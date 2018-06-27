@@ -3,25 +3,18 @@
 \docType{data}
 \name{potato_visual}
 \alias{potato_visual}
-\alias{potato_visual}
 \title{Result of ranking potatoes by weight, where the assessors were only allowed
 to inspected the potatoes visually. 12 assessors ranked 20 potatoes.}
 \format{An integer matrix with 12 rows and 20 columns.}
 \usage{
 potato_visual
-
-potato_visual
 }
 \description{
 Result of ranking potatoes by weight, where the assessors were only allowed
 to inspected the potatoes visually. 12 assessors ranked 20 potatoes.
-
-Result of ranking potatoes by weight, where the assessors were allowed to lift the potatoes. 12 assessors ranked 20 potatoes.
 }
 \references{
 Insert reference to review paper where the potato data is
   presented.
-
-Insert reference to review paper where the potato data is presented.
 }
 \keyword{datasets}
