@@ -10,3 +10,10 @@ or an [Issue](https://github.uio.no/oyss/BayesMallows/issues).
 
 Please also check out the [Suggested
 Roadmap](https://github.uio.no/oyss/BayesMallows/wiki/Roadmap).
+
+## Coding Style
+
+I follow [The tidyverse style
+guide](http://style.tidyverse.org/index.html). In particular, all
+`variable_names` with lowercase letters separated by underscore,
+function names are verbs, and object names are nouns.
