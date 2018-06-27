@@ -20,3 +20,7 @@ A scalar.
 \description{
 Compute the distance between two rank vectors.
 }
+\details{
+Note that the Spearman distance is the squared L2 norm, whereas
+the footrule distance is the L1 norm.
+}

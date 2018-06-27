@@ -16,6 +16,8 @@ timesTwo <- function(x) {
 #' @param metric A string. Avaiable options are \code{"footrule"},
 #' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
 #' @return A scalar.
+#' @details Note that the Spearman distance is the squared L2 norm, whereas
+#' the footrule distance is the L1 norm.
 #' @export
 get_rank_distance <- function(r1, r2, metric = "footrule") {
     .Call(`_BayesMallows_get_rank_distance`, r1, r2, metric)
