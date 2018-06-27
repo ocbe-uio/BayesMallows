@@ -9,3 +9,15 @@ timesTwo <- function(x) {
     .Call(`_BayesMallows_timesTwo`, x)
 }
 
+#' Compute the distance between two rank vectors.
+#'
+#' @param r1 A vector of ranks.
+#' @param r2 A vector of ranks.
+#' @param metric A string. Avaiable options are \code{"footrule"},
+#' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
+#' @return A scalar.
+#' @export
+get_rank_distance <- function(r1, r2, metric = "footrule") {
+    .Call(`_BayesMallows_get_rank_distance`, r1, r2, metric)
+}
+

@@ -17,9 +17,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// get_rank_distance
+double get_rank_distance(const arma::vec r1, const arma::vec r2, const std::string metric);
+RcppExport SEXP _BayesMallows_get_rank_distance(SEXP r1SEXP, SEXP r2SEXP, SEXP metricSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec >::type r1(r1SEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type r2(r2SEXP);
+    Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_rank_distance(r1, r2, metric));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_timesTwo", (DL_FUNC) &_BayesMallows_timesTwo, 1},
+    {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
     {NULL, NULL, 0}
 };
 

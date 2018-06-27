@@ -20,3 +20,5 @@
 #' @format An integer matrix with 12 rows and 20 columns.
 #' @references Insert reference to review paper where the potato data is presented.
 "potato_weighing"
+
+
