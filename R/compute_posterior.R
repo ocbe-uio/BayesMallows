@@ -21,6 +21,6 @@ compute_posterior <- function(R, metric){
     cardinalities <- 0
   }
 
-  run_mcmc(R, cardinalities, metric)
+  run_mcmc(as.numeric(R, cardinalities, metric)
 
 }
