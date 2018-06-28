@@ -1,13 +1,14 @@
 #' Compute the posterior distribution for the Mallows model.
 #'
-#' @param R A matrix of ranks.
+#' @param R A matrix of ranks, N x n. This matrix is transposed before calling
+#'   the underlying C++ function.
 #' @param metric The metric to use.
 #'
 #' @return TBD
 #' @export
 #'
 #' @examples
-#' compute_posterior(potato_weighing, "footrule")
+#' model_fit <- compute_posterior(potato_weighing, "footrule")
 compute_posterior <- function(R, metric){
   # Find the number of items
   n <- ncol(R)
@@ -21,6 +22,7 @@ compute_posterior <- function(R, metric){
     cardinalities <- 0
   }
 
-  run_mcmc(as.numeric(R, cardinalities, metric)
+  # Transpose R to get samples along columns.
+  run_mcmc(t(R), cardinalities, metric)
 
 }

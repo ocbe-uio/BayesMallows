@@ -9,16 +9,17 @@
 
 // We put all the function declarations here for clarity
 int binomial_coefficient(int n, int k);
-double get_rank_distance(arma::rowvec, arma::rowvec, std::string);
-double get_partition_function(double, Rcpp::List, std::string);
+double get_rank_distance(arma::vec, arma::vec, std::string);
+double get_partition_function(int, double, arma::vec, std::string);
 Rcpp::List run_mcmc(arma::Mat<int>, arma::vec, std::string);
 arma::vec get_summation_distances(int, arma::vec, std::string);
-Rcpp::List leap_and_shift(arma::rowvec, int);
-double rank_dist_matrix(arma::mat, arma::rowvec, std::string);
+Rcpp::List leap_and_shift(arma::vec, int);
+double rank_dist_matrix(arma::mat, arma::vec, std::string);
 
 //' Worker function for computing the posterior distribtuion.
 //'
-//' @param R A set of complete rankings.
+//' @param R A set of complete rankings, with one sample per column.
+//' With N samples and n items, R is n x N.
 //' @param cardinalities Used when metric equals \code{"footrule"} or
 //' \code{"spearman"} for computing the partition function.
 //' TODO: Make this argument optional.
@@ -28,22 +29,28 @@ double rank_dist_matrix(arma::mat, arma::rowvec, std::string);
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
                     std::string metric = "footrule", int nmc = 10,
-                    int L = 1){
+                    int L = 1, double sd_alpha = 0.1, double lambda = 0.1){
 
   // The number of items ranked
-  int n = R.n_cols;
+  int n = R.n_rows;
+
+  // The number of assessors
+  int N = R.n_cols;
 
   // First we find the vector of distances used to compute the partition function
   arma::vec distances = get_summation_distances(n, cardinalities, metric);
 
   // Declare the matrix to hold the latent ranks
-  arma::mat rho = arma::zeros<arma::mat>(nmc, n);
+  // Note: Armadillo matrices are stored in column-major ordering. Hence,
+  // we put the items along the column, since they are going to be accessed at the
+  // same time for a given Monte Carlo sample.
+  arma::mat rho(n, nmc);
 
   // Set the initial latent rank value
-  rho.row(0) = arma::linspace<arma::rowvec>(1, n, n);
+  rho.col(0) = arma::linspace<arma::vec>(1, n, n);
 
   // Declare the vector to hold the scaling parameter alpha
-  arma::vec alpha = arma::zeros<arma::vec>(nmc);
+  arma::vec alpha(nmc);
 
   // Set the initial alpha value
   alpha(0) = 1;
@@ -51,44 +58,65 @@ Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
   // Number of times alpha and rho proposals are accepted
   int acceptance_rho = 0, acceptance_alpha = 0;
 
+  // Metropolis-Hastings ratio
+  double ratio;
+
   // Starting at t = 1, meaning that alpha and rho must be initialized at index 0
   for(int t = 1; t < nmc; ++t){
     // Save current parameter values
-    arma::rowvec rho_old = rho.row(t - 1);
+    arma::vec rho_old = rho.col(t - 1);
     double alpha_old = alpha(t - 1);
 
     // Sample a rank proposal
     Rcpp::List ls_proposal = leap_and_shift(rho_old, L);
 
     // Save some of the variables
-    arma::rowvec rho_proposal = ls_proposal["proposal"];
+    arma::vec rho_proposal = ls_proposal["proposal"];
     arma::uvec indices = ls_proposal["indices"];
     double prob_backward = ls_proposal["prob_backward"];
     double prob_forward = ls_proposal["prob_forward"];
 
     // Compute the distances to current and proposed ranks
-    double dist_new = rank_dist_matrix(R.cols(indices), rho_proposal(indices), metric);
-    double dist_old = rank_dist_matrix(R.cols(indices), rho_old(indices), metric);
+    double dist_new = rank_dist_matrix(R.rows(indices), rho_proposal(indices), metric);
+    double dist_old = rank_dist_matrix(R.rows(indices), rho_old(indices), metric);
 
     // Metropolis-Hastings ratio
-    double ratio = - alpha_old / n * (dist_new - dist_old) + log(prob_backward) - log(prob_forward);
+    ratio = - alpha_old / n * (dist_new - dist_old) + log(prob_backward) - log(prob_forward);
 
     // Draw a uniform random number
     double u = log(arma::randu<double>());
 
     if(ratio > u){
-      rho.row(t) = rho_proposal;
+      rho.col(t) = rho_proposal;
       acceptance_rho += 1;
     } else {
-      rho.row(t) = rho.row(t - 1);
+      rho.col(t) = rho.col(t - 1);
     }
 
+    // Sample an alpha proposal (normal on the log scale)
+    double alpha_proposal = exp(arma::randn<double>() * sd_alpha + log(alpha(t - 1)));
+
+    double rank_dist = rank_dist_matrix(R, rho.col(t), metric);
+    // Difference between current and proposed alpha
+    double alpha_diff = alpha(t - 1) - alpha_proposal;
+
+    // Compute the Metropolis-Hastings ratio
+    ratio = (alpha(t - 1) - alpha_proposal) / n * rank_dist +
+      lambda * alpha_diff +
+      N * (
+          get_partition_function(n, alpha(t - 1), cardinalities, metric) -
+          get_partition_function(n, alpha_proposal, cardinalities, metric)
+      ) + log(alpha_proposal) - log(alpha(t - 1));
+
     alpha(t) = alpha(t - 1);
+    acceptance_alpha += 1;
   }
 
   return Rcpp::List::create(
     Rcpp::Named("rho") = rho,
-    Rcpp::Named("alpha") = alpha
+    Rcpp::Named("acceptance_rho") = acceptance_rho,
+    Rcpp::Named("alpha") = alpha,
+    Rcpp::Named("acceptance_alpha") = acceptance_alpha
   );
 }
 
@@ -102,22 +130,18 @@ Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
 //' @return A scalar, the logarithm of the partition function.
 //' @export
 // [[Rcpp::export]]
-double get_partition_function(double alpha, Rcpp::List summation_sequences,
+double get_partition_function(int n, double alpha, arma::vec cardinalities,
                               std::string metric = "footrule"){
 
-
-
-  double log_z_n = 0;
-
   if(metric == "footrule") {
-    log_z_n = 1;
 
+    arma::vec distances = arma::regspace(0, 2, floor(pow(n, 2) / 2));
+    return log(arma::sum(cardinalities % exp(-alpha * distances / n)));
 
   } else {
     Rcpp::stop("Inadmissible value of metric.");
   }
 
-  return log_z_n;
 }
 
 //' Get the distances for computing the partition function given
@@ -170,7 +194,7 @@ arma::vec get_summation_distances(int n, arma::vec cardinalities,
 //' the footrule distance is the L1 norm.
 //' @export
 // [[Rcpp::export]]
-double get_rank_distance(arma::rowvec r1, arma::rowvec r2, std::string metric = "footrule"){
+double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footrule"){
 
   if (r1.n_elem != r2.n_elem){
     Rcpp::Rcout << "r1 and r2 must have the same length" << std::endl;
@@ -230,10 +254,10 @@ int binomial_coefficient(int n, int k){
 
 
 
-Rcpp::List leap_and_shift(arma::rowvec rho, int L){
+Rcpp::List leap_and_shift(arma::vec rho, int L){
 
   // Declare the proposed rank vector
-  arma::rowvec proposal = rho;
+  arma::vec proposal = rho;
 
   // Help vectors
   arma::vec support, indices;
@@ -328,15 +352,14 @@ Rcpp::List leap_and_shift(arma::rowvec rho, int L){
 }
 
 // Compute the distance between all rows in R and rho
-double rank_dist_matrix(arma::mat R, arma::rowvec rho, std::string metric){
-  int N = R.n_rows;
-
-  if(R.n_cols != rho.n_elem) Rcpp::stop("R and rho have different number of elements");
+double rank_dist_matrix(arma::mat R, arma::vec rho, std::string metric){
+  int N = R.n_cols;
+  if(R.n_rows != rho.n_elem) Rcpp::stop("R and rho have different number of elements");
 
   double total_distance = 0;
 
   for(int i = 0; i < N; ++i){
-    total_distance += get_rank_distance(R.row(i), rho, metric = metric);
+    total_distance += get_rank_distance(R.col(i), rho, metric = metric);
   }
 
   return total_distance;

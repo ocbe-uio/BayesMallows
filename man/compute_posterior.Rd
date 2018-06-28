@@ -7,7 +7,8 @@
 compute_posterior(R, metric)
 }
 \arguments{
-\item{R}{A matrix of ranks.}
+\item{R}{A matrix of ranks, N x n. This matrix is transposed before calling
+the underlying C++ function.}
 
 \item{metric}{The metric to use.}
 }
@@ -18,5 +19,5 @@ TBD
 Compute the posterior distribution for the Mallows model.
 }
 \examples{
-compute_posterior(potato_weighing, "footrule")
+model_fit <- compute_posterior(potato_weighing, "footrule")
 }

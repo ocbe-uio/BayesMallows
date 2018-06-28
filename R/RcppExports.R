@@ -3,15 +3,16 @@
 
 #' Worker function for computing the posterior distribtuion.
 #'
-#' @param R A set of complete rankings.
+#' @param R A set of complete rankings, with one sample per column.
+#' With N samples and n items, R is n x N.
 #' @param cardinalities Used when metric equals \code{"footrule"} or
 #' \code{"spearman"} for computing the partition function.
 #' TODO: Make this argument optional.
 #' @param metric The distance metric to use.
 #' @param nmc Number of Monte Carlo samples.
 #' @param L Leap-and-shift step size.
-run_mcmc <- function(R, cardinalities, metric = "footrule", nmc = 10L, L = 1L) {
-    .Call(`_BayesMallows_run_mcmc`, R, cardinalities, metric, nmc, L)
+run_mcmc <- function(R, cardinalities, metric = "footrule", nmc = 10L, L = 1L, sd_alpha = 0.1, lambda = 0.1) {
+    .Call(`_BayesMallows_run_mcmc`, R, cardinalities, metric, nmc, L, sd_alpha, lambda)
 }
 
 #' Compute the logarithm of the partition function for a Mallows rank model.
@@ -23,8 +24,8 @@ run_mcmc <- function(R, cardinalities, metric = "footrule", nmc = 10L, L = 1L) {
 #' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
 #' @return A scalar, the logarithm of the partition function.
 #' @export
-get_partition_function <- function(alpha, summation_sequences, metric = "footrule") {
-    .Call(`_BayesMallows_get_partition_function`, alpha, summation_sequences, metric)
+get_partition_function <- function(n, alpha, cardinalities, metric = "footrule") {
+    .Call(`_BayesMallows_get_partition_function`, n, alpha, cardinalities, metric)
 }
 
 #' Get the distances for computing the partition function given

@@ -4,10 +4,12 @@
 \alias{run_mcmc}
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
-run_mcmc(R, cardinalities, metric = "footrule", nmc = 10L, L = 1L)
+run_mcmc(R, cardinalities, metric = "footrule", nmc = 10L, L = 1L,
+  sd_alpha = 0.1, lambda = 0.1)
 }
 \arguments{
-\item{R}{A set of complete rankings.}
+\item{R}{A set of complete rankings, with one sample per column.
+With N samples and n items, R is n x N.}
 
 \item{cardinalities}{Used when metric equals \code{"footrule"} or
 \code{"spearman"} for computing the partition function.

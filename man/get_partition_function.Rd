@@ -4,16 +4,16 @@
 \alias{get_partition_function}
 \title{Compute the logarithm of the partition function for a Mallows rank model.}
 \usage{
-get_partition_function(alpha, summation_sequences, metric = "footrule")
+get_partition_function(n, alpha, cardinalities, metric = "footrule")
 }
 \arguments{
 \item{alpha}{The value of the alpha parameter.}
 
-\item{summation_sequences}{List with elements \code{distances} and
-\code{cardinalities}, both of type arma::vec.}
-
 \item{metric}{A string. Avaiable options are \code{"footrule"},
 \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.}
+
+\item{summation_sequences}{List with elements \code{distances} and
+\code{cardinalities}, both of type arma::vec.}
 }
 \value{
 A scalar, the logarithm of the partition function.
