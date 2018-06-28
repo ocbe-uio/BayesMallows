@@ -6,34 +6,36 @@
 
 using namespace Rcpp;
 
-// timesTwo
-int timesTwo(int x);
-RcppExport SEXP _BayesMallows_timesTwo(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(timesTwo(x));
-    return rcpp_result_gen;
-END_RCPP
-}
 // get_rank_distance
-double get_rank_distance(const arma::vec r1, const arma::vec r2, const std::string metric);
+double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric);
 RcppExport SEXP _BayesMallows_get_rank_distance(SEXP r1SEXP, SEXP r2SEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec >::type r1(r1SEXP);
-    Rcpp::traits::input_parameter< const arma::vec >::type r2(r2SEXP);
-    Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type r1(r1SEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type r2(r2SEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     rcpp_result_gen = Rcpp::wrap(get_rank_distance(r1, r2, metric));
+    return rcpp_result_gen;
+END_RCPP
+}
+// get_partition_functions
+double get_partition_functions(int n, double alpha, std::string metric);
+RcppExport SEXP _BayesMallows_get_partition_functions(SEXP nSEXP, SEXP alphaSEXP, SEXP metricSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_partition_functions(n, alpha, metric));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_BayesMallows_timesTwo", (DL_FUNC) &_BayesMallows_timesTwo, 1},
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
+    {"_BayesMallows_get_partition_functions", (DL_FUNC) &_BayesMallows_get_partition_functions, 3},
     {NULL, NULL, 0}
 };
 

@@ -5,15 +5,6 @@
 //
 // [[Rcpp::depends(RcppArmadillo)]]
 
-//' Multiply a number by two
-//'
-//' @param x A single integer.
-//' @export
-// [[Rcpp::export]]
-int timesTwo(int x) {
-  return x * 2;
-}
-
 //' Compute the distance between two rank vectors.
 //'
 //' @param r1 A vector of ranks.
@@ -25,8 +16,7 @@ int timesTwo(int x) {
 //' the footrule distance is the L1 norm.
 //' @export
 // [[Rcpp::export]]
-double get_rank_distance(const arma::vec r1, const arma::vec r2,
-                         const std::string metric = "footrule"){
+double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footrule"){
 
   if (r1.n_elem != r2.n_elem){
     Rcpp::Rcout << "r1 and r2 must have the same length" << std::endl;
