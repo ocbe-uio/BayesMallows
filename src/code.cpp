@@ -9,10 +9,12 @@
 
 // We put all the function declarations here for clarity
 int binomial_coefficient(int n, int k);
-double get_rank_distance(arma::vec, arma::vec, std::string);
+double get_rank_distance(arma::rowvec, arma::rowvec, std::string);
 double get_partition_function(double, Rcpp::List, std::string);
 Rcpp::List run_mcmc(arma::Mat<int>, arma::vec, std::string);
 arma::vec get_summation_distances(int, arma::vec, std::string);
+Rcpp::List leap_and_shift(arma::rowvec, int);
+double rank_dist_matrix(arma::mat, arma::rowvec, std::string);
 
 //' Worker function for computing the posterior distribtuion.
 //'
@@ -24,7 +26,7 @@ arma::vec get_summation_distances(int, arma::vec, std::string);
 //' @param nmc Number of Monte Carlo samples.
 //' @param L Leap-and-shift step size.
 // [[Rcpp::export]]
-Rcpp::List run_mcmc(arma::Mat<int> R, arma::vec cardinalities,
+Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
                     std::string metric = "footrule", int nmc = 10,
                     int L = 1){
 
@@ -46,8 +48,41 @@ Rcpp::List run_mcmc(arma::Mat<int> R, arma::vec cardinalities,
   // Set the initial alpha value
   alpha(0) = 1;
 
+  // Number of times alpha and rho proposals are accepted
+  int acceptance_rho = 0, acceptance_alpha = 0;
+
+  // Starting at t = 1, meaning that alpha and rho must be initialized at index 0
   for(int t = 1; t < nmc; ++t){
-    rho.row(t) = rho.row(t - 1);
+    // Save current parameter values
+    arma::rowvec rho_old = rho.row(t - 1);
+    double alpha_old = alpha(t - 1);
+
+    // Sample a rank proposal
+    Rcpp::List ls_proposal = leap_and_shift(rho_old, L);
+
+    // Save some of the variables
+    arma::rowvec rho_proposal = ls_proposal["proposal"];
+    arma::uvec indices = ls_proposal["indices"];
+    double prob_backward = ls_proposal["prob_backward"];
+    double prob_forward = ls_proposal["prob_forward"];
+
+    // Compute the distances to current and proposed ranks
+    double dist_new = rank_dist_matrix(R.cols(indices), rho_proposal(indices), metric);
+    double dist_old = rank_dist_matrix(R.cols(indices), rho_old(indices), metric);
+
+    // Metropolis-Hastings ratio
+    double ratio = - alpha_old / n * (dist_new - dist_old) + log(prob_backward) - log(prob_forward);
+
+    // Draw a uniform random number
+    double u = log(arma::randu<double>());
+
+    if(ratio > u){
+      rho.row(t) = rho_proposal;
+      acceptance_rho += 1;
+    } else {
+      rho.row(t) = rho.row(t - 1);
+    }
+
     alpha(t) = alpha(t - 1);
   }
 
@@ -135,7 +170,7 @@ arma::vec get_summation_distances(int n, arma::vec cardinalities,
 //' the footrule distance is the L1 norm.
 //' @export
 // [[Rcpp::export]]
-double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footrule"){
+double get_rank_distance(arma::rowvec r1, arma::rowvec r2, std::string metric = "footrule"){
 
   if (r1.n_elem != r2.n_elem){
     Rcpp::Rcout << "r1 and r2 must have the same length" << std::endl;
@@ -174,6 +209,8 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footr
 }
 
 
+
+
 int binomial_coefficient(int n, int k){
   int res = 1;
 
@@ -190,3 +227,121 @@ int binomial_coefficient(int n, int k){
 
   return res;
 }
+
+
+
+Rcpp::List leap_and_shift(arma::rowvec rho, int L){
+
+  // Declare the proposed rank vector
+  arma::rowvec proposal = rho;
+
+  // Help vectors
+  arma::vec support, indices;
+
+  // Number of items
+  int n = rho.n_elem;
+
+  // Other helper variables
+  int u, index;
+  double delta_r, prob_forward, prob_backward, support_new;
+
+  // Leap 1
+  // 1, sample u randomly between 1 and n
+  u = arma::as_scalar(arma::randi(1, arma::distr_param(1, n)));
+
+  // 2, compute the set S for sampling the new rank
+  // Defining versions of L and n converted to double, to avoid duplication in code
+  double dobL = static_cast<double>(L);
+  double dobn = static_cast<double>(n);
+
+  // Defining linspace lengths here to avoid duplication in code
+  double length1 = std::min(rho(u - 1) - 1, dobL);
+  double length2 = std::min(n - rho(u - 1), dobL);
+
+  if((rho(u - 1) > 1) & (rho(u - 1) < n)){
+    support = arma::join_cols(
+      arma::linspace(
+        std::max(1.0, rho(u - 1) - L), rho(u - 1) - 1, length1
+    ),
+    arma::linspace(
+      rho(u - 1) + 1, std::min(dobn, rho(u - 1) + L), length2
+    )
+    );
+  } else if(rho(u - 1) == 1){
+    support = arma::linspace(
+      rho(u - 1) + 1,
+      std::min(dobn, rho(u - 1) + L),
+      length2
+    );
+
+  } else if(rho(u - 1) == n){
+    support = arma::linspace(
+      std::max(1.0, rho(u - 1) - L), rho(u - 1) - 1,
+      length1);
+  }
+
+  // 3. assign a random element of the support set, this completes the leap step
+  index = arma::as_scalar(arma::randi(1, arma::distr_param(0, support.n_elem-1)));
+  // Picked element index-1 from the support set
+  proposal(u-1) = support(index);
+
+  // Compute the associated transition probabilities (BEFORE THE SHIFT STEP, WHICH IS DETERMINISTIC --> EASIER)
+  if(std::abs(proposal(u - 1) - rho(u - 1)) == 1){
+    // in this case the transition probabilities coincide! (and in fact for L = 1 the L&S is symmetric)
+    support_new = std::min(proposal(u - 1) - 1, dobL) + std::min(n - proposal(u - 1), dobL);
+    prob_forward = 1.0 / (n * support.n_elem) + 1.0 / (n * support_new);
+    prob_backward = prob_forward;
+  } else {
+    // P(proposed|current)
+    prob_forward = 1.0 / (n * support.n_elem);
+    // P(current|proposed)
+    support_new = std::min(proposal(u - 1) - 1, dobL) + std::min(n - proposal(u-1), dobL);
+    prob_backward = 1.0 / (n * support_new);
+  }
+
+  // Shift step:
+  delta_r = proposal(u - 1) - rho(u - 1);
+  indices = arma::zeros(std::abs(delta_r) + 1);
+  indices[0] = u-1;
+
+  if(delta_r > 0){
+    for(int k = 1; k <= delta_r; ++k){
+      index = arma::as_scalar(arma::find(rho == rho(u-1) + k));
+      proposal(index) -= 1;
+      indices[k] = index;
+    }
+  } else if(delta_r < 0) {
+    for(int k =- 1; k>=delta_r; --k){
+      index = arma::as_scalar(arma::find(rho == rho(u-1) + k));
+      proposal(index) += 1;
+      indices[-(k)] = index;
+    }
+  }
+
+
+  return Rcpp::List::create(Rcpp::Named("proposal") = proposal,
+                            Rcpp::Named("indices") = indices,
+                            Rcpp::Named("delta_r") = delta_r,
+                            Rcpp::Named("prob_forward") = prob_forward,
+                            Rcpp::Named("prob_backward") = prob_backward
+                              );
+}
+
+// Compute the distance between all rows in R and rho
+double rank_dist_matrix(arma::mat R, arma::rowvec rho, std::string metric){
+  int N = R.n_rows;
+
+  if(R.n_cols != rho.n_elem) Rcpp::stop("R and rho have different number of elements");
+
+  double total_distance = 0;
+
+  for(int i = 0; i < N; ++i){
+    total_distance += get_rank_distance(R.row(i), rho, metric = metric);
+  }
+
+  return total_distance;
+}
+
+
+
+

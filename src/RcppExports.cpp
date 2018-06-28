@@ -7,12 +7,12 @@
 using namespace Rcpp;
 
 // run_mcmc
-Rcpp::List run_mcmc(arma::Mat<int> R, arma::vec cardinalities, std::string metric, int nmc, int L);
+Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities, std::string metric, int nmc, int L);
 RcppExport SEXP _BayesMallows_run_mcmc(SEXP RSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP, SEXP nmcSEXP, SEXP LSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::Mat<int> >::type R(RSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type R(RSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type cardinalities(cardinalitiesSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< int >::type nmc(nmcSEXP);
@@ -48,13 +48,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // get_rank_distance
-double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric);
+double get_rank_distance(arma::rowvec r1, arma::rowvec r2, std::string metric);
 RcppExport SEXP _BayesMallows_get_rank_distance(SEXP r1SEXP, SEXP r2SEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type r1(r1SEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type r2(r2SEXP);
+    Rcpp::traits::input_parameter< arma::rowvec >::type r1(r1SEXP);
+    Rcpp::traits::input_parameter< arma::rowvec >::type r2(r2SEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     rcpp_result_gen = Rcpp::wrap(get_rank_distance(r1, r2, metric));
     return rcpp_result_gen;
