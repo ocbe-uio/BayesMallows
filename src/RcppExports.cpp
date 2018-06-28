@@ -6,6 +6,47 @@
 
 using namespace Rcpp;
 
+// run_mcmc
+Rcpp::List run_mcmc(arma::Mat<int> R, arma::vec cardinalities, std::string metric, int nmc, int L);
+RcppExport SEXP _BayesMallows_run_mcmc(SEXP RSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP, SEXP nmcSEXP, SEXP LSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::Mat<int> >::type R(RSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type cardinalities(cardinalitiesSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    Rcpp::traits::input_parameter< int >::type nmc(nmcSEXP);
+    Rcpp::traits::input_parameter< int >::type L(LSEXP);
+    rcpp_result_gen = Rcpp::wrap(run_mcmc(R, cardinalities, metric, nmc, L));
+    return rcpp_result_gen;
+END_RCPP
+}
+// get_partition_function
+double get_partition_function(double alpha, Rcpp::List summation_sequences, std::string metric);
+RcppExport SEXP _BayesMallows_get_partition_function(SEXP alphaSEXP, SEXP summation_sequencesSEXP, SEXP metricSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type summation_sequences(summation_sequencesSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_partition_function(alpha, summation_sequences, metric));
+    return rcpp_result_gen;
+END_RCPP
+}
+// get_summation_distances
+arma::vec get_summation_distances(int n, arma::vec cardinalities, std::string metric);
+RcppExport SEXP _BayesMallows_get_summation_distances(SEXP nSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type cardinalities(cardinalitiesSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_summation_distances(n, cardinalities, metric));
+    return rcpp_result_gen;
+END_RCPP
+}
 // get_rank_distance
 double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric);
 RcppExport SEXP _BayesMallows_get_rank_distance(SEXP r1SEXP, SEXP r2SEXP, SEXP metricSEXP) {
@@ -19,23 +60,12 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// get_partition_functions
-double get_partition_functions(int n, double alpha, std::string metric);
-RcppExport SEXP _BayesMallows_get_partition_functions(SEXP nSEXP, SEXP alphaSEXP, SEXP metricSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_partition_functions(n, alpha, metric));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 5},
+    {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 3},
+    {"_BayesMallows_get_summation_distances", (DL_FUNC) &_BayesMallows_get_summation_distances, 3},
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
-    {"_BayesMallows_get_partition_functions", (DL_FUNC) &_BayesMallows_get_partition_functions, 3},
     {NULL, NULL, 0}
 };
 
