@@ -11,6 +11,11 @@ or an [Issue](https://github.uio.no/oyss/BayesMallows/issues).
 Please also check out the [Suggested
 Roadmap](https://github.uio.no/oyss/BayesMallows/wiki/Roadmap).
 
+To install the current development version of the package, you should
+clone or download this repository, and then open `BayesMallows.Rproj` in
+RStudio and click **Build** and then **Install and Restart** on the top
+meny.
+
 ## Function Overview
 
 This table describes the high level functions informally. It is aimed at
