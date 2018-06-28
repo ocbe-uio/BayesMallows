@@ -14,7 +14,7 @@ Roadmap](https://github.uio.no/oyss/BayesMallows/wiki/Roadmap).
 To install the current development version of the package, you should
 clone or download this repository, and then open `BayesMallows.Rproj` in
 RStudio and click **Build** and then **Install and Restart** on the top
-meny.
+menu.
 
 ## Function Overview
 
