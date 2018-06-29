@@ -4,7 +4,8 @@
 \alias{compute_posterior}
 \title{Compute the posterior distribution for the Mallows model.}
 \usage{
-compute_posterior(R, metric)
+compute_posterior(R, metric = "footrule", lambda = 0.1, nmc = 1000,
+  L = 1, sd_alpha = 0.1, alpha_init = 5)
 }
 \arguments{
 \item{R}{A matrix of ranks, N x n. This matrix is transposed before calling

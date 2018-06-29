@@ -9,7 +9,9 @@
 #'
 #' @examples
 #' model_fit <- compute_posterior(potato_weighing, "footrule")
-compute_posterior <- function(R, metric){
+compute_posterior <- function(R, metric = "footrule", lambda = 0.1,
+                              nmc = 1000, L = 1, sd_alpha = 0.1,
+                              alpha_init = 5){
   # Find the number of items
   n <- ncol(R)
 
@@ -23,6 +25,7 @@ compute_posterior <- function(R, metric){
   }
 
   # Transpose R to get samples along columns.
-  run_mcmc(t(R), cardinalities, metric)
+  run_mcmc(t(R), cardinalities, metric = metric, lambda = lambda,
+           nmc = nmc, L = L, sd_alpha = sd_alpha, alpha_init = alpha_init)
 
 }

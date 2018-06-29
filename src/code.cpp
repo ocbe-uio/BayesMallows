@@ -28,8 +28,9 @@ double rank_dist_matrix(arma::mat, arma::vec, std::string);
 //' @param L Leap-and-shift step size.
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
-                    std::string metric = "footrule", int nmc = 10,
-                    int L = 1, double sd_alpha = 0.1, double lambda = 0.1){
+                    std::string metric = "footrule", int nmc = 100,
+                    int L = 1, double sd_alpha = 0.5, double lambda = 0.1,
+                    double alpha_init = 5){
 
   // The number of items ranked
   int n = R.n_rows;
@@ -53,13 +54,20 @@ Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
   arma::vec alpha(nmc);
 
   // Set the initial alpha value
-  alpha(0) = 1;
+  alpha(0) = alpha_init;
 
-  // Number of times alpha and rho proposals are accepted
-  int acceptance_rho = 0, acceptance_alpha = 0;
+  // Declare indicator vectors to hold acceptance or not
+  arma::vec alpha_acceptance(nmc), rho_acceptance(nmc);
+
+  // Set the initial values;
+  alpha_acceptance(0) = 1;
+  rho_acceptance(0) = 1;
 
   // Metropolis-Hastings ratio
   double ratio;
+
+  // Uniform random number which we will draw in Metropolis-Hastings algorithm
+  double u;
 
   // Starting at t = 1, meaning that alpha and rho must be initialized at index 0
   for(int t = 1; t < nmc; ++t){
@@ -84,13 +92,14 @@ Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
     ratio = - alpha_old / n * (dist_new - dist_old) + log(prob_backward) - log(prob_forward);
 
     // Draw a uniform random number
-    double u = log(arma::randu<double>());
+    u = log(arma::randu<double>());
 
     if(ratio > u){
       rho.col(t) = rho_proposal;
-      acceptance_rho += 1;
+      rho_acceptance(t) = 1;
     } else {
       rho.col(t) = rho.col(t - 1);
+      rho_acceptance(t) = 0;
     }
 
     // Sample an alpha proposal (normal on the log scale)
@@ -108,15 +117,26 @@ Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
           get_partition_function(n, alpha_proposal, cardinalities, metric)
       ) + log(alpha_proposal) - log(alpha(t - 1));
 
-    alpha(t) = alpha(t - 1);
-    acceptance_alpha += 1;
+    // Draw a uniform random number
+    u = log(arma::randu<double>());
+
+    if(ratio > u){
+      alpha(t) = alpha_proposal;
+      alpha_acceptance(t) = 1;
+    } else {
+      alpha(t) = alpha(t - 1);
+      alpha_acceptance(t) = 0;
+    }
+
+
+
   }
 
   return Rcpp::List::create(
     Rcpp::Named("rho") = rho,
-    Rcpp::Named("acceptance_rho") = acceptance_rho,
+    Rcpp::Named("rho_acceptance") = rho_acceptance,
     Rcpp::Named("alpha") = alpha,
-    Rcpp::Named("acceptance_alpha") = acceptance_alpha
+    Rcpp::Named("alpha_acceptance") = alpha_acceptance
   );
 }
 

@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // run_mcmc
-Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities, std::string metric, int nmc, int L, double sd_alpha, double lambda);
-RcppExport SEXP _BayesMallows_run_mcmc(SEXP RSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP, SEXP nmcSEXP, SEXP LSEXP, SEXP sd_alphaSEXP, SEXP lambdaSEXP) {
+Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities, std::string metric, int nmc, int L, double sd_alpha, double lambda, double alpha_init);
+RcppExport SEXP _BayesMallows_run_mcmc(SEXP RSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP, SEXP nmcSEXP, SEXP LSEXP, SEXP sd_alphaSEXP, SEXP lambdaSEXP, SEXP alpha_initSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -19,7 +19,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type L(LSEXP);
     Rcpp::traits::input_parameter< double >::type sd_alpha(sd_alphaSEXP);
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_mcmc(R, cardinalities, metric, nmc, L, sd_alpha, lambda));
+    Rcpp::traits::input_parameter< double >::type alpha_init(alpha_initSEXP);
+    rcpp_result_gen = Rcpp::wrap(run_mcmc(R, cardinalities, metric, nmc, L, sd_alpha, lambda, alpha_init));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -65,7 +66,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 7},
+    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 8},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 4},
     {"_BayesMallows_get_summation_distances", (DL_FUNC) &_BayesMallows_get_summation_distances, 3},
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
