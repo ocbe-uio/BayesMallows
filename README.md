@@ -15,11 +15,12 @@ To install the current development version of the package, you should
 clone or download this repository, and then open `BayesMallows.Rproj` in
 RStudio and click **Build** and then **Install and Restart** on the top
 menu. To get started using the package, take a look at the examples in
-the `assess_convergence` function:
+the `assess_convergence` and `compute_posterior` functions:
 
 ``` r
 library(BayesMallows)
 ?assess_convergence
+?compute_posterior
 ```
 
 ## Function Overview
