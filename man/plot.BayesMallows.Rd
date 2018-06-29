@@ -4,7 +4,7 @@
 \alias{plot.BayesMallows}
 \title{Posterior plots}
 \usage{
-\method{plot}{BayesMallows}(fit, type = "alpha", item = NULL, ...)
+\method{plot}{BayesMallows}(fit, type = "alpha", items = NULL, ...)
 }
 \arguments{
 \item{fit}{An object of type \code{BayesMallows}, returned from
@@ -14,8 +14,8 @@
 of the scale parameter or \code{"rho"} for a posterior histogram of a ranked
 item.}
 
-\item{item}{If \code{type = "rho"} this argument must be set. It defines
-which item to plot. If \code{type = "alpha"} this argument is ignored.}
+\item{items}{If \code{type = "rho"} this argument must be set. It defines
+which item(s) to plot. If \code{type = "alpha"} this argument is ignored.}
 
 \item{...}{Other arguments passed to ggplot2::geom_histogram.}
 }
@@ -31,5 +31,7 @@ model_fit <- compute_posterior(potato_weighing, "footrule",
 nmc = 10000, burnin = 5000)
 # Plot the posterior histogram of alpha
 plot(model_fit, type = "alpha", bins = 50)
+# We can also plot the posterior histograms of rankings of items
+plot(model_fit, type = "rho", items = c(2, 5), bins = 20)
 
 }

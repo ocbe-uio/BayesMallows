@@ -49,7 +49,9 @@ compute_posterior <- function(R, metric = "footrule", lambda = 0.1,
            nmc = nmc, L = L, sd_alpha = sd_alpha, alpha_init = alpha_init)
 
   # Finally subset so that we only get values after burnin
-  fit <- lapply(fit, `[`, seq(from = burnin + 1, to = nmc, by = 1))
+  s <- c("rho_acceptance", "alpha", "alpha_acceptance")
+  fit[s] <- lapply(fit[s], `[`, seq(from = burnin + 1, to = nmc, by = 1))
+  fit$rho <- fit$rho[, (burnin + 1) : nmc]
   class(fit) <- "BayesMallows"
 
   return(fit)
