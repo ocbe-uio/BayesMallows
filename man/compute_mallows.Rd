@@ -25,7 +25,7 @@ compute_mallows(R, metric = "footrule", lambda = 0.1, nmc = 3000,
 \item{alpha_init}{Initial value of alpha.}
 }
 \value{
-TBD
+A list of class BayesMallows.
 }
 \description{
 Compute the posterior distribution for the Mallows model.

@@ -9,7 +9,7 @@
 #' @param sd_alpha Standard deviation of the proposal distribution for alpha.
 #' @param alpha_init Initial value of alpha.
 #'
-#' @return TBD
+#' @return A list of class BayesMallows.
 #' @details  It is usually a
 #' good idea to first use \code{\link{assess_convergence}} to determine the
 #' algorithm parameters.

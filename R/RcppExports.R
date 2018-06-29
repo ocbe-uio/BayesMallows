@@ -37,7 +37,6 @@ get_partition_function <- function(n, alpha, cardinalities, metric = "footrule")
 #' @param metric A string. Avaiable options are \code{"footrule"},
 #' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
 #' @return A scalar, the logarithm of the partition function.
-#' @export
 get_summation_distances <- function(n, cardinalities, metric = "footrule") {
     .Call(`_BayesMallows_get_summation_distances`, n, cardinalities, metric)
 }

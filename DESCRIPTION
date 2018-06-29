@@ -13,3 +13,5 @@ RoxygenNote: 6.0.1
 Imports: Rcpp (>= 0.12.17),
   ggplot2 (>= 2.2.1)
 LinkingTo: Rcpp, RcppArmadillo
+Suggests: testthat,
+  gtools (>= 3.8.1)

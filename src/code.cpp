@@ -39,8 +39,11 @@ Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
   // The number of assessors
   int N = R.n_cols;
 
-  // First we find the vector of distances used to compute the partition function
-  arma::vec distances = get_summation_distances(n, cardinalities, metric);
+  if((metric == "footrule") || (metric == "spearman")){
+    // Find the vector of distances used to compute the partition function
+    arma::vec distances = get_summation_distances(n, cardinalities, metric);
+  }
+
 
   // Declare the matrix to hold the latent ranks
   // Note: Armadillo matrices are stored in column-major ordering. Hence,
@@ -90,7 +93,8 @@ Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
     double dist_old = rank_dist_matrix(R.rows(indices), rho_old(indices), metric);
 
     // Metropolis-Hastings ratio
-    ratio = - alpha_old / n * (dist_new - dist_old) + log(prob_backward) - log(prob_forward);
+    ratio = - alpha_old / n * (dist_new - dist_old) +
+      log(prob_backward) - log(prob_forward);
 
     // Draw a uniform random number
     u = log(arma::randu<double>());
@@ -156,6 +160,9 @@ double get_partition_function(int n, double alpha, arma::vec cardinalities,
     arma::vec distances = arma::regspace(0, 2, floor(pow(n, 2) / 2));
     return log(arma::sum(cardinalities % exp(-alpha * distances / n)));
 
+  } else if (metric == "spearman") {
+      arma::vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n + 1, 3));
+      return log(arma::sum(cardinalities % exp(-alpha * distances / n)));
   } else {
     Rcpp::stop("Inadmissible value of metric.");
   }
@@ -171,7 +178,6 @@ double get_partition_function(int n, double alpha, arma::vec cardinalities,
 //' @param metric A string. Avaiable options are \code{"footrule"},
 //' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
 //' @return A scalar, the logarithm of the partition function.
-//' @export
 // [[Rcpp::export]]
 arma::vec get_summation_distances(int n, arma::vec cardinalities,
                                    std::string metric = "footrule") {
@@ -254,6 +260,10 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footr
 
 
 int binomial_coefficient(int n, int k){
+
+  // Special case:
+  if( k > n ) return 0;
+
   int res = 1;
 
   // Since C(n, k) = C(n, n-k)
