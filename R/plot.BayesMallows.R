@@ -18,6 +18,7 @@
 #' nmc = 10000, burnin = 5000)
 #' # Plot the posterior histogram of alpha
 #' plot(model_fit, type = "alpha", bins = 50)
+#'
 plot.BayesMallows <- function(fit, type = "alpha", item = NULL, ...){
   if(type == "alpha") {
     df <- data.frame(alpha = fit$alpha)

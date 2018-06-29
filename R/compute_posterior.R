@@ -16,7 +16,10 @@
 #' @export
 #'
 #' @examples
-#' model_fit <- compute_posterior(potato_weighing, "footrule")
+#' # Compute the posterior
+#' model_fit <- compute_posterior(potato_weighing, "footrule", nmc = 10000, burnin = 5000)
+#' # Plot the posterior histogram for alpha
+#' plot(model_fit, type = "alpha", bins = 50)
 compute_posterior <- function(R, metric = "footrule", lambda = 0.1,
                               nmc = 3000, burnin = 2000, L = 1, sd_alpha = 0.1,
                               alpha_init = 5){

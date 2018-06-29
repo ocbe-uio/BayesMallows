@@ -31,4 +31,5 @@ model_fit <- compute_posterior(potato_weighing, "footrule",
 nmc = 10000, burnin = 5000)
 # Plot the posterior histogram of alpha
 plot(model_fit, type = "alpha", bins = 50)
+
 }

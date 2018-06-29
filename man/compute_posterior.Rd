@@ -36,5 +36,8 @@ good idea to first use \code{\link{assess_convergence}} to determine the
 algorithm parameters.
 }
 \examples{
-model_fit <- compute_posterior(potato_weighing, "footrule")
+# Compute the posterior
+model_fit <- compute_posterior(potato_weighing, "footrule", nmc = 10000, burnin = 5000)
+# Plot the posterior histogram for alpha
+plot(model_fit, type = "alpha", bins = 50)
 }
