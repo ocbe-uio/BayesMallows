@@ -8,6 +8,8 @@
 #' @param L Leap-and-shift step size
 #' @param sd_alpha Standard deviation of alpha proposal
 #' @param alpha_init Initial value of alpha
+#' @param max_items The maximum number of items to plot in the diagnostic for rho.
+#' @param rho_displays The maximum number of displays in the diagnostic plots for rho.
 #'
 #' @return A list containing two plots, one for alpha and one for rho.
 #' @export
@@ -23,13 +25,19 @@
 #' # Then view the plot
 #' check$alpha_plot
 #' # This looked better!
+#'
+#' # Next, we assess the convergence for rho.
+#' # We start by using the results of the previous run.
+#' check$rho_plot
+#' # Let us see how increasing L changes the convergence
+#' check <- assess_convergence(R = potato_weighing, sd_alpha = 0.1, L = 3)
+#' # The acceptance rate went down. We should stick to L = 1.
+#' check$rho_plot
 assess_convergence <- function(R, metric = "footrule", lambda = 0.1,
-                               nmc = 10000, burnin = 5000,
-                               L = 1, sd_alpha = 0.1, alpha_init = 1){
+                               nmc = 3000, burnin = 2000,
+                               L = 1, sd_alpha = 0.1, alpha_init = 1,
+                               max_items = 20, rho_displays = 4){
   model_fit <- compute_posterior(R, metric, lambda, nmc, L, sd_alpha, alpha_init)
-
-
-  alpha_acceptance_rate <- sum(model_fit$alpha_acceptance[(burnin + 1) : nmc]) / (nmc - burnin)
 
   # Converting to data frame before plotting
   df <- data.frame(
@@ -38,6 +46,9 @@ assess_convergence <- function(R, metric = "footrule", lambda = 0.1,
     alpha_acceptance = model_fit$alpha_acceptance
   )
 
+  alpha_acceptance_rate <- mean(df[(burnin + 1):nmc, "alpha_acceptance"])
+
+  # Create the diagnostic plot for alpha
   alpha_plot <- ggplot2::ggplot(df, ggplot2::aes(x = index, y = alpha)) +
     ggplot2::geom_line() +
     ggplot2::geom_vline(xintercept = eval(burnin), linetype = "dashed") +
@@ -50,7 +61,41 @@ assess_convergence <- function(R, metric = "footrule", lambda = 0.1,
         )
       )
 
+  # Create the diagnostic plot for rho
+  # First create a tidy data frame for holding the data
+  df <- data.frame(
+    Item = as.integer(seq(from = 1, to = nrow(model_fit$rho), by = 1)),
+    Iteration = as.integer(rep(seq(from = 1, to = nmc, by = 1), each = nrow(model_fit$rho))),
+    Rank = as.integer(model_fit$rho),
+    Acceptance = as.integer(model_fit$rho_acceptance)
+    )
 
-  return(list(alpha_plot = alpha_plot))
+  if(max(df$Item) > max_items) {
+    message(paste("More than", max_items, "items. Selecting", max_items, " at random."))
+    df <- df[df$Item %in% sample(max(df$Item), max_items), ]
+  }
+
+  # We want to plot no more than 5 items per display, so creating an indicator variable
+  # for this
+  df$Display <- ggplot2::cut_number(df$Item, n = rho_displays,
+                                    labels = seq(from = 1, to = rho_displays))
+  df$Item <- as.factor(df$Item)
+
+  rho_acceptance <- mean(df$Acceptance[(burnin + 1):nmc])
+
+  rho_plot <- ggplot2::ggplot(df, ggplot2::aes(x = Iteration, y = Rank, color = Item)) +
+    ggplot2::geom_line() +
+    ggplot2::geom_vline(xintercept = eval(burnin), linetype = "dashed") +
+    ggplot2::facet_wrap(~ Display) +
+    ggplot2::xlab("Iteration") +
+    ggplot2::ylab(expression(rho)) +
+    ggplot2::ggtitle(
+      paste(
+        "Acceptance rate after burnin:",
+        sprintf("%.1f", rho_acceptance * 100), "%"
+      )
+    )
+
+  return(list(alpha_plot = alpha_plot, rho_plot = rho_plot))
 
 }
