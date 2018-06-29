@@ -41,7 +41,7 @@ Assessing convergence of Metropolis-Hastings algorithm
 }
 \details{
 After finding reasonable values of the tuning parameters, you
-  typically want to use \code{\link{compute_posterior}}.
+  typically want to use \code{\link{compute_mallows}}.
 }
 \examples{
 # Let us first look at the convergence of alpha, for the potato data
@@ -64,5 +64,5 @@ check <- assess_convergence(R = potato_weighing, sd_alpha = 0.1, L = 3)
 check$rho_plot
 }
 \seealso{
-\code{\link{compute_posterior}}, \code{\link{plot.BayesMallows}}
+\code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
 }

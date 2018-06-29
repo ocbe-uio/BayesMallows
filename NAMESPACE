@@ -2,7 +2,7 @@
 
 S3method(plot,BayesMallows)
 export(assess_convergence)
-export(compute_posterior)
+export(compute_mallows)
 export(get_partition_function)
 export(get_rank_distance)
 export(get_summation_distances)

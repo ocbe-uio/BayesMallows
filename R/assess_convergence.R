@@ -15,11 +15,11 @@
 #' @param rho_displays The maximum number of displays in the diagnostic plots
 #'   for rho.
 #'
-#' @seealso \code{\link{compute_posterior}}, \code{\link{plot.BayesMallows}}
+#' @seealso \code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
 #'
 #' @return A list containing two plots, one for alpha and one for rho.
 #' @details After finding reasonable values of the tuning parameters, you
-#'   typically want to use \code{\link{compute_posterior}}.
+#'   typically want to use \code{\link{compute_mallows}}.
 #' @export
 #'
 #' @examples
@@ -45,7 +45,7 @@ assess_convergence <- function(R, metric = "footrule", lambda = 0.1,
                                nmc = 3000, burnin = 2000,
                                L = 1, sd_alpha = 0.1, alpha_init = 1,
                                max_items = 20, rho_displays = 4){
-  model_fit <- compute_posterior(R, metric, lambda, nmc, L, sd_alpha, alpha_init)
+  model_fit <- compute_mallows(R, metric, lambda, nmc, L, sd_alpha, alpha_init)
 
   # Converting to data frame before plotting
   df <- data.frame(

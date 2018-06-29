@@ -1,7 +1,7 @@
 #' Posterior plots
 #'
 #' @param fit An object of type \code{BayesMallows}, returned from
-#'   \code{\link{compute_posterior}}.
+#'   \code{\link{compute_mallows}}.
 #' @param type Which type of plot. Either \code{"alpha"} for a posterior histogram
 #'   of the scale parameter or \code{"rho"} for a posterior histogram of a ranked
 #'   item.
@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' # Fit a model to the potato data
-#' model_fit <- compute_posterior(potato_weighing, "footrule",
+#' model_fit <- compute_mallows(potato_weighing, "footrule",
 #' nmc = 10000, burnin = 5000)
 #' # Plot the posterior histogram of alpha
 #' plot(model_fit, type = "alpha", bins = 50)
