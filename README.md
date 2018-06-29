@@ -28,6 +28,7 @@ values.
 | `get_partition_function` | Returns the partition function for the Mallows model, given the necessary parameters, including distance measure. This function should have reasonable defaults for how the computation is performed. |
 | `get_rank_distance`      | Returns the distance between two rank vectors, in the metric specified.                                                                                                                               |
 | `compute_posterior`      | Runs the MCMC algorithm and computes the posterior distribution. The return values must include some convergence diagnostics. I suggest giving the return object S3 class `BayesMallows`.             |
+| `assess_convergence`     | Function for investigating the convergence of the MCM algorithm, and trying different parameters of the proposal distributions.                                                                       |
 | `plot.BayesMallows`      | S3 method for plotting the posterior distribution. Note that the user only needs to call `plot`.                                                                                                      |
 | `summary.BayesMallows`   | S3 method for summarizing the posterior distribution.                                                                                                                                                 |
 
