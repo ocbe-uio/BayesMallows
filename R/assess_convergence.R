@@ -1,17 +1,23 @@
-#' Create plots for assessing convergence of Metropolis-Hastings algorithm
+#' Assessing convergence of Metropolis-Hastings algorithm
 #'
-#' @param R Ranks
-#' @param metric string
-#' @param lambda Prior
-#' @param nmc Number of Monte Carlo samples in test run
-#' @param burnin How many should we regard as burnin?
-#' @param L Leap-and-shift step size
-#' @param sd_alpha Standard deviation of alpha proposal
-#' @param alpha_init Initial value of alpha
-#' @param max_items The maximum number of items to plot in the diagnostic for rho.
-#' @param rho_displays The maximum number of displays in the diagnostic plots for rho.
+#' @param R A matrix of ranked items.
+#' @param metric The distance metric to use.
+#' @param lambda Parameter for the prior distribution of \code{alpha}. Defaults
+#'   to 0.1.
+#' @param nmc Number of Monte Carlo samples in test run.
+#' @param burnin How many should we regard as burnin? This one is relevant for
+#'   computing the acceptance rate.
+#' @param L Step size of the leap-and-shift proposal distribution.
+#' @param sd_alpha Standard deviation of the proposal distribution for alpha.
+#' @param alpha_init Initial value of alpha.
+#' @param max_items The maximum number of items to plot in the diagnostic for
+#'   rho.
+#' @param rho_displays The maximum number of displays in the diagnostic plots
+#'   for rho.
 #'
 #' @return A list containing two plots, one for alpha and one for rho.
+#' @details After finding reasonable values of the tuning parameters, you
+#'   typically want to use \code{\link{compute_posterior}}.
 #' @export
 #'
 #' @examples

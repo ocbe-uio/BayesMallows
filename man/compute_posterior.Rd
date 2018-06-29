@@ -4,20 +4,36 @@
 \alias{compute_posterior}
 \title{Compute the posterior distribution for the Mallows model.}
 \usage{
-compute_posterior(R, metric = "footrule", lambda = 0.1, nmc = 1000,
-  L = 1, sd_alpha = 0.1, alpha_init = 5)
+compute_posterior(R, metric = "footrule", lambda = 0.1, nmc = 3000,
+  burnin = 2000, L = 1, sd_alpha = 0.1, alpha_init = 5)
 }
 \arguments{
-\item{R}{A matrix of ranks, N x n. This matrix is transposed before calling
-the underlying C++ function.}
+\item{R}{A matrix of ranked items.}
 
-\item{metric}{The metric to use.}
+\item{metric}{The distance metric to use.}
+
+\item{lambda}{Parameter for the prior distribution of \code{alpha}. Defaults to 0.1.}
+
+\item{nmc}{Number of Monte Carlo samples to keep.}
+
+\item{burnin}{Number of samples to discard as burn-in before collecting \code{nmc} samples.}
+
+\item{L}{Step size of the leap-and-shift proposal distribution.}
+
+\item{sd_alpha}{Standard deviation of the proposal distribution for alpha.}
+
+\item{alpha_init}{Initial value of alpha.}
 }
 \value{
 TBD
 }
 \description{
 Compute the posterior distribution for the Mallows model.
+}
+\details{
+It is usually a
+good idea to first use \code{\link{assess_convergence}} to determine the
+algorithm parameters.
 }
 \examples{
 model_fit <- compute_posterior(potato_weighing, "footrule")

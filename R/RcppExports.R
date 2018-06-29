@@ -11,8 +11,8 @@
 #' @param metric The distance metric to use.
 #' @param nmc Number of Monte Carlo samples.
 #' @param L Leap-and-shift step size.
-run_mcmc <- function(R, cardinalities, metric = "footrule", nmc = 100L, L = 1L, sd_alpha = 0.5, lambda = 0.1, alpha_init = 5) {
-    .Call(`_BayesMallows_run_mcmc`, R, cardinalities, metric, nmc, L, sd_alpha, lambda, alpha_init)
+run_mcmc <- function(R, cardinalities, nmc, metric = "footrule", L = 1L, sd_alpha = 0.5, lambda = 0.1, alpha_init = 5) {
+    .Call(`_BayesMallows_run_mcmc`, R, cardinalities, nmc, metric, L, sd_alpha, lambda, alpha_init)
 }
 
 #' Compute the logarithm of the partition function for a Mallows rank model.

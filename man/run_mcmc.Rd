@@ -4,7 +4,7 @@
 \alias{run_mcmc}
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
-run_mcmc(R, cardinalities, metric = "footrule", nmc = 100L, L = 1L,
+run_mcmc(R, cardinalities, nmc, metric = "footrule", L = 1L,
   sd_alpha = 0.5, lambda = 0.1, alpha_init = 5)
 }
 \arguments{
@@ -15,9 +15,9 @@ With N samples and n items, R is n x N.}
 \code{"spearman"} for computing the partition function.
 TODO: Make this argument optional.}
 
-\item{metric}{The distance metric to use.}
-
 \item{nmc}{Number of Monte Carlo samples.}
+
+\item{metric}{The distance metric to use.}
 
 \item{L}{Leap-and-shift step size.}
 }

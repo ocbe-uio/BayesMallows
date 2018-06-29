@@ -2,38 +2,46 @@
 % Please edit documentation in R/assess_convergence.R
 \name{assess_convergence}
 \alias{assess_convergence}
-\title{Create plots for assessing convergence of Metropolis-Hastings algorithm}
+\title{Assessing convergence of Metropolis-Hastings algorithm}
 \usage{
 assess_convergence(R, metric = "footrule", lambda = 0.1, nmc = 3000,
   burnin = 2000, L = 1, sd_alpha = 0.1, alpha_init = 1,
   max_items = 20, rho_displays = 4)
 }
 \arguments{
-\item{R}{Ranks}
+\item{R}{A matrix of ranked items.}
 
-\item{metric}{string}
+\item{metric}{The distance metric to use.}
 
-\item{lambda}{Prior}
+\item{lambda}{Parameter for the prior distribution of \code{alpha}. Defaults
+to 0.1.}
 
-\item{nmc}{Number of Monte Carlo samples in test run}
+\item{nmc}{Number of Monte Carlo samples in test run.}
 
-\item{burnin}{How many should we regard as burnin?}
+\item{burnin}{How many should we regard as burnin? This one is relevant for
+computing the acceptance rate.}
 
-\item{L}{Leap-and-shift step size}
+\item{L}{Step size of the leap-and-shift proposal distribution.}
 
-\item{sd_alpha}{Standard deviation of alpha proposal}
+\item{sd_alpha}{Standard deviation of the proposal distribution for alpha.}
 
-\item{alpha_init}{Initial value of alpha}
+\item{alpha_init}{Initial value of alpha.}
 
-\item{max_items}{The maximum number of items to plot in the diagnostic for rho.}
+\item{max_items}{The maximum number of items to plot in the diagnostic for
+rho.}
 
-\item{rho_displays}{The maximum number of displays in the diagnostic plots for rho.}
+\item{rho_displays}{The maximum number of displays in the diagnostic plots
+for rho.}
 }
 \value{
 A list containing two plots, one for alpha and one for rho.
 }
 \description{
-Create plots for assessing convergence of Metropolis-Hastings algorithm
+Assessing convergence of Metropolis-Hastings algorithm
+}
+\details{
+After finding reasonable values of the tuning parameters, you
+  typically want to use \code{\link{compute_posterior}}.
 }
 \examples{
 # Let us first look at the convergence of alpha, for the potato data

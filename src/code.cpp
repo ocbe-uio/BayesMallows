@@ -28,9 +28,10 @@ double rank_dist_matrix(arma::mat, arma::vec, std::string);
 //' @param L Leap-and-shift step size.
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
-                    std::string metric = "footrule", int nmc = 100,
-                    int L = 1, double sd_alpha = 0.5, double lambda = 0.1,
-                    double alpha_init = 5){
+                    int nmc,
+                    std::string metric = "footrule",
+                    int L = 1, double sd_alpha = 0.5,
+                    double lambda = 0.1, double alpha_init = 5){
 
   // The number of items ranked
   int n = R.n_rows;
@@ -127,9 +128,6 @@ Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
       alpha(t) = alpha(t - 1);
       alpha_acceptance(t) = 0;
     }
-
-
-
   }
 
   return Rcpp::List::create(
