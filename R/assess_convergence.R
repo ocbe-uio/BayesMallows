@@ -15,6 +15,8 @@
 #' @param rho_displays The maximum number of displays in the diagnostic plots
 #'   for rho.
 #'
+#' @seealso \code{\link{compute_posterior}}, \code{\link{plot.BayesMallows}}
+#'
 #' @return A list containing two plots, one for alpha and one for rho.
 #' @details After finding reasonable values of the tuning parameters, you
 #'   typically want to use \code{\link{compute_posterior}}.

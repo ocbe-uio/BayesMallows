@@ -13,6 +13,7 @@
 #' @details  It is usually a
 #' good idea to first use \code{\link{assess_convergence}} to determine the
 #' algorithm parameters.
+#' @seealso \code{\link{assess_convergence}}, \code{\link{plot.BayesMallows}}.
 #' @export
 #'
 #' @examples

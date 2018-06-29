@@ -41,3 +41,6 @@ model_fit <- compute_posterior(potato_weighing, "footrule", nmc = 10000, burnin 
 # Plot the posterior histogram for alpha
 plot(model_fit, type = "alpha", bins = 50)
 }
+\seealso{
+\code{\link{assess_convergence}}, \code{\link{plot.BayesMallows}}.
+}

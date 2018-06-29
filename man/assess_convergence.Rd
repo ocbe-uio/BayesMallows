@@ -63,3 +63,6 @@ check <- assess_convergence(R = potato_weighing, sd_alpha = 0.1, L = 3)
 # The acceptance rate went down. We should stick to L = 1.
 check$rho_plot
 }
+\seealso{
+\code{\link{compute_posterior}}, \code{\link{plot.BayesMallows}}
+}
