@@ -163,6 +163,24 @@ double get_partition_function(int n, double alpha, arma::vec cardinalities,
   } else if (metric == "spearman") {
       arma::vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n + 1, 3));
       return log(arma::sum(cardinalities % exp(-alpha * distances / n)));
+  } else if(metric == "kendall") {
+
+    double res = 0;
+    for(int i = 1; i < (n + 1); ++i){
+      res += log( ( 1 - exp(-i * alpha / n ) )/(1 - exp(-alpha / n )));
+    }
+    return res;
+
+  } else if(metric == "cayley") {
+
+    double res = 0;
+
+    for(int i = 1; i < n; ++i){
+      res += log( ( 1 + i * exp(- alpha / n ) ));
+    }
+    return res;
+
+
   } else {
     Rcpp::stop("Inadmissible value of metric.");
   }
@@ -243,6 +261,22 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footr
         }
       }
     }
+
+  } else if (metric == "cayley") {
+
+    double tmp;
+
+    // This is a C++ translation of Rankcluster::distCayley
+    for(int i = 0; i < n; ++i){
+      if(r1(i) != r2(i)) {
+        distance += 1;
+        tmp = r1(i);
+        r1(i) = r2(i);
+        arma::uvec inds = arma::find(r1 == r2(i));
+        r1.elem(inds).fill(tmp);
+      }
+    }
+
 
   } else if (metric == "spearman") {
 
