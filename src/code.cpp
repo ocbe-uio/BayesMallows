@@ -15,6 +15,7 @@ Rcpp::List run_mcmc(arma::Mat<int>, arma::vec, std::string);
 arma::vec get_summation_distances(int, arma::vec, std::string);
 Rcpp::List leap_and_shift(arma::vec, int);
 double rank_dist_matrix(arma::mat, arma::vec, std::string);
+int factorial(int);
 
 //' Worker function for computing the posterior distribtuion.
 //'
@@ -176,10 +177,19 @@ double get_partition_function(int n, double alpha, arma::vec cardinalities,
     double res = 0;
 
     for(int i = 1; i < n; ++i){
-      res += log( ( 1 + i * exp(- alpha / n ) ));
+      res += log( 1 + i * exp(- alpha / n ) );
     }
     return res;
 
+  } else if(metric == "hamming"){
+
+    double res = 0;
+
+    for(int i = 0; i < (n + 1); ++i){
+      res += factorial(n) * exp(-alpha) * pow((exp(alpha / n) - 1), i) / factorial(i);
+    }
+
+    return log(res);
 
   } else {
     Rcpp::stop("Inadmissible value of metric.");
@@ -277,6 +287,10 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footr
       }
     }
 
+
+  } else if (metric == "hamming") {
+
+    return arma::sum(r1 != r2);
 
   } else if (metric == "spearman") {
 
@@ -427,6 +441,12 @@ double rank_dist_matrix(arma::mat R, arma::vec rho, std::string metric){
   return total_distance;
 }
 
+// Function to compute the factorial
+// taken from http://www.cplusplus.com/forum/unices/33379/
+int factorial(int n)
+{
+  return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n;
+}
 
 
 

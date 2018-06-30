@@ -18,6 +18,10 @@ check_log_zn <- function(n, alpha, metric){
     log(sum(exp(- alpha / n * apply(perm, 1,
                                     get_rank_distance,
                                     r2 = 1:n, metric = "cayley"))))
+  } else if(metric == "hamming") {
+    log(sum(exp(- alpha / n * apply(perm, 1,
+                                    get_rank_distance,
+                                    r2 = 1:n, metric = "hamming"))))
   } else {
     stop("Unknown metric.")
   }
@@ -61,6 +65,17 @@ test_that("Cayley partition function is correct", {
       expect_equal(
         get_partition_function(n, alpha, 0, "cayley"),
         check_log_zn(n, alpha, "cayley")
+      )
+    }
+  }})
+
+
+test_that("Hamming partition function is correct", {
+  for(n in c(1, 2, 3)){
+    for(alpha in c(0.001, 0.1, 1)){
+      expect_equal(
+        get_partition_function(n, alpha, 0, "hamming"),
+        check_log_zn(n, alpha, "hamming")
       )
     }
   }})
