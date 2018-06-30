@@ -10,7 +10,9 @@ compute_mallows(R, metric = "footrule", lambda = 0.1, nmc = 3000,
 \arguments{
 \item{R}{A matrix of ranked items.}
 
-\item{metric}{The distance metric to use.}
+\item{metric}{The distance metric to use. Currently available ones are
+\code{"footrule"}, \code{"spearman"}, \code{"kendall"}, \code{"cayley"},
+and \code{"hamming"}.}
 
 \item{lambda}{Parameter for the prior distribution of \code{alpha}. Defaults to 0.1.}
 

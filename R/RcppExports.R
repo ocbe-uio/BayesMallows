@@ -5,23 +5,30 @@
 #'
 #' @param R A set of complete rankings, with one sample per column.
 #' With N samples and n items, R is n x N.
-#' @param cardinalities Used when metric equals \code{"footrule"} or
-#' \code{"spearman"} for computing the partition function.
-#' TODO: Make this argument optional.
-#' @param metric The distance metric to use.
 #' @param nmc Number of Monte Carlo samples.
+#' @param cardinalities Used when metric equals \code{"footrule"} or
+#' \code{"spearman"} for computing the partition function. Otherwise,
+#' please provided an arbitrary vector.
+#' @param metric The distance metric to use. On of \code{"spearman"},
+#' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
+#' \code{"hamming"}.
 #' @param L Leap-and-shift step size.
-run_mcmc <- function(R, cardinalities, nmc, metric = "footrule", L = 1L, sd_alpha = 0.5, lambda = 0.1, alpha_init = 5) {
-    .Call(`_BayesMallows_run_mcmc`, R, cardinalities, nmc, metric, L, sd_alpha, lambda, alpha_init)
+#' @param sd_alpha Standard deviation of proposal distribution for alpha.
+#' @param alpha_init Initial value of alpha.
+#' @param lambda Parameter of the prior distribution.
+run_mcmc <- function(R, nmc, cardinalities, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, lambda = 0.1) {
+    .Call(`_BayesMallows_run_mcmc`, R, nmc, cardinalities, metric, L, sd_alpha, alpha_init, lambda)
 }
 
 #' Compute the logarithm of the partition function for a Mallows rank model.
 #'
+#' @param n Number of items.
 #' @param alpha The value of the alpha parameter.
-#' @param summation_sequences List with elements \code{distances} and
-#' \code{cardinalities}, both of type arma::vec.
+#' @param cardinalities Number of occurences for each unique distance.
+#' Applicable for footrule and Spearman distance.
 #' @param metric A string. Avaiable options are \code{"footrule"},
-#' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
+#' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
+#' Defaults to \code{"footrule"}.
 #' @return A scalar, the logarithm of the partition function.
 #' @export
 get_partition_function <- function(n, alpha, cardinalities, metric = "footrule") {

@@ -7,20 +7,20 @@
 using namespace Rcpp;
 
 // run_mcmc
-Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities, int nmc, std::string metric, int L, double sd_alpha, double lambda, double alpha_init);
-RcppExport SEXP _BayesMallows_run_mcmc(SEXP RSEXP, SEXP cardinalitiesSEXP, SEXP nmcSEXP, SEXP metricSEXP, SEXP LSEXP, SEXP sd_alphaSEXP, SEXP lambdaSEXP, SEXP alpha_initSEXP) {
+Rcpp::List run_mcmc(arma::mat R, int nmc, arma::vec cardinalities, std::string metric, int L, double sd_alpha, double alpha_init, double lambda);
+RcppExport SEXP _BayesMallows_run_mcmc(SEXP RSEXP, SEXP nmcSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP, SEXP LSEXP, SEXP sd_alphaSEXP, SEXP alpha_initSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type R(RSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type cardinalities(cardinalitiesSEXP);
     Rcpp::traits::input_parameter< int >::type nmc(nmcSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type cardinalities(cardinalitiesSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< int >::type L(LSEXP);
     Rcpp::traits::input_parameter< double >::type sd_alpha(sd_alphaSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< double >::type alpha_init(alpha_initSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_mcmc(R, cardinalities, nmc, metric, L, sd_alpha, lambda, alpha_init));
+    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(run_mcmc(R, nmc, cardinalities, metric, L, sd_alpha, alpha_init, lambda));
     return rcpp_result_gen;
 END_RCPP
 }

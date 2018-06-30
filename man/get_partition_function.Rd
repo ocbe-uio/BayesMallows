@@ -7,13 +7,16 @@
 get_partition_function(n, alpha, cardinalities, metric = "footrule")
 }
 \arguments{
+\item{n}{Number of items.}
+
 \item{alpha}{The value of the alpha parameter.}
 
-\item{metric}{A string. Avaiable options are \code{"footrule"},
-\code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.}
+\item{cardinalities}{Number of occurences for each unique distance.
+Applicable for footrule and Spearman distance.}
 
-\item{summation_sequences}{List with elements \code{distances} and
-\code{cardinalities}, both of type arma::vec.}
+\item{metric}{A string. Avaiable options are \code{"footrule"},
+\code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
+Defaults to \code{"footrule"}.}
 }
 \value{
 A scalar, the logarithm of the partition function.

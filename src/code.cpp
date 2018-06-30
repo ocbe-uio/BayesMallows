@@ -11,7 +11,6 @@
 int binomial_coefficient(int n, int k);
 double get_rank_distance(arma::vec, arma::vec, std::string);
 double get_partition_function(int, double, arma::vec, std::string);
-Rcpp::List run_mcmc(arma::Mat<int>, arma::vec, std::string);
 arma::vec get_summation_distances(int, arma::vec, std::string);
 Rcpp::List leap_and_shift(arma::vec, int);
 double rank_dist_matrix(arma::mat, arma::vec, std::string);
@@ -21,30 +20,30 @@ int factorial(int);
 //'
 //' @param R A set of complete rankings, with one sample per column.
 //' With N samples and n items, R is n x N.
-//' @param cardinalities Used when metric equals \code{"footrule"} or
-//' \code{"spearman"} for computing the partition function.
-//' TODO: Make this argument optional.
-//' @param metric The distance metric to use.
 //' @param nmc Number of Monte Carlo samples.
+//' @param cardinalities Used when metric equals \code{"footrule"} or
+//' \code{"spearman"} for computing the partition function. Otherwise,
+//' please provided an arbitrary vector.
+//' @param metric The distance metric to use. On of \code{"spearman"},
+//' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
+//' \code{"hamming"}.
 //' @param L Leap-and-shift step size.
+//' @param sd_alpha Standard deviation of proposal distribution for alpha.
+//' @param alpha_init Initial value of alpha.
+//' @param lambda Parameter of the prior distribution.
 // [[Rcpp::export]]
-Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
-                    int nmc,
+Rcpp::List run_mcmc(arma::mat R, int nmc,
+                    arma::vec cardinalities,
                     std::string metric = "footrule",
                     int L = 1, double sd_alpha = 0.5,
-                    double lambda = 0.1, double alpha_init = 5){
+                    double alpha_init = 5,
+                    double lambda = 0.1){
 
   // The number of items ranked
   int n = R.n_rows;
 
   // The number of assessors
   int N = R.n_cols;
-
-  if((metric == "footrule") || (metric == "spearman")){
-    // Find the vector of distances used to compute the partition function
-    arma::vec distances = get_summation_distances(n, cardinalities, metric);
-  }
-
 
   // Declare the matrix to hold the latent ranks
   // Note: Armadillo matrices are stored in column-major ordering. Hence,
@@ -145,11 +144,13 @@ Rcpp::List run_mcmc(arma::mat R, arma::vec cardinalities,
 
 //' Compute the logarithm of the partition function for a Mallows rank model.
 //'
+//' @param n Number of items.
 //' @param alpha The value of the alpha parameter.
-//' @param summation_sequences List with elements \code{distances} and
-//' \code{cardinalities}, both of type arma::vec.
+//' @param cardinalities Number of occurences for each unique distance.
+//' Applicable for footrule and Spearman distance.
 //' @param metric A string. Avaiable options are \code{"footrule"},
-//' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
+//' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
+//' Defaults to \code{"footrule"}.
 //' @return A scalar, the logarithm of the partition function.
 //' @export
 // [[Rcpp::export]]

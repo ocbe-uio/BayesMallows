@@ -1,7 +1,9 @@
 #' Compute the posterior distribution for the Mallows model.
 #'
 #' @param R A matrix of ranked items.
-#' @param metric The distance metric to use.
+#' @param metric The distance metric to use. Currently available ones are
+#' \code{"footrule"}, \code{"spearman"}, \code{"kendall"}, \code{"cayley"},
+#' and \code{"hamming"}.
 #' @param lambda Parameter for the prior distribution of \code{alpha}. Defaults to 0.1.
 #' @param nmc Number of Monte Carlo samples to keep.
 #' @param burnin Number of samples to discard as burn-in before collecting \code{nmc} samples.
@@ -34,15 +36,21 @@ compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
   # Extract the right sequence of cardinalities, if relevant
   if(metric == "footrule"){
     if(n > length(footrule_sequence)) {
-      stop("At the moment, at most", length(footrule_sequence), "items can be analyzed.")
+      stop("At the moment, at most", length(footrule_sequence),
+           "items can be analyzed with footrule distance.")
     }
     cardinalities <- footrule_sequence[[n]]
-  } else if (metric == "spearman") {
-    stop("Spearman distance is not implemented yet.")
+  } else if (metric %in% c("spearman", "Spearman")) {
+    if(n > length(spearman_sequence)) {
+      stop("At the moment, at most", length(spearman_sequence),
+           "items can be analyzed with Spearman distance.")
+    }
     cardinalities <- spearman_sequence[[n]]
-  } else {
-    stop("Only footrule is implemented at the moment.")
+  } else if (metric %in% c("cayley", "Cayley", "hamming", "Hamming",
+                           "kendall", "Kendall")) {
     cardinalities <- 0
+  } else {
+    stop(paste("Unknown metric", metric))
   }
 
   # Transpose R to get samples along columns.
