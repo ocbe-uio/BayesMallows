@@ -27,52 +27,13 @@ Roadmap](https://github.uio.no/oyss/BayesMallows/wiki/Roadmap).
 To install the current development version of the package, you should
 clone or download this repository, and then open `BayesMallows.Rproj` in
 RStudio and click **Build** and then **Install and Restart** on the top
-menu. To get started using the package, take a look at the examples in
-the `assess_convergence` and `compute_mallows` functions:
+menu. To get started using the package, take a look at the package
+documentation by running the following commands:
 
 ``` r
 library(BayesMallows)
-?assess_convergence
-?compute_mallows
+?`BayesMallows-package`
 ```
-
-## Function Overview
-
-This table describes the high level functions informally. It is aimed at
-giving an overview of the package. Check the documentation for arguments
-and return
-values.
-
-### Main Functions
-
-| Name                   | Description                                                                                                                                                                      |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `compute_mallows`      | Runs the MCMC algorithm and computes the posterior distribution. The return values must include some convergence diagnostics. It returns an object with S3 class `BayesMallows`. |
-| `assess_convergence`   | Function for investigating the convergence of the MCM algorithm, and trying different parameters of the proposal distributions.                                                  |
-| `plot.BayesMallows`    | S3 method for plotting the posterior distribution. Note that the user only needs to call `plot`.                                                                                 |
-| `summary.BayesMallows` | S3 method for summarizing the posterior distribution.                                                                                                                            |
-
-### Other Functions
-
-The following functions are mainly used internally, but are also
-exported, as they may be useful by
-themself.
-
-| Name                     | Description                                                                                                                                                                                           |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `get_partition_function` | Returns the partition function for the Mallows model, given the necessary parameters, including distance measure. This function should have reasonable defaults for how the computation is performed. |
-| `get_rank_distance`      | Returns the distance between two rank vectors, in the metric specified.                                                                                                                               |
-
-### Data
-
-The package comes with the potato data set (reference coming soon). This
-is used to illustrate the methods in the package.
-
-| Name                  | Description                |
-| --------------------- | -------------------------- |
-| `potato_true_ranking` | Ses `?potato_true_ranking` |
-| `potato_visual`       | See `?potato_visual`       |
-| `potato_weighing`     | See `?potato_weighing`     |
 
 ## References
 
