@@ -32,7 +32,7 @@ test_that("footrule partition function is correct", {
   for(n in c(1, 2, 3, 5)){
     for(alpha in c(0.001, 0.1, 1)){
       expect_equal(
-        get_partition_function(n, alpha, BayesMallows:::footrule_sequence[[n]], "footrule"),
+        get_partition_function(n, alpha, footrule_sequence[[n]], "footrule"),
         check_log_zn(n, alpha, "footrule")
       )
     }
@@ -42,7 +42,7 @@ test_that("Spearman partition function is correct", {
   for(n in c(1, 2, 3)){
     for(alpha in c(0.001, 0.1, 1)){
       expect_equal(
-        get_partition_function(n, alpha, BayesMallows:::spearman_sequence[[n]], "spearman"),
+        get_partition_function(n, alpha, spearman_sequence[[n]], "spearman"),
         check_log_zn(n, alpha, "spearman")
       )
     }

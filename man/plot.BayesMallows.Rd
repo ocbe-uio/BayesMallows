@@ -4,10 +4,10 @@
 \alias{plot.BayesMallows}
 \title{Posterior plots}
 \usage{
-\method{plot}{BayesMallows}(fit, type = "alpha", items = NULL, ...)
+\method{plot}{BayesMallows}(x, type = "alpha", items = NULL, ...)
 }
 \arguments{
-\item{fit}{An object of type \code{BayesMallows}, returned from
+\item{x}{An object of type \code{BayesMallows}, returned from
 \code{\link{compute_mallows}}.}
 
 \item{type}{Which type of plot. Either \code{"alpha"} for a posterior histogram

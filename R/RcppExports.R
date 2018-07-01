@@ -38,9 +38,8 @@ get_partition_function <- function(n, alpha, cardinalities, metric = "footrule")
 #' Get the distances for computing the partition function given
 #' the cardinalities.
 #'
-#' @param alpha The value of the alpha parameter.
-#' @param summation_sequences List with elements \code{distances} and
-#' \code{cardinalities}, both of type arma::vec.
+#' @param n The number of items.
+#' @param cardinalities Number of times each distance appears.
 #' @param metric A string. Avaiable options are \code{"footrule"},
 #' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
 #' @return A scalar, the logarithm of the partition function.

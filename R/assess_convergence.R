@@ -39,13 +39,15 @@
 #' check$rho_plot
 #' # Let us see how increasing L changes the convergence
 #' check <- assess_convergence(R = potato_weighing, sd_alpha = 0.1, L = 3)
-#' # The acceptance rate went down. We should stick to L = 1.
+#' # Plot the new result
 #' check$rho_plot
+#' @import rlang
 assess_convergence <- function(R, metric = "footrule", lambda = 0.1,
                                nmc = 3000, burnin = 2000,
                                L = 1, sd_alpha = 0.1, alpha_init = 1,
                                max_items = 20, rho_displays = 4){
-  model_fit <- compute_mallows(R, metric, lambda, nmc, L, sd_alpha, alpha_init)
+
+  model_fit <- compute_mallows(R, metric, lambda, nmc, burnin = 0, L, sd_alpha, alpha_init)
 
   # Converting to data frame before plotting
   df <- data.frame(
@@ -54,12 +56,12 @@ assess_convergence <- function(R, metric = "footrule", lambda = 0.1,
     alpha_acceptance = model_fit$alpha_acceptance
   )
 
-  alpha_acceptance_rate <- mean(df[(burnin + 1):nmc, "alpha_acceptance"])
+  alpha_acceptance_rate <- mean(model_fit$alpha_acceptance[(burnin + 1) : nmc])
 
   # Create the diagnostic plot for alpha
-  alpha_plot <- ggplot2::ggplot(df, ggplot2::aes(x = index, y = alpha)) +
+  alpha_plot <- ggplot2::ggplot(df, ggplot2::aes_(x =~ index, y =~ alpha)) +
     ggplot2::geom_line() +
-    ggplot2::geom_vline(xintercept = eval(burnin), linetype = "dashed") +
+    ggplot2::geom_vline(xintercept = burnin, linetype = "dashed") +
     ggplot2::xlab("Iteration") +
     ggplot2::ylab(expression(alpha)) +
     ggplot2::ggtitle(
@@ -75,7 +77,7 @@ assess_convergence <- function(R, metric = "footrule", lambda = 0.1,
     Item = as.integer(seq(from = 1, to = nrow(model_fit$rho), by = 1)),
     Iteration = as.integer(rep(seq(from = 1, to = nmc, by = 1), each = nrow(model_fit$rho))),
     Rank = as.integer(model_fit$rho),
-    Acceptance = as.integer(model_fit$rho_acceptance)
+    Acceptance = rep(as.integer(model_fit$rho_acceptance), each = nrow(model_fit$rho))
     )
 
   if(max(df$Item) > max_items) {
@@ -89,11 +91,11 @@ assess_convergence <- function(R, metric = "footrule", lambda = 0.1,
                                     labels = seq(from = 1, to = rho_displays))
   df$Item <- as.factor(df$Item)
 
-  rho_acceptance <- mean(df$Acceptance[(burnin + 1):nmc])
+  rho_acceptance <- mean(model_fit$rho_acceptance[(burnin + 1) : nmc])
 
-  rho_plot <- ggplot2::ggplot(df, ggplot2::aes(x = Iteration, y = Rank, color = Item)) +
+  rho_plot <- ggplot2::ggplot(df, ggplot2::aes_(x =~ Iteration, y =~ Rank, color =~ Item)) +
     ggplot2::geom_line() +
-    ggplot2::geom_vline(xintercept = eval(burnin), linetype = "dashed") +
+    ggplot2::geom_vline(xintercept = burnin, linetype = "dashed") +
     ggplot2::facet_wrap(~ Display) +
     ggplot2::xlab("Iteration") +
     ggplot2::ylab(expression(rho)) +

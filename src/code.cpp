@@ -201,9 +201,8 @@ double get_partition_function(int n, double alpha, arma::vec cardinalities,
 //' Get the distances for computing the partition function given
 //' the cardinalities.
 //'
-//' @param alpha The value of the alpha parameter.
-//' @param summation_sequences List with elements \code{distances} and
-//' \code{cardinalities}, both of type arma::vec.
+//' @param n The number of items.
+//' @param cardinalities Number of times each distance appears.
 //' @param metric A string. Avaiable options are \code{"footrule"},
 //' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
 //' @return A scalar, the logarithm of the partition function.
@@ -250,8 +249,7 @@ arma::vec get_summation_distances(int n, arma::vec cardinalities,
 double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footrule"){
 
   if (r1.n_elem != r2.n_elem){
-    Rcpp::Rcout << "r1 and r2 must have the same length" << std::endl;
-    exit(1);
+    Rcpp::stop("r1 and r2 must have the same length");
   }
   int n = r1.n_elem;
   double distance = 0;

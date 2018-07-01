@@ -8,13 +8,12 @@ the cardinalities.}
 get_summation_distances(n, cardinalities, metric = "footrule")
 }
 \arguments{
+\item{n}{The number of items.}
+
+\item{cardinalities}{Number of times each distance appears.}
+
 \item{metric}{A string. Avaiable options are \code{"footrule"},
 \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.}
-
-\item{alpha}{The value of the alpha parameter.}
-
-\item{summation_sequences}{List with elements \code{distances} and
-\code{cardinalities}, both of type arma::vec.}
 }
 \value{
 A scalar, the logarithm of the partition function.

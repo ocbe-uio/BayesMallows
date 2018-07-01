@@ -60,7 +60,7 @@ check$alpha_plot
 check$rho_plot
 # Let us see how increasing L changes the convergence
 check <- assess_convergence(R = potato_weighing, sd_alpha = 0.1, L = 3)
-# The acceptance rate went down. We should stick to L = 1.
+# Plot the new result
 check$rho_plot
 }
 \seealso{

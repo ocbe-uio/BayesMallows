@@ -1,6 +1,6 @@
 #' Posterior plots
 #'
-#' @param fit An object of type \code{BayesMallows}, returned from
+#' @param x An object of type \code{BayesMallows}, returned from
 #'   \code{\link{compute_mallows}}.
 #' @param type Which type of plot. Either \code{"alpha"} for a posterior histogram
 #'   of the scale parameter or \code{"rho"} for a posterior histogram of a ranked
@@ -21,26 +21,26 @@
 #' # We can also plot the posterior histograms of rankings of items
 #' plot(model_fit, type = "rho", items = c(2, 5), bins = 20)
 #'
-plot.BayesMallows <- function(fit, type = "alpha", items = NULL, ...){
+plot.BayesMallows <- function(x, type = "alpha", items = NULL, ...){
   if(type == "alpha") {
-    df <- data.frame(alpha = fit$alpha)
+    df <- data.frame(alpha = x$alpha)
 
-    ggplot2::ggplot(df, ggplot2::aes(x = alpha)) +
+    ggplot2::ggplot(df, ggplot2::aes_(x =~ alpha)) +
       ggplot2::geom_histogram(...) +
       ggplot2::xlab(expression(alpha)) +
       ggplot2::ggtitle(paste("Mean = ", round(mean(df$alpha), 2),
-                             "standard deviation =", round(sd(df$alpha), 2)))
+                             "standard deviation =", round(stats::sd(df$alpha), 2)))
 
   } else if(type == "rho") {
     stopifnot(!is.null(items))
 
-    nmc <- length(fit$rho_acceptance)
+    nmc <- length(x$rho_acceptance)
     df <- data.frame(
       Item = as.factor(items),
-      Rank = as.factor(fit$rho[items, ])
+      Rank = as.factor(x$rho[items, ])
       )
 
-    ggplot2::ggplot(df, ggplot2::aes(x = Rank)) +
+    ggplot2::ggplot(df, ggplot2::aes_(x =~ Rank)) +
       ggplot2::geom_histogram(stat = "count", ...) +
       ggplot2::facet_wrap(~ Item) +
       ggplot2::ggtitle(paste("Posterior histograms of items", paste(items, collapse = ", ")))
