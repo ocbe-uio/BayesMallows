@@ -30,8 +30,8 @@ To install the current development version of the package, you should
 clone or download this repository, and then open `BayesMallows.Rproj` in
 RStudio and click **Build** and then **Install and Restart** on the top
 menu. If you have trouble, please send me an
-[email](oystein.sorensen@medisin.uio.no) and I will send you a package
-binary.
+[email](mailto:oystein.sorensen@medisin.uio.no) and I will send you a
+package binary.
 
 To get started using the package, take a look at the package
 documentation by running the following commands:
