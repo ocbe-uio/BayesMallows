@@ -1,5 +1,6 @@
 ---
 output: github_document
+bibliography: ./inst/REFERENCES.bib
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -14,7 +15,19 @@ knitr::opts_chunk$set(
 ```
 # BayesMallows
 
-This is the internal repository for development of the BayesMallows package. All feedback and suggestions are very welcome. Feel free to create a [Pull Request](https://github.uio.no/oyss/BayesMallows/pulls) or an [Issue](https://github.uio.no/oyss/BayesMallows/issues).
+This package implements the Bayesian Mallows Model described in @vitelli2018. At the moment, the Mallows model for complete data is implemented, and the user can choose between footrule, Spearman, Cayley, Kendall, or Hamming distance. 
+
+Future releases will include:
+
+- Clustering users with similar preferences (@vitelli2018).
+
+- Handling missing ranks by imputation (@vitelli2018).
+
+- Time-varying ranks (@asfaw2016).
+
+- Non-transitive pairwise comparisons (@crispino2017).
+
+All feedback and suggestions are very welcome. Feel free to create a [Pull Request](https://github.uio.no/oyss/BayesMallows/pulls) or an [Issue](https://github.uio.no/oyss/BayesMallows/issues).
 
 Please also check out the [Suggested Roadmap](https://github.uio.no/oyss/BayesMallows/wiki/Roadmap).
 
@@ -40,7 +53,4 @@ This table describes the high level functions informally. It is aimed at giving 
 | `plot.BayesMallows` | S3 method for plotting the posterior distribution. Note that the user only needs to call `plot`. |
 | `summary.BayesMallows` | S3 method for summarizing the posterior distribution. |
 
-
-## Coding Style
-
-I follow [The tidyverse style guide](http://style.tidyverse.org/index.html). In particular, all `variable_names` with lowercase letters separated by underscore, function names are verbs, and object names are nouns.
+## References
