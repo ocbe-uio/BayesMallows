@@ -75,6 +75,10 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
   // Starting at t = 1, meaning that alpha and rho must be initialized at index 0
   for(int t = 1; t < nmc; ++t){
+
+    // Check if the user has tried to interrupt.
+    if (t % 1000 == 0) Rcpp::checkUserInterrupt();
+
     // Save current parameter values
     arma::vec rho_old = rho.col(t - 1);
     double alpha_old = alpha(t - 1);
