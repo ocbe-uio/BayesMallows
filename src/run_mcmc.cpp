@@ -10,14 +10,10 @@
 //
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// We put all the function declarations here for clarity
-int binomial_coefficient(int n, int k);
-double get_rank_distance(arma::vec, arma::vec, std::string);
-double get_partition_function(int, double, arma::vec, std::string);
-arma::vec get_summation_distances(int, arma::vec, std::string);
-Rcpp::List leap_and_shift(arma::vec, int);
-double rank_dist_matrix(arma::mat, arma::vec, std::string);
-int factorial(int);
+void update_alpha(arma::vec&, arma::vec&, double&, const arma::mat&,
+                  int&, const arma::vec&, const double&, const std::string&,
+                  const double&, const int&, const int&,
+                  const arma::vec&);
 
 //' Worker function for computing the posterior distribtuion.
 //'
@@ -97,44 +93,8 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     arma::vec rho_old = rho.col(t - 1);
 
     if(t % alpha_jump == 0) {
-
-      // Increment to the index we are going to update
-      ++alpha_index;
-
-      // Sample an alpha proposal (normal on the log scale)
-      double alpha_proposal = exp(arma::randn<double>() * sd_alpha +
-                                  log(alpha(alpha_index - 1)));
-
-      double rank_dist = rank_dist_matrix(R, rho_old, metric);
-
-      // Difference between current and proposed alpha
-      double alpha_diff = alpha(alpha_index - 1) - alpha_proposal;
-
-      // Compute the Metropolis-Hastings ratio
-      ratio = (alpha(alpha_index - 1) - alpha_proposal) / n * rank_dist +
-        lambda * alpha_diff +
-        N * (
-            get_partition_function(n, alpha(alpha_index - 1), cardinalities, metric) -
-              get_partition_function(n, alpha_proposal, cardinalities, metric)
-        ) + log(alpha_proposal) - log(alpha(alpha_index - 1));
-
-      // Draw a uniform random number
-      u = log(arma::randu<double>());
-
-
-      if(ratio > u){
-        alpha(alpha_index) = alpha_proposal;
-        alpha_acceptance(alpha_index) = 1;
-      } else {
-        alpha(alpha_index) = alpha(alpha_index - 1);
-        alpha_acceptance(alpha_index) = 0;
-      }
-
-      // Next time around, this is alpha_old
-      // The sampling of rho below should also
-      // use this alpha_old, which then in the first
-      // step is actually the newest alpha
-      alpha_old = alpha(alpha_index);
+      update_alpha(alpha, alpha_acceptance, alpha_old, R, alpha_index,
+        rho_old, sd_alpha, metric, lambda, n, N, cardinalities);
     }
 
     // Sample a rank proposal
@@ -176,3 +136,51 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   );
 }
 
+
+
+void update_alpha(arma::vec& alpha, arma::vec& alpha_acceptance,
+                  double& alpha_old,
+                  const arma::mat& R, int& alpha_index,
+                  const arma::vec& rho_old,
+                  const double& sd_alpha, const std::string& metric,
+                  const double& lambda, const int& n, const int& N,
+                  const arma::vec& cardinalities) {
+
+  // Increment to the index we are going to update
+  ++alpha_index;
+
+  // Sample an alpha proposal (normal on the log scale)
+  double alpha_proposal = exp(arma::randn<double>() * sd_alpha +
+  log(alpha(alpha_index - 1)));
+
+  double rank_dist = rank_dist_matrix(R, rho_old, metric);
+
+  // Difference between current and proposed alpha
+  double alpha_diff = alpha(alpha_index - 1) - alpha_proposal;
+
+  // Compute the Metropolis-Hastings ratio
+  double ratio = (alpha(alpha_index - 1) - alpha_proposal) / n * rank_dist +
+    lambda * alpha_diff +
+    N * (
+        get_partition_function(n, alpha(alpha_index - 1), cardinalities, metric) -
+          get_partition_function(n, alpha_proposal, cardinalities, metric)
+    ) + log(alpha_proposal) - log(alpha(alpha_index - 1));
+
+  // Draw a uniform random number
+  double u = log(arma::randu<double>());
+
+
+  if(ratio > u){
+    alpha(alpha_index) = alpha_proposal;
+    alpha_acceptance(alpha_index) = 1;
+  } else {
+    alpha(alpha_index) = alpha(alpha_index - 1);
+    alpha_acceptance(alpha_index) = 0;
+  }
+
+  // Next time around, this is alpha_old
+  // The sampling of rho below should also
+  // use this alpha_old, which then in the first
+  // step is actually the newest alpha
+  alpha_old = alpha(alpha_index);
+}
