@@ -9,7 +9,6 @@ NULL
 #' Check if a vector is a permutation
 #' @param vec a vector
 #' @return TRUE if vec is a permutation
-#' @export
 #' @examples
 #' n <- 10
 #' vec <- sample(n,n)
