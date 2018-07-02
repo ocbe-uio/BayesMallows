@@ -24,7 +24,7 @@
 #' # Plot the posterior histogram for alpha
 #' plot(model_fit, type = "alpha", bins = 50)
 compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
-                              nmc = 3000, burnin = 2000, L = 1, sd_alpha = 0.1,
+                              nmc = 3000, burnin = 2000, L = ncol(R) / 5, sd_alpha = 0.1,
                               alpha_init = 5){
 
   # Check that we have more samples than we throw away

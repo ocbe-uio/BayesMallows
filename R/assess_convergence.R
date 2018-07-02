@@ -34,17 +34,18 @@
 #' check$alpha_plot
 #' # This looked better!
 #'
-#' # Next, we assess the convergence for rho.
+#' # Next, we assess the convergence for rho. The default is L = n/5,
+#' # which equals 4 in this case.
 #' # We start by using the results of the previous run.
 #' check$rho_plot
 #' # Let us see how increasing L changes the convergence
-#' check <- assess_convergence(R = potato_weighing, sd_alpha = 0.1, L = 3)
+#' check <- assess_convergence(R = potato_weighing, sd_alpha = 0.1, L = 1)
 #' # Plot the new result
 #' check$rho_plot
 #' @import rlang
 assess_convergence <- function(R, metric = "footrule", lambda = 0.1,
                                nmc = 3000, burnin = 2000,
-                               L = 1, sd_alpha = 0.1, alpha_init = 1,
+                               L = ncol(R) / 5, sd_alpha = 0.1, alpha_init = 1,
                                max_items = 20, rho_displays = 4){
 
   model_fit <- compute_mallows(R, metric, lambda, nmc, burnin = 0, L, sd_alpha, alpha_init)
