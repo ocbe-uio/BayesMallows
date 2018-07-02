@@ -1,5 +1,5 @@
 #include "RcppArmadillo.h"
-#include "math.h"
+#include "misc.h"
 
 
 // via the depends attribute we tell Rcpp to create hooks for
@@ -443,13 +443,3 @@ double rank_dist_matrix(arma::mat R, arma::vec rho, std::string metric){
 
   return total_distance;
 }
-
-// Function to compute the factorial
-// taken from http://www.cplusplus.com/forum/unices/33379/
-int factorial(int n)
-{
-  return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n;
-}
-
-
-
