@@ -15,6 +15,9 @@ void update_alpha(arma::vec&, arma::vec&, double&, const arma::mat&,
                   const double&, const int&, const int&,
                   const arma::vec&);
 
+void update_rho(arma::mat&, arma::vec&, arma::vec&, const double&, const int&,
+                const arma::mat&, const std::string&, const int&, const int&);
+
 //' Worker function for computing the posterior distribtuion.
 //'
 //' @param R A set of complete rankings, with one sample per column.
@@ -73,61 +76,30 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   alpha_acceptance(0) = 1;
   rho_acceptance(0) = 1;
 
-  // Metropolis-Hastings ratio
-  double ratio;
-
-  // Uniform random number which we will draw in Metropolis-Hastings algorithm
-  double u;
-
   // Other variables used
   int alpha_index = 0;
   double alpha_old = alpha(0);
+  arma::vec rho_old = rho.col(0);
 
+  // This is the Metropolis-Hastings loop
   // Starting at t = 1, meaning that alpha and rho must be initialized at index 0
   for(int t = 1; t < nmc; ++t){
 
     // Check if the user has tried to interrupt.
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
 
-    // Save current parameter values
-    arma::vec rho_old = rho.col(t - 1);
-
     if(t % alpha_jump == 0) {
+      // Call the void function which updates alpha by reference
       update_alpha(alpha, alpha_acceptance, alpha_old, R, alpha_index,
         rho_old, sd_alpha, metric, lambda, n, N, cardinalities);
     }
 
-    // Sample a rank proposal
-    Rcpp::List ls_proposal = leap_and_shift(rho_old, L);
-
-    // Save some of the variables
-    arma::vec rho_proposal = ls_proposal["proposal"];
-    arma::uvec indices = ls_proposal["indices"];
-    double prob_backward = ls_proposal["prob_backward"];
-    double prob_forward = ls_proposal["prob_forward"];
-
-    // Compute the distances to current and proposed ranks
-    double dist_new = rank_dist_matrix(R.rows(indices), rho_proposal(indices), metric);
-    double dist_old = rank_dist_matrix(R.rows(indices), rho_old(indices), metric);
-
-    // Metropolis-Hastings ratio
-    ratio = - alpha_old / n * (dist_new - dist_old) +
-      log(prob_backward) - log(prob_forward);
-
-    // Draw a uniform random number
-    u = log(arma::randu<double>());
-
-    if(ratio > u){
-      rho.col(t) = rho_proposal;
-      rho_acceptance(t) = 1;
-    } else {
-      rho.col(t) = rho.col(t - 1);
-      rho_acceptance(t) = 0;
-    }
-
+    // Call the void function which updates rho by reference
+    update_rho(rho, rho_acceptance, rho_old, alpha_old, L, R, metric, n, t);
 
   }
 
+  // Finally return the MCMC samples
   return Rcpp::List::create(
     Rcpp::Named("rho") = rho,
     Rcpp::Named("rho_acceptance") = rho_acceptance,
@@ -183,4 +155,39 @@ void update_alpha(arma::vec& alpha, arma::vec& alpha_acceptance,
   // use this alpha_old, which then in the first
   // step is actually the newest alpha
   alpha_old = alpha(alpha_index);
+}
+
+
+void update_rho(arma::mat& rho, arma::vec& rho_acceptance, arma::vec& rho_old,
+                const double& alpha_old, const int& L, const arma::mat& R,
+                const std::string& metric, const int& n, const int& t) {
+  // Sample a rank proposal
+  Rcpp::List ls_proposal = leap_and_shift(rho_old, L);
+
+  // Save some of the variables
+  arma::vec rho_proposal = ls_proposal["proposal"];
+  arma::uvec indices = ls_proposal["indices"];
+  double prob_backward = ls_proposal["prob_backward"];
+  double prob_forward = ls_proposal["prob_forward"];
+
+  // Compute the distances to current and proposed ranks
+  double dist_new = rank_dist_matrix(R.rows(indices), rho_proposal(indices), metric);
+  double dist_old = rank_dist_matrix(R.rows(indices), rho_old(indices), metric);
+
+  // Metropolis-Hastings ratio
+  double ratio = - alpha_old / n * (dist_new - dist_old) +
+    log(prob_backward) - log(prob_forward);
+
+  // Draw a uniform random number
+  double u = log(arma::randu<double>());
+
+  if(ratio > u){
+    rho.col(t) = rho_proposal;
+    rho_acceptance(t) = 1;
+  } else {
+    rho.col(t) = rho.col(t - 1);
+    rho_acceptance(t) = 0;
+  }
+
+  rho_old = rho.col(t - 1);
 }
