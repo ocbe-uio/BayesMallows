@@ -18,5 +18,5 @@ Check if a vector is a permutation
 \examples{
 n <- 10
 vec <- sample(n,n)
-isPerm(vec)
+validate_permutation(vec)
 }

@@ -12,13 +12,7 @@ NULL
 #' @examples
 #' n <- 10
 #' vec <- sample(n,n)
-#' isPerm(vec)
+#' validate_permutation(vec)
 validate_permutation <- function(vec){
-  n <- length(vec)
-
-  if( (sum(vec) == sum(1:n) ) && ( sum(vec^2) == sum((1:n)^2))){
-    return(TRUE)
-  } else {
-    return(FALSE)
-  }
+  all(sort(vec) == seq_along(vec))
 }
