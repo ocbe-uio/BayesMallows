@@ -11,6 +11,10 @@
 #' means that it is automatically set to n/5.
 #' @param sd_alpha Standard deviation of the proposal distribution for alpha.
 #' @param alpha_init Initial value of alpha.
+#' @param alpha_jump alpha_jump How many times should we sample \code{rho} between
+#' each time we sample \code{alpha}. Setting \code{alpha_jump} to a high
+#' number can significantly speed up computation time, since we then do not
+#' have to do expensive computation of the partition function.
 #'
 #' @return A list of class BayesMallows.
 #' @details  It is usually a
@@ -26,13 +30,16 @@
 #' plot(model_fit, type = "alpha", bins = 50)
 compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
                               nmc = 3000, burnin = 2000, L = NULL, sd_alpha = 0.1,
-                              alpha_init = 5){
+                              alpha_init = 5, alpha_jump = 1){
 
   # Check that we have more samples than we throw away
   stopifnot(nmc > burnin)
 
   # Check that all rows of R are proper permutations
   stopifnot(all(apply(R, 1, validate_permutation)))
+
+  # Check that we do not jump over all alphas
+  stopifnot(alpha_jump < nmc)
 
   # Find the number of items
   n <- ncol(R)
@@ -62,12 +69,16 @@ compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
 
   # Transpose R to get samples along columns.
   fit <- run_mcmc(t(R), cardinalities, metric = metric, lambda = lambda,
-           nmc = nmc, L = L, sd_alpha = sd_alpha, alpha_init = alpha_init)
+           nmc = nmc, L = L, sd_alpha = sd_alpha, alpha_init = alpha_init,
+           alpha_jump = alpha_jump)
 
   # Finally subset so that we only get values after burnin
-  s <- c("rho_acceptance", "alpha", "alpha_acceptance")
-  fit[s] <- lapply(fit[s], `[`, seq(from = burnin + 1, to = nmc, by = 1))
   fit$rho <- fit$rho[, (burnin + 1) : nmc]
+  fit$rho_acceptance <- fit$rho_acceptance[(burnin + 1) : nmc]
+
+  fit$alpha <- fit$alpha[(floor((burnin + 1) / alpha_jump)) : (floor(nmc / alpha_jump))]
+  fit$alpha_acceptance <- fit$alpha_acceptance[(floor((burnin + 1) / alpha_jump)) : (floor(nmc / alpha_jump))]
+
   class(fit) <- "BayesMallows"
 
   return(fit)

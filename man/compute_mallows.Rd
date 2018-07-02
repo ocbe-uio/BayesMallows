@@ -5,7 +5,8 @@
 \title{Compute the posterior distribution for the Mallows model.}
 \usage{
 compute_mallows(R, metric = "footrule", lambda = 0.1, nmc = 3000,
-  burnin = 2000, L = NULL, sd_alpha = 0.1, alpha_init = 5)
+  burnin = 2000, L = NULL, sd_alpha = 0.1, alpha_init = 5,
+  alpha_jump = 1)
 }
 \arguments{
 \item{R}{A matrix of ranked items.}
@@ -26,6 +27,11 @@ means that it is automatically set to n/5.}
 \item{sd_alpha}{Standard deviation of the proposal distribution for alpha.}
 
 \item{alpha_init}{Initial value of alpha.}
+
+\item{alpha_jump}{alpha_jump How many times should we sample \code{rho} between
+each time we sample \code{alpha}. Setting \code{alpha_jump} to a high
+number can significantly speed up computation time, since we then do not
+have to do expensive computation of the partition function.}
 }
 \value{
 A list of class BayesMallows.

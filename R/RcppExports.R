@@ -56,8 +56,12 @@ get_partition_function <- function(n, alpha, cardinalities, metric = "footrule")
 #' @param L Leap-and-shift step size.
 #' @param sd_alpha Standard deviation of proposal distribution for alpha.
 #' @param alpha_init Initial value of alpha.
+#' @param alpha_jump How many times should we sample \code{rho} between
+#' each time we sample \code{alpha}. Setting \code{alpha_jump} to a high
+#' number can significantly speed up computation time, since we then do not
+#' have to do expensive computation of the partition function.
 #' @param lambda Parameter of the prior distribution.
-run_mcmc <- function(R, nmc, cardinalities, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, lambda = 0.1) {
-    .Call(`_BayesMallows_run_mcmc`, R, nmc, cardinalities, metric, L, sd_alpha, alpha_init, lambda)
+run_mcmc <- function(R, nmc, cardinalities, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1) {
+    .Call(`_BayesMallows_run_mcmc`, R, nmc, cardinalities, metric, L, sd_alpha, alpha_init, alpha_jump, lambda)
 }
 

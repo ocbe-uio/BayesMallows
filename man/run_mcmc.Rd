@@ -5,7 +5,7 @@
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
 run_mcmc(R, nmc, cardinalities, metric = "footrule", L = 1L,
-  sd_alpha = 0.5, alpha_init = 5, lambda = 0.1)
+  sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1)
 }
 \arguments{
 \item{R}{A set of complete rankings, with one sample per column.
@@ -26,6 +26,11 @@ please provided an arbitrary vector.}
 \item{sd_alpha}{Standard deviation of proposal distribution for alpha.}
 
 \item{alpha_init}{Initial value of alpha.}
+
+\item{alpha_jump}{How many times should we sample \code{rho} between
+each time we sample \code{alpha}. Setting \code{alpha_jump} to a high
+number can significantly speed up computation time, since we then do not
+have to do expensive computation of the partition function.}
 
 \item{lambda}{Parameter of the prior distribution.}
 }

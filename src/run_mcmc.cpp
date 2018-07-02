@@ -1,3 +1,4 @@
+#include <math.h>
 #include "RcppArmadillo.h"
 #include "misc.h"
 #include "leapandshift.h"
@@ -32,13 +33,17 @@ int factorial(int);
 //' @param L Leap-and-shift step size.
 //' @param sd_alpha Standard deviation of proposal distribution for alpha.
 //' @param alpha_init Initial value of alpha.
+//' @param alpha_jump How many times should we sample \code{rho} between
+//' each time we sample \code{alpha}. Setting \code{alpha_jump} to a high
+//' number can significantly speed up computation time, since we then do not
+//' have to do expensive computation of the partition function.
 //' @param lambda Parameter of the prior distribution.
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat R, int nmc,
                     arma::vec cardinalities,
                     std::string metric = "footrule",
                     int L = 1, double sd_alpha = 0.5,
-                    double alpha_init = 5,
+                    double alpha_init = 5, int alpha_jump = 1,
                     double lambda = 0.1){
 
   // The number of items ranked
@@ -46,6 +51,9 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
   // The number of assessors
   int N = R.n_cols;
+
+  // Number of alpha values to store.
+  int n_alpha = ceil(nmc * 1.0 / alpha_jump);
 
   // Declare the matrix to hold the latent ranks
   // Note: Armadillo matrices are stored in column-major ordering. Hence,
@@ -57,13 +65,13 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   rho.col(0) = arma::linspace<arma::vec>(1, n, n);
 
   // Declare the vector to hold the scaling parameter alpha
-  arma::vec alpha(nmc);
+  arma::vec alpha(n_alpha);
 
   // Set the initial alpha value
   alpha(0) = alpha_init;
 
   // Declare indicator vectors to hold acceptance or not
-  arma::vec alpha_acceptance(nmc), rho_acceptance(nmc);
+  arma::vec alpha_acceptance(n_alpha), rho_acceptance(nmc);
 
   // Set the initial values;
   alpha_acceptance(0) = 1;
@@ -75,6 +83,10 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   // Uniform random number which we will draw in Metropolis-Hastings algorithm
   double u;
 
+  // Other variables used
+  int alpha_index = 0;
+  double alpha_old = alpha(0);
+
   // Starting at t = 1, meaning that alpha and rho must be initialized at index 0
   for(int t = 1; t < nmc; ++t){
 
@@ -83,7 +95,47 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
     // Save current parameter values
     arma::vec rho_old = rho.col(t - 1);
-    double alpha_old = alpha(t - 1);
+
+    if(t % alpha_jump == 0) {
+
+      // Increment to the index we are going to update
+      ++alpha_index;
+
+      // Sample an alpha proposal (normal on the log scale)
+      double alpha_proposal = exp(arma::randn<double>() * sd_alpha +
+                                  log(alpha(alpha_index - 1)));
+
+      double rank_dist = rank_dist_matrix(R, rho_old, metric);
+
+      // Difference between current and proposed alpha
+      double alpha_diff = alpha(alpha_index - 1) - alpha_proposal;
+
+      // Compute the Metropolis-Hastings ratio
+      ratio = (alpha(alpha_index - 1) - alpha_proposal) / n * rank_dist +
+        lambda * alpha_diff +
+        N * (
+            get_partition_function(n, alpha(alpha_index - 1), cardinalities, metric) -
+              get_partition_function(n, alpha_proposal, cardinalities, metric)
+        ) + log(alpha_proposal) - log(alpha(alpha_index - 1));
+
+      // Draw a uniform random number
+      u = log(arma::randu<double>());
+
+
+      if(ratio > u){
+        alpha(alpha_index) = alpha_proposal;
+        alpha_acceptance(alpha_index) = 1;
+      } else {
+        alpha(alpha_index) = alpha(alpha_index - 1);
+        alpha_acceptance(alpha_index) = 0;
+      }
+
+      // Next time around, this is alpha_old
+      // The sampling of rho below should also
+      // use this alpha_old, which then in the first
+      // step is actually the newest alpha
+      alpha_old = alpha(alpha_index);
+    }
 
     // Sample a rank proposal
     Rcpp::List ls_proposal = leap_and_shift(rho_old, L);
@@ -113,31 +165,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
       rho_acceptance(t) = 0;
     }
 
-    // Sample an alpha proposal (normal on the log scale)
-    double alpha_proposal = exp(arma::randn<double>() * sd_alpha + log(alpha(t - 1)));
 
-    double rank_dist = rank_dist_matrix(R, rho.col(t), metric);
-    // Difference between current and proposed alpha
-    double alpha_diff = alpha(t - 1) - alpha_proposal;
-
-    // Compute the Metropolis-Hastings ratio
-    ratio = (alpha(t - 1) - alpha_proposal) / n * rank_dist +
-      lambda * alpha_diff +
-      N * (
-          get_partition_function(n, alpha(t - 1), cardinalities, metric) -
-          get_partition_function(n, alpha_proposal, cardinalities, metric)
-      ) + log(alpha_proposal) - log(alpha(t - 1));
-
-    // Draw a uniform random number
-    u = log(arma::randu<double>());
-
-    if(ratio > u){
-      alpha(t) = alpha_proposal;
-      alpha_acceptance(t) = 1;
-    } else {
-      alpha(t) = alpha(t - 1);
-      alpha_acceptance(t) = 0;
-    }
   }
 
   return Rcpp::List::create(
