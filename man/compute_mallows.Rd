@@ -5,7 +5,7 @@
 \title{Compute the posterior distribution for the Mallows model.}
 \usage{
 compute_mallows(R, metric = "footrule", lambda = 0.1, nmc = 3000,
-  burnin = 2000, L = ncol(R)/5, sd_alpha = 0.1, alpha_init = 5)
+  burnin = 2000, L = NULL, sd_alpha = 0.1, alpha_init = 5)
 }
 \arguments{
 \item{R}{A matrix of ranked items.}
@@ -20,7 +20,8 @@ and \code{"hamming"}.}
 
 \item{burnin}{Number of samples to discard as burn-in before collecting \code{nmc} samples.}
 
-\item{L}{Step size of the leap-and-shift proposal distribution.}
+\item{L}{Step size of the leap-and-shift proposal distribution. Defaults to NULL, which
+means that it is automatically set to n/5.}
 
 \item{sd_alpha}{Standard deviation of the proposal distribution for alpha.}
 

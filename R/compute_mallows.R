@@ -7,7 +7,8 @@
 #' @param lambda Parameter for the prior distribution of \code{alpha}. Defaults to 0.1.
 #' @param nmc Number of Monte Carlo samples to keep.
 #' @param burnin Number of samples to discard as burn-in before collecting \code{nmc} samples.
-#' @param L Step size of the leap-and-shift proposal distribution.
+#' @param L Step size of the leap-and-shift proposal distribution. Defaults to NULL, which
+#' means that it is automatically set to n/5.
 #' @param sd_alpha Standard deviation of the proposal distribution for alpha.
 #' @param alpha_init Initial value of alpha.
 #'
@@ -24,14 +25,20 @@
 #' # Plot the posterior histogram for alpha
 #' plot(model_fit, type = "alpha", bins = 50)
 compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
-                              nmc = 3000, burnin = 2000, L = ncol(R) / 5, sd_alpha = 0.1,
+                              nmc = 3000, burnin = 2000, L = NULL, sd_alpha = 0.1,
                               alpha_init = 5){
 
   # Check that we have more samples than we throw away
   stopifnot(nmc > burnin)
 
+  # Check that all rows of R are proper permutations
+  stopifnot(all(apply(R, 1, validate_permutation)))
+
   # Find the number of items
   n <- ncol(R)
+
+  # Set L if it is not alredy set.
+  if(is.null(L)) L <- n / 5
 
   # Extract the right sequence of cardinalities, if relevant
   if(metric == "footrule"){
