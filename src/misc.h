@@ -3,5 +3,6 @@
 
 #include <Rcpp.h>
 int factorial(int);
+int binomial_coefficient(int, int);
 
 #endif
