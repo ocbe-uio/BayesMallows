@@ -4,6 +4,6 @@
 #include "RcppArmadillo.h"
 #include "distfuns.h"
 
-arma::vec get_is_estimate(arma::vec, int, std::string, std::string, int);
+arma::vec compute_importance_sampling_estimate(arma::vec, int, std::string, std::string, int);
 
 #endif

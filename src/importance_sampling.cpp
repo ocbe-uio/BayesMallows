@@ -6,8 +6,13 @@
 //
 // [[Rcpp::depends(RcppArmadillo)]]
 
+// Mainly internal function which will be used to precompute the
+// partition function for footrule and Spearman distance. Can
+// perhaps be called withing the package if the users wishes to
+// use a number of items for which the partition function has not
+// been precomputed.
 // [[Rcpp::export]]
-arma::vec get_is_estimate(arma::vec alpha_vector, int n,
+arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n,
                           std::string proposal_distribution,
                           std::string target_distribution,
                           int nmc
@@ -16,9 +21,10 @@ arma::vec get_is_estimate(arma::vec alpha_vector, int n,
   // The dispersion parameter alpha comes as a vector value
   int num_alphas = alpha_vector.n_elem;
 
-  arma::vec myind, ranks, prob, support, cpd, rho = arma::linspace<arma::vec>(1,n,n), u;
+  // The reference ranking
+  arma::vec rho = arma::linspace<arma::vec>(1,n,n);
 
-  arma::uvec inds;
+  // Vector which holds the result for all alphas
   arma::vec logZ = arma::zeros(num_alphas);
 
   // Loop over the values of alpha
@@ -31,25 +37,25 @@ arma::vec get_is_estimate(arma::vec alpha_vector, int n,
     // Loop over the Monte Carlo samples
     for(int i = 0; i < nmc; ++i){
       // Support set of the proposal distribution
-      support = arma::linspace<arma::vec>(1,n,n);
+      arma::vec support = arma::linspace<arma::vec>(1,n,n);
 
       // Vector which holds the proposed ranks
-      ranks = arma::zeros(n);
+      arma::vec ranks = arma::zeros(n);
 
       // Probability of the ranks we get
       double q = 1;
 
       // n random uniform numbers
-      u = arma::randu(n,1);
+      arma::vec u = arma::randu(n,1);
 
       // Loop over possible values given to item j in random order
-      myind = arma::shuffle(arma::linspace(0, n-1, n));
+      arma::vec myind = arma::shuffle(arma::linspace(0, n-1, n));
 
       for(int j = 0; j < n; ++j){
         int jj = myind(j);
-        prob = arma::zeros(n);
+        arma::vec prob = arma::zeros(n);
         // Find the elements that have not been taken yet
-        inds = arma::find(support != 0);
+        arma::uvec inds = arma::find(support != 0);
         // Number of elements
         int k_max = inds.n_elem;
 
@@ -60,7 +66,7 @@ arma::vec get_is_estimate(arma::vec alpha_vector, int n,
         // Probability of sample
         prob(inds) = arma::exp(- alpha / n * arma::pow(arma::abs(r1 - r2), (proposal_distribution == "footrule") ? 1. : 2.));
         prob = prob / arma::accu(prob);
-        cpd = arma::cumsum(prob);
+        arma::vec cpd = arma::cumsum(prob);
 
         // Draw a random sampl
         inds = find(cpd > u(jj));

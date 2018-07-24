@@ -15,8 +15,3 @@ TRUE if vec is a permutation
 \description{
 Check if a vector is a permutation
 }
-\examples{
-n <- 10
-vec <- sample(n,n)
-validate_permutation(vec)
-}
