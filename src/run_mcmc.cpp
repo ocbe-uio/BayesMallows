@@ -15,7 +15,7 @@
 //' @param cardinalities Used when metric equals \code{"footrule"} or
 //' \code{"spearman"} for computing the partition function. Otherwise,
 //' please provided an arbitrary vector.
-//' @param metric The distance metric to use. On of \code{"spearman"},
+//' @param metric The distance metric to use. One of \code{"spearman"},
 //' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 //' \code{"hamming"}.
 //' @param L Leap-and-shift step size.

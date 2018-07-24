@@ -14,7 +14,7 @@ get_partition_function(n, alpha, cardinalities, metric = "footrule")
 \item{cardinalities}{Number of occurences for each unique distance.
 Applicable for footrule and Spearman distance.}
 
-\item{metric}{A string. Avaiable options are \code{"footrule"},
+\item{metric}{A string. Available options are \code{"footrule"},
 \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
 Defaults to \code{"footrule"}.}
 }

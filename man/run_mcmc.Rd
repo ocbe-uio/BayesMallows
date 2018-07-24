@@ -17,7 +17,7 @@ With N samples and n items, R is n x N.}
 \code{"spearman"} for computing the partition function. Otherwise,
 please provided an arbitrary vector.}
 
-\item{metric}{The distance metric to use. On of \code{"spearman"},
+\item{metric}{The distance metric to use. One of \code{"spearman"},
 \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 \code{"hamming"}.}
 

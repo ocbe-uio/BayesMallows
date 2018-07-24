@@ -27,17 +27,20 @@ get_rank_distance <- function(r1, r2, metric = "footrule") {
     .Call(`_BayesMallows_get_rank_distance`, r1, r2, metric)
 }
 
+get_is_estimate <- function(alpha_vector, n, proposal_distribution, target_distribution, nmc) {
+    .Call(`_BayesMallows_get_is_estimate`, alpha_vector, n, proposal_distribution, target_distribution, nmc)
+}
+
 #' Compute the logarithm of the partition function for a Mallows rank model.
 #'
 #' @param n Number of items.
 #' @param alpha The value of the alpha parameter.
 #' @param cardinalities Number of occurences for each unique distance.
 #' Applicable for footrule and Spearman distance.
-#' @param metric A string. Avaiable options are \code{"footrule"},
+#' @param metric A string. Available options are \code{"footrule"},
 #' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
 #' Defaults to \code{"footrule"}.
 #' @return A scalar, the logarithm of the partition function.
-#' @export
 get_partition_function <- function(n, alpha, cardinalities, metric = "footrule") {
     .Call(`_BayesMallows_get_partition_function`, n, alpha, cardinalities, metric)
 }
@@ -50,7 +53,7 @@ get_partition_function <- function(n, alpha, cardinalities, metric = "footrule")
 #' @param cardinalities Used when metric equals \code{"footrule"} or
 #' \code{"spearman"} for computing the partition function. Otherwise,
 #' please provided an arbitrary vector.
-#' @param metric The distance metric to use. On of \code{"spearman"},
+#' @param metric The distance metric to use. One of \code{"spearman"},
 #' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 #' \code{"hamming"}.
 #' @param L Leap-and-shift step size.
