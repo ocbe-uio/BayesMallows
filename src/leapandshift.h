@@ -3,6 +3,6 @@
 
 #include "RcppArmadillo.h"
 
-Rcpp::List leap_and_shift(arma::vec, int);
+Rcpp::List leap_and_shift(const arma::vec&, int);
 
 #endif

@@ -113,7 +113,7 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footr
 }
 
 // Compute the distance between all rows in R and rho
-double rank_dist_matrix(arma::mat R, arma::vec rho, std::string metric){
+double rank_dist_matrix(const arma::mat& R, const arma::vec& rho, std::string metric){
   int N = R.n_cols;
   if(R.n_rows != rho.n_elem) Rcpp::stop("R and rho have different number of elements");
 

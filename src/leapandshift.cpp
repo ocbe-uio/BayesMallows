@@ -6,7 +6,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
-Rcpp::List leap_and_shift(arma::vec rho, int L){
+Rcpp::List leap_and_shift(const arma::vec& rho, int L){
 
   // Declare the proposed rank vector
   arma::vec proposal = rho;
