@@ -21,9 +21,3 @@
 #' @references Insert reference to review paper where the potato data is presented.
 "potato_weighing"
 
-
-#' Importance sampling fits in the form of regression coefficients based on
-#' \code{log(Z) = b0 + b1 alpha + ... + b10 alpha^10}. These are to be supplied
-#' to \code{\link{run_mcmc}} internally, when the importance sampling estimates are to
-#' be used.
-"importance_sampling_fit"
