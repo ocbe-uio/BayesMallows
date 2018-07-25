@@ -6,16 +6,17 @@
 //
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// Mainly internal function which will be used to precompute the
-// partition function for footrule and Spearman distance. Can
-// perhaps be called withing the package if the users wishes to
-// use a number of items for which the partition function has not
-// been precomputed.
+
+//' Compute importance sampling estimates of log partition function
+//' for footrule and Spearman distances.
+//'
+//' @param alpha_vector Vector of alpha values at which to compute partition function.
+//' @param n Integer specifying the number of ranked items.
+//' @param metric Distance measure of the target Mallows distribution. Defaults to \code{footrule}.
+//' @param nmc Number of Monte Carlo samples. Defaults to \code{1e6}.
 // [[Rcpp::export]]
 arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n,
-                          std::string proposal_distribution,
-                          std::string target_distribution,
-                          int nmc
+                          std::string metric = "footrule", int nmc = 1e6
                           ) {
 
   // The dispersion parameter alpha comes as a vector value
@@ -64,7 +65,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n,
         // Sampled vector
         arma::vec r2 = rho(jj) * arma::ones(k_max);
         // Probability of sample
-        prob(inds) = arma::exp(- alpha / n * arma::pow(arma::abs(r1 - r2), (proposal_distribution == "footrule") ? 1. : 2.));
+        prob(inds) = arma::exp(- alpha / n * arma::pow(arma::abs(r1 - r2), (metric == "footrule") ? 1. : 2.));
         prob = prob / arma::accu(prob);
         arma::vec cpd = arma::cumsum(prob);
 
@@ -76,7 +77,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n,
         support(ranks(jj) - 1) = 0;
       }
       // Increment the partition function
-      Z += exp(- alpha / n * get_rank_distance(ranks, rho, target_distribution))/q;
+      Z += exp(- alpha / n * get_rank_distance(ranks, rho, metric))/q;
     }
     // Average over the Monte Carlo samples
     logZ(t) = log(Z / nmc);

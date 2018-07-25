@@ -2,19 +2,22 @@
 % Please edit documentation in R/RcppExports.R
 \name{compute_importance_sampling_estimate}
 \alias{compute_importance_sampling_estimate}
-\title{Mainly internal function which will be used to precompute the
-partition function for footrule and Spearman distance. Can
-perhaps be called withing the package if the users wishes to
-use a number of items for which the partition function has not
-been precomputed.}
+\title{Compute importance sampling estimates of log partition function
+for footrule and Spearman distances.}
 \usage{
-compute_importance_sampling_estimate(alpha_vector, n, proposal_distribution,
-  target_distribution, nmc)
+compute_importance_sampling_estimate(alpha_vector, n, metric = "footrule",
+  nmc = 1000000L)
+}
+\arguments{
+\item{alpha_vector}{Vector of alpha values at which to compute partition function.}
+
+\item{n}{Integer specifying the number of ranked items.}
+
+\item{metric}{Distance measure of the target Mallows distribution. Defaults to \code{footrule}.}
+
+\item{nmc}{Number of Monte Carlo samples. Defaults to \code{1e6}.}
 }
 \description{
-Mainly internal function which will be used to precompute the
-partition function for footrule and Spearman distance. Can
-perhaps be called withing the package if the users wishes to
-use a number of items for which the partition function has not
-been precomputed.
+Compute importance sampling estimates of log partition function
+for footrule and Spearman distances.
 }

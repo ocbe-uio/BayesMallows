@@ -33,17 +33,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // compute_importance_sampling_estimate
-arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n, std::string proposal_distribution, std::string target_distribution, int nmc);
-RcppExport SEXP _BayesMallows_compute_importance_sampling_estimate(SEXP alpha_vectorSEXP, SEXP nSEXP, SEXP proposal_distributionSEXP, SEXP target_distributionSEXP, SEXP nmcSEXP) {
+arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n, std::string metric, int nmc);
+RcppExport SEXP _BayesMallows_compute_importance_sampling_estimate(SEXP alpha_vectorSEXP, SEXP nSEXP, SEXP metricSEXP, SEXP nmcSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type alpha_vector(alpha_vectorSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< std::string >::type proposal_distribution(proposal_distributionSEXP);
-    Rcpp::traits::input_parameter< std::string >::type target_distribution(target_distributionSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< int >::type nmc(nmcSEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_importance_sampling_estimate(alpha_vector, n, proposal_distribution, target_distribution, nmc));
+    rcpp_result_gen = Rcpp::wrap(compute_importance_sampling_estimate(alpha_vector, n, metric, nmc));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -84,7 +83,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_summation_distances", (DL_FUNC) &_BayesMallows_get_summation_distances, 3},
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
-    {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 5},
+    {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 4},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 4},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 9},
     {NULL, NULL, 0}

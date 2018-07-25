@@ -27,13 +27,15 @@ get_rank_distance <- function(r1, r2, metric = "footrule") {
     .Call(`_BayesMallows_get_rank_distance`, r1, r2, metric)
 }
 
-#' Mainly internal function which will be used to precompute the
-#' partition function for footrule and Spearman distance. Can
-#' perhaps be called withing the package if the users wishes to
-#' use a number of items for which the partition function has not
-#' been precomputed.
-compute_importance_sampling_estimate <- function(alpha_vector, n, proposal_distribution, target_distribution, nmc) {
-    .Call(`_BayesMallows_compute_importance_sampling_estimate`, alpha_vector, n, proposal_distribution, target_distribution, nmc)
+#' Compute importance sampling estimates of log partition function
+#' for footrule and Spearman distances.
+#'
+#' @param alpha_vector Vector of alpha values at which to compute partition function.
+#' @param n Integer specifying the number of ranked items.
+#' @param metric Distance measure of the target Mallows distribution. Defaults to \code{footrule}.
+#' @param nmc Number of Monte Carlo samples. Defaults to \code{1e6}.
+compute_importance_sampling_estimate <- function(alpha_vector, n, metric = "footrule", nmc = 1e6L) {
+    .Call(`_BayesMallows_compute_importance_sampling_estimate`, alpha_vector, n, metric, nmc)
 }
 
 #' Compute the logarithm of the partition function for a Mallows rank model.
