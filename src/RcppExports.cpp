@@ -47,28 +47,28 @@ BEGIN_RCPP
 END_RCPP
 }
 // get_partition_function
-double get_partition_function(int n, double alpha, arma::vec cardinalities, std::string metric);
+double get_partition_function(int n, double alpha, Rcpp::Nullable<arma::vec> cardinalities, std::string metric);
 RcppExport SEXP _BayesMallows_get_partition_function(SEXP nSEXP, SEXP alphaSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type cardinalities(cardinalitiesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type cardinalities(cardinalitiesSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     rcpp_result_gen = Rcpp::wrap(get_partition_function(n, alpha, cardinalities, metric));
     return rcpp_result_gen;
 END_RCPP
 }
 // run_mcmc
-Rcpp::List run_mcmc(arma::mat R, int nmc, arma::vec cardinalities, std::string metric, int L, double sd_alpha, double alpha_init, int alpha_jump, double lambda);
+Rcpp::List run_mcmc(arma::mat R, int nmc, Rcpp::Nullable<arma::vec> cardinalities, std::string metric, int L, double sd_alpha, double alpha_init, int alpha_jump, double lambda);
 RcppExport SEXP _BayesMallows_run_mcmc(SEXP RSEXP, SEXP nmcSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP, SEXP LSEXP, SEXP sd_alphaSEXP, SEXP alpha_initSEXP, SEXP alpha_jumpSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type R(RSEXP);
     Rcpp::traits::input_parameter< int >::type nmc(nmcSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type cardinalities(cardinalitiesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type cardinalities(cardinalitiesSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< int >::type L(LSEXP);
     Rcpp::traits::input_parameter< double >::type sd_alpha(sd_alphaSEXP);

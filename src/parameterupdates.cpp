@@ -15,7 +15,7 @@ void update_alpha(arma::vec& alpha, arma::vec& alpha_acceptance,
                   const arma::vec& rho_old,
                   const double& sd_alpha, const std::string& metric,
                   const double& lambda, const int& n, const int& N,
-                  const arma::vec& cardinalities) {
+                  const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue) {
 
   // Increment to the index we are going to update
   ++alpha_index;

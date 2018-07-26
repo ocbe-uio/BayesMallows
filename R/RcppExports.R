@@ -43,12 +43,12 @@ compute_importance_sampling_estimate <- function(alpha_vector, n, metric = "foot
 #' @param n Number of items.
 #' @param alpha The value of the alpha parameter.
 #' @param cardinalities Number of occurences for each unique distance.
-#' Applicable for footrule and Spearman distance.
+#' Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.
 #' @param metric A string. Available options are \code{"footrule"},
 #' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
 #' Defaults to \code{"footrule"}.
 #' @return A scalar, the logarithm of the partition function.
-get_partition_function <- function(n, alpha, cardinalities, metric = "footrule") {
+get_partition_function <- function(n, alpha, cardinalities = NULL, metric = "footrule") {
     .Call(`_BayesMallows_get_partition_function`, n, alpha, cardinalities, metric)
 }
 
@@ -58,8 +58,8 @@ get_partition_function <- function(n, alpha, cardinalities, metric = "footrule")
 #' With N samples and n items, R is n x N.
 #' @param nmc Number of Monte Carlo samples.
 #' @param cardinalities Used when metric equals \code{"footrule"} or
-#' \code{"spearman"} for computing the partition function. Otherwise,
-#' please provided an arbitrary vector.
+#' \code{"spearman"} for computing the partition function. Defaults to
+#' \code{R_NilValue}.
 #' @param metric The distance metric to use. One of \code{"spearman"},
 #' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 #' \code{"hamming"}.

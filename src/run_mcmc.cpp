@@ -13,8 +13,8 @@
 //' With N samples and n items, R is n x N.
 //' @param nmc Number of Monte Carlo samples.
 //' @param cardinalities Used when metric equals \code{"footrule"} or
-//' \code{"spearman"} for computing the partition function. Otherwise,
-//' please provided an arbitrary vector.
+//' \code{"spearman"} for computing the partition function. Defaults to
+//' \code{R_NilValue}.
 //' @param metric The distance metric to use. One of \code{"spearman"},
 //' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 //' \code{"hamming"}.
@@ -28,7 +28,7 @@
 //' @param lambda Parameter of the prior distribution.
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat R, int nmc,
-                    arma::vec cardinalities,
+                    Rcpp::Nullable<arma::vec> cardinalities,
                     std::string metric = "footrule",
                     int L = 1, double sd_alpha = 0.5,
                     double alpha_init = 5, int alpha_jump = 1,

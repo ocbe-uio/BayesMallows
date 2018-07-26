@@ -14,8 +14,8 @@ With N samples and n items, R is n x N.}
 \item{nmc}{Number of Monte Carlo samples.}
 
 \item{cardinalities}{Used when metric equals \code{"footrule"} or
-\code{"spearman"} for computing the partition function. Otherwise,
-please provided an arbitrary vector.}
+\code{"spearman"} for computing the partition function. Defaults to
+\code{R_NilValue}.}
 
 \item{metric}{The distance metric to use. One of \code{"spearman"},
 \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or

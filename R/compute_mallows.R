@@ -47,27 +47,30 @@ compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
   # Set L if it is not alredy set.
   if(is.null(L)) L <- n / 5
 
+  # Extract the relevant rows from partition_function_data
+  partition_function_data <- dplyr::filter(partition_function_data, metric == metric)
+
   # Extract the right sequence of cardinalities, if relevant
   if(metric == "footrule"){
-    relevant_params <- dplyr::filter(partition_function_data, metric == "footrule", type == "cardinalities")
+    relevant_params <- dplyr::filter(partition_function_data, type == "cardinalities")
 
-    if(n > max(relevant_params$num_items)) {
+    if(n > max(dplyr::pull(relevant_params, num_items))) {
       stop("At the moment, at most", length(footrule_sequence),
            "items can be analyzed with footrule distance.")
     }
-    cardinalities <- as.numeric(unlist(dplyr::select(dplyr::filter(relevant_params, num_items == n), values)))
+    cardinalities <- unlist(dplyr::pull(dplyr::select(dplyr::filter(relevant_params, num_items == n), values)))
 
   } else if (metric %in% c("spearman", "Spearman")) {
-    relevant_params <- dplyr::filter(partition_function_data, metric == "spearman", type == "cardinalities")
+    relevant_params <- dplyr::filter(partition_function_data, type == "cardinalities")
 
-    if(n > max(relevant_params$num_items)) {
+    if(n > max(dplyr::pull(relevant_params, num_items))) {
       stop("At the moment, at most", length(spearman_sequence),
            "items can be analyzed with Spearman distance.")
     }
-    cardinalities <- as.numeric(unlist(dplyr::select(dplyr::filter(relevant_params, num_items == n), values)))
+    cardinalities <- unlist(dplyr::pull(dplyr::select(dplyr::filter(relevant_params, num_items == n), values)))
   } else if (metric %in% c("cayley", "Cayley", "hamming", "Hamming",
                            "kendall", "Kendall")) {
-    cardinalities <- 0
+    cardinalities <- NULL
   } else {
     stop(paste("Unknown metric", metric))
   }
