@@ -5,7 +5,7 @@ model_fit <- compute_mallows(potato_weighing, "footrule", nmc = 10000, burnin = 
 test_that(
   "alpha is in a decent range for footrule",
   expect_true(
-    model_fit$alpha > 10 && model_fit$alpha < 20
+    mean(model_fit$alpha) > 10 && mean(model_fit$alpha) < 20
   )
 )
 

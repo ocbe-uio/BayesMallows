@@ -13,7 +13,8 @@ void update_alpha(arma::vec&, arma::vec& ,
                   const arma::vec& ,
                   const double&, const std::string&,
                   const double&, const int&, const int&,
-                  const Rcpp::Nullable<arma::vec>);
+                  Rcpp::Nullable<arma::vec>,
+                  Rcpp::Nullable<arma::vec>);
 
 void update_rho(arma::mat& rho, arma::vec& rho_acceptance, arma::vec& rho_old,
                 const double& alpha_old, const int& L, const arma::mat& R,

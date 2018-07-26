@@ -36,7 +36,8 @@ test_that("footrule partition function is correct", {
   for(n in c(1, 2, 3, 5)){
     for(alpha in c(0.001, 0.1, 1)){
       expect_equal(
-        get_partition_function(n, alpha, footrule_sequence[[n]], "footrule"),
+        get_partition_function(n = n, alpha = alpha,
+                               cardinalities = footrule_sequence[[n]], metric = "footrule"),
         check_log_zn(n, alpha, "footrule")
       )
     }
@@ -50,7 +51,8 @@ test_that("Spearman partition function is correct", {
   for(n in c(1, 2, 3)){
     for(alpha in c(0.001, 0.1, 1)){
       expect_equal(
-        get_partition_function(n, alpha, spearman_sequence[[n]], "spearman"),
+        get_partition_function(n = n, alpha = alpha,
+                               cardinalities = spearman_sequence[[n]], metric = "spearman"),
         check_log_zn(n, alpha, "spearman")
       )
     }
@@ -61,7 +63,7 @@ test_that("Kendall partition function is correct", {
   for(n in c(1, 2, 3)){
     for(alpha in c(0.001, 0.1, 1)){
       expect_equal(
-        get_partition_function(n, alpha, 0, "kendall"),
+        get_partition_function(n = n, alpha = alpha, metric = "kendall"),
         check_log_zn(n, alpha, "kendall")
       )
     }
@@ -71,7 +73,7 @@ test_that("Cayley partition function is correct", {
   for(n in c(1, 2, 3)){
     for(alpha in c(0.001, 0.1, 1)){
       expect_equal(
-        get_partition_function(n, alpha, 0, "cayley"),
+        get_partition_function(n = n, alpha = alpha, metric = "cayley"),
         check_log_zn(n, alpha, "cayley")
       )
     }
@@ -82,7 +84,7 @@ test_that("Hamming partition function is correct", {
   for(n in c(1, 2, 3)){
     for(alpha in c(0.001, 0.1, 1)){
       expect_equal(
-        get_partition_function(n, alpha, 0, "hamming"),
+        get_partition_function(n = n, alpha = alpha, metric = "hamming"),
         check_log_zn(n, alpha, "hamming")
       )
     }

@@ -5,6 +5,6 @@
 #include "misc.h"
 #include "distfuns.h"
 
-double get_partition_function(int, double, Rcpp::Nullable<arma::vec>, std::string);
+double get_partition_function(int, double, Rcpp::Nullable<arma::vec>, Rcpp::Nullable<arma::vec>, std::string);
 
 #endif

@@ -48,8 +48,8 @@ compute_importance_sampling_estimate <- function(alpha_vector, n, metric = "foot
 #' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
 #' Defaults to \code{"footrule"}.
 #' @return A scalar, the logarithm of the partition function.
-get_partition_function <- function(n, alpha, cardinalities = NULL, metric = "footrule") {
-    .Call(`_BayesMallows_get_partition_function`, n, alpha, cardinalities, metric)
+get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL, metric = "footrule") {
+    .Call(`_BayesMallows_get_partition_function`, n, alpha, cardinalities, is_fit, metric)
 }
 
 #' Worker function for computing the posterior distribtuion.
@@ -71,7 +71,7 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, metric = "foo
 #' number can significantly speed up computation time, since we then do not
 #' have to do expensive computation of the partition function.
 #' @param lambda Parameter of the prior distribution.
-run_mcmc <- function(R, nmc, cardinalities, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1) {
-    .Call(`_BayesMallows_run_mcmc`, R, nmc, cardinalities, metric, L, sd_alpha, alpha_init, alpha_jump, lambda)
+run_mcmc <- function(R, nmc, cardinalities, is_fit, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1) {
+    .Call(`_BayesMallows_run_mcmc`, R, nmc, cardinalities, is_fit, metric, L, sd_alpha, alpha_init, alpha_jump, lambda)
 }
 

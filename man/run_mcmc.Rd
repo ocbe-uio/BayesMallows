@@ -4,7 +4,7 @@
 \alias{run_mcmc}
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
-run_mcmc(R, nmc, cardinalities, metric = "footrule", L = 1L,
+run_mcmc(R, nmc, cardinalities, is_fit, metric = "footrule", L = 1L,
   sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1)
 }
 \arguments{

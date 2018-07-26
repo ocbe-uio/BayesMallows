@@ -1,4 +1,4 @@
-# We need dplyr and tidyr to do this nicely
+# We need these packages to do this nicely
 library(dplyr)
 library(tidyr)
 library(purrr)
@@ -33,16 +33,23 @@ rm(seq2)
 
 # Code for generating off-line importance sampling estimates for Spearman and footrule.
 
+nmc <- 1e4
+num_alphas <- 5
+
 # tibble to hold the parameters
 parameters <- bind_rows(
-  crossing(num_items = 51:52, metric = "footrule", alpha = seq(from = 0.01, to = 10, length.out = 5), nmc = 1e2),
-  crossing(num_items = 15:26, metric = "spearman", alpha = seq(from = 0.01, to = 20, length.out = 5), nmc = 1e2)
+  crossing(num_items = 51:52, metric = "footrule", alpha = seq(from = 0.01, to = 10, length.out = num_alphas), nmc = nmc),
+  crossing(num_items = 15:26, metric = "spearman", alpha = seq(from = 0.01, to = 20, length.out = num_alphas), nmc = nmc)
 )
 
 # Use pmap from purrr to estimate logZ for each combination of the parameters
+# Create a progress bar
+pb <- progress_estimated(nrow(parameters))
+
 
 importance_sampling_parameters <- parameters %>%
   pmap(function(num_items, metric, alpha, nmc) {
+    pb$tick()$print()
     tibble(
       num_items = num_items,
       metric = metric,

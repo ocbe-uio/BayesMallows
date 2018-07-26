@@ -9,6 +9,21 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
+// Helper to compute the importance sampling smoothed fit
+double compute_is_fit(double alpha, arma::vec fit){
+  // The partition function
+  double Z = 0;
+  int n = fit.n_elem;
+
+  for(int i = 0; i < n; ++i){
+    Z += pow(alpha, i) * fit(i);
+  }
+  return(log(Z));
+}
+
+
+
+
 //' Compute the logarithm of the partition function for a Mallows rank model.
 //'
 //' @param n Number of items.
@@ -20,15 +35,22 @@
 //' Defaults to \code{"footrule"}.
 //' @return A scalar, the logarithm of the partition function.
 // [[Rcpp::export]]
-double get_partition_function(int n, double alpha, Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
+double get_partition_function(int n, double alpha,
+                              Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
+                              Rcpp::Nullable<arma::vec> is_fit = R_NilValue,
                               std::string metric = "footrule"){
 
   if(metric == "footrule") {
 
-    // If cardinalities are defined, we use them
+    // If cardinalities are defined, we use them. If importance sampling estimates exist,
+    // then we use that
     if(cardinalities.isNotNull()){
       arma::vec distances = arma::regspace(0, 2, floor(pow(n, 2) / 2));
       return log(arma::sum(Rcpp::as<arma::vec>(cardinalities) % exp(-alpha * distances / n)));
+    } else if(is_fit.isNotNull()){
+      return compute_is_fit(alpha, Rcpp::as<arma::vec>(is_fit));
+    } else {
+      Rcpp::stop("Could not compute partition function");
     }
 
 
@@ -37,6 +59,8 @@ double get_partition_function(int n, double alpha, Rcpp::Nullable<arma::vec> car
     if(cardinalities.isNotNull()){
       arma::vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n + 1, 3));
       return log(arma::sum(Rcpp::as<arma::vec>(cardinalities) % exp(-alpha * distances / n)));
+    } else if(is_fit.isNotNull()){
+      return compute_is_fit(alpha, Rcpp::as<arma::vec>(is_fit));
     }
 
 
@@ -71,5 +95,7 @@ double get_partition_function(int n, double alpha, Rcpp::Nullable<arma::vec> car
     Rcpp::stop("Inadmissible value of metric.");
   }
 
+  return 0;
 }
+
 
