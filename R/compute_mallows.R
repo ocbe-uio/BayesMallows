@@ -47,28 +47,39 @@ compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
   # Set L if it is not alredy set.
   if(is.null(L)) L <- n / 5
 
+  # Extract the relevant rows from partition_function_data
+  partition_function_data <- dplyr::filter(partition_function_data, metric == metric)
+
+  ## Temporary!
+  is_fit <- NULL
+
   # Extract the right sequence of cardinalities, if relevant
   if(metric == "footrule"){
-    if(n > length(footrule_sequence)) {
+    relevant_params <- dplyr::filter(partition_function_data, type == "cardinalities")
+
+    if(n > max(dplyr::pull(relevant_params, num_items))) {
       stop("At the moment, at most", length(footrule_sequence),
            "items can be analyzed with footrule distance.")
     }
-    cardinalities <- footrule_sequence[[n]]
+    cardinalities <- unlist(dplyr::pull(dplyr::select(dplyr::filter(relevant_params, num_items == n), values)))
+
   } else if (metric %in% c("spearman", "Spearman")) {
-    if(n > length(spearman_sequence)) {
+    relevant_params <- dplyr::filter(partition_function_data, type == "cardinalities")
+
+    if(n > max(dplyr::pull(relevant_params, num_items))) {
       stop("At the moment, at most", length(spearman_sequence),
            "items can be analyzed with Spearman distance.")
     }
-    cardinalities <- spearman_sequence[[n]]
+    cardinalities <- unlist(dplyr::pull(dplyr::select(dplyr::filter(relevant_params, num_items == n), values)))
   } else if (metric %in% c("cayley", "Cayley", "hamming", "Hamming",
                            "kendall", "Kendall")) {
-    cardinalities <- 0
+    cardinalities <- NULL
   } else {
     stop(paste("Unknown metric", metric))
   }
 
   # Transpose R to get samples along columns.
-  fit <- run_mcmc(t(R), cardinalities, metric = metric, lambda = lambda,
+  fit <- run_mcmc(t(R), cardinalities = cardinalities, is_fit = is_fit, metric = metric, lambda = lambda,
            nmc = nmc, L = L, sd_alpha = sd_alpha, alpha_init = alpha_init,
            alpha_jump = alpha_jump)
 

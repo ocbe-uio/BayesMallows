@@ -13,9 +13,9 @@
 //' With N samples and n items, R is n x N.
 //' @param nmc Number of Monte Carlo samples.
 //' @param cardinalities Used when metric equals \code{"footrule"} or
-//' \code{"spearman"} for computing the partition function. Otherwise,
-//' please provided an arbitrary vector.
-//' @param metric The distance metric to use. On of \code{"spearman"},
+//' \code{"spearman"} for computing the partition function. Defaults to
+//' \code{R_NilValue}.
+//' @param metric The distance metric to use. One of \code{"spearman"},
 //' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 //' \code{"hamming"}.
 //' @param L Leap-and-shift step size.
@@ -28,7 +28,8 @@
 //' @param lambda Parameter of the prior distribution.
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat R, int nmc,
-                    arma::vec cardinalities,
+                    Rcpp::Nullable<arma::vec> cardinalities,
+                    Rcpp::Nullable<arma::vec> is_fit,
                     std::string metric = "footrule",
                     int L = 1, double sd_alpha = 0.5,
                     double alpha_init = 5, int alpha_jump = 1,
@@ -80,7 +81,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     if(t % alpha_jump == 0) {
       // Call the void function which updates alpha by reference
       update_alpha(alpha, alpha_acceptance, alpha_old, R, alpha_index,
-        rho_old, sd_alpha, metric, lambda, n, N, cardinalities);
+        rho_old, sd_alpha, metric, lambda, n, N, cardinalities, is_fit);
     }
 
     // Call the void function which updates rho by reference

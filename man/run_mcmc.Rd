@@ -4,7 +4,7 @@
 \alias{run_mcmc}
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
-run_mcmc(R, nmc, cardinalities, metric = "footrule", L = 1L,
+run_mcmc(R, nmc, cardinalities, is_fit, metric = "footrule", L = 1L,
   sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1)
 }
 \arguments{
@@ -14,10 +14,10 @@ With N samples and n items, R is n x N.}
 \item{nmc}{Number of Monte Carlo samples.}
 
 \item{cardinalities}{Used when metric equals \code{"footrule"} or
-\code{"spearman"} for computing the partition function. Otherwise,
-please provided an arbitrary vector.}
+\code{"spearman"} for computing the partition function. Defaults to
+\code{R_NilValue}.}
 
-\item{metric}{The distance metric to use. On of \code{"spearman"},
+\item{metric}{The distance metric to use. One of \code{"spearman"},
 \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 \code{"hamming"}.}
 

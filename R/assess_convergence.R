@@ -42,7 +42,6 @@
 #' check <- assess_convergence(R = potato_weighing, sd_alpha = 0.1, L = 1)
 #' # Plot the new result
 #' check$rho_plot
-#' @import rlang
 assess_convergence <- function(R, metric = "footrule", lambda = 0.1,
                                nmc = 3000, burnin = 2000,
                                L = ncol(R) / 5, sd_alpha = 0.1, alpha_init = 1,

@@ -21,4 +21,3 @@
 #' @references Insert reference to review paper where the potato data is presented.
 "potato_weighing"
 
-

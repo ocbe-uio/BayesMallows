@@ -4,7 +4,8 @@
 \alias{get_partition_function}
 \title{Compute the logarithm of the partition function for a Mallows rank model.}
 \usage{
-get_partition_function(n, alpha, cardinalities, metric = "footrule")
+get_partition_function(n, alpha, cardinalities = NULL, is_fit = NULL,
+  metric = "footrule")
 }
 \arguments{
 \item{n}{Number of items.}
@@ -12,9 +13,9 @@ get_partition_function(n, alpha, cardinalities, metric = "footrule")
 \item{alpha}{The value of the alpha parameter.}
 
 \item{cardinalities}{Number of occurences for each unique distance.
-Applicable for footrule and Spearman distance.}
+Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.}
 
-\item{metric}{A string. Avaiable options are \code{"footrule"},
+\item{metric}{A string. Available options are \code{"footrule"},
 \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
 Defaults to \code{"footrule"}.}
 }

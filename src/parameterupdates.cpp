@@ -15,7 +15,8 @@ void update_alpha(arma::vec& alpha, arma::vec& alpha_acceptance,
                   const arma::vec& rho_old,
                   const double& sd_alpha, const std::string& metric,
                   const double& lambda, const int& n, const int& N,
-                  const arma::vec& cardinalities) {
+                  Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
+                  Rcpp::Nullable<arma::vec> is_fit = R_NilValue) {
 
   // Increment to the index we are going to update
   ++alpha_index;
@@ -33,8 +34,8 @@ void update_alpha(arma::vec& alpha, arma::vec& alpha_acceptance,
   double ratio = (alpha(alpha_index - 1) - alpha_proposal) / n * rank_dist +
     lambda * alpha_diff +
     N * (
-        get_partition_function(n, alpha(alpha_index - 1), cardinalities, metric) -
-          get_partition_function(n, alpha_proposal, cardinalities, metric)
+        get_partition_function(n, alpha(alpha_index - 1), cardinalities, is_fit, metric) -
+          get_partition_function(n, alpha_proposal, cardinalities, is_fit, metric)
     ) + log(alpha_proposal) - log(alpha(alpha_index - 1));
 
   // Draw a uniform random number

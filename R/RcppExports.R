@@ -27,19 +27,29 @@ get_rank_distance <- function(r1, r2, metric = "footrule") {
     .Call(`_BayesMallows_get_rank_distance`, r1, r2, metric)
 }
 
+#' Compute importance sampling estimates of log partition function
+#' for footrule and Spearman distances.
+#'
+#' @param alpha_vector Vector of alpha values at which to compute partition function.
+#' @param n Integer specifying the number of ranked items.
+#' @param metric Distance measure of the target Mallows distribution. Defaults to \code{footrule}.
+#' @param nmc Number of Monte Carlo samples. Defaults to \code{1e6}.
+compute_importance_sampling_estimate <- function(alpha_vector, n, metric = "footrule", nmc = 1e6L) {
+    .Call(`_BayesMallows_compute_importance_sampling_estimate`, alpha_vector, n, metric, nmc)
+}
+
 #' Compute the logarithm of the partition function for a Mallows rank model.
 #'
 #' @param n Number of items.
 #' @param alpha The value of the alpha parameter.
 #' @param cardinalities Number of occurences for each unique distance.
-#' Applicable for footrule and Spearman distance.
-#' @param metric A string. Avaiable options are \code{"footrule"},
+#' Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.
+#' @param metric A string. Available options are \code{"footrule"},
 #' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
 #' Defaults to \code{"footrule"}.
 #' @return A scalar, the logarithm of the partition function.
-#' @export
-get_partition_function <- function(n, alpha, cardinalities, metric = "footrule") {
-    .Call(`_BayesMallows_get_partition_function`, n, alpha, cardinalities, metric)
+get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL, metric = "footrule") {
+    .Call(`_BayesMallows_get_partition_function`, n, alpha, cardinalities, is_fit, metric)
 }
 
 #' Worker function for computing the posterior distribtuion.
@@ -48,9 +58,9 @@ get_partition_function <- function(n, alpha, cardinalities, metric = "footrule")
 #' With N samples and n items, R is n x N.
 #' @param nmc Number of Monte Carlo samples.
 #' @param cardinalities Used when metric equals \code{"footrule"} or
-#' \code{"spearman"} for computing the partition function. Otherwise,
-#' please provided an arbitrary vector.
-#' @param metric The distance metric to use. On of \code{"spearman"},
+#' \code{"spearman"} for computing the partition function. Defaults to
+#' \code{R_NilValue}.
+#' @param metric The distance metric to use. One of \code{"spearman"},
 #' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 #' \code{"hamming"}.
 #' @param L Leap-and-shift step size.
@@ -61,7 +71,7 @@ get_partition_function <- function(n, alpha, cardinalities, metric = "footrule")
 #' number can significantly speed up computation time, since we then do not
 #' have to do expensive computation of the partition function.
 #' @param lambda Parameter of the prior distribution.
-run_mcmc <- function(R, nmc, cardinalities, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1) {
-    .Call(`_BayesMallows_run_mcmc`, R, nmc, cardinalities, metric, L, sd_alpha, alpha_init, alpha_jump, lambda)
+run_mcmc <- function(R, nmc, cardinalities, is_fit, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1) {
+    .Call(`_BayesMallows_run_mcmc`, R, nmc, cardinalities, is_fit, metric, L, sd_alpha, alpha_init, alpha_jump, lambda)
 }
 

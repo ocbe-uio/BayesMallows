@@ -14,11 +14,13 @@ Depends: R (>= 2.10)
 Imports: Rcpp (>= 0.12.17),
   ggplot2 (>= 2.2.1),
   Rdpack (>= 0.8),
-  rlang (>= 0.1.0),
-  stats (>= 3.5.0)
+  stats (>= 3.5.0),
+  dplyr
 LinkingTo: Rcpp, RcppArmadillo
 Suggests:
     testthat,
+    tidyr,
+    purrr,
     gtools (>= 3.8.1),
     knitr,
     rmarkdown,
