@@ -2,7 +2,9 @@
 
 S3method(plot,BayesMallows)
 export(assess_convergence)
+export(compute_importance_sampling_estimate)
 export(compute_mallows)
+export(create_ranking_from_ordering)
 export(get_rank_distance)
 importFrom(Rcpp,sourceCpp)
 useDynLib(BayesMallows, .registration = TRUE)

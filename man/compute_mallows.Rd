@@ -28,7 +28,7 @@ means that it is automatically set to n/5.}
 
 \item{alpha_init}{Initial value of alpha.}
 
-\item{alpha_jump}{alpha_jump How many times should we sample \code{rho} between
+\item{alpha_jump}{How many times should we sample \code{rho} between
 each time we sample \code{alpha}. Setting \code{alpha_jump} to a high
 number can significantly speed up computation time, since we then do not
 have to do expensive computation of the partition function.}
@@ -49,6 +49,9 @@ algorithm parameters.
 model_fit <- compute_mallows(potato_weighing, "footrule", nmc = 10000, burnin = 5000)
 # Plot the posterior histogram for alpha
 plot(model_fit, type = "alpha", bins = 50)
+}
+\references{
+\insertRef{vitelli2018}{BayesMallows}
 }
 \seealso{
 \code{\link{assess_convergence}}, \code{\link{plot.BayesMallows}}.

@@ -1,3 +1,5 @@
+# This code generates the internal data sets needed for computing the partition functions.
+
 # We need these packages to do this nicely
 library(dplyr)
 library(tidyr)
@@ -33,7 +35,9 @@ rm(seq2)
 
 # Code for generating off-line importance sampling estimates for Spearman and footrule.
 
+# Should be 1e6
 nmc <- 1e4
+# Should be at least 50
 num_alphas <- 5
 
 # tibble to hold the parameters
@@ -54,7 +58,7 @@ importance_sampling_parameters <- parameters %>%
       num_items = num_items,
       metric = metric,
       alpha = alpha,
-      logZ = as.numeric(BayesMallows:::compute_importance_sampling_estimate(alpha, num_items, metric, nmc))
+      logZ = as.numeric(compute_importance_sampling_estimate(alpha, num_items, metric, nmc))
       )
   }
   ) %>%
