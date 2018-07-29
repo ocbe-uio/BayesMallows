@@ -14,6 +14,7 @@
 //' @param n Integer specifying the number of ranked items.
 //' @param metric Distance measure of the target Mallows distribution. Defaults to \code{footrule}.
 //' @param nmc Number of Monte Carlo samples. Defaults to \code{1e6}.
+//' @export
 // [[Rcpp::export]]
 arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n,
                           std::string metric = "footrule", int nmc = 1e6

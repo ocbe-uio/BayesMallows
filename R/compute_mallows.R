@@ -11,7 +11,7 @@
 #' means that it is automatically set to n/5.
 #' @param sd_alpha Standard deviation of the proposal distribution for alpha.
 #' @param alpha_init Initial value of alpha.
-#' @param alpha_jump alpha_jump How many times should we sample \code{rho} between
+#' @param alpha_jump How many times should we sample \code{rho} between
 #' each time we sample \code{alpha}. Setting \code{alpha_jump} to a high
 #' number can significantly speed up computation time, since we then do not
 #' have to do expensive computation of the partition function.
@@ -20,6 +20,7 @@
 #' @details  It is usually a
 #' good idea to first use \code{\link{assess_convergence}} to determine the
 #' algorithm parameters.
+#' @references \insertRef{vitelli2018}{BayesMallows}
 #' @seealso \code{\link{assess_convergence}}, \code{\link{plot.BayesMallows}}.
 #' @export
 #'
