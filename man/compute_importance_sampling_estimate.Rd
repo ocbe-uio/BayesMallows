@@ -5,8 +5,8 @@
 \title{Compute importance sampling estimates of log partition function
 for footrule and Spearman distances.}
 \usage{
-compute_importance_sampling_estimate(alpha_vector, n, metric = "footrule",
-  nmc = 1000000L)
+compute_importance_sampling_estimate(alpha_vector, n,
+  metric = "footrule", nmc = 1000000L)
 }
 \arguments{
 \item{alpha_vector}{Vector of alpha values at which to compute partition function.}
