@@ -26,6 +26,9 @@
 //' number can significantly speed up computation time, since we then do not
 //' have to do expensive computation of the partition function.
 //' @param lambda Parameter of the prior distribution.
+//' @param thinning Thinning parameter. Keep only every \code{thinning} rank
+//' sample from the posterior distribution.
+//'
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat R, int nmc,
                     Rcpp::Nullable<arma::vec> cardinalities,
@@ -43,6 +46,9 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
   // Number of alpha values to store.
   int n_alpha = ceil(nmc * 1.0 / alpha_jump);
+
+  // Number of rho values to store
+  //int n_rho = ceil(nmc * 1.0 / thinning);
 
   // Declare the matrix to hold the latent ranks
   // Note: Armadillo matrices are stored in column-major ordering. Hence,

@@ -32,7 +32,7 @@ plot.BayesMallows <- function(x, type = "alpha", items = NULL, ...){
                              "standard deviation =", round(stats::sd(df$alpha), 2)))
 
   } else if(type == "rho") {
-    stopifnot(!is.null(items))
+    if(is.null(items)) stop("You must specify the items to plot.")
 
     nmc <- length(x$rho_acceptance)
     df <- data.frame(

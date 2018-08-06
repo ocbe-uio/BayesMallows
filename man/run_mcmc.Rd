@@ -33,6 +33,9 @@ number can significantly speed up computation time, since we then do not
 have to do expensive computation of the partition function.}
 
 \item{lambda}{Parameter of the prior distribution.}
+
+\item{thinning}{Thinning parameter. Keep only every \code{thinning} rank
+sample from the posterior distribution.}
 }
 \description{
 Worker function for computing the posterior distribtuion.

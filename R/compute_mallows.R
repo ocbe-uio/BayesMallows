@@ -1,25 +1,35 @@
 #' Compute the posterior distribution for the Mallows model.
 #'
-#' @param R A matrix of ranked items.
+#' @param R A matrix of ranked items. See \code{\link{create_ranking}} if you
+#'   have an ordered set of items that needs to be converted to rankings.
 #' @param metric The distance metric to use. Currently available ones are
-#' \code{"footrule"}, \code{"spearman"}, \code{"kendall"}, \code{"cayley"},
-#' and \code{"hamming"}.
-#' @param lambda Parameter for the prior distribution of \code{alpha}. Defaults to 0.1.
+#'   \code{"footrule"}, \code{"spearman"}, \code{"kendall"}, \code{"cayley"},
+#'   and \code{"hamming"}.
+#' @param lambda Parameter for the prior distribution of \code{alpha}. Defaults
+#'   to 0.1.
 #' @param nmc Number of Monte Carlo samples to keep.
-#' @param burnin Number of samples to discard as burn-in before collecting \code{nmc} samples.
-#' @param L Step size of the leap-and-shift proposal distribution. Defaults to NULL, which
-#' means that it is automatically set to n/5.
+#' @param burnin Number of samples to discard as burn-in before collecting
+#'   \code{nmc} samples. See \code{\link{assess_convergence}} for a function
+#'   that can be used to pick the right number of burn-in samples to discard.
+#' @param L Step size of the leap-and-shift proposal distribution. Defaults to
+#'   NULL, which means that it is automatically set to n/5.
 #' @param sd_alpha Standard deviation of the proposal distribution for alpha.
 #' @param alpha_init Initial value of alpha.
-#' @param alpha_jump How many times should we sample \code{rho} between
-#' each time we sample \code{alpha}. Setting \code{alpha_jump} to a high
-#' number can significantly speed up computation time, since we then do not
-#' have to do expensive computation of the partition function.
+#' @param alpha_jump How many times should we sample \code{rho} between each
+#'   time we sample \code{alpha}. Setting \code{alpha_jump} to a high number can
+#'   significantly speed up computation time, since we then do not have to do
+#'   expensive computation of the partition function.
+#' @param thinning Save only every \code{thinning}th MCMC sample of the ranks. A
+#'   number between 1 and \code{nmc} which defaults to 1. When the
+#'   number of items is very large, and/or the number of MCMC samples is very
+#'   large, not saving every sample saves memory and may make it easier to
+#'   compute properties of the posterior distribution. Note that every
+#'   \code{alpha} sample is saved, and that this is controlled by the parameter
+#'   \code{alpha_jump}.
 #'
 #' @return A list of class BayesMallows.
-#' @details  It is usually a
-#' good idea to first use \code{\link{assess_convergence}} to determine the
-#' algorithm parameters.
+#' @details  It is usually a good idea to first use
+#'   \code{\link{assess_convergence}} to determine the algorithm parameters.
 #' @references \insertRef{vitelli2018}{BayesMallows}
 #' @seealso \code{\link{assess_convergence}}, \code{\link{plot.BayesMallows}}.
 #' @export
@@ -29,9 +39,10 @@
 #' model_fit <- compute_mallows(potato_weighing, "footrule", nmc = 10000, burnin = 5000)
 #' # Plot the posterior histogram for alpha
 #' plot(model_fit, type = "alpha", bins = 50)
+#'
 compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
                               nmc = 3000, burnin = 2000, L = NULL, sd_alpha = 0.1,
-                              alpha_init = 5, alpha_jump = 1){
+                              alpha_init = 5, alpha_jump = 1, thinning = 1){
 
   # Check that we have more samples than we throw away
   stopifnot(nmc > burnin)
@@ -41,6 +52,9 @@ compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
 
   # Check that we do not jump over all alphas
   stopifnot(alpha_jump < nmc)
+
+  # Check that the thinning fraction is appropriately set.
+  stopifnot(thinning >= 1 && thinning < nmc)
 
   # Find the number of items
   n <- ncol(R)

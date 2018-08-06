@@ -72,6 +72,9 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' number can significantly speed up computation time, since we then do not
 #' have to do expensive computation of the partition function.
 #' @param lambda Parameter of the prior distribution.
+#' @param thinning Thinning parameter. Keep only every \code{thinning} rank
+#' sample from the posterior distribution.
+#'
 run_mcmc <- function(R, nmc, cardinalities, is_fit, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1) {
     .Call(`_BayesMallows_run_mcmc`, R, nmc, cardinalities, is_fit, metric, L, sd_alpha, alpha_init, alpha_jump, lambda)
 }

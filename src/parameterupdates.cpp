@@ -89,5 +89,6 @@ void update_rho(arma::mat& rho, arma::vec& rho_acceptance, arma::vec& rho_old,
     rho_acceptance(t) = 0;
   }
 
-  rho_old = rho.col(t - 1);
+  // Finally update rho_old to be the current value
+  rho_old = rho.col(t);
 }
