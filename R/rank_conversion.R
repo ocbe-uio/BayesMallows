@@ -12,7 +12,6 @@
 #'   times n, where N is the number of samples and n is the number of items.
 #'
 #' @return A vector or matrix of rankings.
-#' @export
 #'
 #'
 #' @examples
@@ -38,7 +37,11 @@
 #' O2 <- create_ordering(R)
 #' # Confirm that we get back what we had
 #' all.equal(O, O2)
-#'
+#' @name rank_conversion
+NULL
+
+#' @describeIn rank_conversion Convert from ordering to ranking.
+#' @export
 create_ranking <- function(O){
 
   # Check that it is a permutation
@@ -54,7 +57,7 @@ create_ranking <- function(O){
   }
 }
 
-#' @describeIn create_ranking Convert from ranking to ordering.
+#' @describeIn rank_conversion Convert from ranking to ordering.
 #' @export
 create_ordering <- function(R){
   create_ranking(R)
