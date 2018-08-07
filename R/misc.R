@@ -14,12 +14,12 @@ validate_permutation <- function(vec){
 }
 
 
-get_cardinalities <- function(relevant_params, n) {
+get_cardinalities <- function(relevant_params) {
   unlist(
     dplyr::pull(
       dplyr::select(
         dplyr::filter(
-          relevant_params, .data$num_items == n
+          relevant_params
         ),
         .data$values)
     )

@@ -22,3 +22,10 @@ test_that(
     mean(model_fit$rho_acceptance) > 0 && mean(model_fit$rho_acceptance) < 1
   )
 )
+
+test_that(
+  "rho is a rank vector",
+  expect_true(
+    all(apply(model_fit$rho[, sample.int(n = 5000, size = 100)], 2, BayesMallows:::validate_permutation))
+  )
+)

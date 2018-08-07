@@ -19,13 +19,6 @@
 #'   time we sample \code{alpha}. Setting \code{alpha_jump} to a high number can
 #'   significantly speed up computation time, since we then do not have to do
 #'   expensive computation of the partition function.
-#' @param thinning Save only every \code{thinning}th MCMC sample of the ranks. A
-#'   number between 1 and \code{nmc} which defaults to 1. When the
-#'   number of items is very large, and/or the number of MCMC samples is very
-#'   large, not saving every sample saves memory and may make it easier to
-#'   compute properties of the posterior distribution. Note that every
-#'   \code{alpha} sample is saved, and that this is controlled by the parameter
-#'   \code{alpha_jump}.
 #'
 #' @return A list of class BayesMallows.
 #' @details  It is usually a good idea to first use
@@ -45,7 +38,7 @@
 #'
 compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
                               nmc = 3000, burnin = 2000, L = NULL, sd_alpha = 0.1,
-                              alpha_init = 5, alpha_jump = 1, thinning = 1){
+                              alpha_init = 5, alpha_jump = 1){
 
   # Check that we have more samples than we throw away
   stopifnot(nmc > burnin)
@@ -56,44 +49,28 @@ compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
   # Check that we do not jump over all alphas
   stopifnot(alpha_jump < nmc)
 
-  # Check that the thinning fraction is appropriately set.
-  stopifnot(thinning >= 1 && thinning < nmc)
-
   # Find the number of items
-  n <- ncol(R)
+  n_items <- ncol(R)
 
   # Set L if it is not alredy set.
-  if(is.null(L)) L <- n / 5
-
-  # Extract the relevant rows from partition_function_data
-  partition_function_data <- dplyr::filter(partition_function_data, metric == metric)
+  if(is.null(L)) L <- n_items / 5
 
   ## Temporary!
   is_fit <- NULL
 
   # Extract the right sequence of cardinalities, if relevant
-  if(metric == "footrule"){
-    relevant_params <- dplyr::filter(partition_function_data, .data$type == "cardinalities")
+  if(metric %in% c("footrule", "spearman")){
+    # Extract the relevant rows from partition_function_data
+    # Note that we need to evaluate the right-hand side, in particular metric,
+    # to avoid confusion with columns of the tibble
+    relevant_params <- dplyr::filter(partition_function_data,
+                                     .data$num_items == !!n_items,
+                                     .data$metric == !!metric,
+                                     .data$type == "cardinalities" # TEMPORARY!!
+    )
 
-    max_params <- max(dplyr::pull(relevant_params, .data$num_items))
-
-    if(n > max_params) {
-      stop("At the moment, at most", max_params,
-           "items can be analyzed with footrule distance.")
-    }
-    cardinalities <- get_cardinalities(relevant_params, n)
-
-  } else if (metric %in% c("spearman", "Spearman")) {
-    relevant_params <- dplyr::filter(partition_function_data, .data$type == "cardinalities")
-
-    max_params <- max(dplyr::pull(relevant_params, .data$num_items))
-    if(n > max_params) {
-      stop("At the moment, at most", max_params,
-           "items can be analyzed with Spearman distance.")
-    }
-    cardinalities <- get_cardinalities(relevant_params, n)
-  } else if (metric %in% c("cayley", "Cayley", "hamming", "Hamming",
-                           "kendall", "Kendall")) {
+    cardinalities <- get_cardinalities(relevant_params)
+  } else if (metric %in% c("cayley", "hamming", "kendall")) {
     cardinalities <- NULL
   } else {
     stop(paste("Unknown metric", metric))
