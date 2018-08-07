@@ -28,7 +28,6 @@
 //' @param lambda Parameter of the prior distribution.
 //' @param thinning Thinning parameter. Keep only every \code{thinning} rank
 //' sample from the posterior distribution.
-//' @keywords internal
 //'
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat R, int nmc,
@@ -37,7 +36,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
                     std::string metric = "footrule",
                     int L = 1, double sd_alpha = 0.5,
                     double alpha_init = 5, int alpha_jump = 1,
-                    double lambda = 0.1){
+                    double lambda = 0.1, int thinning = 1){
 
   // The number of items ranked
   int n = R.n_rows;

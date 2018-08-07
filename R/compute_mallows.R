@@ -19,6 +19,7 @@
 #'   time we sample \code{alpha}. Setting \code{alpha_jump} to a high number can
 #'   significantly speed up computation time, since we then do not have to do
 #'   expensive computation of the partition function.
+#' @param thinning Keep every \code{thinning} iteration of \code{rho}.
 #'
 #' @return A list of class BayesMallows.
 #' @details  It is usually a good idea to first use
@@ -38,7 +39,7 @@
 #'
 compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
                               nmc = 3000, burnin = 2000, L = NULL, sd_alpha = 0.1,
-                              alpha_init = 0.001, alpha_jump = 1){
+                              alpha_init = 0.001, alpha_jump = 1, thinning = 1){
 
   # Check that we have more samples than we throw away
   stopifnot(nmc > burnin)

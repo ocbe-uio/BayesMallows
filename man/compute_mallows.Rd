@@ -6,7 +6,7 @@
 \usage{
 compute_mallows(R, metric = "footrule", lambda = 0.1, nmc = 3000,
   burnin = 2000, L = NULL, sd_alpha = 0.1, alpha_init = 0.001,
-  alpha_jump = 1)
+  alpha_jump = 1, thinning = 1)
 }
 \arguments{
 \item{R}{A matrix of ranked items. See \code{\link{create_ranking}} if you
@@ -36,6 +36,8 @@ NULL, which means that it is automatically set to n/5.}
 time we sample \code{alpha}. Setting \code{alpha_jump} to a high number can
 significantly speed up computation time, since we then do not have to do
 expensive computation of the partition function.}
+
+\item{thinning}{Keep every \code{thinning} iteration of \code{rho}.}
 }
 \value{
 A list of class BayesMallows.
