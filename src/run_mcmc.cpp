@@ -37,7 +37,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
                     std::string metric = "footrule",
                     int L = 1, double sd_alpha = 0.5,
                     double alpha_init = 5, int alpha_jump = 1,
-                    double lambda = 0.1, int thinning = 1){
+                    double lambda = 0.1){
 
   // The number of items ranked
   int n = R.n_rows;
@@ -49,7 +49,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   int n_alpha = ceil(nmc * 1.0 / alpha_jump);
 
   // Number of rho values to store
-  int n_rho = ceil(nmc * 1.0 / thinning);
+  int n_rho = nmc;
 
   // Declare the matrix to hold the latent ranks
   // Note: Armadillo matrices are stored in column-major ordering. Hence,
@@ -77,8 +77,8 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   int alpha_index = 0;
   double alpha_old = alpha(0);
   arma::vec rho_old = rho.col(0);
-  // Iterator showing the index of rho
-  int i = 0;
+
+
 
   // This is the Metropolis-Hastings loop
   // Starting at t = 1, meaning that alpha and rho must be initialized at index 0
@@ -95,7 +95,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
     // Call the void function which updates rho by reference
     // i is increased within this function
-    update_rho(rho, rho_acceptance, rho_old, alpha_old, L, R, metric, n, t, i, ((i % t) == 0));
+    update_rho(rho, rho_acceptance, rho_old, alpha_old, L, R, metric, n, t);
 
   }
 

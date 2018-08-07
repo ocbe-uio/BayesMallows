@@ -77,7 +77,7 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' sample from the posterior distribution.
 #' @keywords internal
 #'
-run_mcmc <- function(R, nmc, cardinalities, is_fit, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L) {
-    .Call(`_BayesMallows_run_mcmc`, R, nmc, cardinalities, is_fit, metric, L, sd_alpha, alpha_init, alpha_jump, lambda, thinning)
+run_mcmc <- function(R, nmc, cardinalities, is_fit, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1) {
+    .Call(`_BayesMallows_run_mcmc`, R, nmc, cardinalities, is_fit, metric, L, sd_alpha, alpha_init, alpha_jump, lambda)
 }
 

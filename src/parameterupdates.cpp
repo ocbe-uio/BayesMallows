@@ -60,7 +60,7 @@ void update_alpha(arma::vec& alpha, arma::vec& alpha_acceptance,
 
 void update_rho(arma::mat& rho, arma::vec& rho_acceptance, arma::vec& rho_old,
                 const double& alpha_old, const int& L, const arma::mat& R,
-                const std::string& metric, const int& n, const int& t, int& i, const bool& save) {
+                const std::string& metric, const int& n, const int& t) {
 
   // Sample a rank proposal
   Rcpp::List ls_proposal = leap_and_shift(rho_old, L);
@@ -83,15 +83,14 @@ void update_rho(arma::mat& rho, arma::vec& rho_acceptance, arma::vec& rho_old,
   double u = log(arma::randu<double>());
 
   if(ratio > u){
-    rho_old = rho_proposal;
+    rho.col(t) = rho_proposal;
     rho_acceptance(t) = 1;
   } else {
+    rho.col(t) = rho.col(t - 1);
     rho_acceptance(t) = 0;
   }
 
-  if(save){
-    rho.col(i) = rho_old;
-    ++i;
-  }
+  // Finally update rho_old to be the current value
+  rho_old = rho.col(t);
 
 }

@@ -5,8 +5,7 @@
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
 run_mcmc(R, nmc, cardinalities, is_fit, metric = "footrule", L = 1L,
-  sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1,
-  thinning = 1L)
+  sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1)
 }
 \arguments{
 \item{R}{A set of complete rankings, with one sample per column.
