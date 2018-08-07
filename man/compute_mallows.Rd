@@ -60,6 +60,8 @@ It is usually a good idea to first use
 model_fit <- compute_mallows(potato_weighing, "footrule", nmc = 10000, burnin = 5000)
 # Plot the posterior histogram for alpha
 plot(model_fit, type = "alpha", bins = 50)
+# Plot the posterior histogram for potatoes 1, 2, and 3.
+plot(model_fit, type = "rho", items = 1:3)
 
 }
 \references{

@@ -15,6 +15,8 @@ get_partition_function(n, alpha, cardinalities = NULL, is_fit = NULL,
 \item{cardinalities}{Number of occurences for each unique distance.
 Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.}
 
+\item{is_fit}{Precomputed importance sampling fit.}
+
 \item{metric}{A string. Available options are \code{"footrule"},
 \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
 Defaults to \code{"footrule"}.}

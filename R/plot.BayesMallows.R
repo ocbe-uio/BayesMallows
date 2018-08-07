@@ -23,7 +23,7 @@
 #'
 plot.BayesMallows <- function(x, type = "alpha", items = NULL, ...){
   if(type == "alpha") {
-    df <- data.frame(alpha = x$alpha)
+    df <- dplyr::tibble(alpha = x$alpha)
 
     ggplot2::ggplot(df, ggplot2::aes_(x =~ alpha)) +
       ggplot2::geom_histogram(...) +
@@ -34,15 +34,40 @@ plot.BayesMallows <- function(x, type = "alpha", items = NULL, ...){
   } else if(type == "rho") {
     if(is.null(items)) stop("You must specify the items to plot.")
 
-    nmc <- length(x$rho_acceptance)
-    df <- data.frame(
-      Item = as.factor(items),
-      Rank = as.factor(x$rho[items, ])
-      )
+    # Convert the posterior rank matrix to a tibble
+    df <- dplyr::as_tibble(t(x$rho))
 
-    ggplot2::ggplot(df, ggplot2::aes_(x =~ Rank)) +
-      ggplot2::geom_histogram(stat = "count", ...) +
-      ggplot2::facet_wrap(~ Item) +
-      ggplot2::ggtitle(paste("Posterior histograms of items", paste(items, collapse = ", ")))
+    # Save the number of items
+    n <- ncol(df)
+
+    # Set the column names to the item numbers
+    names(df) <- seq(1, n)
+
+    # Make the tibble tall by gathering items
+    df <- tidyr::gather(df, key = "Item", value = "Rank")
+
+    # Filter the tibble to keep the items the user wants
+    df <- dplyr::filter(df, .data$Item %in% items)
+
+    # Compute the density, rather than the count, since the latter
+    # depends on the number of Monte Carlo samples
+    df <- dplyr::group_by(df, .data$Item, .data$Rank)
+    df <- dplyr::summarise(df, n = n())
+    df <- dplyr::mutate(df, pct = n / sum(n))
+
+    # Function for getting an x axis without decimals.
+    # Modified from https://stackoverflow.com/questions/21061653/creating-a-density-histogram-in-ggplot2
+    scalefun <- function(x) sprintf("%d", as.integer(x))
+
+    # Finally create the plot
+    ggplot2::ggplot(df, ggplot2::aes(x = .data$Rank, y = .data$pct)) +
+      ggplot2::geom_col() +
+      ggplot2::scale_x_continuous(labels = scalefun) +
+      ggplot2::facet_wrap(~ .data$Item) +
+      ggplot2::ggtitle("Posterior ranks for items") +
+      ggplot2::xlab("Rank") +
+      ggplot2::ylab("Posterior probability")
+
+
   }
 }

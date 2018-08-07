@@ -15,11 +15,12 @@ Imports: Rcpp (>= 0.12.17),
   ggplot2 (>= 2.2.1),
   Rdpack (>= 0.8),
   stats (>= 3.5.0),
-  dplyr
+  dplyr,
+  tidyr,
+  rlang
 LinkingTo: Rcpp, RcppArmadillo
 Suggests:
     testthat,
-    tidyr,
     purrr,
     gtools (>= 3.8.1),
     knitr,

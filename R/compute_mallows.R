@@ -33,12 +33,15 @@
 #' @references \insertRef{vitelli2018}{BayesMallows}
 #' @seealso \code{\link{assess_convergence}}, \code{\link{plot.BayesMallows}}.
 #' @export
+#' @importFrom rlang .data
 #'
 #' @examples
 #' # Compute the posterior
 #' model_fit <- compute_mallows(potato_weighing, "footrule", nmc = 10000, burnin = 5000)
 #' # Plot the posterior histogram for alpha
 #' plot(model_fit, type = "alpha", bins = 50)
+#' # Plot the posterior histogram for potatoes 1, 2, and 3.
+#' plot(model_fit, type = "rho", items = 1:3)
 #'
 compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
                               nmc = 3000, burnin = 2000, L = NULL, sd_alpha = 0.1,
@@ -70,22 +73,25 @@ compute_mallows <- function(R, metric = "footrule", lambda = 0.1,
 
   # Extract the right sequence of cardinalities, if relevant
   if(metric == "footrule"){
-    relevant_params <- dplyr::filter(partition_function_data, type == "cardinalities")
+    relevant_params <- dplyr::filter(partition_function_data, .data$type == "cardinalities")
 
-    if(n > max(dplyr::pull(relevant_params, num_items))) {
-      stop("At the moment, at most", length(footrule_sequence),
+    max_params <- max(dplyr::pull(relevant_params, .data$num_items))
+
+    if(n > max_params) {
+      stop("At the moment, at most", max_params,
            "items can be analyzed with footrule distance.")
     }
-    cardinalities <- unlist(dplyr::pull(dplyr::select(dplyr::filter(relevant_params, num_items == n), values)))
+    cardinalities <- get_cardinalities(relevant_params, n)
 
   } else if (metric %in% c("spearman", "Spearman")) {
-    relevant_params <- dplyr::filter(partition_function_data, type == "cardinalities")
+    relevant_params <- dplyr::filter(partition_function_data, .data$type == "cardinalities")
 
-    if(n > max(dplyr::pull(relevant_params, num_items))) {
-      stop("At the moment, at most", length(spearman_sequence),
+    max_params <- max(dplyr::pull(relevant_params, .data$num_items))
+    if(n > max_params) {
+      stop("At the moment, at most", max_params,
            "items can be analyzed with Spearman distance.")
     }
-    cardinalities <- unlist(dplyr::pull(dplyr::select(dplyr::filter(relevant_params, num_items == n), values)))
+    cardinalities <- get_cardinalities(relevant_params, n)
   } else if (metric %in% c("cayley", "Cayley", "hamming", "Hamming",
                            "kendall", "Kendall")) {
     cardinalities <- NULL

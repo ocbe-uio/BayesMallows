@@ -13,3 +13,15 @@ validate_permutation <- function(vec){
   all(sort(vec) == seq_along(vec))
 }
 
+
+get_cardinalities <- function(relevant_params, n) {
+  unlist(
+    dplyr::pull(
+      dplyr::select(
+        dplyr::filter(
+          relevant_params, .data$num_items == n
+        ),
+        .data$values)
+    )
+  )
+}
