@@ -23,7 +23,19 @@
 #' @export
 #'
 #' @examples
-#' # Let us first look at the convergence of alpha, for the potato data
+#' # First we generate some data with 5 items and 3 assessors
+#' R <- matrix(
+#'   c(1, 2, 3, 4, 5,
+#'     1, 3, 2, 4, 5,
+#'     2, 1, 3, 4, 5),
+#'  nrow = 3, byrow = TRUE
+#' )
+#'
+#' check <- assess_convergence(R)
+#' check$alpha_plot
+#' check$rho_plot
+#'
+#' # Let us now look at the convergence of alpha, for the potato data
 #' # First we try with an alpha standard deviation of 5
 #' check <- assess_convergence(R = potato_weighing, sd_alpha = 5)
 #' # Now show the convergence plot for alpha

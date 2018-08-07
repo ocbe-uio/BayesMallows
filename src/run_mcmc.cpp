@@ -48,14 +48,11 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   // Number of alpha values to store.
   int n_alpha = ceil(nmc * 1.0 / alpha_jump);
 
-  // Number of rho values to store
-  int n_rho = nmc;
-
   // Declare the matrix to hold the latent ranks
   // Note: Armadillo matrices are stored in column-major ordering. Hence,
   // we put the items along the column, since they are going to be accessed at the
   // same time for a given Monte Carlo sample.
-  arma::mat rho(n, n_rho);
+  arma::mat rho(n, nmc);
 
   // Set the initial latent rank value
   rho.col(0) = arma::linspace<arma::vec>(1, n, n);
