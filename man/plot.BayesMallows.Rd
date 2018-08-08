@@ -4,13 +4,18 @@
 \alias{plot.BayesMallows}
 \title{Posterior plots}
 \usage{
-\method{plot}{BayesMallows}(x, burnin, ...)
+\method{plot}{BayesMallows}(x, burnin, type = "alpha", items = NULL,
+  ...)
 }
 \arguments{
 \item{x}{An object of type \code{BayesMallows}, returned from
 \code{\link{compute_mallows}}.}
 
 \item{burnin}{Number of iterations to discard as burn-in.}
+
+\item{type}{Either \code{"alpha"} or \code{"rho"}.}
+
+\item{items}{Index of items to plot. Only used when \code{type = "rho"}.}
 
 \item{...}{Other arguments passed to \code{plot} (not used).}
 }

@@ -27,7 +27,8 @@ get_cardinalities <- function(relevant_params) {
 }
 
 
-gather_rho <- function(model_fit, selected_items = NULL){
+gather_rho <- function(model_fit, selected_items = NULL,
+                       row_inds = NULL){
 
   all_items <- seq(1, model_fit$n_items)
 
@@ -37,7 +38,13 @@ gather_rho <- function(model_fit, selected_items = NULL){
     selected_items <- all_items
   }
 
-  df <- dplyr::as_tibble(t(model_fit$rho[selected_items, , drop = FALSE]))
+  if(!is.null(row_inds)){
+    stopifnot(all(row_inds %in% 1:ncol(model_fit$rho)))
+  } else {
+    row_inds <- seq.int(from = 1, to = ncol(model_fit$rho), by = 1)
+  }
+
+  df <- dplyr::as_tibble(t(model_fit$rho[selected_items, row_inds, drop = FALSE]))
   names(df) <- selected_items
 
   df <- dplyr::mutate(df, Index = dplyr::row_number())

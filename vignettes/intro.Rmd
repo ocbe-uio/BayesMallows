@@ -34,7 +34,7 @@ The `BayesMallows` package comes with example data described in @liu2018. A tota
 
 The `potato_visual` dataset is shown below. The column names P1, ..., P20 represent potatoes, and the row names A1, ..., A12 represent assessors. The `potato_weighing` dataset has a similar structure.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, results='asis'}
 knitr::kable(potato_visual, caption = "Example dataset potato_visual.")
 ```
 
@@ -45,7 +45,7 @@ The `compute_mallows` function is the workhorse of `BayesMallows`, and finds the
 
 We start by using all the default values of the parameters, so we only need to supply the matrix of ranked items. We use the `potato_visual` data printed above.
 
-```{r}
+```{r, cache=TRUE}
 model_fit <- compute_mallows(potato_visual)
 ```
 
@@ -77,52 +77,101 @@ Once we are confident that the algorithm parameters are reasonable, we can study
 
 With a burnin of 2000, the original `model_fit` object has only 1000 MCMC samples. We compare this to a new object, which has 100 times as many samples. We see that the densities have the same mean, but that with a larger number of iterations, the density is more symmetric and less bumpy.
 
-```{r, fig.show='hold'}
+```{r, fig.show='hold', cache=TRUE}
 model_fit_big <- compute_mallows(potato_visual, nmc = 1e5 + 2000)
 plot(model_fit, burnin = 2000)
 plot(model_fit_big, burnin = 2000)
 ```
 
 
-The model objects contain a fair amount of data, so we tidy up before going on:
+The object `model_fit_big` contain a fair amount of data, so we tidy up before going on:
 ```{r}
-rm(model_fit, model_fit_big)
+rm(model_fit_big)
 ```
 
 
 ### Latent Ranks
 
+Obtaining posterior samples from $\rho$ is in general harder than for $\alpha$. Some items tend to be very sticky. 
 
+We start by plotting the `model_fit` object from above, with 3000 iterations, discarding the first 2000 as burn-in. We see frmo the posterior histograms of the first 6 items that the ranks are sticky. We definitely need to run it longer.
 
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+#### Jumping over Alphas
+We try again with a million samples. To avoid updating $\alpha$ in each step, we set `alpha_jump = 100`. This implies that $\alpha$ is updated and saved only every 100th iteration on $\rho$. Before computing the posterior distribution with this parameter, we do a new convergence assessment:
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r, cache=TRUE}
+model_fit <- compute_mallows(potato_visual, nmc = 50000, alpha_jump = 100)
 ```
 
-Also a quote using `>`:
+The trace indicates convergence after around 200 iterations of $\alpha$, i.e., after `nmc * alpha_jump = 20000` Monte Carlo samples. 
+```{r, fig.width=6, fig.align='center'}
+assess_convergence(model_fit, type = "alpha")
+```
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+The convergence plot for $\rho$ agrees that the MCMC algorithms seems to have converged after 20000 iterations.
+```{r, fig.width=6, fig.align='center'}
+assess_convergence(model_fit, type = "rho", items = 1:5)
+```
+
+We now run the algorithm with a million iterations of $\rho$, sampling $\alpha$ only every 100th step:
+
+```{r, cache=TRUE}
+model_fit <- compute_mallows(potato_visual, nmc = 1e6 + 20000, alpha_jump = 100)
+```
+
+The posterior density of $\alpha$ looks very similar to what it did above:
+```{r, fig.align='center'}
+plot(model_fit, burnin = 20000)
+```
+
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+plot(model_fit, burnin = 20000, type = "rho", items = 1:20)
+```
+
+Now at least there is some variation. We can compare the posterior probabilities to the average rank obtained by each potato. There is an overall agreement between the mean rankings in the data, which is reassuring.
+
+```{r, results='asis', message=FALSE}
+library(dplyr)
+library(tidyr)
+as_tibble(potato_visual) %>% 
+  select(P1:P6) %>% 
+  gather(key = "Potato", value = "Rank") %>% 
+  group_by(Potato) %>% 
+  summarise(
+    Mean = mean(Rank),
+    StDev = sd(Rank)
+  ) %>% 
+  knitr::kable(digits = 1)
+```
+
+#### Thinning
+Saving more than a million iterations of $\rho$ starts to get quite expensive, so to this end, we have a `thinning` parameter, which specifies that only each `thinning`th iteration of $\rho$ should be saved to memory. We keep the same number of iterations, while setting `thinning = 10`.
+
+```{r, cache=TRUE}
+model_fit <- compute_mallows(potato_visual, nmc = 1e6 + 20000, 
+                             alpha_jump = 100, thinning = 10)
+```
+
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+plot(model_fit, burnin = 20000, type = "rho", items = 1:20)
+```
+
+## Varying the Distance Metric
+We can try to use the Kendall distance instead of the footrule distance.
+
+```{r}
+model_fit <- compute_mallows(potato_visual, metric = "kendall",
+                             nmc = 1e6 + 20000, 
+                             alpha_jump = 100, thinning = 10)
+```
+
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+plot(model_fit, burnin = 20000, type = "rho", items = 1:20)
+```
+
 
 # References
