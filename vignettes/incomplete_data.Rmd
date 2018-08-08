@@ -1,0 +1,41 @@
+---
+title: "Incomplete Data"
+author: "Oystein Sorensen"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: ../inst/REFERENCES.bib
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+set.seed(232312)
+```
+
+This vignette assumes that you are familiar with the topics in the introductory vignette, so make sure you read that one first.
+
+## Missing Ranks
+
+There are occasion in which the assessors have ranked only a subset of the items. Such missing data are represented as `NA` values in the rank matrix. We illustrate this by randomly removing 20 % of the ranks in `potato_visual`.
+
+```{r}
+library(BayesMallows)
+n_items <- ncol(potato_visual)
+n_assessors <- nrow(potato_visual)
+missingness_matrix <- matrix(ifelse(runif(n_items * n_assessors) > 0.2, 1, NA_real_),
+                             nrow = n_assessors, ncol = n_items)
+potato_missing <- potato_visual * missingness_matrix
+```
+
+We see that some of the rankings have got the value `NA`. When only one item is missing from an assessor, it is obvious what the value should be, and this is taken care of automatically by `compute_mallows`.
+```{r, echo=FALSE, results='asis'}
+knitr::kable(potato_missing, caption = "Example dataset potato_missing.")
+```
+
+# References
