@@ -2,30 +2,39 @@
 #'
 #' @param x An object of type \code{BayesMallows}, returned from
 #'   \code{\link{compute_mallows}}.
+#' @param burnin Number of iterations to discard as burn-in.
 #' @param ... Other arguments passed to \code{plot} (not used).
 #'
 #' @return A plot.
 #' @export
 #'
-plot.BayesMallows <- function(x, ...){
+plot.BayesMallows <- function(x, burnin, ...){
   # Note, the first argument must be named x, otherwise R CMD CHECK will
   # issue a warning. This is because plot.BayesMallows must have the same
   # required arguments as graphics::plot.
 
-  graphics::plot(x$alpha, type = "l")
+  stopifnot(x$nmc > burnin)
+
+
   # if(type == "alpha") {
-  #   df <- dplyr::tibble(alpha = model_fit$alpha)
-  #
-  #   ggplot2::ggplot(df, ggplot2::aes_(x =~ alpha)) +
-  #     ggplot2::geom_histogram(...) +
-  #     ggplot2::xlab(expression(alpha)) +
-  #     ggplot2::ggtitle(paste("Mean = ", round(mean(df$alpha), 2),
-  #                            "standard deviation =", round(stats::sd(df$alpha), 2)))
-  #
+    start <- floor(burnin / x$alpha_jump) + 1
+    stop <- ceiling(x$nmc / x$alpha_jump)
+    num <- stop - start + 1
+
+    df <- dplyr::tibble(alpha = x$alpha[start:stop, 1])
+
+    ggplot2::ggplot(df, ggplot2::aes(x = .data$alpha)) +
+      ggplot2::geom_density() +
+      ggplot2::xlab(expression(alpha)) +
+      ggplot2::ylab("Posterior density") +
+      ggplot2::ggtitle(label = "Posterior density of alpha",
+                       subtitle = paste(num, "samples, mean =",
+                       sprintf("%.1f", mean(df$alpha))))
+
   # } else if(type == "rho") {
   #   if(is.null(items)) stop("You must specify the items to plot.")
   #
-  #   df <- gather_rho(model_fit, items)
+  #   df <- gather_rho(x, items)
   #
   #   # Compute the density, rather than the count, since the latter
   #   # depends on the number of Monte Carlo samples

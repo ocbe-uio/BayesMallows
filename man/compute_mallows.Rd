@@ -5,7 +5,7 @@
 \title{Compute the posterior distribution for the Mallows model.}
 \usage{
 compute_mallows(R, metric = "footrule", lambda = 0.1, nmc = 3000,
-  L = NULL, sd_alpha = 0.1, alpha_init = 0.001, alpha_jump = 1,
+  L = NULL, sd_alpha = 0.1, alpha_init = 1, alpha_jump = 1,
   thinning = 1)
 }
 \arguments{
@@ -40,10 +40,6 @@ A list of class BayesMallows.
 }
 \description{
 Compute the posterior distribution for the Mallows model.
-}
-\details{
-It is usually a good idea to first use
-  \code{\link{assess_convergence}} to determine the algorithm parameters.
 }
 \examples{
 # Compute the posterior

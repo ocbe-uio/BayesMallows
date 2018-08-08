@@ -4,11 +4,13 @@
 \alias{assess_convergence}
 \title{Assessing convergence of Metropolis-Hastings algorithm}
 \usage{
-assess_convergence(model_fit, items = NULL)
+assess_convergence(model_fit, type = "alpha", items = NULL)
 }
 \arguments{
 \item{model_fit}{A fitted model object of class \code{BayesMallows}, obtained
 with \code{\link{compute_mallows}}.}
+
+\item{type}{Should we plot \code{alpha} or \code{rho}.}
 
 \item{items}{The items to study in the diagnostic plot for \code{rho}. A
 vector of indices. If NULL, five items are selected randomly.}

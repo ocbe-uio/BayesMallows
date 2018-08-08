@@ -19,8 +19,6 @@
 #' @param thinning Keep every \code{thinning} iteration of \code{rho}.
 #'
 #' @return A list of class BayesMallows.
-#' @details  It is usually a good idea to first use
-#'   \code{\link{assess_convergence}} to determine the algorithm parameters.
 #' @references \insertRef{vitelli2018}{BayesMallows}
 #' @seealso \code{\link{assess_convergence}}, \code{\link{plot.BayesMallows}}.
 #' @export
@@ -36,7 +34,7 @@ compute_mallows <- function(R,
                             nmc = 3000,
                             L = NULL,
                             sd_alpha = 0.1,
-                            alpha_init = 0.001,
+                            alpha_init = 1,
                             alpha_jump = 1,
                             thinning = 1
                             ){

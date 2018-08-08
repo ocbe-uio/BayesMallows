@@ -1,0 +1,128 @@
+---
+title: "Introduction to BayesMallows"
+author: "Oystein Sorensen"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: ../inst/REFERENCES.bib
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+set.seed(232312)
+```
+
+## Introduction
+
+The `BayesMallows` package implements the Bayesian methods for analysis of rank data described in @vitelli2018. This vignette describes the basic usage of the function for complete data. Other vignettes will describe incomplete data and clustering.
+
+We start by loading the package.
+```{r}
+library(BayesMallows)
+```
+
+
+## Potato Data
+
+The `BayesMallows` package comes with example data described in @liu2018. A total of 12 assessors were asked to rank 20 potatoes based on their weight. In the round, the assessors were only allowed to study the potatoes visually, while in the second round, the assessors were also allowed to hold the potatoes in their hands in order to compare them. The data sets are named `potato_visual` and `potato_weighing`, respectively. The true ordering of the potatoes' weights are stored in the vector `potato_true_ranking`.
+
+The `potato_visual` dataset is shown below. The column names P1, ..., P20 represent potatoes, and the row names A1, ..., A12 represent assessors. The `potato_weighing` dataset has a similar structure.
+
+```{r, echo=FALSE}
+knitr::kable(potato_visual, caption = "Example dataset potato_visual.")
+```
+
+
+## Algorithm Tuning
+
+The `compute_mallows` function is the workhorse of `BayesMallows`, and finds the posterior distribution of the scale parameter $\alpha$ and the latent ranks $\rho$ of the Bayesian Mallows' rank model. To see all its arguments, please run `?compute_mallows` in the console.
+
+We start by using all the default values of the parameters, so we only need to supply the matrix of ranked items. We use the `potato_visual` data printed above.
+
+```{r}
+model_fit <- compute_mallows(potato_visual)
+```
+
+The argument returned is a list object of class `BayesMallows`, which contains a whole lot of information about the MCMC run.
+
+```{r}
+str(model_fit)
+```
+
+The function `assess_convergence` takes an object of class `BayesMallows` and produces plots for visual convergence assessment. We start by studing $\alpha$, which is the default. The plot is shown below, and looks good enough, at least to begin with.
+
+```{r, fig.width=6, fig.align='center'}
+assess_convergence(model_fit)
+```
+
+Next, we study the convergence of $\rho$. To avoid too complicated plots, we pick 5 items to plot.
+
+```{r, fig.width=6, fig.align='center'}
+assess_convergence(model_fit, type = "rho", items = 1:5)
+```
+
+Based on these plots, it looks like the algorithm starts to converge after around 1000 iterations. Discarding the first 2000 iterations as burn-in hence seems like a safe choice.
+
+## Studying the Posterior Distributions
+
+Once we are confident that the algorithm parameters are reasonable, we can study the posterior distributions of the model parameters using the generic function `plot.BayesMallows`.
+
+### Scale Parameter
+
+With a burnin of 2000, the original `model_fit` object has only 1000 MCMC samples. We compare this to a new object, which has 100 times as many samples. We see that the densities have the same mean, but that with a larger number of iterations, the density is more symmetric and less bumpy.
+
+```{r, fig.show='hold'}
+model_fit_big <- compute_mallows(potato_visual, nmc = 1e5 + 2000)
+plot(model_fit, burnin = 2000)
+plot(model_fit_big, burnin = 2000)
+```
+
+
+The model objects contain a fair amount of data, so we tidy up before going on:
+```{r}
+rm(model_fit, model_fit_big)
+```
+
+
+### Latent Ranks
+
+
+
+
+## Figures
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))
+
+# References
