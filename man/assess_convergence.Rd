@@ -4,77 +4,20 @@
 \alias{assess_convergence}
 \title{Assessing convergence of Metropolis-Hastings algorithm}
 \usage{
-assess_convergence(R, metric = "footrule", lambda = 0.1, nmc = 3000,
-  burnin = 2000, L = ncol(R)/5, sd_alpha = 0.1, alpha_init = 1,
-  max_items = 20, rho_displays = 4)
+assess_convergence(model_fit, items = NULL)
 }
 \arguments{
-\item{R}{A matrix of ranked items.}
+\item{model_fit}{A fitted model object of class \code{BayesMallows}, obtained
+with \code{\link{compute_mallows}}.}
 
-\item{metric}{The distance metric to use.}
-
-\item{lambda}{Parameter for the prior distribution of \code{alpha}. Defaults
-to 0.1.}
-
-\item{nmc}{Number of Monte Carlo samples in test run.}
-
-\item{burnin}{How many should we regard as burnin? This one is relevant for
-computing the acceptance rate.}
-
-\item{L}{Step size of the leap-and-shift proposal distribution.}
-
-\item{sd_alpha}{Standard deviation of the proposal distribution for alpha.}
-
-\item{alpha_init}{Initial value of alpha.}
-
-\item{max_items}{The maximum number of items to plot in the diagnostic for
-rho.}
-
-\item{rho_displays}{The maximum number of displays in the diagnostic plots
-for rho.}
+\item{items}{The items to study in the diagnostic plot for \code{rho}. A
+vector of indices. If NULL, five items are selected randomly.}
 }
 \value{
 A list containing two plots, one for alpha and one for rho.
 }
 \description{
 Assessing convergence of Metropolis-Hastings algorithm
-}
-\details{
-After finding reasonable values of the tuning parameters, you
-  typically want to use \code{\link{compute_mallows}}.
-}
-\examples{
-# First we generate some data with 5 items and 3 assessors
-R <- matrix(
-  c(1, 2, 3, 4, 5,
-    1, 3, 2, 4, 5,
-    2, 1, 3, 4, 5),
- nrow = 3, byrow = TRUE
-)
-
-check <- assess_convergence(R)
-check$alpha_plot
-check$rho_plot
-
-# Let us now look at the convergence of alpha, for the potato data
-# First we try with an alpha standard deviation of 5
-check <- assess_convergence(R = potato_weighing, sd_alpha = 5)
-# Now show the convergence plot for alpha
-check$alpha_plot
-# The acceptance rate was a bit low, so let us try to decrease the sd_alpha
-check <- assess_convergence(R = potato_weighing, sd_alpha = 0.1)
-# Then view the plot
-check$alpha_plot
-# This looked better!
-
-# Next, we assess the convergence for rho. The default is L = n/5,
-# which equals 4 in this case.
-# We start by using the results of the previous run.
-check$rho_plot
-# Let us see how increasing L changes the convergence
-check <- assess_convergence(R = potato_weighing, sd_alpha = 0.1, L = 1)
-# Plot the new result
-check$rho_plot
 }
 \seealso{
 \code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}

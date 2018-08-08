@@ -10,13 +10,15 @@ run_mcmc(R, nmc, cardinalities, is_fit, metric = "footrule", L = 1L,
 }
 \arguments{
 \item{R}{A set of complete rankings, with one sample per column.
-With N samples and n items, R is n x N.}
+With n_assessors samples and n_items items, R is n_items x n_assessors.}
 
 \item{nmc}{Number of Monte Carlo samples.}
 
 \item{cardinalities}{Used when metric equals \code{"footrule"} or
 \code{"spearman"} for computing the partition function. Defaults to
 \code{R_NilValue}.}
+
+\item{is_fit}{Importance sampling fit.}
 
 \item{metric}{The distance metric to use. One of \code{"spearman"},
 \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or

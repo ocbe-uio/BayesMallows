@@ -10,11 +10,12 @@
 //' Worker function for computing the posterior distribtuion.
 //'
 //' @param R A set of complete rankings, with one sample per column.
-//' With N samples and n items, R is n x N.
+//' With n_assessors samples and n_items items, R is n_items x n_assessors.
 //' @param nmc Number of Monte Carlo samples.
 //' @param cardinalities Used when metric equals \code{"footrule"} or
 //' \code{"spearman"} for computing the partition function. Defaults to
 //' \code{R_NilValue}.
+//' @param is_fit Importance sampling fit.
 //' @param metric The distance metric to use. One of \code{"spearman"},
 //' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 //' \code{"hamming"}.
@@ -39,22 +40,25 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
                     double lambda = 0.1, int thinning = 1){
 
   // The number of items ranked
-  int n = R.n_rows;
+  int n_items = R.n_rows;
 
   // The number of assessors
-  int N = R.n_cols;
+  int n_assessors = R.n_cols;
 
   // Number of alpha values to store.
   int n_alpha = ceil(nmc * 1.0 / alpha_jump);
+
+  // Number of rho values to store
+  int n_rho = ceil(nmc * 1.0 / thinning);
 
   // Declare the matrix to hold the latent ranks
   // Note: Armadillo matrices are stored in column-major ordering. Hence,
   // we put the items along the column, since they are going to be accessed at the
   // same time for a given Monte Carlo sample.
-  arma::mat rho(n, nmc);
+  arma::mat rho(n_items, n_rho);
 
   // Set the initial latent rank value
-  rho.col(0) = arma::linspace<arma::vec>(1, n, n);
+  rho.col(0) = arma::linspace<arma::vec>(1, n_items, n_items);
 
   // Declare the vector to hold the scaling parameter alpha
   arma::vec alpha(n_alpha);
@@ -70,7 +74,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   rho_acceptance(0) = 1;
 
   // Other variables used
-  int alpha_index = 0;
+  int alpha_index = 0, rho_index = 0;
   double alpha_old = alpha(0);
   arma::vec rho_old = rho.col(0);
 
@@ -86,12 +90,11 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     if(t % alpha_jump == 0) {
       // Call the void function which updates alpha by reference
       update_alpha(alpha, alpha_acceptance, alpha_old, R, alpha_index,
-        rho_old, sd_alpha, metric, lambda, n, N, cardinalities, is_fit);
+        rho_old, sd_alpha, metric, lambda, n_items, n_assessors, cardinalities, is_fit);
     }
 
     // Call the void function which updates rho by reference
-    // i is increased within this function
-    update_rho(rho, rho_acceptance, rho_old, alpha_old, L, R, metric, n, t);
+    update_rho(rho, rho_acceptance, rho_old, rho_index, thinning, alpha_old, L, R, metric, n_items, t);
 
   }
 
@@ -100,7 +103,16 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     Rcpp::Named("rho") = rho,
     Rcpp::Named("rho_acceptance") = rho_acceptance,
     Rcpp::Named("alpha") = alpha,
-    Rcpp::Named("alpha_acceptance") = alpha_acceptance
+    Rcpp::Named("alpha_acceptance") = alpha_acceptance,
+    Rcpp::Named("metric") = metric,
+    Rcpp::Named("lambda") = lambda,
+    Rcpp::Named("nmc") = nmc,
+    Rcpp::Named("n_items") = n_items,
+    Rcpp::Named("n_assessors") = n_assessors,
+    Rcpp::Named("alpha_jump") = alpha_jump,
+    Rcpp::Named("thinning") = thinning,
+    Rcpp::Named("L") = L,
+    Rcpp::Named("sd_alpha") = sd_alpha
   );
 }
 

@@ -7,17 +7,30 @@
 #include "distfuns.h"
 #include "partitionfuns.h"
 
-void update_alpha(arma::vec&, arma::vec& ,
+void update_alpha(arma::vec&,
+                  arma::vec&,
                   double&,
-                  const arma::mat&, int& ,
-                  const arma::vec& ,
-                  const double&, const std::string&,
-                  const double&, const int&, const int&,
+                  const arma::mat&,
+                  int&,
+                  const arma::vec&,
+                  const double&,
+                  const std::string&,
+                  const double&,
+                  const int&,
+                  const int&,
                   Rcpp::Nullable<arma::vec>,
                   Rcpp::Nullable<arma::vec>);
 
-void update_rho(arma::mat& rho, arma::vec& rho_acceptance, arma::vec& rho_old,
-                const double& alpha_old, const int& L, const arma::mat& R,
-                const std::string& metric, const int& n, const int& t);
+void update_rho(arma::mat&,
+                arma::vec&,
+                arma::vec&,
+                int&,
+                const int&,
+                const double&,
+                const int&,
+                const arma::mat&,
+                const std::string&,
+                const int&,
+                const int&);
 
 #endif

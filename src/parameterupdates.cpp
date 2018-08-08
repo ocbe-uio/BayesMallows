@@ -14,7 +14,7 @@ void update_alpha(arma::vec& alpha, arma::vec& alpha_acceptance,
                   const arma::mat& R, int& alpha_index,
                   const arma::vec& rho_old,
                   const double& sd_alpha, const std::string& metric,
-                  const double& lambda, const int& n, const int& N,
+                  const double& lambda, const int& n_items, const int& n_assessors,
                   Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
                   Rcpp::Nullable<arma::vec> is_fit = R_NilValue) {
 
@@ -31,11 +31,11 @@ void update_alpha(arma::vec& alpha, arma::vec& alpha_acceptance,
   double alpha_diff = alpha(alpha_index - 1) - alpha_proposal;
 
   // Compute the Metropolis-Hastings ratio
-  double ratio = (alpha(alpha_index - 1) - alpha_proposal) / n * rank_dist +
+  double ratio = (alpha(alpha_index - 1) - alpha_proposal) / n_items * rank_dist +
     lambda * alpha_diff +
-    N * (
-        get_partition_function(n, alpha(alpha_index - 1), cardinalities, is_fit, metric) -
-          get_partition_function(n, alpha_proposal, cardinalities, is_fit, metric)
+    n_assessors * (
+        get_partition_function(n_items, alpha(alpha_index - 1), cardinalities, is_fit, metric) -
+          get_partition_function(n_items, alpha_proposal, cardinalities, is_fit, metric)
     ) + log(alpha_proposal) - log(alpha(alpha_index - 1));
 
   // Draw a uniform random number
@@ -50,17 +50,15 @@ void update_alpha(arma::vec& alpha, arma::vec& alpha_acceptance,
     alpha_acceptance(alpha_index) = 0;
   }
 
-  // Next time around, this is alpha_old
-  // The sampling of rho below should also
-  // use this alpha_old, which then in the first
-  // step is actually the newest alpha
   alpha_old = alpha(alpha_index);
 }
 
 
 void update_rho(arma::mat& rho, arma::vec& rho_acceptance, arma::vec& rho_old,
+                int& rho_index, const int& thinning,
                 const double& alpha_old, const int& L, const arma::mat& R,
-                const std::string& metric, const int& n, const int& t) {
+                const std::string& metric, const int& n_items, const int& t) {
+
 
   // Sample a rank proposal
   Rcpp::List ls_proposal = leap_and_shift(rho_old, L);
@@ -76,21 +74,29 @@ void update_rho(arma::mat& rho, arma::vec& rho_acceptance, arma::vec& rho_old,
   double dist_old = rank_dist_matrix(R.rows(indices), rho_old(indices), metric);
 
   // Metropolis-Hastings ratio
-  double ratio = - alpha_old / n * (dist_new - dist_old) +
+  double ratio = - alpha_old / n_items * (dist_new - dist_old) +
     log(prob_backward) - log(prob_forward);
 
   // Draw a uniform random number
   double u = log(arma::randu<double>());
 
   if(ratio > u){
-    rho.col(t) = rho_proposal;
+    //rho.col(t) = rho_proposal;
+    rho_old = rho_proposal;
     rho_acceptance(t) = 1;
   } else {
-    rho.col(t) = rho.col(t - 1);
+    //rho.col(t) = rho.col(t - 1);
     rho_acceptance(t) = 0;
   }
 
+  // Save rho if appropriate
+  if(t % thinning == 0){
+    ++rho_index;
+    rho.col(rho_index) = rho_old;
+  }
+
+
   // Finally update rho_old to be the current value
-  rho_old = rho.col(t);
+  // rho_old = rho.col(t);
 
 }

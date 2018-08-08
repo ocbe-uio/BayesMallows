@@ -5,8 +5,8 @@
 \title{Compute the posterior distribution for the Mallows model.}
 \usage{
 compute_mallows(R, metric = "footrule", lambda = 0.1, nmc = 3000,
-  burnin = 2000, L = NULL, sd_alpha = 0.1, alpha_init = 0.001,
-  alpha_jump = 1, thinning = 1)
+  L = NULL, sd_alpha = 0.1, alpha_init = 0.001, alpha_jump = 1,
+  thinning = 1)
 }
 \arguments{
 \item{R}{A matrix of ranked items. See \code{\link{create_ranking}} if you
@@ -20,10 +20,6 @@ and \code{"hamming"}.}
 to 0.1.}
 
 \item{nmc}{Number of Monte Carlo samples to keep.}
-
-\item{burnin}{Number of samples to discard as burn-in before collecting
-\code{nmc} samples. See \code{\link{assess_convergence}} for a function
-that can be used to pick the right number of burn-in samples to discard.}
 
 \item{L}{Step size of the leap-and-shift proposal distribution. Defaults to
 NULL, which means that it is automatically set to n/5.}
@@ -51,11 +47,7 @@ It is usually a good idea to first use
 }
 \examples{
 # Compute the posterior
-model_fit <- compute_mallows(potato_weighing, "footrule", nmc = 10000, burnin = 5000)
-# Plot the posterior histogram for alpha
-plot(model_fit, type = "alpha", bins = 50)
-# Plot the posterior histogram for potatoes 1, 2, and 3.
-plot(model_fit, type = "rho", items = 1:3)
+model_fit <- compute_mallows(potato_weighing, "footrule", nmc = 1000)
 
 }
 \references{

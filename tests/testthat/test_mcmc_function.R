@@ -1,7 +1,7 @@
 context("Testing MCMC function on potato data")
 
 # Testing with footrule
-model_fit <- compute_mallows(potato_weighing, "footrule", nmc = 10000, burnin = 5000)
+model_fit <- compute_mallows(potato_weighing, "footrule", nmc = 10000)
 test_that(
   "alpha is in a decent range for footrule",
   expect_true(

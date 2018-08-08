@@ -57,11 +57,12 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' Worker function for computing the posterior distribtuion.
 #'
 #' @param R A set of complete rankings, with one sample per column.
-#' With N samples and n items, R is n x N.
+#' With n_assessors samples and n_items items, R is n_items x n_assessors.
 #' @param nmc Number of Monte Carlo samples.
 #' @param cardinalities Used when metric equals \code{"footrule"} or
 #' \code{"spearman"} for computing the partition function. Defaults to
 #' \code{R_NilValue}.
+#' @param is_fit Importance sampling fit.
 #' @param metric The distance metric to use. One of \code{"spearman"},
 #' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 #' \code{"hamming"}.
