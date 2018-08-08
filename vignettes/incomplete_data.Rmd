@@ -33,9 +33,13 @@ missingness_matrix <- matrix(ifelse(runif(n_items * n_assessors) > 0.2, 1, NA_re
 potato_missing <- potato_visual * missingness_matrix
 ```
 
-We see that some of the rankings have got the value `NA`. When only one item is missing from an assessor, it is obvious what the value should be, and this is taken care of automatically by `compute_mallows`.
+We see that some of the rankings have got the value `NA`. When only one item is missing from an assessor (row), it is obvious what the value should be, and this is taken care of automatically by `compute_mallows`.
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(potato_missing, caption = "Example dataset potato_missing.")
 ```
+
+When two or more ranks are missing, we impute the missing ranks with a data augmentation scheme.
+
+
 
 # References

@@ -51,6 +51,17 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   // Number of rho values to store
   int n_rho = ceil(nmc * 1.0 / thinning);
 
+  // Find out if any data augmentation is needed (encoded as -1),
+  // on a rowwise basis
+  // urowvec augment(n_assessors);
+
+  // for(int i = 0; i < n_assessors; ++i){
+  //   uvec indices_missing = arma::find(R.col(i) == -1);
+  //
+  //   // Take a look at this one to find a set difference function:
+  //   // https://stackoverflow.com/questions/29724083/trying-to-write-a-setdiff-function-using-rcpparmadillo-gives-compilation-error
+  // }
+
   // Declare the matrix to hold the latent ranks
   // Note: Armadillo matrices are stored in column-major ordering. Hence,
   // we put the items along the column, since they are going to be accessed at the

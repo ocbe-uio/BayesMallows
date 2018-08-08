@@ -54,6 +54,8 @@ compute_mallows <- function(R,
   # Set L if it is not alredy set.
   if(is.null(L)) L <- n_items / 5
 
+  # Encoding missing values with -1
+  R[is.na(R)] <- -1
 
   # Extract the right sequence of cardinalities, if relevant
   if(metric %in% c("footrule", "spearman")){
@@ -85,9 +87,11 @@ compute_mallows <- function(R,
   }
 
   # Transpose R to get samples along columns.
-  fit <- run_mcmc(t(R), cardinalities = cardinalities, is_fit = is_fit, metric = metric, lambda = lambda,
-           nmc = nmc, L = L, sd_alpha = sd_alpha, alpha_init = alpha_init,
-           alpha_jump = alpha_jump, thinning = thinning)
+  fit <- run_mcmc(t(R), cardinalities = cardinalities, is_fit = is_fit,
+                  metric = metric, lambda = lambda,
+                  nmc = nmc, L = L, sd_alpha = sd_alpha,
+                  alpha_init = alpha_init,
+                  alpha_jump = alpha_jump, thinning = thinning)
 
   class(fit) <- "BayesMallows"
 
