@@ -12,13 +12,13 @@
 // Helper to compute the importance sampling smoothed fit
 double compute_is_fit(double alpha, arma::vec fit){
   // The partition function
-  double Z = 0;
+  double logZ = 0;
   int n = fit.n_elem;
 
   for(int i = 0; i < n; ++i){
-    Z += pow(alpha, i) * fit(i);
+    logZ += pow(alpha, i) * fit(i);
   }
-  return(log(Z));
+  return(logZ);
 }
 
 

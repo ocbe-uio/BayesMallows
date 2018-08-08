@@ -54,8 +54,6 @@ compute_mallows <- function(R,
   # Set L if it is not alredy set.
   if(is.null(L)) L <- n_items / 5
 
-  ## Temporary!
-  is_fit <- NULL
 
   # Extract the right sequence of cardinalities, if relevant
   if(metric %in% c("footrule", "spearman")){
@@ -64,13 +62,24 @@ compute_mallows <- function(R,
     # to avoid confusion with columns of the tibble
     relevant_params <- dplyr::filter(partition_function_data,
                                      .data$num_items == !!n_items,
-                                     .data$metric == !!metric,
-                                     .data$type == "cardinalities" # TEMPORARY!!
+                                     .data$metric == !!metric
     )
 
-    cardinalities <- get_cardinalities(relevant_params)
+    type <- dplyr::pull(relevant_params, type)
+
+    if(type == "cardinalities") {
+      cardinalities <- unlist(relevant_params$values)
+      is_fit <- NULL
+    } else if(type == "importance_sampling"){
+      cardinalities <- NULL
+      is_fit <- unlist(relevant_params$values)
+    } else {
+      stop("Precomputed partition function not available yet.")
+    }
+
   } else if (metric %in% c("cayley", "hamming", "kendall")) {
     cardinalities <- NULL
+    is_fit <- NULL
   } else {
     stop(paste("Unknown metric", metric))
   }

@@ -14,18 +14,6 @@ validate_permutation <- function(vec){
 }
 
 
-get_cardinalities <- function(relevant_params) {
-  unlist(
-    dplyr::pull(
-      dplyr::select(
-        dplyr::filter(
-          relevant_params
-        ),
-        .data$values)
-    )
-  )
-}
-
 
 gather_rho <- function(model_fit, selected_items = NULL,
                        row_inds = NULL){
