@@ -36,32 +36,36 @@ rm(seq2)
 # Code for generating off-line importance sampling estimates for Spearman and footrule.
 
 # Should be 1e6
-nmc <- 1e4
+nmc <- 1e5
 # Should be at least 50
-num_alphas <- 5
+num_alphas <- 50
 
-# tibble to hold the parameters
-parameters <- bind_rows(
-  crossing(num_items = 51:52, metric = "footrule", alpha = seq(from = 0.01, to = 10, length.out = num_alphas), nmc = nmc),
-  crossing(num_items = 15:26, metric = "spearman", alpha = seq(from = 0.01, to = 20, length.out = num_alphas), nmc = nmc)
-)
-
-# Use pmap from purrr to estimate logZ for each combination of the parameters
-# Create a progress bar
-pb <- progress_estimated(nrow(parameters))
-
-
-importance_sampling_parameters <- parameters %>%
-  pmap(function(num_items, metric, alpha, nmc) {
-    pb$tick()$print()
-    tibble(
-      num_items = num_items,
-      metric = metric,
-      alpha = alpha,
-      logZ = as.numeric(compute_importance_sampling_estimate(alpha, num_items, metric, nmc))
-      )
-  }
+# list to hold the parameters
+parameters <- crossing(
+  num_items = 15:20,
+  metric = "spearman",
+  alpha = seq(from = 0.01, to = 20, length.out = num_alphas),
+  nmc = nmc
   ) %>%
+  split(seq(nrow(.)))
+
+library(parallel)
+cl <- makeCluster(7)
+is_fit <- parLapply(cl = cl, X = parameters, fun = function(X){
+  X[["logZ"]] <- BayesMallows::compute_importance_sampling_estimate(
+    alpha_vector = X[["alpha"]],
+    n = X[["num_items"]],
+    metric = X[["metric"]],
+    nmc = X[["nmc"]]
+  )
+  return(X)
+})
+stopCluster(cl)
+
+# Now we turn the fits into a tibble again and estimate regressions per
+# num_items and metric
+
+is_fit <- bind_rows(is_fit) %>%
   map_dfr(.f = identity) %>%
   nest(-num_items, -metric) %>%
   mutate(
@@ -73,7 +77,7 @@ importance_sampling_parameters <- parameters %>%
 
 # Finally, add these to the partition function data
 partition_function_data <- partition_function_data %>%
-  bind_rows(importance_sampling_parameters)
+  bind_rows(is_fit)
 
 
 # Finally, save the fit as internal data
