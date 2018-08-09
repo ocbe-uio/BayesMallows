@@ -46,8 +46,8 @@ plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
     # Compute the density, rather than the count, since the latter
     # depends on the number of Monte Carlo samples
     df <- dplyr::group_by(df, .data$Item, .data$Rank)
-    df <- dplyr::summarise(df, n = n())
-    df <- dplyr::mutate(df, pct = n / sum(n))
+    df <- dplyr::summarise(df, n = dplyr::n())
+    df <- dplyr::mutate(df, pct = .data$n / sum(.data$n))
 
     # Function for getting an x axis without decimals.
     # Modified from https://stackoverflow.com/questions/21061653/creating-a-density-histogram-in-ggplot2

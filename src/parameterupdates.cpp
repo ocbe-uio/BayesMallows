@@ -81,11 +81,9 @@ void update_rho(arma::mat& rho, arma::vec& rho_acceptance, arma::vec& rho_old,
   double u = log(arma::randu<double>());
 
   if(ratio > u){
-    //rho.col(t) = rho_proposal;
     rho_old = rho_proposal;
     rho_acceptance(t) = 1;
   } else {
-    //rho.col(t) = rho.col(t - 1);
     rho_acceptance(t) = 0;
   }
 

@@ -46,17 +46,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// missing_data
-arma::mat missing_data(arma::mat R);
-RcppExport SEXP _BayesMallows_missing_data(SEXP RSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type R(RSEXP);
-    rcpp_result_gen = Rcpp::wrap(missing_data(R));
-    return rcpp_result_gen;
-END_RCPP
-}
 // get_partition_function
 double get_partition_function(int n, double alpha, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> is_fit, std::string metric);
 RcppExport SEXP _BayesMallows_get_partition_function(SEXP nSEXP, SEXP alphaSEXP, SEXP cardinalitiesSEXP, SEXP is_fitSEXP, SEXP metricSEXP) {
@@ -98,7 +87,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_summation_distances", (DL_FUNC) &_BayesMallows_get_summation_distances, 3},
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
     {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 4},
-    {"_BayesMallows_missing_data", (DL_FUNC) &_BayesMallows_missing_data, 1},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 11},
     {NULL, NULL, 0}

@@ -94,45 +94,47 @@ rm(model_fit_big)
 
 Obtaining posterior samples from $\rho$ is in general harder than for $\alpha$. Some items tend to be very sticky. 
 
-We start by plotting the `model_fit` object from above, with 3000 iterations, discarding the first 2000 as burn-in. We see frmo the posterior histograms of the first 6 items that the ranks are sticky. We definitely need to run it longer.
+We start by plotting the `model_fit` object from above, with 3000 iterations, discarding the first 2000 as burn-in.
 
 ```{r, fig.width=6, fig.height=6, fig.align='center'}
 plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
 ```
 
 #### Jumping over Alphas
-We try again with a million samples. To avoid updating $\alpha$ in each step, we set `alpha_jump = 100`. This implies that $\alpha$ is updated and saved only every 100th iteration on $\rho$. Before computing the posterior distribution with this parameter, we do a new convergence assessment:
+We try again with more samples. To avoid updating $\alpha$ in each step, we set `alpha_jump = 100`. This implies that $\alpha$ is updated and saved only every 10th iteration on $\rho$. Before computing the posterior distribution with this parameter, we do a new convergence assessment:
 
 ```{r}
-model_fit <- compute_mallows(potato_visual, nmc = 50000, alpha_jump = 100)
+model_fit <- compute_mallows(potato_visual, nmc = 10000, alpha_jump = 10)
 ```
 
-The trace indicates convergence after around 200 iterations of $\alpha$, i.e., after `nmc * alpha_jump = 20000` Monte Carlo samples. 
+The trace indicates convergence after around 200 iterations of $\alpha$, i.e., after 2000 Monte Carlo samples. 
+
 ```{r, fig.width=6, fig.align='center'}
 assess_convergence(model_fit, type = "alpha")
 ```
 
-The convergence plot for $\rho$ agrees that the MCMC algorithms seems to have converged after 20000 iterations.
+The convergence plot for $\rho$ agrees that the MCMC algorithms seems to have converged after 2000 iterations.
+
 ```{r, fig.width=6, fig.align='center'}
 assess_convergence(model_fit, type = "rho", items = 1:5)
 ```
 
-We now run the algorithm with a million iterations of $\rho$, sampling $\alpha$ only every 100th step:
+We now run the algorithm with a 1e5 iterations of $\rho$, sampling $\alpha$ only every 10th step:
 
 ```{r}
-model_fit <- compute_mallows(potato_visual, nmc = 1e6 + 20000, alpha_jump = 100)
+model_fit <- compute_mallows(potato_visual, nmc = 1e5 + 2000, alpha_jump = 10)
 ```
 
 The posterior density of $\alpha$ looks very similar to what it did above:
 ```{r, fig.align='center'}
-plot(model_fit, burnin = 20000)
+plot(model_fit, burnin = 2000)
 ```
 
 ```{r, fig.width=6, fig.height=6, fig.align='center'}
-plot(model_fit, burnin = 20000, type = "rho", items = 1:20)
+plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
 ```
 
-Now at least there is some variation. We can compare the posterior probabilities to the average rank obtained by each potato. There is an overall agreement between the mean rankings in the data, which is reassuring.
+Now at least there is some more variation. We can compare the posterior probabilities to the average rank obtained by each potato. There is an overall agreement between the mean rankings in the data, which is reassuring.
 
 ```{r, results='asis', message=FALSE}
 library(dplyr)
@@ -149,15 +151,15 @@ as_tibble(potato_visual) %>%
 ```
 
 #### Thinning
-Saving more than a million iterations of $\rho$ starts to get quite expensive, so to this end, we have a `thinning` parameter, which specifies that only each `thinning`th iteration of $\rho$ should be saved to memory. We keep the same number of iterations, while setting `thinning = 10`.
+Saving a large number of iterations of $\rho$ starts to get quite expensive, so to this end, we have a `thinning` parameter, which specifies that only each `thinning`th iteration of $\rho$ should be saved to memory. We increase the number of iterations tenfold, while setting `thinning = 10`.
 
 ```{r}
-model_fit <- compute_mallows(potato_visual, nmc = 1e6 + 20000, 
-                             alpha_jump = 100, thinning = 10)
+model_fit <- compute_mallows(potato_visual, nmc = 1e6 + 2000, 
+                             alpha_jump = 10, thinning = 10)
 ```
 
 ```{r, fig.width=6, fig.height=6, fig.align='center'}
-plot(model_fit, burnin = 20000, type = "rho", items = 1:20)
+plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
 ```
 
 ## Varying the Distance Metric
@@ -165,24 +167,22 @@ We can try to use the Kendall distance instead of the footrule distance.
 
 ```{r}
 model_fit <- compute_mallows(potato_visual, metric = "kendall",
-                             nmc = 1e6 + 20000, 
-                             alpha_jump = 100, thinning = 10)
+                             nmc = 1e5 + 2000, alpha_jump = 10)
 ```
 
 ```{r, fig.width=6, fig.height=6, fig.align='center'}
-plot(model_fit, burnin = 20000, type = "rho", items = 1:20)
+plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
 ```
 
 And we can use Spearman distance. In this case, since the number of potatoes (20) is large than the maximum number for which we have an exact computation of the partition function (14), importance sampling estimates are used. This is handled automatically by `compute_mallows`. Note that the posterior ranks are less peaked with Spearman distance. This agrees with the results seen in @liu2018.
 
 ```{r}
 model_fit <- compute_mallows(potato_visual, metric = "spearman",
-                             nmc = 1e6 + 20000,
-                             alpha_jump = 100, thinning = 10)
+                             nmc = 1e5 + 2000, alpha_jump = 10)
 ```
 
 ```{r, fig.width=6, fig.height=6, fig.align='center'}
-plot(model_fit, burnin = 20000, type = "rho", items = 1:20)
+plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
 ```
 
 

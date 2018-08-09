@@ -62,6 +62,9 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   // Fill the two above defined missingness indicators
   define_missingness(missing_indicator, assessor_missing, R, n_items, n_assessors);
 
+  // Boolean which indicates if ANY assessor has missing ranks
+  bool any_missing = arma::any(assessor_missing);
+
   // Declare the matrix to hold the latent ranks
   // Note: Armadillo matrices are stored in column-major ordering. Hence,
   // we put the items along the column, since they are going to be accessed at the
@@ -77,8 +80,14 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   // Set the initial alpha value
   alpha(0) = alpha_init;
 
+  // Fill in missing ranks, if needed
+  if(any_missing){
+    initialize_missing_ranks(R, missing_indicator, assessor_missing,
+                             n_items, n_assessors);
+  }
+
   // Declare indicator vectors to hold acceptance or not
-  arma::vec alpha_acceptance(n_alpha), rho_acceptance(nmc);
+  arma::vec alpha_acceptance(n_alpha), rho_acceptance(nmc), aug_acceptance(nmc);
 
   // Set the initial values;
   alpha_acceptance(0) = 1;
@@ -102,17 +111,30 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
         rho_old, sd_alpha, metric, lambda, n_items, n_assessors, cardinalities, is_fit);
     }
 
+    // Perform data augmentation if needed
+    if(any_missing){
+      update_missing_ranks(R, aug_acceptance, missing_indicator,
+                           assessor_missing, n_items, n_assessors,
+                           alpha_old, rho_old, metric, t);
+    } else {
+      // If not augmentation has happened, it is kind of accepted
+      aug_acceptance(t) = 1;
+    }
+
     // Call the void function which updates rho by reference
-    update_rho(rho, rho_acceptance, rho_old, rho_index, thinning, alpha_old, L, R, metric, n_items, t);
+    update_rho(rho, rho_acceptance, rho_old, rho_index,
+               thinning, alpha_old, L, R, metric, n_items, t);
 
   }
 
-  // Finally return the MCMC samples
+  // Return everything that might be of interest
   return Rcpp::List::create(
     Rcpp::Named("rho") = rho,
     Rcpp::Named("rho_acceptance") = rho_acceptance,
     Rcpp::Named("alpha") = alpha,
     Rcpp::Named("alpha_acceptance") = alpha_acceptance,
+    Rcpp::Named("any_missing") = any_missing,
+    Rcpp::Named("aug_acceptance") = aug_acceptance,
     Rcpp::Named("metric") = metric,
     Rcpp::Named("lambda") = lambda,
     Rcpp::Named("nmc") = nmc,
