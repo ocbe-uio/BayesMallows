@@ -10,7 +10,7 @@ NULL
 #' @param vec a vector
 #' @return TRUE if vec is a permutation
 validate_permutation <- function(vec){
-  all(sort(vec) == seq_along(vec))
+  all(sort(vec, na.last = NA) == seq_along(vec)[!is.na(vec)])
 }
 
 

@@ -54,9 +54,6 @@ compute_mallows <- function(R,
   # Set L if it is not alredy set.
   if(is.null(L)) L <- n_items / 5
 
-  # Encoding missing values with -1
-  R[is.na(R)] <- -1
-
   # Extract the right sequence of cardinalities, if relevant
   if(metric %in% c("footrule", "spearman")){
     # Extract the relevant rows from partition_function_data

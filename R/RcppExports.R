@@ -39,6 +39,10 @@ compute_importance_sampling_estimate <- function(alpha_vector, n, metric = "foot
     .Call(`_BayesMallows_compute_importance_sampling_estimate`, alpha_vector, n, metric, nmc)
 }
 
+missing_data <- function(R) {
+    .Call(`_BayesMallows_missing_data`, R)
+}
+
 #' Compute the logarithm of the partition function for a Mallows rank model.
 #'
 #' @param n Number of items.

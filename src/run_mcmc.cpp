@@ -1,6 +1,8 @@
 #include <math.h>
 #include "RcppArmadillo.h"
 #include "parameterupdates.h"
+#include "misc.h"
+#include "missing_data.h"
 
 // via the depends attribute we tell Rcpp to create hooks for
 // RcppArmadillo so that the build process will know what to do
@@ -51,16 +53,14 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   // Number of rho values to store
   int n_rho = ceil(nmc * 1.0 / thinning);
 
-  // Find out if any data augmentation is needed (encoded as -1),
-  // on a rowwise basis
-  // urowvec augment(n_assessors);
+  // Declare indicator matrix of missing ranks, and fill it with zeros
+  arma::mat missing_indicator = arma::zeros<arma::mat>(n_items, n_assessors);
 
-  // for(int i = 0; i < n_assessors; ++i){
-  //   uvec indices_missing = arma::find(R.col(i) == -1);
-  //
-  //   // Take a look at this one to find a set difference function:
-  //   // https://stackoverflow.com/questions/29724083/trying-to-write-a-setdiff-function-using-rcpparmadillo-gives-compilation-error
-  // }
+  // Number of missing items per assessor
+  arma::vec assessor_missing = arma::zeros<arma::vec>(n_assessors);
+
+  // Fill the two above defined missingness indicators
+  define_missingness(missing_indicator, assessor_missing, R, n_items, n_assessors);
 
   // Declare the matrix to hold the latent ranks
   // Note: Armadillo matrices are stored in column-major ordering. Hence,
@@ -88,8 +88,6 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   int alpha_index = 0, rho_index = 0;
   double alpha_old = alpha(0);
   arma::vec rho_old = rho.col(0);
-
-
 
   // This is the Metropolis-Hastings loop
   // Starting at t = 1, meaning that alpha and rho must be initialized at index 0
