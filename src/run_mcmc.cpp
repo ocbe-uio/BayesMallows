@@ -87,11 +87,18 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   }
 
   // Declare indicator vectors to hold acceptance or not
-  arma::vec alpha_acceptance(n_alpha), rho_acceptance(nmc), aug_acceptance(nmc);
+  arma::vec alpha_acceptance(n_alpha), rho_acceptance(nmc);
+  arma::mat aug_acceptance(n_items, nmc);
 
   // Set the initial values;
   alpha_acceptance(0) = 1;
   rho_acceptance(0) = 1;
+  if(any_missing){
+    aug_acceptance.col(0) = arma::ones<arma::vec>(n_items);
+  } else {
+    aug_acceptance = arma::ones<arma::mat>(n_items, nmc);
+  }
+
 
   // Other variables used
   int alpha_index = 0, rho_index = 0;
@@ -116,9 +123,6 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
       update_missing_ranks(R, aug_acceptance, missing_indicator,
                            assessor_missing, n_items, n_assessors,
                            alpha_old, rho_old, metric, t);
-    } else {
-      // If not augmentation has happened, it is kind of accepted
-      aug_acceptance(t) = 1;
     }
 
     // Call the void function which updates rho by reference

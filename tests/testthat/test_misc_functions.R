@@ -14,6 +14,10 @@ test_that(
       BayesMallows:::validate_permutation(c(1, NA_real_, 3, NA_real_)),
       TRUE
     )
+    expect_equal(
+      BayesMallows:::validate_permutation(c(NA_real_, NA_real_, NA_real_)),
+      TRUE
+    )
   }
 
 )

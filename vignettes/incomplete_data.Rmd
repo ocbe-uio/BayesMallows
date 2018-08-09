@@ -18,24 +18,33 @@ knitr::opts_chunk$set(
 set.seed(232312)
 ```
 
-This vignette assumes that you are familiar with the topics in the introductory vignette, so make sure you read that one first. We start by describing top-k rankings, and the go on with data missing at random.
+This vignette assumes that you are familiar with the topics in the introductory vignette, so make sure you read that one first. We start by describing top-k rankings, and then go on with data missing at random.
 
 ## Top-k Rankings
 
-Imagine that the assessors in the potato experiment were asked to rank only the top-five heaviest potatoes, and that we are only interested in the top-five potatoes in our analysis. 
-
-We generate these data by retaining only ranks 5 or higher in `potato_visual`, setting the rest to `NA`.
+Imagine that the assessors in the potato experiment were asked to rank only the top-five heaviest potatoes. We generate these data by retaining only ranks 5 or higher in `potato_visual`, setting the rest to `NA`.
 
 ```{r}
 library(BayesMallows)
 potato_top <- ifelse(potato_visual > 5, NA_real_, potato_visual)
 ```
 
+Here is the resulting rank matrix:
 
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(potato_top, caption = "Example dataset potato_top.")
 ```
 
+The `compute_mallows` function automatically recognizes the `NA` values as missing ranks, and augments the data. Let us try:
+
+```{r}
+model_fit <- compute_mallows(potato_top)
+```
+
+Looking at the returned object, we see that `any_missing` is `TRUE`, so `compute_mallows` has correctly detected that there are missing values.
+```{r}
+str(model_fit)
+```
 
 
 ### Excluding Leftover Items

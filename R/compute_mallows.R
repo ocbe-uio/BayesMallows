@@ -40,7 +40,10 @@ compute_mallows <- function(R,
                             ){
 
   # Check that all rows of R are proper permutations
-  stopifnot(all(apply(R, 1, validate_permutation)))
+  if(!all(apply(R, 1, validate_permutation))){
+    stop("Not valid permutation.")
+  }
+
 
   # Check that we do not jump over all alphas
   stopifnot(alpha_jump < nmc)

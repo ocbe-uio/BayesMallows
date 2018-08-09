@@ -185,5 +185,16 @@ model_fit <- compute_mallows(potato_visual, metric = "spearman",
 plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
 ```
 
+## Validation of Input
+
+It is also worth pointing out that `compute_mallows` checks if the input data are indeed ranks. Let us try this by manipulating the first row of `potato_visual`, giving rank 1 to the first two items:
+
+```{r, error=TRUE}
+potato_modified <- potato_visual
+potato_modified[1, 1:2] <- 1
+
+model_fit <- compute_mallows(potato_modified)
+```
+
 
 # References

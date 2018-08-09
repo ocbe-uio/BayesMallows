@@ -14,7 +14,7 @@ void initialize_missing_ranks(arma::mat& R, const arma::mat& missing_indicator,
                               const arma::vec& assessor_missing,
                               const int& n_items, const int& n_assessors);
 
-void update_missing_ranks(arma::mat& R, arma::vec& aug_acceptance,
+void update_missing_ranks(arma::mat& R, arma::mat& aug_acceptance,
                           const arma::mat& missing_indicator,
                           const arma::vec& assessor_missing,
                           const int& n_items, const int& n_assessors,
