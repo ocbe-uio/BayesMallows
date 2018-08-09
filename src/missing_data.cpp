@@ -63,6 +63,7 @@ void update_missing_ranks(arma::mat& R, arma::mat& aug_acceptance,
                           const std::string& metric, const int& t){
   for(int i = 0; i < n_assessors; ++i){
     if(assessor_missing(i) == 0){
+      aug_acceptance(i, t) = 1;
       continue;
     } else {
       arma::vec proposal = propose_augmentation(R.col(i), missing_indicator.col(i),

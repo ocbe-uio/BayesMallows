@@ -49,10 +49,6 @@ plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
     df <- dplyr::summarise(df, n = dplyr::n())
     df <- dplyr::mutate(df, pct = .data$n / sum(.data$n))
 
-    # Function for getting an x axis without decimals.
-    # Modified from https://stackoverflow.com/questions/21061653/creating-a-density-histogram-in-ggplot2
-    scalefun <- function(x) sprintf("%d", as.integer(x))
-
     # Finally create the plot
     ggplot2::ggplot(df, ggplot2::aes(x = .data$Rank, y = .data$pct)) +
       ggplot2::geom_col() +

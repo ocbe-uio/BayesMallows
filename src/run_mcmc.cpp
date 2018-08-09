@@ -88,15 +88,15 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
   // Declare indicator vectors to hold acceptance or not
   arma::vec alpha_acceptance(n_alpha), rho_acceptance(nmc);
-  arma::mat aug_acceptance(n_items, nmc);
+  arma::mat aug_acceptance(n_assessors, nmc);
 
   // Set the initial values;
   alpha_acceptance(0) = 1;
   rho_acceptance(0) = 1;
   if(any_missing){
-    aug_acceptance.col(0) = arma::ones<arma::vec>(n_items);
+    aug_acceptance.col(0) = arma::ones<arma::vec>(n_assessors);
   } else {
-    aug_acceptance = arma::ones<arma::mat>(n_items, nmc);
+    aug_acceptance = arma::ones<arma::mat>(n_assessors, nmc);
   }
 
 

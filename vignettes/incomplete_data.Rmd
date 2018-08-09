@@ -46,6 +46,21 @@ Looking at the returned object, we see that `any_missing` is `TRUE`, so `compute
 str(model_fit)
 ```
 
+### Assessing Convergence
+
+Saving the augmented ranks through every MCMC step would yield an array of size `nmc x n_items x n_assessors`, which quickly becomes prohibitively large. Thus, rather than saving this, we save an indicator array of size `nmc x n_assessors`, showing whether or not the proposed ranks were accepted for each assessor at each iteration. Even this matrix may become very large, so we should probably make it optional.
+
+```{r, fig.width=6, fig.height=5, fig.align='center'}
+assess_convergence(model_fit, type = "augmentation")
+```
+
+The `assess_convergence` tells us that the size of the rolling mean was set to 10. We can increase it to 100 and see if that changes the plots.
+
+```{r, fig.width=6, fig.height=5, fig.align='center'}
+assess_convergence(model_fit, type = "augmentation", k = 100)
+```
+
+We see that after some initial fluctuations, the augmentations settle close to zero, but not exactly at zero.
 
 ### Excluding Leftover Items
 Same MAP, but not the same posterior distributions.

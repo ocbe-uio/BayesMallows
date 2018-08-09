@@ -54,3 +54,8 @@ gather_rho <- function(model_fit, selected_items = NULL,
 
   return(df)
 }
+
+
+# Function for getting an x axis without decimals.
+# Modified from https://stackoverflow.com/questions/21061653/creating-a-density-histogram-in-ggplot2
+scalefun <- function(x) sprintf("%d", as.integer(x))

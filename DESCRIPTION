@@ -17,7 +17,8 @@ Imports: Rcpp (>= 0.12.17),
   stats (>= 3.5.0),
   dplyr,
   tidyr,
-  rlang
+  rlang,
+  zoo
 LinkingTo: Rcpp, RcppArmadillo
 Suggests:
     testthat,

@@ -93,6 +93,9 @@ compute_mallows <- function(R,
                   alpha_init = alpha_init,
                   alpha_jump = alpha_jump, thinning = thinning)
 
+  # If no data augmentation has happened, do not include aug_acceptance
+  if(!fit$any_missing) fit$aug_acceptance <- NULL
+
   class(fit) <- "BayesMallows"
 
   return(fit)
