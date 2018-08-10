@@ -76,10 +76,10 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' @param lambda Parameter of the prior distribution.
 #' @param thinning Thinning parameter. Keep only every \code{thinning} rank
 #' sample from the posterior distribution.
-#' @param augmentation_diagnostic_thinning The interval in which we save
+#' @param aug_diag_thinning The interval in which we save
 #' augmentation diagnostics.
 #'
-run_mcmc <- function(R, nmc, cardinalities, is_fit, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L, augmentation_diagnostic_thinning = 100L) {
-    .Call(`_BayesMallows_run_mcmc`, R, nmc, cardinalities, is_fit, metric, L, sd_alpha, alpha_init, alpha_jump, lambda, thinning, augmentation_diagnostic_thinning)
+run_mcmc <- function(R, nmc, cardinalities, is_fit, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L) {
+    .Call(`_BayesMallows_run_mcmc`, R, nmc, cardinalities, is_fit, metric, L, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning)
 }
 

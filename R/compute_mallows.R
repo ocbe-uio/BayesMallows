@@ -17,7 +17,7 @@
 #'   significantly speed up computation time, since we then do not have to do
 #'   expensive computation of the partition function.
 #' @param thinning Keep every \code{thinning} iteration of \code{rho}.
-#' @param augmentation_diagnostic_thinning The interval in which we save
+#' @param aug_diag_thinning The interval in which we save
 #' augmentation diagnostics.
 #'
 #' @return A list of class BayesMallows.
@@ -39,7 +39,7 @@ compute_mallows <- function(R,
                             alpha_init = 1,
                             alpha_jump = 1,
                             thinning = 1,
-                            augmentation_diagnostic_thinning = 100
+                            aug_diag_thinning = 100
                             ){
 
   # Check that all rows of R are proper permutations
@@ -95,14 +95,14 @@ compute_mallows <- function(R,
                   nmc = nmc, L = L, sd_alpha = sd_alpha,
                   alpha_init = alpha_init,
                   alpha_jump = alpha_jump, thinning = thinning,
-                  augmentation_diagnostic_thinning = augmentation_diagnostic_thinning)
+                  aug_diag_thinning = aug_diag_thinning)
 
   # If no data augmentation has happened, do not include aug_acceptance
   # Otherwise, convert to fraction
   if(!fit$any_missing) {
     fit$aug_acceptance <- NULL
   } else {
-    fit$aug_acceptance <- fit$aug_acceptance / augmentation_diagnostic_thinning
+    fit$aug_acceptance <- fit$aug_acceptance / aug_diag_thinning
   }
 
   # Add names of item

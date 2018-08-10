@@ -85,7 +85,7 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
                         -.data$Assessor, convert = TRUE)
 
     df <- dplyr::mutate(df, Iteration = .data$Iteration *
-                          model_fit$augmentation_diagnostic_thinning)
+                          model_fit$aug_diag_thinning)
 
     # Saving and then printing, because one gets a warning due to log(0) == -Inf
     ggplot2::ggplot(df, ggplot2::aes(x = .data$Iteration, y = .data$Acceptance)) +
@@ -95,7 +95,7 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       ggplot2::ylab("Mean acceptance rate") +
       ggplot2::ggtitle(
         label = "Data Augmentation",
-        subtitle = paste("Average per", model_fit$augmentation_diagnostic_thinning, "steps."))
+        subtitle = paste("Average per", model_fit$aug_diag_thinning, "steps."))
 
 
   } else {

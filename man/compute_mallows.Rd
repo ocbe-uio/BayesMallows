@@ -6,7 +6,7 @@
 \usage{
 compute_mallows(R, metric = "footrule", lambda = 0.1, nmc = 3000,
   L = NULL, sd_alpha = 0.1, alpha_init = 1, alpha_jump = 1,
-  thinning = 1, augmentation_diagnostic_thinning = 100)
+  thinning = 1, aug_diag_thinning = 100)
 }
 \arguments{
 \item{R}{A matrix of ranked items. See \code{\link{create_ranking}} if you
@@ -35,7 +35,7 @@ expensive computation of the partition function.}
 
 \item{thinning}{Keep every \code{thinning} iteration of \code{rho}.}
 
-\item{augmentation_diagnostic_thinning}{The interval in which we save
+\item{aug_diag_thinning}{The interval in which we save
 augmentation diagnostics.}
 }
 \value{

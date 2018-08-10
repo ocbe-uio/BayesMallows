@@ -62,8 +62,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_mcmc
-Rcpp::List run_mcmc(arma::mat R, int nmc, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> is_fit, std::string metric, int L, double sd_alpha, double alpha_init, int alpha_jump, double lambda, int thinning, int augmentation_diagnostic_thinning);
-RcppExport SEXP _BayesMallows_run_mcmc(SEXP RSEXP, SEXP nmcSEXP, SEXP cardinalitiesSEXP, SEXP is_fitSEXP, SEXP metricSEXP, SEXP LSEXP, SEXP sd_alphaSEXP, SEXP alpha_initSEXP, SEXP alpha_jumpSEXP, SEXP lambdaSEXP, SEXP thinningSEXP, SEXP augmentation_diagnostic_thinningSEXP) {
+Rcpp::List run_mcmc(arma::mat R, int nmc, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> is_fit, std::string metric, int L, double sd_alpha, double alpha_init, int alpha_jump, double lambda, int thinning, int aug_diag_thinning);
+RcppExport SEXP _BayesMallows_run_mcmc(SEXP RSEXP, SEXP nmcSEXP, SEXP cardinalitiesSEXP, SEXP is_fitSEXP, SEXP metricSEXP, SEXP LSEXP, SEXP sd_alphaSEXP, SEXP alpha_initSEXP, SEXP alpha_jumpSEXP, SEXP lambdaSEXP, SEXP thinningSEXP, SEXP aug_diag_thinningSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -78,8 +78,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type alpha_jump(alpha_jumpSEXP);
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< int >::type thinning(thinningSEXP);
-    Rcpp::traits::input_parameter< int >::type augmentation_diagnostic_thinning(augmentation_diagnostic_thinningSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_mcmc(R, nmc, cardinalities, is_fit, metric, L, sd_alpha, alpha_init, alpha_jump, lambda, thinning, augmentation_diagnostic_thinning));
+    Rcpp::traits::input_parameter< int >::type aug_diag_thinning(aug_diag_thinningSEXP);
+    rcpp_result_gen = Rcpp::wrap(run_mcmc(R, nmc, cardinalities, is_fit, metric, L, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning));
     return rcpp_result_gen;
 END_RCPP
 }

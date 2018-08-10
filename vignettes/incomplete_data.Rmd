@@ -62,7 +62,7 @@ str(model_fit)
 
 ### Assessing Convergence
 
-Saving the augmented ranks through every MCMC step would yield an array of size `nmc x n_items x n_assessors`, which quickly becomes prohibitively large. Thus, rather than saving this, we save an array of size `nmc x n_assessors / augmentation_diagnostic_thinning`, where `augmentation_diagnostic_thinning` is an argument to `compute_mallows`. We save the average acceptance rates for each iteration interval of size `augmentation_diagnostic_thinning`. The default value is 100.
+Saving the augmented ranks through every MCMC step would yield an array of size `nmc x n_items x n_assessors`, which quickly becomes prohibitively large. Thus, rather than saving this, we save an array of size `nmc x n_assessors / aug_diag_thinning`, where `aug_diag_thinning` is an argument to `compute_mallows`. We save the average acceptance rates for each iteration interval of size `aug_diag_thinning`. The default value is 100.
 
 ```{r, fig.width=6, fig.height=5, fig.align='center'}
 assess_convergence(model_fit, type = "augmentation")
@@ -132,7 +132,7 @@ Potatoes 12 and 13 have no variation, so we try with an even larger number of it
 ```{r}
 model_fit <- compute_mallows(potato_top, nmc = 1e4 + 2e6, 
                              alpha_jump = 100, thinning = 10, 
-                             augmentation_diagnostic_thinning = 1000)
+                             aug_diag_thinning = 1000)
 ```
 
 As the diagnostic plot below shows, the posterior ranks for 12 and 13 stayed the same. This may be correct: Looking at the `potato_top` matrix above, we see that potato 12 has been ranked first by all but one assessor, who ranked it second. 
