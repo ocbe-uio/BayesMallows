@@ -4,7 +4,8 @@
 #'   \code{\link{compute_mallows}}.
 #' @param burnin Number of iterations to discard as burn-in.
 #' @param type Either \code{"alpha"} or \code{"rho"}.
-#' @param items Index of items to plot. Only used when \code{type = "rho"}.
+#' @param items Index of items to plot or names of the items, as specified in
+#'   \code{rownames(model_fit$rho)}. Only used when \code{type = "rho"}.
 #' @param ... Other arguments passed to \code{plot} (not used).
 #'
 #' @return A plot.

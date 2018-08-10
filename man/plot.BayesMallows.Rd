@@ -15,7 +15,8 @@
 
 \item{type}{Either \code{"alpha"} or \code{"rho"}.}
 
-\item{items}{Index of items to plot. Only used when \code{type = "rho"}.}
+\item{items}{Index of items to plot or names of the items, as specified in
+\code{rownames(model_fit$rho)}. Only used when \code{type = "rho"}.}
 
 \item{...}{Other arguments passed to \code{plot} (not used).}
 }

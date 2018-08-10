@@ -35,6 +35,19 @@ Here is the resulting rank matrix:
 knitr::kable(potato_top, caption = "Example dataset potato_top.")
 ```
 
+In @vitteli2018 it is shown that the unranked items do not effect the MAP estimates of the ranked items in this top-k setting. In this case, there are 8 potatoes which have been ranked, and so the unranked potatoes should have uniform posterior distributions between 9 and 20. However, arriving at these uniform posteriors require a large number of MCMC iterations, so we instead remove these items:
+
+```{r}
+item_ranked <- apply(potato_top, 2, function(x) !all(is.na(x)))
+potato_top <- potato_top[, item_ranked, drop = FALSE]
+```
+
+We are now left with this 12 by 8 matrix:
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(potato_top, caption = "Example dataset potato_top.")
+```
+
 The `compute_mallows` function automatically recognizes the `NA` values as missing ranks, and augments the data. Let us try:
 
 ```{r}
@@ -60,10 +73,75 @@ The `assess_convergence` tells us that the size of the rolling mean was set to 1
 assess_convergence(model_fit, type = "augmentation", k = 100)
 ```
 
-We see that after some initial fluctuations, the augmentations settle close to zero, but not exactly at zero.
 
-### Excluding Leftover Items
-Same MAP, but not the same posterior distributions.
+If we want to take a closer look at some of the curves, we can specify this with the `assessors` argument. Let's look at assessor 3, which seems to have a very high acceptance rate. First, we do two other runs and compare them. These will differ due to the stochastic MCMC algorithm. We also increase the number of iterations to 10000.
+
+```{r}
+model_fit1 <- compute_mallows(potato_top, nmc = 10000)
+model_fit2 <- compute_mallows(potato_top, nmc = 10000)
+```
+
+The acceptance rates for the data augmentation for assessor 12 seem absolutely reasonable, so we assume that convergence has been reached after 10000 iterations. The convergence seems reasonable in this case. (A point of improvement of `plot.BayesMallows` is to make the title correspond to the assessor).
+
+```{r, fig.show='hold'}
+assess_convergence(model_fit1, type = "augmentation", k = 100, assessors = 3)
+assess_convergence(model_fit2, type = "augmentation", k = 100, assessors = 3)
+```
+
+We should also check that $\alpha$ and $\rho$ show good convergence behavior, as before. We use the model object `model_fit1` for this, and delete the other ones that we have created so far.
+
+```{r}
+rm(model_fit, model_fit2)
+```
+
+The convergence of $\alpha$ looks very good.
+```{r, fig.width=6, fig.align='center'}
+assess_convergence(model_fit1, type = "alpha")
+```
+
+The latent ranks also seem to converge. Note that they vary more in this top-k case, than the did in the intro vignette without missing data.
+```{r, fig.width=6, fig.align='center'}
+assess_convergence(model_fit1, type = "rho", items = 1:8)
+```
+
+Based on the analysis in this section, we assume conservatively that the MCMC algorithm reaches convergence after 10,000 iterations.
+
+Before going on, we delete the last model object:
+
+```{r}
+rm(model_fit1)
+```
+
+
+### Posterior Distributions
+
+We now run `compute_mallows` bit longer, to obtain 100,000 samples from the posterior distribution. There is no need for thinning in this case, since the data fit well into memory.
+
+```{r}
+model_fit <- compute_mallows(potato_top, nmc = 1e4 + 1e5)
+```
+
+Here is the posterior distribution of the scale parameter:
+```{r, fig.width=6, fig.align='center'}
+plot(model_fit, burnin = 1e4)
+```
+
+
+
+```{r, fig.width=6, fig.align='center'}
+plot(model_fit, burnin = 1e4, type = "rho", items = 1:8)
+```
+
+```{r}
+model_fit <- compute_mallows(potato_top, nmc = 1e4 + 2e6, alpha_jump = 100, thinning = 10)
+```
+
+
+```{r, fig.width=6, fig.align='center'}
+plot(model_fit, burnin = 1e4, type = "rho", items = 1:8)
+```
+
+
 
 ## Data Missing at Random
 

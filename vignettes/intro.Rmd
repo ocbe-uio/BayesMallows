@@ -61,10 +61,16 @@ The function `assess_convergence` takes an object of class `BayesMallows` and pr
 assess_convergence(model_fit)
 ```
 
-Next, we study the convergence of $\rho$. To avoid too complicated plots, we pick 5 items to plot.
+Next, we study the convergence of $\rho$. To avoid too complicated plots, we pick 5 items to plot. 
 
 ```{r, fig.width=6, fig.align='center'}
 assess_convergence(model_fit, type = "rho", items = 1:5)
+```
+
+When the name of the items have been specified in to column names of `R`, we can also provide these to the `items` argument:
+
+```{r, fig.width=6, fig.align='center'}
+assess_convergence(model_fit, type = "rho", items = c("P16", "P17", "P18", "P19", "P20"))
 ```
 
 Based on these plots, it looks like the algorithm starts to converge after around 1000 iterations. Discarding the first 2000 iterations as burn-in hence seems like a safe choice.
@@ -101,7 +107,7 @@ plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
 ```
 
 #### Jumping over Alphas
-We try again with more samples. To avoid updating $\alpha$ in each step, we set `alpha_jump = 100`. This implies that $\alpha$ is updated and saved only every 10th iteration on $\rho$. Before computing the posterior distribution with this parameter, we do a new convergence assessment:
+We try again with more samples. To avoid updating $\alpha$ in each step, we set `alpha_jump = 100`. This implies that $\alpha$ is updated and saved only every 10th iteration on $\rho$. Note that this is not thinning, since $\alpha$ is never sampled. Before computing the posterior distribution with this parameter, we do a new convergence assessment:
 
 ```{r}
 model_fit <- compute_mallows(potato_visual, nmc = 10000, alpha_jump = 10)

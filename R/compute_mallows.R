@@ -96,6 +96,13 @@ compute_mallows <- function(R,
   # If no data augmentation has happened, do not include aug_acceptance
   if(!fit$any_missing) fit$aug_acceptance <- NULL
 
+  # Add names of item
+  if(!is.null(colnames(R))) {
+    rownames(fit$rho) <- colnames(R)
+  } else {
+    rownames(fit$rho) <- paste("Item", seq(from = 1, to = nrow(fit$rho), by = 1))
+  }
+
   class(fit) <- "BayesMallows"
 
   return(fit)

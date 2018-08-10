@@ -2,11 +2,15 @@
 #'
 #' @param model_fit A fitted model object of class \code{BayesMallows}, obtained
 #'   with \code{\link{compute_mallows}}.
-#' @param type Should we plot \code{"alpha"}, \code{"rho"}, or \code{"augmentation"}.
-#' @param items The items to study in the diagnostic plot for \code{rho}. A
+#' @param type Should we plot \code{"alpha"}, \code{"rho"}, or
+#'   \code{"augmentation"}.
+#' @param items The items to study in the diagnostic plot for \code{rho}. Either
+#'   a vector of item names, corresponding to \code{model_fit$item_names} or a
 #'   vector of indices. If NULL, five items are selected randomly.
-#' @param k Window size for rolling mean. Used when \code{type = "augmentation"}.
-#' @param assessors The assessors to study in the diagnostic plot for \code{"augmentation"}.
+#' @param k Window size for rolling mean. Used when \code{type =
+#'   "augmentation"}.
+#' @param assessors The assessors to study in the diagnostic plot for
+#'   \code{"augmentation"}.
 #'
 #' @seealso \code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
 #'
@@ -16,6 +20,8 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
                                k = NULL, assessors = NULL){
 
   stopifnot(class(model_fit) == "BayesMallows")
+
+  if(is.character(items)) stopifnot(items %in% rownames(model_fit$rho))
 
   if(type == "alpha") {
     # Converting to data frame before plotting
@@ -67,6 +73,8 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
 
     if(is.null(assessors) && model_fit$n_assessors > 12) {
       message("Assessors not set Plotting the first 12.")
+    } else if(is.null(assessors)) {
+      assessors <- seq(from = 1, to = model_fit$n_assessors, by = 1)
     }
 
     if(is.null(k) && model_fit$nmc > 100){
@@ -77,7 +85,7 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       k <- 1
     }
 
-    df <- dplyr::as_tibble(model_fit$aug_acceptance)
+    df <- dplyr::as_tibble(model_fit$aug_acceptance[assessors, , drop = FALSE])
     names(df) <- 1:ncol(df)
 
     df <- dplyr::mutate(df, Assessor = as.factor(dplyr::row_number()))
@@ -91,17 +99,15 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       )
 
     # Saving and then printing, because one gets a warning due to log(0) == -Inf
-    plt <- ggplot2::ggplot(df, ggplot2::aes(x = .data$Iteration, y = .data$RollingMean)) +
+    ggplot2::ggplot(df, ggplot2::aes(x = .data$Iteration, y = .data$RollingMean)) +
       ggplot2::geom_line(na.rm = TRUE) +
       ggplot2::facet_wrap(~ .data$Assessor) +
-      ggplot2::scale_y_log10() +
       ggplot2::xlab("Iteration") +
       ggplot2::ylab("Mean acceptance rate") +
       ggplot2::ggtitle(
-        label = "Acceptance rates for data augmentation",
-        subtitle = paste("Rolling (left-handed) mean with window size", k, "."))
+        label = "Data Augmentation",
+        subtitle = paste("Rolling mean with window size", k, "."))
 
-    suppressWarnings(print(plt))
 
   } else {
     stop("type must be either \"alpha\", \"rho\", or \"augmentation\".")

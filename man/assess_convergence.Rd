@@ -4,19 +4,25 @@
 \alias{assess_convergence}
 \title{Assessing convergence of Metropolis-Hastings algorithm}
 \usage{
-assess_convergence(model_fit, type = "alpha", items = NULL)
+assess_convergence(model_fit, type = "alpha", items = NULL, k = NULL,
+  assessors = NULL)
 }
 \arguments{
 \item{model_fit}{A fitted model object of class \code{BayesMallows}, obtained
 with \code{\link{compute_mallows}}.}
 
-\item{type}{Should we plot \code{alpha} or \code{rho}.}
+\item{type}{Should we plot \code{"alpha"}, \code{"rho"}, or
+\code{"augmentation"}.}
 
-\item{items}{The items to study in the diagnostic plot for \code{rho}. A
+\item{items}{The items to study in the diagnostic plot for \code{rho}. Either
+a vector of item names, corresponding to \code{model_fit$item_names} or a
 vector of indices. If NULL, five items are selected randomly.}
-}
-\value{
-A list containing two plots, one for alpha and one for rho.
+
+\item{k}{Window size for rolling mean. Used when \code{type =
+"augmentation"}.}
+
+\item{assessors}{The assessors to study in the diagnostic plot for
+\code{"augmentation"}.}
 }
 \description{
 Assessing convergence of Metropolis-Hastings algorithm

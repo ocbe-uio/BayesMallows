@@ -28,7 +28,8 @@ gather_rho <- function(model_fit, selected_items = NULL,
   all_items <- seq(1, model_fit$n_items)
 
   if(!is.null(selected_items)){
-    stopifnot(all(selected_items %in% all_items) )
+    stopifnot(all(selected_items %in% all_items) ||
+                all(selected_items %in% rownames(model_fit$rho)))
   } else {
     selected_items <- all_items
   }
@@ -40,17 +41,20 @@ gather_rho <- function(model_fit, selected_items = NULL,
   }
 
   df <- dplyr::as_tibble(t(model_fit$rho[selected_items, row_inds, drop = FALSE]))
-  names(df) <- selected_items
 
   df <- dplyr::mutate(df, Index = dplyr::row_number())
 
   # Make the tibble tall by gathering items
   df <- tidyr::gather(df, key = "Item", value = "Rank", -.data$Index)
 
-  # Convert the item to factor
-  df <- dplyr::mutate(df,
-                      Item = factor(paste("Item", .data$Item),
-                                    levels = paste("Item", sort(selected_items))))
+  # Convert the item to factor, so it ends up in the order specified
+  if(is.character(selected_items)){
+    fct_levels <- selected_items
+  } else {
+    fct_levels <- rownames(model_fit$rho)[selected_items]
+  }
+
+  df <- dplyr::mutate(df, Item = factor(.data$Item, levels = fct_levels))
 
   return(df)
 }
