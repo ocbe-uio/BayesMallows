@@ -53,12 +53,13 @@ Next, we need to find the transitive closure for the set of pairwise comparisons
 pair_comp_tc <- generate_transitive_closure(pair_comp, num_items = 5)
 ```
 
-As we can see, `pair_comp_tc` has an additional row containing the relation $A_{4} \prec A_{5}$.
+As we can see, `pair_comp_tc` has an additional row containing the relation $A_{4} \prec A_{5}$. For assessor 2, $\text{tc}(\mathcal{B}_{2}) = \mathcal{B}_{2}$, so no new rows needed to be added.
 
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(pair_comp_tc)
 ```
 
-
+## Mallows Model with Pairwise Preferences
+Having generated the transitive closure of each assessor's pairwise preferences, we can go on and use these as input to the Mallows model.
 
 # References
