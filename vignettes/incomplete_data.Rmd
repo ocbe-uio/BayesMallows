@@ -18,15 +18,16 @@ knitr::opts_chunk$set(
 set.seed(232312)
 ```
 
-This vignette assumes that you are familiar with the topics in the introductory vignette, so make sure you read that one first. We start by describing top-k rankings, and then go on with data missing at random.
+This vignette assumes that you are familiar with the topics in the introductory vignette, so make sure you read that one first. 
 
 ## Top-k Rankings
 
-Imagine that the assessors in the potato experiment were asked to rank only the top-five heaviest potatoes. We generate these data by retaining only ranks 5 or higher in `potato_visual`, setting the rest to `NA`.
+Imagine that the assessors in the potato experiment were asked to rank only the top-five heaviest potatoes. We generate these data by retaining only ranks 5 or higher in `potato_visual`, setting the rest to `NA`. (I use `dplyr::if_else` because it is safer than the `ifelse` function of base R).
 
-```{r}
+```{r, message=FALSE}
 library(BayesMallows)
-potato_top <- ifelse(potato_visual > 5, NA_real_, potato_visual)
+library(dplyr)
+potato_top <- potato_visual * if_else(potato_visual > 5, NA_integer_, 1L)
 ```
 
 Here is the resulting rank matrix:
@@ -35,7 +36,7 @@ Here is the resulting rank matrix:
 knitr::kable(potato_top, caption = "Example dataset potato_top.")
 ```
 
-In @vitteli2018 it is shown that the unranked items do not effect the MAP estimates of the ranked items in this top-k setting. In this case, there are 8 potatoes which have been ranked, and so the unranked potatoes should have uniform posterior distributions between 9 and 20. However, arriving at these uniform posteriors require a large number of MCMC iterations, so we instead remove these items:
+In @vitelli2018 it is shown that the unranked items do not effect the MAP estimates of the ranked items in this top-k setting. In this case, there are 8 potatoes which have been ranked, and so the unranked potatoes should have uniform posterior distributions between 9 and 20. However, arriving at these uniform posteriors require a large number of MCMC iterations, so we instead remove these items:
 
 ```{r}
 item_ranked <- apply(potato_top, 2, function(x) !all(is.na(x)))
@@ -61,18 +62,11 @@ str(model_fit)
 
 ### Assessing Convergence
 
-Saving the augmented ranks through every MCMC step would yield an array of size `nmc x n_items x n_assessors`, which quickly becomes prohibitively large. Thus, rather than saving this, we save an indicator array of size `nmc x n_assessors`, showing whether or not the proposed ranks were accepted for each assessor at each iteration. Even this matrix may become very large, so we should probably make it optional.
+Saving the augmented ranks through every MCMC step would yield an array of size `nmc x n_items x n_assessors`, which quickly becomes prohibitively large. Thus, rather than saving this, we save an array of size `nmc x n_assessors / augmentation_diagnostic_thinning`, where `augmentation_diagnostic_thinning` is an argument to `compute_mallows`. We save the average acceptance rates for each iteration interval of size `augmentation_diagnostic_thinning`. The default value is 100.
 
 ```{r, fig.width=6, fig.height=5, fig.align='center'}
 assess_convergence(model_fit, type = "augmentation")
 ```
-
-The `assess_convergence` tells us that the size of the rolling mean was set to 10. We can increase it to 100 and see if that changes the plots.
-
-```{r, fig.width=6, fig.height=5, fig.align='center'}
-assess_convergence(model_fit, type = "augmentation", k = 100)
-```
-
 
 If we want to take a closer look at some of the curves, we can specify this with the `assessors` argument. Let's look at assessor 3, which seems to have a very high acceptance rate. First, we do two other runs and compare them. These will differ due to the stochastic MCMC algorithm. We also increase the number of iterations to 10000.
 
@@ -81,11 +75,11 @@ model_fit1 <- compute_mallows(potato_top, nmc = 10000)
 model_fit2 <- compute_mallows(potato_top, nmc = 10000)
 ```
 
-The acceptance rates for the data augmentation for assessor 12 seem absolutely reasonable, so we assume that convergence has been reached after 10000 iterations. The convergence seems reasonable in this case. (A point of improvement of `plot.BayesMallows` is to make the title correspond to the assessor).
+The trace of acceptance for assessor three for the two independent runs are shown in the plots below. Although high, these are absolutely acceptable.
 
 ```{r, fig.show='hold'}
-assess_convergence(model_fit1, type = "augmentation", k = 100, assessors = 3)
-assess_convergence(model_fit2, type = "augmentation", k = 100, assessors = 3)
+assess_convergence(model_fit1, type = "augmentation", assessors = 3)
+assess_convergence(model_fit2, type = "augmentation", assessors = 3)
 ```
 
 We should also check that $\alpha$ and $\rho$ show good convergence behavior, as before. We use the model object `model_fit1` for this, and delete the other ones that we have created so far.
@@ -99,7 +93,8 @@ The convergence of $\alpha$ looks very good.
 assess_convergence(model_fit1, type = "alpha")
 ```
 
-The latent ranks also seem to converge. Note that they vary more in this top-k case, than the did in the intro vignette without missing data.
+The latent ranks also seem to converge.
+
 ```{r, fig.width=6, fig.align='center'}
 assess_convergence(model_fit1, type = "rho", items = 1:8)
 ```
@@ -132,19 +127,84 @@ plot(model_fit, burnin = 1e4)
 plot(model_fit, burnin = 1e4, type = "rho", items = 1:8)
 ```
 
+Potatoes 12 and 13 have no variation, so we try with an even larger number of iterations. To avoid getting a too large model object, we increase the thinning.
+
 ```{r}
-model_fit <- compute_mallows(potato_top, nmc = 1e4 + 2e6, alpha_jump = 100, thinning = 10)
+model_fit <- compute_mallows(potato_top, nmc = 1e4 + 2e6, 
+                             alpha_jump = 100, thinning = 10, 
+                             augmentation_diagnostic_thinning = 1000)
 ```
 
+As the diagnostic plot below shows, the posterior ranks for 12 and 13 stayed the same. This may be correct: Looking at the `potato_top` matrix above, we see that potato 12 has been ranked first by all but one assessor, who ranked it second. 
 
 ```{r, fig.width=6, fig.align='center'}
 plot(model_fit, burnin = 1e4, type = "rho", items = 1:8)
 ```
 
+### Other Distance Measures
+
+Like for the complete ranks, we can vary the distance measure used in the Mallows model. We can start with a Spearman model:
+
+```{r}
+model_fit <- compute_mallows(potato_top, nmc = 1e4 + 1e5, metric = "spearman")
+```
+
+As for the full ranks described in the intro vignette, the posterior uncertainty is higher with the Spearman distance.
+
+```{r, fig.width=6, fig.align='center'}
+plot(model_fit, burnin = 1e4, type = "rho", items = 1:8)
+```
+
+## Ranks Missing at Random
+
+If the ranks are missing completely at random, we cannot remove the unranked items as we did for top-k rankings above. Let us assume that 10 % of the data in `potato_visual` have disappeared du to a disk failure. We generate this data now:
+
+```{r}
+missing_indicator <- if_else(
+  runif(nrow(potato_visual) * ncol(potato_visual)) < 0.1,
+                            NA_real_, 1)
+potato_missing <- potato_visual * missing_indicator
+```
+
+The data now looks like the following:
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(potato_missing, caption = "Example dataset potato_missing.")
+```
+
+### Convergence Assessment
+We supply `potato_missing` to `compute_mallows` as before:
+
+```{r}
+model_fit <- compute_mallows(potato_missing)
+```
+
+The convergence of $\alpha$ and $\rho$ seem fine:
+```{r}
+assess_convergence(model_fit)
+```
+
+```{r}
+assess_convergence(model_fit, type = "rho", items = 1:6)
+```
+
+The convegence of the data augmentation is interesting. Let us compare it to the fraction missing per assessor:
+
+```{r}
+assess_convergence(model_fit, type = "augmentation")
+```
 
 
-## Data Missing at Random
+## Posterior Distribution
 
-Point: If only one item has a missing rank, this can be filled in. This is not true for top-k rankings.
+Again, we can fit a final model, and plot the posterior histogram of the latent ranks.
+
+```{r}
+model_fit <- compute_mallows(potato_visual, nmc = 1e5 + 2000, alpha_jump = 10)
+```
+
+```{r}
+plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
+```
 
 # References

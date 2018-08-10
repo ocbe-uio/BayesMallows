@@ -4,7 +4,7 @@
 \alias{assess_convergence}
 \title{Assessing convergence of Metropolis-Hastings algorithm}
 \usage{
-assess_convergence(model_fit, type = "alpha", items = NULL, k = NULL,
+assess_convergence(model_fit, type = "alpha", items = NULL,
   assessors = NULL)
 }
 \arguments{
@@ -17,9 +17,6 @@ with \code{\link{compute_mallows}}.}
 \item{items}{The items to study in the diagnostic plot for \code{rho}. Either
 a vector of item names, corresponding to \code{model_fit$item_names} or a
 vector of indices. If NULL, five items are selected randomly.}
-
-\item{k}{Window size for rolling mean. Used when \code{type =
-"augmentation"}.}
 
 \item{assessors}{The assessors to study in the diagnostic plot for
 \code{"augmentation"}.}

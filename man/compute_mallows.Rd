@@ -6,7 +6,7 @@
 \usage{
 compute_mallows(R, metric = "footrule", lambda = 0.1, nmc = 3000,
   L = NULL, sd_alpha = 0.1, alpha_init = 1, alpha_jump = 1,
-  thinning = 1)
+  thinning = 1, augmentation_diagnostic_thinning = 100)
 }
 \arguments{
 \item{R}{A matrix of ranked items. See \code{\link{create_ranking}} if you
@@ -34,6 +34,9 @@ significantly speed up computation time, since we then do not have to do
 expensive computation of the partition function.}
 
 \item{thinning}{Keep every \code{thinning} iteration of \code{rho}.}
+
+\item{augmentation_diagnostic_thinning}{The interval in which we save
+augmentation diagnostics.}
 }
 \value{
 A list of class BayesMallows.

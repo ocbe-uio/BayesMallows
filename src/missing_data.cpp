@@ -60,11 +60,11 @@ void update_missing_ranks(arma::mat& R, arma::mat& aug_acceptance,
                           const arma::vec& assessor_missing,
                           const int& n_items, const int& n_assessors,
                           const double& alpha, const arma::vec& rho,
-                          const std::string& metric, const int& t){
+                          const std::string& metric, const int& t,
+                          int& aug_diag_index, const int& aug_diag_thinning){
   for(int i = 0; i < n_assessors; ++i){
     if(assessor_missing(i) == 0){
-      aug_acceptance(i, t) = 1;
-      continue;
+      ++aug_acceptance(i, aug_diag_index);
     } else {
       arma::vec proposal = propose_augmentation(R.col(i), missing_indicator.col(i),
                                                 n_items);
@@ -78,10 +78,14 @@ void update_missing_ranks(arma::mat& R, arma::mat& aug_acceptance,
 
       if(ratio > u){
         R.col(i) = proposal;
-        aug_acceptance(i, t) = 1;
-      } else {
-        aug_acceptance(i, t) = 0;
+        ++aug_acceptance(i, aug_diag_index);
       }
     }
   }
+
+  // If appropriate, increment the augmentation diagnostic index
+  if(t % aug_diag_thinning == 0){
+    ++aug_diag_index;
+  }
+
 }

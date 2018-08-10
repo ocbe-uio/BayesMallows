@@ -19,6 +19,7 @@ void update_missing_ranks(arma::mat& R, arma::mat& aug_acceptance,
                           const arma::vec& assessor_missing,
                           const int& n_items, const int& n_assessors,
                           const double& alpha, const arma::vec& rho,
-                          const std::string& metric, const int& t);
+                          const std::string& metric, const int& t,
+                          int& aug_diag_index, const int& aug_diag_thinning);
 
 #endif

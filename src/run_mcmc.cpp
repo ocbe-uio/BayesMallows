@@ -31,6 +31,8 @@
 //' @param lambda Parameter of the prior distribution.
 //' @param thinning Thinning parameter. Keep only every \code{thinning} rank
 //' sample from the posterior distribution.
+//' @param augmentation_diagnostic_thinning The interval in which we save
+//' augmentation diagnostics.
 //'
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat R, int nmc,
@@ -39,7 +41,8 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
                     std::string metric = "footrule",
                     int L = 1, double sd_alpha = 0.5,
                     double alpha_init = 5, int alpha_jump = 1,
-                    double lambda = 0.1, int thinning = 1){
+                    double lambda = 0.1, int thinning = 1,
+                    int augmentation_diagnostic_thinning = 100){
 
   // The number of items ranked
   int n_items = R.n_rows;
@@ -52,6 +55,9 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
   // Number of rho values to store
   int n_rho = ceil(nmc * 1.0 / thinning);
+
+  // Number of augmentation diagnostics to store
+  int n_aug_diag = ceil(nmc * 1.0 / augmentation_diagnostic_thinning);
 
   // Declare indicator matrix of missing ranks, and fill it with zeros
   arma::mat missing_indicator = arma::zeros<arma::mat>(n_items, n_assessors);
@@ -88,20 +94,16 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
   // Declare indicator vectors to hold acceptance or not
   arma::vec alpha_acceptance(n_alpha), rho_acceptance(nmc);
-  arma::mat aug_acceptance(n_assessors, nmc);
+  arma::mat aug_acceptance = arma::zeros<arma::mat>(n_assessors, n_aug_diag);
 
   // Set the initial values;
   alpha_acceptance(0) = 1;
   rho_acceptance(0) = 1;
-  if(any_missing){
-    aug_acceptance.col(0) = arma::ones<arma::vec>(n_assessors);
-  } else {
-    aug_acceptance = arma::ones<arma::mat>(n_assessors, nmc);
-  }
+  aug_acceptance.col(0) = arma::zeros<arma::vec>(n_assessors);
 
 
   // Other variables used
-  int alpha_index = 0, rho_index = 0;
+  int alpha_index = 0, rho_index = 0, aug_diag_index = 0;
   double alpha_old = alpha(0);
   arma::vec rho_old = rho.col(0);
 
@@ -122,7 +124,8 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     if(any_missing){
       update_missing_ranks(R, aug_acceptance, missing_indicator,
                            assessor_missing, n_items, n_assessors,
-                           alpha_old, rho_old, metric, t);
+                           alpha_old, rho_old, metric, t, aug_diag_index,
+                           augmentation_diagnostic_thinning);
     }
 
     // Call the void function which updates rho by reference
@@ -147,7 +150,8 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     Rcpp::Named("alpha_jump") = alpha_jump,
     Rcpp::Named("thinning") = thinning,
     Rcpp::Named("L") = L,
-    Rcpp::Named("sd_alpha") = sd_alpha
+    Rcpp::Named("sd_alpha") = sd_alpha,
+    Rcpp::Named("augmentation_diagnostic_thinning") = augmentation_diagnostic_thinning
   );
 }
 

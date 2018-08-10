@@ -7,8 +7,6 @@
 #' @param items The items to study in the diagnostic plot for \code{rho}. Either
 #'   a vector of item names, corresponding to \code{model_fit$item_names} or a
 #'   vector of indices. If NULL, five items are selected randomly.
-#' @param k Window size for rolling mean. Used when \code{type =
-#'   "augmentation"}.
 #' @param assessors The assessors to study in the diagnostic plot for
 #'   \code{"augmentation"}.
 #'
@@ -17,7 +15,7 @@
 #' @export
 #'
 assess_convergence <- function(model_fit, type = "alpha", items = NULL,
-                               k = NULL, assessors = NULL){
+                               assessors = NULL){
 
   stopifnot(class(model_fit) == "BayesMallows")
 
@@ -77,36 +75,27 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       assessors <- seq(from = 1, to = model_fit$n_assessors, by = 1)
     }
 
-    if(is.null(k) && model_fit$nmc > 100){
-      message("Window size k not set. Using k = 10.")
-      k <- 10
-    } else if(is.null(k) && model_fit$nmc <= 100) {
-      message("Window size not set. Using k = 1.")
-      k <- 1
-    }
-
-    df <- dplyr::as_tibble(model_fit$aug_acceptance[assessors, , drop = FALSE])
+    df <- dplyr::as_tibble(model_fit$aug_acceptance)
     names(df) <- 1:ncol(df)
 
     df <- dplyr::mutate(df, Assessor = as.factor(dplyr::row_number()))
+    df <- dplyr::slice(df, assessors)
+
     df <- tidyr::gather(df, key = "Iteration", value = "Acceptance",
                         -.data$Assessor, convert = TRUE)
 
-    df <- dplyr::group_by(df, Assessor)
-
-    df <- dplyr::mutate(df,
-      RollingMean = zoo::rollmean(Acceptance, k = k, fill = NA_real_, align = "right")
-      )
+    df <- dplyr::mutate(df, Iteration = .data$Iteration *
+                          model_fit$augmentation_diagnostic_thinning)
 
     # Saving and then printing, because one gets a warning due to log(0) == -Inf
-    ggplot2::ggplot(df, ggplot2::aes(x = .data$Iteration, y = .data$RollingMean)) +
+    ggplot2::ggplot(df, ggplot2::aes(x = .data$Iteration, y = .data$Acceptance)) +
       ggplot2::geom_line(na.rm = TRUE) +
       ggplot2::facet_wrap(~ .data$Assessor) +
       ggplot2::xlab("Iteration") +
       ggplot2::ylab("Mean acceptance rate") +
       ggplot2::ggtitle(
         label = "Data Augmentation",
-        subtitle = paste("Rolling mean with window size", k, "."))
+        subtitle = paste("Average per", model_fit$augmentation_diagnostic_thinning, "steps."))
 
 
   } else {
