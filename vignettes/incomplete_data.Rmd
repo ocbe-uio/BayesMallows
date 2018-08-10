@@ -123,7 +123,7 @@ plot(model_fit, burnin = 1e4)
 
 
 
-```{r, fig.width=6, fig.align='center'}
+```{r, fig.width=6, fig.height=5, fig.align='center'}
 plot(model_fit, burnin = 1e4, type = "rho", items = 1:8)
 ```
 
@@ -137,7 +137,7 @@ model_fit <- compute_mallows(potato_top, nmc = 1e4 + 2e6,
 
 As the diagnostic plot below shows, the posterior ranks for 12 and 13 stayed the same. This may be correct: Looking at the `potato_top` matrix above, we see that potato 12 has been ranked first by all but one assessor, who ranked it second. 
 
-```{r, fig.width=6, fig.align='center'}
+```{r, fig.width=6, fig.height=5, fig.align='center'}
 plot(model_fit, burnin = 1e4, type = "rho", items = 1:8)
 ```
 
@@ -151,7 +151,7 @@ model_fit <- compute_mallows(potato_top, nmc = 1e4 + 1e5, metric = "spearman")
 
 As for the full ranks described in the intro vignette, the posterior uncertainty is higher with the Spearman distance.
 
-```{r, fig.width=6, fig.align='center'}
+```{r, fig.width=6, fig.height=5, fig.align='center'}
 plot(model_fit, burnin = 1e4, type = "rho", items = 1:8)
 ```
 
@@ -180,17 +180,17 @@ model_fit <- compute_mallows(potato_missing)
 ```
 
 The convergence of $\alpha$ and $\rho$ seem fine:
-```{r}
+```{r, fig.width=6}
 assess_convergence(model_fit)
 ```
 
-```{r}
+```{r, fig.width=6}
 assess_convergence(model_fit, type = "rho", items = 1:6)
 ```
 
 The convegence of the data augmentation is interesting. Let us compare it to the fraction missing per assessor:
 
-```{r}
+```{r, fig.width=6, fig.height=5, fig.align='center'}
 assess_convergence(model_fit, type = "augmentation")
 ```
 
@@ -203,7 +203,7 @@ Again, we can fit a final model, and plot the posterior histogram of the latent 
 model_fit <- compute_mallows(potato_visual, nmc = 1e5 + 2000, alpha_jump = 10)
 ```
 
-```{r}
+```{r, fig.width=6, fig.height=5, fig.align='center'}
 plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
 ```
 
