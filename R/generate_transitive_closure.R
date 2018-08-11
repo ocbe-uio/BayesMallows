@@ -1,28 +1,23 @@
 #' Title
 #'
-#' @param df Dataframe with columns \code{Assessor}, \code{BottomItem}, and
-#'   \code{TopItem}.
-#' @param num_items Number of items in total.
+#' @param df Dataframe with columns \code{assessor}, \code{bottom_item}, and
+#'   \code{top_item}.
 #'
 #' @export
 #'
-generate_transitive_closure <- function(df, num_items){
+generate_transitive_closure <- function(df){
 
-  df <- dplyr::group_by(df, .data$Assessor)
+  df <- dplyr::group_by(df, .data$assessor)
   result <- dplyr::do(
     df,
     dplyr::as_tibble(
       .generate_transitive_closure(
-        cbind(.data$BottomItem, .data$TopItem),
-        num_items = num_items)
+        cbind(.data$bottom_item, .data$top_item))
       )
   )
   result <- dplyr::ungroup(result)
 
   names(result) <- names(df)
-
-  # Add the number of items as an attribute
-  attr(result, "num_items") <- num_items
 
   return(result)
 }
@@ -38,11 +33,7 @@ generate_transitive_closure <- function(df, num_items){
 #' @return
 #'
 #' @examples
-.generate_transitive_closure <- function(mat, num_items){
-
-  incidence_matrix <- matrix(0, nrow = num_items, ncol = num_items)
-  colnames(incidence_matrix) <- seq(from = 1, to = num_items, by = 1)
-  rownames(incidence_matrix) <- seq(from = 1, to = num_items, by = 1)
+.generate_transitive_closure <- function(mat){
 
   # This line was an answer to StackOverflow question 51794127
   my_set <- do.call(sets::set, apply(mat, 1, sets::as.tuple))
@@ -52,11 +43,12 @@ generate_transitive_closure <- function(df, num_items){
   tc <- relations::transitive_closure(r)
   incidence <- relations::relation_incidence(tc)
 
-  # Put this into the incidence_matrix defined above
-  incidence_matrix[rownames(incidence), colnames(incidence)] <- incidence
+  new_mat <- which(incidence == 1, arr.ind = TRUE)
 
-  # We now have a new matrix, with potentially more rows that the original
-  result <- arrayInd(which(incidence_matrix == 1), .dim = c(num_items, num_items))
+  result <- cbind(
+    as.integer(rownames(incidence)[new_mat[, 1, drop = FALSE]]),
+    as.integer(colnames(incidence)[new_mat[, 2, drop = FALSE]])
+  )
 
   return(result)
 

@@ -4,13 +4,11 @@
 \alias{generate_transitive_closure}
 \title{Title}
 \usage{
-generate_transitive_closure(df, num_items)
+generate_transitive_closure(df)
 }
 \arguments{
-\item{df}{Dataframe with columns \code{Assessor}, \code{BottomItem}, and
-\code{TopItem}.}
-
-\item{num_items}{Number of items in total.}
+\item{df}{Dataframe with columns \code{assessor}, \code{bottom_item}, and
+\code{top_item}.}
 }
 \description{
 Title

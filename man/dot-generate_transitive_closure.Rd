@@ -4,7 +4,7 @@
 \alias{.generate_transitive_closure}
 \title{Internal function for generating transitive closure}
 \usage{
-.generate_transitive_closure(mat, num_items)
+.generate_transitive_closure(mat)
 }
 \arguments{
 \item{mat}{A matrix in which column 1 is the lower ranked item and column 2 is the
