@@ -22,7 +22,7 @@ set.seed(33232)
 Pairwise comparisons are described in Section 4.2 of @vitelli2018. Let us start by considering a toy example with two assessors and five items. Assessor 1 has stated a set of preferences
 $$ \mathcal{B}_{1} = \left\{A_{1} \prec A_{2}, A_{2} \prec A_{5}, A_{4} \prec A_{5} \right\} $$
 and assessor 2 has the set of preferences
-$$ \mathcal{B}_{2} = \left\{ A_{3} \prec A_{2}, A_{4} \prec A_{5} \right\}. $$
+$$ \mathcal{B}_{2} = \left\{ A_{1} \prec A_{2}, A_{2} \prec A_{3}, A_{3} \prec A_{4} \right\}. $$
 
 ### Data Model
 Each time an assessor is asked to compare two object, a measurement is made. Therefore, in order to keep order data *tidy* (@wickham2014), we define a dataframe in which each row correspond to one pairwise comparison. The columns (variables) are *the assessor*, *the bottom item*, and *the top item*. 
@@ -37,8 +37,9 @@ pair_comp <- tribble(
   1, 1, 2,
   1, 2, 5,
   1, 4, 5,
-  2, 3, 2,
-  2, 4, 5
+  2, 1, 2,
+  2, 2, 3,
+  2, 3, 4
 )
 
 knitr::kable(pair_comp)
@@ -53,13 +54,19 @@ Next, we need to find the transitive closure for the set of pairwise comparisons
 pair_comp_tc <- generate_transitive_closure(pair_comp, num_items = 5)
 ```
 
-As we can see, `pair_comp_tc` has an additional row containing the relation $A_{4} \prec A_{5}$. For assessor 2, $\text{tc}(\mathcal{B}_{2}) = \mathcal{B}_{2}$, so no new rows needed to be added.
+As we can see, `pair_comp_tc` has an additional row containing the relation $A_{4} \prec A_{5}$. For assessor 2, $$\text{tc}(\mathcal{B}_{2}) = \mathcal{B}_{2} \cup \left\{ A_{1} \prec A_{3}, A_{1} \prec A_{4}, A_{2} \prec A_{4}\right\},$$ so three new rows have been added.
 
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(pair_comp_tc)
 ```
 
+The number of items is stored as an additional attribute, since this cannot necessarily be deduced from the values themself.
+```{r}
+attr(pair_comp_tc, "num_items")
+```
+
+
 ## Mallows Model with Pairwise Preferences
-Having generated the transitive closure of each assessor's pairwise preferences, we can go on and use these as input to the Mallows model.
+Having generated the transitive closure of each assessor's pairwise preferences, we can go on and use these as inputs to the Mallows model.
 
 # References
