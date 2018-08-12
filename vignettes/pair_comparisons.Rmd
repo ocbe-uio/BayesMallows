@@ -60,6 +60,29 @@ As we can see, `pair_comp_tc` has an additional row containing the relation $A_{
 knitr::kable(pair_comp_tc)
 ```
 
+## Oystein's Implentation Notes
+
+In order to go on from here, we need to generate an initial ranking $R_{j}, ~j=1,\dots,N$ which is compliant with $\text{tc}(\mathcal{B}_{j})$. We must also provide, for each assessor $j$, a set of items that are constrained, $\mathcal{A}_{j}$ in the notation of the paper. Then we draw a random integer $u \in \{1, \dots, n\}$. 
+
+If $u \in \mathcal{A}_{j}$ we find the elements in $\mathcal{A}_{j}$ which are ranked below $u$. Here is an example. I must write this function in `C++`.
+
+```{r}
+u <- 5 # Imagine this is the random number
+j <- 1
+pair_comp_tc %>% 
+  filter(assessor == !!j, top_item == !!u) %>% 
+  pull(bottom_item)
+```
+Having a rank vector $R_{j}$, the left-handed limit is now $l_{j} = \text{max}(R_{j1}, R_{j2}, R_{j4})$.
+
+The right-handed limit is similarly:
+```{r}
+pair_comp_tc %>% 
+  filter(assessor == !!j, bottom_item == !!u) %>% 
+  pull(top_item)
+```
+Since this is the empty set in this particular case, $r_{j} = n+1$. We now draw a proposal uniformly from the set $\{l_{j}+1, \dots, r_{j} - 1\}$.
+
 
 ## Mallows Model with Pairwise Preferences
 Having generated the transitive closure of each assessor's pairwise preferences, we can go on and use these as inputs to the Mallows model.
