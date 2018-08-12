@@ -92,9 +92,24 @@ Since this is the empty set in this particular case, $r_{j} = n+1$. We now draw 
 
 ### Generating the Initial Ranking
 
-We also 
+We can also generate an initial ranking, consistent with the pairwise comparisons. Again, `compute_mallows` will do it for us, but we may save time by computing it once and for all before we starting running the algorithms.
+
+```{r}
+initial_ranking <- generate_initial_ranking(pair_comp_tc)
+```
+
+```{r, results='asis'}
+knitr::kable(initial_ranking, row.names = TRUE)
+```
+
 
 ## Mallows Model with Pairwise Preferences
-Having generated the transitive closure of each assessor's pairwise preferences, we can go on and use these as inputs to the Mallows model.
+Having generated the transitive closure of each assessor's pairwise preferences and the initial ranking, we can go on and use these as inputs to the Mallows model.
+
+```{r}
+model_fit <- compute_mallows(R = R, P = pair_comp_tc, nmc = 1e5)
+plot(model_fit, burnin = 5e4, type = "rho", items = 1:2)
+```
+
 
 # References

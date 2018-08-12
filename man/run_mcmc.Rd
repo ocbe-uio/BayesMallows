@@ -4,15 +4,17 @@
 \alias{run_mcmc}
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
-run_mcmc(R, nmc, cardinalities, is_fit, metric = "footrule", L = 1L,
-  sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1,
-  thinning = 1L, aug_diag_thinning = 100L)
+run_mcmc(R, nmc, preferences, cardinalities, is_fit, metric = "footrule",
+  L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L,
+  lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L)
 }
 \arguments{
 \item{R}{A set of complete rankings, with one sample per column.
 With n_assessors samples and n_items items, R is n_items x n_assessors.}
 
 \item{nmc}{Number of Monte Carlo samples.}
+
+\item{preferences}{Dataframe of pairwise preferences.}
 
 \item{cardinalities}{Used when metric equals \code{"footrule"} or
 \code{"spearman"} for computing the partition function. Defaults to

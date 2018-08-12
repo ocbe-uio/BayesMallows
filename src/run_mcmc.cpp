@@ -14,6 +14,7 @@
 //' @param R A set of complete rankings, with one sample per column.
 //' With n_assessors samples and n_items items, R is n_items x n_assessors.
 //' @param nmc Number of Monte Carlo samples.
+//' @param preferences Dataframe of pairwise preferences.
 //' @param cardinalities Used when metric equals \code{"footrule"} or
 //' \code{"spearman"} for computing the partition function. Defaults to
 //' \code{R_NilValue}.
@@ -36,6 +37,7 @@
 //'
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat R, int nmc,
+                    Rcpp::Nullable<arma::mat> preferences,
                     Rcpp::Nullable<arma::vec> cardinalities,
                     Rcpp::Nullable<arma::vec> is_fit,
                     std::string metric = "footrule",
@@ -58,6 +60,14 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
   // Number of augmentation diagnostics to store
   int n_aug_diag = ceil(nmc * 1.0 / aug_diag_thinning);
+
+  // Check if we have pairwise preferences
+  bool pairwise;
+  if(preferences.isNotNull()){
+    pairwise = true;
+  } else {
+    pairwise = false;
+  }
 
   // Declare indicator matrix of missing ranks, and fill it with zeros
   arma::mat missing_indicator = arma::zeros<arma::mat>(n_items, n_assessors);

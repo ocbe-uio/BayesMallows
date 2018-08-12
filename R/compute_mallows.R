@@ -50,7 +50,7 @@ compute_mallows <- function(R = NULL,
                             ){
 
   # Check that at most one of R and P is set
-  stopifnot(xor(is.null(R), is.null(P)))
+  stopifnot(!is.null(R) || !is.null(P))
 
 
   # Deal with pairwise comparisons. Generate R compatible with them.
@@ -58,14 +58,16 @@ compute_mallows <- function(R = NULL,
     if(!("BayesMallowsTC" %in% class(P))){
       P <- generate_transitive_closure(P)
     }
+
+    if(is.null(R)){
+      R <- generate_initial_ranking(P)
+    }
   }
 
   # Check that all rows of R are proper permutations
   if(!all(apply(R, 1, validate_permutation))){
     stop("Not valid permutation.")
   }
-
-
 
   # Check that we do not jump over all alphas
   stopifnot(alpha_jump < nmc)
@@ -109,12 +111,20 @@ compute_mallows <- function(R = NULL,
   }
 
   # Transpose R to get samples along columns.
-  fit <- run_mcmc(t(R), cardinalities = cardinalities, is_fit = is_fit,
-                  metric = metric, lambda = lambda,
-                  nmc = nmc, L = L, sd_alpha = sd_alpha,
+  fit <- run_mcmc(R = t(R),
+                  nmc = nmc,
+                  preferences = P,
+                  cardinalities = cardinalities,
+                  is_fit = is_fit,
+                  metric = metric,
+                  lambda = lambda,
+                  L = L,
+                  sd_alpha = sd_alpha,
                   alpha_init = alpha_init,
-                  alpha_jump = alpha_jump, thinning = thinning,
-                  aug_diag_thinning = aug_diag_thinning)
+                  alpha_jump = alpha_jump,
+                  thinning = thinning,
+                  aug_diag_thinning = aug_diag_thinning
+                  )
 
   # If no data augmentation has happened, do not include aug_acceptance
   # Otherwise, convert to fraction
