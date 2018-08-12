@@ -18,6 +18,7 @@ generate_transitive_closure <- function(df){
   result <- dplyr::ungroup(result)
 
   names(result) <- names(df)
+  class(result) <- c("BayesMallowsTC", class(result))
 
   return(result)
 }
@@ -32,7 +33,6 @@ generate_transitive_closure <- function(df){
 #'
 #' @return
 #'
-#' @examples
 .generate_transitive_closure <- function(mat){
 
   # This line was an answer to StackOverflow question 51794127
