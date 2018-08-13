@@ -4,6 +4,7 @@ author: "Øystein Sørensen"
 date: "`r Sys.Date()`"
 bibliography: ../inst/REFERENCES.bib
 output: rmarkdown::html_vignette
+#output: rmarkdown::github_document
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
