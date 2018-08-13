@@ -49,7 +49,7 @@ We are now left with this 12 by 8 matrix:
 knitr::kable(potato_top, caption = "Example dataset potato_top.")
 ```
 
-The `compute_mallows` function automatically recognizes the `NA` values as missing ranks, and augments the data. Let us try:
+The `compute_mallows` function automatically recognizes the `NA` values as missing ranks, and augments the data, as described in Section 4.1 of @vitelli2018. Let us try:
 
 ```{r}
 model_fit <- compute_mallows(potato_top)
@@ -60,7 +60,7 @@ Looking at the returned object, we see that `any_missing` is `TRUE`, so `compute
 str(model_fit)
 ```
 
-### Assessing Convergence
+## Assessing Convergence
 
 Saving the augmented ranks through every MCMC step would yield an array of size `nmc x n_items x n_assessors`, which quickly becomes prohibitively large. Thus, rather than saving this, we save an array of size `nmc x n_assessors / aug_diag_thinning`, where `aug_diag_thinning` is an argument to `compute_mallows`. We save the average acceptance rates for each iteration interval of size `aug_diag_thinning`. The default value is 100.
 
@@ -157,7 +157,7 @@ plot(model_fit, burnin = 1e4, type = "rho", items = 1:8)
 
 ## Ranks Missing at Random
 
-If the ranks are missing completely at random, we cannot remove the unranked items as we did for top-k rankings above. Let us assume that 10 % of the data in `potato_visual` have disappeared du to a disk failure. We generate this data now:
+If the ranks are missing completely at random, we cannot remove the unranked items as we did for top-k rankings above. Let us assume that 10 % of the data in `potato_visual` have disappeared due to a disk failure. We generate this data now:
 
 ```{r}
 missing_indicator <- if_else(

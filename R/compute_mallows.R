@@ -73,6 +73,8 @@ compute_mallows <- function(R = NULL,
     if(is.null(R)){
       R <- generate_initial_ranking(P)
     }
+  } else {
+    constrained <- NULL
   }
 
   # Check that all rows of R are proper permutations
