@@ -58,6 +58,7 @@ compute_mallows <- function(R = NULL,
     if(!("BayesMallowsTC" %in% class(P))){
       P <- generate_transitive_closure(P)
     }
+    P <- t(as.matrix(P))
 
     if(is.null(R)){
       R <- generate_initial_ranking(P)
@@ -110,10 +111,13 @@ compute_mallows <- function(R = NULL,
     stop(paste("Unknown metric", metric))
   }
 
-  # Transpose R to get samples along columns.
+
+
+  # Transpose R to get samples along columns. The same applies to P.
+  # The reason is that Armadillo uses column-major ordering.
   fit <- run_mcmc(R = t(R),
                   nmc = nmc,
-                  preferences = P,
+                  pairwise = P,
                   cardinalities = cardinalities,
                   is_fit = is_fit,
                   metric = metric,
