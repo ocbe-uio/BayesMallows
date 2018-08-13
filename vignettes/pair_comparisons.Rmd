@@ -25,7 +25,7 @@ and assessor 2 has the set of preferences
 $$ \mathcal{B}_{2} = \left\{ A_{1} \prec A_{2}, A_{2} \prec A_{3}, A_{3} \prec A_{4} \right\}. $$
 
 ### Data Model
-Each time an assessor is asked to compare two objects, a measurement is made. Therefore, in order to keep the data *tidy* (@wickham2014), we define a dataframe in which each row correspond to one pairwise comparison. The columns (variables) are *the assessor*, *the bottom item*, and *the top item*. 
+Each time an assessor is asked to compare two objects, a measurement is made. Therefore, in order to keep the data *tidy* (@wickham2014), we define a dataframe in which each row corresponds to a pairwise comparison. The columns (variables) are *the assessor*, *the bottom item*, and *the top item*. 
 
 In the code snippet below, we defined such a dataframe:
 

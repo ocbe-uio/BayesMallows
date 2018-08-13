@@ -7,6 +7,9 @@
 #'
 generate_transitive_closure <- function(df){
 
+  # Integers mess up the function, so we use numeric
+  df <- dplyr::mutate_all(df, as.numeric)
+
   df <- dplyr::group_by(df, .data$assessor)
   result <- dplyr::do(
     df,
