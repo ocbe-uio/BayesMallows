@@ -5,6 +5,29 @@
 //
 // [[Rcpp::depends(RcppArmadillo)]]
 
+void shift_step(arma::vec& proposal, const arma::vec& rho,
+                const int& u, double& delta_r, arma::vec& indices){
+  // Shift step:
+  delta_r = proposal(u - 1) - rho(u - 1);
+  indices = arma::zeros(std::abs(delta_r) + 1);
+  indices[0] = u-1;
+  int index;
+
+  if(delta_r > 0){
+    for(int k = 1; k <= delta_r; ++k){
+      index = arma::as_scalar(arma::find(rho == rho(u-1) + k));
+      proposal(index) -= 1;
+      indices[k] = index;
+    }
+  } else if(delta_r < 0) {
+    for(int k = (-1); k >= delta_r; --k){
+      index = arma::as_scalar(arma::find(rho == rho(u-1) + k));
+      proposal(index) += 1;
+      indices[-(k)] = index;
+    }
+  }
+}
+
 
 Rcpp::List leap_and_shift(const arma::vec& rho, int L){
 
@@ -75,25 +98,7 @@ Rcpp::List leap_and_shift(const arma::vec& rho, int L){
     prob_backward = 1.0 / (n * support_new);
   }
 
-  // Shift step:
-  delta_r = proposal(u - 1) - rho(u - 1);
-  indices = arma::zeros(std::abs(delta_r) + 1);
-  indices[0] = u-1;
-
-  if(delta_r > 0){
-    for(int k = 1; k <= delta_r; ++k){
-      index = arma::as_scalar(arma::find(rho == rho(u-1) + k));
-      proposal(index) -= 1;
-      indices[k] = index;
-    }
-  } else if(delta_r < 0) {
-    for(int k =- 1; k>=delta_r; --k){
-      index = arma::as_scalar(arma::find(rho == rho(u-1) + k));
-      proposal(index) += 1;
-      indices[-(k)] = index;
-    }
-  }
-
+  shift_step(proposal, rho, u, delta_r, indices);
 
   return Rcpp::List::create(Rcpp::Named("proposal") = proposal,
                             Rcpp::Named("indices") = indices,
@@ -102,5 +107,6 @@ Rcpp::List leap_and_shift(const arma::vec& rho, int L){
                             Rcpp::Named("prob_backward") = prob_backward
   );
 }
+
 
 

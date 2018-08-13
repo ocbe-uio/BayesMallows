@@ -59,7 +59,8 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' @param R A set of complete rankings, with one sample per column.
 #' With n_assessors samples and n_items items, R is n_items x n_assessors.
 #' @param nmc Number of Monte Carlo samples.
-#' @param pairwise Dataframe of pairwise preferences.
+#' @param pairwise Matrix of pairwise preferences, 3 x n_items.
+#' @param constrained Matrix of constrained elements, 2 rows.
 #' @param cardinalities Used when metric equals \code{"footrule"} or
 #' \code{"spearman"} for computing the partition function. Defaults to
 #' \code{R_NilValue}.
@@ -80,7 +81,7 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' @param aug_diag_thinning The interval in which we save
 #' augmentation diagnostics.
 #'
-run_mcmc <- function(R, nmc, pairwise, cardinalities, is_fit, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L) {
-    .Call(`_BayesMallows_run_mcmc`, R, nmc, pairwise, cardinalities, is_fit, metric, L, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning)
+run_mcmc <- function(R, nmc, pairwise, constrained, cardinalities, is_fit, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L) {
+    .Call(`_BayesMallows_run_mcmc`, R, nmc, pairwise, constrained, cardinalities, is_fit, metric, L, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning)
 }
 

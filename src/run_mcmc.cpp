@@ -3,6 +3,7 @@
 #include "parameterupdates.h"
 #include "misc.h"
 #include "missing_data.h"
+#include "pairwise_comparisons.h"
 
 // via the depends attribute we tell Rcpp to create hooks for
 // RcppArmadillo so that the build process will know what to do
@@ -14,7 +15,8 @@
 //' @param R A set of complete rankings, with one sample per column.
 //' With n_assessors samples and n_items items, R is n_items x n_assessors.
 //' @param nmc Number of Monte Carlo samples.
-//' @param pairwise Dataframe of pairwise preferences.
+//' @param pairwise Matrix of pairwise preferences, 3 x n_items.
+//' @param constrained Matrix of constrained elements, 2 rows.
 //' @param cardinalities Used when metric equals \code{"footrule"} or
 //' \code{"spearman"} for computing the partition function. Defaults to
 //' \code{R_NilValue}.
@@ -38,6 +40,7 @@
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat R, int nmc,
                     Rcpp::Nullable<arma::mat> pairwise,
+                    Rcpp::Nullable<arma::mat> constrained,
                     Rcpp::Nullable<arma::vec> cardinalities,
                     Rcpp::Nullable<arma::vec> is_fit,
                     std::string metric = "footrule",
@@ -62,11 +65,16 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   int n_aug_diag = ceil(nmc * 1.0 / aug_diag_thinning);
 
   // Check if we have pairwise preferences
-  bool augment_pairwise;
-  if(pairwise.isNotNull()){
-    augment_pairwise = true;
+  bool augpair;
+  arma::mat pairwise_preferences, constrained_elements;
+
+
+  if(pairwise.isNotNull() & constrained.isNotNull()){
+    augpair = true;
+    pairwise_preferences = Rcpp::as<arma::mat>(pairwise);
+    constrained_elements = Rcpp::as<arma::mat>(constrained);
   } else {
-    augment_pairwise = false;
+    augpair = false;
   }
 
   // Declare indicator matrix of missing ranks, and fill it with zeros
@@ -130,13 +138,21 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
         rho_old, sd_alpha, metric, lambda, n_items, n_assessors, cardinalities, is_fit);
     }
 
-    // Perform data augmentation if needed
+    // Perform data augmentation of missing ranks, if needed
     if(any_missing){
       update_missing_ranks(R, aug_acceptance, missing_indicator,
                            assessor_missing, n_items, n_assessors,
                            alpha_old, rho_old, metric, t, aug_diag_index,
                            aug_diag_thinning);
     }
+
+    // Perform data augmentation of pairwise comparisons, if needed
+    if(augpair){
+      augment_pairwise(R, alpha_old, rho_old, metric, pairwise_preferences,
+                       constrained_elements, n_assessors, n_items,
+                       t, aug_acceptance, aug_diag_index, aug_diag_thinning);
+    }
+
 
     // Call the void function which updates rho by reference
     update_rho(rho, rho_acceptance, rho_old, rho_index,
@@ -151,6 +167,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     Rcpp::Named("alpha") = alpha,
     Rcpp::Named("alpha_acceptance") = alpha_acceptance,
     Rcpp::Named("any_missing") = any_missing,
+    Rcpp::Named("augpair") = augpair,
     Rcpp::Named("aug_acceptance") = aug_acceptance,
     Rcpp::Named("metric") = metric,
     Rcpp::Named("lambda") = lambda,

@@ -67,7 +67,7 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
                          sprintf("%.1f", rho_acceptance_rate * 100), "%"))
 
   } else if(type == "augmentation") {
-    if(!model_fit$any_missing) stop("No missing values, so data were not augmented.")
+    if(!model_fit$any_missing && !model_fit$augpair) stop("No missing values, so data were not augmented.")
 
     if(is.null(assessors) && model_fit$n_assessors > 12) {
       message("Assessors not set Plotting the first 12.")

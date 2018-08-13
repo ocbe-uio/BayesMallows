@@ -55,9 +55,19 @@ compute_mallows <- function(R = NULL,
 
   # Deal with pairwise comparisons. Generate R compatible with them.
   if(!is.null(P)){
+
     if(!("BayesMallowsTC" %in% class(P))){
       P <- generate_transitive_closure(P)
     }
+
+    # Find all the constrained elements per assessor
+    constrained <- dplyr::group_by(P, assessor)
+    constrained <- dplyr::summarise(constrained,
+                                    items = list(unique(c(.data$bottom_item, .data$top_item))))
+    constrained <- tidyr::unnest(constrained)
+    constrained <- as.matrix(t(constrained))
+
+    # Transpose (because armadillo i column-major), and convert to matrix
     P <- t(as.matrix(P))
 
     if(is.null(R)){
@@ -118,6 +128,7 @@ compute_mallows <- function(R = NULL,
   fit <- run_mcmc(R = t(R),
                   nmc = nmc,
                   pairwise = P,
+                  constrained = constrained,
                   cardinalities = cardinalities,
                   is_fit = is_fit,
                   metric = metric,
@@ -132,7 +143,7 @@ compute_mallows <- function(R = NULL,
 
   # If no data augmentation has happened, do not include aug_acceptance
   # Otherwise, convert to fraction
-  if(!fit$any_missing) {
+  if(!fit$any_missing && !fit$augpair) {
     fit$aug_acceptance <- NULL
   } else {
     fit$aug_acceptance <- fit$aug_acceptance / aug_diag_thinning
