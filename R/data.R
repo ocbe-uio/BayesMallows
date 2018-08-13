@@ -21,3 +21,9 @@
 #' @references Insert reference to review paper where the potato data is presented.
 "potato_weighing"
 
+
+#' Pairwise preference data for beaches
+#'
+#'
+#' @references \insertRef{vitelli2018}{BayesMallows}
+"beach_preferences"
