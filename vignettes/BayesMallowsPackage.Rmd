@@ -3,8 +3,7 @@ title: "`BayesMallows`: An R Package for Probabilistic Preference Learning with 
 author: "Øystein Sørensen"
 date: "`r Sys.Date()`"
 bibliography: ../inst/REFERENCES.bib
-#output: rmarkdown::html_vignette
-output: rmarkdown::github_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
