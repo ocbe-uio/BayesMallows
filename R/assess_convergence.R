@@ -71,6 +71,7 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
 
     if(is.null(assessors) && model_fit$n_assessors > 12) {
       message("Assessors not set Plotting the first 12.")
+      assessors <- seq(from = 1, to = 12, by = 1)
     } else if(is.null(assessors)) {
       assessors <- seq(from = 1, to = model_fit$n_assessors, by = 1)
     }

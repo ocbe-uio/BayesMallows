@@ -535,10 +535,84 @@ knitr::kable(head(beach_init_rank, 6))
 We can now check the convergence, using the same tools as before.
 
 ```{r, error=TRUE}
-test_run <- compute_mallows(R = beach_init_rank, P = beach_tc)
+test_run <- compute_mallows(
+  R = beach_init_rank, 
+  P = beach_tc
+  )
 ```
 
-As you can tell, there is a bug. And that is where I will start tomorrow.
+#### Convergence of $\alpha$
+
+The chain for $\alpha$ seems to be close to convergence already after 1,000 iterations.
+
+```{r}
+assess_convergence(test_run)
+```
+
+#### Convergence of $\rho$
+
+The latent ranks seem to converge quite fast, and definitely after 1,000 iterations.
+
+```{r}
+assess_convergence(test_run, type = "rho", items = 1:15)
+```
+
+#### Convergence of Augmented Ranks
+
+Also the acceptance rate for the augmented ranks looks very fine.
+
+```{r}
+assess_convergence(test_run, type = "augmentation")
+```
+
+We delete the test run before going on.
+
+```{r}
+rm(test_run)
+```
+
+
+## Posterior Distributions
+Based on the convergence diagnostics, and being fairly conservative, we set `burnin = 2000`, and take an additional 10,000 samples.
+
+```{r}
+model_fit <- compute_mallows(
+  R = beach_init_rank, 
+  P = beach_tc,
+  nmc = 1e4 + 2000
+  )
+```
+
+### Posterior Distribution of $\alpha$
+
+The posterior density of $\alpha$ has mean equal to $4.8$, and is quite smooth.
+
+```{r}
+plot(model_fit, burnin = 2000)
+```
+
+### Posterior Density of $\rho$
+
+We first make a plot matrix for all beaches.
+```{r, fig.width=6, fig.height=5}
+plot(model_fit, type = "rho", burnin = 2000, items = 1:15)
+```
+
+#### Top Ranked Beaches
+Beaches 9, 6, and 3 were ranked as number 1, 2, and 3, respectively, in @vitelli2018. We can make a detailed plot of these.
+
+```{r, fig.width=6}
+plot(model_fit, type = "rho", items = c(3, 6, 9), burnin = 2000)
+```
+
+#### Bottom Ranked Beaches
+We can also look at beaches 14, 12, and 2, which were ranked 13th, 14th, and 15th, respectively, in @vitelli2018.
+
+```{r, fig.width=6}
+plot(model_fit, type = "rho", items = c(2, 12, 14), burnin = 2000)s
+```
+
+ 
 
 # Clustering of Assessors
 

@@ -54,6 +54,7 @@ plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
     ggplot2::ggplot(df, ggplot2::aes(x = .data$Rank, y = .data$pct)) +
       ggplot2::geom_col() +
       ggplot2::scale_x_continuous(labels = scalefun) +
+      ggplot2::scale_y_continuous(limits = c(0, 1)) +
       ggplot2::facet_wrap(~ .data$Item) +
       ggplot2::ggtitle("Posterior ranks for items") +
       ggplot2::xlab("Rank") +
