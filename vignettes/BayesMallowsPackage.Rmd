@@ -535,10 +535,11 @@ knitr::kable(head(beach_init_rank, 6))
 We can now check the convergence, using the same tools as before.
 
 ```{r, error=TRUE}
-test_run <- compute_mallows(R = beach_init_rank, P = beach_tc, nmc = 2)
+test_run <- compute_mallows(R = beach_init_rank, P = beach_tc)
 ```
 
 As you can tell, there is a bug. And that is where I will start tomorrow.
+
 # Clustering of Assessors
 
 # References

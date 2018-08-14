@@ -89,7 +89,7 @@ void augment_pairwise(
       if(rank_inds.n_elem > 0){
         ranks_above = R.col(i);
         ranks_above = ranks_above.elem(indices_above);
-        left_limit = arma::min(ranks_above);
+        left_limit = arma::max(ranks_above);
       }
 
     }
