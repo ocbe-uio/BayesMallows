@@ -36,22 +36,30 @@ void augment_pairwise(
     // Check if the drawn element is in the constraint set
     arma::uvec element_ind = arma::find(constr == element);
 
-    // Lower and upper limits of the rankings we will draw
-    int lower_limit = 0, upper_limit = n_items + 1;
+    // Left and right limits of the interval we draw ranks from
+    // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
+    int left_limit = 0, right_limit = n_items + 1;
 
+    // Check first the the element is constrained
     if(element_ind.n_elem > 0){
 
       // We extract the pairwise preferences of assessor i
       arma::uvec pref_inds = arma::find(pairwise_preferences.row(0) == (i + 1));
+
       arma::mat prefs = pairwise_preferences.submat(1, arma::min(pref_inds),
                                                     2, arma::max(pref_inds));
 
+
       // We must find the items that are ranked below the drawn element
+      // Remember, this means that we find elements with a **higher** numeric value
+      // of their rank.
       // First, where is this element preferred
       arma::uvec rank_inds = arma::find(prefs.row(1) == element);
+
       // Next, which elements are ranked below
       arma::vec elements_below = prefs.row(0).t();
       elements_below = elements_below.elem(rank_inds);
+
       // Subtract 1 to go from items to indices
       arma::uvec indices_below = arma::conv_to<arma::uvec>::from(elements_below) -
         arma::ones<arma::uvec>(elements_below.n_elem);
@@ -61,15 +69,17 @@ void augment_pairwise(
       if(rank_inds.n_elem > 0){
         ranks_below = R.col(i);
         ranks_below = ranks_below.elem(indices_below);
-        lower_limit = arma::max(ranks_below);
+        right_limit = arma::min(ranks_below);
       }
 
       // Next, we find the items that are ranked above the drawn element
       // First, where is this element not preferred
       rank_inds = arma::find(prefs.row(0) == element);
+
       // Next, which elements are ranked above
       arma::vec elements_above = prefs.row(1).t();
       elements_above = elements_above.elem(rank_inds);
+
       // Subtract 1 to go from items to indices
       arma::uvec indices_above = arma::conv_to<arma::uvec>::from(elements_above) -
         arma::ones<arma::uvec>(elements_above.n_elem);
@@ -79,16 +89,16 @@ void augment_pairwise(
       if(rank_inds.n_elem > 0){
         ranks_above = R.col(i);
         ranks_above = ranks_above.elem(indices_above);
-        upper_limit = arma::min(ranks_above);
+        left_limit = arma::min(ranks_above);
       }
 
     }
 
     // Now complete the leap step by drawing a new proposal uniformly between
-    // lower_limit + 1 and upper_limit - 1
+    // right_limit + 1 and left_limit - 1
 
     int proposed_element = arma::as_scalar(
-      arma::randi(1, arma::distr_param(lower_limit + 1, upper_limit - 1)));
+      arma::randi(1, arma::distr_param(left_limit + 1, right_limit - 1)));
 
 
     // Assign the proposal to the (element-1)th element

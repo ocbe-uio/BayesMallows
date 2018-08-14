@@ -92,7 +92,7 @@ compute_mallows <- function(R = NULL,
   n_items <- ncol(R)
 
   # Set L if it is not alredy set.
-  if(is.null(L)) L <- n_items / 5
+  if(is.null(L)) L <- floor(n_items / 5)
 
   # Extract the right sequence of cardinalities, if relevant
   if(metric %in% c("footrule", "spearman")){

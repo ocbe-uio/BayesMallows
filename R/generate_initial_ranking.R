@@ -22,7 +22,9 @@ generate_initial_ranking <- function(tc,
     all_items <- seq(from = 1, to = num_items, by = 1)
     g <- c(g, setdiff(all_items, g))
 
-    mat <- matrix(g, nrow = 1)
+    # Convert from ordering to ranking
+    r <- create_ranking(rev(g))
+    mat <- matrix(r, nrow = 1)
 
     return(mat)
   }
@@ -39,3 +41,4 @@ generate_initial_ranking <- function(tc,
   colnames(mat) <- seq(from = 1, to = num_items, by = 1)
   return(mat)
 }
+
