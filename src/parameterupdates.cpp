@@ -54,7 +54,7 @@ void update_alpha(arma::vec& alpha, arma::vec& alpha_acceptance,
 }
 
 
-void update_rho(arma::mat& rho, arma::vec& rho_acceptance, arma::vec& rho_old,
+void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::vec& rho_old,
                 int& rho_index, const int& thinning,
                 const double& alpha_old, const int& L, const arma::mat& R,
                 const std::string& metric, const int& n_items, const int& t) {
@@ -92,9 +92,5 @@ void update_rho(arma::mat& rho, arma::vec& rho_acceptance, arma::vec& rho_old,
     ++rho_index;
     rho.col(rho_index) = rho_old;
   }
-
-
-  // Finally update rho_old to be the current value
-  // rho_old = rho.col(t);
 
 }

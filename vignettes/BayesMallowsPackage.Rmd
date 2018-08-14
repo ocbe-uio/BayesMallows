@@ -46,7 +46,7 @@ The `compute_mallows` function is the workhorse of `BayesMallows`. It runs the M
 We start by using all the default values of the parameters, so we only need to supply the matrix of ranked items. We use the `potato_visual` data printed above. 
 
 ```{r, cache=TRUE}
-model_fit <- compute_mallows(potato_visual)
+model_fit <- compute_mallows(potato_visual, nmc = 2)
 ```
 
 The argument returned is a list object of class `BayesMallows`, which contains a whole lot of information about the MCMC run.
@@ -609,11 +609,12 @@ plot(model_fit, type = "rho", items = c(3, 6, 9), burnin = 2000)
 We can also look at beaches 14, 12, and 2, which were ranked 13th, 14th, and 15th, respectively, in @vitelli2018.
 
 ```{r, fig.width=6}
-plot(model_fit, type = "rho", items = c(2, 12, 14), burnin = 2000)s
+plot(model_fit, type = "rho", items = c(2, 12, 14), burnin = 2000)
 ```
 
- 
 
 # Clustering of Assessors
+
+
 
 # References

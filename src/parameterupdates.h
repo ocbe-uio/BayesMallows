@@ -21,7 +21,7 @@ void update_alpha(arma::vec&,
                   Rcpp::Nullable<arma::vec>,
                   Rcpp::Nullable<arma::vec>);
 
-void update_rho(arma::mat&,
+void update_rho(arma::cube&,
                 arma::vec&,
                 arma::vec&,
                 int&,
