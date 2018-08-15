@@ -27,4 +27,19 @@ void update_rho(arma::cube& rho, arma::mat& rho_acceptance, arma::mat& rho_old,
                 const std::string& metric, const int& n_items, const int& t,
                 const arma::uvec& element_indices);
 
+void update_cluster_labels(
+    arma::umat& cluster_indicator,
+    const arma::mat& rho_old,
+    const arma::mat& R,
+    const arma::mat& cluster_probs,
+    const arma::vec& alpha_old,
+    const int& n_items,
+    const int& n_assessors,
+    const int& n_clusters,
+    const int& t,
+    const std::string& metric,
+    Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
+    Rcpp::Nullable<arma::vec> is_fit = R_NilValue
+);
+
 #endif

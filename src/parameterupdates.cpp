@@ -110,3 +110,40 @@ void update_rho(arma::cube& rho, arma::mat& rho_acceptance, arma::mat& rho_old,
   }
 
 }
+
+
+void update_cluster_labels(
+    arma::umat& cluster_indicator,
+    const arma::mat& rho_old,
+    const arma::mat& R,
+    const arma::mat& cluster_probs,
+    const arma::vec& alpha_old,
+    const int& n_items,
+    const int& n_assessors,
+    const int& n_clusters,
+    const int& t,
+    const std::string& metric,
+    Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
+    Rcpp::Nullable<arma::vec> is_fit = R_NilValue
+){
+  // Matrix to hold assignment probabilities
+  arma::mat assignment_prob(n_clusters, n_assessors);
+
+  for(int assessor_index = 0; assessor_index < n_assessors; ++assessor_index){
+    for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
+      assignment_prob(cluster_index, assessor_index) =
+        cluster_probs(cluster_index, t) /
+        get_partition_function(n_items, alpha_old(cluster_index), cardinalities, is_fit, metric) *
+        exp(-alpha_old(cluster_index)/ n_items *
+          get_rank_distance(R.col(assessor_index), rho_old.col(cluster_index), metric));
+
+    }
+
+  }
+  // Normalise the assignment probabilities, to unit L1 norm for each assessor (column)
+  assignment_prob = arma::normalise(assignment_prob, 1, 0);
+
+
+
+
+}

@@ -1,5 +1,4 @@
 #include <math.h>
-#include <random>
 #include "RcppArmadillo.h"
 #include "parameterupdates.h"
 #include "misc.h"
@@ -115,8 +114,8 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   // Can considering having this as an optional user argument
   int psi = floor(n_assessors / n_clusters);
   // Cluster probabilities
-  arma::vec cluster_probs(n_clusters);
-  cluster_probs.fill(1.0/n_clusters);
+  arma::mat cluster_probs(n_clusters, nmc);
+  cluster_probs.col(0).fill(1.0/n_clusters);
 
   // Declare the cluster indicator z
   arma::umat cluster_indicator(nmc, n_assessors);
@@ -147,11 +146,6 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
   arma::uvec element_indices = arma::regspace<arma::uvec>(0, R.n_rows - 1);
 
-
-  // This initializes the GSL random number generator
-  // gsl_rng *r = gsl_rng_alloc(gsl_rng_mt19937);
-  // gsl_rng_set(r, arma::randi<arma::vec>(1)[0]);
-
   // This is the Metropolis-Hastings loop
 
   // Starting at t = 1, meaning that alpha and rho must be initialized at index 0
@@ -163,12 +157,18 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     // Gibbs sampler step for clustering
     arma::uvec tau_k(n_clusters);
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
+      // Find the parameter for this cluster
       tau_k(cluster_index) = arma::sum(cluster_indicator.row(t - 1) == cluster_index) + psi;
+
+      // Save the a draw from the gamma distribution
+      cluster_probs(cluster_index, t) = arma::randg<double>(arma::distr_param(tau_k(cluster_index), 1.0));
+
     }
 
-    // gsl_ran_dirichlet(r, n_clusters, tau_k.memptr(), cluster_probs.memptr());
-
-    Rcpp::Rcout << tau_k << std::endl;
+    // Finally, normalize cluster_probs. Must specify that it should have unit 1-norm,
+    // 2-norm is default!!
+    // cluster_probs.col(t) now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
+    cluster_probs.col(t) = arma::normalise(cluster_probs.col(t), 1);
 
 
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
@@ -216,11 +216,15 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
     }
 
+  // Update the cluster labels, per assessor
 
+  update_cluster_labels(cluster_indicator, rho_old, R, cluster_probs, alpha_old, n_items, n_assessors, n_clusters,
+                        t, metric, cardinalities, is_fit);
 
-
+  // Rcpp::Rcout << assignment_prob << std::endl;
 
   }
+
 
   // Return everything that might be of interest
   return Rcpp::List::create(

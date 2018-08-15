@@ -615,6 +615,7 @@ plot(model_fit, type = "rho", items = c(2, 12, 14), burnin = 2000)
 
 # Clustering of Assessors
 
+## Drawing Number from the Dirichlet Distribution
 
 
 # References
