@@ -15,30 +15,36 @@ knitr::opts_chunk$set(
 ```
 # BayesMallows
 
-This package implements the Bayesian Mallows Model described in @vitelli2018. At the moment, the Mallows model for complete data is implemented, and the user can choose between footrule, Spearman, Cayley, Kendall, or Hamming distance. 
+This package implements the Bayesian Mallows Model described in @vitelli2018. The user can choose between footrule, Spearman, Cayley, Kendall, or Hamming distance. 
 
-Future releases will include:
+The following features are currently implemented:
+
+- Complete data (@vitelli2018).
 
 - Clustering users with similar preferences (@vitelli2018).
 
 - Handling missing ranks by imputation (@vitelli2018).
 
+- Handling transitive pairwise preferences by imputation (@vitelli2018).
+
+This includes any combination thereof, e.g., clustering assessors based on pairwise preferences.
+
+Future releases will include:
+
 - Time-varying ranks (@asfaw2016).
 
-- Non-transitive pairwise comparisons (@crispino2017).
+- Non-transitive pairwise comparisons (@crispino2018).
 
 All feedback and suggestions are very welcome. Feel free to create a [Pull Request](https://github.uio.no/oyss/BayesMallows/pulls) or an [Issue](https://github.uio.no/oyss/BayesMallows/issues). Please also check out the [Suggested Roadmap](https://github.uio.no/oyss/BayesMallows/wiki/Roadmap).
 
 ## Installation
 To install the current development version of the package, you should clone or download this repository, and then open `BayesMallows.Rproj` in RStudio and press CTRL + SHIFT + B. If you have trouble, please send me an [email](mailto:oystein.sorensen@medisin.uio.no). 
 
-To get started using the package, take a look at the package documentation by running the following commands:
+To get started using the package, generate its vignette with the following command:
 
-```{r, eval = FALSE}
-library(BayesMallows)
-?`BayesMallows-package`
+```{r, eval=FALSE}
+rmarkdown::render("./vignettes/BayesMallowsPackage.Rmd")
 ```
-
 
 
 

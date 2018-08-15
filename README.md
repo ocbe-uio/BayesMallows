@@ -4,19 +4,28 @@
 # BayesMallows
 
 This package implements the Bayesian Mallows Model described in Vitelli
-et al. (2018). At the moment, the Mallows model for complete data is
-implemented, and the user can choose between footrule, Spearman, Cayley,
+et al. (2018). The user can choose between footrule, Spearman, Cayley,
 Kendall, or Hamming distance.
 
-Future releases will include:
+The following features are currently implemented:
+
+  - Complete data (Vitelli et al. (2018)).
 
   - Clustering users with similar preferences (Vitelli et al. (2018)).
 
   - Handling missing ranks by imputation (Vitelli et al. (2018)).
 
+  - Handling transitive pairwise preferences by imputation (Vitelli et
+    al. (2018)).
+
+This includes any combination thereof, e.g., clustering assessors based
+on pairwise preferences.
+
+Future releases will include:
+
   - Time-varying ranks (Asfaw et al. (2016)).
 
-  - Non-transitive pairwise comparisons (Crispino et al. (2017)).
+  - Non-transitive pairwise comparisons (Crispino et al. (2018)).
 
 All feedback and suggestions are very welcome. Feel free to create a
 [Pull Request](https://github.uio.no/oyss/BayesMallows/pulls) or an
@@ -31,12 +40,11 @@ clone or download this repository, and then open `BayesMallows.Rproj` in
 RStudio and press CTRL + SHIFT + B. If you have trouble, please send me
 an [email](mailto:oystein.sorensen@medisin.uio.no).
 
-To get started using the package, take a look at the package
-documentation by running the following commands:
+To get started using the package, generate its vignette with the
+following command:
 
 ``` r
-library(BayesMallows)
-?`BayesMallows-package`
+rmarkdown::render("./vignettes/BayesMallowsPackage.Rmd")
 ```
 
 ## References
@@ -47,23 +55,26 @@ library(BayesMallows)
 
 Asfaw, D., V. Vitelli, O. Sorensen, E. Arjas, and A. Frigessi. 2016.
 “Time‐varying Rankings with the Bayesian Mallows Model.” *Stat* 6 (1):
-14–30.
+14–30. <https://onlinelibrary.wiley.com/doi/abs/10.1002/sta4.132>.
 
 </div>
 
-<div id="ref-crispino2017">
+<div id="ref-crispino2018">
 
-Crispino, M., E. Arjas, V. Vitelli, N. Barrett, and A. Frigessi. 2017.
+Crispino, M., E. Arjas, V. Vitelli, N. Barrett, and A. Frigessi. 2018.
 “A Bayesian Mallows approach to non-transitive pair comparison data:
-how human are sounds?” *ArXiv E-Prints*.
+how human are sounds?” *Accepted for Publication in Annals of Applied
+Statistics*.
+<https://www.e-publications.org/ims/submission/AOAS/user/submissionFile/34225?confirm=6b603456>.
 
 </div>
 
 <div id="ref-vitelli2018">
 
 Vitelli, V., O. Sorensen, M. Crispino, E. Arjas, and A. Frigessi. 2018.
-“Probabilistic Preference Learning with the Mallows Rank Model.” *J
-Mach. Learn. Res.* 18 (1): 1–49.
+“Probabilistic Preference Learning with the Mallows Rank Model.”
+*Journal of Machine Learning Research* 18 (1): 1–49.
+<http://jmlr.org/papers/v18/15-481.html>.
 
 </div>
 
