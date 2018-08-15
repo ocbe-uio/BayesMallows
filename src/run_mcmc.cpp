@@ -188,22 +188,23 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
           cardinalities, is_fit);
       }
 
-//
-//       // Perform data augmentation of missing ranks, if needed
-//       if(any_missing){
-//         update_missing_ranks(R, aug_acceptance, missing_indicator,
-//                              assessor_missing, n_items, n_assessors,
-//                              alpha_old, rho_old, metric, t, aug_diag_index,
-//                              aug_diag_thinning);
-//       }
+
+      // Perform data augmentation of missing ranks, if needed
+      if(any_missing){
+        update_missing_ranks(R, aug_acceptance, missing_indicator,
+                             assessor_missing, n_items, n_assessors,
+                             alpha_old(cluster_index), rho_old.col(cluster_index), metric, t, aug_diag_index,
+                             aug_diag_thinning);
+      }
 
 
-// Perform data augmentation of pairwise comparisons, if needed
-        // if(augpair){
-        //   augment_pairwise(R, alpha_old, rho_old, metric, pairwise_preferences,
-        //                    constrained_elements, n_assessors, n_items,
-        //                    t, aug_acceptance, aug_diag_index, aug_diag_thinning);
-        // }
+      // Perform data augmentation of pairwise comparisons, if needed
+      if(augpair){
+        augment_pairwise(R, alpha_old(cluster_index), rho_old.col(cluster_index),
+                         metric, pairwise_preferences, constrained_elements,
+                         n_assessors, n_items, t, aug_acceptance, aug_diag_index,
+                         aug_diag_thinning);
+        }
 
 
 
@@ -221,7 +222,6 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   update_cluster_labels(cluster_indicator, rho_old, R, cluster_probs, alpha_old, n_items, n_assessors, n_clusters,
                         t, metric, cardinalities, is_fit);
 
-  // Rcpp::Rcout << assignment_prob << std::endl;
 
   }
 
@@ -240,6 +240,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     Rcpp::Named("nmc") = nmc,
     Rcpp::Named("n_items") = n_items,
     Rcpp::Named("n_assessors") = n_assessors,
+    Rcpp::Named("n_clusters") = n_clusters,
     Rcpp::Named("alpha_jump") = alpha_jump,
     Rcpp::Named("thinning") = thinning,
     Rcpp::Named("L") = L,

@@ -29,7 +29,7 @@ generate_initial_ranking <- function(tc,
     return(mat)
   }
   # Find
-  tc <- dplyr::group_by(tc, assessor)
+  tc <- dplyr::group_by(tc, .data$assessor)
   tc <- dplyr::do(tc, dplyr::as_tibble(
       x = create_ranks(
         as.matrix(.data[, c("bottom_item", "top_item"), drop = FALSE]),

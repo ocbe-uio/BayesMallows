@@ -33,11 +33,6 @@
 #' @seealso \code{\link{assess_convergence}}, \code{\link{plot.BayesMallows}}.
 #' @export
 #' @importFrom rlang .data
-#'
-#' @examples
-#' # Compute the posterior
-#' model_fit <- compute_mallows(potato_weighing, "footrule", nmc = 1000)
-#'
 compute_mallows <- function(R = NULL,
                             P = NULL,
                             metric = "footrule",
@@ -64,7 +59,7 @@ compute_mallows <- function(R = NULL,
     }
 
     # Find all the constrained elements per assessor
-    constrained <- dplyr::group_by(P, assessor)
+    constrained <- dplyr::group_by(P, .data$assessor)
     constrained <- dplyr::summarise(constrained,
                                     items = list(unique(c(.data$bottom_item, .data$top_item))))
     constrained <- tidyr::unnest(constrained)

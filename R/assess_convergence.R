@@ -19,6 +19,10 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
 
   stopifnot(class(model_fit) == "BayesMallows")
 
+  if(model_fit$n_clusters != 1){
+    stop("Cluster plots not implemented yet")
+  }
+
   if(is.character(items)) stopifnot(items %in% rownames(model_fit$rho))
 
   if(type == "alpha") {

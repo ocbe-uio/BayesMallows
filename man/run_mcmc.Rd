@@ -5,7 +5,7 @@
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
 run_mcmc(R, nmc, pairwise, constrained, cardinalities, is_fit,
-  metric = "footrule", num_clusters = 1L, L = 1L, sd_alpha = 0.5,
+  metric = "footrule", n_clusters = 1L, L = 1L, sd_alpha = 0.5,
   alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L,
   aug_diag_thinning = 100L)
 }
@@ -29,7 +29,7 @@ With n_assessors samples and n_items items, R is n_items x n_assessors.}
 \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 \code{"hamming"}.}
 
-\item{num_clusters}{Number of clusters. Defaults to 1.}
+\item{n_clusters}{Number of clusters. Defaults to 1.}
 
 \item{L}{Leap-and-shift step size.}
 

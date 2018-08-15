@@ -1,10 +1,7 @@
-#' Title
+#' Generate transitive closure
 #'
-#' @param df Dataframe with columns \code{assessor}, \code{bottom_item}, and
-#'   \code{top_item}.
-#'
+#' @param df Data frame with columns \code{assessor}, \code{top_item}, and \code{bottom_item}.
 #' @export
-#'
 generate_transitive_closure <- function(df){
 
   # Integers mess up the function, so we use numeric
@@ -31,11 +28,6 @@ generate_transitive_closure <- function(df){
 #'
 #' @param mat A matrix in which column 1 is the lower ranked item and column 2 is the
 #'   upper ranked item.
-#' @param num_items Total number of items.
-#'
-#'
-#' @return
-#'
 .generate_transitive_closure <- function(mat){
 
   # This line was an answer to StackOverflow question 51794127

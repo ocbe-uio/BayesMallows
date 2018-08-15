@@ -9,11 +9,6 @@
 \arguments{
 \item{mat}{A matrix in which column 1 is the lower ranked item and column 2 is the
 upper ranked item.}
-
-\item{num_items}{Total number of items.}
-}
-\value{
-
 }
 \description{
 Internal function for generating transitive closure

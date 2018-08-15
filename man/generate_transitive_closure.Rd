@@ -2,14 +2,13 @@
 % Please edit documentation in R/generate_transitive_closure.R
 \name{generate_transitive_closure}
 \alias{generate_transitive_closure}
-\title{Title}
+\title{Generate transitive closure}
 \usage{
 generate_transitive_closure(df)
 }
 \arguments{
-\item{df}{Dataframe with columns \code{assessor}, \code{bottom_item}, and
-\code{top_item}.}
+\item{df}{Data frame with columns \code{assessor}, \code{top_item}, and \code{bottom_item}.}
 }
 \description{
-Title
+Generate transitive closure
 }

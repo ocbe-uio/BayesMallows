@@ -55,11 +55,6 @@ A list of class BayesMallows.
 \description{
 Compute the posterior distribution for the Mallows model.
 }
-\examples{
-# Compute the posterior
-model_fit <- compute_mallows(potato_weighing, "footrule", nmc = 1000)
-
-}
 \references{
 \insertRef{vitelli2018}{BayesMallows}
 }
