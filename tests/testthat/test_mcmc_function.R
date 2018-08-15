@@ -26,6 +26,6 @@ test_that(
 test_that(
   "rho is a rank vector",
   expect_true(
-    all(apply(model_fit$rho[, sample.int(n = 5000, size = 100)], 2, BayesMallows:::validate_permutation))
+    all(apply(model_fit$rho[, sample.int(n = 5000, size = 100), 1], 2, BayesMallows:::validate_permutation))
   )
 )

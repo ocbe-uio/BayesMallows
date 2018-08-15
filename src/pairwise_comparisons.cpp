@@ -96,7 +96,6 @@ void augment_pairwise(
 
     // Now complete the leap step by drawing a new proposal uniformly between
     // right_limit + 1 and left_limit - 1
-
     int proposed_element = arma::as_scalar(
       arma::randi(1, arma::distr_param(left_limit + 1, right_limit - 1)));
 

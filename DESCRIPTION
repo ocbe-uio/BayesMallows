@@ -15,19 +15,20 @@ Imports: Rcpp (>= 0.12.17),
   ggplot2 (>= 2.2.1),
   Rdpack (>= 0.8),
   stats (>= 3.5.0),
-  dplyr,
-  sets,
-  relations,
-  tidyr,
-  rlang,
-  zoo
+  igraph (>= 1.2.2),
+  dplyr (>= 0.7.6),
+  sets (>= 1.0-18),
+  relations (>= 0.6-8),
+  tidyr (>= 0.8.1),
+  rlang (>= 0.2.1),
+  zoo (>= 1.8-3)
 LinkingTo: Rcpp, RcppArmadillo
 Suggests:
     testthat,
-    purrr,
+    purrr (>= 0.2.5),
     gtools (>= 3.8.1),
     knitr,
     rmarkdown,
-    Rankcluster
+    Rankcluster (>= 0.94)
 VignetteBuilder: knitr
 RdMacros: Rdpack

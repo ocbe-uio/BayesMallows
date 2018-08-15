@@ -68,6 +68,7 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' @param metric The distance metric to use. One of \code{"spearman"},
 #' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 #' \code{"hamming"}.
+#' @param n_clusters Number of clusters. Defaults to 1.
 #' @param L Leap-and-shift step size.
 #' @param sd_alpha Standard deviation of proposal distribution for alpha.
 #' @param alpha_init Initial value of alpha.
@@ -81,7 +82,7 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' @param aug_diag_thinning The interval in which we save
 #' augmentation diagnostics.
 #'
-run_mcmc <- function(R, nmc, pairwise, constrained, cardinalities, is_fit, metric = "footrule", L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L) {
-    .Call(`_BayesMallows_run_mcmc`, R, nmc, pairwise, constrained, cardinalities, is_fit, metric, L, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning)
+run_mcmc <- function(R, nmc, pairwise, constrained, cardinalities, is_fit, metric = "footrule", n_clusters = 1L, L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L) {
+    .Call(`_BayesMallows_run_mcmc`, R, nmc, pairwise, constrained, cardinalities, is_fit, metric, n_clusters, L, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning)
 }
 

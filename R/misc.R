@@ -40,7 +40,8 @@ gather_rho <- function(model_fit, selected_items = NULL,
     row_inds <- seq.int(from = 1, to = ncol(model_fit$rho), by = 1)
   }
 
-  df <- dplyr::as_tibble(t(model_fit$rho[selected_items, row_inds, drop = FALSE]))
+  # Workaround until we have a way to plot clusters
+  df <- dplyr::as_tibble(t(model_fit$rho[selected_items, row_inds, 1]))
 
   df <- dplyr::mutate(df, Index = dplyr::row_number())
 
