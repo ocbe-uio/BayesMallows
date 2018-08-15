@@ -670,5 +670,10 @@ assess_convergence(model_fit)
 assess_convergence(model_fit, type = "rho", items = 1:4)
 ```
 
+## Sushi Data
+```{r}
+knitr::kable(head(sushi_rankings), caption = "First 6 rows of example dataset `sushi_rankings`.")
+```
+
 
 # References

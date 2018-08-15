@@ -27,3 +27,8 @@
 #'
 #' @references \insertRef{vitelli2018}{BayesMallows}
 "beach_preferences"
+
+#' Sushi preferences
+#'
+#' @references \insertRef{vitelli2018}{BayesMallows}
+"sushi_rankings"
