@@ -1,4 +1,5 @@
 #include <math.h>
+#include <random>
 #include "RcppArmadillo.h"
 #include "parameterupdates.h"
 #include "misc.h"
@@ -101,97 +102,148 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   // same time for a given Monte Carlo sample.
   arma::cube rho(n_items, n_rho, n_clusters);
 
-  // Set the initial latent rank value
+  // Declare the vector to hold the scaling parameter alpha
+  arma::mat alpha(n_alpha, n_clusters);
+
+  // Set the initial latent rank value and alpha value
   for(int i = 0; i < n_clusters; ++i){
     rho.slice(i).col(0) = arma::linspace<arma::vec>(1, n_items, n_items);
+    alpha.col(i).row(0) = alpha_init;
   }
-  Rcpp::Rcout << rho.slice(0).col(0) << std::endl;
+
+  // Hyperparameter for Dirichlet prior used in clustering
+  // Can considering having this as an optional user argument
+  int psi = floor(n_assessors / n_clusters);
+  // Cluster probabilities
+  arma::vec cluster_probs(n_clusters);
+  cluster_probs.fill(1.0/n_clusters);
+
+  // Declare the cluster indicator z
+  arma::umat cluster_indicator(nmc, n_assessors);
+  // Initialize clusters randomly
+  cluster_indicator.row(0) = arma::randi<arma::urowvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
+
+  // Fill in missing ranks, if needed
+  if(any_missing){
+    initialize_missing_ranks(R, missing_indicator, assessor_missing,
+                             n_items, n_assessors);
+  }
+
+  // Declare indicator vectors to hold acceptance or not
+  arma::mat alpha_acceptance(n_alpha, n_clusters);
+  arma::mat rho_acceptance(nmc, n_clusters);
+  arma::mat aug_acceptance = arma::zeros<arma::mat>(n_assessors, n_aug_diag);
+
+  // Set the initial values;
+  alpha_acceptance.row(0).fill(1);
+  rho_acceptance.row(0).fill(1);
+  aug_acceptance.col(0) = arma::zeros<arma::vec>(n_assessors);
+
+
+  // Other variables used
+  int alpha_index = 0, rho_index = 0, aug_diag_index = 0;
+  arma::vec alpha_old = alpha.row(0).t();
+  arma::mat rho_old = rho(arma::span::all, arma::span(0), arma::span::all);
+
+  arma::uvec element_indices = arma::regspace<arma::uvec>(0, R.n_rows - 1);
+
+
+  // This initializes the GSL random number generator
+  // gsl_rng *r = gsl_rng_alloc(gsl_rng_mt19937);
+  // gsl_rng_set(r, arma::randi<arma::vec>(1)[0]);
+
+  // This is the Metropolis-Hastings loop
+
+  // Starting at t = 1, meaning that alpha and rho must be initialized at index 0
+  for(int t = 1; t < nmc; ++t){
+
+    // Check if the user has tried to interrupt.
+    if (t % 1000 == 0) Rcpp::checkUserInterrupt();
+
+    // Gibbs sampler step for clustering
+    arma::uvec tau_k(n_clusters);
+    for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
+      tau_k(cluster_index) = arma::sum(cluster_indicator.row(t - 1) == cluster_index) + psi;
+    }
+
+    // gsl_ran_dirichlet(r, n_clusters, tau_k.memptr(), cluster_probs.memptr());
+
+    Rcpp::Rcout << tau_k << std::endl;
+
+
+    for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
+
+      if(t % alpha_jump == 0) {
+
+        // Increment alpha_index only once, and not n_cluster times!
+        if(cluster_index == 0) ++alpha_index;
+
+        // Call the void function which updates alpha by reference
+        update_alpha(
+          alpha, alpha_acceptance, alpha_old,
+          R.submat(element_indices,
+                   arma::find(cluster_indicator.row(t - 1) == cluster_index)),
+          alpha_index, cluster_index, rho_old,
+          sd_alpha, metric, lambda, n_items,
+          cardinalities, is_fit);
+      }
 
 //
-//   // Declare the vector to hold the scaling parameter alpha
-//   arma::vec alpha(n_alpha);
-//
-//   // Set the initial alpha value
-//   alpha(0) = alpha_init;
-//
-//   // Fill in missing ranks, if needed
-//   if(any_missing){
-//     initialize_missing_ranks(R, missing_indicator, assessor_missing,
-//                              n_items, n_assessors);
-//   }
-//
-//   // Declare indicator vectors to hold acceptance or not
-//   arma::vec alpha_acceptance(n_alpha), rho_acceptance(nmc);
-//   arma::mat aug_acceptance = arma::zeros<arma::mat>(n_assessors, n_aug_diag);
-//
-//   // Set the initial values;
-//   alpha_acceptance(0) = 1;
-//   rho_acceptance(0) = 1;
-//   aug_acceptance.col(0) = arma::zeros<arma::vec>(n_assessors);
-//
-//
-//   // Other variables used
-//   int alpha_index = 0, rho_index = 0, aug_diag_index = 0;
-//   double alpha_old = alpha(0);
-//   arma::vec rho_old = rho.col(0);
-//
-//   // This is the Metropolis-Hastings loop
-//   // Starting at t = 1, meaning that alpha and rho must be initialized at index 0
-//   for(int t = 1; t < nmc; ++t){
-//
-//     // Check if the user has tried to interrupt.
-//     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
-//
-//     if(t % alpha_jump == 0) {
-//       // Call the void function which updates alpha by reference
-//       update_alpha(alpha, alpha_acceptance, alpha_old, R, alpha_index,
-//         rho_old, sd_alpha, metric, lambda, n_items, n_assessors, cardinalities, is_fit);
-//     }
-//
-//     // Perform data augmentation of missing ranks, if needed
-//     if(any_missing){
-//       update_missing_ranks(R, aug_acceptance, missing_indicator,
-//                            assessor_missing, n_items, n_assessors,
-//                            alpha_old, rho_old, metric, t, aug_diag_index,
-//                            aug_diag_thinning);
-//     }
-//
-//     // Perform data augmentation of pairwise comparisons, if needed
-//     if(augpair){
-//       augment_pairwise(R, alpha_old, rho_old, metric, pairwise_preferences,
-//                        constrained_elements, n_assessors, n_items,
-//                        t, aug_acceptance, aug_diag_index, aug_diag_thinning);
-//     }
-//
-//
-//     // Call the void function which updates rho by reference
-//     update_rho(rho, rho_acceptance, rho_old, rho_index,
-//                thinning, alpha_old, L, R, metric, n_items, t);
-//
-//   }
-//
-//   // Return everything that might be of interest
-//   return Rcpp::List::create(
-//     Rcpp::Named("rho") = rho,
-//     Rcpp::Named("rho_acceptance") = rho_acceptance,
-//     Rcpp::Named("alpha") = alpha,
-//     Rcpp::Named("alpha_acceptance") = alpha_acceptance,
-//     Rcpp::Named("any_missing") = any_missing,
-//     Rcpp::Named("augpair") = augpair,
-//     Rcpp::Named("aug_acceptance") = aug_acceptance,
-//     Rcpp::Named("metric") = metric,
-//     Rcpp::Named("lambda") = lambda,
-//     Rcpp::Named("nmc") = nmc,
-//     Rcpp::Named("n_items") = n_items,
-//     Rcpp::Named("n_assessors") = n_assessors,
-//     Rcpp::Named("alpha_jump") = alpha_jump,
-//     Rcpp::Named("thinning") = thinning,
-//     Rcpp::Named("L") = L,
-//     Rcpp::Named("sd_alpha") = sd_alpha,
-//     Rcpp::Named("aug_diag_thinning") = aug_diag_thinning
-//   );
+//       // Perform data augmentation of missing ranks, if needed
+//       if(any_missing){
+//         update_missing_ranks(R, aug_acceptance, missing_indicator,
+//                              assessor_missing, n_items, n_assessors,
+//                              alpha_old, rho_old, metric, t, aug_diag_index,
+//                              aug_diag_thinning);
+//       }
 
-return(Rcpp::List::create(Rcpp::Named("test") = 0));
+
+// Perform data augmentation of pairwise comparisons, if needed
+        // if(augpair){
+        //   augment_pairwise(R, alpha_old, rho_old, metric, pairwise_preferences,
+        //                    constrained_elements, n_assessors, n_items,
+        //                    t, aug_acceptance, aug_diag_index, aug_diag_thinning);
+        // }
+
+
+
+
+      // Call the void function which updates rho by reference
+      update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,
+                 thinning, alpha_old(cluster_index), L, R, metric, n_items, t,
+                 element_indices);
+
+
+    }
+
+
+
+
+
+  }
+
+  // Return everything that might be of interest
+  return Rcpp::List::create(
+    Rcpp::Named("rho") = rho,
+    Rcpp::Named("rho_acceptance") = rho_acceptance,
+    Rcpp::Named("alpha") = alpha,
+    Rcpp::Named("alpha_acceptance") = alpha_acceptance,
+    Rcpp::Named("any_missing") = any_missing,
+    Rcpp::Named("augpair") = augpair,
+    Rcpp::Named("aug_acceptance") = aug_acceptance,
+    Rcpp::Named("metric") = metric,
+    Rcpp::Named("lambda") = lambda,
+    Rcpp::Named("nmc") = nmc,
+    Rcpp::Named("n_items") = n_items,
+    Rcpp::Named("n_assessors") = n_assessors,
+    Rcpp::Named("alpha_jump") = alpha_jump,
+    Rcpp::Named("thinning") = thinning,
+    Rcpp::Named("L") = L,
+    Rcpp::Named("sd_alpha") = sd_alpha,
+    Rcpp::Named("aug_diag_thinning") = aug_diag_thinning
+  );
+
+// return(Rcpp::List::create(Rcpp::Named("test") = 0));
 }
 
 
