@@ -528,7 +528,7 @@ test_run <- compute_mallows(
 
 The chain for $\alpha$ seems to be close to convergence already after 1,000 iterations.
 
-```{r}
+```{r, fig.width=6}
 assess_convergence(test_run)
 ```
 
@@ -536,7 +536,7 @@ assess_convergence(test_run)
 
 The latent ranks seem to converge quite fast, and definitely after 1,000 iterations.
 
-```{r}
+```{r, fig.width=6}
 assess_convergence(test_run, type = "rho", items = 1:15)
 ```
 
@@ -544,7 +544,7 @@ assess_convergence(test_run, type = "rho", items = 1:15)
 
 Also the acceptance rate for the augmented ranks looks very fine.
 
-```{r}
+```{r, fig.width=6}
 assess_convergence(test_run, type = "augmentation")
 ```
 
@@ -598,7 +598,77 @@ plot(model_fit, type = "rho", items = c(2, 12, 14), burnin = 2000)
 
 # Clustering of Assessors
 
-## Drawing Number from the Dirichlet Distribution
+In many situations, it is interesting to divide the assessors into clusters, in which each the assessors in each cluster have similar preferences. In @vitelli2018, Section 4.3, it is shown how the Bayesian Mallows model can be extended to do exactly this, with a mixture approach. `BayesMallows` supports this through the optional argument `num_clusters` to `compute_mallows`.
+
+## Introduction
+
+To illustrate how to perform clustering, let us create some clusters in the `potato_visual` dataset. This dataset has 12 assessors. We leave the first 6 assessors as is, but for the last 6, we revert the rankings.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(potato_visual, caption = "Dataset `potato_visual` before manipulation.")
+```
+
+
+```{r}
+potato_manipulated <- potato_visual
+potato_manipulated[7:12, ] <- 21 - potato_manipulated[7:12, ]
+```
+
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(potato_manipulated, caption = "Dataset `potato_manipulated`.")
+```
+
+Let us try first without clustering.
+```{r}
+model_fit <- compute_mallows(R = potato_manipulated)
+```
+
+Looking at the convergence of $\alpha$ and $\rho$, we see that this model does not settle on a consensus ranking.
+```{r, fig.width=6}
+assess_convergence(model_fit)
+```
+
+
+```{r, fig.width=6}
+assess_convergence(model_fit, type = "rho", items = 1:4)
+```
+
+Let us instead introduce clustering:
+
+```{r}
+model_fit <- compute_mallows(R = potato_manipulated, num_clusters = 2, nmc = 10000)
+```
+
+Here is the model object.
+
+```{r}
+str(model_fit)
+```
+
+
+The element `n_clusters` is correctly equal to 2. In addition, note that `rho` has size $20 \times 3000 \times 2$, and that `rho_acceptance`, `alpha`, and `alpha_acceptance` have size $3000 \times 2$.
+
+**Note:** The package author has a job to do in terms of defining the dimensions of the various parameter objects, cf. `dim(model_fit)$cluster_probs` vs. `dim(model_fit)$cluster_indicator`. This also has performance implications, due to [C++'s row-major ordering](https://en.wikipedia.org/wiki/Row-_and_column-major_order#Programming_languages_and_libraries).
+
+### Label Switching
+
+Before going on, I have to implement a way to handle label switching.
+
+### Algorithm Tuning
+
+#### Convergence of $\alpha$
+We can assess convergence in the usual way. Let us start with `alpha`. The `assess_convergence` method now shows one trace per cluster.
+
+```{r}
+assess_convergence(model_fit)
+```
+
+#### Convergence of $\rho$
+
+```{r}
+assess_convergence(model_fit, type = "rho", items = 1:4)
+```
 
 
 # References

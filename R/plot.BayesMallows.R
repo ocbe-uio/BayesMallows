@@ -20,6 +20,10 @@ plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
 
   stopifnot(type %in% c("alpha", "rho"))
 
+  if(x$n_clusters != 1){
+    stop("Cluster plots not implemented yet")
+  }
+
 
   if(type == "alpha") {
     start <- floor(burnin / x$alpha_jump) + 1
@@ -46,18 +50,18 @@ plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
 
     # Compute the density, rather than the count, since the latter
     # depends on the number of Monte Carlo samples
-    df <- dplyr::group_by(df, .data$Item, .data$Rank)
+    df <- dplyr::group_by(df, .data$item, .data$rank)
     df <- dplyr::summarise(df, n = dplyr::n())
     df <- dplyr::mutate(df, pct = .data$n / sum(.data$n))
 
     # Finally create the plot
-    ggplot2::ggplot(df, ggplot2::aes(x = .data$Rank, y = .data$pct)) +
+    ggplot2::ggplot(df, ggplot2::aes(x = .data$rank, y = .data$pct)) +
       ggplot2::geom_col() +
       ggplot2::scale_x_continuous(labels = scalefun) +
       ggplot2::scale_y_continuous(limits = c(0, 1)) +
-      ggplot2::facet_wrap(~ .data$Item) +
+      ggplot2::facet_wrap(~ .data$item) +
       ggplot2::ggtitle("Posterior ranks for items") +
-      ggplot2::xlab("Rank") +
+      ggplot2::xlab("rank") +
       ggplot2::ylab("Posterior probability")
   }
 }

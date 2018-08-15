@@ -40,13 +40,32 @@ gather_rho <- function(model_fit, selected_items = NULL,
     row_inds <- seq.int(from = 1, to = ncol(model_fit$rho), by = 1)
   }
 
-  # Workaround until we have a way to plot clusters
-  df <- dplyr::as_tibble(t(model_fit$rho[selected_items, row_inds, 1]))
 
-  df <- dplyr::mutate(df, Index = dplyr::row_number())
+  df <- dplyr::tibble(
+    index = numeric(),
+    cluster = numeric(),
+    item = character(),
+    rank = numeric()
+  )
+  for(i in seq(from = 1, to = model_fit$n_clusters, by = 1)){
+    tmp <- matrix(nrow = model_fit$nmc, ncol = length(selected_items))
+    tmp[] <- t(model_fit$rho[selected_items,,i])
 
-  # Make the tibble tall by gathering items
-  df <- tidyr::gather(df, key = "Item", value = "Rank", -.data$Index)
+    if(is.character(selected_items)){
+      colnames(tmp) <- selected_items
+    } else {
+      colnames(tmp) <- rownames(model_fit$rho)[selected_items]
+    }
+
+
+    tmp <- dplyr::as_tibble(tmp)
+    tmp <- dplyr::mutate(tmp,
+                         index = dplyr::row_number(),
+                         cluster = i)
+    tmp <- tidyr::gather(tmp, key = "item", value = "rank", -index, -cluster)
+
+    df <- dplyr::bind_rows(df, tmp)
+  }
 
   # Convert the item to factor, so it ends up in the order specified
   if(is.character(selected_items)){
@@ -55,7 +74,7 @@ gather_rho <- function(model_fit, selected_items = NULL,
     fct_levels <- rownames(model_fit$rho)[selected_items]
   }
 
-  df <- dplyr::mutate(df, Item = factor(.data$Item, levels = fct_levels))
+  df <- dplyr::mutate(df, item = factor(.data$item, levels = fct_levels))
 
   return(df)
 }

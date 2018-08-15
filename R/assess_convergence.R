@@ -19,36 +19,34 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
 
   stopifnot(class(model_fit) == "BayesMallows")
 
-  if(model_fit$n_clusters != 1){
-    stop("Cluster plots not implemented yet")
-  }
+
 
   if(is.character(items)) stopifnot(items %in% rownames(model_fit$rho))
 
   if(type == "alpha") {
-    # Converting to data frame before plotting
-    df <- dplyr::bind_cols(
-      alpha = model_fit$alpha,
-      alpha_acceptance = model_fit$alpha_acceptance)
 
-    df <- dplyr::mutate(df, Index = dplyr::row_number())
-
-    alpha_acceptance_rate <- mean(model_fit$alpha_acceptance)
+    df <- dplyr::as_tibble(model_fit$alpha)
+    names(df) <- paste("Cluster", seq(from = 1, to = ncol(df), by = 1))
+    df <- dplyr::mutate(df, index = dplyr::row_number())
+    df <- tidyr::gather(df, key = "cluster", value = "alpha", -index)
 
     # Create the diagnostic plot for alpha
-    ggplot2::ggplot(df, ggplot2::aes(x = .data$Index, y = .data$alpha)) +
-      ggplot2::geom_line() +
+
+    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$index, y = .data$alpha)) +
       ggplot2::xlab("Iteration") +
       ggplot2::ylab(expression(alpha)) +
-      ggplot2::ggtitle(
-        label = "Convergence of alpha",
-        subtitle = paste("Acceptance rate:",
-                         sprintf("%.1f", alpha_acceptance_rate * 100), "%")
-      )
+      ggplot2::theme(legend.title = ggplot2::element_blank()) +
+      ggplot2::ggtitle(label = "Convergence of alpha")
+
+    if(model_fit$n_clusters == 1){
+      p <- p + ggplot2::geom_line()
+    } else {
+      p <- p + ggplot2::geom_line(ggplot2::aes(color = .data$cluster))
+    }
+
+    print(p)
 
   } else if(type == "rho"){
-    # Create the diagnostic plot for rho
-    # First create a tidy data frame for holding the data
 
     if(is.null(items) && model_fit$n_items > 5){
       message("Items not provided by user. Picking 5 at random.")
@@ -58,17 +56,19 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
     }
 
     df <- gather_rho(model_fit, items)
-    rho_acceptance_rate <- mean(model_fit$rho_acceptance)
 
-    ggplot2::ggplot(df, ggplot2::aes(x = .data$Index, y = .data$Rank, color = .data$Item)) +
+    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$index, y = .data$rank, color = .data$item)) +
       ggplot2::geom_line() +
       ggplot2::theme(legend.title = ggplot2::element_blank()) +
       ggplot2::xlab("Iteration") +
       ggplot2::ylab(expression(rho)) +
-      ggplot2::ggtitle(
-        label = "Convergence of rho",
-        subtitle = paste("Acceptance rate:",
-                         sprintf("%.1f", rho_acceptance_rate * 100), "%"))
+      ggplot2::ggtitle(label = "Convergence of rho")
+
+    if(model_fit$n_clusters > 1){
+      p <- p + ggplot2::facet_wrap(~ .data$cluster)
+    }
+
+    print(p)
 
   } else if(type == "augmentation") {
     if(!model_fit$any_missing && !model_fit$augpair) stop("No missing values, so data were not augmented.")
