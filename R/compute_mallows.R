@@ -75,6 +75,11 @@ compute_mallows <- function(R = NULL,
     constrained <- NULL
   }
 
+  # If there are no missing values nor preference, increase aug_diag_thinning
+  if(is.null(P) && sum(is.na(R)) == 0){
+    aug_diag_thinning <- nmc
+  }
+
   # Check that all rows of R are proper permutations
   if(!all(apply(R, 1, validate_permutation))){
     stop("Not valid permutation.")

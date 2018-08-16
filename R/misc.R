@@ -43,7 +43,7 @@ gather_rho <- function(model_fit, selected_items = NULL,
 
   df <- dplyr::tibble(
     index = numeric(),
-    cluster = numeric(),
+    cluster = character(),
     item = character(),
     rank = numeric()
   )
@@ -61,7 +61,7 @@ gather_rho <- function(model_fit, selected_items = NULL,
     tmp <- dplyr::as_tibble(tmp)
     tmp <- dplyr::mutate(tmp,
                          index = dplyr::row_number(),
-                         cluster = i)
+                         cluster = paste("Cluster", i))
     tmp <- tidyr::gather(tmp, key = "item", value = "rank", -index, -cluster)
 
     df <- dplyr::bind_rows(df, tmp)
@@ -101,4 +101,14 @@ validate_initial_ranking <- function(pair_comp, mat){
   } else {
     return(TRUE)
   }
+}
+
+
+prepare_alpha_df <- function(alpha_matrix){
+  df <- dplyr::as_tibble(alpha_matrix)
+  names(df) <- paste("Cluster", seq(from = 1, to = ncol(alpha_matrix), by = 1))
+  df <- dplyr::mutate(df, index = dplyr::row_number())
+  df <- tidyr::gather(df, key = "cluster", value = "alpha", -index)
+
+  return(df)
 }

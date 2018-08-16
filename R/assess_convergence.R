@@ -25,10 +25,7 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
 
   if(type == "alpha") {
 
-    df <- dplyr::as_tibble(model_fit$alpha)
-    names(df) <- paste("Cluster", seq(from = 1, to = ncol(df), by = 1))
-    df <- dplyr::mutate(df, index = dplyr::row_number())
-    df <- tidyr::gather(df, key = "cluster", value = "alpha", -index)
+    df <- prepare_alpha_df(model_fit$alpha)
 
     # Create the diagnostic plot for alpha
 
