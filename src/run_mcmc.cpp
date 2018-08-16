@@ -173,16 +173,25 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
 
+      // Matrix of ranks for this cluster
+      arma::mat clus_mat = R.submat(element_indices,
+                                    arma::find(cluster_indicator.row(t - 1) == cluster_index));
+
+      // Call the void function which updates rho by reference
+      update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,
+                 thinning, alpha_old(cluster_index), L, clus_mat, metric, n_items, t,
+                 element_indices);
+
       if(t % alpha_jump == 0) {
 
         // Increment alpha_index only once, and not n_cluster times!
         if(cluster_index == 0) ++alpha_index;
 
+
         // Call the void function which updates alpha by reference
         update_alpha(
           alpha, alpha_acceptance, alpha_old,
-          R.submat(element_indices,
-                   arma::find(cluster_indicator.row(t - 1) == cluster_index)),
+          clus_mat,
           alpha_index, cluster_index, rho_old,
           sd_alpha, metric, lambda, n_items,
           cardinalities, is_fit);
@@ -193,8 +202,8 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
       if(any_missing){
         update_missing_ranks(R, aug_acceptance, missing_indicator,
                              assessor_missing, n_items, n_assessors,
-                             alpha_old(cluster_index), rho_old.col(cluster_index), metric, t, aug_diag_index,
-                             aug_diag_thinning);
+                             alpha_old(cluster_index), rho_old.col(cluster_index),
+                             metric, t, aug_diag_index, aug_diag_thinning);
       }
 
 
@@ -208,17 +217,9 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
 
 
-
-      // Call the void function which updates rho by reference
-      update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,
-                 thinning, alpha_old(cluster_index), L, R, metric, n_items, t,
-                 element_indices);
-
-
     }
 
   // Update the cluster labels, per assessor
-
   update_cluster_labels(cluster_indicator, rho_old, R, cluster_probs,
                         alpha_old, n_items, n_assessors, n_clusters,
                         t, metric, cardinalities, is_fit);

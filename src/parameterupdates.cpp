@@ -30,34 +30,30 @@ void update_alpha(arma::mat& alpha,
 
   // Sample an alpha proposal
   double alpha_proposal = exp(arma::randn<double>() * sd_alpha +
-  log(alpha(alpha_index - 1, cluster_index)));
+  log(alpha_old(cluster_index)));
 
   double rank_dist = rank_dist_matrix(R, rho_old.col(cluster_index), metric);
 
   // Difference between current and proposed alpha
-  double alpha_diff = alpha(alpha_index - 1, cluster_index) - alpha_proposal;
+  double alpha_diff = alpha_old(cluster_index) - alpha_proposal;
 
   // Compute the Metropolis-Hastings ratio
   double ratio =
     alpha_diff / n_items * rank_dist +
     lambda * alpha_diff +
     n_assessors * (
-        get_partition_function(n_items, alpha(alpha_index - 1, cluster_index),
-                               cardinalities, is_fit, metric) -
+        get_partition_function(n_items, alpha_old(cluster_index), cardinalities, is_fit, metric) -
           get_partition_function(n_items, alpha_proposal, cardinalities, is_fit, metric)
-    ) + log(alpha_proposal) - log(alpha(alpha_index - 1, cluster_index));
+    ) + log(alpha_proposal) - log(alpha_old(cluster_index));
 
   // Draw a uniform random number
   double u = log(arma::randu<double>());
-
-
-
 
   if(ratio > u){
     alpha(alpha_index, cluster_index) = alpha_proposal;
     alpha_acceptance(alpha_index, cluster_index) = 1;
   } else {
-    alpha(alpha_index, cluster_index) = alpha(alpha_index - 1, cluster_index);
+    alpha(alpha_index, cluster_index) = alpha_old(cluster_index);
     alpha_acceptance(alpha_index, cluster_index) = 0;
   }
 
@@ -150,25 +146,11 @@ void update_cluster_labels(
     // Draw a uniform random number
     double u = arma::randu();
 
-    // Pick out the column vector of probabilities for this assessor
-    // This corresponds to aa in JMLR code
-    arma::vec assessor_prob_vector = assignment_prob.col(assessor_index);
+    // Find the first index that is large than u. That is the cluster index.
+    int cluster = arma::as_scalar(
+      arma::find(arma::cumsum(assignment_prob.col(assessor_index)) > u, 1, "first"));
+    cluster_indicator(t, assessor_index) = cluster;
 
-    // Define helper variables
-    bool cluster_assigned = false;
-    int cluster_index = 0;
-    double sum = 0;
-
-    while(!cluster_assigned){
-      if(u < (arma::as_scalar(assessor_prob_vector(cluster_index)) / (1 - sum))) {
-        cluster_assigned = true;
-      } else {
-        sum += arma::as_scalar(assessor_prob_vector(cluster_index));
-        ++cluster_index;
-      }
-    }
-
-    cluster_indicator(t, assessor_index) = cluster_index;
   }
 
 }
