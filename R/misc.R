@@ -62,7 +62,7 @@ gather_rho <- function(model_fit, selected_items = NULL,
     tmp <- dplyr::mutate(tmp,
                          index = dplyr::row_number(),
                          cluster = paste("Cluster", i))
-    tmp <- tidyr::gather(tmp, key = "item", value = "rank", -index, -cluster)
+    tmp <- tidyr::gather(tmp, key = "item", value = "rank", -.data$index, -.data$cluster)
 
     df <- dplyr::bind_rows(df, tmp)
   }
@@ -108,7 +108,7 @@ prepare_alpha_df <- function(alpha_matrix){
   df <- dplyr::as_tibble(alpha_matrix)
   names(df) <- paste("Cluster", seq(from = 1, to = ncol(alpha_matrix), by = 1))
   df <- dplyr::mutate(df, index = dplyr::row_number())
-  df <- tidyr::gather(df, key = "cluster", value = "alpha", -index)
+  df <- tidyr::gather(df, key = "cluster", value = "alpha", -.data$index)
 
   return(df)
 }

@@ -26,3 +26,6 @@ A plot.
 \description{
 Posterior plots
 }
+\examples{
+# Here is an example.
+}

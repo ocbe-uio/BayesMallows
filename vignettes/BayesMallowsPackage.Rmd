@@ -692,7 +692,7 @@ assess_convergence(model_fit2, type = "rho", items = c(8, 12))
 
 ### Label Switching
 
-Since we know the data in this example, we can use the very simple constraint that $\rho_{8} < \rho{12}$ in clusters 1 and 2. Note that we can only use this approach because we created the data, and know that potatoes 8 and 12 are at the extremes of the rankings in each cluster. We also try the ECR algorithm, developed in @papastamoulis2010. Both methods are implemented in the R package `label.switching` (@papastamoulis2016).
+Since we know the data in this example, we can use the very simple constraint that $\rho_{8} < \rho_{12}$ in clusters 1 and 2. Note that we can only use this approach because we created the data, and know that potatoes 8 and 12 are at the extremes of the rankings in each cluster. We also try the ECR algorithm, developed in @papastamoulis2010. Both methods are implemented in the R package `label.switching` (@papastamoulis2016).
 
 We first define a function for finding the pivot allocation used by ECR:
 

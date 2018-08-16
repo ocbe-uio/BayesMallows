@@ -11,6 +11,8 @@
 #' @return A plot.
 #' @export
 #'
+#' @examples
+#' # Here is an example.
 plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
   # Note, the first argument must be named x, otherwise R CMD CHECK will
   # issue a warning. This is because plot.BayesMallows must have the same

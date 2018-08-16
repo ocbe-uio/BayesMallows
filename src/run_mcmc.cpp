@@ -154,7 +154,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     // Check if the user has tried to interrupt.
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
 
-    // Gibbs sampler step for clustering
+    // Update cluster probabilities, conjugate model
     arma::uvec tau_k(n_clusters);
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
       // Find the parameter for this cluster
@@ -219,7 +219,8 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
   // Update the cluster labels, per assessor
 
-  update_cluster_labels(cluster_indicator, rho_old, R, cluster_probs, alpha_old, n_items, n_assessors, n_clusters,
+  update_cluster_labels(cluster_indicator, rho_old, R, cluster_probs,
+                        alpha_old, n_items, n_assessors, n_clusters,
                         t, metric, cardinalities, is_fit);
 
 

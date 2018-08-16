@@ -27,6 +27,7 @@ Suggests:
     testthat,
     purrr (>= 0.2.5),
     gtools (>= 3.8.1),
+    label.switching (>= 1.7),
     knitr,
     rmarkdown,
     Rankcluster (>= 0.94)
