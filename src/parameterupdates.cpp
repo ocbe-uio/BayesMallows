@@ -10,7 +10,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 void update_alpha(arma::mat& alpha,
-                  arma::mat& alpha_acceptance,
+                  arma::vec& alpha_acceptance,
                   arma::vec& alpha_old,
                   const arma::mat& R,
                   int& alpha_index,
@@ -50,20 +50,19 @@ void update_alpha(arma::mat& alpha,
   double u = log(arma::randu<double>());
 
   if(ratio > u){
-    alpha(alpha_index, cluster_index) = alpha_proposal;
-    alpha_acceptance(alpha_index, cluster_index) = 1;
+    alpha(cluster_index, alpha_index) = alpha_proposal;
+    ++alpha_acceptance(cluster_index);
   } else {
-    alpha(alpha_index, cluster_index) = alpha_old(cluster_index);
-    alpha_acceptance(alpha_index, cluster_index) = 0;
+    alpha(cluster_index, alpha_index) = alpha_old(cluster_index);
   }
 
 
-  alpha_old(cluster_index) = alpha(alpha_index, cluster_index);
+  alpha_old(cluster_index) = alpha(cluster_index, alpha_index);
 
 }
 
 
-void update_rho(arma::cube& rho, arma::mat& rho_acceptance, arma::mat& rho_old,
+void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
                 int& rho_index, const int& cluster_index, const int& thinning,
                 const double& alpha_old, const int& L, const arma::mat& R,
                 const std::string& metric, const int& n_items, const int& t,
@@ -96,15 +95,13 @@ void update_rho(arma::cube& rho, arma::mat& rho_acceptance, arma::mat& rho_old,
 
   if(ratio > u){
     rho_old.col(cluster_index) = rho_proposal;
-    rho_acceptance.col(cluster_index).row(t) = 1;
-  } else {
-    rho_acceptance.col(cluster_index).row(t) = 0;
+    ++rho_acceptance(cluster_index);
   }
 
   // Save rho if appropriate
   if(t % thinning == 0){
     if(cluster_index == 0) ++rho_index;
-    rho.slice(cluster_index).col(rho_index) = rho_old.col(cluster_index);
+    rho.slice(rho_index).col(cluster_index) = rho_old.col(cluster_index);
   }
 
 }

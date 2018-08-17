@@ -8,7 +8,7 @@
 #include "partitionfuns.h"
 
 void update_alpha(arma::mat& alpha,
-                  arma::mat& alpha_acceptance,
+                  arma::vec& alpha_acceptance,
                   arma::vec& alpha_old,
                   const arma::mat& R,
                   int& alpha_index,
@@ -21,7 +21,7 @@ void update_alpha(arma::mat& alpha,
                   Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
                   Rcpp::Nullable<arma::vec> is_fit = R_NilValue);
 
-void update_rho(arma::cube& rho, arma::mat& rho_acceptance, arma::mat& rho_old,
+void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
                 int& rho_index, const int& cluster_index, const int& thinning,
                 const double& alpha_old, const int& L, const arma::mat& R,
                 const std::string& metric, const int& n_items, const int& t,

@@ -151,6 +151,7 @@ compute_mallows <- function(R = NULL,
   # Otherwise, convert to fraction
   if(!fit$any_missing && !fit$augpair) {
     fit$aug_acceptance <- NULL
+    fit$aug_diag_thinning <- NULL
   } else {
     fit$aug_acceptance <- fit$aug_acceptance / aug_diag_thinning
   }
