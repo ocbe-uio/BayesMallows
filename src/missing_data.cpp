@@ -55,26 +55,33 @@ void initialize_missing_ranks(arma::mat& R, const arma::mat& missing_indicator,
   }
 }
 
-void update_missing_ranks(arma::mat& R, arma::mat& aug_acceptance,
+void update_missing_ranks(arma::mat& R, const arma::umat& cluster_indicator,
+                          arma::mat& aug_acceptance,
                           const arma::mat& missing_indicator,
                           const arma::vec& assessor_missing,
                           const int& n_items, const int& n_assessors,
-                          const double& alpha, const arma::vec& rho,
+                          const arma::vec& alpha, const arma::mat& rho,
                           const std::string& metric, const int& t,
                           int& aug_diag_index, const int& aug_diag_thinning){
+
   for(int i = 0; i < n_assessors; ++i){
     if(assessor_missing(i) == 0){
       ++aug_acceptance(i, aug_diag_index);
     } else {
-      arma::vec proposal = propose_augmentation(R.col(i), missing_indicator.col(i),
-                                                n_items);
+
+
+      // Sample an augmentation proposal
+      arma::vec proposal = propose_augmentation(R.col(i), missing_indicator.col(i), n_items);
 
       // Draw a uniform random number
       double u = log(arma::randu<double>());
 
-      double ratio = -alpha / n_items *
-        (get_rank_distance(proposal, rho, metric) -
-        get_rank_distance(R.col(i), rho, metric));
+      // Find which cluster the assessor belongs to
+      int cluster = cluster_indicator(i, t);
+
+      double ratio = -alpha(cluster) / n_items *
+        (get_rank_distance(proposal, rho.col(cluster), metric) -
+        get_rank_distance(R.col(i), rho.col(cluster), metric));
 
       if(ratio > u){
         R.col(i) = proposal;

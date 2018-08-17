@@ -22,17 +22,10 @@ plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
 
   stopifnot(type %in% c("alpha", "rho"))
 
-
-
   if(type == "alpha") {
-    start <- floor(burnin / x$alpha_jump) + 1
-    stop <- ceiling(x$nmc / x$alpha_jump)
+    df <- dplyr::filter(x$alpha, .data$iteration > burnin)
 
-    alpha_matrix <- x$alpha[seq(from = start, to = stop, by = 1), , drop = FALSE]
-
-    df <- prepare_alpha_df(alpha_matrix)
-
-    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$alpha)) +
+    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
       ggplot2::xlab(expression(alpha)) +
       ggplot2::ylab("Posterior density") +
@@ -48,22 +41,22 @@ plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
 
     if(is.null(items)) stop("You must specify the items to plot.")
 
-    start <- floor(burnin / x$thinning) + 1
-    stop <- ceiling(x$nmc / x$thinning)
+    if(!is.character(items)){
+      items <- x$items[items]
+    }
 
-    df <- gather_rho(x, items, row_inds = seq(from = start, to = stop, by = 1))
+    df <- dplyr::filter(x$rho, .data$iteration > burnin, .data$item %in% items)
 
     # Compute the density, rather than the count, since the latter
     # depends on the number of Monte Carlo samples
-    df <- dplyr::group_by(df, .data$cluster, .data$item, .data$rank)
+    df <- dplyr::group_by(df, .data$cluster, .data$item, .data$value)
     df <- dplyr::summarise(df, n = dplyr::n())
     df <- dplyr::mutate(df, pct = .data$n / sum(.data$n))
 
     # Finally create the plot
-    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$rank, y = .data$pct)) +
+    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
       ggplot2::geom_col() +
       ggplot2::scale_x_continuous(labels = scalefun) +
-      #ggplot2::scale_y_continuous(limits = c(0, 1)) +
       ggplot2::ggtitle("Posterior ranks for items") +
       ggplot2::xlab("rank") +
       ggplot2::ylab("Posterior probability")

@@ -173,7 +173,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
       // Matrix of ranks for this cluster
       arma::mat clus_mat = R.submat(element_indices,
-                                    arma::find(cluster_indicator.col(t - 1) == cluster_index));
+                          arma::find(cluster_indicator.col(t - 1) == cluster_index));
 
       // Call the void function which updates rho by reference
       update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,
@@ -196,22 +196,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
       }
 
 
-      // Perform data augmentation of missing ranks, if needed
-      if(any_missing){
-        update_missing_ranks(R, aug_acceptance, missing_indicator,
-                             assessor_missing, n_items, n_assessors,
-                             alpha_old(cluster_index), rho_old.col(cluster_index),
-                             metric, t, aug_diag_index, aug_diag_thinning);
-      }
 
-
-      // Perform data augmentation of pairwise comparisons, if needed
-      if(augpair){
-        augment_pairwise(R, alpha_old(cluster_index), rho_old.col(cluster_index),
-                         metric, pairwise_preferences, constrained_elements,
-                         n_assessors, n_items, t, aug_acceptance, aug_diag_index,
-                         aug_diag_thinning);
-        }
 
 
 
@@ -221,6 +206,25 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   update_cluster_labels(cluster_indicator, rho_old, R, cluster_probs,
                         alpha_old, n_items, n_assessors, n_clusters,
                         t, metric, cardinalities, is_fit);
+
+
+
+  // Perform data augmentation of missing ranks, if needed
+  if(any_missing){
+    update_missing_ranks(R, cluster_indicator, aug_acceptance, missing_indicator,
+                         assessor_missing, n_items, n_assessors,
+                         alpha_old, rho_old,
+                         metric, t, aug_diag_index, aug_diag_thinning);
+  }
+
+
+    // Perform data augmentation of pairwise comparisons, if needed
+  if(augpair){
+    augment_pairwise(R, cluster_indicator, alpha_old, rho_old,
+                     metric, pairwise_preferences, constrained_elements,
+                     n_assessors, n_items, t, aug_acceptance, aug_diag_index,
+                     aug_diag_thinning);
+  }
 
 
   }

@@ -63,10 +63,9 @@ compute_mallows <- function(R = NULL,
     constrained <- dplyr::summarise(constrained,
                                     items = list(unique(c(.data$bottom_item, .data$top_item))))
     constrained <- tidyr::unnest(constrained)
-    constrained <- as.matrix(t(constrained))
+    constrained <- as.matrix(constrained)
 
-    # Transpose (because armadillo i column-major), and convert to matrix
-    P <- t(as.matrix(P))
+    P <- as.matrix(P)
 
     if(is.null(R)){
       R <- generate_initial_ranking(P)
@@ -163,6 +162,13 @@ compute_mallows <- function(R = NULL,
     rownames(fit$rho) <- paste("Item", seq(from = 1, to = nrow(fit$rho), by = 1))
   }
 
+  fit$items <- rownames(fit$rho)
+  # Tidy MCMC results
+
+  fit <- tidy_mcmc(fit)
+
+
+  # Add class attribute
   class(fit) <- "BayesMallows"
 
   return(fit)

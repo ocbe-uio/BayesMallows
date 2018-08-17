@@ -6,8 +6,9 @@
 
 void augment_pairwise(
     arma::mat& R,
-    const double& alpha,
-    const arma::vec& rho,
+    const arma::umat& cluster_indicator,
+    const arma::vec& alpha,
+    const arma::mat& rho,
     const std::string& metric,
     const arma::mat& pairwise_preferences,
     const arma::mat& constrained_elements,
@@ -21,16 +22,19 @@ void augment_pairwise(
 
   for(int i = 0; i < n_assessors; ++i){
 
+    // Find which cluster the assessor belongs to
+    int cluster = cluster_indicator(i, t);
+
     // Draw an integer between 1 and n_items
     int element = arma::as_scalar(arma::randi(1, arma::distr_param(1, n_items)));
 
     // Find the constrained elements for this particular assessor
     // First, check which columns the assessor has
     // i + 1 because the assessor numbering starts at 1
-    arma::uvec inds = arma::find(constrained_elements.row(0) == (i + 1));
+    arma::uvec inds = arma::find(constrained_elements.col(0) == (i + 1));
 
     // Then find the corresponding elements
-    arma::vec constr = constrained_elements.row(1).t();
+    arma::vec constr = constrained_elements.col(1);
     constr = constr.elem(inds);
 
     // Check if the drawn element is in the constraint set
@@ -44,20 +48,20 @@ void augment_pairwise(
     if(element_ind.n_elem > 0){
 
       // We extract the pairwise preferences of assessor i
-      arma::uvec pref_inds = arma::find(pairwise_preferences.row(0) == (i + 1));
+      arma::uvec pref_inds = arma::find(pairwise_preferences.col(0) == (i + 1));
 
-      arma::mat prefs = pairwise_preferences.submat(1, arma::min(pref_inds),
-                                                    2, arma::max(pref_inds));
+      arma::mat prefs = pairwise_preferences.submat(arma::min(pref_inds), 1,
+                                                    arma::max(pref_inds), 2);
 
 
       // We must find the items that are ranked below the drawn element
       // Remember, this means that we find elements with a **higher** numeric value
       // of their rank.
       // First, where is this element preferred
-      arma::uvec rank_inds = arma::find(prefs.row(1) == element);
+      arma::uvec rank_inds = arma::find(prefs.col(1) == element);
 
       // Next, which elements are ranked below
-      arma::vec elements_below = prefs.row(0).t();
+      arma::vec elements_below = prefs.col(0);
       elements_below = elements_below.elem(rank_inds);
 
       // Subtract 1 to go from items to indices
@@ -74,10 +78,10 @@ void augment_pairwise(
 
       // Next, we find the items that are ranked above the drawn element
       // First, where is this element not preferred
-      rank_inds = arma::find(prefs.row(0) == element);
+      rank_inds = arma::find(prefs.col(0) == element);
 
       // Next, which elements are ranked above
-      arma::vec elements_above = prefs.row(1).t();
+      arma::vec elements_above = prefs.col(1);
       elements_above = elements_above.elem(rank_inds);
 
       // Subtract 1 to go from items to indices
@@ -114,9 +118,9 @@ void augment_pairwise(
     // Draw a uniform random number
     double u = log(arma::randu<double>());
 
-    double ratio = -alpha / n_items *
-      (get_rank_distance(proposal, rho, metric) -
-      get_rank_distance(R.col(i), rho, metric));
+    double ratio = -alpha(cluster) / n_items *
+      (get_rank_distance(proposal, rho.col(cluster), metric) -
+      get_rank_distance(R.col(i), rho.col(cluster), metric));
 
     if(ratio > u){
       R.col(i) = proposal;
