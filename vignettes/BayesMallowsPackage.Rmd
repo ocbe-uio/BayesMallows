@@ -90,7 +90,10 @@ plot(model_fit, burnin = 2000)
 We see that the posterior distribution is a bit bumpy. Since this might be due to randomness in the MCMC algorithm, we do another run with 10 times as many samples.
 
 ```{r, fig.show='hold'}
+t1 <- Sys.time()
 model_fit_big <- compute_mallows(potato_visual, nmc = 1e4 + 2000)
+t2 <- Sys.time()
+t2 - t1
 ```
 
 Next, we plot the posterior of $\alpha$ from this run:
