@@ -1,6 +1,6 @@
 ---
 title: "Sampling Cluster Indicators"
-author: "Ã˜ystein SÃ¸rensen"
+author: "Oystein Sorensen"
 date: "8/16/2018"
 output:
   pdf_document: default
@@ -18,7 +18,7 @@ Assume that $C=3$, and that the cluster probabilities are $(0.1, 0.2, 0.7)$. In 
 
 ```{r}
 probs <- c(0.1, 0.2, 0.7)
-(z_j_m <- sample.int(n = 3, size = 1, prob = probs, replace = TRUE))
+(z_j_m <- sample.int(n = length(probs), size = 1, prob = probs, replace = TRUE))
 ```
 
 ## Brute Force `R` Implementation
@@ -78,6 +78,7 @@ This is my `R` replication. Note that I use `k + 1` in the indexing, but otherwi
 
 ```{r}
 draw_cluster_assignments_cond <- function(probs){
+  K <- length(probs)
   
   # Draw uniform random number
   sampleU <- runif(1)
@@ -88,7 +89,7 @@ draw_cluster_assignments_cond <- function(probs){
   somma <- 0
 
   while(quale == 0){
-    if(sampleU < aa[[k + 1]]/(1 - somma) || k == (3 - 1)){
+    if(sampleU < aa[[k + 1]]/(1 - somma) || k == K){
       quale <- 1
     }
     somma <- somma + aa[[k + 1]]
@@ -121,6 +122,8 @@ My question is:
 ```{r}
 draw_cluster_assignments_sylvia <- function(probs){
   
+  K <- length(probs)
+  
   # Draw uniform random number
   sampleU <- runif(1)
   aa <- probs / sum(probs)
@@ -130,7 +133,7 @@ draw_cluster_assignments_sylvia <- function(probs){
   somma <- 0
 
   while(quale == 0){
-    if(sampleU < aa[[k + 1]]/(1 - somma) || k == (3 - 1)){
+    if(sampleU < aa[[k + 1]]/(1 - somma) || k == K){
       quale <- 1
     }
     somma <- somma + aa[[k + 1]]

@@ -19,17 +19,10 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
 
   stopifnot(class(model_fit) == "BayesMallows")
 
-
-
-  if(is.character(items)) stopifnot(items %in% rownames(model_fit$rho))
-
   if(type == "alpha") {
 
-    df <- prepare_alpha_df(model_fit$alpha)
-
     # Create the diagnostic plot for alpha
-
-    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$index, y = .data$alpha)) +
+    p <- ggplot2::ggplot(model_fit$alpha, ggplot2::aes(x = .data$iteration, y = .data$value)) +
       ggplot2::xlab("Iteration") +
       ggplot2::ylab(expression(alpha)) +
       ggplot2::theme(legend.title = ggplot2::element_blank()) +
@@ -52,9 +45,13 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       items <- seq.int(from = 1, to = model_fit$n_items)
     }
 
-    df <- gather_rho(model_fit, items)
+    if(!is.character(items)){
+      items <- model_fit$items[items]
+    }
 
-    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$index, y = .data$rank, color = .data$item)) +
+    df <- dplyr::filter(model_fit$rho, .data$item %in% items)
+
+    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
       ggplot2::geom_line() +
       ggplot2::theme(legend.title = ggplot2::element_blank()) +
       ggplot2::xlab("Iteration") +

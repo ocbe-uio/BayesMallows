@@ -5,8 +5,9 @@
 
 void augment_pairwise(
     arma::mat& R,
-    const double& alpha,
-    const arma::vec& rho,
+    const arma::umat& cluster_indicator,
+    const arma::vec& alpha,
+    const arma::mat& rho,
     const std::string& metric,
     const arma::mat& pairwise_preferences,
     const arma::mat& constrained_elements,

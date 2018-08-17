@@ -63,10 +63,9 @@ compute_mallows <- function(R = NULL,
     constrained <- dplyr::summarise(constrained,
                                     items = list(unique(c(.data$bottom_item, .data$top_item))))
     constrained <- tidyr::unnest(constrained)
-    constrained <- as.matrix(t(constrained))
+    constrained <- as.matrix(constrained)
 
-    # Transpose (because armadillo i column-major), and convert to matrix
-    P <- t(as.matrix(P))
+    P <- as.matrix(P)
 
     if(is.null(R)){
       R <- generate_initial_ranking(P)
@@ -128,8 +127,8 @@ compute_mallows <- function(R = NULL,
 
 
 
-  # Transpose R to get samples along columns. The same applies to P.
-  # The reason is that Armadillo uses column-major ordering.
+  # Transpose R to get samples along columns, since we typically want
+  # to extract one sample at a time. armadillo is column major, just like R
   fit <- run_mcmc(R = t(R),
                   nmc = nmc,
                   pairwise = P,
@@ -151,6 +150,7 @@ compute_mallows <- function(R = NULL,
   # Otherwise, convert to fraction
   if(!fit$any_missing && !fit$augpair) {
     fit$aug_acceptance <- NULL
+    fit$aug_diag_thinning <- NULL
   } else {
     fit$aug_acceptance <- fit$aug_acceptance / aug_diag_thinning
   }
@@ -162,6 +162,13 @@ compute_mallows <- function(R = NULL,
     rownames(fit$rho) <- paste("Item", seq(from = 1, to = nrow(fit$rho), by = 1))
   }
 
+  fit$items <- rownames(fit$rho)
+  # Tidy MCMC results
+
+  fit <- tidy_mcmc(fit)
+
+
+  # Add class attribute
   class(fit) <- "BayesMallows"
 
   return(fit)

@@ -99,28 +99,30 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   // Note: Armadillo matrices are stored in column-major ordering. Hence,
   // we put the items along the column, since they are going to be accessed at the
   // same time for a given Monte Carlo sample.
-  arma::cube rho(n_items, n_rho, n_clusters);
+  arma::cube rho(n_items, n_clusters, n_rho);
 
   // Declare the vector to hold the scaling parameter alpha
-  arma::mat alpha(n_alpha, n_clusters);
+  arma::mat alpha(n_clusters, n_alpha);
 
-  // Set the initial latent rank value and alpha value
+  // Set the initial alpha value
+  alpha.col(0).fill(alpha_init);
+
+  // Initialize latent ranks randomly
   for(int i = 0; i < n_clusters; ++i){
-    rho.slice(i).col(0) = arma::linspace<arma::vec>(1, n_items, n_items);
-    alpha.col(i).row(0) = alpha_init;
+    rho.slice(0).col(i) = arma::shuffle(arma::regspace<arma::vec>(1, 1, n_items));
   }
 
   // Hyperparameter for Dirichlet prior used in clustering
-  // Can considering having this as an optional user argument
-  int psi = floor(n_assessors / n_clusters);
+  // Consider having this as an optional user argument
+  int psi = 10;
   // Cluster probabilities
   arma::mat cluster_probs(n_clusters, nmc);
   cluster_probs.col(0).fill(1.0/n_clusters);
 
   // Declare the cluster indicator z
-  arma::umat cluster_indicator(nmc, n_assessors);
+  arma::umat cluster_indicator(n_assessors, nmc);
   // Initialize clusters randomly
-  cluster_indicator.row(0) = arma::randi<arma::urowvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
+  cluster_indicator.col(0) = arma::randi<arma::uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
 
   // Fill in missing ranks, if needed
   if(any_missing){
@@ -129,26 +131,21 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   }
 
   // Declare indicator vectors to hold acceptance or not
-  arma::mat alpha_acceptance(n_alpha, n_clusters);
-  arma::mat rho_acceptance(nmc, n_clusters);
+  arma::vec alpha_acceptance = arma::ones(n_clusters);
+  arma::vec rho_acceptance = arma::ones(n_clusters);
   arma::mat aug_acceptance = arma::zeros<arma::mat>(n_assessors, n_aug_diag);
-
-  // Set the initial values;
-  alpha_acceptance.row(0).fill(1);
-  rho_acceptance.row(0).fill(1);
-  aug_acceptance.col(0) = arma::zeros<arma::vec>(n_assessors);
-
 
   // Other variables used
   int alpha_index = 0, rho_index = 0, aug_diag_index = 0;
-  arma::vec alpha_old = alpha.row(0).t();
-  arma::mat rho_old = rho(arma::span::all, arma::span(0), arma::span::all);
+  arma::vec alpha_old = alpha.col(0);
+  arma::mat rho_old = rho(arma::span::all, arma::span::all, arma::span(0));
 
   arma::uvec element_indices = arma::regspace<arma::uvec>(0, R.n_rows - 1);
 
   // This is the Metropolis-Hastings loop
 
-  // Starting at t = 1, meaning that alpha and rho must be initialized at index 0
+  // Starting at t = 1, meaning that alpha and rho must be initialized at index 0,
+  // and this has been done above
   for(int t = 1; t < nmc; ++t){
 
     // Check if the user has tried to interrupt.
@@ -158,8 +155,9 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     arma::uvec tau_k(n_clusters);
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
       // Find the parameter for this cluster
-      tau_k(cluster_index) = arma::sum(cluster_indicator.row(t - 1) == cluster_index) + psi;
+      tau_k(cluster_index) = arma::sum(cluster_indicator.col(t - 1) == cluster_index) + psi;
 
+      // If there are no assessors in the cluster,
       // Save the a draw from the gamma distribution
       cluster_probs(cluster_index, t) = arma::randg<double>(arma::distr_param(tau_k(cluster_index), 1.0));
 
@@ -175,7 +173,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
       // Matrix of ranks for this cluster
       arma::mat clus_mat = R.submat(element_indices,
-                                    arma::find(cluster_indicator.row(t - 1) == cluster_index));
+                          arma::find(cluster_indicator.col(t - 1) == cluster_index));
 
       // Call the void function which updates rho by reference
       update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,
@@ -198,22 +196,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
       }
 
 
-      // Perform data augmentation of missing ranks, if needed
-      if(any_missing){
-        update_missing_ranks(R, aug_acceptance, missing_indicator,
-                             assessor_missing, n_items, n_assessors,
-                             alpha_old(cluster_index), rho_old.col(cluster_index),
-                             metric, t, aug_diag_index, aug_diag_thinning);
-      }
 
-
-      // Perform data augmentation of pairwise comparisons, if needed
-      if(augpair){
-        augment_pairwise(R, alpha_old(cluster_index), rho_old.col(cluster_index),
-                         metric, pairwise_preferences, constrained_elements,
-                         n_assessors, n_items, t, aug_acceptance, aug_diag_index,
-                         aug_diag_thinning);
-        }
 
 
 
@@ -225,15 +208,34 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
                         t, metric, cardinalities, is_fit);
 
 
+
+  // Perform data augmentation of missing ranks, if needed
+  if(any_missing){
+    update_missing_ranks(R, cluster_indicator, aug_acceptance, missing_indicator,
+                         assessor_missing, n_items, n_assessors,
+                         alpha_old, rho_old,
+                         metric, t, aug_diag_index, aug_diag_thinning);
+  }
+
+
+    // Perform data augmentation of pairwise comparisons, if needed
+  if(augpair){
+    augment_pairwise(R, cluster_indicator, alpha_old, rho_old,
+                     metric, pairwise_preferences, constrained_elements,
+                     n_assessors, n_items, t, aug_acceptance, aug_diag_index,
+                     aug_diag_thinning);
+  }
+
+
   }
 
 
   // Return everything that might be of interest
   return Rcpp::List::create(
     Rcpp::Named("rho") = rho,
-    Rcpp::Named("rho_acceptance") = rho_acceptance,
+    Rcpp::Named("rho_acceptance") = rho_acceptance/nmc,
     Rcpp::Named("alpha") = alpha,
-    Rcpp::Named("alpha_acceptance") = alpha_acceptance,
+    Rcpp::Named("alpha_acceptance") = alpha_acceptance/nmc,
     Rcpp::Named("cluster_indicator") = cluster_indicator + 1,
     Rcpp::Named("cluster_probs") = cluster_probs,
     Rcpp::Named("any_missing") = any_missing,

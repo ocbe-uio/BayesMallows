@@ -116,7 +116,7 @@ plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
 
 Some of the histograms in the plot above seem unreasonable peaked, so we would like to try again with more samples.
 
-#### Jumping of $\alpha$
+#### Jumping over $\alpha$
 Updating $\alpha$ in each step may be time consuming, so we set `alpha_jump = 10`. This implies that $\alpha$ is updated and saved only every 10th iteration on $\rho$. Note that this is not thinning, since $\alpha$ is saved each time it is sampled. Before computing the posterior distribution with this parameter, we do a new convergence assessment, and hence generate a `BayesMallows` object with a small number of iterations. 
 
 ```{r}
@@ -652,9 +652,6 @@ str(model_fit)
 
 
 The element `n_clusters` is correctly equal to 2. In addition, note that `rho` has size $n_items \times nmc \times n_clusters$, and that `rho_acceptance`, `alpha`, and `alpha_acceptance` have size $nmc \times n_clusters$.
-
-**Note:** The package author has a job to do in terms of defining the dimensions of the various parameter objects, cf. `dim(model_fit)$cluster_probs` vs. `dim(model_fit)$cluster_indicator`. This also has performance implications, due to [C++'s row-major ordering](https://en.wikipedia.org/wiki/Row-_and_column-major_order#Programming_languages_and_libraries).
-
 
 ### Algorithm Tuning
 
