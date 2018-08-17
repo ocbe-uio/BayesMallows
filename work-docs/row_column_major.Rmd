@@ -1,0 +1,58 @@
+---
+title: "Row and Column Major Ordering"
+author: "Øystein Sørensen"
+date: "8/17/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R is Column Major
+
+Let us fill a matrix, either by row or by column.
+```{r}
+n <- 1000
+p <- 1000
+mat <- matrix(nrow = n, ncol = p)
+```
+
+
+```{r}
+column_first <- function(mat, n, p){
+  for(i in 1:p){
+    for(j in 1:n){
+      mat[j, i] <- 1
+    }
+  }
+  mat
+}
+
+row_first <- function(mat, n, p){
+  for(i in 1:n){
+    for(j in 1:p){
+      mat[i, j] <- 1
+    }
+  }
+  mat
+}
+```
+
+```{r}
+microbenchmark::microbenchmark(
+  mat2 <- column_first(mat, n, p),
+  mat2 <- row_first(mat, n, p)
+)
+```
+The difference is extremely small.
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

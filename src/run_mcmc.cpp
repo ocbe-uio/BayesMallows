@@ -118,9 +118,9 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   cluster_probs.col(0).fill(1.0/n_clusters);
 
   // Declare the cluster indicator z
-  arma::umat cluster_indicator(nmc, n_assessors);
+  arma::umat cluster_indicator(n_assessors, nmc);
   // Initialize clusters randomly
-  cluster_indicator.row(0) = arma::randi<arma::urowvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
+  cluster_indicator.col(0) = arma::randi<arma::uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
 
   // Fill in missing ranks, if needed
   if(any_missing){
@@ -158,7 +158,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     arma::uvec tau_k(n_clusters);
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
       // Find the parameter for this cluster
-      tau_k(cluster_index) = arma::sum(cluster_indicator.row(t - 1) == cluster_index) + psi;
+      tau_k(cluster_index) = arma::sum(cluster_indicator.col(t - 1) == cluster_index) + psi;
 
       // Save the a draw from the gamma distribution
       cluster_probs(cluster_index, t) = arma::randg<double>(arma::distr_param(tau_k(cluster_index), 1.0));
@@ -175,7 +175,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
       // Matrix of ranks for this cluster
       arma::mat clus_mat = R.submat(element_indices,
-                                    arma::find(cluster_indicator.row(t - 1) == cluster_index));
+                                    arma::find(cluster_indicator.col(t - 1) == cluster_index));
 
       // Call the void function which updates rho by reference
       update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,

@@ -128,8 +128,8 @@ compute_mallows <- function(R = NULL,
 
 
 
-  # Transpose R to get samples along columns. The same applies to P.
-  # The reason is that Armadillo uses column-major ordering.
+  # Transpose R to get samples along columns, since we typically want
+  # to extract one sample at a time. armadillo is column major, just like R
   fit <- run_mcmc(R = t(R),
                   nmc = nmc,
                   pairwise = P,

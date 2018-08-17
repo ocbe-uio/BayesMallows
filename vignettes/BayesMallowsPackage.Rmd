@@ -653,9 +653,6 @@ str(model_fit)
 
 The element `n_clusters` is correctly equal to 2. In addition, note that `rho` has size $n_items \times nmc \times n_clusters$, and that `rho_acceptance`, `alpha`, and `alpha_acceptance` have size $nmc \times n_clusters$.
 
-**Note:** The package author has a job to do in terms of defining the dimensions of the various parameter objects, cf. `dim(model_fit)$cluster_probs` vs. `dim(model_fit)$cluster_indicator`. This also has performance implications, due to [C++'s row-major ordering](https://en.wikipedia.org/wiki/Row-_and_column-major_order#Programming_languages_and_libraries).
-
-
 ### Algorithm Tuning
 
 #### Convergence of $\alpha$

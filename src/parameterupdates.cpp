@@ -149,7 +149,7 @@ void update_cluster_labels(
     // Find the first index that is large than u. That is the cluster index.
     int cluster = arma::as_scalar(
       arma::find(arma::cumsum(assignment_prob.col(assessor_index)) > u, 1, "first"));
-    cluster_indicator(t, assessor_index) = cluster;
+    cluster_indicator(assessor_index, t) = cluster;
 
   }
 
