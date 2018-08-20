@@ -46,6 +46,41 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// factorial
+int factorial(int n);
+RcppExport SEXP _BayesMallows_factorial(SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(factorial(n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// binomial_coefficient
+int binomial_coefficient(int n, int k);
+RcppExport SEXP _BayesMallows_binomial_coefficient(SEXP nSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    rcpp_result_gen = Rcpp::wrap(binomial_coefficient(n, k));
+    return rcpp_result_gen;
+END_RCPP
+}
+// std_setdiff
+arma::uvec std_setdiff(arma::uvec& x, arma::uvec& y);
+RcppExport SEXP _BayesMallows_std_setdiff(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uvec& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::uvec& >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(std_setdiff(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 // get_partition_function
 double get_partition_function(int n, double alpha, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> is_fit, std::string metric);
 RcppExport SEXP _BayesMallows_get_partition_function(SEXP nSEXP, SEXP alphaSEXP, SEXP cardinalitiesSEXP, SEXP is_fitSEXP, SEXP metricSEXP) {
@@ -91,6 +126,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_summation_distances", (DL_FUNC) &_BayesMallows_get_summation_distances, 3},
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
     {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 4},
+    {"_BayesMallows_factorial", (DL_FUNC) &_BayesMallows_factorial, 1},
+    {"_BayesMallows_binomial_coefficient", (DL_FUNC) &_BayesMallows_binomial_coefficient, 2},
+    {"_BayesMallows_std_setdiff", (DL_FUNC) &_BayesMallows_std_setdiff, 2},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 15},
     {NULL, NULL, 0}

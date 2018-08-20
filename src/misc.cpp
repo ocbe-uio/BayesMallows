@@ -3,16 +3,15 @@
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-//using namespace Rcpp;
-
 // Function to compute the factorial
 // taken from http://www.cplusplus.com/forum/unices/33379/
+// [[Rcpp::export]]
 int factorial(int n)
 {
   return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n;
 }
 
-
+// [[Rcpp::export]]
 int binomial_coefficient(int n, int k){
 
   // Special case:
@@ -37,6 +36,7 @@ int binomial_coefficient(int n, int k){
 
 // This function is taken from
 // https://stackoverflow.com/questions/29724083/trying-to-write-a-setdiff-function-using-rcpparmadillo-gives-compilation-error
+// [[Rcpp::export]]
 arma::uvec std_setdiff(arma::uvec& x, arma::uvec& y) {
 
   std::vector<int> a = arma::conv_to< std::vector<int> >::from(arma::sort(x));

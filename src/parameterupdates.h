@@ -42,4 +42,12 @@ void update_cluster_labels(
     Rcpp::Nullable<arma::vec> is_fit = R_NilValue
 );
 
+void update_cluster_probs(
+        arma::mat& cluster_probs,
+        const arma::umat& cluster_indicator,
+        const int& n_clusters,
+        const int& psi,
+        const int& t
+);
+
 #endif

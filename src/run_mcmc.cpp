@@ -151,23 +151,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     // Check if the user has tried to interrupt.
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
 
-    // Update cluster probabilities, conjugate model
-    arma::uvec tau_k(n_clusters);
-    for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
-      // Find the parameter for this cluster
-      tau_k(cluster_index) = arma::sum(cluster_indicator.col(t - 1) == cluster_index) + psi;
-
-      // If there are no assessors in the cluster,
-      // Save the a draw from the gamma distribution
-      cluster_probs(cluster_index, t) = arma::randg<double>(arma::distr_param(tau_k(cluster_index), 1.0));
-
-    }
-
-    // Finally, normalize cluster_probs. Must specify that it should have unit 1-norm,
-    // 2-norm is default!!
-    // cluster_probs.col(t) now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
-    cluster_probs.col(t) = arma::normalise(cluster_probs.col(t), 1);
-
+    update_cluster_probs(cluster_probs, cluster_indicator, n_clusters, psi, t);
 
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
 
@@ -194,11 +178,6 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
           sd_alpha, metric, lambda, n_items,
           cardinalities, is_fit);
       }
-
-
-
-
-
 
     }
 
