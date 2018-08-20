@@ -463,7 +463,7 @@ knitr::kable(initial_ranking, row.names = TRUE)
 Having generated the transitive closure of each assessor's pairwise preferences and the initial ranking, we can go on and use these as inputs to the Mallows model.
 
 ```{r}
-model_fit <- compute_mallows(R = initial_ranking, P = pair_comp_tc)
+model_fit <- compute_mallows(R = initial_ranking, P = pair_comp_tc, nmc = 5)
 ```
 
 The model object has `augpair` equal to `TRUE`, and contains the `aug_acceptance` statisics.

@@ -22,30 +22,22 @@ void augment_pairwise(
 
   for(int i = 0; i < n_assessors; ++i){
 
-    // Find which cluster the assessor belongs to
-    int cluster = cluster_indicator(i, t);
-
     // Draw an integer between 1 and n_items
     int element = arma::as_scalar(arma::randi(1, arma::distr_param(1, n_items)));
 
-    // Find the constrained elements for this particular assessor
-    // First, check which columns the assessor has
-    // i + 1 because the assessor numbering starts at 1
-    arma::uvec inds = arma::find(constrained_elements.col(0) == (i + 1));
+    // Check if the drawn element is in the constraint set for this assessor
+    arma::uvec element_row = arma::intersect(
+      arma::find(constrained_elements.col(0) == (i + 1)),
+      arma::find(constrained_elements.col(1) == element)
+      );
 
-    // Then find the corresponding elements
-    arma::vec constr = constrained_elements.col(1);
-    constr = constr.elem(inds);
-
-    // Check if the drawn element is in the constraint set
-    arma::uvec element_ind = arma::find(constr == element);
 
     // Left and right limits of the interval we draw ranks from
     // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
     int left_limit = 0, right_limit = n_items + 1;
 
-    // Check first the the element is constrained
-    if(element_ind.n_elem > 0){
+    // Check first if the element is constrained
+    if(element_row.n_elem > 0){
 
       // We extract the pairwise preferences of assessor i
       arma::uvec pref_inds = arma::find(pairwise_preferences.col(0) == (i + 1));
@@ -117,6 +109,9 @@ void augment_pairwise(
     // Finally, decide whether to accept the proposal or not
     // Draw a uniform random number
     double u = log(arma::randu<double>());
+
+    // Find which cluster the assessor belongs to
+    int cluster = cluster_indicator(i, t);
 
     double ratio = -alpha(cluster) / n_items *
       (get_rank_distance(proposal, rho.col(cluster), metric) -
