@@ -5,7 +5,7 @@
 \title{Compute the posterior distribution for the Mallows model.}
 \usage{
 compute_mallows(rankings = NULL, preferences = NULL,
-  metric = "footrule", n_clusters = 1, lambda = 0.1, nmc = 3000,
+  metric = "footrule", n_clusters = 1, lambda = 0.1, nmc = 2000,
   leap_size = NULL, sd_alpha = 0.1, alpha_init = 1, alpha_jump = 1,
   thinning = 1, aug_diag_thinning = 100)
 }
