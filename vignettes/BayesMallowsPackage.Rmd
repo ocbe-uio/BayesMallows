@@ -479,6 +479,7 @@ assess_convergence(model_fit, type = "augmentation")
 
 Rather than digging deeper into this toy example, we go on with a real application.
 
+
 ## Beach Preferences
 The beach preference dataset is described in Section 6.2 of @vitelli2018, and is available in the dataframe `beach_preferences` in `BayesMallows`. In short, $60$ assessors were each asked to perform a random set of pairwise comparisons between pictures of $15$ beaches. The first few rows are listed below.
 

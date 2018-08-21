@@ -30,7 +30,7 @@ void update_alpha(arma::mat& alpha,
 
   // Sample an alpha proposal
   double alpha_proposal = exp(arma::randn<double>() * sd_alpha +
-  log(alpha_old(cluster_index)));
+                              log(alpha_old(cluster_index)));
 
   double rank_dist = rank_dist_matrix(R, rho_old.col(cluster_index), metric);
 
@@ -68,9 +68,10 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
                 const std::string& metric, const int& n_items, const int& t,
                 const arma::uvec& element_indices) {
 
+  arma::vec rho_cluster = rho_old.col(cluster_index);
 
   // Sample a rank proposal
-  Rcpp::List ls_proposal = leap_and_shift(rho_old.col(cluster_index), L);
+  Rcpp::List ls_proposal = leap_and_shift(rho_cluster, L);
 
   // Save some of the variables
   arma::vec rho_proposal = ls_proposal["proposal"];
@@ -80,11 +81,7 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
 
   // Compute the distances to current and proposed ranks
   double dist_new = rank_dist_matrix(R.rows(indices), rho_proposal(indices), metric);
-
-  double dist_old = rank_dist_matrix(R.rows(indices),
-                                     rho_old.submat(indices, arma::regspace<arma::uvec>(cluster_index, cluster_index)),
-                                     metric);
-
+  double dist_old = rank_dist_matrix(R.rows(indices), rho_cluster(indices), metric);
 
   // Metropolis-Hastings ratio
   double ratio = - alpha_old / n_items * (dist_new - dist_old) +
