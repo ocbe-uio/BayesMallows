@@ -2,6 +2,7 @@
 
 S3method(plot,BayesMallows)
 export(assess_convergence)
+export(compute_cp_consensus)
 export(compute_importance_sampling_estimate)
 export(compute_mallows)
 export(create_ordering)

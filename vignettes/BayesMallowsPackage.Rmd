@@ -23,8 +23,15 @@ The `BayesMallows` package implements methods for Bayesian preference learning w
 
 [The package's GitHub repository](https://github.uio.no/oyss/BayesMallows) describes how to install it. We start this vignette by loading it.
 
-```{r}
+```{r, message=FALSE}
 library(BayesMallows)
+```
+
+We also load some other packages which are useful.
+
+```{r, message=FALSE}
+library(dplyr)
+library(ggplot2)
 ```
 
 
@@ -52,7 +59,8 @@ model_fit <- compute_mallows(potato_visual)
 The argument returned is a list object of class `BayesMallows`, which contains a whole lot of information about the MCMC run.
 
 ```{r}
-str(model_fit)
+class(model_fit)
+names(model_fit)
 ```
 
 The function `assess_convergence` produces plots for visual convergence assessment. We start by studing $\alpha$, which is the default. The plot is shown below, and looks good enough, at least to begin with.
@@ -67,13 +75,13 @@ Next, we study the convergence of $\rho$. To avoid too complicated plots, we pic
 assess_convergence(model_fit, type = "rho", items = 1:5)
 ```
 
-When the name of the items have been specified in to column names of `rankings`, we can also provide these to the `items` argument. The line below plots potatoes 16 through 20.
+When the name of the items have been specified in the column names of `rankings`, we can also provide these to the `items` argument. The line below plots potatoes 16 through 20.
 
 ```{r, fig.width=6}
 assess_convergence(model_fit, type = "rho", items = c("P16", "P17", "P18", "P19", "P20"))
 ```
 
-Based on these plots, it looks like the algorithm starts to converge after around 1000 iterations. Discarding the first 2000 iterations as burn-in hence seems like a safe choice.
+Based on these plots, it looks like the algorithm starts to converge after around 1000 iterations. Discarding the first 1000 iterations as burn-in hence seems like a safe choice.
 
 ## Posterior Distributions
 
@@ -81,25 +89,25 @@ Once we are confident that the algorithm parameters are reasonable, we can study
 
 ### Scale Parameter $\alpha$
 
-With a burnin of 2000, the original `model_fit` object from the previous subsection has 1000 MCMC samples. The default parameter of `plot.BayesMallows` is $alpha$, so we can study the posterior distribution with the simple statement below.
+With a burnin of 1000, the original `model_fit` object from the previous subsection has 1000 MCMC samples. The default parameter of `plot.BayesMallows` is $alpha$, so we can study the posterior distribution with the simple statement below.
 
 ```{r}
-plot(model_fit, burnin = 2000)
+plot(model_fit, burnin = 1000)
 ```
 
-We see that the posterior distribution is a bit bumpy. Since this might be due to randomness in the MCMC algorithm, we do another run with 10 times as many samples.
+We see that the posterior distribution is a bit bumpy. Since this might be due to randomness in the MCMC algorithm, we do another run with 5 times as many samples.
 
 ```{r, fig.show='hold'}
-model_fit_big <- compute_mallows(potato_visual, nmc = 1e4 + 2000)
+model_fit_big <- compute_mallows(potato_visual, nmc = 6000)
 ```
 
 Next, we plot the posterior of $\alpha$ from this run:
 
 ```{r}
-plot(model_fit_big, burnin = 2000)
+plot(model_fit_big, burnin = 1000)
 ```
 
-This estimate of the posterior density of $\alpha$ does not have the bump to the right, so we clearly needed more samples. You can also try again with, e.g., `1e5` samples, and see if the bimodality of this last plot disappears as well (it does!). We did not include that here, because package vignettes should build rather fast.
+This estimate of the posterior density of $\alpha$ does not have the bump to the right, so we clearly needed more samples. You can also try again with, e.g., `1e5` samples, and see if the bumpiness of this last plot disappears as well (it does!). We did not include that here, because package vignettes should build rather fast.
 
 The objects returned from `compute_mallows` contain the full MCMC samples, so we remove `model_fit_big` before going on.
 
@@ -111,7 +119,7 @@ rm(model_fit_big)
 Obtaining posterior samples from $\rho$ is in general harder than for $\alpha$. Some items tend to be very sticky. We start by plotting the `model_fit` object from above, with 3000 iterations, discarding the first 2000 as burn-in. We now have to tell `plot.BayesMallows` that we want a plot of `type = "rho"` and all the items. This gives us posterior the posterior density of all the items.
 
 ```{r, fig.width=6, fig.height=6}
-plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
+plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
 ```
 
 Some of the histograms in the plot above seem unreasonable peaked, so we would like to try again with more samples.
@@ -120,7 +128,7 @@ Some of the histograms in the plot above seem unreasonable peaked, so we would l
 Updating $\alpha$ in each step may be time consuming, so we set `alpha_jump = 10`. This implies that $\alpha$ is updated and saved only every 10th iteration on $\rho$. Note that this is not thinning, since $\alpha$ is saved each time it is sampled. Before computing the posterior distribution with this parameter, we do a new convergence assessment, and hence generate a `BayesMallows` object with a small number of iterations. 
 
 ```{r}
-test_run <- compute_mallows(potato_visual, nmc = 10000, alpha_jump = 10)
+test_run <- compute_mallows(potato_visual, nmc = 6000, alpha_jump = 10)
 ```
 
 The trace indicates convergence after around 200 iterations of $\alpha$, i.e., after 2000 Monte Carlo samples. 
@@ -135,14 +143,14 @@ The convergence plot for $\rho$ agrees that the MCMC algorithms seems to have co
 assess_convergence(test_run, type = "rho", items = 1:5)
 ```
 
-We delete the `test_run` object and try with 25,000 iterations.
+We delete the `test_run` object and try with 10,000 iterations after burn-in.
 
 ```{r}
 rm(test_run)
 ```
 
 ```{r}
-model_fit <- compute_mallows(potato_visual, nmc = 25000 + 2000, alpha_jump = 10)
+model_fit <- compute_mallows(potato_visual, nmc = 12000, alpha_jump = 10)
 ```
 
 The posterior density of $\alpha$ looks similar to what it did above, despite our use of `alpha_jump`.
@@ -165,8 +173,7 @@ Saving a large number of iterations of $\rho$ gets quite expensive, so `compute_
 Please be careful with thinning. In this small data example it is definitely wasteful! Running the same number of iterations without thinning always gives a better approximation of the posterior distribution. Thinning might be useful when you need to run a large number of iterations to explore the space of latent ranks, and the latent ranks from all iterations do not fit in memory. (See, e.g., @gelman2004 for a discussion of thinning).
 
 ```{r}
-model_fit <- compute_mallows(potato_visual, nmc = 50000 + 2000, 
-                             alpha_jump = 10, thinning = 2)
+model_fit <- compute_mallows(potato_visual, nmc = 12000, alpha_jump = 10, thinning = 2)
 ```
 
 ```{r, fig.width=6, fig.height=6}
@@ -179,23 +186,21 @@ plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
 We can try to use the Kendall distance instead of the footrule distance.
 
 ```{r}
-model_fit <- compute_mallows(potato_visual, metric = "kendall",
-                             nmc = 25000 + 2000, alpha_jump = 10)
+model_fit <- compute_mallows(potato_visual, metric = "kendall")
 ```
 
 ```{r, fig.width=6, fig.height=6}
-plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
+plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
 ```
 
 And we can use Spearman distance. In this case, since the number of potatoes (20) is larger than the maximum number for which we have an exact computation of the partition function (14), so precomputed importance sampling estimates are used. This is handled automatically by `compute_mallows`. Note that the posterior ranks are less peaked with Spearman distance. This agrees with the results seen in @liu2018.
 
 ```{r}
-model_fit <- compute_mallows(potato_visual, metric = "spearman", 
-                             nmc = 25000 + 2000, alpha_jump = 10)
+model_fit <- compute_mallows(potato_visual, metric = "spearman")
 ```
 
 ```{r, fig.width=6, fig.height=6}
-plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
+plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
 ```
 
 ## Validation of Input
@@ -216,7 +221,6 @@ model_fit <- compute_mallows(potato_modified)
 Now imagine that the assessors in the potato experiment were asked to rank only the top-five heaviest potatoes. We generate these data by retaining only ranks 5 or higher in `potato_visual`, setting the rest to `NA`. (I use `dplyr::if_else` because it is safer than the `ifelse` function of base R).
 
 ```{r, message=FALSE}
-library(dplyr)
 potato_top <- potato_visual * if_else(potato_visual > 5, NA_integer_, 1L)
 ```
 
@@ -249,7 +253,7 @@ model_fit <- compute_mallows(potato_top)
 
 Looking at the returned object, we see that `any_missing` is `TRUE`, so `compute_mallows` has correctly detected that there are missing values.
 ```{r}
-str(model_fit)
+model_fit$any_missing
 ```
 
 ## Algorithm Tuning
@@ -261,31 +265,18 @@ When data augmentation is used, `compute_mallows` saves the average acceptance r
 assess_convergence(model_fit, type = "augmentation")
 ```
 
-If we want to take a closer look at some of the curves, we can specify this with the `assessors` argument. Let's look at assessor 3, which seems to have a very high acceptance rate. First, we do two other runs and compare them. These will differ due to the stochastic MCMC algorithm. We also increase the number of iterations to 10,000.
-
-```{r}
-model_fit1 <- compute_mallows(potato_top, nmc = 10000)
-model_fit2 <- compute_mallows(potato_top, nmc = 10000)
-```
-
-The trace of acceptance for assessor three for the two independent runs are shown in the plots below. Although high, these are absolutely acceptable.
+If we want to take a closer look at some of the curves, we can specify this with the `assessors` argument. Let's look at assessor 3, which seems to have a very high acceptance rate.
 
 ```{r, fig.show='hold'}
-assess_convergence(model_fit1, type = "augmentation", assessors = 3)
-assess_convergence(model_fit2, type = "augmentation", assessors = 3)
+assess_convergence(model_fit, type = "augmentation", assessors = 3)
 ```
 
-We should also check that $\alpha$ and $\rho$ show good convergence behavior, as before. We use the model object `model_fit1` for this, and delete the other ones that we have created so far.
-
-```{r}
-rm(model_fit, model_fit2)
-```
 
 ### Convergence of $\alpha$
 
 The convergence of $\alpha$ looks very good.
 ```{r, fig.width=6}
-assess_convergence(model_fit1, type = "alpha")
+assess_convergence(model_fit, type = "alpha")
 ```
 
 
@@ -293,34 +284,34 @@ assess_convergence(model_fit1, type = "alpha")
 The latent ranks also seem to converge.
 
 ```{r, fig.width=6}
-assess_convergence(model_fit1, type = "rho", items = 1:8)
+assess_convergence(model_fit, type = "rho", items = 1:8)
 ```
 
-Based on the analysis in this section, we assume conservatively that the MCMC algorithm reaches convergence after 10,000 iterations.
+Based on the analysis in this section, we assume that the MCMC algorithm reaches convergence after 1,000 iterations.
 
 Before going on, we delete the last model object:
 
 ```{r}
-rm(model_fit1)
+rm(model_fit)
 ```
 
 ## Posterior Distributions
 
-We now run `compute_mallows` bit longer, to obtain 20,000 samples from the posterior distribution. There is no need for thinning in this case, since the data fit well into memory.
+We now run `compute_mallows` bit longer, to obtain 5,000 samples from the posterior distribution. There is no need for thinning in this case, since the data fit well into memory.
 
 ```{r}
-model_fit <- compute_mallows(potato_top, nmc = 1e4 + 2e4)
+model_fit <- compute_mallows(potato_top, nmc = 6000)
 ```
 
 Here is the posterior distribution of the scale parameter:
 ```{r, fig.width=6}
-plot(model_fit, burnin = 1e4)
+plot(model_fit, burnin = 1000)
 ```
 
 And the posterior distribution of the latent ranks:
 
 ```{r, fig.width=6, fig.height=5}
-plot(model_fit, burnin = 1e4, type = "rho", items = 1:8)
+plot(model_fit, burnin = 1000, type = "rho", items = 1:8)
 ```
 
 ## Other Distance Measures
@@ -328,13 +319,13 @@ plot(model_fit, burnin = 1e4, type = "rho", items = 1:8)
 Like for the complete ranks, we can vary the distance measure used in the Mallows model. We can try with a Spearman model:
 
 ```{r}
-model_fit <- compute_mallows(potato_top, nmc = 1e4 + 2e4, metric = "spearman")
+model_fit <- compute_mallows(potato_top, nmc = 6000, metric = "spearman")
 ```
 
 As for the full ranks described in the intro vignette, the posterior uncertainty is higher with the Spearman distance.
 
 ```{r, fig.width=6, fig.height=5}
-plot(model_fit, burnin = 1e4, type = "rho", items = 1:8)
+plot(model_fit, burnin = 1000, type = "rho", items = 1:8)
 ```
 
 # Ranks Missing at Random
@@ -358,7 +349,7 @@ knitr::kable(potato_missing, caption = "Example dataset `potato_missing`.")
 We supply `potato_missing` to `compute_mallows` as before:
 
 ```{r}
-model_fit <- compute_mallows(potato_missing, nmc = 1e4)
+model_fit <- compute_mallows(potato_missing)
 ```
 
 The convergence of $\alpha$ and $\rho$ seem fine:
@@ -389,11 +380,11 @@ We see that these assessors have either 0 or 1 missing ranks. In the former case
 Again, we can fit a final model, and plot the posterior histogram of the latent ranks.
 
 ```{r}
-model_fit <- compute_mallows(potato_visual, nmc = 1e4)
+model_fit <- compute_mallows(potato_visual, nmc = 6000)
 ```
 
 ```{r, fig.width=6, fig.height=5}
-plot(model_fit, burnin = 2000, type = "rho", items = 1:20)
+plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
 ```
 
 
@@ -469,7 +460,8 @@ model_fit <- compute_mallows(rankings = initial_ranking, preferences = pair_comp
 The model object has `augpair` equal to `TRUE`, and contains the `aug_acceptance` statisics.
 
 ```{r}
-str(model_fit)
+model_fit$augpair
+dim(model_fit$aug_acceptance)
 ```
 
 We can study the acceptance rate of the proposed augmented ranks.
@@ -557,13 +549,13 @@ rm(test_run)
 
 
 ## Posterior Distributions
-Based on the convergence diagnostics, and being fairly conservative, we set `burnin = 2000`, and take an additional 10,000 samples.
+Based on the convergence diagnostics, and being fairly conservative, we set `burnin = 1000`, and take an additional 5,000 samples.
 
 ```{r}
 model_fit <- compute_mallows(
   rankings = beach_init_rank, 
   preferences = beach_tc,
-  nmc = 1e4 + 2000
+  nmc = 6000
   )
 ```
 
@@ -572,28 +564,22 @@ model_fit <- compute_mallows(
 The posterior density of $\alpha$ has mean equal to $4.8$, and is quite smooth.
 
 ```{r}
-plot(model_fit, burnin = 2000)
+plot(model_fit, burnin = 1000)
 ```
 
 ### Posterior Density of $\rho$
 
 We first make a plot matrix for all beaches.
 ```{r, fig.width=6, fig.height=5}
-plot(model_fit, type = "rho", burnin = 2000, items = 1:15)
+plot(model_fit, type = "rho", burnin = 1000, items = 1:15)
 ```
 
-#### Top Ranked Beaches
-Beaches 9, 6, and 3 were ranked as number 1, 2, and 3, respectively, in @vitelli2018. We can make a detailed plot of these.
+### CP Consensus
 
-```{r, fig.width=6}
-plot(model_fit, type = "rho", items = c(3, 6, 9), burnin = 2000)
-```
+We can also rank the beaches according to the cumulative probability (CP) consensus. This functionality is provided by `compute_cp_consensus`, which returns a dataframe.
 
-#### Bottom Ranked Beaches
-We can also look at beaches 14, 12, and 2, which were ranked 13th, 14th, and 15th, respectively, in @vitelli2018.
-
-```{r, fig.width=6}
-plot(model_fit, type = "rho", items = c(2, 12, 14), burnin = 2000)
+```{r, results='asis'}
+knitr::kable(compute_cp_consensus(model_fit, burnin = 1000), digits = 2)
 ```
 
 
@@ -640,19 +626,9 @@ Let us instead introduce clustering:
 ```{r}
 model_fit <- compute_mallows(
   rankings = potato_manipulated, 
-  n_clusters = 2, 
-  nmc = 10000
+  n_clusters = 2
   )
 ```
-
-Here is the model object.
-
-```{r}
-str(model_fit)
-```
-
-
-The element `n_clusters` is correctly equal to 2. In addition, note that `rho` has size $n_items \times nmc \times n_clusters$, and that `rho_acceptance`, `alpha`, and `alpha_acceptance` have size $nmc \times n_clusters$.
 
 ### Algorithm Tuning
 
@@ -679,7 +655,7 @@ assess_convergence(model_fit, type = "rho", items = c(8, 12))
 
 The `plot.BayesMallows` detects that we have two clusters, and plots the estimated densities of $\alpha_{1}$ and $\alpha{2}$ in two separate plots.
 ```{r, fig.width=6}
-plot(model_fit, burnin = 2000)
+plot(model_fit, burnin = 1000)
 ```
 
 #### Posterior Distribution of $\rho$
@@ -688,14 +664,49 @@ We start by plotting the three potatoes that had the largest true weights. (The 
 
 ```{r, fig.width=6, fig.height=4}
 potato_true_ranking
-plot(model_fit, burnin = 2000, type = "rho", items = which(potato_true_ranking <= 3))
+plot(model_fit, burnin = 1000, type = "rho", items = which(potato_true_ranking <= 3))
 ```
 
 We do the same with the three lightest potatoes.
 
 ```{r, fig.width=6, fig.height=4}
-plot(model_fit, burnin = 2000, type = "rho", items = which(potato_true_ranking >= 18))
+plot(model_fit, burnin = 1000, type = "rho", items = which(potato_true_ranking >= 18))
 ```
+
+### Clusterwise CP Consensus
+
+The function `compute_cp_consensus` returns the CP consensus per cluster:
+
+```{r}
+cp_consensus_df <- compute_cp_consensus(model_fit, burnin = 1000)
+```
+
+
+```{r}
+knitr::kable(filter(cp_consensus_df, cluster == "Cluster 1"), digits = 2)
+```
+
+
+```{r}
+knitr::kable(filter(cp_consensus_df, cluster == "Cluster 2"), digits = 2)
+```
+
+Note that since `compute_cp_consensus` returns a dataframe, we can also analyze it further. For example, we can print out the top-3 in each cluster:
+
+```{r, eval=FALSE}
+cp_consensus_df %>% 
+  filter(ranking <= 3) %>% 
+  arrange(cluster, ranking)
+```
+
+```{r, echo=FALSE, results='asis'}
+cp_consensus_df %>% 
+  filter(ranking <= 3) %>% 
+  arrange(cluster, ranking) %>% 
+  knitr::kable(digits = 3)
+```
+ 
+
 
 ## Sushi Data
 The `BayesMallows` package comes with a set of sushi preference data, in which 5000 assessors each have ranked a set of 10 types of sushi (@kamishima2003). Here are the first few rows of the dataset.
@@ -707,22 +718,19 @@ knitr::kable(head(sushi_rankings), caption = "First 6 rows of example dataset `s
 With clustering, we can see if there are subsets of assessors with similar preferences. We set `nmc = 1000` here, to speed up the vignette building.
 
 ```{r, eval=FALSE}
-model_fit1 <- compute_mallows(sushi_rankings)
-model_fit2 <- compute_mallows(sushi_rankings, n_clusters = 2)
+model_fit1 <- compute_mallows(sushi_rankings, nmc = 1000)
+model_fit2 <- compute_mallows(sushi_rankings, n_clusters = 2, nmc = 1000)
 ```
-
-
-
 
 It is useful to look at the trace plots of $\alpha_{1}, \dots, \alpha_{C}$.
 ```{r, eval=FALSE}
 assess_convergence(model_fit1)
 ```
-
-
-```{r, echo=FALSE, out.width = '75%'}
-knitr::include_graphics("./vignette_data/sushi_convergence_1.png")
+```{r, echo=FALSE, out.width="75%"}
+knitr::include_graphics("./vignette-data/alpha_convergence_1.png")
 ```
+
+
 
 
 ```{r, eval=FALSE}
@@ -730,10 +738,33 @@ assess_convergence(model_fit2)
 ```
 
 
-
-```{r, echo=FALSE, out.width = '75%'}
-knitr::include_graphics("./vignette_data/sushi_convergence_2.png")
+```{r, echo=FALSE, out.width="75%"}
+knitr::include_graphics("./vignette-data/alpha_convergence_2.png")
 ```
+
+
+It seems like $\alpha$ is mixing rapidly. Let us set `burnin = 200`, and compute the CP consensus for the case with two clusters.
+
+```{r, eval=FALSE}
+cp_consensus_sushi <- compute_cp_consensus(model_fit2, burnin = 200)
+```
+
+```{r, echo=FALSE}
+load("./vignette-data/cp_consensus_sushi.RData")
+```
+
+
+We can now look at each cluster:
+
+```{r}
+knitr::kable(filter(cp_consensus_sushi, cluster == "Cluster 1"), digits = 2)
+```
+
+
+```{r}
+knitr::kable(filter(cp_consensus_sushi, cluster == "Cluster 2"), digits = 2)
+```
+
 
 
 # References
