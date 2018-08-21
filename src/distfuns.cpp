@@ -65,7 +65,7 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footr
 
   if(metric == "footrule") {
 
-    // Footrule is the one-norm
+    // Footrule is the sum of absolute values
     distance = arma::norm(r1 - r2, 1);
 
   } else if(metric == "kendall") {
@@ -102,8 +102,8 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footr
 
   } else if (metric == "spearman") {
 
-    // Spearman distance is the squared L2 norm
-    distance = pow(arma::norm(r1 - r2, 2), 2);
+    // Spearman distance is the sum of squares
+    distance = pow(arma::norm(r1 - r2, 2), 2.0);
 
   } else {
     Rcpp::stop("Inadmissible value of metric.");
