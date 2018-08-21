@@ -43,9 +43,9 @@ draw_cluster_assignments <- function(prob){
 Let us simulate from this function a large number of times.
 
 ```{r}
-num_samples <- 10000
-samples <- replicate(num_samples, draw_cluster_assignments(prob))
-table(samples) / num_samples
+n_samples <- 10000
+samples <- replicate(n_samples, draw_cluster_assignments(prob))
+table(samples) / n_samples
 ```
 It gives exactly the probabilies I asked for.
 
@@ -104,8 +104,8 @@ draw_cluster_assignments_cond <- function(probs){
 This implementation does not assign clusters according to `probs`.
 
 ```{r}
-samples <- replicate(num_samples, draw_cluster_assignments_cond(probs))
-table(samples) / num_samples
+samples <- replicate(n_samples, draw_cluster_assignments_cond(probs))
+table(samples) / n_samples
 ```
 
 
@@ -151,8 +151,8 @@ draw_cluster_assignments_sylvia <- function(probs){
 This implementation seems correct!
 
 ```{r}
-samples <- replicate(num_samples, draw_cluster_assignments_sylvia(probs))
-table(samples) / num_samples
+samples <- replicate(n_samples, draw_cluster_assignments_sylvia(probs))
+table(samples) / n_samples
 ```
 
 

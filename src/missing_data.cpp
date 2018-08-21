@@ -5,11 +5,11 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 void define_missingness(arma::mat& missing_indicator, arma::vec& assessor_missing,
-                        const arma::mat& R,
+                        const arma::mat& rankings,
                         const int& n_items, const int& n_assessors){
   for(int i = 0; i < n_assessors; ++i){
     for(int j = 0; j < n_items; ++j){
-      if(!arma::is_finite(R(j, i))){
+      if(!arma::is_finite(rankings(j, i))){
         missing_indicator(j, i) = 1;
         ++assessor_missing(i);
       }
@@ -42,7 +42,7 @@ arma::vec propose_augmentation(const arma::vec& ranks, const arma::vec& indicato
 }
 
 
-void initialize_missing_ranks(arma::mat& R, const arma::mat& missing_indicator,
+void initialize_missing_ranks(arma::mat& rankings, const arma::mat& missing_indicator,
                               const arma::vec& assessor_missing,
                               const int& n_items, const int& n_assessors) {
 
@@ -50,12 +50,12 @@ void initialize_missing_ranks(arma::mat& R, const arma::mat& missing_indicator,
     if(assessor_missing(i) == 0) {
       continue;
     } else {
-      R.col(i) = propose_augmentation(R.col(i), missing_indicator.col(i), n_items);
+      rankings.col(i) = propose_augmentation(rankings.col(i), missing_indicator.col(i), n_items);
     }
   }
 }
 
-void update_missing_ranks(arma::mat& R, const arma::umat& cluster_indicator,
+void update_missing_ranks(arma::mat& rankings, const arma::umat& cluster_indicator,
                           arma::mat& aug_acceptance,
                           const arma::mat& missing_indicator,
                           const arma::vec& assessor_missing,
@@ -71,7 +71,7 @@ void update_missing_ranks(arma::mat& R, const arma::umat& cluster_indicator,
 
 
       // Sample an augmentation proposal
-      arma::vec proposal = propose_augmentation(R.col(i), missing_indicator.col(i), n_items);
+      arma::vec proposal = propose_augmentation(rankings.col(i), missing_indicator.col(i), n_items);
 
       // Draw a uniform random number
       double u = log(arma::randu<double>());
@@ -81,10 +81,10 @@ void update_missing_ranks(arma::mat& R, const arma::umat& cluster_indicator,
 
       double ratio = -alpha(cluster) / n_items *
         (get_rank_distance(proposal, rho.col(cluster), metric) -
-        get_rank_distance(R.col(i), rho.col(cluster), metric));
+        get_rank_distance(rankings.col(i), rho.col(cluster), metric));
 
       if(ratio > u){
-        R.col(i) = proposal;
+        rankings.col(i) = proposal;
         ++aug_acceptance(i, aug_diag_index);
       }
     }

@@ -12,10 +12,10 @@
 
 //' Worker function for computing the posterior distribtuion.
 //'
-//' @param R A set of complete rankings, with one sample per column.
-//' With n_assessors samples and n_items items, R is n_items x n_assessors.
+//' @param rankings A set of complete rankings, with one sample per column.
+//' With n_assessors samples and n_items items, rankings is n_items x n_assessors.
 //' @param nmc Number of Monte Carlo samples.
-//' @param pairwise Matrix of pairwise preferences, 3 x n_items.
+//' @param preferences Matrix of preferences preferences, 3 x n_items.
 //' @param constrained Matrix of constrained elements, 2 rows.
 //' @param cardinalities Used when metric equals \code{"footrule"} or
 //' \code{"spearman"} for computing the partition function. Defaults to
@@ -25,7 +25,7 @@
 //' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 //' \code{"hamming"}.
 //' @param n_clusters Number of clusters. Defaults to 1.
-//' @param L Leap-and-shift step size.
+//' @param leap_size Leap-and-shift step size.
 //' @param sd_alpha Standard deviation of proposal distribution for alpha.
 //' @param alpha_init Initial value of alpha.
 //' @param alpha_jump How many times should we sample \code{rho} between
@@ -39,14 +39,14 @@
 //' augmentation diagnostics.
 //'
 // [[Rcpp::export]]
-Rcpp::List run_mcmc(arma::mat R, int nmc,
-                    Rcpp::Nullable<arma::mat> pairwise,
+Rcpp::List run_mcmc(arma::mat rankings, int nmc,
+                    Rcpp::Nullable<arma::mat> preferences,
                     Rcpp::Nullable<arma::mat> constrained,
                     Rcpp::Nullable<arma::vec> cardinalities,
                     Rcpp::Nullable<arma::vec> is_fit,
                     std::string metric = "footrule",
                     int n_clusters = 1,
-                    int L = 1,
+                    int leap_size = 1,
                     double sd_alpha = 0.5,
                     double alpha_init = 5,
                     int alpha_jump = 1,
@@ -56,10 +56,10 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
                       ){
 
   // The number of items ranked
-  int n_items = R.n_rows;
+  int n_items = rankings.n_rows;
 
   // The number of assessors
-  int n_assessors = R.n_cols;
+  int n_assessors = rankings.n_cols;
 
   // Number of alpha values to store, per cluster.
   int n_alpha = ceil(nmc * 1.0 / alpha_jump);
@@ -75,9 +75,9 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   arma::mat pairwise_preferences, constrained_elements;
 
 
-  if(pairwise.isNotNull() & constrained.isNotNull()){
+  if(preferences.isNotNull() & constrained.isNotNull()){
     augpair = true;
-    pairwise_preferences = Rcpp::as<arma::mat>(pairwise);
+    pairwise_preferences = Rcpp::as<arma::mat>(preferences);
     constrained_elements = Rcpp::as<arma::mat>(constrained);
   } else {
     augpair = false;
@@ -90,7 +90,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   arma::vec assessor_missing = arma::zeros<arma::vec>(n_assessors);
 
   // Fill the two above defined missingness indicators
-  define_missingness(missing_indicator, assessor_missing, R, n_items, n_assessors);
+  define_missingness(missing_indicator, assessor_missing, rankings, n_items, n_assessors);
 
   // Boolean which indicates if ANY assessor has missing ranks
   bool any_missing = arma::any(assessor_missing);
@@ -126,7 +126,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
   // Fill in missing ranks, if needed
   if(any_missing){
-    initialize_missing_ranks(R, missing_indicator, assessor_missing,
+    initialize_missing_ranks(rankings, missing_indicator, assessor_missing,
                              n_items, n_assessors);
   }
 
@@ -140,7 +140,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
   arma::vec alpha_old = alpha.col(0);
   arma::mat rho_old = rho(arma::span::all, arma::span::all, arma::span(0));
 
-  arma::uvec element_indices = arma::regspace<arma::uvec>(0, R.n_rows - 1);
+  arma::uvec element_indices = arma::regspace<arma::uvec>(0, rankings.n_rows - 1);
 
   // This is the Metropolis-Hastings loop
 
@@ -156,12 +156,12 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
 
       // Matrix of ranks for this cluster
-      arma::mat clus_mat = R.submat(element_indices,
+      arma::mat clus_mat = rankings.submat(element_indices,
                           arma::find(cluster_indicator.col(t - 1) == cluster_index));
 
       // Call the void function which updates rho by reference
       update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,
-                 thinning, alpha_old(cluster_index), L, clus_mat, metric, n_items, t,
+                 thinning, alpha_old(cluster_index), leap_size, clus_mat, metric, n_items, t,
                  element_indices);
 
       if(t % alpha_jump == 0) {
@@ -182,7 +182,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     }
 
   // Update the cluster labels, per assessor
-  update_cluster_labels(cluster_indicator, rho_old, R, cluster_probs,
+  update_cluster_labels(cluster_indicator, rho_old, rankings, cluster_probs,
                         alpha_old, n_items, n_assessors, n_clusters,
                         t, metric, cardinalities, is_fit);
 
@@ -190,7 +190,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
   // Perform data augmentation of missing ranks, if needed
   if(any_missing){
-    update_missing_ranks(R, cluster_indicator, aug_acceptance, missing_indicator,
+    update_missing_ranks(rankings, cluster_indicator, aug_acceptance, missing_indicator,
                          assessor_missing, n_items, n_assessors,
                          alpha_old, rho_old,
                          metric, t, aug_diag_index, aug_diag_thinning);
@@ -199,7 +199,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
 
     // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
-    augment_pairwise(R, cluster_indicator, alpha_old, rho_old,
+    augment_pairwise(rankings, cluster_indicator, alpha_old, rho_old,
                      metric, pairwise_preferences, constrained_elements,
                      n_assessors, n_items, t, aug_acceptance, aug_diag_index,
                      aug_diag_thinning);
@@ -228,7 +228,7 @@ Rcpp::List run_mcmc(arma::mat R, int nmc,
     Rcpp::Named("n_clusters") = n_clusters,
     Rcpp::Named("alpha_jump") = alpha_jump,
     Rcpp::Named("thinning") = thinning,
-    Rcpp::Named("L") = L,
+    Rcpp::Named("leap_size") = leap_size,
     Rcpp::Named("sd_alpha") = sd_alpha,
     Rcpp::Named("aug_diag_thinning") = aug_diag_thinning
   );

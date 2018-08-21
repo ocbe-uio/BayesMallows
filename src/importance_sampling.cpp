@@ -21,16 +21,16 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n,
                           ) {
 
   // The dispersion parameter alpha comes as a vector value
-  int num_alphas = alpha_vector.n_elem;
+  int n_alphas = alpha_vector.n_elem;
 
   // The reference ranking
   arma::vec rho = arma::linspace<arma::vec>(1,n,n);
 
   // Vector which holds the result for all alphas
-  arma::vec logZ = arma::zeros(num_alphas);
+  arma::vec logZ = arma::zeros(n_alphas);
 
   // Loop over the values of alpha
-  for(int t = 0; t < num_alphas; ++t){
+  for(int t = 0; t < n_alphas; ++t){
     // The current value of alpha
     double alpha = alpha_vector(t);
     // The current value of the partition function

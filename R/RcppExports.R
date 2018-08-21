@@ -68,10 +68,10 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 
 #' Worker function for computing the posterior distribtuion.
 #'
-#' @param R A set of complete rankings, with one sample per column.
-#' With n_assessors samples and n_items items, R is n_items x n_assessors.
+#' @param rankings A set of complete rankings, with one sample per column.
+#' With n_assessors samples and n_items items, rankings is n_items x n_assessors.
 #' @param nmc Number of Monte Carlo samples.
-#' @param pairwise Matrix of pairwise preferences, 3 x n_items.
+#' @param preferences Matrix of preferences preferences, 3 x n_items.
 #' @param constrained Matrix of constrained elements, 2 rows.
 #' @param cardinalities Used when metric equals \code{"footrule"} or
 #' \code{"spearman"} for computing the partition function. Defaults to
@@ -81,7 +81,7 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 #' \code{"hamming"}.
 #' @param n_clusters Number of clusters. Defaults to 1.
-#' @param L Leap-and-shift step size.
+#' @param leap_size Leap-and-shift step size.
 #' @param sd_alpha Standard deviation of proposal distribution for alpha.
 #' @param alpha_init Initial value of alpha.
 #' @param alpha_jump How many times should we sample \code{rho} between
@@ -94,7 +94,7 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' @param aug_diag_thinning The interval in which we save
 #' augmentation diagnostics.
 #'
-run_mcmc <- function(R, nmc, pairwise, constrained, cardinalities, is_fit, metric = "footrule", n_clusters = 1L, L = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L) {
-    .Call(`_BayesMallows_run_mcmc`, R, nmc, pairwise, constrained, cardinalities, is_fit, metric, n_clusters, L, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning)
+run_mcmc <- function(rankings, nmc, preferences, constrained, cardinalities, is_fit, metric = "footrule", n_clusters = 1L, leap_size = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, preferences, constrained, cardinalities, is_fit, metric, n_clusters, leap_size, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning)
 }
 

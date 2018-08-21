@@ -4,7 +4,7 @@
 #include <RcppArmadillo.h>
 
 void augment_pairwise(
-    arma::mat& R,
+    arma::mat& rankings,
     const arma::umat& cluster_indicator,
     const arma::vec& alpha,
     const arma::mat& rho,

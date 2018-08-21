@@ -6,25 +6,25 @@
 \alias{create_ordering}
 \title{Convert between ranking and ordering.}
 \usage{
-create_ranking(O)
+create_ranking(orderings)
 
-create_ordering(R)
+create_ordering(rankings)
 }
 \arguments{
-\item{O}{A vector or matrix of ordered items. If a matrix, it should be of
+\item{orderings}{A vector or matrix of ordered items. If a matrix, it should be of
 size N times n, where N is the number of samples and n is the number of
 items.}
 
-\item{R}{A vector or matrix of ranked items. If a matrix, it should be N
+\item{rankings}{A vector or matrix of ranked items. If a matrix, it should be N
 times n, where N is the number of samples and n is the number of items.}
 }
 \value{
 A vector or matrix of rankings.
 }
 \description{
-\code{create_ranking} takes a vector or matrix of ordered items \code{O} and
+\code{create_ranking} takes a vector or matrix of ordered items \code{orderings} and
 returns a corresponding vector or matrix of ranked items.
-\code{create_ordering} takes a vector or matrix of rankings \code{R} and
+\code{create_ordering} takes a vector or matrix of rankings \code{rankings} and
 returns a corresponding vector or matrix of ordered items.
 }
 \section{Functions}{
@@ -36,25 +36,25 @@ returns a corresponding vector or matrix of ordered items.
 
 \examples{
 # A vector of ordered items.
-O <- c(5, 1, 2, 4, 3)
+orderings <- c(5, 1, 2, 4, 3)
 # Get ranks
-R <- create_ranking(O)
-# R is c(2, 3, 5, 4, 1)
+rankings <- create_ranking(orderings)
+# rankings is c(2, 3, 5, 4, 1)
 # Finally we convert it backed to an ordering.
-O2 <- create_ordering(R)
+orderings_2 <- create_ordering(rankings)
 # Confirm that we get back what we had
-all.equal(O, O2)
+all.equal(orderings, orderings_2)
 
 # Next, we have a matrix with N = 19 samples
 # and n = 4 items
 set.seed(21)
 N <- 10
 n <- 4
-O <- t(replicate(N, sample.int(n)))
+orderings <- t(replicate(N, sample.int(n)))
 # Convert the ordering to ranking
-R <- create_ranking(O)
+rankings <- create_ranking(orderings)
 # Now we try to convert it back to an ordering.
-O2 <- create_ordering(R)
+orderings_2 <- create_ordering(rankings)
 # Confirm that we get back what we had
-all.equal(O, O2)
+all.equal(orderings, orderings_2)
 }

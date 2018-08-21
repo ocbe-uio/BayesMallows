@@ -10,7 +10,7 @@
 void update_alpha(arma::mat& alpha,
                   arma::vec& alpha_acceptance,
                   arma::vec& alpha_old,
-                  const arma::mat& R,
+                  const arma::mat& rankings,
                   int& alpha_index,
                   int& cluster_index,
                   const arma::mat& rho_old,
@@ -23,14 +23,14 @@ void update_alpha(arma::mat& alpha,
 
 void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
                 int& rho_index, const int& cluster_index, const int& thinning,
-                const double& alpha_old, const int& L, const arma::mat& R,
+                const double& alpha_old, const int& leap_size, const arma::mat& rankings,
                 const std::string& metric, const int& n_items, const int& t,
                 const arma::uvec& element_indices);
 
 void update_cluster_labels(
     arma::umat& cluster_indicator,
     const arma::mat& rho_old,
-    const arma::mat& R,
+    const arma::mat& rankings,
     const arma::mat& cluster_probs,
     const arma::vec& alpha_old,
     const int& n_items,

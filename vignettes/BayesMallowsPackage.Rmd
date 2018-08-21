@@ -67,7 +67,7 @@ Next, we study the convergence of $\rho$. To avoid too complicated plots, we pic
 assess_convergence(model_fit, type = "rho", items = 1:5)
 ```
 
-When the name of the items have been specified in to column names of `R`, we can also provide these to the `items` argument. The line below plots potatoes 16 through 20.
+When the name of the items have been specified in to column names of `rankings`, we can also provide these to the `items` argument. The line below plots potatoes 16 through 20.
 
 ```{r, fig.width=6}
 assess_convergence(model_fit, type = "rho", items = c("P16", "P17", "P18", "P19", "P20"))
@@ -463,7 +463,7 @@ knitr::kable(initial_ranking, row.names = TRUE)
 Having generated the transitive closure of each assessor's pairwise preferences and the initial ranking, we can go on and use these as inputs to the Mallows model.
 
 ```{r}
-model_fit <- compute_mallows(R = initial_ranking, P = pair_comp_tc)
+model_fit <- compute_mallows(rankings = initial_ranking, preferences = pair_comp_tc)
 ```
 
 The model object has `augpair` equal to `TRUE`, and contains the `aug_acceptance` statisics.
@@ -520,8 +520,8 @@ We can now check the convergence, using the same tools as before.
 
 ```{r, error=TRUE}
 test_run <- compute_mallows(
-  R = beach_init_rank, 
-  P = beach_tc
+  rankings = beach_init_rank, 
+  preferences = beach_tc
   )
 ```
 
@@ -561,8 +561,8 @@ Based on the convergence diagnostics, and being fairly conservative, we set `bur
 
 ```{r}
 model_fit <- compute_mallows(
-  R = beach_init_rank, 
-  P = beach_tc,
+  rankings = beach_init_rank, 
+  preferences = beach_tc,
   nmc = 1e4 + 2000
   )
 ```
@@ -599,7 +599,7 @@ plot(model_fit, type = "rho", items = c(2, 12, 14), burnin = 2000)
 
 # Clustering of Assessors
 
-In many situations, it is interesting to divide the assessors into clusters, in which each the assessors in each cluster have similar preferences. In @vitelli2018, Section 4.3, it is shown how the Bayesian Mallows model can be extended to do exactly this, with a mixture approach. `BayesMallows` supports this through the optional argument `num_clusters` to `compute_mallows`.
+In many situations, it is interesting to divide the assessors into clusters, in which each the assessors in each cluster have similar preferences. In @vitelli2018, Section 4.3, it is shown how the Bayesian Mallows model can be extended to do exactly this, with a mixture approach. `BayesMallows` supports this through the optional argument `n_clusters` to `compute_mallows`.
 
 ## Introduction
 
@@ -622,7 +622,7 @@ knitr::kable(potato_manipulated, caption = "Dataset `potato_manipulated`.")
 
 Let us try first without clustering.
 ```{r}
-model_fit <- compute_mallows(R = potato_manipulated)
+model_fit <- compute_mallows(rankings = potato_manipulated)
 ```
 
 Looking at the convergence of $\alpha$ and $\rho$, we see that this model does not settle on a consensus ranking.
@@ -639,8 +639,8 @@ Let us instead introduce clustering:
 
 ```{r}
 model_fit <- compute_mallows(
-  R = potato_manipulated, 
-  num_clusters = 2, 
+  rankings = potato_manipulated, 
+  n_clusters = 2, 
   nmc = 10000
   )
 ```
@@ -708,7 +708,7 @@ With clustering, we can see if there are subsets of assessors with similar prefe
 
 ```{r, eval=FALSE}
 model_fit1 <- compute_mallows(sushi_rankings)
-model_fit2 <- compute_mallows(sushi_rankings, num_clusters = 2)
+model_fit2 <- compute_mallows(sushi_rankings, n_clusters = 2)
 ```
 
 

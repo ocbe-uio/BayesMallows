@@ -29,7 +29,7 @@ void shift_step(arma::vec& proposal, const arma::vec& rho,
 }
 
 
-Rcpp::List leap_and_shift(const arma::vec& rho, int L){
+Rcpp::List leap_and_shift(const arma::vec& rho, int leap_size){
 
   // Declare the proposed rank vector
   arma::vec proposal = rho;
@@ -49,8 +49,8 @@ Rcpp::List leap_and_shift(const arma::vec& rho, int L){
   u = arma::as_scalar(arma::randi(1, arma::distr_param(1, n)));
 
   // 2, compute the set S for sampling the new rank
-  // Defining versions of L and n converted to double, to avoid duplication in code
-  double dobL = static_cast<double>(L);
+  // Defining versions of leap_size and n converted to double, to avoid duplication in code
+  double dobL = static_cast<double>(leap_size);
   double dobn = static_cast<double>(n);
 
   // Defining linspace lengths here to avoid duplication in code
@@ -60,22 +60,22 @@ Rcpp::List leap_and_shift(const arma::vec& rho, int L){
   if((rho(u - 1) > 1) & (rho(u - 1) < n)){
     support = arma::join_cols(
       arma::linspace(
-        std::max(1.0, rho(u - 1) - L), rho(u - 1) - 1, length1
+        std::max(1.0, rho(u - 1) - leap_size), rho(u - 1) - 1, length1
       ),
       arma::linspace(
-        rho(u - 1) + 1, std::min(dobn, rho(u - 1) + L), length2
+        rho(u - 1) + 1, std::min(dobn, rho(u - 1) + leap_size), length2
       )
     );
   } else if(rho(u - 1) == 1){
     support = arma::linspace(
       rho(u - 1) + 1,
-      std::min(dobn, rho(u - 1) + L),
+      std::min(dobn, rho(u - 1) + leap_size),
       length2
     );
 
   } else if(rho(u - 1) == n){
     support = arma::linspace(
-      std::max(1.0, rho(u - 1) - L), rho(u - 1) - 1,
+      std::max(1.0, rho(u - 1) - leap_size), rho(u - 1) - 1,
       length1);
   }
 
@@ -86,7 +86,7 @@ Rcpp::List leap_and_shift(const arma::vec& rho, int L){
 
   // Compute the associated transition probabilities (BEFORE THE SHIFT STEP, WHICH IS DETERMINISTIC --> EASIER)
   if(std::abs(proposal(u - 1) - rho(u - 1)) == 1){
-    // in this case the transition probabilities coincide! (and in fact for L = 1 the L&S is symmetric)
+    // in this case the transition probabilities coincide! (and in fact for leap_size = 1 the L&S is symmetric)
     support_new = std::min(proposal(u - 1) - 1, dobL) + std::min(n - proposal(u - 1), dobL);
     prob_forward = 1.0 / (n * support.n_elem) + 1.0 / (n * support_new);
     prob_backward = prob_forward;

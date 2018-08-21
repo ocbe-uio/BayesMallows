@@ -4,18 +4,18 @@
 \alias{run_mcmc}
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
-run_mcmc(R, nmc, pairwise, constrained, cardinalities, is_fit,
-  metric = "footrule", n_clusters = 1L, L = 1L, sd_alpha = 0.5,
-  alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L,
-  aug_diag_thinning = 100L)
+run_mcmc(rankings, nmc, preferences, constrained, cardinalities, is_fit,
+  metric = "footrule", n_clusters = 1L, leap_size = 1L,
+  sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1,
+  thinning = 1L, aug_diag_thinning = 100L)
 }
 \arguments{
-\item{R}{A set of complete rankings, with one sample per column.
-With n_assessors samples and n_items items, R is n_items x n_assessors.}
+\item{rankings}{A set of complete rankings, with one sample per column.
+With n_assessors samples and n_items items, rankings is n_items x n_assessors.}
 
 \item{nmc}{Number of Monte Carlo samples.}
 
-\item{pairwise}{Matrix of pairwise preferences, 3 x n_items.}
+\item{preferences}{Matrix of preferences preferences, 3 x n_items.}
 
 \item{constrained}{Matrix of constrained elements, 2 rows.}
 
@@ -31,7 +31,7 @@ With n_assessors samples and n_items items, R is n_items x n_assessors.}
 
 \item{n_clusters}{Number of clusters. Defaults to 1.}
 
-\item{L}{Leap-and-shift step size.}
+\item{leap_size}{Leap-and-shift step size.}
 
 \item{sd_alpha}{Standard deviation of proposal distribution for alpha.}
 

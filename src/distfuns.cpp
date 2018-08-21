@@ -112,15 +112,15 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footr
   return distance;
 }
 
-// Compute the distance between all rows in R and rho
-double rank_dist_matrix(const arma::mat& R, const arma::vec& rho, std::string metric){
-  int N = R.n_cols;
-  if(R.n_rows != rho.n_elem) Rcpp::stop("R and rho have different number of elements");
+// Compute the distance between all rows in rankings and rho
+double rank_dist_matrix(const arma::mat& rankings, const arma::vec& rho, std::string metric){
+  int N = rankings.n_cols;
+  if(rankings.n_rows != rho.n_elem) Rcpp::stop("rankings and rho have different number of elements");
 
   double total_distance = 0;
 
   for(int i = 0; i < N; ++i){
-    total_distance += get_rank_distance(R.col(i), rho, metric = metric);
+    total_distance += get_rank_distance(rankings.col(i), rho, metric = metric);
   }
 
   return total_distance;

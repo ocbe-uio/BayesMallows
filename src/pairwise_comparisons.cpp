@@ -5,7 +5,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 void augment_pairwise(
-    arma::mat& R,
+    arma::mat& rankings,
     const arma::umat& cluster_indicator,
     const arma::vec& alpha,
     const arma::mat& rho,
@@ -51,7 +51,7 @@ void augment_pairwise(
       arma::uvec preferred_elements = arma::conv_to<arma::uvec>::from(pairwise_preferences.col(2));
       preferred_elements = preferred_elements.elem(preferred_element_inds);
 
-      possible_rankings = R.col(i);
+      possible_rankings = rankings.col(i);
       possible_rankings = possible_rankings.elem(preferred_elements - 1);
 
       if(possible_rankings.n_elem > 0) {
@@ -67,7 +67,7 @@ void augment_pairwise(
       arma::uvec disfavored_elements = arma::conv_to<arma::uvec>::from(pairwise_preferences.col(1));
       disfavored_elements = disfavored_elements.elem(disfavored_element_inds);
 
-      possible_rankings = R.col(i);
+      possible_rankings = rankings.col(i);
       possible_rankings = possible_rankings.elem(disfavored_elements - 1);
 
       if(possible_rankings.n_elem > 0) {
@@ -80,14 +80,14 @@ void augment_pairwise(
     int proposed_rank = arma::randi<int>(arma::distr_param(left_limit + 1, right_limit - 1));
 
     // Assign the proposal to the (element-1)th element
-    arma::vec proposal = R.col(i);
+    arma::vec proposal = rankings.col(i);
     proposal(element - 1) = proposed_rank;
 
     double delta_r;
     arma::vec indices;
 
     // Do the shift step
-    shift_step(proposal, R.col(i), element, delta_r, indices);
+    shift_step(proposal, rankings.col(i), element, delta_r, indices);
 
     // Finally, decide whether to accept the proposal or not
     // Draw a uniform random number
@@ -98,10 +98,10 @@ void augment_pairwise(
 
     double ratio = -alpha(cluster) / n_items *
       (get_rank_distance(proposal, rho.col(cluster), metric) -
-      get_rank_distance(R.col(i), rho.col(cluster), metric));
+      get_rank_distance(rankings.col(i), rho.col(cluster), metric));
 
     if(ratio > u){
-      R.col(i) = proposal;
+      rankings.col(i) = proposal;
       ++aug_acceptance(i, aug_diag_index);
     }
   }
