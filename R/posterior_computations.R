@@ -31,30 +31,51 @@ compute_cp_consensus <- function(model_fit, burnin){
   # Find the count of each unique combination (value, item, cluster)
   df <- dplyr::count(df)
 
-  # Divide by the number of counts in total, per item and cluster
+  # Arrange according to value, per item and cluster
   df <- dplyr::ungroup(df)
   df <- dplyr::group_by(df, .data$item, .data$cluster)
-  df <- dplyr::mutate(df, prob = .data$n/sum(.data$n))
-
-  # Arrange according to value, per item and cluster
   df <- dplyr::arrange(df, .data$value, .by_group = TRUE)
 
-  # Compute the cumulative probability per item and cluster
-  df <- dplyr::mutate(df,  cumprob = cumsum(.data$prob))
+  # Find the cumulative probability, by dividing by the total
+  # count in (item, cluster) and the summing cumulatively
+  df <- dplyr::mutate(df, cumprob = cumsum(.data$n/sum(.data$n)))
+
+  # Find the CP consensus per cluster, using the find_cpc function
+  df <- dplyr::ungroup(df)
+  df <- dplyr::group_by(df, .data$cluster)
+  df <- dplyr::do(df, find_cpc(.data))
   df <- dplyr::ungroup(df)
 
-  # We now have reduced df to (n_items * n_clusters) rows, which
-  # is typically a small number.
+  # If there is only one cluster, we drop the cluster column
+  if(model_fit$n_clusters == 1){
+    df <- dplyr::select(df, -.data$cluster)
+  }
+
+  return(df)
+
+}
+
+
+# Internal function for finding CP consensus.
+find_cpc <- function(group_df){
   # Declare the result dataframe before adding rows to it
-  result <- dplyr::tibble()
+  result <- dplyr::tibble(
+    cluster = character(),
+    ranking = numeric(),
+    item = character(),
+    cumprob = numeric()
+  )
+  n_items <- max(group_df$value)
 
-  for(i in seq(from = 1, to = model_fit$n_items, by = 1)){
-    # Filter out the relevant rows.
-    tmp_df <- dplyr::filter(df, .data$value == i)
+  for(i in seq(from = 1, to = n_items, by = 1)){
+    # Filter out the relevant rows
+    tmp_df <- dplyr::filter(group_df, .data$value == i)
 
-    # Keep the max per cluster only. This filtering must be done after the first filter,
+    # Remove items in result
+    tmp_df <- dplyr::anti_join(tmp_df, result, by = c("cluster", "item"))
+
+    # Keep the max only. This filtering must be done after the first filter,
     # since we take the maximum among the filtered values
-    tmp_df <- dplyr::group_by(tmp_df, .data$cluster)
     tmp_df <- dplyr::filter(tmp_df, .data$cumprob == max(.data$cumprob))
 
     # Add the ranking
@@ -64,18 +85,6 @@ compute_cp_consensus <- function(model_fit, burnin){
     result <- dplyr::bind_rows(result,
                                dplyr::select(tmp_df, .data$cluster, .data$ranking, .data$item, .data$cumprob))
 
-    # Remove the select rows from df
-    # Here we remove everything ranked i
-    df <- dplyr::filter(df, .data$value != i)
-    # Here we remove the (item, cluster) that are in tmp_df
-    df <- dplyr::anti_join(df, tmp_df, by = c("cluster", "item"))
   }
-
-  # If there is only one cluster, we drop the cluster column
-  if(model_fit$n_clusters == 1){
-    result <- dplyr::select(result, -.data$cluster)
-  }
-
   return(result)
-
 }
