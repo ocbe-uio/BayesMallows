@@ -86,17 +86,25 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     augpair = false;
   }
 
-  // Declare indicator matrix of missing ranks, and fill it with zeros
-  arma::mat missing_indicator = arma::zeros<arma::mat>(n_items, n_assessors);
-
-  // Number of missing items per assessor
-  arma::vec assessor_missing = arma::zeros<arma::vec>(n_assessors);
-
-  // Fill the two above defined missingness indicators
-  define_missingness(missing_indicator, assessor_missing, rankings, n_items, n_assessors);
-
   // Boolean which indicates if ANY assessor has missing ranks
-  bool any_missing = arma::any(assessor_missing);
+  bool any_missing = !arma::is_finite(rankings);
+
+  arma::mat missing_indicator;
+  arma::vec assessor_missing;
+
+  if(any_missing){
+    missing_indicator = arma::zeros<arma::mat>(n_items, n_assessors);
+
+    // Number of missing items per assessor
+    assessor_missing = arma::zeros<arma::vec>(n_assessors);
+
+    // Fill the two above defined missingness indicators
+    define_missingness(missing_indicator, assessor_missing, rankings, n_items, n_assessors);
+
+  } else {
+    missing_indicator.reset();
+    assessor_missing.reset();
+  }
 
   // Declare the matrix to hold the latent ranks
   // Note: Armadillo matrices are stored in column-major ordering. Hence,
@@ -137,7 +145,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     // Empty the matrix
     cluster_probs.reset();
     cluster_indicator.reset();
-    clus_mat = rankings; // assign once and for all
+    clus_mat = rankings;
   }
 
 
@@ -152,7 +160,14 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Declare indicator vectors to hold acceptance or not
   arma::vec alpha_acceptance = arma::ones(n_clusters);
   arma::vec rho_acceptance = arma::ones(n_clusters);
-  arma::mat aug_acceptance = arma::zeros<arma::mat>(n_assessors, n_aug_diag);
+
+  arma::mat aug_acceptance;
+  if(any_missing | augpair){
+    aug_acceptance = arma::zeros<arma::mat>(n_assessors, n_aug_diag);
+  } else {
+    aug_acceptance.reset();
+  }
+
 
   // Other variables used
   int alpha_index = 0, rho_index = 0, aug_diag_index = 0;
@@ -181,6 +196,9 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
       if(clustering){
         clus_mat = rankings.submat(element_indices,
                                    arma::find(cluster_indicator.col(t - 1) == cluster_index));
+      } else if (any_missing | augpair){
+        // When augmenting data, we need to update in every step, even without clustering
+        clus_mat = rankings;
       }
 
 
@@ -228,7 +246,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     augment_pairwise(rankings, cluster_indicator, alpha_old, rho_old,
                      metric, pairwise_preferences, constrained_elements,
                      n_assessors, n_items, t, aug_acceptance, aug_diag_index,
-                     aug_diag_thinning);
+                     aug_diag_thinning, clustering);
   }
 
 

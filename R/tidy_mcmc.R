@@ -52,8 +52,8 @@ tidy_mcmc <- function(fit){
     cluster_dims <- dim(fit$cluster_indicator)
     value <- paste("Cluster", c(fit$cluster_indicator))
   } else {
-    cluster_dims <- c(fit$n_clusters, fit$nmc)
-    value <- rep(1, prod(cluster_dims))
+    cluster_dims <- c(fit$n_assessors, fit$nmc)
+    value <- paste("Cluster", rep(1, prod(cluster_dims)))
   }
 
 

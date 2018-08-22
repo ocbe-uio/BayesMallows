@@ -53,10 +53,7 @@ The `compute_mallows` function is the workhorse of `BayesMallows`. It runs the M
 We start by using all the default values of the parameters, so we only need to supply the matrix of ranked items. We use the `potato_visual` data printed above. 
 
 ```{r}
-t1 <- Sys.time()
 model_fit <- compute_mallows(potato_visual)
-t2 <- Sys.time()
-print(t2 - t1)
 ```
 
 The argument returned is a list object of class `BayesMallows`, which contains a whole lot of information about the MCMC run.
@@ -251,7 +248,7 @@ knitr::kable(potato_top, caption = "Example dataset `potato_top`.")
 The `compute_mallows` function automatically recognizes the `NA` values as missing ranks, and augments the data, as described in Section 4.1 of @vitelli2018. Let us try:
 
 ```{r}
-model_fit <- compute_mallows(potato_top, aug_diag_thinning = 10, nmc = 10000)
+model_fit <- compute_mallows(potato_top)
 ```
 
 Looking at the returned object, we see that `any_missing` is `TRUE`, so `compute_mallows` has correctly detected that there are missing values.
@@ -791,13 +788,13 @@ To get other quantiles, use the `probs` argument to `compute_within_cluster_dist
 
 We can also compute an elbow plot directly, using `plot_elbow`. Before doing that, we should look at its arguments:
 ```{r}
-formals(plot_elbow)
+args(plot_elbow)
 ```
 
 `plot_elbow` requires the model fits for different number of clusters to be provided as the first arguments. The remaining arguments must be named. We try this for the case of one and two clusters:
 
 ```{r, eval=FALSE}
-plot_elbow(model_fit1, model_fit2, burnin = 200)
+plot_elbow(model_fit1, model_fit2, rankings = sushi_rankings, burnin = 200)
 ```
 ```{r, echo=FALSE, out.width="75%"}
 knitr::include_graphics("./vignette-data/sushi_elbow.png")

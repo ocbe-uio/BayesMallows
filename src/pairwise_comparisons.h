@@ -16,7 +16,8 @@ void augment_pairwise(
     const int& t,
     arma::mat& aug_acceptance,
     int& aug_diag_index,
-    const int& aug_diag_thinning
+    const int& aug_diag_thinning,
+    const bool& clustering
 );
 
 #endif
