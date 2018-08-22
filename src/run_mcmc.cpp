@@ -70,6 +70,9 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Number of augmentation diagnostics to store
   int n_aug_diag = ceil(nmc * 1.0 / aug_diag_thinning);
 
+  // Check if we want to do clustering
+  bool clustering = n_clusters > 1;
+
   // Check if we have pairwise preferences
   bool augpair;
   arma::mat pairwise_preferences, constrained_elements;
@@ -115,9 +118,19 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Hyperparameter for Dirichlet prior used in clustering
   // Consider having this as an optional user argument
   int psi = 10;
+
   // Cluster probabilities
   arma::mat cluster_probs(n_clusters, nmc);
-  cluster_probs.col(0).fill(1.0/n_clusters);
+  // Submatrix of rankings to be updated in each clustering step
+  arma::mat clus_mat;
+
+  if(clustering){
+    cluster_probs.col(0).fill(1.0/n_clusters);
+  } else {
+    cluster_probs.fill(1.0);
+    clus_mat = rankings; // assign once and for all
+  }
+
 
   // Declare the cluster indicator z
   arma::umat cluster_indicator(n_assessors, nmc);
@@ -151,13 +164,19 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     // Check if the user has tried to interrupt.
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
 
-    update_cluster_probs(cluster_probs, cluster_indicator, n_clusters, psi, t);
+    if(clustering){
+      update_cluster_probs(cluster_probs, cluster_indicator, n_clusters, psi, t);
+    }
+
 
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
 
       // Matrix of ranks for this cluster
-      arma::mat clus_mat = rankings.submat(element_indices,
-                          arma::find(cluster_indicator.col(t - 1) == cluster_index));
+      if(clustering){
+        clus_mat = rankings.submat(element_indices,
+                                   arma::find(cluster_indicator.col(t - 1) == cluster_index));
+      }
+
 
       // Call the void function which updates rho by reference
       update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,

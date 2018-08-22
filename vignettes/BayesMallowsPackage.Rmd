@@ -53,7 +53,10 @@ The `compute_mallows` function is the workhorse of `BayesMallows`. It runs the M
 We start by using all the default values of the parameters, so we only need to supply the matrix of ranked items. We use the `potato_visual` data printed above. 
 
 ```{r}
+t1 <- Sys.time()
 model_fit <- compute_mallows(potato_visual)
+t2 <- Sys.time()
+print(t2 - t1)
 ```
 
 The argument returned is a list object of class `BayesMallows`, which contains a whole lot of information about the MCMC run.
