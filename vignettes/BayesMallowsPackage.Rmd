@@ -251,7 +251,7 @@ knitr::kable(potato_top, caption = "Example dataset `potato_top`.")
 The `compute_mallows` function automatically recognizes the `NA` values as missing ranks, and augments the data, as described in Section 4.1 of @vitelli2018. Let us try:
 
 ```{r}
-model_fit <- compute_mallows(potato_top)
+model_fit <- compute_mallows(potato_top, aug_diag_thinning = 10, nmc = 10000)
 ```
 
 Looking at the returned object, we see that `any_missing` is `TRUE`, so `compute_mallows` has correctly detected that there are missing values.

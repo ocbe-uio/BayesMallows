@@ -163,8 +163,8 @@ compute_mallows <- function(rankings = NULL,
   }
 
   fit$items <- rownames(fit$rho)
-  # Tidy MCMC results
 
+  # Tidy MCMC results
   fit <- tidy_mcmc(fit)
 
 

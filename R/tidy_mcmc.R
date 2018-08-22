@@ -48,11 +48,18 @@ tidy_mcmc <- function(fit){
   )
 
   # Tidy cluster indicator
-  cluster_dims <- dim(fit$cluster_indicator)
+  if(fit$n_clusters > 1){
+    cluster_dims <- dim(fit$cluster_indicator)
+    value <- paste("Cluster", c(fit$cluster_indicator))
+  } else {
+    cluster_dims <- c(fit$n_clusters, fit$nmc)
+    value <- rep(1, prod(cluster_dims))
+  }
+
 
   # Assessor1, Assessor2, ..., Assessor1, Assessor2
   # Iteration1, Iteration1, ..., Iteration2, Iteration2
-  value <- paste("Cluster", c(fit$cluster_indicator))
+
   assessor <- rep(
     seq(from = 1, to = cluster_dims[[1]], by = 1),
     times = cluster_dims[[2]]
@@ -68,12 +75,19 @@ tidy_mcmc <- function(fit){
     value = value
   )
 
-  # Tidy cluster probabilities
-  clusprob_dims <- dim(fit$cluster_probs)
+  # Tidy cluster probabilities, if required
+  if(fit$n_clusters > 1){
+    clusprob_dims <- dim(fit$cluster_probs)
+    value <- c(fit$cluster_probs)
+  } else {
+    clusprob_dims <- c(fit$n_clusters, fit$nmc)
+    value <- rep(1, times = prod(clusprob_dims))
+  }
+
 
   # Cluster1, Cluster2, ..., Cluster1, Cluster2
   # Iteration1, Iteration1, ..., Iteration2, Iteration2
-  value <- c(fit$cluster_probs)
+
 
   cluster <- rep(
     paste("Cluster", seq(from = 1, to = clusprob_dims[[1]], by = 1)),

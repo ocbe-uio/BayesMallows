@@ -120,22 +120,28 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   int psi = 10;
 
   // Cluster probabilities
-  arma::mat cluster_probs(n_clusters, nmc);
+  arma::mat cluster_probs;
+  // Declare the cluster indicator z
+  arma::umat cluster_indicator;
   // Submatrix of rankings to be updated in each clustering step
   arma::mat clus_mat;
 
   if(clustering){
+    cluster_probs.set_size(n_clusters, nmc);
     cluster_probs.col(0).fill(1.0/n_clusters);
+    // Initialize clusters randomly
+    cluster_indicator.set_size(n_assessors, nmc);
+    cluster_indicator.col(0) = arma::randi<arma::uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
+
   } else {
-    cluster_probs.fill(1.0);
+    // Empty the matrix
+    cluster_probs.reset();
+    cluster_indicator.reset();
     clus_mat = rankings; // assign once and for all
   }
 
 
-  // Declare the cluster indicator z
-  arma::umat cluster_indicator(n_assessors, nmc);
-  // Initialize clusters randomly
-  cluster_indicator.col(0) = arma::randi<arma::uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
+
 
   // Fill in missing ranks, if needed
   if(any_missing){
@@ -201,18 +207,19 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     }
 
   // Update the cluster labels, per assessor
-  update_cluster_labels(cluster_indicator, rho_old, rankings, cluster_probs,
-                        alpha_old, n_items, n_assessors, n_clusters,
-                        t, metric, cardinalities, is_fit);
+  if(clustering){
+    update_cluster_labels(cluster_indicator, rho_old, rankings, cluster_probs,
+                          alpha_old, n_items, n_assessors, n_clusters,
+                          t, metric, cardinalities, is_fit);
+  }
 
 
 
   // Perform data augmentation of missing ranks, if needed
   if(any_missing){
     update_missing_ranks(rankings, cluster_indicator, aug_acceptance, missing_indicator,
-                         assessor_missing, n_items, n_assessors,
-                         alpha_old, rho_old,
-                         metric, t, aug_diag_index, aug_diag_thinning);
+                         assessor_missing, n_items, n_assessors, alpha_old, rho_old,
+                         metric, t, aug_diag_index, aug_diag_thinning, clustering);
   }
 
 
