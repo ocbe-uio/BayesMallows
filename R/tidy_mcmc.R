@@ -52,7 +52,7 @@ tidy_mcmc <- function(fit){
 
   # Assessor1, Assessor2, ..., Assessor1, Assessor2
   # Iteration1, Iteration1, ..., Iteration2, Iteration2
-  value <- c(fit$cluster_indicator)
+  value <- paste("Cluster", c(fit$cluster_indicator))
   assessor <- rep(
     seq(from = 1, to = cluster_dims[[1]], by = 1),
     times = cluster_dims[[2]]

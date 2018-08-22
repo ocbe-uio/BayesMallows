@@ -21,12 +21,12 @@ Imports: Rcpp (>= 0.12.17),
   sets (>= 1.0-18),
   relations (>= 0.6-8),
   tidyr (>= 0.8.1),
+  purrr (>= 0.2.5),
   rlang (>= 0.2.1),
   zoo (>= 1.8-3)
 LinkingTo: Rcpp, RcppArmadillo
 Suggests:
     testthat,
-    purrr (>= 0.2.5),
     gtools (>= 3.8.1),
     label.switching (>= 1.7),
     knitr,
