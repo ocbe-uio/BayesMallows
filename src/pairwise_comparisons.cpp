@@ -17,7 +17,8 @@ void augment_pairwise(
     const int& t,
     arma::mat& aug_acceptance,
     int& aug_diag_index,
-    const int& aug_diag_thinning
+    const int& aug_diag_thinning,
+    const bool& clustering
 ){
 
   for(int i = 0; i < n_assessors; ++i){
@@ -94,7 +95,12 @@ void augment_pairwise(
     double u = log(arma::randu<double>());
 
     // Find which cluster the assessor belongs to
-    int cluster = cluster_indicator(i, t);
+    int cluster;
+    if(clustering){
+      cluster = cluster_indicator(i, t);
+    } else {
+      cluster = 0;
+    }
 
     double ratio = -alpha(cluster) / n_items *
       (get_rank_distance(proposal, rho.col(cluster), metric) -

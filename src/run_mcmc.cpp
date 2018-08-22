@@ -70,6 +70,9 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Number of augmentation diagnostics to store
   int n_aug_diag = ceil(nmc * 1.0 / aug_diag_thinning);
 
+  // Check if we want to do clustering
+  bool clustering = n_clusters > 1;
+
   // Check if we have pairwise preferences
   bool augpair;
   arma::mat pairwise_preferences, constrained_elements;
@@ -83,17 +86,25 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     augpair = false;
   }
 
-  // Declare indicator matrix of missing ranks, and fill it with zeros
-  arma::mat missing_indicator = arma::zeros<arma::mat>(n_items, n_assessors);
-
-  // Number of missing items per assessor
-  arma::vec assessor_missing = arma::zeros<arma::vec>(n_assessors);
-
-  // Fill the two above defined missingness indicators
-  define_missingness(missing_indicator, assessor_missing, rankings, n_items, n_assessors);
-
   // Boolean which indicates if ANY assessor has missing ranks
-  bool any_missing = arma::any(assessor_missing);
+  bool any_missing = !arma::is_finite(rankings);
+
+  arma::mat missing_indicator;
+  arma::vec assessor_missing;
+
+  if(any_missing){
+    missing_indicator = arma::zeros<arma::mat>(n_items, n_assessors);
+
+    // Number of missing items per assessor
+    assessor_missing = arma::zeros<arma::vec>(n_assessors);
+
+    // Fill the two above defined missingness indicators
+    define_missingness(missing_indicator, assessor_missing, rankings, n_items, n_assessors);
+
+  } else {
+    missing_indicator.reset();
+    assessor_missing.reset();
+  }
 
   // Declare the matrix to hold the latent ranks
   // Note: Armadillo matrices are stored in column-major ordering. Hence,
@@ -115,14 +126,30 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Hyperparameter for Dirichlet prior used in clustering
   // Consider having this as an optional user argument
   int psi = 10;
-  // Cluster probabilities
-  arma::mat cluster_probs(n_clusters, nmc);
-  cluster_probs.col(0).fill(1.0/n_clusters);
 
+  // Cluster probabilities
+  arma::mat cluster_probs;
   // Declare the cluster indicator z
-  arma::umat cluster_indicator(n_assessors, nmc);
-  // Initialize clusters randomly
-  cluster_indicator.col(0) = arma::randi<arma::uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
+  arma::umat cluster_indicator;
+  // Submatrix of rankings to be updated in each clustering step
+  arma::mat clus_mat;
+
+  if(clustering){
+    cluster_probs.set_size(n_clusters, nmc);
+    cluster_probs.col(0).fill(1.0/n_clusters);
+    // Initialize clusters randomly
+    cluster_indicator.set_size(n_assessors, nmc);
+    cluster_indicator.col(0) = arma::randi<arma::uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
+
+  } else {
+    // Empty the matrix
+    cluster_probs.reset();
+    cluster_indicator.reset();
+    clus_mat = rankings;
+  }
+
+
+
 
   // Fill in missing ranks, if needed
   if(any_missing){
@@ -133,7 +160,14 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Declare indicator vectors to hold acceptance or not
   arma::vec alpha_acceptance = arma::ones(n_clusters);
   arma::vec rho_acceptance = arma::ones(n_clusters);
-  arma::mat aug_acceptance = arma::zeros<arma::mat>(n_assessors, n_aug_diag);
+
+  arma::mat aug_acceptance;
+  if(any_missing | augpair){
+    aug_acceptance = arma::zeros<arma::mat>(n_assessors, n_aug_diag);
+  } else {
+    aug_acceptance.reset();
+  }
+
 
   // Other variables used
   int alpha_index = 0, rho_index = 0, aug_diag_index = 0;
@@ -151,13 +185,22 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     // Check if the user has tried to interrupt.
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
 
-    update_cluster_probs(cluster_probs, cluster_indicator, n_clusters, psi, t);
+    if(clustering){
+      update_cluster_probs(cluster_probs, cluster_indicator, n_clusters, psi, t);
+    }
+
 
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
 
       // Matrix of ranks for this cluster
-      arma::mat clus_mat = rankings.submat(element_indices,
-                          arma::find(cluster_indicator.col(t - 1) == cluster_index));
+      if(clustering){
+        clus_mat = rankings.submat(element_indices,
+                                   arma::find(cluster_indicator.col(t - 1) == cluster_index));
+      } else if (any_missing | augpair){
+        // When augmenting data, we need to update in every step, even without clustering
+        clus_mat = rankings;
+      }
+
 
       // Call the void function which updates rho by reference
       update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,
@@ -182,18 +225,19 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     }
 
   // Update the cluster labels, per assessor
-  update_cluster_labels(cluster_indicator, rho_old, rankings, cluster_probs,
-                        alpha_old, n_items, n_assessors, n_clusters,
-                        t, metric, cardinalities, is_fit);
+  if(clustering){
+    update_cluster_labels(cluster_indicator, rho_old, rankings, cluster_probs,
+                          alpha_old, n_items, n_assessors, n_clusters,
+                          t, metric, cardinalities, is_fit);
+  }
 
 
 
   // Perform data augmentation of missing ranks, if needed
   if(any_missing){
     update_missing_ranks(rankings, cluster_indicator, aug_acceptance, missing_indicator,
-                         assessor_missing, n_items, n_assessors,
-                         alpha_old, rho_old,
-                         metric, t, aug_diag_index, aug_diag_thinning);
+                         assessor_missing, n_items, n_assessors, alpha_old, rho_old,
+                         metric, t, aug_diag_index, aug_diag_thinning, clustering);
   }
 
 
@@ -202,7 +246,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     augment_pairwise(rankings, cluster_indicator, alpha_old, rho_old,
                      metric, pairwise_preferences, constrained_elements,
                      n_assessors, n_items, t, aug_acceptance, aug_diag_index,
-                     aug_diag_thinning);
+                     aug_diag_thinning, clustering);
   }
 
 
