@@ -24,3 +24,4 @@ Compute the distance between two rank vectors.
 Note that the Spearman distance is the squared L2 norm, whereas
 the footrule distance is the L1 norm.
 }
+\keyword{internal}

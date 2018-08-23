@@ -13,3 +13,4 @@ upper ranked item.}
 \description{
 Internal function for generating transitive closure
 }
+\keyword{internal}

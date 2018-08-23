@@ -27,3 +27,4 @@ A scalar, the logarithm of the partition function.
 \description{
 Compute the logarithm of the partition function for a Mallows rank model.
 }
+\keyword{internal}

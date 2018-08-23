@@ -34,6 +34,21 @@ library(dplyr)
 library(ggplot2)
 ```
 
+# Overview of Functions
+
+Here is an overview of the most used function. You can read their documentation with `?function_name`, or search for an example in this vignette.
+
+| Function Name | Description | 
+| ---- | ---- | 
+| `compute_mallows` | Compute the posterior distribution of the Bayesian Mallows model. This is the main function of the package. Returns an object of class `BayesMallows`. |
+| `plot.BayesMallows` | Quick plots of the posterior densities of $\alpha$ and $\rho$. |
+| `assess_convergence` | Study the convergence of the Markov chain, in order to determine burnin and other algorithm parameters.  |
+| `plot_elbow` | Create an elbow plot for comparing models with different number of clusters. |
+| `plot_top_k` | Plot the top-$k$ rankings. Particularly relevant when the data is in the form of pairwise comparisons. |
+| `compute_cp_consensus` | Rank the items according to their CP consensus. |
+| `compute_posterior_intervals`| Compute Bayesian posterior intervals for the parameters. |
+| `generate_initial_ranking` | Generate an initial ranking, for the case of missing data or pairwise comparisons. |
+| `generate_transitive_closure` | Generate the transitive closure for a set of pairwise comparisons. |
 
 # Completely Ranked Data
 

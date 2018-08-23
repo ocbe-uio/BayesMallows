@@ -35,6 +35,8 @@ double compute_is_fit(double alpha, arma::vec fit){
 //' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
 //' Defaults to \code{"footrule"}.
 //' @return A scalar, the logarithm of the partition function.
+//' @keywords internal
+//'
 // [[Rcpp::export]]
 double get_partition_function(int n, double alpha,
                               Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,

@@ -22,3 +22,4 @@ A scalar, the logarithm of the partition function.
 Get the distances for computing the partition function given
 the cardinalities.
 }
+\keyword{internal}

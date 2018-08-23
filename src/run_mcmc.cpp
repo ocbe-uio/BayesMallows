@@ -42,6 +42,7 @@
 //' augmentation diagnostics.
 //' @param save_augmented_data Whether or not to save the augmented data every
 //' \code{thinning}th iteration.
+//' @keywords internal
 //'
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat rankings, int nmc,

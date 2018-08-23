@@ -28,6 +28,7 @@ generate_transitive_closure <- function(df){
 #'
 #' @param mat A matrix in which column 1 is the lower ranked item and column 2 is the
 #'   upper ranked item.
+#' @keywords internal
 .generate_transitive_closure <- function(mat){
 
   # This line was an answer to StackOverflow question 51794127

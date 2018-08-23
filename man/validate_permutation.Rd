@@ -15,3 +15,4 @@ TRUE if vec is a permutation
 \description{
 Check if a vector is a permutation
 }
+\keyword{internal}

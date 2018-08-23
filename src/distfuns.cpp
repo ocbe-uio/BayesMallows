@@ -15,6 +15,8 @@
 //' @param metric A string. Available options are \code{"footrule"},
 //' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
 //' @return A scalar, the logarithm of the partition function.
+//' @keywords internal
+//'
 // [[Rcpp::export]]
 arma::vec get_summation_distances(int n, arma::vec cardinalities,
                                   std::string metric = "footrule") {
@@ -53,7 +55,8 @@ arma::vec get_summation_distances(int n, arma::vec cardinalities,
 //' @return A scalar.
 //' @details Note that the Spearman distance is the squared L2 norm, whereas
 //' the footrule distance is the L1 norm.
-//' @export
+//' @keywords internal
+//'
 // [[Rcpp::export]]
 double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footrule"){
 

@@ -60,3 +60,4 @@ augmentation diagnostics.}
 \description{
 Worker function for computing the posterior distribtuion.
 }
+\keyword{internal}
