@@ -75,7 +75,7 @@ tidy_mcmc <- function(fit){
     value = value
   )
 
-  # Tidy cluster probabilities, if required
+  # Tidy cluster probabilities
   if(fit$n_clusters > 1){
     clusprob_dims <- dim(fit$cluster_probs)
     value <- c(fit$cluster_probs)
@@ -87,8 +87,6 @@ tidy_mcmc <- function(fit){
 
   # Cluster1, Cluster2, ..., Cluster1, Cluster2
   # Iteration1, Iteration1, ..., Iteration2, Iteration2
-
-
   cluster <- rep(
     paste("Cluster", seq(from = 1, to = clusprob_dims[[1]], by = 1)),
     times = clusprob_dims[[2]]
@@ -104,6 +102,36 @@ tidy_mcmc <- function(fit){
     iteration = iteration,
     value = value
   )
+
+  # Tidy the within-cluster distances, or delete the empty matrix
+  if(fit$include_wcd){
+    wcd_dims <- dim(fit$within_cluster_distance)
+    value <- c(fit$within_cluster_distance)
+
+    # Cluster1, Cluster2, ..., Cluster1, Cluster2
+    # Iteration1, Iteration1, ..., Iteration2, Iteration2
+
+    cluster <- rep(
+      paste("Cluster", seq(from = 1, to = wcd_dims[[1]], by = 1)),
+      times = wcd_dims[[2]]
+    )
+
+    iteration <- rep(
+      seq(from = 1, to = wcd_dims[[2]], by = 1),
+      each = wcd_dims[[1]]
+    )
+
+    fit$within_cluster_distance <- dplyr::tibble(
+      cluster = cluster,
+      iteration = iteration,
+      value = value
+    )
+
+
+  } else {
+    fit$within_cluster_distance <- NULL
+  }
+
 
   return(fit)
 

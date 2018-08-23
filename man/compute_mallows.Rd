@@ -5,9 +5,10 @@
 \title{Compute the posterior distribution for the Mallows model.}
 \usage{
 compute_mallows(rankings = NULL, preferences = NULL,
-  metric = "footrule", n_clusters = 1, lambda = 0.1, nmc = 2000,
-  leap_size = NULL, sd_alpha = 0.1, alpha_init = 1, alpha_jump = 1,
-  thinning = 1, aug_diag_thinning = 100)
+  metric = "footrule", n_clusters = 1, include_wcd = (n_clusters >
+  1), lambda = 0.1, nmc = 2000, leap_size = NULL, sd_alpha = 0.1,
+  alpha_init = 1, alpha_jump = 1, thinning = 1,
+  aug_diag_thinning = 100)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items. See \code{\link{create_ranking}} if you
@@ -26,6 +27,9 @@ and \code{"hamming"}.}
 
 \item{n_clusters}{Number of clusters. Defaults to 1, which means no
 clustering.}
+
+\item{include_wcd}{Logical, defaults to \code{TRUE} if
+\code{n_clusters > 1}, otherwise \code{FALSE}.}
 
 \item{lambda}{Parameter for the prior distribution of \code{alpha}. Defaults
 to 0.1.}

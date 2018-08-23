@@ -63,7 +63,7 @@ void update_missing_ranks(arma::mat& rankings, const arma::umat& cluster_indicat
                           const arma::vec& alpha, const arma::mat& rho,
                           const std::string& metric, const int& t,
                           int& aug_diag_index, const int& aug_diag_thinning,
-                          const bool& clustering){
+                          const bool& clustering, bool& augmentation_accepted){
 
   for(int i = 0; i < n_assessors; ++i){
     if(assessor_missing(i) == 0){
@@ -92,6 +92,9 @@ void update_missing_ranks(arma::mat& rankings, const arma::umat& cluster_indicat
       if(ratio > u){
         rankings.col(i) = proposal;
         ++aug_acceptance(i, aug_diag_index);
+        augmentation_accepted = true;
+      } else {
+        augmentation_accepted = false;
       }
     }
   }

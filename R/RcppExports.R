@@ -81,6 +81,8 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 #' \code{"hamming"}.
 #' @param n_clusters Number of clusters. Defaults to 1.
+#' @param include_wcd Boolean defining whether or
+#' not to store the within-cluster distance.
 #' @param leap_size Leap-and-shift step size.
 #' @param sd_alpha Standard deviation of proposal distribution for alpha.
 #' @param alpha_init Initial value of alpha.
@@ -94,7 +96,7 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' @param aug_diag_thinning The interval in which we save
 #' augmentation diagnostics.
 #'
-run_mcmc <- function(rankings, nmc, preferences, constrained, cardinalities, is_fit, metric = "footrule", n_clusters = 1L, leap_size = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, preferences, constrained, cardinalities, is_fit, metric, n_clusters, leap_size, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning)
+run_mcmc <- function(rankings, nmc, preferences, constrained, cardinalities, is_fit, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, preferences, constrained, cardinalities, is_fit, metric, n_clusters, include_wcd, leap_size, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning)
 }
 

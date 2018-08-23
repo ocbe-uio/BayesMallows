@@ -718,7 +718,7 @@ knitr::kable(head(sushi_rankings), caption = "First 6 rows of example dataset `s
 With clustering, we can see if there are subsets of assessors with similar preferences. We set `nmc = 1000` here, to speed up the vignette building.
 
 ```{r, eval=FALSE}
-model_fit1 <- compute_mallows(sushi_rankings, nmc = 1000)
+model_fit1 <- compute_mallows(sushi_rankings, nmc = 1000, include_wcd = TRUE)
 model_fit2 <- compute_mallows(sushi_rankings, n_clusters = 2, nmc = 1000)
 ```
 

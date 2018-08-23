@@ -13,6 +13,8 @@
 #'   and \code{"hamming"}.
 #' @param n_clusters Number of clusters. Defaults to 1, which means no
 #'   clustering.
+#' @param include_wcd Logical, defaults to \code{TRUE} if
+#' \code{n_clusters > 1}, otherwise \code{FALSE}.
 #' @param lambda Parameter for the prior distribution of \code{alpha}. Defaults
 #'   to 0.1.
 #' @param nmc Number of Monte Carlo samples to keep.
@@ -37,6 +39,7 @@ compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
                             metric = "footrule",
                             n_clusters = 1,
+                            include_wcd = (n_clusters > 1),
                             lambda = 0.1,
                             nmc = 2000,
                             leap_size = NULL,
@@ -137,6 +140,7 @@ compute_mallows <- function(rankings = NULL,
                   is_fit = is_fit,
                   metric = metric,
                   n_clusters = n_clusters,
+                  include_wcd = include_wcd,
                   lambda = lambda,
                   leap_size = leap_size,
                   sd_alpha = sd_alpha,
@@ -145,6 +149,19 @@ compute_mallows <- function(rankings = NULL,
                   thinning = thinning,
                   aug_diag_thinning = aug_diag_thinning
                   )
+
+  # Add some arguments
+  fit$metric <- metric
+  fit$lambda <- lambda
+  fit$nmc <- nmc
+  fit$n_items <- n_items
+  fit$n_clusters <- n_clusters
+  fit$alpha_jump <- alpha_jump
+  fit$thinning <- thinning
+  fit$leap_size <- leap_size
+  fit$sd_alpha <- sd_alpha
+  fit$aug_diag_thinning <- aug_diag_thinning
+  fit$include_wcd = include_wcd
 
   # If no data augmentation has happened, do not include aug_acceptance
   # Otherwise, convert to fraction
