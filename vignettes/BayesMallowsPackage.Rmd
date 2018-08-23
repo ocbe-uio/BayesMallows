@@ -618,11 +618,16 @@ model_fit <- compute_mallows(
   )
 ```
 
-The model fit now has an object called `augmented_data`:
 
-```{r, results='asis'}
-knitr::kable(head(model_fit$augmented_data))
+We can do a top-$k$ plot with `plot_top_k`. By default, `k = 3`.
+```{r, eval=FALSE}
+plot_top_k(model_fit, burnin = 2000)
 ```
+
+```{r, echo=FALSE, out.width="75%"}
+knitr::include_graphics("./vignette-data/top_k_beaches.png")
+```
+
 
 
 

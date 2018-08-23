@@ -23,7 +23,7 @@ plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
   stopifnot(type %in% c("alpha", "rho"))
 
   if(type == "alpha") {
-    df <- dplyr::filter(x$alpha, .data$iteration > burnin/x$alpha_jump)
+    df <- dplyr::filter(x$alpha, .data$iteration > burnin)
 
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +

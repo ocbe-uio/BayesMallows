@@ -1,4 +1,5 @@
 tidy_mcmc <- function(fit){
+
   # Tidy rho
   rho_dims <- dim(fit$rho)
   # Item1, Item2, Item3, ...., Item1, Item2, Item3
@@ -14,7 +15,7 @@ tidy_mcmc <- function(fit){
     times = rho_dims[[3]]
     )
 
-  iteration <- rep(seq(from = 1, to = rho_dims[[3]], by = 1),
+  iteration <- rep(seq(from = 1, to = rho_dims[[3]] * fit$thinning, by = fit$thinning),
                    each = rho_dims[[1]] * rho_dims[[2]])
 
   # Store the final rho as a tibble
@@ -37,7 +38,7 @@ tidy_mcmc <- function(fit){
     )
 
   iteration <- rep(
-    seq(from = 1, to = alpha_dims[[2]], by = 1),
+    seq(from = 1, to = alpha_dims[[2]] * fit$alpha_jump, by = fit$alpha_jump),
     each = alpha_dims[[1]]
     )
 
@@ -146,7 +147,8 @@ tidy_mcmc <- function(fit){
     assessor <- rep(seq(from = 1, to = augdata_dims[[2]], by = 1), each = augdata_dims[[1]],
                     times = augdata_dims[[3]])
 
-    iteration <- rep(seq(from = 1, to = augdata_dims[[3]]), each = augdata_dims[[1]] * augdata_dims[[2]])
+    iteration <- rep(seq(from = 1, to = augdata_dims[[3]] * fit$thinning, by = fit$thinning),
+                     each = augdata_dims[[1]] * augdata_dims[[2]])
 
     fit$augmented_data <- dplyr::tibble(
       iteration = iteration,
