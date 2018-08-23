@@ -132,6 +132,32 @@ tidy_mcmc <- function(fit){
     fit$within_cluster_distance <- NULL
   }
 
+  # Tidy augmented data, or delete
+  if(fit$save_augmented_data){
+
+    augdata_dims <- dim(fit$augmented_data)
+
+    # Item1, Item2, ..., Item1, Item2, ..., Item1, Item2, ..., Item1, Item2
+    # Assessor1, Assessor1, ..., Assessor2, Assessor2, ... Assessor1, Assessor1, ..., Assessor2, Assessor2
+    # Iteration1, Iteration1, ..., Iteration1, Iteration1, ..., Iteration2, Iteration2, ... Iteration2, Iteration2
+    value <- c(fit$augmented_data)
+
+    item <- rep(fit$items, times = augdata_dims[[2]] * augdata_dims[[3]])
+    assessor <- rep(seq(from = 1, to = augdata_dims[[2]], by = 1), each = augdata_dims[[1]],
+                    times = augdata_dims[[3]])
+
+    iteration <- rep(seq(from = 1, to = augdata_dims[[3]]), each = augdata_dims[[1]] * augdata_dims[[2]])
+
+    fit$augmented_data <- dplyr::tibble(
+      iteration = iteration,
+      assessor = assessor,
+      item = item,
+      value = value
+    )
+  } else {
+    fit$augmented_data <- NULL
+  }
+
 
   return(fit)
 

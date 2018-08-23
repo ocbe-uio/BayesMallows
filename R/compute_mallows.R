@@ -29,6 +29,8 @@
 #' @param thinning Keep every \code{thinning} iteration of \code{rho}.
 #' @param aug_diag_thinning The interval in which we save augmentation
 #'   diagnostics.
+#' @param save_augmented_data Whether or not to save the augmented data every
+#' \code{thinning}th iteration, for the case of missing data or pairwise preferences.
 #'
 #' @return A list of class BayesMallows.
 #' @references \insertRef{vitelli2018}{BayesMallows}
@@ -47,7 +49,8 @@ compute_mallows <- function(rankings = NULL,
                             alpha_init = 1,
                             alpha_jump = 1,
                             thinning = 1,
-                            aug_diag_thinning = 100
+                            aug_diag_thinning = 100,
+                            save_augmented_data = FALSE
                             ){
 
   # Check that at most one of rankings and preferences is set
@@ -147,7 +150,8 @@ compute_mallows <- function(rankings = NULL,
                   alpha_init = alpha_init,
                   alpha_jump = alpha_jump,
                   thinning = thinning,
-                  aug_diag_thinning = aug_diag_thinning
+                  aug_diag_thinning = aug_diag_thinning,
+                  save_augmented_data = save_augmented_data
                   )
 
   # Add some arguments
@@ -161,7 +165,8 @@ compute_mallows <- function(rankings = NULL,
   fit$leap_size <- leap_size
   fit$sd_alpha <- sd_alpha
   fit$aug_diag_thinning <- aug_diag_thinning
-  fit$include_wcd = include_wcd
+  fit$include_wcd <- include_wcd
+  fit$save_augmented_data <- save_augmented_data
 
   # If no data augmentation has happened, do not include aug_acceptance
   # Otherwise, convert to fraction
