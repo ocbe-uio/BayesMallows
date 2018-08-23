@@ -1,38 +1,41 @@
-#' Generate elbow plot for choice of clusters
+#' @title Posterior plots
 #'
-#' @param ... One or more objects returned from \code{\link{compute_mallows}}.
-#' @param rankings A matrix with complete rankings, the same as was
-#' given to \code{\link{compute_mallows}}.
-#' @param burnin The number of iterations to discard.
-#' @param probs Probability of the quantiles to returned. This argument is passed on to
-#' \code{stats::quantile}.
-#' @param thinning Optional argument which can be used to take only every
-#' \code{thinning}th iteration after burn-in. If the function takes very long to run,
-#' one might try to set this number to something larger than 1. Be aware that this always leads to
-#' less accurate posterior distributions.
+#' @param ... One or more objects returned from \code{\link{compute_mallows}},
+#' separated by comma, or a list of such objects.
+#' @param burnin Number of iterations to discard as burn-in.
 #'
-#' @details At the moment, this function computes the footrule distance,
-#' and no other distance measures are supported.
-#'
+#' @return A plot.
 #' @export
 #'
-plot_elbow <- function(..., rankings, burnin,
-                       probs = seq(0, 1, 0.25),
-                       thinning = 1){
+plot_elbow <- function(..., burnin){
 
   # Put the models into a list. These are typically fitted with different number of clusters
   models <- list(...)
 
-  # Compute within-cluster distance for each, and put in a dataframe
-  distances <- purrr::map_dfr(models, .compute_within_cluster_distance,
-                              rankings = rankings, burnin = burnin, thinning = thinning)
+  # Taking into account the case where the user has entered a list of models
+  if(length(models) == 1 && !(class(models[[1]]) == "BayesMallows")){
+    models <- models[[1]]
+  }
 
+  df <- purrr::map_dfr(models, function(x) {
+    stopifnot(class(x) == "BayesMallows")
+    if(!x$include_wcd) stop("To get an elbow plot, set include_wcd=TRUE in compute_mallows")
 
-  # Do a boxplot
-  ggplot2::ggplot(distances, ggplot2::aes(x = as.factor(.data$n_clusters), y = .data$within_cluster_distance)) +
+    df <- dplyr::filter(x$within_cluster_distance, .data$iteration > burnin)
+
+    # Need to sum the within-cluster distances across clusters, for each iteration
+    df <- dplyr::group_by(df, .data$iteration)
+    df <- dplyr::summarise(df, value = sum(.data$value))
+
+    df <- dplyr::mutate(df, n_clusters = x$n_clusters)
+    return(df)
+  })
+
+  ggplot2::ggplot(df, ggplot2::aes(x = as.factor(.data$n_clusters), y = .data$value)) +
     ggplot2::geom_boxplot() +
     ggplot2::xlab("Number of clusters") +
-    ggplot2::ylab("Within-cluster sum of distances") +
+    ggplot2::ylab("Within-cluster som of distances") +
     ggplot2::ggtitle("Elbow Plot")
+
 
 }

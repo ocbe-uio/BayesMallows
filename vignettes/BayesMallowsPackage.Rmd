@@ -715,7 +715,7 @@ The `BayesMallows` package comes with a set of sushi preference data, in which 5
 knitr::kable(head(sushi_rankings), caption = "First 6 rows of example dataset `sushi_rankings`.")
 ```
 
-With clustering, we can see if there are subsets of assessors with similar preferences. We set `nmc = 1000` here, to speed up the vignette building.
+With clustering, we can see if there are subsets of assessors with similar preferences. We set `nmc = 1000` here, to speed up the vignette building. The argument `include_wcd` specifies whether to compute within-cluster distance during MCMC. When `n_cluster > 1` it defaults to `TRUE`, otherwise to `FALSE`. Hence, in order to get the within-cluster distance for the one-cluster case, we set `include_wcd = TRUE` when calling `compute_mallows`:
 
 ```{r, eval=FALSE}
 model_fit1 <- compute_mallows(sushi_rankings, nmc = 1000, include_wcd = TRUE)
@@ -772,32 +772,41 @@ knitr::kable(filter(cp_consensus_sushi, cluster == "Cluster 2"), digits = 2)
 ```
 
 #### Determining the Number of Clusters
-We can use the function `compute_within_cluster_distance` to find the posterior distribution of the within-cluster footrule distance to the cluster centers. We need to supply the original `sushi_rankings` matrix, as well as the burn-in.
 
-```{r, eval = FALSE}
-clus_dis1 <- compute_within_cluster_distance(model_fit1, rankings = sushi_rankings, burnin = 200)
-clus_dis2 <- compute_within_cluster_distance(model_fit2, rankings = sushi_rankings, burnin = 200)
-```
-
-```{r, echo=FALSE}
-clus_dis1
-clus_dis2
-```
-
-To get other quantiles, use the `probs` argument to `compute_within_cluster_distance`. To speed up the computation, use the `thinning` argument (with caution!).
-
-We can also compute an elbow plot directly, using `plot_elbow`. Before doing that, we should look at its arguments:
+We can also compute an elbow plot, using `plot_elbow`. Before doing that, we should look at its arguments:
 ```{r}
 args(plot_elbow)
 ```
 
-`plot_elbow` requires the model fits for different number of clusters to be provided as the first arguments. The remaining arguments must be named. We try this for the case of one and two clusters:
+`plot_elbow` requires the model fits for different number of clusters to be provided as the first arguments, either comma separated, or as a list. The other argument is `burnin`, which must be named.
 
 ```{r, eval=FALSE}
-plot_elbow(model_fit1, model_fit2, rankings = sushi_rankings, burnin = 200)
+plot_elbow(model_fit1, model_fit2, burnin = 200)
 ```
 ```{r, echo=FALSE, out.width="75%"}
 knitr::include_graphics("./vignette-data/sushi_elbow.png")
+```
+
+In order to systematically investigate how many clusters to include, we can store different solutions in a list, like this:
+
+```{r, message=FALSE, eval=FALSE}
+library(purrr)
+n_clusters <- seq(from = 1, to = 10)
+models <- map(n_clusters, ~ compute_mallows(rankings = sushi_rankings, nmc = 1000, 
+                                            n_clusters = .x, include_wcd = TRUE))
+```
+
+Here, I used `purrr::map` to call `compute_mallows` repeatedly, and defined an inline function with `~`. One could of course also do this with a for loop.
+
+We can now provide the `models` list to `plot_elbow`. 
+
+```{r, eval=FALSE}
+plot_elbow(models, burnin = 200)
+```
+
+
+```{r, echo=FALSE, out.width="75%"}
+knitr::include_graphics("./vignette-data/sushi_elbow_10.png")
 ```
 
 
