@@ -40,6 +40,8 @@
 //' sample from the posterior distribution.
 //' @param aug_diag_thinning The interval in which we save
 //' augmentation diagnostics.
+//' @param save_augmented_data Whether or not to save the augmented data every
+//' \code{thinning}th iteration.
 //'
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat rankings, int nmc,
@@ -56,7 +58,8 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     int alpha_jump = 1,
                     double lambda = 0.1,
                     int thinning = 1,
-                    int aug_diag_thinning = 100
+                    int aug_diag_thinning = 100,
+                    bool save_augmented_data = false
                       ){
 
   // The number of items ranked
@@ -131,6 +134,14 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   if(any_missing){
     initialize_missing_ranks(rankings, missing_indicator, assessor_missing,
                              n_items, n_assessors);
+  }
+
+
+  // If the user wants to save augmented data, we need a cube
+  arma::cube augmented_data;
+  if(save_augmented_data){
+    augmented_data.set_size(n_items, n_assessors, n_rho);
+    augmented_data.slice(0) = rankings;
   }
 
   // Hyperparameter for Dirichlet prior used in clustering
@@ -285,6 +296,12 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   }
 
 
+  // Save augmented data if the user wants this. Uses the same index as rho.
+  if(save_augmented_data){
+    augmented_data.slice(rho_index) = rankings;
+  }
+
+
   }
 
 
@@ -297,6 +314,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     Rcpp::Named("cluster_assignment") = cluster_assignment + 1,
     Rcpp::Named("cluster_probs") = cluster_probs,
     Rcpp::Named("within_cluster_distance") = within_cluster_distance,
+    Rcpp::Named("augmented_data") = augmented_data,
     Rcpp::Named("any_missing") = any_missing,
     Rcpp::Named("augpair") = augpair,
     Rcpp::Named("aug_acceptance") = aug_acceptance,

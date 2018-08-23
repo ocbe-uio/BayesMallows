@@ -8,7 +8,7 @@ compute_mallows(rankings = NULL, preferences = NULL,
   metric = "footrule", n_clusters = 1, include_wcd = (n_clusters >
   1), lambda = 0.1, nmc = 2000, leap_size = NULL, sd_alpha = 0.1,
   alpha_init = 1, alpha_jump = 1, thinning = 1,
-  aug_diag_thinning = 100)
+  aug_diag_thinning = 100, save_augmented_data = FALSE)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items. See \code{\link{create_ranking}} if you
@@ -52,6 +52,9 @@ expensive computation of the partition function.}
 
 \item{aug_diag_thinning}{The interval in which we save augmentation
 diagnostics.}
+
+\item{save_augmented_data}{Whether or not to save the augmented data every
+\code{thinning}th iteration, for the case of missing data or pairwise preferences.}
 }
 \value{
 A list of class BayesMallows.

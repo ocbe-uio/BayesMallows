@@ -95,8 +95,10 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' sample from the posterior distribution.
 #' @param aug_diag_thinning The interval in which we save
 #' augmentation diagnostics.
+#' @param save_augmented_data Whether or not to save the augmented data every
+#' \code{thinning}th iteration.
 #'
-run_mcmc <- function(rankings, nmc, preferences, constrained, cardinalities, is_fit, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, preferences, constrained, cardinalities, is_fit, metric, n_clusters, include_wcd, leap_size, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning)
+run_mcmc <- function(rankings, nmc, preferences, constrained, cardinalities, is_fit, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L, save_augmented_data = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, preferences, constrained, cardinalities, is_fit, metric, n_clusters, include_wcd, leap_size, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning, save_augmented_data)
 }
 

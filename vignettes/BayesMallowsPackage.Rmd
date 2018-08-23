@@ -600,6 +600,36 @@ We can also rank the beaches according to the cumulative probability (CP) consen
 knitr::kable(compute_cp_consensus(model_fit, burnin = 1000), digits = 2)
 ```
 
+```{r, results='asis'}
+knitr::kable(compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho"))
+```
+
+
+## Posterior Probability of Being Ranked Top-$k$
+
+We can also find the posterior probability for each beach of being ranked top-$k$, both in $\rho$ and among the assessors. In order to find this for the assessors, we need to set `save_augmented_data = TRUE`.
+
+```{r, eval=FALSE}
+model_fit <- compute_mallows(
+  rankings = beach_init_rank, 
+  preferences = beach_tc,
+  nmc = 6000,
+  save_augmented_data = TRUE
+  )
+```
+
+
+We can do a top-$k$ plot with `plot_top_k`. By default, `k = 3`.
+```{r, eval=FALSE}
+plot_top_k(model_fit, burnin = 2000)
+```
+
+```{r, echo=FALSE, out.width="75%"}
+knitr::include_graphics("./vignette-data/top_k_beaches.png")
+```
+
+
+
 
 # Clustering of Assessors
 
