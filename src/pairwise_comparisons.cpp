@@ -6,7 +6,7 @@
 
 void augment_pairwise(
     arma::mat& rankings,
-    const arma::umat& cluster_indicator,
+    const arma::umat& cluster_assignment,
     const arma::vec& alpha,
     const arma::mat& rho,
     const std::string& metric,
@@ -98,7 +98,7 @@ void augment_pairwise(
     // Find which cluster the assessor belongs to
     int cluster;
     if(clustering){
-      cluster = cluster_indicator(i, t);
+      cluster = cluster_assignment(i, t);
     } else {
       cluster = 0;
     }
