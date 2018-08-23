@@ -5,9 +5,9 @@
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
 run_mcmc(rankings, nmc, preferences, constrained, cardinalities, is_fit,
-  metric = "footrule", n_clusters = 1L, leap_size = 1L,
-  sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1,
-  thinning = 1L, aug_diag_thinning = 100L)
+  metric = "footrule", n_clusters = 1L, include_wcd = FALSE,
+  leap_size = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L,
+  lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L)
 }
 \arguments{
 \item{rankings}{A set of complete rankings, with one sample per column.
@@ -30,6 +30,9 @@ With n_assessors samples and n_items items, rankings is n_items x n_assessors.}
 \code{"hamming"}.}
 
 \item{n_clusters}{Number of clusters. Defaults to 1.}
+
+\item{include_wcd}{Boolean defining whether or
+not to store the within-cluster distance.}
 
 \item{leap_size}{Leap-and-shift step size.}
 

@@ -97,8 +97,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_mcmc
-Rcpp::List run_mcmc(arma::mat rankings, int nmc, Rcpp::Nullable<arma::mat> preferences, Rcpp::Nullable<arma::mat> constrained, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> is_fit, std::string metric, int n_clusters, int leap_size, double sd_alpha, double alpha_init, int alpha_jump, double lambda, int thinning, int aug_diag_thinning);
-RcppExport SEXP _BayesMallows_run_mcmc(SEXP rankingsSEXP, SEXP nmcSEXP, SEXP preferencesSEXP, SEXP constrainedSEXP, SEXP cardinalitiesSEXP, SEXP is_fitSEXP, SEXP metricSEXP, SEXP n_clustersSEXP, SEXP leap_sizeSEXP, SEXP sd_alphaSEXP, SEXP alpha_initSEXP, SEXP alpha_jumpSEXP, SEXP lambdaSEXP, SEXP thinningSEXP, SEXP aug_diag_thinningSEXP) {
+Rcpp::List run_mcmc(arma::mat rankings, int nmc, Rcpp::Nullable<arma::mat> preferences, Rcpp::Nullable<arma::mat> constrained, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> is_fit, std::string metric, int n_clusters, bool include_wcd, int leap_size, double sd_alpha, double alpha_init, int alpha_jump, double lambda, int thinning, int aug_diag_thinning);
+RcppExport SEXP _BayesMallows_run_mcmc(SEXP rankingsSEXP, SEXP nmcSEXP, SEXP preferencesSEXP, SEXP constrainedSEXP, SEXP cardinalitiesSEXP, SEXP is_fitSEXP, SEXP metricSEXP, SEXP n_clustersSEXP, SEXP include_wcdSEXP, SEXP leap_sizeSEXP, SEXP sd_alphaSEXP, SEXP alpha_initSEXP, SEXP alpha_jumpSEXP, SEXP lambdaSEXP, SEXP thinningSEXP, SEXP aug_diag_thinningSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -110,6 +110,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type is_fit(is_fitSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< int >::type n_clusters(n_clustersSEXP);
+    Rcpp::traits::input_parameter< bool >::type include_wcd(include_wcdSEXP);
     Rcpp::traits::input_parameter< int >::type leap_size(leap_sizeSEXP);
     Rcpp::traits::input_parameter< double >::type sd_alpha(sd_alphaSEXP);
     Rcpp::traits::input_parameter< double >::type alpha_init(alpha_initSEXP);
@@ -117,7 +118,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< int >::type thinning(thinningSEXP);
     Rcpp::traits::input_parameter< int >::type aug_diag_thinning(aug_diag_thinningSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_mcmc(rankings, nmc, preferences, constrained, cardinalities, is_fit, metric, n_clusters, leap_size, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning));
+    rcpp_result_gen = Rcpp::wrap(run_mcmc(rankings, nmc, preferences, constrained, cardinalities, is_fit, metric, n_clusters, include_wcd, leap_size, sd_alpha, alpha_init, alpha_jump, lambda, thinning, aug_diag_thinning));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -130,7 +131,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_binomial_coefficient", (DL_FUNC) &_BayesMallows_binomial_coefficient, 2},
     {"_BayesMallows_std_setdiff", (DL_FUNC) &_BayesMallows_std_setdiff, 2},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
-    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 15},
+    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 16},
     {NULL, NULL, 0}
 };
 

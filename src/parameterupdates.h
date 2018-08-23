@@ -18,36 +18,14 @@ void update_alpha(arma::mat& alpha,
                   const std::string& metric,
                   const double& lambda,
                   const int& n_items,
-                  Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-                  Rcpp::Nullable<arma::vec> is_fit = R_NilValue);
+                  const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
+                  const Rcpp::Nullable<arma::vec> is_fit = R_NilValue);
 
 void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
                 int& rho_index, const int& cluster_index, const int& thinning,
                 const double& alpha_old, const int& leap_size, const arma::mat& rankings,
                 const std::string& metric, const int& n_items, const int& t,
-                const arma::uvec& element_indices);
+                const arma::uvec& element_indices, bool& rho_accepted);
 
-void update_cluster_labels(
-    arma::umat& cluster_indicator,
-    const arma::mat& rho_old,
-    const arma::mat& rankings,
-    const arma::mat& cluster_probs,
-    const arma::vec& alpha_old,
-    const int& n_items,
-    const int& n_assessors,
-    const int& n_clusters,
-    const int& t,
-    const std::string& metric,
-    Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-    Rcpp::Nullable<arma::vec> is_fit = R_NilValue
-);
-
-void update_cluster_probs(
-        arma::mat& cluster_probs,
-        const arma::umat& cluster_indicator,
-        const int& n_clusters,
-        const int& psi,
-        const int& t
-);
 
 #endif

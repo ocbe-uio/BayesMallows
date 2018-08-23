@@ -125,3 +125,14 @@ double rank_dist_matrix(const arma::mat& rankings, const arma::vec& rho, std::st
 
   return total_distance;
 }
+
+
+// update the matrix used to speed up clustering
+void update_distance_matrix(arma::mat& dist_mat, const arma::mat& rankings, const arma::vec& rho_cluster,
+                            const int& n_assessors, const int& cluster_index,
+                            const std::string metric){
+  for(int i = 0; i < n_assessors; ++i){
+    dist_mat(i, cluster_index) = get_rank_distance(rankings.col(i), rho_cluster, metric);
+  }
+
+}

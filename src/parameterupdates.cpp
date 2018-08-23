@@ -20,8 +20,8 @@ void update_alpha(arma::mat& alpha,
                   const std::string& metric,
                   const double& lambda,
                   const int& n_items,
-                  Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-                  Rcpp::Nullable<arma::vec> is_fit = R_NilValue) {
+                  const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
+                  const Rcpp::Nullable<arma::vec> is_fit = R_NilValue) {
 
 
   // Set the number of assessors. Not using the variable from run_mcmc because
@@ -66,7 +66,7 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
                 int& rho_index, const int& cluster_index, const int& thinning,
                 const double& alpha_old, const int& leap_size, const arma::mat& rankings,
                 const std::string& metric, const int& n_items, const int& t,
-                const arma::uvec& element_indices) {
+                const arma::uvec& element_indices, bool& rho_accepted) {
 
   arma::vec rho_cluster = rho_old.col(cluster_index);
 
@@ -93,6 +93,9 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
   if(ratio > u){
     rho_old.col(cluster_index) = rho_proposal;
     ++rho_acceptance(cluster_index);
+    rho_accepted = true;
+  } else {
+    rho_accepted = false;
   }
 
   // Save rho if appropriate
@@ -103,73 +106,3 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
 
 }
 
-
-void update_cluster_labels(
-    arma::umat& cluster_indicator,
-    const arma::mat& rho_old,
-    const arma::mat& rankings,
-    const arma::mat& cluster_probs,
-    const arma::vec& alpha_old,
-    const int& n_items,
-    const int& n_assessors,
-    const int& n_clusters,
-    const int& t,
-    const std::string& metric,
-    Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-    Rcpp::Nullable<arma::vec> is_fit = R_NilValue
-){
-
-  // Matrix to hold assignment probabilities
-  arma::vec assignment_prob(n_clusters);
-
-  for(int assessor_index = 0; assessor_index < n_assessors; ++assessor_index){
-
-    // Loop over cluster
-    for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
-      assignment_prob(cluster_index) = cluster_probs(cluster_index, t) *
-          exp(-alpha_old(cluster_index) / n_items *
-          get_rank_distance(rankings.col(assessor_index), rho_old.col(cluster_index), metric)) /
-            exp(get_partition_function(n_items, alpha_old(cluster_index), cardinalities, is_fit, metric));
-    }
-
-    // Normalise the assignment prob for the given assessor to unit 1-norm
-    assignment_prob = arma::normalise(assignment_prob, 1);
-
-    // Draw a uniform random number
-    double u = arma::randu();
-
-    // Find the first index that is larger than u. That is the cluster index.
-    int cluster = arma::as_scalar(arma::find(arma::cumsum(assignment_prob) > u, 1, "first"));
-
-    // Assign the cluster indicator
-    cluster_indicator(assessor_index, t) = cluster;
-
-
-  }
-
-}
-
-void update_cluster_probs(
-    arma::mat& cluster_probs,
-    const arma::umat& cluster_indicator,
-    const int& n_clusters,
-    const int& psi,
-    const int& t
-){
-  // Update cluster probabilities, conjugate model
-  arma::uvec tau_k(n_clusters);
-  for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
-    // Find the parameter for this cluster
-    tau_k(cluster_index) = arma::sum(cluster_indicator.col(t - 1) == cluster_index) + psi;
-
-    // If there are no assessors in the cluster,
-    // Save the a draw from the gamma distribution
-    cluster_probs(cluster_index, t) = arma::randg<double>(arma::distr_param(tau_k(cluster_index), 1.0));
-
-  }
-
-  // Finally, normalize cluster_probs. Must specify that it should have unit 1-norm,
-  // 2-norm is default!!
-  // cluster_probs.col(t) now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
-  cluster_probs.col(t) = arma::normalise(cluster_probs.col(t), 1);
-}

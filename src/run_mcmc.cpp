@@ -4,6 +4,7 @@
 #include "misc.h"
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
+#include "clustering.h"
 
 // via the depends attribute we tell Rcpp to create hooks for
 // RcppArmadillo so that the build process will know what to do
@@ -25,6 +26,8 @@
 //' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 //' \code{"hamming"}.
 //' @param n_clusters Number of clusters. Defaults to 1.
+//' @param include_wcd Boolean defining whether or
+//' not to store the within-cluster distance.
 //' @param leap_size Leap-and-shift step size.
 //' @param sd_alpha Standard deviation of proposal distribution for alpha.
 //' @param alpha_init Initial value of alpha.
@@ -46,6 +49,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     Rcpp::Nullable<arma::vec> is_fit,
                     std::string metric = "footrule",
                     int n_clusters = 1,
+                    bool include_wcd = false,
                     int leap_size = 1,
                     double sd_alpha = 0.5,
                     double alpha_init = 5,
@@ -123,38 +127,59 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     rho.slice(0).col(i) = arma::shuffle(arma::regspace<arma::vec>(1, 1, n_items));
   }
 
+  // Fill in missing ranks, if needed
+  if(any_missing){
+    initialize_missing_ranks(rankings, missing_indicator, assessor_missing,
+                             n_items, n_assessors);
+  }
+
   // Hyperparameter for Dirichlet prior used in clustering
   // Consider having this as an optional user argument
   int psi = 10;
 
   // Cluster probabilities
   arma::mat cluster_probs;
+
   // Declare the cluster indicator z
   arma::umat cluster_indicator;
+
+  // Within cluster distance
+  arma::mat within_cluster_distance;
+
   // Submatrix of rankings to be updated in each clustering step
-  arma::mat clus_mat;
+  arma::mat clus_mat = rankings;
 
-  if(clustering){
-    cluster_probs.set_size(n_clusters, nmc);
-    cluster_probs.col(0).fill(1.0/n_clusters);
-    // Initialize clusters randomly
+  // Matrix with precomputed distances d(R_j, \rho_j), used to avoid looping during cluster assignment
+  arma::mat dist_mat;
+
+  if(clustering | include_wcd){
+
     cluster_indicator.set_size(n_assessors, nmc);
-    cluster_indicator.col(0) = arma::randi<arma::uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
+    within_cluster_distance.set_size(n_clusters, nmc);
 
-  } else {
-    // Empty the matrix
-    cluster_probs.reset();
-    cluster_indicator.reset();
-    clus_mat = rankings;
-  }
+    if(clustering){
+      cluster_probs.set_size(n_clusters, nmc);
+      cluster_probs.col(0).fill(1.0/n_clusters);
 
+      // Initialize clusters randomly
+      cluster_indicator.col(0) = arma::randi<arma::uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
 
+    } else {
+      // Set all clusters once and for all
+      cluster_indicator = arma::zeros<arma::umat>(n_assessors, nmc);
+    }
 
+    // Initialize the distance matrix. Can be done here since \rho and R already are intialized
+    dist_mat.set_size(n_assessors, n_clusters);
 
-  // Fill in missing ranks, if needed
-  if(any_missing){
-    initialize_missing_ranks(rankings, missing_indicator, assessor_missing,
-                             n_items, n_assessors);
+    for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
+      update_distance_matrix(dist_mat, rankings, rho.slice(0).col(cluster_index),
+                             n_assessors, cluster_index, metric);
+    }
+
+    update_wcd(within_cluster_distance, cluster_indicator.col(0),
+               dist_mat, n_clusters, 0);
+
   }
 
   // Declare indicator vectors to hold acceptance or not
@@ -168,11 +193,12 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     aug_acceptance.reset();
   }
 
-
   // Other variables used
   int alpha_index = 0, rho_index = 0, aug_diag_index = 0;
   arma::vec alpha_old = alpha.col(0);
   arma::mat rho_old = rho(arma::span::all, arma::span::all, arma::span(0));
+  bool rho_accepted = false;
+  bool augmentation_accepted = false;
 
   arma::uvec element_indices = arma::regspace<arma::uvec>(0, rankings.n_rows - 1);
 
@@ -201,34 +227,42 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
         clus_mat = rankings;
       }
 
-
       // Call the void function which updates rho by reference
       update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,
                  thinning, alpha_old(cluster_index), leap_size, clus_mat, metric, n_items, t,
-                 element_indices);
+                 element_indices, rho_accepted);
+
+      if((rho_accepted | augmentation_accepted) & (clustering | include_wcd)){
+        // Note: Must use rho_old rather than rho, because when thinning > 1,
+        // rho does not necessarily have the last accepted value
+        update_distance_matrix(dist_mat, rankings, rho_old.col(cluster_index),
+                               n_assessors, cluster_index, metric);
+      }
 
       if(t % alpha_jump == 0) {
 
         // Increment alpha_index only once, and not n_cluster times!
         if(cluster_index == 0) ++alpha_index;
 
-
         // Call the void function which updates alpha by reference
-        update_alpha(
-          alpha, alpha_acceptance, alpha_old,
-          clus_mat,
-          alpha_index, cluster_index, rho_old,
-          sd_alpha, metric, lambda, n_items,
-          cardinalities, is_fit);
+        update_alpha(alpha, alpha_acceptance, alpha_old, clus_mat, alpha_index,
+                     cluster_index, rho_old, sd_alpha, metric, lambda, n_items,
+                     cardinalities, is_fit);
       }
 
     }
 
-  // Update the cluster labels, per assessor
   if(clustering){
-    update_cluster_labels(cluster_indicator, rho_old, rankings, cluster_probs,
+    // Update the cluster labels, per assessor
+    update_cluster_labels(cluster_indicator, dist_mat, rho_old, rankings, cluster_probs,
                           alpha_old, n_items, n_assessors, n_clusters,
                           t, metric, cardinalities, is_fit);
+  }
+
+  if(include_wcd){
+    // Update within_cluster_distance
+    update_wcd(within_cluster_distance, cluster_indicator.col(t),
+               dist_mat, n_clusters, t);
   }
 
 
@@ -237,7 +271,8 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   if(any_missing){
     update_missing_ranks(rankings, cluster_indicator, aug_acceptance, missing_indicator,
                          assessor_missing, n_items, n_assessors, alpha_old, rho_old,
-                         metric, t, aug_diag_index, aug_diag_thinning, clustering);
+                         metric, t, aug_diag_index, aug_diag_thinning, clustering,
+                         augmentation_accepted);
   }
 
 
@@ -246,7 +281,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     augment_pairwise(rankings, cluster_indicator, alpha_old, rho_old,
                      metric, pairwise_preferences, constrained_elements,
                      n_assessors, n_items, t, aug_acceptance, aug_diag_index,
-                     aug_diag_thinning, clustering);
+                     aug_diag_thinning, clustering, augmentation_accepted);
   }
 
 
@@ -261,23 +296,14 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     Rcpp::Named("alpha_acceptance") = alpha_acceptance/nmc,
     Rcpp::Named("cluster_indicator") = cluster_indicator + 1,
     Rcpp::Named("cluster_probs") = cluster_probs,
+    Rcpp::Named("within_cluster_distance") = within_cluster_distance,
     Rcpp::Named("any_missing") = any_missing,
     Rcpp::Named("augpair") = augpair,
     Rcpp::Named("aug_acceptance") = aug_acceptance,
-    Rcpp::Named("metric") = metric,
-    Rcpp::Named("lambda") = lambda,
-    Rcpp::Named("nmc") = nmc,
-    Rcpp::Named("n_items") = n_items,
-    Rcpp::Named("n_assessors") = n_assessors,
-    Rcpp::Named("n_clusters") = n_clusters,
-    Rcpp::Named("alpha_jump") = alpha_jump,
-    Rcpp::Named("thinning") = thinning,
-    Rcpp::Named("leap_size") = leap_size,
-    Rcpp::Named("sd_alpha") = sd_alpha,
-    Rcpp::Named("aug_diag_thinning") = aug_diag_thinning
+    Rcpp::Named("n_assessors") = n_assessors
   );
 
-// return(Rcpp::List::create(Rcpp::Named("test") = 0));
+
 }
 
 

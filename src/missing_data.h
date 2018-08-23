@@ -22,6 +22,6 @@ void update_missing_ranks(arma::mat& rankings, const arma::umat& cluster_indicat
                           const arma::vec& alpha, const arma::mat& rho,
                           const std::string& metric, const int& t,
                           int& aug_diag_index, const int& aug_diag_thinning,
-                          const bool& clustering);
+                          const bool& clustering, bool& augmentation_accepted);
 
 #endif

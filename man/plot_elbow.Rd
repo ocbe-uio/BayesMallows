@@ -2,31 +2,19 @@
 % Please edit documentation in R/plot_elbow.R
 \name{plot_elbow}
 \alias{plot_elbow}
-\title{Generate elbow plot for choice of clusters}
+\title{Posterior plots}
 \usage{
-plot_elbow(..., rankings, burnin, probs = seq(0, 1, 0.25),
-  thinning = 1)
+plot_elbow(..., burnin)
 }
 \arguments{
-\item{...}{One or more objects returned from \code{\link{compute_mallows}}.}
+\item{...}{One or more objects returned from \code{\link{compute_mallows}},
+separated by comma, or a list of such objects.}
 
-\item{rankings}{A matrix with complete rankings, the same as was
-given to \code{\link{compute_mallows}}.}
-
-\item{burnin}{The number of iterations to discard.}
-
-\item{probs}{Probability of the quantiles to returned. This argument is passed on to
-\code{stats::quantile}.}
-
-\item{thinning}{Optional argument which can be used to take only every
-\code{thinning}th iteration after burn-in. If the function takes very long to run,
-one might try to set this number to something larger than 1. Be aware that this always leads to
-less accurate posterior distributions.}
+\item{burnin}{Number of iterations to discard as burn-in.}
+}
+\value{
+A plot.
 }
 \description{
-Generate elbow plot for choice of clusters
-}
-\details{
-At the moment, this function computes the footrule distance,
-and no other distance measures are supported.
+Posterior plots
 }
