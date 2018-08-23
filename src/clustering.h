@@ -8,7 +8,7 @@
 #include "partitionfuns.h"
 
 void update_cluster_labels(
-        arma::umat& cluster_indicator,
+        arma::umat& cluster_assignment,
         const arma::mat& dist_mat,
         const arma::mat& rho_old,
         const arma::mat& rankings,
@@ -25,13 +25,13 @@ void update_cluster_labels(
 
 void update_cluster_probs(
         arma::mat& cluster_probs,
-        const arma::umat& cluster_indicator,
+        const arma::umat& cluster_assignment,
         const int& n_clusters,
         const int& psi,
         const int& t
 );
 
-void update_wcd(arma::mat& within_cluster_distance, const arma::uvec& cluster_indicator,
+void update_wcd(arma::mat& within_cluster_distance, const arma::uvec& cluster_assignment,
                 const arma::mat& dist_mat, const int& n_clusters, const int& t);
 
 #endif

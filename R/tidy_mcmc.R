@@ -49,8 +49,8 @@ tidy_mcmc <- function(fit){
 
   # Tidy cluster indicator
   if(fit$n_clusters > 1){
-    cluster_dims <- dim(fit$cluster_indicator)
-    value <- paste("Cluster", c(fit$cluster_indicator))
+    cluster_dims <- dim(fit$cluster_assignment)
+    value <- paste("Cluster", c(fit$cluster_assignment))
   } else {
     cluster_dims <- c(fit$n_assessors, fit$nmc)
     value <- paste("Cluster", rep(1, prod(cluster_dims)))
@@ -69,7 +69,7 @@ tidy_mcmc <- function(fit){
     each = cluster_dims[[1]]
   )
 
-  fit$cluster_indicator <- dplyr::tibble(
+  fit$cluster_assignment <- dplyr::tibble(
     assessor = assessor,
     iteration = iteration,
     value = value

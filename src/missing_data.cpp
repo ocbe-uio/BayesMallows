@@ -55,7 +55,7 @@ void initialize_missing_ranks(arma::mat& rankings, const arma::mat& missing_indi
   }
 }
 
-void update_missing_ranks(arma::mat& rankings, const arma::umat& cluster_indicator,
+void update_missing_ranks(arma::mat& rankings, const arma::umat& cluster_assignment,
                           arma::mat& aug_acceptance,
                           const arma::mat& missing_indicator,
                           const arma::vec& assessor_missing,
@@ -79,7 +79,7 @@ void update_missing_ranks(arma::mat& rankings, const arma::umat& cluster_indicat
       // Find which cluster the assessor belongs to
       int cluster;
       if(clustering){
-        cluster = cluster_indicator(i, t);
+        cluster = cluster_assignment(i, t);
       } else {
         cluster = 0;
       }

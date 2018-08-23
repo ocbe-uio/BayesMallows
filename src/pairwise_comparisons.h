@@ -5,7 +5,7 @@
 
 void augment_pairwise(
     arma::mat& rankings,
-    const arma::umat& cluster_indicator,
+    const arma::umat& cluster_assignment,
     const arma::vec& alpha,
     const arma::mat& rho,
     const std::string& metric,
