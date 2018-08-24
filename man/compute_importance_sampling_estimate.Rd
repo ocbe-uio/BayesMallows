@@ -21,3 +21,4 @@ compute_importance_sampling_estimate(alpha_vector, n,
 Compute importance sampling estimates of log partition function
 for footrule and Spearman distances.
 }
+\keyword{internal}

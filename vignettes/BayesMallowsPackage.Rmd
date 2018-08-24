@@ -288,21 +288,22 @@ Looking at the returned object, we see that `any_missing` is `TRUE`, so `compute
 ```{r}
 model_fit$any_missing
 ```
+`model_fit` also has assessor-wise acceptance rates for the augmentation.
+
+```{r, result='asis'}
+knitr::kable(model_fit$aug_acceptance, digits = 2)
+```
+
 
 ## Algorithm Tuning
 
 ### Convergence of Augmentation
-When data augmentation is used, `compute_mallows` saves the average acceptance rates for each iteration interval of size `aug_diag_thinning`, which is an optional argument default value 100. We can specify to `assess_convergence` that we want to study the convergence of the data augmentation.
+When data augmentation is used, `compute_mallows` saves the average acceptance rates for each assessor in the `aug_acceptance` object.
 
 ```{r, fig.width=6, fig.height=5}
 assess_convergence(model_fit, type = "augmentation")
 ```
 
-If we want to take a closer look at some of the curves, we can specify this with the `assessors` argument. Let's look at assessor 3, which seems to have a very high acceptance rate.
-
-```{r, fig.show='hold'}
-assess_convergence(model_fit, type = "augmentation", assessors = 3)
-```
 
 
 ### Convergence of $\alpha$
@@ -400,13 +401,13 @@ We also plot the convergence of the data augmentation.
 assess_convergence(model_fit, type = "augmentation")
 ```
 
-Note in the plot above that the proposed augmentation is always accepted for assessors 2, 5, 6, 7, and 10. We can compare this to the number of missing ranks for these assessors:
+We can compare the acceptance rates to the number of missing ranks for for each assessor:
 
 ```{r}
 apply(potato_missing, 1, function(x) sum(is.na(x)))
 ```
 
-We see that these assessors have either 0 or 1 missing ranks. In the former case, there is no augmentation at all, but we use convention that the assessor's complete data are accepted. In the latter case, when only one rank is missing, the proposal distribution has a support set of size 1, which has probability 1 of being accepted. 
+We see that assessors who have either 0 or 1 missing ranks, always have their augmentations accepted. In the case of 0 missing ranks, there is in fact no augmentation going on at all, but we use the convention that the assessor's own complete data is accepted.
 
 ## Posterior Distributions
 

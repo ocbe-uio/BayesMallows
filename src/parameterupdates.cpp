@@ -16,7 +16,7 @@ void update_alpha(arma::mat& alpha,
                   int& alpha_index,
                   int& cluster_index,
                   const arma::mat& rho_old,
-                  const double& sd_alpha,
+                  const double& alpha_prop_sd,
                   const std::string& metric,
                   const double& lambda,
                   const int& n_items,
@@ -29,7 +29,7 @@ void update_alpha(arma::mat& alpha,
   int n_assessors = rankings.n_cols;
 
   // Sample an alpha proposal
-  double alpha_proposal = exp(arma::randn<double>() * sd_alpha +
+  double alpha_proposal = exp(arma::randn<double>() * alpha_prop_sd +
                               log(alpha_old(cluster_index)));
 
   double rank_dist = rank_dist_matrix(rankings, rho_old.col(cluster_index), metric);

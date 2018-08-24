@@ -15,13 +15,12 @@ void initialize_missing_ranks(arma::mat& rankings, const arma::mat& missing_indi
                               const int& n_items, const int& n_assessors);
 
 void update_missing_ranks(arma::mat& rankings, const arma::umat& cluster_assignment,
-                          arma::mat& aug_acceptance,
+                          arma::vec& aug_acceptance,
                           const arma::mat& missing_indicator,
                           const arma::vec& assessor_missing,
                           const int& n_items, const int& n_assessors,
                           const arma::vec& alpha, const arma::mat& rho,
                           const std::string& metric, const int& t,
-                          int& aug_diag_index, const int& aug_diag_thinning,
                           const bool& clustering, bool& augmentation_accepted);
 
 #endif

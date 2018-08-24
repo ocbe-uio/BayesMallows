@@ -5,10 +5,10 @@
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
 run_mcmc(rankings, nmc, preferences, constrained, cardinalities, is_fit,
-  metric = "footrule", n_clusters = 1L, include_wcd = FALSE,
-  leap_size = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L,
-  lambda = 0.1, psi = 10L, thinning = 1L, aug_diag_thinning = 100L,
-  save_augmented_data = FALSE)
+  rho_init, metric = "footrule", n_clusters = 1L,
+  include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5,
+  alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L,
+  thinning = 1L, save_augmented_data = FALSE)
 }
 \arguments{
 \item{rankings}{A set of complete rankings, with one sample per column.
@@ -37,7 +37,7 @@ not to store the within-cluster distance.}
 
 \item{leap_size}{Leap-and-shift step size.}
 
-\item{sd_alpha}{Standard deviation of proposal distribution for alpha.}
+\item{alpha_prop_sd}{Standard deviation of proposal distribution for alpha.}
 
 \item{alpha_init}{Initial value of alpha.}
 
@@ -52,9 +52,6 @@ have to do expensive computation of the partition function.}
 
 \item{thinning}{Thinning parameter. Keep only every \code{thinning} rank
 sample from the posterior distribution.}
-
-\item{aug_diag_thinning}{The interval in which we save
-augmentation diagnostics.}
 
 \item{save_augmented_data}{Whether or not to save the augmented data every
 \code{thinning}th iteration.}

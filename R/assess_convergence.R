@@ -65,36 +65,16 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
     print(p)
 
   } else if(type == "augmentation") {
-    if(!model_fit$any_missing && !model_fit$augpair) stop("No missing values, so data were not augmented.")
-
-    if(is.null(assessors) && model_fit$n_assessors > 12) {
-      message("Assessors not set Plotting the first 12.")
-      assessors <- seq(from = 1, to = 12, by = 1)
-    } else if(is.null(assessors)) {
-      assessors <- seq(from = 1, to = model_fit$n_assessors, by = 1)
+    if(!exists("aug_acceptance", model_fit)){
+      stop("aug_acceptance not found")
     }
 
-    df <- dplyr::as_tibble(model_fit$aug_acceptance)
-    names(df) <- 1:ncol(df)
-
-    df <- dplyr::mutate(df, Assessor = as.factor(dplyr::row_number()))
-    df <- dplyr::slice(df, assessors)
-
-    df <- tidyr::gather(df, key = "Iteration", value = "Acceptance",
-                        -.data$Assessor, convert = TRUE)
-
-    df <- dplyr::mutate(df, Iteration = .data$Iteration *
-                          model_fit$aug_diag_thinning)
-
-    # Saving and then printing, because one gets a warning due to log(0) == -Inf
-    ggplot2::ggplot(df, ggplot2::aes(x = .data$Iteration, y = .data$Acceptance)) +
-      ggplot2::geom_line(na.rm = TRUE) +
-      ggplot2::facet_wrap(~ .data$Assessor) +
-      ggplot2::xlab("Iteration") +
-      ggplot2::ylab("Mean acceptance rate") +
-      ggplot2::ggtitle(
-        label = "Data Augmentation",
-        subtitle = paste("Average per", model_fit$aug_diag_thinning, "steps."))
+    ggplot2::ggplot(model_fit$aug_acceptance,
+                    ggplot2::aes(x = .data$assessor, y = .data$acceptance_rate)) +
+      ggplot2::geom_col() +
+      ggplot2::xlab("Assessor") +
+      ggplot2::ylab("Acceptance rate") +
+      ggplot2::ggtitle("Assessor-wise acceptance rates for augmented data")
 
 
   } else {

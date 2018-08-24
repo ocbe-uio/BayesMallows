@@ -160,6 +160,18 @@ tidy_mcmc <- function(fit){
     fit$augmented_data <- NULL
   }
 
+  # Augmentation acceptance
+  if(fit$any_missing || fit$augpair){
+    fit$aug_acceptance <- dplyr::tibble(acceptance_rate = c(fit$aug_acceptance))
+    fit$aug_acceptance <- dplyr::mutate(fit$aug_acceptance,
+                                        assessor = dplyr::row_number())
+    fit$aug_acceptance <- dplyr::select(fit$aug_acceptance,
+                                        .data$assessor, .data$acceptance_rate)
+
+  } else {
+    fit$aug_acceptance <- NULL
+  }
+
 
   return(fit)
 

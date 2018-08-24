@@ -37,7 +37,8 @@ get_rank_distance <- function(r1, r2, metric = "footrule") {
 #' @param n Integer specifying the number of ranked items.
 #' @param metric Distance measure of the target Mallows distribution. Defaults to \code{footrule}.
 #' @param nmc Number of Monte Carlo samples. Defaults to \code{1e6}.
-#' @export
+#'
+#' @keywords internal
 #'
 compute_importance_sampling_estimate <- function(alpha_vector, n, metric = "footrule", nmc = 1e6L) {
     .Call(`_BayesMallows_compute_importance_sampling_estimate`, alpha_vector, n, metric, nmc)
@@ -90,7 +91,7 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' @param include_wcd Boolean defining whether or
 #' not to store the within-cluster distance.
 #' @param leap_size Leap-and-shift step size.
-#' @param sd_alpha Standard deviation of proposal distribution for alpha.
+#' @param alpha_prop_sd Standard deviation of proposal distribution for alpha.
 #' @param alpha_init Initial value of alpha.
 #' @param alpha_jump How many times should we sample \code{rho} between
 #' each time we sample \code{alpha}. Setting \code{alpha_jump} to a high
@@ -100,13 +101,11 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
 #' @param thinning Thinning parameter. Keep only every \code{thinning} rank
 #' sample from the posterior distribution.
-#' @param aug_diag_thinning The interval in which we save
-#' augmentation diagnostics.
 #' @param save_augmented_data Whether or not to save the augmented data every
 #' \code{thinning}th iteration.
 #' @keywords internal
 #'
-run_mcmc <- function(rankings, nmc, preferences, constrained, cardinalities, is_fit, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L, aug_diag_thinning = 100L, save_augmented_data = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, preferences, constrained, cardinalities, is_fit, metric, n_clusters, include_wcd, leap_size, sd_alpha, alpha_init, alpha_jump, lambda, psi, thinning, aug_diag_thinning, save_augmented_data)
+run_mcmc <- function(rankings, nmc, preferences, constrained, cardinalities, is_fit, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L, save_augmented_data = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, preferences, constrained, cardinalities, is_fit, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, thinning, save_augmented_data)
 }
 
