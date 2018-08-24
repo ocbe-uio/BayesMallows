@@ -36,6 +36,7 @@
 //' number can significantly speed up computation time, since we then do not
 //' have to do expensive computation of the partition function.
 //' @param lambda Parameter of the prior distribution.
+//' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
 //' @param thinning Thinning parameter. Keep only every \code{thinning} rank
 //' sample from the posterior distribution.
 //' @param aug_diag_thinning The interval in which we save
@@ -58,6 +59,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     double alpha_init = 5,
                     int alpha_jump = 1,
                     double lambda = 0.1,
+                    int psi = 10,
                     int thinning = 1,
                     int aug_diag_thinning = 100,
                     bool save_augmented_data = false
@@ -144,10 +146,6 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     augmented_data.set_size(n_items, n_assessors, n_rho);
     augmented_data.slice(0) = rankings;
   }
-
-  // Hyperparameter for Dirichlet prior used in clustering
-  // Consider having this as an optional user argument
-  int psi = 10;
 
   // Cluster probabilities
   arma::mat cluster_probs;

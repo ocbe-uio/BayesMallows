@@ -7,7 +7,7 @@
 run_mcmc(rankings, nmc, preferences, constrained, cardinalities, is_fit,
   metric = "footrule", n_clusters = 1L, include_wcd = FALSE,
   leap_size = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L,
-  lambda = 0.1, thinning = 1L, aug_diag_thinning = 100L,
+  lambda = 0.1, psi = 10L, thinning = 1L, aug_diag_thinning = 100L,
   save_augmented_data = FALSE)
 }
 \arguments{
@@ -47,6 +47,8 @@ number can significantly speed up computation time, since we then do not
 have to do expensive computation of the partition function.}
 
 \item{lambda}{Parameter of the prior distribution.}
+
+\item{psi}{Hyperparameter for the Dirichlet prior distribution used in clustering.}
 
 \item{thinning}{Thinning parameter. Keep only every \code{thinning} rank
 sample from the posterior distribution.}

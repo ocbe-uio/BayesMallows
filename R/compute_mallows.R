@@ -17,6 +17,7 @@
 #'   otherwise \code{FALSE}.
 #' @param lambda Parameter for the prior distribution of \code{alpha}. Defaults
 #'   to 0.1.
+#' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
 #' @param nmc Number of Monte Carlo samples to keep.
 #' @param leap_size Step size of the leap-and-shift proposal distribution.
 #'   Defaults to NULL, which means that it is automatically set to n/5.
@@ -46,6 +47,7 @@ compute_mallows <- function(rankings = NULL,
                             n_clusters = 1,
                             include_wcd = (n_clusters > 1),
                             lambda = 0.1,
+                            psi = 10,
                             nmc = 2000,
                             leap_size = NULL,
                             sd_alpha = 0.1,

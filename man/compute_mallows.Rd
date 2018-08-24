@@ -6,8 +6,8 @@
 \usage{
 compute_mallows(rankings = NULL, preferences = NULL,
   metric = "footrule", n_clusters = 1, include_wcd = (n_clusters >
-  1), lambda = 0.1, nmc = 2000, leap_size = NULL, sd_alpha = 0.1,
-  alpha_init = 1, alpha_jump = 1, thinning = 1,
+  1), lambda = 0.1, psi = 10, nmc = 2000, leap_size = NULL,
+  sd_alpha = 0.1, alpha_init = 1, alpha_jump = 1, thinning = 1,
   aug_diag_thinning = 100, save_augmented_data = FALSE,
   is_fit = NULL)
 }
@@ -34,6 +34,8 @@ otherwise \code{FALSE}.}
 
 \item{lambda}{Parameter for the prior distribution of \code{alpha}. Defaults
 to 0.1.}
+
+\item{psi}{Hyperparameter for the Dirichlet prior distribution used in clustering.}
 
 \item{nmc}{Number of Monte Carlo samples to keep.}
 
