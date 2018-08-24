@@ -3,8 +3,11 @@
 
 #include "RcppArmadillo.h"
 
-Rcpp::List leap_and_shift(const arma::vec&, int);
-void shift_step(arma::vec& proposal, const arma::vec& rho,
-                const int& u, double& delta_r, arma::vec& indices);
+void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
+                    double& prob_backward, double& prob_forward,
+                    const arma::vec& rho, int leap_size);
+
+void shift_step(arma::vec& rho_proposal, const arma::vec& rho,
+                const int& u, double& delta_r, arma::uvec& indices);
 
 #endif
