@@ -18,6 +18,8 @@ plot_top_k <- function(model_fit, burnin, k = 3, rel_widths = c(rep(1, model_fit
 
   # Extract post burn-in rows with value <= k
   rho <- dplyr::filter(model_fit$rho, .data$iteration > burnin, .data$value <= k)
+  # Factors are not needed in this case
+  rho <- dplyr::mutate(rho, item = as.character(.data$item))
   rho <- dplyr::group_by(rho, .data$item, .data$cluster)
   rho <- dplyr::summarise(rho, prob = dplyr::n()/n_samples)
   rho <- dplyr::ungroup(rho)
@@ -30,9 +32,8 @@ plot_top_k <- function(model_fit, burnin, k = 3, rel_widths = c(rep(1, model_fit
   rho <- dplyr::ungroup(rho)
 
   # Sort the items according to probability
-  ordered_items <- dplyr::pull(dplyr::arrange(rho, .data$prob), .data$item)
-
-  rho <- dplyr::mutate(rho, item = factor(.data$item, levels = ordered_items))
+  item_ordering <- rev(compute_cp_consensus(model_fit, burnin = burnin)$item)
+  rho <- dplyr::mutate(rho, item = factor(.data$item, levels = item_ordering))
 
   # Trick to make the plot look nicer
   if(model_fit$n_clusters == 1){
@@ -40,6 +41,7 @@ plot_top_k <- function(model_fit, burnin, k = 3, rel_widths = c(rep(1, model_fit
   }
 
   rankings <- dplyr::filter(model_fit$augmented_data, .data$iteration > burnin, .data$value <= k)
+  rankings <- dplyr::mutate(rankings, item = as.character(.data$item))
   rankings <- dplyr::group_by(rankings, .data$assessor, .data$item)
   rankings <- dplyr::summarise(rankings, prob = dplyr::n()/n_samples)
   rankings <- dplyr::ungroup(rankings)
@@ -49,7 +51,7 @@ plot_top_k <- function(model_fit, burnin, k = 3, rel_widths = c(rep(1, model_fit
     fill = list(prob = 0)
   )
   # Sorting the items according to their probability in rho
-  rankings <- dplyr::mutate(rankings, item = factor(.data$item, levels = ordered_items))
+  rankings <- dplyr::mutate(rankings, item = factor(.data$item, levels = item_ordering))
 
   assessor_plot <- ggplot2::ggplot(rankings, ggplot2::aes(.data$assessor, .data$item)) +
     ggplot2::geom_tile(ggplot2::aes(fill = .data$prob), colour = "white") +
