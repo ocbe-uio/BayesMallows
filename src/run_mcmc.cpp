@@ -29,7 +29,7 @@
 //' @param include_wcd Boolean defining whether or
 //' not to store the within-cluster distance.
 //' @param leap_size Leap-and-shift step size.
-//' @param sd_alpha Standard deviation of proposal distribution for alpha.
+//' @param alpha_prop_sd Standard deviation of proposal distribution for alpha.
 //' @param alpha_init Initial value of alpha.
 //' @param alpha_jump How many times should we sample \code{rho} between
 //' each time we sample \code{alpha}. Setting \code{alpha_jump} to a high
@@ -51,11 +51,12 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     Rcpp::Nullable<arma::mat> constrained,
                     Rcpp::Nullable<arma::vec> cardinalities,
                     Rcpp::Nullable<arma::vec> is_fit,
+                    Rcpp::Nullable<arma::vec> rho_init,
                     std::string metric = "footrule",
                     int n_clusters = 1,
                     bool include_wcd = false,
                     int leap_size = 1,
-                    double sd_alpha = 0.5,
+                    double alpha_prop_sd = 0.5,
                     double alpha_init = 5,
                     int alpha_jump = 1,
                     double lambda = 0.1,
@@ -128,9 +129,13 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Set the initial alpha value
   alpha.col(0).fill(alpha_init);
 
-  // Initialize latent ranks randomly
+  // Initialize latent ranks as provided by rho_init, or randomly:
   for(int i = 0; i < n_clusters; ++i){
-    rho.slice(0).col(i) = arma::shuffle(arma::regspace<arma::vec>(1, 1, n_items));
+    if(rho_init.isNotNull()){
+      rho.slice(0).col(i) = Rcpp::as<arma::vec>(rho_init);
+    } else {
+      rho.slice(0).col(i) = arma::shuffle(arma::regspace<arma::vec>(1, 1, n_items));
+    }
   }
 
   // Fill in missing ranks, if needed
@@ -256,7 +261,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
         // Call the void function which updates alpha by reference
         update_alpha(alpha, alpha_acceptance, alpha_old, clus_mat, alpha_index,
-                     cluster_index, rho_old, sd_alpha, metric, lambda, n_items,
+                     cluster_index, rho_old, alpha_prop_sd, metric, lambda, n_items,
                      cardinalities, is_fit);
       }
 

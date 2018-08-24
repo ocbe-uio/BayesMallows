@@ -5,9 +5,10 @@
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
 run_mcmc(rankings, nmc, preferences, constrained, cardinalities, is_fit,
-  metric = "footrule", n_clusters = 1L, include_wcd = FALSE,
-  leap_size = 1L, sd_alpha = 0.5, alpha_init = 5, alpha_jump = 1L,
-  lambda = 0.1, psi = 10L, thinning = 1L, aug_diag_thinning = 100L,
+  rho_init, metric = "footrule", n_clusters = 1L,
+  include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5,
+  alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L,
+  thinning = 1L, aug_diag_thinning = 100L,
   save_augmented_data = FALSE)
 }
 \arguments{
@@ -37,7 +38,7 @@ not to store the within-cluster distance.}
 
 \item{leap_size}{Leap-and-shift step size.}
 
-\item{sd_alpha}{Standard deviation of proposal distribution for alpha.}
+\item{alpha_prop_sd}{Standard deviation of proposal distribution for alpha.}
 
 \item{alpha_init}{Initial value of alpha.}
 
