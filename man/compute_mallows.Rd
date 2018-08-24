@@ -98,9 +98,6 @@ not yet ranked, and is required by \code{\link{plot_top_k}}.}
 
 \item{is_fit}{Importance sampling estimate of the partition function,
 computed with \code{\link{estimate_partition_function}}.}
-
-\item{aug_diag_thinning}{The interval in which we save augmentation
-diagnostics.}
 }
 \value{
 A list of class BayesMallows.
@@ -115,11 +112,32 @@ the preferences can take the form of complete or incomplete rankings, as well
 as pairwise preferences. \code{compute_mallows} can also compute mixtures of
 Mallows models, for clustering of assessors with similar preferences.
 }
-\section{Prior Distributions}{
+\examples{
+# Analysis of complete rankings
+# The example datasets potato_visual and potato_weighing contain complete
+# rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
+# model:
+model_fit <- compute_mallows(potato_visual)
+# We study the trace plot of the parameters
+# alpha is the default
+assess_convergence(model_fit)
+# When studying convergence of rho, we can also specify which items to plot
+assess_convergence(model_fit, type = "rho", items = 1:5)
+# Based on these plots, we conclude that the Markov chain has converged well
+# before 1,000 iterations. We hence set burnin = 1000.
+# Next, we use the generic plot function to study the posterior distributions
+# of alpha and rho
+plot(model_fit, burnin = 1000)
+plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
+# We can also compute the CP consensus posterior ranking
+compute_cp_consensus(model_fit, burnin = 1000)
+# And we can compute the posterior intervals:
+# First we compute the interval for alpha
+compute_posterior_intervals(model_fit, burnin = 1000, parameter = "alpha")
+# Then we compute the interval for all the items
+compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho")
 
-A uniform prior distribution is used for \eqn{\rho}.
 }
-
 \references{
 \insertAllCited{}
 }

@@ -97,19 +97,40 @@
 #' @param is_fit Importance sampling estimate of the partition function,
 #'   computed with \code{\link{estimate_partition_function}}.
 #'
-#' @param aug_diag_thinning The interval in which we save augmentation
-#'   diagnostics.
+#' @return
+#' A list of class BayesMallows.
 #'
-#'
-#' @section Prior Distributions:
-#' A uniform prior distribution is used for \eqn{\rho}.
-#'
-#' @return A list of class BayesMallows.
 #'
 #' @references \insertAllCited{}
 #'
 #' @export
 #' @importFrom rlang .data
+#'
+#' @examples
+#' # Analysis of complete rankings
+#' # The example datasets potato_visual and potato_weighing contain complete
+#' # rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
+#' # model:
+#' model_fit <- compute_mallows(potato_visual)
+#' # We study the trace plot of the parameters
+#' # alpha is the default
+#' assess_convergence(model_fit)
+#' # When studying convergence of rho, we can also specify which items to plot
+#' assess_convergence(model_fit, type = "rho", items = 1:5)
+#' # Based on these plots, we conclude that the Markov chain has converged well
+#' # before 1,000 iterations. We hence set burnin = 1000.
+#' # Next, we use the generic plot function to study the posterior distributions
+#' # of alpha and rho
+#' plot(model_fit, burnin = 1000)
+#' plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
+#' # We can also compute the CP consensus posterior ranking
+#' compute_cp_consensus(model_fit, burnin = 1000)
+#' # And we can compute the posterior intervals:
+#' # First we compute the interval for alpha
+#' compute_posterior_intervals(model_fit, burnin = 1000, parameter = "alpha")
+#' # Then we compute the interval for all the items
+#' compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho")
+#'
 compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
                             metric = "footrule",
@@ -209,8 +230,6 @@ compute_mallows <- function(rankings = NULL,
     stop(paste("Unknown metric", metric))
   }
 
-
-
   # Transpose rankings to get samples along columns, since we typically want
   # to extract one sample at a time. armadillo is column major, just like rankings
   fit <- run_mcmc(rankings = t(rankings),
@@ -256,7 +275,6 @@ compute_mallows <- function(rankings = NULL,
 
   # Tidy MCMC results
   fit <- tidy_mcmc(fit)
-
 
   # Add class attribute
   class(fit) <- "BayesMallows"
