@@ -86,7 +86,7 @@ void augment_pairwise(
     proposal(element - 1) = proposed_rank;
 
     double delta_r;
-    arma::vec indices;
+    arma::uvec indices;
 
     // Do the shift step
     shift_step(proposal, rankings.col(i), element, delta_r, indices);

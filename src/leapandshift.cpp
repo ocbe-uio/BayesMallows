@@ -5,44 +5,46 @@
 //
 // [[Rcpp::depends(RcppArmadillo)]]
 
-void shift_step(arma::vec& proposal, const arma::vec& rho,
-                const int& u, double& delta_r, arma::vec& indices){
+void shift_step(arma::vec& rho_proposal, const arma::vec& rho,
+                const int& u, double& delta_r, arma::uvec& indices){
   // Shift step:
-  delta_r = proposal(u - 1) - rho(u - 1);
-  indices = arma::zeros(std::abs(delta_r) + 1);
+  delta_r = rho_proposal(u - 1) - rho(u - 1);
+  indices = arma::zeros<arma::uvec>(std::abs(delta_r) + 1);
   indices[0] = u-1;
   int index;
 
   if(delta_r > 0){
     for(int k = 1; k <= delta_r; ++k){
       index = arma::as_scalar(arma::find(rho == rho(u-1) + k));
-      proposal(index) -= 1;
+      rho_proposal(index) -= 1;
       indices[k] = index;
     }
   } else if(delta_r < 0) {
     for(int k = (-1); k >= delta_r; --k){
       index = arma::as_scalar(arma::find(rho == rho(u-1) + k));
-      proposal(index) += 1;
+      rho_proposal(index) += 1;
       indices[-(k)] = index;
     }
   }
 }
 
 
-Rcpp::List leap_and_shift(const arma::vec& rho, int leap_size){
+void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
+                    double& prob_backward, double& prob_forward,
+                    const arma::vec& rho, int leap_size){
 
   // Declare the proposed rank vector
-  arma::vec proposal = rho;
+  rho_proposal = rho;
 
   // Help vectors
-  arma::vec support, indices;
+  arma::vec support;
 
   // Number of items
   int n = rho.n_elem;
 
   // Other helper variables
   int u, index;
-  double delta_r, prob_forward, prob_backward, support_new;
+  double delta_r, support_new;
 
   // Leap 1
   // 1, sample u randomly between 1 and n
@@ -82,30 +84,25 @@ Rcpp::List leap_and_shift(const arma::vec& rho, int leap_size){
   // 3. assign a random element of the support set, this completes the leap step
   index = arma::as_scalar(arma::randi(1, arma::distr_param(0, support.n_elem-1)));
   // Picked element index-1 from the support set
-  proposal(u-1) = support(index);
+  rho_proposal(u-1) = support(index);
 
   // Compute the associated transition probabilities (BEFORE THE SHIFT STEP, WHICH IS DETERMINISTIC --> EASIER)
-  if(std::abs(proposal(u - 1) - rho(u - 1)) == 1){
+  if(std::abs(rho_proposal(u - 1) - rho(u - 1)) == 1){
     // in this case the transition probabilities coincide! (and in fact for leap_size = 1 the L&S is symmetric)
-    support_new = std::min(proposal(u - 1) - 1, dobL) + std::min(n - proposal(u - 1), dobL);
+    support_new = std::min(rho_proposal(u - 1) - 1, dobL) + std::min(n - rho_proposal(u - 1), dobL);
     prob_forward = 1.0 / (n * support.n_elem) + 1.0 / (n * support_new);
     prob_backward = prob_forward;
   } else {
     // P(proposed|current)
     prob_forward = 1.0 / (n * support.n_elem);
     // P(current|proposed)
-    support_new = std::min(proposal(u - 1) - 1, dobL) + std::min(n - proposal(u-1), dobL);
+    support_new = std::min(rho_proposal(u - 1) - 1, dobL) + std::min(n - rho_proposal(u-1), dobL);
     prob_backward = 1.0 / (n * support_new);
   }
 
-  shift_step(proposal, rho, u, delta_r, indices);
+  shift_step(rho_proposal, rho, u, delta_r, indices);
 
-  return Rcpp::List::create(Rcpp::Named("proposal") = proposal,
-                            Rcpp::Named("indices") = indices,
-                            Rcpp::Named("delta_r") = delta_r,
-                            Rcpp::Named("prob_forward") = prob_forward,
-                            Rcpp::Named("prob_backward") = prob_backward
-  );
+
 }
 
 

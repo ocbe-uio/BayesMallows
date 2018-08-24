@@ -71,13 +71,12 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
   arma::vec rho_cluster = rho_old.col(cluster_index);
 
   // Sample a rank proposal
-  Rcpp::List ls_proposal = leap_and_shift(rho_cluster, leap_size);
+  arma::vec rho_proposal;
+  arma::uvec indices;
+  double prob_backward, prob_forward;
 
-  // Save some of the variables
-  arma::vec rho_proposal = ls_proposal["proposal"];
-  arma::uvec indices = ls_proposal["indices"];
-  double prob_backward = ls_proposal["prob_backward"];
-  double prob_forward = ls_proposal["prob_forward"];
+  leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
+                 rho_cluster, leap_size);
 
   // Compute the distances to current and proposed ranks
   double dist_new = rank_dist_matrix(rankings.rows(indices), rho_proposal(indices), metric);
