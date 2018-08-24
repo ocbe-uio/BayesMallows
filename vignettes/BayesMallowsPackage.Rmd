@@ -90,10 +90,10 @@ Next, we study the convergence of $\rho$. To avoid too complicated plots, we pic
 assess_convergence(model_fit, type = "rho", items = 1:5)
 ```
 
-When the name of the items have been specified in the column names of `rankings`, we can also provide these to the `items` argument. The line below plots potatoes 16 through 20.
+When the name of the items have been specified in the column names of `rankings`, we can also provide these to the `items` argument. The line below plots a selection of potatoes.
 
 ```{r, fig.width=6}
-assess_convergence(model_fit, type = "rho", items = c("P16", "P17", "P18", "P19", "P20"))
+assess_convergence(model_fit, type = "rho", items = c("P2", "P11", "P14", "P18", "P19", "P20"))
 ```
 
 Based on these plots, it looks like the algorithm starts to converge after around 1000 iterations. Discarding the first 1000 iterations as burn-in hence seems like a safe choice.
@@ -290,7 +290,12 @@ model_fit$any_missing
 ```
 `model_fit` also has assessor-wise acceptance rates for the augmentation.
 
-```{r, result='asis'}
+```{r, eval=FALSE}
+model_fit$aug_acceptance
+```
+
+
+```{r, echo=FALSE, result='asis'}
 knitr::kable(model_fit$aug_acceptance, digits = 2)
 ```
 
@@ -447,9 +452,12 @@ pair_comp <- tribble(
   2, 2, 3,
   2, 3, 4
 )
-
-knitr::kable(pair_comp)
 ```
+
+```{r}
+knitr::kable(pair_comp, caption = "Dataset `pair_comp`.")
+```
+
 
 ### Transitive Closure
 
@@ -462,7 +470,12 @@ pair_comp_tc <- generate_transitive_closure(pair_comp)
 
 As we can see, `pair_comp_tc` has an additional row containing the relation $A_{4} \prec A_{5}$ for assessor 1. For assessor 2, $$\text{tc}(\mathcal{B}_{2}) = \mathcal{B}_{2} \cup \left\{ A_{1} \prec A_{3}, A_{1} \prec A_{4}, A_{2} \prec A_{4}\right\},$$ so three new rows have been added.
 
-```{r, results='asis'}
+```{r, eval=FALSE}
+pair_comp_tc
+```
+
+
+```{r, results='asis', echo=FALSE}
 knitr::kable(pair_comp_tc)
 ```
 
@@ -478,10 +491,6 @@ We can also generate an initial ranking, consistent with the pairwise comparison
 
 ```{r}
 initial_ranking <- generate_initial_ranking(pair_comp_tc)
-```
-
-```{r, results='asis'}
-knitr::kable(initial_ranking, row.names = TRUE)
 ```
 
 ### Mallows Model
@@ -509,7 +518,7 @@ Rather than digging deeper into this toy example, we go on with a real applicati
 ## Beach Preferences
 The beach preference dataset is described in Section 6.2 of @vitelli2018, and is available in the dataframe `beach_preferences` in `BayesMallows`. In short, $60$ assessors were each asked to perform a random set of pairwise comparisons between pictures of $15$ beaches. The first few rows are listed below.
 
-```{r, results='asis'}
+```{r, results='asis', echo=FALSE}
 knitr::kable(head(beach_preferences, 6), caption = "Example dataset `beach_preferences`")
 ```
 
@@ -536,9 +545,16 @@ beach_init_rank <- generate_initial_ranking(beach_tc)
 
 We can also take a look at the first 6 rows in it.
 
-```{r, results='asis'}
-knitr::kable(head(beach_init_rank, 6))
+```{r, results='asis', echo=FALSE}
+knitr::kable(head(beach_init_rank, 6), caption="First 6 rows in `beach_init_rank`.")
 ```
+
+Let us add column names to the initial ranking. This will make the plots more informative.
+
+```{r}
+colnames(beach_init_rank) <- paste("Beach", seq(from = 1, to = ncol(beach_init_rank), by = 1))
+```
+
 
 ### Algorithm Tuning
 
@@ -635,7 +651,8 @@ model_fit <- compute_mallows(
 ```
 
 
-We can do a top-$k$ plot with `plot_top_k`. By default, `k = 3`.
+We can do a top-$k$ plot with `plot_top_k`. By default, `k = 3`. It may be necessary to do some experimentation with the `rel_widths` argument to get a good looking plot.
+
 ```{r, eval=FALSE}
 plot_top_k(model_fit, burnin = 2000)
 ```
@@ -756,12 +773,12 @@ cp_consensus_df <- compute_cp_consensus(model_fit, burnin = 1000)
 ```
 
 
-```{r}
-knitr::kable(filter(cp_consensus_df, cluster == "Cluster 1"), digits = 2)
+```{r, eval=FALSE}
+filter(cp_consensus_df, cluster == "Cluster 2")
 ```
 
 
-```{r}
+```{r, echo=FALSE, results='asis'}
 knitr::kable(filter(cp_consensus_df, cluster == "Cluster 2"), digits = 2)
 ```
 
@@ -785,7 +802,7 @@ cp_consensus_df %>%
 ## Sushi Data
 The `BayesMallows` package comes with a set of sushi preference data, in which 5000 assessors each have ranked a set of 10 types of sushi (@kamishima2003). Here are the first few rows of the dataset.
 
-```{r}
+```{r, echo=FALSE, results='asis'}
 knitr::kable(head(sushi_rankings), caption = "First 6 rows of example dataset `sushi_rankings`.")
 ```
 
@@ -836,12 +853,21 @@ load("./vignette-data/sushi_clustering_data.RData")
 
 We can now look at each cluster:
 
-```{r}
-knitr::kable(filter(cp_consensus_sushi, cluster == "Cluster 1"), digits = 2)
+```{r, eval=FALSE}
+filter(cp_consensus_sushi, cluster == "Cluster 1")
 ```
 
 
-```{r}
+```{r, echo=FALSE, results='asis'}
+knitr::kable(filter(cp_consensus_sushi, cluster == "Cluster 1"), digits = 2)
+```
+
+```{r, eval=FALSE}
+filter(cp_consensus_sushi, cluster == "Cluster 2")
+```
+
+
+```{r, echo=FALSE, results='asis'}
 knitr::kable(filter(cp_consensus_sushi, cluster == "Cluster 2"), digits = 2)
 ```
 

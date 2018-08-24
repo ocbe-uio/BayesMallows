@@ -14,7 +14,7 @@ ggsave(filename = "./vignettes/vignette-data/alpha_convergence_2.png",
 cp_consensus_sushi <- compute_cp_consensus(model_fit2, burnin = 200)
 
 ggsave(filename = "./vignettes/vignette-data/sushi_elbow.png",
-       plot_elbow(model_fit1, model_fit2, rankings = sushi_rankings, burnin = 200))
+       plot_elbow(model_fit1, model_fit2, burnin = 200))
 
 library(purrr)
 n_clusters <- seq(from = 1, to = 10)

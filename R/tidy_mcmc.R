@@ -1,5 +1,19 @@
 tidy_mcmc <- function(fit){
 
+  fit <- tidy_rho(fit)
+  fit <- tidy_alpha(fit)
+  fit <- tidy_cluster_assignment(fit)
+  fit <- tidy_cluster_probabilities(fit)
+  fit <- tidy_wcd(fit)
+  fit <- tidy_augmented_data(fit)
+  fit <- tidy_augmentation_acceptance(fit)
+
+  return(fit)
+}
+
+
+
+tidy_rho <- function(fit){
   # Tidy rho
   rho_dims <- dim(fit$rho)
   # Item1, Item2, Item3, ...., Item1, Item2, Item3
@@ -7,13 +21,14 @@ tidy_mcmc <- function(fit){
   # Iteration1, Iteration1, ..., Iteration1, Iteration1, Iteration1, Iteration2
   value <- c(fit$rho)
 
-  item <- rep(dimnames(fit$rho)[[1]], times = rho_dims[[2]] * rho_dims[[3]])
+  item <- rep(fit$items, times = rho_dims[[2]] * rho_dims[[3]])
+  item <- factor(item, levels = fit$items)
 
   cluster <- rep(
     paste("Cluster", seq(from = 1, to = rho_dims[[2]], by = 1)),
     each = rho_dims[[1]],
     times = rho_dims[[3]]
-    )
+  )
 
   iteration <- rep(seq(from = 1, to = rho_dims[[3]] * fit$thinning, by = fit$thinning),
                    each = rho_dims[[1]] * rho_dims[[2]])
@@ -26,6 +41,10 @@ tidy_mcmc <- function(fit){
     value = value
   )
 
+  return(fit)
+}
+
+tidy_alpha <- function(fit){
   # Tidy alpha
   alpha_dims <- dim(fit$alpha)
   # Cluster1, Cluster2, ..., Cluster1, Cluster2
@@ -35,12 +54,12 @@ tidy_mcmc <- function(fit){
   cluster <- rep(
     paste("Cluster", seq(from = 1, to = alpha_dims[[1]], by = 1)),
     times = alpha_dims[[2]]
-    )
+  )
 
   iteration <- rep(
     seq(from = 1, to = alpha_dims[[2]] * fit$alpha_jump, by = fit$alpha_jump),
     each = alpha_dims[[1]]
-    )
+  )
 
   fit$alpha <- dplyr::tibble(
     cluster = cluster,
@@ -48,7 +67,11 @@ tidy_mcmc <- function(fit){
     value = value
   )
 
-  # Tidy cluster indicator
+  return(fit)
+}
+
+tidy_cluster_assignment <- function(fit){
+  # Tidy cluster assignment
   if(fit$n_clusters > 1){
     cluster_dims <- dim(fit$cluster_assignment)
     value <- paste("Cluster", c(fit$cluster_assignment))
@@ -64,7 +87,7 @@ tidy_mcmc <- function(fit){
   assessor <- rep(
     seq(from = 1, to = cluster_dims[[1]], by = 1),
     times = cluster_dims[[2]]
-    )
+  )
   iteration <- rep(
     seq(from = 1, to = cluster_dims[[2]], by = 1),
     each = cluster_dims[[1]]
@@ -76,6 +99,10 @@ tidy_mcmc <- function(fit){
     value = value
   )
 
+  return(fit)
+}
+
+tidy_cluster_probabilities <- function(fit){
   # Tidy cluster probabilities
   if(fit$n_clusters > 1){
     clusprob_dims <- dim(fit$cluster_probs)
@@ -103,7 +130,11 @@ tidy_mcmc <- function(fit){
     iteration = iteration,
     value = value
   )
+  return(fit)
+}
 
+
+tidy_wcd <- function(fit){
   # Tidy the within-cluster distances, or delete the empty matrix
   if(fit$include_wcd){
     wcd_dims <- dim(fit$within_cluster_distance)
@@ -132,7 +163,10 @@ tidy_mcmc <- function(fit){
   } else {
     fit$within_cluster_distance <- NULL
   }
+  return(fit)
+}
 
+tidy_augmented_data <- function(fit){
   # Tidy augmented data, or delete
   if(fit$save_augmented_data){
 
@@ -144,6 +178,8 @@ tidy_mcmc <- function(fit){
     value <- c(fit$augmented_data)
 
     item <- rep(fit$items, times = augdata_dims[[2]] * augdata_dims[[3]])
+    item <- factor(item, levels = fit$items)
+
     assessor <- rep(seq(from = 1, to = augdata_dims[[2]], by = 1), each = augdata_dims[[1]],
                     times = augdata_dims[[3]])
 
@@ -160,7 +196,13 @@ tidy_mcmc <- function(fit){
     fit$augmented_data <- NULL
   }
 
+  return(fit)
+}
+
+
+tidy_augmentation_acceptance <- function(fit){
   # Augmentation acceptance
+
   if(fit$any_missing || fit$augpair){
     fit$aug_acceptance <- dplyr::tibble(acceptance_rate = c(fit$aug_acceptance))
     fit$aug_acceptance <- dplyr::mutate(fit$aug_acceptance,
@@ -171,8 +213,5 @@ tidy_mcmc <- function(fit){
   } else {
     fit$aug_acceptance <- NULL
   }
-
-
   return(fit)
-
 }
