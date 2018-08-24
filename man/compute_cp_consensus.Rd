@@ -9,12 +9,35 @@ compute_cp_consensus(model_fit, burnin)
 \arguments{
 \item{model_fit}{An object returned from \code{\link{compute_mallows}}.}
 
-\item{burnin}{The number of iterations to discard as burn-in.}
+\item{burnin}{A numeric value specifying the number of iterations to discard
+as burn-in. See \code{\link{assess_convergence}}.}
 }
 \description{
-Compute CP Consensus
+Compute the cumulative probability (CP) consensus ranking
+\insertCite{vitelli2018}{BayesMallows} of the items. For mixture models, the
+CP consensus is given for each ranking.
 }
-\details{
-Computes the cumulative probability (CP) consensus rankings of the latent ranks.
-If the number of clusters is larger than 1, it returns the CP consensus per cluster.
+\examples{
+# Analysis of complete rankings
+# The example datasets potato_visual and potato_weighing contain complete
+# rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
+# model:
+model_fit <- compute_mallows(potato_visual)
+# We study the trace plot of the parameters
+# alpha is the default
+assess_convergence(model_fit)
+# When studying convergence of rho, we can also specify which items to plot
+assess_convergence(model_fit, type = "rho", items = 1:5)
+# Based on these plots, we conclude that the Markov chain has converged well
+# before 1,000 iterations. We hence set burnin = 1000.
+# Next, we use the generic plot function to study the posterior distributions
+# of alpha and rho
+plot(model_fit, burnin = 1000)
+plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
+# We can also compute the CP consensus posterior ranking
+compute_cp_consensus(model_fit, burnin = 1000)
+
+}
+\references{
+\insertAllCited{}
 }

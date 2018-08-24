@@ -1,18 +1,36 @@
-#' Assessing convergence of Metropolis-Hastings algorithm
+#' Trace Plots from Metropolis-Hastings Algorithm
+#'
+#' \code{assess_convergence} provides trace plots for the parameters of the
+#' Mallows Rank model, in order to study the convergence of the Metropolis-Hastings
+#' algorithm.
 #'
 #' @param model_fit A fitted model object of class \code{BayesMallows}, obtained
 #'   with \code{\link{compute_mallows}}.
-#' @param type Should we plot \code{"alpha"}, \code{"rho"}, or
-#'   \code{"augmentation"}.
+#'
+#' @param type Character string specifying which plot type we want. Available
+#' options are \code{"alpha"}, \code{"rho"}, or \code{"augmentation"}.
+#'
 #' @param items The items to study in the diagnostic plot for \code{rho}. Either
-#'   a vector of item names, corresponding to \code{model_fit$item_names} or a
+#'   a vector of item names, corresponding to \code{model_fit$items} or a
 #'   vector of indices. If NULL, five items are selected randomly.
-#' @param assessors The assessors to study in the diagnostic plot for
-#'   \code{"augmentation"}.
+#'
+#' @param assessors Numeric vector specifying the assessors to study in
+#' the diagnostic plot for \code{"augmentation"}.
 #'
 #' @seealso \code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
 #'
 #' @export
+#' @examples
+#' # Compute the posterior distribution for the dataset potato_visual:
+#' model_fit <- compute_mallows(potato_visual)
+#' # Study the trace plot of the parameters
+#' # alpha is the default
+#' assess_convergence(model_fit)
+#' # When studying convergence of rho, we can also specify which items to plot,
+#' # either a vector of item indices
+#' assess_convergence(model_fit, type = "rho", items = 1:5)
+#' # or with item names:
+#' assess_convergence(model_fit, type = "rho", items = c("P2", "P5", "P15"))
 #'
 assess_convergence <- function(model_fit, type = "alpha", items = NULL,
                                assessors = NULL){
