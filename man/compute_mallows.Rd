@@ -9,8 +9,7 @@ compute_mallows(rankings = NULL, preferences = NULL,
   leap_size = NULL, rho_init = NULL, thinning = 1L,
   alpha_prop_sd = 0.1, alpha_init = 1, alpha_jump = 1L,
   lambda = 0.001, psi = 10L, include_wcd = (n_clusters > 1),
-  save_augmented_data = FALSE, is_fit = NULL,
-  aug_diag_thinning = 100)
+  save_augmented_data = FALSE, is_fit = NULL)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items, of size \code{n_assessors x
@@ -123,7 +122,4 @@ A uniform prior distribution is used for \eqn{\rho}.
 
 \references{
 \insertAllCited{}
-}
-\seealso{
-\code{\link{assess_convergence}}, \code{\link{plot.BayesMallows}}.
 }

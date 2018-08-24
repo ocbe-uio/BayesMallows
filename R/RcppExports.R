@@ -101,13 +101,11 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
 #' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
 #' @param thinning Thinning parameter. Keep only every \code{thinning} rank
 #' sample from the posterior distribution.
-#' @param aug_diag_thinning The interval in which we save
-#' augmentation diagnostics.
 #' @param save_augmented_data Whether or not to save the augmented data every
 #' \code{thinning}th iteration.
 #' @keywords internal
 #'
-run_mcmc <- function(rankings, nmc, preferences, constrained, cardinalities, is_fit, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L, aug_diag_thinning = 100L, save_augmented_data = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, preferences, constrained, cardinalities, is_fit, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, thinning, aug_diag_thinning, save_augmented_data)
+run_mcmc <- function(rankings, nmc, preferences, constrained, cardinalities, is_fit, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L, save_augmented_data = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, preferences, constrained, cardinalities, is_fit, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, thinning, save_augmented_data)
 }
 

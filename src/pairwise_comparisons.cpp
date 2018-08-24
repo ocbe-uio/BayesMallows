@@ -15,9 +15,7 @@ void augment_pairwise(
     const int& n_assessors,
     const int& n_items,
     const int& t,
-    arma::mat& aug_acceptance,
-    int& aug_diag_index,
-    const int& aug_diag_thinning,
+    arma::vec& aug_acceptance,
     const bool& clustering,
     bool& augmentation_accepted
 ){
@@ -109,15 +107,11 @@ void augment_pairwise(
 
     if(ratio > u){
       rankings.col(i) = proposal;
-      ++aug_acceptance(i, aug_diag_index);
+      ++aug_acceptance(i);
       augmentation_accepted = true;
     } else {
       augmentation_accepted = false;
     }
   }
 
-  // If appropriate, increment the augmentation diagnostic index
-  if(t % aug_diag_thinning == 0){
-    ++aug_diag_index;
-  }
 }

@@ -108,7 +108,6 @@
 #'
 #' @references \insertAllCited{}
 #'
-#' @seealso \code{\link{assess_convergence}}, \code{\link{plot.BayesMallows}}.
 #' @export
 #' @importFrom rlang .data
 compute_mallows <- function(rankings = NULL,
@@ -126,8 +125,7 @@ compute_mallows <- function(rankings = NULL,
                             psi = 10L,
                             include_wcd = (n_clusters > 1),
                             save_augmented_data = FALSE,
-                            is_fit = NULL,
-                            aug_diag_thinning = 100
+                            is_fit = NULL
                             ){
 
   # Check that at most one of rankings and preferences is set
@@ -158,11 +156,6 @@ compute_mallows <- function(rankings = NULL,
     }
   } else {
     constrained <- NULL
-  }
-
-  # If there are no missing values nor preference, increase aug_diag_thinning
-  if(is.null(preferences) && sum(is.na(rankings)) == 0){
-    aug_diag_thinning <- nmc
   }
 
   # Check that all rows of rankings are proper permutations
@@ -236,7 +229,6 @@ compute_mallows <- function(rankings = NULL,
                   alpha_init = alpha_init,
                   alpha_jump = alpha_jump,
                   thinning = thinning,
-                  aug_diag_thinning = aug_diag_thinning,
                   save_augmented_data = save_augmented_data
                   )
 
@@ -250,18 +242,8 @@ compute_mallows <- function(rankings = NULL,
   fit$thinning <- thinning
   fit$leap_size <- leap_size
   fit$alpha_prop_sd <- alpha_prop_sd
-  fit$aug_diag_thinning <- aug_diag_thinning
   fit$include_wcd <- include_wcd
   fit$save_augmented_data <- save_augmented_data
-
-  # If no data augmentation has happened, do not include aug_acceptance
-  # Otherwise, convert to fraction
-  if(!fit$any_missing && !fit$augpair) {
-    fit$aug_acceptance <- NULL
-    fit$aug_diag_thinning <- NULL
-  } else {
-    fit$aug_acceptance <- fit$aug_acceptance / aug_diag_thinning
-  }
 
   # Add names of item
   if(!is.null(colnames(rankings))) {

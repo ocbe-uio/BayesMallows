@@ -39,8 +39,6 @@
 //' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
 //' @param thinning Thinning parameter. Keep only every \code{thinning} rank
 //' sample from the posterior distribution.
-//' @param aug_diag_thinning The interval in which we save
-//' augmentation diagnostics.
 //' @param save_augmented_data Whether or not to save the augmented data every
 //' \code{thinning}th iteration.
 //' @keywords internal
@@ -62,7 +60,6 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     double lambda = 0.1,
                     int psi = 10,
                     int thinning = 1,
-                    int aug_diag_thinning = 100,
                     bool save_augmented_data = false
                       ){
 
@@ -77,9 +74,6 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
   // Number of rho values to store, per cluster and item
   int n_rho = ceil(nmc * 1.0 / thinning);
-
-  // Number of augmentation diagnostics to store
-  int n_aug_diag = ceil(nmc * 1.0 / aug_diag_thinning);
 
   // Check if we want to do clustering
   bool clustering = n_clusters > 1;
@@ -201,15 +195,15 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   arma::vec alpha_acceptance = arma::ones(n_clusters);
   arma::vec rho_acceptance = arma::ones(n_clusters);
 
-  arma::mat aug_acceptance;
+  arma::vec aug_acceptance;
   if(any_missing | augpair){
-    aug_acceptance = arma::zeros<arma::mat>(n_assessors, n_aug_diag);
+    aug_acceptance = arma::ones<arma::vec>(n_assessors);
   } else {
     aug_acceptance.reset();
   }
 
   // Other variables used
-  int alpha_index = 0, rho_index = 0, aug_diag_index = 0;
+  int alpha_index = 0, rho_index = 0;
   arma::vec alpha_old = alpha.col(0);
   arma::mat rho_old = rho(arma::span::all, arma::span::all, arma::span(0));
   bool rho_accepted = false;
@@ -286,8 +280,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   if(any_missing){
     update_missing_ranks(rankings, cluster_assignment, aug_acceptance, missing_indicator,
                          assessor_missing, n_items, n_assessors, alpha_old, rho_old,
-                         metric, t, aug_diag_index, aug_diag_thinning, clustering,
-                         augmentation_accepted);
+                         metric, t, clustering, augmentation_accepted);
   }
 
 
@@ -295,8 +288,8 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   if(augpair){
     augment_pairwise(rankings, cluster_assignment, alpha_old, rho_old,
                      metric, pairwise_preferences, constrained_elements,
-                     n_assessors, n_items, t, aug_acceptance, aug_diag_index,
-                     aug_diag_thinning, clustering, augmentation_accepted);
+                     n_assessors, n_items, t, aug_acceptance,
+                     clustering, augmentation_accepted);
   }
 
 
@@ -312,16 +305,16 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Return everything that might be of interest
   return Rcpp::List::create(
     Rcpp::Named("rho") = rho,
-    Rcpp::Named("rho_acceptance") = rho_acceptance/nmc,
+    Rcpp::Named("rho_acceptance") = rho_acceptance / nmc,
     Rcpp::Named("alpha") = alpha,
-    Rcpp::Named("alpha_acceptance") = alpha_acceptance/nmc,
+    Rcpp::Named("alpha_acceptance") = alpha_acceptance / nmc,
     Rcpp::Named("cluster_assignment") = cluster_assignment + 1,
     Rcpp::Named("cluster_probs") = cluster_probs,
     Rcpp::Named("within_cluster_distance") = within_cluster_distance,
     Rcpp::Named("augmented_data") = augmented_data,
     Rcpp::Named("any_missing") = any_missing,
     Rcpp::Named("augpair") = augpair,
-    Rcpp::Named("aug_acceptance") = aug_acceptance,
+    Rcpp::Named("aug_acceptance") = aug_acceptance / nmc,
     Rcpp::Named("n_assessors") = n_assessors
   );
 
