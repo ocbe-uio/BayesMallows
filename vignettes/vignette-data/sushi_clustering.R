@@ -11,6 +11,9 @@ ggsave(filename = "./vignettes/vignette-data/alpha_convergence_1.png",
 ggsave(filename = "./vignettes/vignette-data/alpha_convergence_2.png",
        plot = assess_convergence(model_fit2))
 
+ggsave(filename = "./vignettes/vignette-data/cluster_probs_convergence2.png",
+       plot = assess_convergence(model_fit2, type = "cluster_probs"))
+
 cp_consensus_sushi <- compute_cp_consensus(model_fit2, burnin = 200)
 
 ggsave(filename = "./vignettes/vignette-data/sushi_elbow.png",

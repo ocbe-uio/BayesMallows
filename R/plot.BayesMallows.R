@@ -1,18 +1,42 @@
-#' @title Posterior plots
+#' Plot Posterior Distributions
+#'
+#' Plot posterior distributions of the parameters of the Mallows Rank model.
 #'
 #' @param x An object of type \code{BayesMallows}, returned from
 #'   \code{\link{compute_mallows}}.
-#' @param burnin Number of iterations to discard as burn-in.
-#' @param type Either \code{"alpha"} or \code{"rho"}.
-#' @param items Index of items to plot or names of the items, as specified in
-#'   \code{rownames(model_fit$rho)}. Only used when \code{type = "rho"}.
+#'
+#' @param burnin A numeric value specifying the number of iterations
+#' to discard as burn-in. See \code{\link{assess_convergence}}.
+#'
+#' @param type Character string defining the parameter to plot. Available
+#' options are \code{"alpha"} and \code{"rho"}.
+#'
+#' @param items Numeric vector specifying the index of the items to plot
+#' or character vector with names of the items, as specified in
+#'   \code{model_fit$items}. Only used when \code{type = "rho"}.
+#'
 #' @param ... Other arguments passed to \code{plot} (not used).
 #'
-#' @return A plot.
 #' @export
 #'
 #' @examples
-#' # Here is an example.
+#' # Analysis of complete rankings
+#' # The example datasets potato_visual and potato_weighing contain complete
+#' # rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
+#' # model:
+#' model_fit <- compute_mallows(potato_visual)
+#' # We study the trace plot of the parameters
+#' # alpha is the default
+#' assess_convergence(model_fit)
+#' # When studying convergence of rho, we can also specify which items to plot
+#' assess_convergence(model_fit, type = "rho", items = 1:5)
+#' # Based on these plots, we conclude that the Markov chain has converged well
+#' # before 1,000 iterations. We hence set burnin = 1000.
+#' # Next, we use the generic plot function to study the posterior distributions
+#' # of alpha and rho
+#' plot(model_fit, burnin = 1000)
+#' plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
+#'
 plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
   # Note, the first argument must be named x, otherwise R CMD CHECK will
   # issue a warning. This is because plot.BayesMallows must have the same

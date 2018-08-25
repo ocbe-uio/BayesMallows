@@ -835,6 +835,17 @@ assess_convergence(model_fit2)
 knitr::include_graphics("./vignette-data/alpha_convergence_2.png")
 ```
 
+We can also look at the trace plot of the cluster probabilities, $\tau_{1}$ and $\tau_{2}$:
+
+```{r, eval=FALSE}
+assess_convergence(model_fit2, type = "cluster_probs")
+```
+
+```{r, echo=FALSE, out.width="75%"}
+knitr::include_graphics("./vignette-data/cluster_probs_convergence2.png")
+```
+
+
 
 It seems like $\alpha$ is mixing rapidly. Let us set `burnin = 200`, and compute the CP consensus for the case with two clusters.
 

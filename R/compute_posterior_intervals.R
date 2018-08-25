@@ -2,12 +2,19 @@
 #' Compute Posterior Intervals
 #'
 #' @param model_fit An object returned from \code{\link{compute_mallows}}.
-#' @param burnin The number of iterations to discard as burn-in.
-#' @param parameter Which parameter to compute posterior intervals for. One of
-#' \code{"alpha"}, \code{"rho"}, or \code{"cluster_probs"}.
-#' @param level Confidence level.
-#' @param decimals Number of decimals to include in posterior intervals and the mean
-#' and median.
+#'
+#' @param burnin A numeric value specifying the number of iterations to discard
+#'   as burn-in. See \code{\link{assess_convergence}}.
+#'
+#' @param parameter Character string defining which parameter to compute
+#' posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
+#' \code{"cluster_probs"}.
+#'
+#' @param level Decimal number in \eqn{[0,1]} specifying the confidence level.
+#' Defaults to \code{0.95}.
+#'
+#' @param decimals Integer specifying the number of decimals to include
+#' in posterior intervals and the mean and median. Defaults to \code{3}.
 #'
 #' @details This function computes both the Highest Posterior Density Interval (HPDI),
 #' which may be discontinuous for bimodal distributions, and
@@ -18,7 +25,7 @@
 #'
 compute_posterior_intervals <- function(model_fit, burnin, parameter,
                                         level = 0.95,
-                                        decimals = 3){
+                                        decimals = 3L){
   stopifnot(class(model_fit) == "BayesMallows")
   stopifnot(burnin < model_fit$nmc)
   stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment"))

@@ -112,18 +112,18 @@
 #' # The example datasets potato_visual and potato_weighing contain complete
 #' # rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
 #' # model:
-#' model_fit <- compute_mallows(potato_visual)
+#' model_fit <- compute_mallows(potato_visual, nmc = 2000)
 #' # We study the trace plot of the parameters
 #' # alpha is the default
-#' assess_convergence(model_fit)
+#' assess_convergence(model_fit, type = "alpha")
 #' # When studying convergence of rho, we can also specify which items to plot
 #' assess_convergence(model_fit, type = "rho", items = 1:5)
 #' # Based on these plots, we conclude that the Markov chain has converged well
 #' # before 1,000 iterations. We hence set burnin = 1000.
 #' # Next, we use the generic plot function to study the posterior distributions
 #' # of alpha and rho
-#' plot(model_fit, burnin = 1000)
-#' plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
+#' plot(model_fit, burnin = 1000, type = "alpha")
+#' plot(model_fit, burnin = 1000, type = "rho", items = 10:15)
 #' # We can also compute the CP consensus posterior ranking
 #' compute_cp_consensus(model_fit, burnin = 1000)
 #' # And we can compute the posterior intervals:
@@ -131,6 +131,11 @@
 #' compute_posterior_intervals(model_fit, burnin = 1000, parameter = "alpha")
 #' # Then we compute the interval for all the items
 #' compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho")
+#'
+#' # Clustering with a mixture model
+#' # Try with 2 mixtures for the example sushi_data
+#' model_fit <- compute_mallows(sushi_rankings, n_clusters = 2, nmc = 1000)
+#' #
 #'
 compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
