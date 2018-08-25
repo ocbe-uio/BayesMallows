@@ -12,7 +12,8 @@ assess_convergence(model_fit, type = "alpha", items = NULL,
 with \code{\link{compute_mallows}}.}
 
 \item{type}{Character string specifying which plot type we want. Available
-options are \code{"alpha"}, \code{"rho"}, or \code{"augmentation"}.}
+options are \code{"alpha"}, \code{"rho"}, \code{"augmentation"}, or
+\code{"cluster_probs"}.}
 
 \item{items}{The items to study in the diagnostic plot for \code{rho}. Either
 a vector of item names, corresponding to \code{model_fit$items} or a

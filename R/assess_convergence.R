@@ -8,7 +8,8 @@
 #'   with \code{\link{compute_mallows}}.
 #'
 #' @param type Character string specifying which plot type we want. Available
-#' options are \code{"alpha"}, \code{"rho"}, or \code{"augmentation"}.
+#' options are \code{"alpha"}, \code{"rho"}, \code{"augmentation"}, or
+#' \code{"cluster_probs"}.
 #'
 #' @param items The items to study in the diagnostic plot for \code{rho}. Either
 #'   a vector of item names, corresponding to \code{model_fit$items} or a
@@ -94,6 +95,20 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       ggplot2::ylab("Acceptance rate") +
       ggplot2::ggtitle("Assessor-wise acceptance rates for augmented data")
 
+  } else if (type == "cluster_probs"){
+
+    if(!exists("cluster_probs", model_fit)){
+      stop("cluster_probs not found")
+    }
+
+    ggplot2::ggplot(model_fit$cluster_probs,
+                    ggplot2::aes(x = .data$iteration, y = .data$value,
+                                 color = .data$cluster)) +
+      ggplot2::geom_line() +
+      ggplot2::theme(legend.title = ggplot2::element_blank()) +
+      ggplot2::xlab("Iteration") +
+      ggplot2::ylab(expression(tau[k])) +
+      ggplot2::ggtitle("Cluster Probabilities")
 
   } else {
     stop("type must be either \"alpha\", \"rho\", or \"augmentation\".")
