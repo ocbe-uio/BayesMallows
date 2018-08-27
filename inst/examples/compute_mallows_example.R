@@ -38,6 +38,9 @@ compute_posterior_intervals(model_fit, burnin = 1000, parameter = "alpha")
   plot(model_fit, burnin = 2500, type = "alpha")
   # We can also compute the posterior density of the cluster probabilities
   plot(model_fit, burnin = 2500, type = "cluster_probs")
+  # We can also plot the posterior cluster assignment. In this case, the assessors
+  # are sorted according to their maximum a prior cluster estimate.
+  plot(model_fit, burnin = 2500, type = "cluster_assignment")
   }
 
 
