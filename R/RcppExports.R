@@ -77,6 +77,26 @@ get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL
     .Call(`_BayesMallows_get_partition_function`, n, alpha, cardinalities, is_fit, metric)
 }
 
+#' Asymptotic Approximation of Partition Function
+#'
+#' Compute the asymptotic approximation of the logarithm of the partition function,
+#' using the iteration algorithm of \insertCite{mukherjee2016;textual}{BayesMallows}.
+#'
+#' @param alpha_grid A numeric vector of alpha values.
+#' @param metric One of \code{"footrule"} and \code{"spearman"}.
+#' @param K Integer.
+#' @param n_iterations Integer specifying the number of iterations.
+#' @param n_items Integer specifying the number of items.
+#'
+#' @return A vector, containing the partition function at each value of alpha.
+#' @keywords internal
+#'
+#' @references \insertAllCited{}
+#'
+asymptotic_partition_function <- function(alpha_grid, metric, K, n_iterations, n_items) {
+    .Call(`_BayesMallows_asymptotic_partition_function`, alpha_grid, metric, K, n_iterations, n_items)
+}
+
 #' Worker function for computing the posterior distribtuion.
 #'
 #' @param rankings A set of complete rankings, with one sample per column.
