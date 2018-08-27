@@ -102,3 +102,92 @@ double get_partition_function(int n, double alpha,
 }
 
 
+//' Asymptotic Approximation of Partition Function
+//'
+//' Compute the asymptotic approximation of the logarithm of the partition function,
+//' using the iteration algorithm of \insertCite{mukherjee2016;textual}{BayesMallows}.
+//'
+//' @param alpha_grid A numeric vector of alpha values.
+//' @param metric One of \code{"footrule"} and \code{"spearman"}.
+//' @param K Integer.
+//' @param n_iterations Integer specifying the number of iterations.
+//' @param n_items Integer specifying the number of items.
+//'
+//' @return A vector, containing the partition function at each value of alpha.
+//' @keywords internal
+//'
+//' @references \insertAllCited{}
+//'
+// [[Rcpp::export]]
+arma::vec asymptotic_partition_function(arma::vec alpha_grid, std::string metric,
+                                        int K, int n_iterations, int n_items){
+  // IPFP procedure
+  // Set the matrix dimension
+  int mat_dim;
+  if(n_iterations < K){
+    mat_dim = n_iterations;
+  } else {
+    mat_dim = K;
+  }
+
+  // Initialize a square matrix where each row/column sums to one
+  arma::mat A = arma::ones<arma::mat>(mat_dim, mat_dim) * 1.0 / mat_dim;
+
+  // arma::accu sums all elements of the tensor
+  // the % operator computes the element-wise product
+  double Z0lim = -2 * log(K) - arma::accu(A % arma::log(A));
+
+  // Helper matrix
+  arma::mat B(K, K);
+  for(int i = 0; i < K; ++i){
+    for(int j = 0; j < K; ++j){
+      if(metric == "footrule"){
+        // Because 0 is the first index, this is really (i + 1) - (j + 1) = i - j
+        B(i, j) = -abs(i - j);
+      } else if(metric == "spearman"){
+        B(i, j) = -pow(i - j, 2.0);
+      }
+    }
+  }
+  // Divide each element by K
+  // B corresponds to outer((1:K)/K, (1:K)/K, dist) in R
+  B = B * 1.0 / K;
+
+  int n_alpha = alpha_grid.n_elem;
+  arma::vec result(n_alpha);
+
+  for(int i = 0; i < n_alpha; ++i){
+    double alpha = alpha_grid(i);
+
+    A = arma::exp(alpha * B);
+    for(int i = 0; i < n_iterations; ++i){
+      // Note: We can use 1-norm because the expenontial never gets negative
+
+      // A <- A/rowSums(A)
+      // 1-norm along rows
+      A = arma::normalise(A, 1, 1);
+      // A <- A/rep(1, nrow(A)) %*% t(colSums(A)) which is
+      // equivalent to t(t(A)/c(colSums(A)))
+
+      // Divide each column by its sum
+      A = arma::normalise(A, 1, 0);
+    }
+
+    double Zlim = alpha * arma::accu(B % A) - 2 * log(K) - arma::accu(A % arma::log(A));
+
+    double Z0 = 0;
+    for(int i = 0; i < n_items; ++i){
+      Z0 += log(i + 1);
+    }
+
+    // This should be what is called Tranf_Zlim_2 in the R code
+    result(i) = (Zlim - Z0lim)/K * n_items + Z0;
+  }
+
+
+  return(result);
+}
+
+
+
+
