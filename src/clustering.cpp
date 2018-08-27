@@ -39,11 +39,7 @@ void update_cluster_labels(
 
   for(int assessor_index = 0; assessor_index < n_assessors; ++assessor_index){
 
-    // Draw a uniform random number
-    double u = arma::randu();
-
-    // Find the first index that is larger than u. That is the cluster index.
-    int cluster = arma::as_scalar(arma::find(arma::cumsum(assignment_prob.row(assessor_index)) > u, 1, "first"));
+    int cluster = sample_int(assignment_prob.row(assessor_index));
 
     // Assign the cluster indicator
     cluster_assignment(assessor_index, t) = cluster;

@@ -56,6 +56,10 @@ std_setdiff <- function(x, y) {
     .Call(`_BayesMallows_std_setdiff`, x, y)
 }
 
+sample_int <- function(probs) {
+    .Call(`_BayesMallows_sample_int`, probs)
+}
+
 #' Compute the logarithm of the partition function for a Mallows rank model.
 #'
 #' @param n Number of items.

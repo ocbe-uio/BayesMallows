@@ -48,3 +48,12 @@ arma::uvec std_setdiff(arma::uvec& x, arma::uvec& y) {
 
   return arma::conv_to<arma::uvec>::from(out);
 }
+
+// Function to sample an integer given a set of probabilities
+// [[Rcpp::export]]
+int sample_int(const arma::rowvec& probs){
+  // Draw a uniform random number
+  double u = arma::randu();
+
+  return arma::as_scalar(arma::find(arma::cumsum(probs) > u, 1, "first"));
+}
