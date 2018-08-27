@@ -27,4 +27,12 @@ models <- map(n_clusters, ~ compute_mallows(rankings = sushi_rankings, nmc = 100
 ggsave(filename = "./vignettes/vignette-data/sushi_elbow_10.png",
        plot = plot_elbow(models, burnin = 200))
 
-save(cp_consensus_sushi, file = "./vignettes/vignette-data/sushi_clustering_data.RData")
+cluster_assignment <- assign_cluster(models[[7]], burnin = 200, soft = FALSE)
+cluster_assignment <- head(cluster_assignment)
+
+save(cp_consensus_sushi, cluster_assignment,
+     file = "./vignettes/vignette-data/sushi_clustering_data.RData")
+
+ggsave(filename = "./vignettes/vignette-data/cluster_assignment_plot_10.png",
+       plot = plot(models[[7]], burnin = 200, type = "cluster_assignment"))
+

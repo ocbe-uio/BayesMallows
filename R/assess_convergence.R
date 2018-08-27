@@ -13,7 +13,7 @@
 #'
 #' @param items The items to study in the diagnostic plot for \code{rho}. Either
 #'   a vector of item names, corresponding to \code{model_fit$items} or a
-#'   vector of indices. If NULL, five items are selected randomly.
+#'   vector of indices. If NULL, five items are selected randomly. Only used when \code{type = "rho"}.
 #'
 #' @param assessors Numeric vector specifying the assessors to study in
 #' the diagnostic plot for \code{"augmentation"}.
@@ -21,17 +21,6 @@
 #' @seealso \code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
 #'
 #' @export
-#' @examples
-#' # Compute the posterior distribution for the dataset potato_visual:
-#' model_fit <- compute_mallows(potato_visual)
-#' # Study the trace plot of the parameters
-#' # alpha is the default
-#' assess_convergence(model_fit)
-#' # When studying convergence of rho, we can also specify which items to plot,
-#' # either a vector of item indices
-#' assess_convergence(model_fit, type = "rho", items = 1:5)
-#' # or with item names:
-#' assess_convergence(model_fit, type = "rho", items = c("P2", "P5", "P15"))
 #'
 assess_convergence <- function(model_fit, type = "alpha", items = NULL,
                                assessors = NULL){
@@ -111,6 +100,6 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       ggplot2::ggtitle("Cluster Probabilities")
 
   } else {
-    stop("type must be either \"alpha\", \"rho\", or \"augmentation\".")
+    stop("type must be either \"alpha\", \"rho\", \"augmentation\", or \"cluster_probs\".")
   }
 }

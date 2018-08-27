@@ -17,7 +17,7 @@ options are \code{"alpha"}, \code{"rho"}, \code{"augmentation"}, or
 
 \item{items}{The items to study in the diagnostic plot for \code{rho}. Either
 a vector of item names, corresponding to \code{model_fit$items} or a
-vector of indices. If NULL, five items are selected randomly.}
+vector of indices. If NULL, five items are selected randomly. Only used when \code{type = "rho"}.}
 
 \item{assessors}{Numeric vector specifying the assessors to study in
 the diagnostic plot for \code{"augmentation"}.}
@@ -26,19 +26,6 @@ the diagnostic plot for \code{"augmentation"}.}
 \code{assess_convergence} provides trace plots for the parameters of the
 Mallows Rank model, in order to study the convergence of the Metropolis-Hastings
 algorithm.
-}
-\examples{
-# Compute the posterior distribution for the dataset potato_visual:
-model_fit <- compute_mallows(potato_visual)
-# Study the trace plot of the parameters
-# alpha is the default
-assess_convergence(model_fit)
-# When studying convergence of rho, we can also specify which items to plot,
-# either a vector of item indices
-assess_convergence(model_fit, type = "rho", items = 1:5)
-# or with item names:
-assess_convergence(model_fit, type = "rho", items = c("P2", "P5", "P15"))
-
 }
 \seealso{
 \code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}

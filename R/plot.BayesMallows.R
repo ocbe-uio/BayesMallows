@@ -9,33 +9,17 @@
 #' to discard as burn-in. See \code{\link{assess_convergence}}.
 #'
 #' @param type Character string defining the parameter to plot. Available
-#' options are \code{"alpha"} and \code{"rho"}.
+#' options are \code{"alpha"}, \code{"rho"}, \code{"cluster_probs"}, and
+#' \code{"cluster_assignment"}.
 #'
-#' @param items Numeric vector specifying the index of the items to plot
-#' or character vector with names of the items, as specified in
-#'   \code{model_fit$items}. Only used when \code{type = "rho"}.
+#' @param items The items to study in the diagnostic plot for \code{rho}. Either
+#'   a vector of item names, corresponding to \code{x$items} or a
+#'   vector of indices. If NULL, five items are selected randomly.
+#'   Only used when \code{type = "rho"}.
 #'
 #' @param ... Other arguments passed to \code{plot} (not used).
 #'
 #' @export
-#'
-#' @examples
-#' # Analysis of complete rankings
-#' # The example datasets potato_visual and potato_weighing contain complete
-#' # rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
-#' # model:
-#' model_fit <- compute_mallows(potato_visual)
-#' # We study the trace plot of the parameters
-#' # alpha is the default
-#' assess_convergence(model_fit)
-#' # When studying convergence of rho, we can also specify which items to plot
-#' assess_convergence(model_fit, type = "rho", items = 1:5)
-#' # Based on these plots, we conclude that the Markov chain has converged well
-#' # before 1,000 iterations. We hence set burnin = 1000.
-#' # Next, we use the generic plot function to study the posterior distributions
-#' # of alpha and rho
-#' plot(model_fit, burnin = 1000)
-#' plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
 #'
 plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
   # Note, the first argument must be named x, otherwise R CMD CHECK will
@@ -44,7 +28,7 @@ plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
 
   stopifnot(x$nmc > burnin)
 
-  stopifnot(type %in% c("alpha", "rho"))
+  stopifnot(type %in% c("alpha", "rho", "cluster_probs", "cluster_assignment"))
 
   if(type == "alpha") {
     df <- dplyr::filter(x$alpha, .data$iteration > burnin)
@@ -63,7 +47,12 @@ plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
 
   } else if(type == "rho") {
 
-    if(is.null(items)) stop("You must specify the items to plot.")
+    if(is.null(items) && x$n_items > 5){
+      message("Items not provided by user. Picking 5 at random.")
+      items <- sample.int(x$n_items, 5)
+    } else if (is.null(items) && x$n_items > 0) {
+      items <- seq.int(from = 1, to = x$n_items)
+    }
 
     if(!is.character(items)){
       items <- x$items[items]
@@ -92,5 +81,40 @@ plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
     }
 
     print(p)
+  } else if(type == "cluster_probs"){
+    df <- dplyr::filter(x$cluster_probs, .data$iteration > burnin)
+
+    ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
+      ggplot2::geom_density() +
+      ggplot2::xlab(expression(tau[k])) +
+      ggplot2::ylab("Posterior density") +
+      ggplot2::ggtitle(label = "Posterior density of cluster probabilities") +
+      ggplot2::facet_wrap(~ .data$cluster)
+
+  } else if(type == "cluster_assignment"){
+
+    # First get one cluster per assessor, and sort these
+    df <- assign_cluster(x, burnin = burnin, soft = FALSE, expand = FALSE)
+    df <- dplyr::arrange(df, .data$map_cluster)
+    assessor_order <- dplyr::pull(df, .data$assessor)
+
+    # Next, rerun with soft=TRUE to get the probability of all clusters
+    df <- assign_cluster(x, burnin = burnin, soft = TRUE, expand = TRUE)
+    # Then order the assessors according to assessor_order
+    df <- dplyr::mutate(df, assessor = factor(.data$assessor, levels = assessor_order))
+
+    # Now make a plot
+    ggplot2::ggplot(df, ggplot2::aes(.data$assessor, .data$cluster)) +
+      ggplot2::geom_tile(ggplot2::aes(fill = .data$probability)) +
+      ggplot2::scale_fill_gradient(low = "blue", high = "red") +
+      ggplot2::theme(
+        legend.title = ggplot2::element_blank(),
+        axis.title.y = ggplot2::element_blank(),
+        axis.ticks.x = ggplot2::element_blank(),
+        axis.text.x = ggplot2::element_blank()
+      ) +
+      ggplot2::xlab(paste0("Assessors (", min(assessor_order), " - ", max(assessor_order), ")")) +
+      ggplot2::ggtitle("Posterior Probabilities of Cluster Assignment")
+
   }
 }

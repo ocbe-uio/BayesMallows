@@ -15,33 +15,16 @@
 to discard as burn-in. See \code{\link{assess_convergence}}.}
 
 \item{type}{Character string defining the parameter to plot. Available
-options are \code{"alpha"} and \code{"rho"}.}
+options are \code{"alpha"}, \code{"rho"}, \code{"cluster_probs"}, and
+\code{"cluster_assignment"}.}
 
-\item{items}{Numeric vector specifying the index of the items to plot
-or character vector with names of the items, as specified in
-  \code{model_fit$items}. Only used when \code{type = "rho"}.}
+\item{items}{The items to study in the diagnostic plot for \code{rho}. Either
+a vector of item names, corresponding to \code{x$items} or a
+vector of indices. If NULL, five items are selected randomly.
+Only used when \code{type = "rho"}.}
 
 \item{...}{Other arguments passed to \code{plot} (not used).}
 }
 \description{
 Plot posterior distributions of the parameters of the Mallows Rank model.
-}
-\examples{
-# Analysis of complete rankings
-# The example datasets potato_visual and potato_weighing contain complete
-# rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
-# model:
-model_fit <- compute_mallows(potato_visual)
-# We study the trace plot of the parameters
-# alpha is the default
-assess_convergence(model_fit)
-# When studying convergence of rho, we can also specify which items to plot
-assess_convergence(model_fit, type = "rho", items = 1:5)
-# Based on these plots, we conclude that the Markov chain has converged well
-# before 1,000 iterations. We hence set burnin = 1000.
-# Next, we use the generic plot function to study the posterior distributions
-# of alpha and rho
-plot(model_fit, burnin = 1000)
-plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
-
 }

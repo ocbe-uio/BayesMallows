@@ -51,6 +51,8 @@ Function Name                 Description
  
  `plot_top_k`                 Plot the top-$k$ rankings. Particularly relevant when the data is in the form of pairwise comparisons. 
  
+ `assign_cluster`             Compute the cluster assignment of assessors.
+ 
  `compute_cp_consensus`       Rank the items according to their CP consensus. 
  
  `compute_posterior_intervals` Compute Bayesian posterior intervals for the parameters. 
@@ -934,5 +936,24 @@ plot_elbow(models, burnin = 200)
 knitr::include_graphics("./vignette-data/sushi_elbow_10.png")
 ```
 
+Choosing 7 clusters seems to be an ok solution. We can then find the cluster assignment probabilities for each assessor.
+
+```{r, eval=FALSE}
+plot(models[[7]], burnin = 200, type = "cluster_assignment")
+```
+
+```{r, echo=FALSE, out.width="75%"}
+knitr::include_graphics("./vignette-data/cluster_assignment_plot_10.png")
+```
+
+We can also the function `assign_cluster` to get the a posteriori cluster assignment for each assessor.
+```{r, eval=FALSE}
+cluster_assignment <- assign_cluster(models[[7]], burnin = 200, soft = FALSE)
+```
+
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(cluster_assignment, caption = "The first few rows of `cluster_assignment`.")
+```
 
 # References
