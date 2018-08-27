@@ -24,9 +24,10 @@ importance sampling.}
 estimate.}
 }
 \value{
-A vector of length \code{degree}.
+A vector of length \code{degree} which can be supplied to the
+\code{is_fit} argument of \code{\link{compute_mallows}}.
 }
 \description{
 \code{estimate_partition_function} uses importance sampling to estimate
-the partition function of the Mallows rank model.
+the logarithm of the partition function of the Mallows rank model.
 }

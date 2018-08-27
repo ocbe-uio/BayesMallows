@@ -1,7 +1,7 @@
 #' Estimate Partition Function with Importance Sampling
 #'
 #' \code{estimate_partition_function} uses importance sampling to estimate
-#' the partition function of the Mallows rank model.
+#' the logarithm of the partition function of the Mallows rank model.
 #'
 #' @param alpha_vector Numeric vector of \eqn{\alpha} values over which
 #' to compute the importance sampling estimate.
@@ -18,12 +18,26 @@
 #' \eqn{\log(\alpha)} from the grid of values provided by the importance sampling
 #' estimate.
 #'
-#' @return A vector of length \code{degree}.
+#' @return A vector of length \code{degree} which can be supplied to the
+#' \code{is_fit} argument of \code{\link{compute_mallows}}.
 #'
 #' @export
 #'
 estimate_partition_function <- function(alpha_vector, n_items, metric,
                                         nmc, degree){
 
-  message("This function is not yet implemented.")
+  stopifnot(degree < length(alpha_vector))
+
+  # Compute the estimate at each discrete alpha value
+  estimate <- purrr::map_dfr(alpha_vector, function(alpha) {
+    log_z <- compute_importance_sampling_estimate(
+      alpha_vector = alpha, n = n_items, metric = metric, nmc = nmc
+    )
+    return(dplyr::tibble(alpha = alpha, log_z = as.numeric(log_z)))
+  }
+  )
+
+  # Fit a regression model
+  stats::lm(alpha ~ poly(log_z, degree), data = estimate)$coefficients
+
 }
