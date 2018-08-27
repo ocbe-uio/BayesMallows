@@ -2,13 +2,89 @@
 % Please edit documentation in R/generate_transitive_closure.R
 \name{generate_transitive_closure}
 \alias{generate_transitive_closure}
-\title{Generate transitive closure}
+\title{Generate Transitive Closure}
 \usage{
 generate_transitive_closure(df)
 }
 \arguments{
-\item{df}{Data frame with columns \code{assessor}, \code{top_item}, and \code{bottom_item}.}
+\item{df}{A data frame with one row per pairwise comparison, and columns
+\code{assessor}, \code{top_item}, and \code{bottom_item}. Each column contains the
+following:
+\itemize{
+\item \code{assessor} is a numeric vector containing the assessor index, or a character
+      vector containing the (unique) name of the assessor.
+
+\item \code{bottom_item} is a numeric vector containing the index of the item that
+      was disfavored in each pairwise comparison.
+
+\item \code{top_item} is a numeric vector containing the index of the item that was
+      preferred in each pairwise comparison.
+}
+So if we have two assessors and five items, and assessor 1 prefers item 1 to item 2 and
+item 1 to item 5, while assessor 2 prefers item 3 to item 5, we have the following \code{df}:
+\tabular{rrr}{
+\strong{assessor} \tab \strong{bottom_item} \tab \strong{top_item}\cr
+1 \tab 2 \tab 1\cr
+1 \tab 5 \tab 1\cr
+2 \tab 5 \tab 3\cr
+}}
+}
+\value{
+A dataframe with the same columns as \code{df}, but with its set of rows expanded
+to include all pairwise preferences implied by the ones stated in \code{df}. The returned
+object has \code{S3} subclass \code{BayesMallowsTC}, to indicate that this is the
+transitive closure.
 }
 \description{
-Generate transitive closure
+Generate the transitive closure for a set of consistent pairwise comparisons. The result
+can be given in the \code{preferences} argument to \code{\link{compute_mallows}}.
+}
+\examples{
+# Let us first consider a simple case with two assessors, where assessor 1
+# prefers item 1 to item 2, and item 1 to item 5, while assessor 2 prefers
+# item 3 to item 5. We then have the following dataframe of pairwise
+# comparisons:
+library(dplyr)
+pair_comp <- tribble(
+  ~assessor, ~bottom_item, ~top_item,
+  1, 2, 1,
+  1, 5, 1,
+  2, 5, 3
+)
+# We then generate the transitive closure of these preferences:
+(pair_comp_tc <- generate_transitive_closure(pair_comp))
+# In this case, no additional relations we implied by the ones
+# stated in pair_comp, so pair_comp_tc has exactly the same rows
+# as pair_comp.
+
+# Now assume that assessor 1 also preferred item 5 to item 3, and
+# that assessor 2 preferred item 4 to item 3.
+pair_comp <- tribble(
+  ~assessor, ~bottom_item, ~top_item,
+  1, 2, 1,
+  1, 5, 1,
+  1, 3, 5,
+  2, 5, 3,
+  2, 3, 4
+)
+# We generate the transitive closure again:
+(pair_comp_tc <- generate_transitive_closure(pair_comp))
+# We now have one implied relation for each assessor.
+# For assessor 1, it is implied that 1 is preferred to 3.
+# For assessor 2, it is implied that 4 is preferred to 5.
+
+\dontrun{
+  # If assessor 1 in addition preferred item 3 to item 1,
+  # the preferences would not be consistent. This is not yet supported by compute_mallows,
+  # so it causes an error message. It will be supported in a future release of the package.
+  # First, we add the inconsistent row to pair_comp
+  pair_comp <- bind_rows(pair_comp,
+                         tibble(assessor = 1, bottom_item = 1, top_item = 3))
+
+  # This causes an error message and prints out the problematic rankings:
+  (pair_comp_tc <- generate_transitive_closure(pair_comp))
+}
+}
+\seealso{
+\code{\link{generate_initial_ranking}}
 }
