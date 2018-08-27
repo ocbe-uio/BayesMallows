@@ -28,6 +28,8 @@ pair_comp_tc <- tribble(
 ) %>%
   arrange(assessor, bottom_item, top_item)
 
+class(pair_comp_tc) <- c("BayesMallowsTC", class(pair_comp_tc))
+
 
 test_that("transitive closure generation works",{
 

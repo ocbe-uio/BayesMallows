@@ -65,7 +65,6 @@ generate_transitive_closure <- function(df){
     stop("Inconsistent rankings are not yet supported.")
   }
 
-
   class(result) <- c("BayesMallowsTC", class(result))
 
   return(result)

@@ -55,7 +55,7 @@ test_that(
     skip_on_cran()
     diff <- abs(probs - freqs)
     for(i in 1:3){
-      expect_lt(diff[[i]], 0.01)
+      expect_lt(diff[[i]], 0.02)
     }
 
 

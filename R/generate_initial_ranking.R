@@ -10,7 +10,13 @@
 #'   equal the largest item index found in \code{tc}, i.e.,
 #'   \code{max(tc[, c("bottom_item", "top_item")])}.
 #'
+#' @return A matrix of rankings which can be given in the \code{rankings} argument
+#' to \code{\link{compute_mallows}}.
+#'
 #' @export
+#'
+#' @example /inst/examples/generate_initial_ranking_example.R
+#'
 generate_initial_ranking <- function(tc,
                                      n_items = max(tc[, c("bottom_item", "top_item")])){
 
