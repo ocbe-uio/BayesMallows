@@ -116,9 +116,11 @@ if(!is.null(is_fit)){
 }
 
 
-
-BayesMallows:::find_pairwise_limits(0, 6, 2, linear_ordering[[1]], possible_rankings = initial_ranking[1, ]) + c(1, -1)
-
+element <- 1
+BayesMallows:::find_pairwise_limits(0, 6, element, linear_ordering[[1]],
+                                    possible_rankings = initial_ranking[1, ]) + c(1, -1)
+BayesMallows:::find_pairwise_limits_old(0, 6, element, as.matrix(preferences),
+                                        possible_rankings = initial_ranking[1, ], 0)
 
 
 
