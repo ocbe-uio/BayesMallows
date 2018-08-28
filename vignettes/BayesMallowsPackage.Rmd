@@ -588,6 +588,10 @@ The latent ranks seem to converge quite fast, and definitely after 1,000 iterati
 assess_convergence(test_run, type = "rho", items = 1:15)
 ```
 
+```{r}
+assess_convergence(test_run, type = "augmentation", items = 1:5, assessors = 1:3)
+```
+
 
 
 We delete the test run before going on.
@@ -605,7 +609,8 @@ t1 <- Sys.time()
 model_fit <- compute_mallows(
   rankings = beach_init_rank, 
   preferences = beach_tc,
-  nmc = 1e4
+  nmc = 1e4,
+  save_augmented_data = TRUE
   )
 t2 <- Sys.time()
 print(t2 - t1)

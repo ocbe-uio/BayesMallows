@@ -73,6 +73,7 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
     print(p)
 
   } else if(type == "augmentation") {
+
     if(is.null(items) && model_fit$n_items > 5){
       message("Items not provided by user. Picking 5 at random.")
       items <- sample.int(model_fit$n_items, 5)
@@ -87,8 +88,12 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       assessors <- seq.int(from = 1, to = model_fit$n_assessors)
     }
 
+    if(is.factor(model_fit$augmented_data$item) && is.numeric(items)){
+      items <- levels(model_fit$augmented_data$item)[items]
+    }
     df <- dplyr::filter(model_fit$augmented_data,
-                        .data$assessor %in% assessors)
+                        .data$assessor %in% assessors,
+                        .data$item %in% items)
 
     ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
       ggplot2::geom_line() +
