@@ -318,13 +318,6 @@ knitr::kable(model_fit$aug_acceptance, digits = 2)
 
 ## Algorithm Tuning
 
-### Convergence of Augmentation
-When data augmentation is used, `compute_mallows` saves the average acceptance rates for each assessor in the `aug_acceptance` object.
-
-```{r, fig.width=6, fig.height=5}
-assess_convergence(model_fit, type = "augmentation")
-```
-
 
 
 ### Convergence of $\alpha$
@@ -416,11 +409,6 @@ assess_convergence(model_fit)
 assess_convergence(model_fit, type = "rho", items = 1:6)
 ```
 
-We also plot the convergence of the data augmentation.
-
-```{r, fig.width=6, fig.height=5}
-assess_convergence(model_fit, type = "augmentation")
-```
 
 We can compare the acceptance rates to the number of missing ranks for for each assessor:
 
@@ -600,13 +588,7 @@ The latent ranks seem to converge quite fast, and definitely after 1,000 iterati
 assess_convergence(test_run, type = "rho", items = 1:15)
 ```
 
-#### Convergence of Augmented Ranks
 
-
-
-```{r, fig.width=6}
-assess_convergence(test_run, type = "augmentation", assessors = 1:2)
-```
 
 We delete the test run before going on.
 
