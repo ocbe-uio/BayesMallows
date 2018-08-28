@@ -16,8 +16,7 @@
 //' @param rankings A set of complete rankings, with one sample per column.
 //' With n_assessors samples and n_items items, rankings is n_items x n_assessors.
 //' @param nmc Number of Monte Carlo samples.
-//' @param preferences Matrix of preferences preferences, 3 x n_items.
-//' @param constrained Matrix of constrained elements, 2 rows.
+//' @param linear_ordering List of linear ordering, one element per assessor.
 //' @param cardinalities Used when metric equals \code{"footrule"} or
 //' \code{"spearman"} for computing the partition function. Defaults to
 //' \code{R_NilValue}.
@@ -45,8 +44,7 @@
 //'
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat rankings, int nmc,
-                    Rcpp::Nullable<arma::mat> preferences,
-                    Rcpp::Nullable<arma::mat> constrained,
+                    Rcpp::List linear_ordering,
                     Rcpp::Nullable<arma::vec> cardinalities,
                     Rcpp::Nullable<arma::vec> is_fit,
                     Rcpp::Nullable<arma::vec> rho_init,
@@ -80,13 +78,9 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
   // Check if we have pairwise preferences
   bool augpair;
-  arma::mat pairwise_preferences, constrained_elements;
 
-
-  if(preferences.isNotNull() & constrained.isNotNull()){
+  if(linear_ordering.length() > 0){
     augpair = true;
-    pairwise_preferences = Rcpp::as<arma::mat>(preferences);
-    constrained_elements = Rcpp::as<arma::mat>(constrained);
   } else {
     augpair = false;
   }
@@ -284,13 +278,15 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   }
 
 
+
     // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
     augment_pairwise(rankings, cluster_assignment, alpha_old, rho_old,
-                     metric, pairwise_preferences, constrained_elements,
-                     n_assessors, n_items, t, aug_acceptance,
-                     clustering, augmentation_accepted);
+                     metric, linear_ordering, n_assessors, n_items, t,
+                     aug_acceptance, clustering, augmentation_accepted);
+
   }
+
 
 
   // Save augmented data if the user wants this. Uses the same index as rho.

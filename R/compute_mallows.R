@@ -141,20 +141,17 @@ compute_mallows <- function(rankings = NULL,
       preferences <- generate_transitive_closure(preferences)
     }
 
-    # Find all the constrained elements per assessor
-    constrained <- dplyr::group_by(preferences, .data$assessor)
-    constrained <- dplyr::summarise(constrained,
-                                    items = list(unique(c(.data$bottom_item, .data$top_item))))
-    constrained <- tidyr::unnest(constrained)
-    constrained <- as.matrix(constrained)
-
-    preferences <- as.matrix(preferences)
-
     if(is.null(rankings)){
-      rankings <- generate_initial_ranking(preferences)
+      rankings <- generate_initial_ranking(as.matrix(preferences))
     }
+
+    linear_ordering <- split(preferences, preferences$assessor)
+    linear_ordering <- purrr::map(linear_ordering, function(x) {
+      create_linear_ordering(as.matrix(x[,2:3]), partial = TRUE)
+    })
+
   } else {
-    constrained <- NULL
+    linear_ordering <- list()
   }
 
   # Check that all rows of rankings are proper permutations
@@ -212,8 +209,7 @@ compute_mallows <- function(rankings = NULL,
   # to extract one sample at a time. armadillo is column major, just like rankings
   fit <- run_mcmc(rankings = t(rankings),
                   nmc = nmc,
-                  preferences = preferences,
-                  constrained = constrained,
+                  linear_ordering = linear_ordering,
                   cardinalities = cardinalities,
                   is_fit = is_fit,
                   rho_init = rho_init,

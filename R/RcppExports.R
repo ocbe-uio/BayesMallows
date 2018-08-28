@@ -102,8 +102,7 @@ asymptotic_partition_function <- function(alpha_grid, metric, K, n_iterations, n
 #' @param rankings A set of complete rankings, with one sample per column.
 #' With n_assessors samples and n_items items, rankings is n_items x n_assessors.
 #' @param nmc Number of Monte Carlo samples.
-#' @param preferences Matrix of preferences preferences, 3 x n_items.
-#' @param constrained Matrix of constrained elements, 2 rows.
+#' @param linear_ordering List of linear ordering, one element per assessor.
 #' @param cardinalities Used when metric equals \code{"footrule"} or
 #' \code{"spearman"} for computing the partition function. Defaults to
 #' \code{R_NilValue}.
@@ -129,7 +128,7 @@ asymptotic_partition_function <- function(alpha_grid, metric, K, n_iterations, n
 #' \code{thinning}th iteration.
 #' @keywords internal
 #'
-run_mcmc <- function(rankings, nmc, preferences, constrained, cardinalities, is_fit, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L, save_augmented_data = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, preferences, constrained, cardinalities, is_fit, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, thinning, save_augmented_data)
+run_mcmc <- function(rankings, nmc, linear_ordering, cardinalities, is_fit, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L, save_augmented_data = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, linear_ordering, cardinalities, is_fit, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, thinning, save_augmented_data)
 }
 

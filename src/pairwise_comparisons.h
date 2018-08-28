@@ -9,8 +9,7 @@ void augment_pairwise(
     const arma::vec& alpha,
     const arma::mat& rho,
     const std::string& metric,
-    const arma::mat& pairwise_preferences,
-    const arma::mat& constrained_elements,
+    const Rcpp::List& linear_ordering,
     const int& n_assessors,
     const int& n_items,
     const int& t,
@@ -18,5 +17,9 @@ void augment_pairwise(
     const bool& clustering,
     bool& augmentation_accepted
 );
+
+void find_pairwise_limits(int& left_limit, int& right_limit, const int& element,
+                          const arma::uvec& ordering,
+                          const arma::vec& possible_rankings);
 
 #endif
