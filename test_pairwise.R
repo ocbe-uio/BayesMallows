@@ -13,7 +13,8 @@ pair_comp_tc <- generate_transitive_closure(pair_comp)
 
 initial_ranking <- generate_initial_ranking(pair_comp_tc)
 
-res <- compute_mallows(initial_ranking, pair_comp_tc, nmc = 100)
+set.seed(1)
+res <- compute_mallows(initial_ranking, pair_comp_tc, nmc = 10)
 
 
 
@@ -37,7 +38,6 @@ devtools::load_all()
 
 
 
-# Check that at most one of rankings and preferences is set
 stopifnot(!is.null(rankings) || !is.null(preferences))
 
 if(!is.null(rho_init)) {
@@ -61,7 +61,7 @@ if(!is.null(preferences)){
   })
 
 } else {
-  linear_ordering <- NULL
+  linear_ordering <- list()
 }
 
 # Check that all rows of rankings are proper permutations
@@ -104,33 +104,33 @@ if(!is.null(is_fit)){
     is_fit <- unlist(relevant_params$values)
   } else {
     stop("Precomputed partition function not available yet. Consider computing one
-         with the function estimate_partition_function(), and provide it
-         in the is_fit argument to compute_mallows().")
-    }
-
-  } else if (metric %in% c("cayley", "hamming", "kendall")) {
-    cardinalities <- NULL
-    is_fit <- NULL
-  } else {
-    stop(paste("Unknown metric", metric))
+           with the function estimate_partition_function(), and provide it
+           in the is_fit argument to compute_mallows().")
   }
 
-  # Transpose rankings to get samples along columns, since we typically want
-  # to extract one sample at a time. armadillo is column major, just like rankings
-  fit <- run_mcmc(rankings = t(rankings),
-                  nmc = nmc,
-                  linear_ordering = linear_ordering,
-                  cardinalities = cardinalities,
-                  is_fit = is_fit,
-                  rho_init = rho_init,
-                  metric = metric,
-                  n_clusters = n_clusters,
-                  include_wcd = include_wcd,
-                  lambda = lambda,
-                  leap_size = leap_size,
-                  alpha_prop_sd = alpha_prop_sd,
-                  alpha_init = alpha_init,
-                  alpha_jump = alpha_jump,
-                  thinning = thinning,
-                  save_augmented_data = save_augmented_data
-                  )
+} else if (metric %in% c("cayley", "hamming", "kendall")) {
+  cardinalities <- NULL
+  is_fit <- NULL
+} else {
+  stop(paste("Unknown metric", metric))
+}
+
+
+# to extract one sample at a time. armadillo is column major, just like rankings
+fit <- run_mcmc(rankings = t(rankings),
+                nmc = nmc,
+                linear_ordering = linear_ordering,
+                cardinalities = cardinalities,
+                is_fit = is_fit,
+                rho_init = rho_init,
+                metric = metric,
+                n_clusters = n_clusters,
+                include_wcd = include_wcd,
+                lambda = lambda,
+                leap_size = leap_size,
+                alpha_prop_sd = alpha_prop_sd,
+                alpha_init = alpha_init,
+                alpha_jump = alpha_jump,
+                thinning = thinning,
+                save_augmented_data = save_augmented_data
+)

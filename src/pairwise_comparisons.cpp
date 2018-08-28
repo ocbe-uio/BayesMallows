@@ -21,9 +21,9 @@ void augment_pairwise(
 
   for(int i = 0; i < n_assessors; ++i){
 
-
     // Draw an integer between 1 and n_items
     int element = arma::randi<int>(arma::distr_param(1, n_items));
+    Rcpp::Rcout << "element " << element << std::endl;
 
     arma::uvec ordering = linear_ordering[i];
 
@@ -32,7 +32,6 @@ void augment_pairwise(
     // Left and right limits of the interval we draw ranks from
     // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
     int left_limit = 0, right_limit = n_items + 1;
-
 
     if(element_is_constrained){
       arma::vec possible_rankings;
