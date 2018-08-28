@@ -60,14 +60,6 @@ sample_int <- function(probs) {
     .Call(`_BayesMallows_sample_int`, probs)
 }
 
-find_pairwise_limits <- function(left_limit, right_limit, element, ordering, possible_rankings) {
-    .Call(`_BayesMallows_find_pairwise_limits`, left_limit, right_limit, element, ordering, possible_rankings)
-}
-
-find_pairwise_limits_old <- function(left_limit, right_limit, element, pairwise_preferences, possible_rankings, i) {
-    .Call(`_BayesMallows_find_pairwise_limits_old`, left_limit, right_limit, element, pairwise_preferences, possible_rankings, i)
-}
-
 #' Compute the logarithm of the partition function for a Mallows rank model.
 #'
 #' @param n Number of items.

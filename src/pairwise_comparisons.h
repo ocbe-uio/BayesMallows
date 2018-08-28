@@ -18,7 +18,8 @@ void augment_pairwise(
     bool& augmentation_accepted
 );
 
-arma::vec find_pairwise_limits(int left_limit, int right_limit, int element,
-                               arma::uvec ordering, arma::vec possible_rankings);
+void find_pairwise_limits(int& left_limit, int& right_limit, const int& element,
+                          const arma::uvec& ordering,
+                          const arma::vec& possible_rankings);
 
 #endif
