@@ -122,16 +122,8 @@ double get_partition_function(int n, double alpha,
 arma::vec asymptotic_partition_function(arma::vec alpha_grid, std::string metric,
                                         int K, int n_iterations, int n_items){
   // IPFP procedure
-  // Set the matrix dimension
-  int mat_dim;
-  if(n_iterations < K){
-    mat_dim = n_iterations;
-  } else {
-    mat_dim = K;
-  }
-
   // Initialize a square matrix where each row/column sums to one
-  arma::mat A = arma::ones<arma::mat>(mat_dim, mat_dim) * 1.0 / mat_dim;
+  arma::mat A = arma::ones<arma::mat>(K, K) * 1.0 / K;
 
   // arma::accu sums all elements of the tensor
   // the % operator computes the element-wise product

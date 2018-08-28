@@ -29,7 +29,8 @@ Zlim<-function(alpha.grid,K,niter, distance){
   
   # IPFP procedure
   alpha <- 0
-  A <- matrix(1,ncol=min(K,niter),nrow=min(K,niter))
+  #A <- matrix(1,ncol=min(K,niter),nrow=min(K,niter))
+  A <- matrix(1,ncol=K,nrow=K)
   for(iter in 1:niter){
     A <- A/rowSums(A)
     A <- A/rep(1, nrow(A)) %*% t(colSums(A))
@@ -58,7 +59,7 @@ Here is the script. Note that I set the grid kind of small to speed up the code.
 ```{r}
 
 ####create a grid of alpha, for which we would later interpolate
-alpha.grid<-c(seq(10,50,.1)) 
+alpha.grid<-c(seq(10,50,10)) 
 niter<-105    ###you can run it for as long as possible, but 200 is more than enough
 
 #Choose n - the number of items you want to compute for
