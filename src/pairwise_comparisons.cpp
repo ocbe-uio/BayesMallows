@@ -10,8 +10,7 @@ void augment_pairwise(
     const arma::vec& alpha,
     const arma::mat& rho,
     const std::string& metric,
-    const arma::mat& pairwise_preferences,
-    const arma::mat& constrained_elements,
+    const Rcpp::List& linear_ordering,
     const int& n_assessors,
     const int& n_items,
     const int& t,
@@ -22,57 +21,49 @@ void augment_pairwise(
 
   for(int i = 0; i < n_assessors; ++i){
 
+
     // Draw an integer between 1 and n_items
     int element = arma::randi<int>(arma::distr_param(1, n_items));
 
-    // Check if the drawn element is in the constraint set for this assessor
-    arma::uvec element_row = arma::intersect(
-      arma::find(constrained_elements.col(0) == (i + 1)),
-      arma::find(constrained_elements.col(1) == element)
-      );
+    arma::uvec ordering = linear_ordering[i];
 
-    bool element_is_constrained = (element_row.n_elem != 0);
+    bool element_is_constrained = arma::any(ordering == element);
 
     // Left and right limits of the interval we draw ranks from
     // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
     int left_limit = 0, right_limit = n_items + 1;
 
-    // Check first if the element is constrained
-    if(element_is_constrained){
 
+    if(element_is_constrained){
       arma::vec possible_rankings;
 
       // Find the indices of the constrained elements which are preferred to *element*
-      arma::uvec preferred_element_inds = arma::intersect(
-        arma::find(pairwise_preferences.col(0) == (i + 1)),
-        arma::find(pairwise_preferences.col(1) == element) // bottom_item is element
-      );
+      // Find the index of this element
+      arma::uvec element_ind = arma::find(ordering == element, 1);
 
-      arma::uvec preferred_elements = arma::conv_to<arma::uvec>::from(pairwise_preferences.col(2));
-      preferred_elements = preferred_elements.elem(preferred_element_inds);
+      // If there are any elements above, we must find the possible rankings
+      if(element_ind(0) < (ordering.n_elem - 1)){
 
-      possible_rankings = rankings.col(i);
-      possible_rankings = possible_rankings.elem(preferred_elements - 1);
+        arma::uvec preferred_element_inds = arma::regspace<arma::uvec>(element_ind(0) + 1, 1, ordering.n_elem - 1);
+        arma::uvec preferred_elements = ordering(preferred_element_inds);
 
-      if(possible_rankings.n_elem > 0) {
+        possible_rankings = rankings.col(i);
+        possible_rankings = possible_rankings.elem(preferred_elements - 1);
+
         left_limit = arma::max(possible_rankings);
+
       }
+      // If there are any elements below, we must find the possible rankings
+      if(element_ind(0) > 0){
+        arma::uvec disfavored_element_inds = arma::regspace<arma::uvec>(0, 1, element_ind(0) - 1);
+        arma::uvec disfavored_elements = ordering(disfavored_element_inds);
 
-      // Find the indices of the constrained elements which are disfavored to *element*
-      arma::uvec disfavored_element_inds = arma::intersect(
-        arma::find(pairwise_preferences.col(0) == (i + 1)),
-        arma::find(pairwise_preferences.col(2) == element) // top_item is element
-      );
+        possible_rankings = rankings.col(i);
+        possible_rankings = possible_rankings.elem(disfavored_elements - 1);
 
-      arma::uvec disfavored_elements = arma::conv_to<arma::uvec>::from(pairwise_preferences.col(1));
-      disfavored_elements = disfavored_elements.elem(disfavored_element_inds);
-
-      possible_rankings = rankings.col(i);
-      possible_rankings = possible_rankings.elem(disfavored_elements - 1);
-
-      if(possible_rankings.n_elem > 0) {
         right_limit = arma::min(possible_rankings);
       }
+
     }
 
     // Now complete the leap step by drawing a new proposal uniformly between

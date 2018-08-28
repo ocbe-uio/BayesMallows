@@ -96,3 +96,4 @@ generate_transitive_closure <- function(df){
   return(result)
 
 }
+

@@ -24,20 +24,6 @@ generate_initial_ranking <- function(tc,
     stop("tc must be an object returned from generate_transitive_closure")
   }
 
-  create_ranks <- function(mat, n_items){
-    g <- igraph::graph_from_edgelist(mat)
-    g <- as.integer(igraph::topological.sort(g))
-
-    # Add unranked elements at the end
-    all_items <- seq(from = 1, to = n_items, by = 1)
-    g <- c(g, setdiff(all_items, g))
-
-    # Convert from ordering to ranking
-    r <- create_ranking(rev(g))
-    mat <- matrix(r, nrow = 1)
-
-    return(mat)
-  }
   # Find
   tc <- dplyr::group_by(tc, .data$assessor)
   tc <- dplyr::do(tc, dplyr::as_tibble(
@@ -52,3 +38,27 @@ generate_initial_ranking <- function(tc,
   return(mat)
 }
 
+create_ranks <- function(mat, n_items){
+  g <- create_linear_ordering(mat)
+
+  # Add unranked elements at the end
+  all_items <- seq(from = 1, to = n_items, by = 1)
+  g <- c(g, setdiff(all_items, g))
+
+  # Convert from ordering to ranking
+  r <- create_ranking(rev(g))
+  mat <- matrix(r, nrow = 1)
+
+  return(mat)
+}
+
+
+create_linear_ordering <- function(mat, partial = FALSE){
+  g <- igraph::graph_from_edgelist(mat)
+  g <- as.integer(igraph::topological.sort(g))
+
+  if(partial){
+    g <- base::intersect(g, c(mat))
+  }
+  return(g)
+}

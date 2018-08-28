@@ -618,11 +618,14 @@ rm(test_run)
 Based on the convergence diagnostics, and being fairly conservative, we set `burnin = 1000`, and take an additional 5,000 samples.
 
 ```{r}
+t1 <- Sys.time()
 model_fit <- compute_mallows(
   rankings = beach_init_rank, 
   preferences = beach_tc,
-  nmc = 6000
+  nmc = 1e4
   )
+t2 <- Sys.time()
+print(t2 - t1)
 ```
 
 ### Posterior Distribution of $\alpha$
