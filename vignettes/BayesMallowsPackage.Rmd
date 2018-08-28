@@ -513,7 +513,7 @@ initial_ranking <- generate_initial_ranking(pair_comp_tc)
 Having generated the transitive closure of each assessor's pairwise preferences and the initial ranking, we can go on and use these as inputs to the Mallows model.
 
 ```{r}
-model_fit <- compute_mallows(rankings = initial_ranking, preferences = pair_comp_tc)
+model_fit <- compute_mallows(rankings = initial_ranking, preferences = pair_comp_tc, save_augmented_data = TRUE)
 ```
 
 The model object has `augpair` equal to `TRUE`, and contains the `aug_acceptance` statisics.
@@ -579,7 +579,8 @@ We can now check the convergence, using the same tools as before.
 ```{r, error=TRUE}
 test_run <- compute_mallows(
   rankings = beach_init_rank, 
-  preferences = beach_tc
+  preferences = beach_tc,
+  save_augmented_data = TRUE
   )
 ```
 
@@ -601,10 +602,10 @@ assess_convergence(test_run, type = "rho", items = 1:15)
 
 #### Convergence of Augmented Ranks
 
-Also the acceptance rate for the augmented ranks looks very fine.
+
 
 ```{r, fig.width=6}
-assess_convergence(test_run, type = "augmentation")
+assess_convergence(test_run, type = "augmentation", assessors = 1:2)
 ```
 
 We delete the test run before going on.

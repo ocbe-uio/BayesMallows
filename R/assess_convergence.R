@@ -73,16 +73,31 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
     print(p)
 
   } else if(type == "augmentation") {
-    if(!exists("aug_acceptance", model_fit)){
-      stop("aug_acceptance not found")
+    if(is.null(items) && model_fit$n_items > 5){
+      message("Items not provided by user. Picking 5 at random.")
+      items <- sample.int(model_fit$n_items, 5)
+    } else if (is.null(items) && model_fit$n_items > 0) {
+      items <- seq.int(from = 1, to = model_fit$n_items)
     }
 
-    ggplot2::ggplot(model_fit$aug_acceptance,
-                    ggplot2::aes(x = .data$assessor, y = .data$acceptance_rate)) +
-      ggplot2::geom_col() +
-      ggplot2::xlab("Assessor") +
-      ggplot2::ylab("Acceptance rate") +
-      ggplot2::ggtitle("Assessor-wise acceptance rates for augmented data")
+    if(is.null(assessors) && model_fit$n_assessors > 5){
+      message("Assessors not provided by user. Picking 5 at random.")
+      assessors <- sample.int(model_fit$n_assessors, 5)
+    } else if (is.null(assessors) && model_fit$n_assessors > 0) {
+      assessors <- seq.int(from = 1, to = model_fit$n_assessors)
+    }
+
+    df <- dplyr::filter(model_fit$augmented_data,
+                        .data$assessor %in% assessors)
+
+    ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
+      ggplot2::geom_line() +
+      ggplot2::facet_wrap(~ .data$assessor) +
+      ggplot2::theme(legend.title = ggplot2::element_blank()) +
+      ggplot2::xlab("Iteration") +
+      ggplot2::ylab(expression(rho)) +
+      ggplot2::ggtitle(label = "Convergence of augmentation")
+
 
   } else if (type == "cluster_probs"){
 
