@@ -92,6 +92,37 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// find_pairwise_limits
+arma::vec find_pairwise_limits(int left_limit, int right_limit, int element, arma::uvec ordering, arma::vec possible_rankings);
+RcppExport SEXP _BayesMallows_find_pairwise_limits(SEXP left_limitSEXP, SEXP right_limitSEXP, SEXP elementSEXP, SEXP orderingSEXP, SEXP possible_rankingsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type left_limit(left_limitSEXP);
+    Rcpp::traits::input_parameter< int >::type right_limit(right_limitSEXP);
+    Rcpp::traits::input_parameter< int >::type element(elementSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type ordering(orderingSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type possible_rankings(possible_rankingsSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_pairwise_limits(left_limit, right_limit, element, ordering, possible_rankings));
+    return rcpp_result_gen;
+END_RCPP
+}
+// find_pairwise_limits_old
+arma::vec find_pairwise_limits_old(int left_limit, int right_limit, int element, arma::mat pairwise_preferences, arma::vec possible_rankings, int i);
+RcppExport SEXP _BayesMallows_find_pairwise_limits_old(SEXP left_limitSEXP, SEXP right_limitSEXP, SEXP elementSEXP, SEXP pairwise_preferencesSEXP, SEXP possible_rankingsSEXP, SEXP iSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type left_limit(left_limitSEXP);
+    Rcpp::traits::input_parameter< int >::type right_limit(right_limitSEXP);
+    Rcpp::traits::input_parameter< int >::type element(elementSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type pairwise_preferences(pairwise_preferencesSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type possible_rankings(possible_rankingsSEXP);
+    Rcpp::traits::input_parameter< int >::type i(iSEXP);
+    rcpp_result_gen = Rcpp::wrap(find_pairwise_limits_old(left_limit, right_limit, element, pairwise_preferences, possible_rankings, i));
+    return rcpp_result_gen;
+END_RCPP
+}
 // get_partition_function
 double get_partition_function(int n, double alpha, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> is_fit, std::string metric);
 RcppExport SEXP _BayesMallows_get_partition_function(SEXP nSEXP, SEXP alphaSEXP, SEXP cardinalitiesSEXP, SEXP is_fitSEXP, SEXP metricSEXP) {
@@ -158,6 +189,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_binomial_coefficient", (DL_FUNC) &_BayesMallows_binomial_coefficient, 2},
     {"_BayesMallows_std_setdiff", (DL_FUNC) &_BayesMallows_std_setdiff, 2},
     {"_BayesMallows_sample_int", (DL_FUNC) &_BayesMallows_sample_int, 1},
+    {"_BayesMallows_find_pairwise_limits", (DL_FUNC) &_BayesMallows_find_pairwise_limits, 5},
+    {"_BayesMallows_find_pairwise_limits_old", (DL_FUNC) &_BayesMallows_find_pairwise_limits_old, 6},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 5},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 17},

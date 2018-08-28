@@ -13,8 +13,8 @@ pair_comp_tc <- generate_transitive_closure(pair_comp)
 
 initial_ranking <- generate_initial_ranking(pair_comp_tc)
 
-set.seed(1)
-res <- compute_mallows(initial_ranking, pair_comp_tc, nmc = 10)
+# set.seed(1)
+# res <- compute_mallows(initial_ranking, pair_comp_tc, nmc = 10)
 
 
 
@@ -114,6 +114,14 @@ if(!is.null(is_fit)){
 } else {
   stop(paste("Unknown metric", metric))
 }
+
+
+
+BayesMallows:::find_pairwise_limits(0, 6, 2, linear_ordering[[1]], possible_rankings = initial_ranking[1, ]) + c(1, -1)
+
+
+
+
 
 
 # to extract one sample at a time. armadillo is column major, just like rankings
