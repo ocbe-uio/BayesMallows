@@ -36,6 +36,43 @@ void find_pairwise_limits(int& left_limit, int& right_limit, const int& element,
 
 }
 
+void propose_pairwise_augmentation(arma::vec& proposal,
+                                   arma::mat& rankings,
+                                   const Rcpp::List& linear_ordering,
+                                   const int& n_items,
+                                   const int& i){
+  // Draw an integer between 1 and n_items
+  int element = arma::randi<int>(arma::distr_param(1, n_items));
+
+  arma::uvec ordering = linear_ordering[i];
+
+  bool element_is_constrained = arma::any(ordering == element);
+
+  // Left and right limits of the interval we draw ranks from
+  // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
+  int left_limit = 0, right_limit = n_items + 1;
+
+  if(element_is_constrained){
+    find_pairwise_limits(left_limit, right_limit, element,
+                         ordering, rankings.col(i));
+  }
+
+  // Now complete the leap step by drawing a new proposal uniformly between
+  // right_limit + 1 and left_limit - 1
+  int proposed_rank = arma::randi<int>(arma::distr_param(left_limit + 1, right_limit - 1));
+
+  // Assign the proposal to the (element-1)th element
+  proposal = rankings.col(i);
+  proposal(element - 1) = proposed_rank;
+
+  double delta_r;
+  arma::uvec indices;
+
+  // Do the shift step
+  shift_step(proposal, rankings.col(i), element, delta_r, indices);
+
+}
+
 
 void augment_pairwise(
     arma::mat& rankings,
@@ -54,35 +91,8 @@ void augment_pairwise(
 
   for(int i = 0; i < n_assessors; ++i){
 
-    // Draw an integer between 1 and n_items
-    int element = arma::randi<int>(arma::distr_param(1, n_items));
-
-    arma::uvec ordering = linear_ordering[i];
-
-    bool element_is_constrained = arma::any(ordering == element);
-
-    // Left and right limits of the interval we draw ranks from
-    // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
-    int left_limit = 0, right_limit = n_items + 1;
-
-    if(element_is_constrained){
-      find_pairwise_limits(left_limit, right_limit, element,
-                           ordering, rankings.col(i));
-    }
-
-    // Now complete the leap step by drawing a new proposal uniformly between
-    // right_limit + 1 and left_limit - 1
-    int proposed_rank = arma::randi<int>(arma::distr_param(left_limit + 1, right_limit - 1));
-
-    // Assign the proposal to the (element-1)th element
-    arma::vec proposal = rankings.col(i);
-    proposal(element - 1) = proposed_rank;
-
-    double delta_r;
-    arma::uvec indices;
-
-    // Do the shift step
-    shift_step(proposal, rankings.col(i), element, delta_r, indices);
+    arma::vec proposal;
+    propose_pairwise_augmentation(proposal, rankings, linear_ordering, n_items, i);
 
     // Finally, decide whether to accept the proposal or not
     // Draw a uniform random number
