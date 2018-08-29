@@ -98,7 +98,7 @@ Here is the logic:
 
 We have $\{A_{4} \prec A_{7}\}$. 
 
-We also have $\{A_{7} \prec A_{1}\}$ and $\{A_{7} \prec A_{9}\}$, which imply $\{A_{4} \prec A_{1}\}$ and $\{A_{4} \prec A_{9}\}$.
+We also have $\{A_{7} \prec A_{1}\}$ and $\{A_{7} \prec A_{9}\}$, which imply $\{A_{4} \prec A_{1}\}$ and $\{A_{4} \prec A_{9}\}$ because $\{A_{4} \prec A_{7}\}$.
 
 Further, we have $\{A_{1} \prec A_{10}\}$, which implies $\{A_{4} \prec A_{10}\}$ because $\{A_{4} \prec A_{1}\}$.
 
