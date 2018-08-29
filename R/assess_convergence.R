@@ -100,7 +100,7 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       ggplot2::facet_wrap(~ .data$assessor) +
       ggplot2::theme(legend.title = ggplot2::element_blank()) +
       ggplot2::xlab("Iteration") +
-      ggplot2::ylab(expression(rho)) +
+      ggplot2::ylab(expression(tilde(R))) +
       ggplot2::ggtitle(label = "Convergence of augmentation")
 
 

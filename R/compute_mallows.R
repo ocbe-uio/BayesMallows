@@ -237,6 +237,7 @@ compute_mallows <- function(rankings = NULL,
   fit$alpha_prop_sd <- alpha_prop_sd
   fit$include_wcd <- include_wcd
   fit$save_augmented_data <- save_augmented_data
+  fit$linear_ordering <- linear_ordering
 
   # Add names of item
   if(!is.null(colnames(rankings))) {

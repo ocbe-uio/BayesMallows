@@ -27,11 +27,10 @@ The `BayesMallows` package implements methods for Bayesian preference learning w
 library(BayesMallows)
 ```
 
-We also load some other packages which are useful.
+We also load the `dplyr` package, which we will use a few places.
 
 ```{r, message=FALSE}
 library(dplyr)
-library(ggplot2)
 ```
 
 # Overview of Functions
@@ -168,7 +167,7 @@ Some of the histograms in the plot above seem unreasonable peaked, so we would l
 
 First, we find the posterior intervals:
 ```{r, results='asis'}
-compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho")
+knitr::kable(compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho"))
 ```
 
 
@@ -334,6 +333,7 @@ The latent ranks also seem to converge.
 ```{r, fig.width=6}
 assess_convergence(model_fit, type = "rho", items = 1:8)
 ```
+
 
 Based on the analysis in this section, we assume that the MCMC algorithm reaches convergence after 1,000 iterations.
 
@@ -504,16 +504,17 @@ Having generated the transitive closure of each assessor's pairwise preferences 
 model_fit <- compute_mallows(rankings = initial_ranking, preferences = pair_comp_tc, save_augmented_data = TRUE)
 ```
 
-The model object has `augpair` equal to `TRUE`, and contains the `aug_acceptance` statisics.
-
-```{r}
-model_fit$augpair
-dim(model_fit$aug_acceptance)
-```
 
 We can study the acceptance rate of the proposed augmented ranks.
 ```{r, fig.width=6}
 assess_convergence(model_fit, type = "augmentation")
+```
+
+
+Below, we study items 2 and 3 for assessors 1. As ecpected, item 3 fluctuates wildly, since it is not constrained. Item 2 jumps between being ranked 2 and 3.
+
+```{r, fig.width=6}
+assess_convergence(model_fit, type = "augmentation", assessors = 1, items = 2:3)
 ```
 
 Rather than digging deeper into this toy example, we go on with a real application.
@@ -588,11 +589,45 @@ The latent ranks seem to converge quite fast, and definitely after 1,000 iterati
 assess_convergence(test_run, type = "rho", items = 1:15)
 ```
 
-```{r}
-assess_convergence(test_run, type = "augmentation", items = 1:5, assessors = 1:3)
+#### Convergence of $\tilde{R}$
+
+We can set `type = "augmentation"` and choose `assessors` and `items`.
+
+##### Assessor 1
+Let us start by looking at assessor 1:
+```{r, fig.width=6}
+assess_convergence(test_run, type = "augmentation", assessors = 1, items = 1:15)
 ```
 
+All rankings of assessor 1 are fixed. We can see why by looking at the implied linear ordering of assessor 1's preferences:
 
+```{r}
+test_run$linear_ordering[[1]]
+length(test_run$linear_ordering[[1]])
+```
+
+All 15 items are constrained, so the ranking for assessor 1 is fixed.
+
+##### Assessor 2
+For assessor 2, many of the beaches are fluctuating.
+```{r, fig.width=6}
+assess_convergence(test_run, type = "augmentation", assessors = 2, items = 1:15)
+```
+
+The fluctuation makes sense, because assessor 2 has stated preferences for 12 beaches out of 15.
+```{r}
+test_run$linear_ordering[[2]]
+length(test_run$linear_ordering[[2]])
+```
+
+We can confirm the consistency of the augmented rankings by studying a selected set. Let us look at beaches 2, 7, and 8, i.e., the bottom-3:
+
+```{r, fig.width=6}
+assess_convergence(test_run, type = "augmentation", assessors = 2, 
+                   items = c(2, 7, 8))
+```
+
+Indeed, the internal ordering of beaches 2, 7, and 8 is always consistent with the linear ordering.
 
 We delete the test run before going on.
 
@@ -605,20 +640,16 @@ rm(test_run)
 Based on the convergence diagnostics, and being fairly conservative, we set `burnin = 1000`, and take an additional 5,000 samples.
 
 ```{r}
-t1 <- Sys.time()
 model_fit <- compute_mallows(
   rankings = beach_init_rank, 
   preferences = beach_tc,
-  nmc = 1e4,
+  nmc = 6000,
   save_augmented_data = TRUE
   )
-t2 <- Sys.time()
-print(t2 - t1)
 ```
 
 ### Posterior Distribution of $\alpha$
 
-The posterior density of $\alpha$ has mean equal to $4.8$, and is quite smooth.
 
 ```{r}
 plot(model_fit, burnin = 1000)
@@ -646,29 +677,13 @@ knitr::kable(compute_posterior_intervals(model_fit, burnin = 1000, parameter = "
 
 ## Posterior Probability of Being Ranked Top-$k$
 
-We can also find the posterior probability for each beach of being ranked top-$k$, both in $\rho$ and among the assessors. In order to find this for the assessors, we need to set `save_augmented_data = TRUE`.
-
-```{r, eval=FALSE}
-model_fit <- compute_mallows(
-  rankings = beach_init_rank, 
-  preferences = beach_tc,
-  nmc = 6000,
-  save_augmented_data = TRUE
-  )
-```
-
+We can also find the posterior probability for each beach of being ranked top-$k$, both in $\rho$ and among the assessors.
 
 We can do a top-$k$ plot with `plot_top_k`. By default, `k = 3`. It may be necessary to do some experimentation with the `rel_widths` argument to get a good looking plot.
 
 ```{r, eval=FALSE}
-plot_top_k(model_fit, burnin = 2000)
+plot_top_k(model_fit, burnin = 1000)
 ```
-
-```{r, echo=FALSE, out.width="75%"}
-knitr::include_graphics("./vignette-data/top_k_beaches.png")
-```
-
-
 
 
 # Clustering of Assessors
