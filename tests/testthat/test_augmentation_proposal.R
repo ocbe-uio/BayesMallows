@@ -29,11 +29,7 @@ pair_comp <- dplyr::tribble(
 pair_comp_tc <- generate_transitive_closure(pair_comp)
 
 # We then create a linear ordering per assessor
-# This is actually done internally in compute_mallows
-linear_ordering <- split(pair_comp_tc, pair_comp_tc$assessor)
-linear_ordering <- purrr::map(linear_ordering, function(x) {
-  BayesMallows:::create_linear_ordering(as.matrix(x[,2:3]), partial = TRUE)
-})
+linear_ordering <- create_linear_ordering(pair_comp_tc)
 
 # Each element of the list linear_ordering is the linear ordering
 # for the given assessor
@@ -222,26 +218,14 @@ test_that("l_j and r_j of augmentation proposal are correct",{
 # are consistent with the linear ordering. Under the hood, the find_pairwise_limits
 # function used in the last test is used to compute l_{j} and r_{j}
 
-# We need a function to check that ranks are consistent with linear ordering
-# We assume the linear_ordering has n_assessors elements, each being a vector.
-# The first vector element is least favored, and the last element is most preferred.
-validate_ranks <- function(rankings, linear_ordering){
-  # Convert rankings to list
-  rankings <- split(rankings, seq(1, nrow(rankings)))
-
-  # Remove the non-constrained elements
-  rankings_constrained <- purrr::map2(linear_ordering, rankings, ~ .y[.x])
-
-  # Verify that all list elements are in ascending order
-  all(purrr::map_lgl(rankings_constrained, ~ all(order(.x, decreasing = TRUE) == seq(1, length(.x)))))
-}
-
 # The function BayesMallows:::check_pairwise_augmentation takes an initial ranking
 # and a linear ordering, and proposes new rankings by using the full modified
-# leap-and-shift procedure. We hence use this to test
+# leap-and-shift procedure. We hence use this to test that all proposals are consistent.
 
 # We test by always accepting the proposal, and running for a while, verifying
 # that inconsistent ranks are never proposed.
+
+# The function validate_rank_ordering is part of the BayesMallows package.
 proposal <- init_rank
 test_that("rank proposals are consistent with ordering", {
 
@@ -249,7 +233,7 @@ test_that("rank proposals are consistent with ordering", {
   # we need to transpose both the argument and the result.
   for(i in 1:100){
     proposal <- t(BayesMallows:::check_pairwise_augmentation(t(proposal), linear_ordering))
-    expect_equal(validate_ranks(proposal, linear_ordering), TRUE)
+    expect_equal(validate_rank_ordering(proposal, linear_ordering), TRUE)
   }
 
 })
@@ -259,11 +243,7 @@ test_that("rank proposals are consistent with ordering", {
 beach_tc <- generate_transitive_closure(beach_preferences)
 
 # We then create a linear ordering per assessor
-# This is actually done internally in compute_mallows
-linear_ordering <- split(beach_tc, beach_tc$assessor)
-linear_ordering <- purrr::map(linear_ordering, function(x) {
-  BayesMallows:::create_linear_ordering(as.matrix(x[,2:3]), partial = TRUE)
-})
+linear_ordering <- create_linear_ordering(beach_tc)
 
 # We generate a random initial ranking
 beach_init_rank <- generate_initial_ranking(beach_tc)
@@ -277,7 +257,7 @@ test_that("beach dataset rank proposals are consistent with ordering", {
   # we need to transpose both the argument and the result.
   for(i in 1:100){
     proposal <- t(BayesMallows:::check_pairwise_augmentation(t(proposal), linear_ordering))
-    expect_equal(validate_ranks(proposal, linear_ordering), TRUE)
+    expect_equal(validate_rank_ordering(proposal, linear_ordering), TRUE)
   }
 
 })

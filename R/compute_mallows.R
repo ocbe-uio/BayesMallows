@@ -145,10 +145,8 @@ compute_mallows <- function(rankings = NULL,
       rankings <- generate_initial_ranking(as.matrix(preferences))
     }
 
-    linear_ordering <- split(preferences, preferences$assessor)
-    linear_ordering <- purrr::map(linear_ordering, function(x) {
-      create_linear_ordering(as.matrix(x[,2:3]), partial = TRUE)
-    })
+    linear_ordering <- create_linear_ordering(preferences)
+
 
   } else {
     linear_ordering <- list()
