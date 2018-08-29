@@ -6,7 +6,7 @@
 
 void find_pairwise_limits(int& left_limit, int& right_limit, const int& element,
                           const arma::uvec& ordering,
-                          const arma::vec& possible_rankings){
+                          const arma::vec& current_ranking){
 
   // Find the indices of the constrained elements which are preferred to *element*
   // Find the index of this element
@@ -18,7 +18,7 @@ void find_pairwise_limits(int& left_limit, int& right_limit, const int& element,
     arma::uvec preferred_element_inds = arma::regspace<arma::uvec>(element_ind(0) + 1, 1, ordering.n_elem - 1);
     arma::uvec preferred_elements = ordering(preferred_element_inds);
 
-    arma::vec rankings_above = possible_rankings.elem(preferred_elements - 1);
+    arma::vec rankings_above = current_ranking.elem(preferred_elements - 1);
 
     left_limit = arma::max(rankings_above);
 
@@ -29,12 +29,63 @@ void find_pairwise_limits(int& left_limit, int& right_limit, const int& element,
     arma::uvec disfavored_element_inds = arma::regspace<arma::uvec>(0, 1, element_ind(0) - 1);
 
     arma::uvec disfavored_elements = ordering(disfavored_element_inds);
-    arma::vec rankings_below = possible_rankings.elem(disfavored_elements - 1);
+    arma::vec rankings_below = current_ranking.elem(disfavored_elements - 1);
 
     right_limit = arma::min(rankings_below);
   }
 
 }
+
+//' Find the left and right limit for proposing augmented rank.
+//'
+//' This function implements a part of the modified leap-and-shift
+//' algorithm for proposing augmented ranks that agree with the
+//' transitive closure of pairwise preferences stated by the assessor. The
+//' algorithm is described on pp. 21-22 of \insertCite{vitelli2018;textual}{BayesMallows}.
+//' \code{find_pairwise_limits} returns the left and right limits, \eqn{l_{j}} and
+//' \eqn{r_{j}}. The proposed new ranking of the given element is then
+//' sampled uniformly from the set \eqn{\{l_{j} + 1, \dots, r_{j} - 1\}}, whereupon
+//' a shift step is applied. This function is separated out mainly for testing
+//' purposes.
+//'
+//' @param u An integer specifying the element to modify. In the modified leap-and-shift
+//' algorithm, \eqn{u} is drawn randomly from the set \eqn{\{1, \dots, n_{items}\}}.
+//'
+//' @param ordering A vector that contains the linear ordering of elements implied by
+//' the preferences stated by the assessor. Note that the unconstrained elements are
+//' not supposed to be part of this vector.
+//'
+//' @param current_ranking A vector that contains the current complete ranking for
+//' the assessor. This correspondings to \eqn{\tilde{R}_{j}} in the modified leap-and-shift
+//' algorithm.
+//'
+//'
+//' @return
+//' A vector of size 2. The first element is the left limit (\eqn{l_{j}}) and
+//' the second element is the right limit (\eqn{r_{j}}).
+//'
+//' @references \insertAllCited{}
+//'
+//' @keywords internal
+//'
+// [[Rcpp::export]]
+arma::vec find_pairwise_limits(int u, arma::uvec ordering, arma::vec current_ranking){
+  int n_items = current_ranking.n_elem;
+
+  int left_limit = 0;
+  int right_limit = n_items + 1;
+
+  bool element_is_constrained = arma::any(ordering == u);
+  if(element_is_constrained){
+    find_pairwise_limits(left_limit, right_limit, u, ordering, current_ranking);
+  }
+
+
+  arma::vec result(2); result(0) = left_limit; result(1) = right_limit;
+  return result;
+}
+
+
 
 void propose_pairwise_augmentation(arma::vec& proposal,
                                    arma::mat& rankings,
