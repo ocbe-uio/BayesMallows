@@ -8,7 +8,7 @@
 #'   with \code{\link{compute_mallows}}.
 #'
 #' @param type Character string specifying which plot type we want. Available
-#' options are \code{"alpha"}, \code{"rho"}, \code{"augmentation"}, or
+#' options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"}, or
 #' \code{"cluster_probs"}.
 #'
 #' @param items The items to study in the diagnostic plot for \code{rho}. Either
@@ -16,7 +16,7 @@
 #'   vector of indices. If NULL, five items are selected randomly. Only used when \code{type = "rho"}.
 #'
 #' @param assessors Numeric vector specifying the assessors to study in
-#' the diagnostic plot for \code{"augmentation"}.
+#' the diagnostic plot for \code{"Rtilde"}.
 #'
 #' @seealso \code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
 #'
@@ -72,7 +72,7 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
 
     print(p)
 
-  } else if(type == "augmentation") {
+  } else if(type == "Rtilde") {
 
     if(is.null(items) && model_fit$n_items > 5){
       message("Items not provided by user. Picking 5 at random.")
@@ -100,8 +100,8 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       ggplot2::facet_wrap(~ .data$assessor) +
       ggplot2::theme(legend.title = ggplot2::element_blank()) +
       ggplot2::xlab("Iteration") +
-      ggplot2::ylab(expression(tilde(R))) +
-      ggplot2::ggtitle(label = "Convergence of augmentation")
+      ggplot2::ylab("Rtilde") +
+      ggplot2::ggtitle(label = "Convergence of Rtilde")
 
 
   } else if (type == "cluster_probs"){

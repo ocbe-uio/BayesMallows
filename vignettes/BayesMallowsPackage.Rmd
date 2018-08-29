@@ -507,14 +507,14 @@ model_fit <- compute_mallows(rankings = initial_ranking, preferences = pair_comp
 
 We can study the acceptance rate of the proposed augmented ranks.
 ```{r, fig.width=6}
-assess_convergence(model_fit, type = "augmentation")
+assess_convergence(model_fit, type = "Rtilde")
 ```
 
 
 Below, we study items 2 and 3 for assessors 1. As ecpected, item 3 fluctuates wildly, since it is not constrained. Item 2 jumps between being ranked 2 and 3.
 
 ```{r, fig.width=6}
-assess_convergence(model_fit, type = "augmentation", assessors = 1, items = 2:3)
+assess_convergence(model_fit, type = "Rtilde", assessors = 1, items = 2:3)
 ```
 
 Rather than digging deeper into this toy example, we go on with a real application.
@@ -589,14 +589,14 @@ The latent ranks seem to converge quite fast, and definitely after 1,000 iterati
 assess_convergence(test_run, type = "rho", items = 1:15)
 ```
 
-#### Convergence of $\tilde{R}$
+#### Convergence of Rtilde
 
-We can set `type = "augmentation"` and choose `assessors` and `items`.
+We can set `type = "Rtilde"` and choose `assessors` and `items`.
 
 ##### Assessor 1
 Let us start by looking at assessor 1:
 ```{r, fig.width=6}
-assess_convergence(test_run, type = "augmentation", assessors = 1, items = 1:15)
+assess_convergence(test_run, type = "Rtilde", assessors = 1, items = 1:15)
 ```
 
 All rankings of assessor 1 are fixed. We can see why by looking at the implied linear ordering of assessor 1's preferences:
@@ -611,7 +611,7 @@ All 15 items are constrained, so the ranking for assessor 1 is fixed.
 ##### Assessor 2
 For assessor 2, many of the beaches are fluctuating.
 ```{r, fig.width=6}
-assess_convergence(test_run, type = "augmentation", assessors = 2, items = 1:15)
+assess_convergence(test_run, type = "Rtilde", assessors = 2, items = 1:15)
 ```
 
 The fluctuation makes sense, because assessor 2 has stated preferences for 12 beaches out of 15.
@@ -623,7 +623,7 @@ length(test_run$linear_ordering[[2]])
 We can confirm the consistency of the augmented rankings by studying a selected set. Let us look at beaches 2, 7, and 8, i.e., the bottom-3:
 
 ```{r, fig.width=6}
-assess_convergence(test_run, type = "augmentation", assessors = 2, 
+assess_convergence(test_run, type = "Rtilde", assessors = 2, 
                    items = c(2, 7, 8))
 ```
 
