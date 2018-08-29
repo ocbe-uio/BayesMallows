@@ -96,6 +96,10 @@ find_pairwise_limits <- function(u, ordering, current_ranking) {
     .Call(`_BayesMallows_find_pairwise_limits`, u, ordering, current_ranking)
 }
 
+check_pairwise_augmentation <- function(rankings, linear_ordering) {
+    .Call(`_BayesMallows_check_pairwise_augmentation`, rankings, linear_ordering)
+}
+
 #' Compute the logarithm of the partition function for a Mallows rank model.
 #'
 #' @param n Number of items.

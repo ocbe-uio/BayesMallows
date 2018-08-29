@@ -88,7 +88,7 @@ arma::vec find_pairwise_limits(int u, arma::uvec ordering, arma::vec current_ran
 
 
 void propose_pairwise_augmentation(arma::vec& proposal,
-                                   arma::mat& rankings,
+                                   const arma::mat& rankings,
                                    const Rcpp::List& linear_ordering,
                                    const int& n_items,
                                    const int& i){
@@ -123,7 +123,6 @@ void propose_pairwise_augmentation(arma::vec& proposal,
   shift_step(proposal, rankings.col(i), element, delta_r, indices);
 
 }
-
 
 void augment_pairwise(
     arma::mat& rankings,
@@ -170,5 +169,22 @@ void augment_pairwise(
     }
   }
 
+}
+
+// [[Rcpp::export]]
+arma::mat check_pairwise_augmentation(arma::mat& rankings,
+                                      Rcpp::List linear_ordering){
+
+  arma::vec proposal;
+  int n_items = rankings.n_rows;
+  int n_assessors = rankings.n_cols;
+
+  for(int i = 0; i < n_assessors; ++i){
+    propose_pairwise_augmentation(proposal, rankings, linear_ordering,
+                                  n_items, i);
+    rankings.col(i) = proposal;
+  }
+
+  return rankings;
 }
 

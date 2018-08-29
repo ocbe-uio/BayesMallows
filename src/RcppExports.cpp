@@ -105,6 +105,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// check_pairwise_augmentation
+arma::mat check_pairwise_augmentation(arma::mat& rankings, Rcpp::List linear_ordering);
+RcppExport SEXP _BayesMallows_check_pairwise_augmentation(SEXP rankingsSEXP, SEXP linear_orderingSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type rankings(rankingsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type linear_ordering(linear_orderingSEXP);
+    rcpp_result_gen = Rcpp::wrap(check_pairwise_augmentation(rankings, linear_ordering));
+    return rcpp_result_gen;
+END_RCPP
+}
 // get_partition_function
 double get_partition_function(int n, double alpha, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> is_fit, std::string metric);
 RcppExport SEXP _BayesMallows_get_partition_function(SEXP nSEXP, SEXP alphaSEXP, SEXP cardinalitiesSEXP, SEXP is_fitSEXP, SEXP metricSEXP) {
@@ -172,6 +184,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_std_setdiff", (DL_FUNC) &_BayesMallows_std_setdiff, 2},
     {"_BayesMallows_sample_int", (DL_FUNC) &_BayesMallows_sample_int, 1},
     {"_BayesMallows_find_pairwise_limits", (DL_FUNC) &_BayesMallows_find_pairwise_limits, 3},
+    {"_BayesMallows_check_pairwise_augmentation", (DL_FUNC) &_BayesMallows_check_pairwise_augmentation, 2},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 5},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 17},
