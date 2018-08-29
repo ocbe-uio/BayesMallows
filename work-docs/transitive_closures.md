@@ -149,7 +149,7 @@ Here is the logic:
 
 We have {*A*<sub>4</sub> ≺ *A*<sub>7</sub>}.
 
-We also have {*A*<sub>7</sub> ≺ *A*<sub>1</sub>} and {*A*<sub>7</sub> ≺ *A*<sub>9</sub>}, which imply {*A*<sub>4</sub> ≺ *A*<sub>1</sub>} and {*A*<sub>4</sub> ≺ *A*<sub>9</sub>}.
+We also have {*A*<sub>7</sub> ≺ *A*<sub>1</sub>} and {*A*<sub>7</sub> ≺ *A*<sub>9</sub>}, which imply {*A*<sub>4</sub> ≺ *A*<sub>1</sub>} and {*A*<sub>4</sub> ≺ *A*<sub>9</sub>} because {*A*<sub>4</sub> ≺ *A*<sub>7</sub>}.
 
 Further, we have {*A*<sub>1</sub> ≺ *A*<sub>10</sub>}, which implies {*A*<sub>4</sub> ≺ *A*<sub>10</sub>} because {*A*<sub>4</sub> ≺ *A*<sub>1</sub>}.
 
