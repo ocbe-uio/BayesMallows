@@ -1,0 +1,108 @@
+---
+title: "Transitive Closures"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Here I investigate the results of `generate_transitive_closure` for the beach data.
+
+```{r, message=FALSE}
+library(dplyr)
+library(BayesMallows)
+```
+
+First, I generate the transitive closure.
+
+```{r}
+beach_tc <- generate_transitive_closure(beach_preferences)
+```
+
+
+## Assessor 1
+
+### Item 2
+
+Let us look at how assessor 1 has ranked item 2.
+
+```{r, results='asis'}
+beach_preferences %>% 
+  filter(assessor == 1, 
+         bottom_item == 2 | top_item == 2) %>% 
+  knitr::kable()
+```
+
+Assessor 1 has stated that she prefers item 15 to item 2.
+
+Next, let us look at all rows involving item 2 in `beach_tc`:
+
+```{r, results='asis'}
+beach_tc %>% 
+  filter(assessor == 1, 
+         bottom_item == 2 | top_item == 2) %>% 
+  knitr::kable()
+```
+
+The ordering $\{A_{2} \prec A_6\}$ is implied by the other orderings.
+
+Why is it so? Let us look at items 2, 6, and 15 in the original stated preferences (not the transitive closure):
+
+```{r, results='asis'}
+beach_preferences %>% 
+  filter(assessor == 1, 
+         bottom_item %in% c(2, 6, 15) | top_item %in% c(2, 6, 15)) %>% 
+  knitr::kable()
+```
+
+We see that items 3, 9, 12, 14, and 15 are all disfavored to item 6. Since item 15 is preferred to item 2, as we saw above, it follows that item 6 is favored to item 2.
+
+So the logic here is that $\{A_{2} \prec A_{15}, A_{15} \prec A_{6}\}$ implies $\{A_2 \prec A_6\}$.
+
+### Item 4
+Let us look at how assessor 1 has ranked item 4.
+
+```{r, results='asis'}
+beach_preferences %>% 
+  filter(assessor == 1, 
+         bottom_item == 4 | top_item == 4) %>% 
+  knitr::kable()
+```
+
+Assessor 1 has stated that she prefers item 7 to item 4.
+
+Next, let us look at all rows involving item 4 in `beach_tc`:
+
+```{r, results='asis'}
+beach_tc %>% 
+  filter(assessor == 1, 
+         bottom_item == 4 | top_item == 4) %>% 
+  knitr::kable()
+```
+
+The orderings $\{A_{4} \prec A_1\}$, $\{A_{4} \prec A_3\}$, $\{A_{4} \prec A_6\}$, $\{A_{4} \prec A_9\}$, $\{A_{4} \prec A_{10}\}$, and $\{A_{4} \prec A_{11}\}$ are implied by the other orderings.
+
+Why is it so? Let us look at items 4, 7, 1, 3, 6, 9, 10, and 11 in the original stated preferences (not the transitive closure):
+
+```{r, results='asis'}
+items <- c(1, 3, 4, 6, 7, 9, 10, 11)
+beach_preferences %>% 
+  filter(assessor == 1, 
+         bottom_item %in% items | top_item %in% items) %>% 
+  arrange(bottom_item, top_item) %>% 
+  knitr::kable()
+```
+
+Here is the logic:
+
+We have $\{A_{4} \prec A_{7}\}$. 
+
+We also have $\{A_{7} \prec A_{1}\}$ and $\{A_{7} \prec A_{9}\}$, which imply $\{A_{4} \prec A_{1}\}$ and $\{A_{4} \prec A_{9}\}$.
+
+Further, we have $\{A_{1} \prec A_{10}\}$, which implies $\{A_{4} \prec A_{10}\}$ because $\{A_{4} \prec A_{1}\}$.
+
+We also have $\{A_{9} \prec A_{3}\}$, $\{A_{9} \prec A_{6}\}$, and $\{A_{9} \prec A_{11}\}$, which impliy $\{A_{4} \prec A_{3}\}$, $\{A_{4} \prec A_{6}\}$, and $\{A_{4} \prec A_{11}\}$, because $\{A_{4} \prec A_{9}\}$.
+
+That was it!
+
