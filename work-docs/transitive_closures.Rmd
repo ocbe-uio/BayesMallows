@@ -104,5 +104,6 @@ Further, we have $\{A_{1} \prec A_{10}\}$, which implies $\{A_{4} \prec A_{10}\}
 
 We also have $\{A_{9} \prec A_{3}\}$, $\{A_{9} \prec A_{6}\}$, and $\{A_{9} \prec A_{11}\}$, which impliy $\{A_{4} \prec A_{3}\}$, $\{A_{4} \prec A_{6}\}$, and $\{A_{4} \prec A_{11}\}$, because $\{A_{4} \prec A_{9}\}$.
 
-That was it!
+To summarise, we hence have $\{A_{4} \prec A_{1}, A_{4} \prec A_{3}, A_{4} \prec A_{6}, A_{4} \prec A_{7}, A_{4} \prec A_{9}, A_{4} \prec A_{10},
+A_{4} \prec A_{11}\}$, which correspond exactly to the rows in `beach_tc` shown above.
 

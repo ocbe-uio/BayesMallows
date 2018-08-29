@@ -155,4 +155,4 @@ Further, we have {*A*<sub>1</sub> ≺ *A*<sub>10</sub>}, which implies {*A*<
 
 We also have {*A*<sub>9</sub> ≺ *A*<sub>3</sub>}, {*A*<sub>9</sub> ≺ *A*<sub>6</sub>}, and {*A*<sub>9</sub> ≺ *A*<sub>11</sub>}, which impliy {*A*<sub>4</sub> ≺ *A*<sub>3</sub>}, {*A*<sub>4</sub> ≺ *A*<sub>6</sub>}, and {*A*<sub>4</sub> ≺ *A*<sub>11</sub>}, because {*A*<sub>4</sub> ≺ *A*<sub>9</sub>}.
 
-That was it!
+To summarise, we hence have {*A*<sub>4</sub> ≺ *A*<sub>1</sub>, *A*<sub>4</sub> ≺ *A*<sub>3</sub>, *A*<sub>4</sub> ≺ *A*<sub>6</sub>, *A*<sub>4</sub> ≺ *A*<sub>7</sub>, *A*<sub>4</sub> ≺ *A*<sub>9</sub>, *A*<sub>4</sub> ≺ *A*<sub>10</sub>, *A*<sub>4</sub> ≺ *A*<sub>11</sub>}, which correspond exactly to the rows in `beach_tc` shown above.
