@@ -118,29 +118,3 @@ prepare_alpha_df <- function(alpha_matrix){
 
 
 
-#' Validate that rankings are consistent with ordering
-#'
-#' We need a function to check that ranks are consistent with linear ordering We
-#' assume the linear_ordering has n_assessors elements, each being a vector.
-#'
-#'
-#' @param rankings A rank matrix of size n_assessors x n_items.
-#'
-#' @param linear_ordering A list of length n_assessors. Each list element must
-#'   be a vector of orderings. It is assumed that the first vector element is
-#'   least favored, and the last element is most preferred.
-#'
-#' @return A logical. `TRUE` if consistent, `FALSE` otherwise.
-#' @export
-#'
-validate_rank_ordering <- function(rankings, linear_ordering){
-  # Convert rankings to list
-  rankings <- split(rankings, seq(1, nrow(rankings)))
-
-  # Remove the non-constrained elements
-  rankings_constrained <- purrr::map2(linear_ordering, rankings, ~ .y[.x])
-
-  # Verify that all list elements are in ascending order
-  all(purrr::map_lgl(rankings_constrained, ~ all(order(.x, decreasing = TRUE) == seq(1, length(.x)))))
-}
-
