@@ -88,7 +88,6 @@ void augment_pairwise(
 ){
 
   for(int i = 0; i < n_assessors; ++i){
-
     // Call the function which creates a proposal
     arma::vec proposal;
     propose_pairwise_augmentation(proposal, rankings, constraints, n_items, i);
