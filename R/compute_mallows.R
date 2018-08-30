@@ -136,20 +136,12 @@ compute_mallows <- function(rankings = NULL,
 
   # Deal with pairwise comparisons. Generate rankings compatible with them.
   if(!is.null(preferences)){
-
     if(!("BayesMallowsTC" %in% class(preferences))){
       preferences <- generate_transitive_closure(preferences)
     }
-
     if(is.null(rankings)){
       rankings <- generate_initial_ranking(as.matrix(preferences))
     }
-
-    linear_ordering <- create_linear_ordering(preferences)
-
-
-  } else {
-    linear_ordering <- list()
   }
 
   # Check that all rows of rankings are proper permutations
@@ -165,6 +157,9 @@ compute_mallows <- function(rankings = NULL,
 
   # Find the number of items
   n_items <- ncol(rankings)
+
+  # Generate the constraint set
+  constraints <- generate_constraints(preferences, n_items)
 
   # Set leap_size if it is not alredy set.
   if(is.null(leap_size)) leap_size <- floor(n_items / 5)
@@ -207,7 +202,7 @@ compute_mallows <- function(rankings = NULL,
   # to extract one sample at a time. armadillo is column major, just like rankings
   fit <- run_mcmc(rankings = t(rankings),
                   nmc = nmc,
-                  linear_ordering = linear_ordering,
+                  constraints = constraints,
                   cardinalities = cardinalities,
                   is_fit = is_fit,
                   rho_init = rho_init,
@@ -235,7 +230,6 @@ compute_mallows <- function(rankings = NULL,
   fit$alpha_prop_sd <- alpha_prop_sd
   fit$include_wcd <- include_wcd
   fit$save_augmented_data <- save_augmented_data
-  fit$linear_ordering <- linear_ordering
 
   # Add names of item
   if(!is.null(colnames(rankings))) {

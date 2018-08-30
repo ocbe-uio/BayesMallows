@@ -9,7 +9,7 @@ void augment_pairwise(
     const arma::vec& alpha,
     const arma::mat& rho,
     const std::string& metric,
-    const Rcpp::List& linear_ordering,
+    const Rcpp::List& constraints,
     const int& n_assessors,
     const int& n_items,
     const int& t,
@@ -26,11 +26,11 @@ arma::vec find_pairwise_limits(int u, arma::uvec ordering, arma::vec current_ran
 
 void propose_pairwise_augmentation(arma::vec& proposal,
                                    const arma::mat& rankings,
-                                   const Rcpp::List& linear_ordering,
+                                   const Rcpp::List& constraints,
                                    const int& n_items,
                                    const int& i);
 
 arma::mat check_pairwise_augmentation(arma::mat& rankings,
-                                      Rcpp::List linear_ordering);
+                                      Rcpp::List constraints);
 
 #endif

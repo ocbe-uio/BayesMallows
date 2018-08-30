@@ -52,30 +52,9 @@ create_ranks <- function(mat, n_items){
   return(mat)
 }
 
-
-#' Create a list of linear orderings
-#'
-#'
-#' @param preferences Dataframe with columns `assessor`, `bottom_item` and
-#' `top_item`.
-#'
-#' @return A list with one element per assessor.
-#' @export
-#'
-create_linear_ordering <- function(preferences){
-  linear_ordering <- split(preferences, preferences$assessor)
-  linear_ordering <- purrr::map(linear_ordering, function(x) {
-    .create_linear_ordering(as.matrix(x[,2:3]), partial = TRUE)
-  })
-  return(linear_ordering)
-}
-
-.create_linear_ordering <- function(mat, partial = FALSE){
+.create_linear_ordering <- function(mat){
   g <- igraph::graph_from_edgelist(mat)
   g <- as.integer(igraph::topological.sort(g))
 
-  if(partial){
-    g <- base::intersect(g, c(mat))
-  }
   return(g)
 }

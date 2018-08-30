@@ -16,7 +16,7 @@
 //' @param rankings A set of complete rankings, with one sample per column.
 //' With n_assessors samples and n_items items, rankings is n_items x n_assessors.
 //' @param nmc Number of Monte Carlo samples.
-//' @param linear_ordering List of linear ordering, one element per assessor.
+//' @param constraints List of lists of lists, returned from `generate_constraints`.
 //' @param cardinalities Used when metric equals \code{"footrule"} or
 //' \code{"spearman"} for computing the partition function. Defaults to
 //' \code{R_NilValue}.
@@ -44,7 +44,7 @@
 //'
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat rankings, int nmc,
-                    Rcpp::List linear_ordering,
+                    Rcpp::List constraints,
                     Rcpp::Nullable<arma::vec> cardinalities,
                     Rcpp::Nullable<arma::vec> is_fit,
                     Rcpp::Nullable<arma::vec> rho_init,
@@ -79,7 +79,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Check if we have pairwise preferences
   bool augpair;
 
-  if(linear_ordering.length() > 0){
+  if(constraints.length() > 0){
     augpair = true;
   } else {
     augpair = false;
@@ -282,7 +282,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
     augment_pairwise(rankings, cluster_assignment, alpha_old, rho_old,
-                     metric, linear_ordering, n_assessors, n_items, t,
+                     metric, constraints, n_assessors, n_items, t,
                      aug_acceptance, clustering, augmentation_accepted);
 
   }

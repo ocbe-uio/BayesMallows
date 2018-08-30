@@ -89,13 +89,13 @@ arma::vec find_pairwise_limits(int u, arma::uvec ordering, arma::vec current_ran
 
 void propose_pairwise_augmentation(arma::vec& proposal,
                                    const arma::mat& rankings,
-                                   const Rcpp::List& linear_ordering,
+                                   const Rcpp::List& constraints,
                                    const int& n_items,
                                    const int& i){
   // Draw an integer between 1 and n_items
   int element = arma::randi<int>(arma::distr_param(1, n_items));
 
-  arma::uvec ordering = linear_ordering[i];
+  arma::uvec ordering = constraints[i];
 
   bool element_is_constrained = arma::any(ordering == element);
 
@@ -130,7 +130,7 @@ void augment_pairwise(
     const arma::vec& alpha,
     const arma::mat& rho,
     const std::string& metric,
-    const Rcpp::List& linear_ordering,
+    const Rcpp::List& constraints,
     const int& n_assessors,
     const int& n_items,
     const int& t,
@@ -142,7 +142,7 @@ void augment_pairwise(
   for(int i = 0; i < n_assessors; ++i){
 
     arma::vec proposal;
-    propose_pairwise_augmentation(proposal, rankings, linear_ordering, n_items, i);
+    propose_pairwise_augmentation(proposal, rankings, constraints, n_items, i);
 
     // Finally, decide whether to accept the proposal or not
     // Draw a uniform random number
@@ -173,14 +173,14 @@ void augment_pairwise(
 
 // [[Rcpp::export]]
 arma::mat check_pairwise_augmentation(arma::mat& rankings,
-                                      Rcpp::List linear_ordering){
+                                      Rcpp::List constraints){
 
   arma::vec proposal;
   int n_items = rankings.n_rows;
   int n_assessors = rankings.n_cols;
 
   for(int i = 0; i < n_assessors; ++i){
-    propose_pairwise_augmentation(proposal, rankings, linear_ordering,
+    propose_pairwise_augmentation(proposal, rankings, constraints,
                                   n_items, i);
     rankings.col(i) = proposal;
   }
