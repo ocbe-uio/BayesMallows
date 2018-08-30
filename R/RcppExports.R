@@ -60,46 +60,6 @@ sample_int <- function(probs) {
     .Call(`_BayesMallows_sample_int`, probs)
 }
 
-#' Find the left and right limit for proposing augmented rank.
-#'
-#' This function implements a part of the modified leap-and-shift
-#' algorithm for proposing augmented ranks that agree with the
-#' transitive closure of pairwise preferences stated by the assessor. The
-#' algorithm is described on pp. 21-22 of \insertCite{vitelli2018;textual}{BayesMallows}.
-#' \code{find_pairwise_limits} returns the left and right limits, \eqn{l_{j}} and
-#' \eqn{r_{j}}. The proposed new ranking of the given element is then
-#' sampled uniformly from the set \eqn{\{l_{j} + 1, \dots, r_{j} - 1\}}, whereupon
-#' a shift step is applied. This function is separated out mainly for testing
-#' purposes.
-#'
-#' @param u An integer specifying the element to modify. In the modified leap-and-shift
-#' algorithm, \eqn{u} is drawn randomly from the set \eqn{\{1, \dots, n_{items}\}}.
-#'
-#' @param ordering A vector that contains the linear ordering of elements implied by
-#' the preferences stated by the assessor. Note that the unconstrained elements are
-#' not supposed to be part of this vector.
-#'
-#' @param current_ranking A vector that contains the current complete ranking for
-#' the assessor. This correspondings to \eqn{\tilde{R}_{j}} in the modified leap-and-shift
-#' algorithm.
-#'
-#'
-#' @return
-#' A vector of size 2. The first element is the left limit (\eqn{l_{j}}) and
-#' the second element is the right limit (\eqn{r_{j}}).
-#'
-#' @references \insertAllCited{}
-#'
-#' @keywords internal
-#'
-find_pairwise_limits <- function(u, ordering, current_ranking) {
-    .Call(`_BayesMallows_find_pairwise_limits`, u, ordering, current_ranking)
-}
-
-check_pairwise_augmentation <- function(rankings, linear_ordering) {
-    .Call(`_BayesMallows_check_pairwise_augmentation`, rankings, linear_ordering)
-}
-
 #' Compute the logarithm of the partition function for a Mallows rank model.
 #'
 #' @param n Number of items.
@@ -142,7 +102,7 @@ asymptotic_partition_function <- function(alpha_grid, metric, K, n_iterations, n
 #' @param rankings A set of complete rankings, with one sample per column.
 #' With n_assessors samples and n_items items, rankings is n_items x n_assessors.
 #' @param nmc Number of Monte Carlo samples.
-#' @param linear_ordering List of linear ordering, one element per assessor.
+#' @param constraints List of lists of lists, returned from `generate_constraints`.
 #' @param cardinalities Used when metric equals \code{"footrule"} or
 #' \code{"spearman"} for computing the partition function. Defaults to
 #' \code{R_NilValue}.
@@ -168,7 +128,7 @@ asymptotic_partition_function <- function(alpha_grid, metric, K, n_iterations, n
 #' \code{thinning}th iteration.
 #' @keywords internal
 #'
-run_mcmc <- function(rankings, nmc, linear_ordering, cardinalities, is_fit, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L, save_augmented_data = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, linear_ordering, cardinalities, is_fit, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, thinning, save_augmented_data)
+run_mcmc <- function(rankings, nmc, constraints, cardinalities, is_fit, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L, save_augmented_data = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, constraints, cardinalities, is_fit, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, thinning, save_augmented_data)
 }
 

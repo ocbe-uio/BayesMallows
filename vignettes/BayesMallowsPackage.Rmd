@@ -108,7 +108,8 @@ assess_convergence(model_fit, type = "rho", items = 1:5)
 When the name of the items have been specified in the column names of `rankings`, we can also provide these to the `items` argument. The line below plots a selection of potatoes.
 
 ```{r, fig.width=6}
-assess_convergence(model_fit, type = "rho", items = c("P2", "P11", "P14", "P18", "P19", "P20"))
+assess_convergence(model_fit, type = "rho", 
+                   items = c("P2", "P11", "P14", "P18", "P19", "P20"))
 ```
 
 Based on these plots, it looks like the algorithm starts to converge after around 1000 iterations. Discarding the first 1000 iterations as burn-in hence seems like a safe choice.
@@ -501,21 +502,17 @@ initial_ranking <- generate_initial_ranking(pair_comp_tc)
 Having generated the transitive closure of each assessor's pairwise preferences and the initial ranking, we can go on and use these as inputs to the Mallows model.
 
 ```{r}
-model_fit <- compute_mallows(rankings = initial_ranking, preferences = pair_comp_tc, save_augmented_data = TRUE)
+model_fit <- compute_mallows(rankings = initial_ranking, 
+                             preferences = pair_comp_tc, 
+                             save_augmented_data = TRUE)
 ```
 
 
 We can study the acceptance rate of the proposed augmented ranks.
 ```{r, fig.width=6}
-assess_convergence(model_fit, type = "Rtilde")
+assess_convergence(model_fit, type = "Rtilde", assessor = 1)
 ```
 
-
-Below, we study items 2 and 3 for assessors 1. As ecpected, item 3 fluctuates wildly, since it is not constrained. Item 2 jumps between being ranked 2 and 3.
-
-```{r, fig.width=6}
-assess_convergence(model_fit, type = "Rtilde", assessors = 1, items = 2:3)
-```
 
 Rather than digging deeper into this toy example, we go on with a real application.
 
@@ -554,10 +551,10 @@ We can also take a look at the first 6 rows in it.
 knitr::kable(head(beach_init_rank, 6), caption="First 6 rows in `beach_init_rank`.")
 ```
 
-Let us add column names to the initial ranking. This will make the plots more informative.
+Let us add column names to the initial ranking. This will make the plots more informative. But be aware that if the names are too long, some plots will be filled with text. We therefore name them B1, B2, ..., B15.
 
 ```{r}
-colnames(beach_init_rank) <- paste("Beach", seq(from = 1, to = ncol(beach_init_rank), by = 1))
+colnames(beach_init_rank) <- paste0("B", seq(from = 1, to = ncol(beach_init_rank), by = 1))
 ```
 
 
@@ -599,35 +596,85 @@ Let us start by looking at assessor 1:
 assess_convergence(test_run, type = "Rtilde", assessors = 1, items = 1:15)
 ```
 
-All rankings of assessor 1 are fixed. We can see why by looking at the implied linear ordering of assessor 1's preferences:
+Let us look at Beach 2 for assessor 1.
 
-```{r}
-test_run$linear_ordering[[1]]
-length(test_run$linear_ordering[[1]])
+```{r, results='asis'}
+beach_tc %>% 
+  filter(assessor == 1, bottom_item == 2 | top_item == 2) %>% 
+  knitr::kable()
 ```
 
-All 15 items are constrained, so the ranking for assessor 1 is fixed.
+It is implied by the preferences of assessor 1 that $\{B_{2} \prec B_{6}\}$ and $\{B_{2} \prec B_{15}\}$.
+
+```{r, fig.width=6}
+assess_convergence(test_run, type = "Rtilde", 
+                   assessors = 1, items = c(2, 6, 15))
+```
+
+This seems correct.
+
+Next, no ordering is implied between beach 2 and 4 for assessor 1.
+
+```{r}
+beach_tc %>% 
+  filter(assessor == 1, bottom_item %in% c(2, 4), top_item %in% c(2, 4)) %>% 
+  nrow()
+```
+
+The traces of item 2 and 4 do indeed cross.
+```{r, fig.width=6}
+assess_convergence(test_run, type = "Rtilde", 
+                   assessors = 1, items = c(2, 4))
+```
+
+
+No ordering is implied between beach 5 and beach 8 either:
+
+```{r}
+beach_tc %>% 
+  filter(assessor == 1, bottom_item %in% c(5, 8), top_item %in% c(5, 8)) %>% 
+  nrow()
+```
+
+The traces of beaches 5 and 8 do indeed cross.
+```{r, fig.width=6}
+assess_convergence(test_run, type = "Rtilde", 
+                   assessors = 1, items = c(5, 8))
+```
+
 
 ##### Assessor 2
-For assessor 2, many of the beaches are fluctuating.
+
 ```{r, fig.width=6}
 assess_convergence(test_run, type = "Rtilde", assessors = 2, items = 1:15)
 ```
 
-The fluctuation makes sense, because assessor 2 has stated preferences for 12 beaches out of 15.
-```{r}
-test_run$linear_ordering[[2]]
-length(test_run$linear_ordering[[2]])
+Let us take a look at, say, beach 10. 
+```{r, results='asis'}
+beach_tc %>% 
+  filter(assessor == 2, bottom_item == 10 | top_item == 10) %>% 
+  knitr::kable()
 ```
 
-We can confirm the consistency of the augmented rankings by studying a selected set. Let us look at beaches 2, 7, and 8, i.e., the bottom-3:
+Beach 10 is preferred to beach 7, but disfavored to beach 5. The trace plot does indeed show this:
 
 ```{r, fig.width=6}
-assess_convergence(test_run, type = "Rtilde", assessors = 2, 
-                   items = c(2, 7, 8))
+assess_convergence(test_run, type = "Rtilde", 
+                   assessors = 2, items = c(5, 7, 10))
 ```
 
-Indeed, the internal ordering of beaches 2, 7, and 8 is always consistent with the linear ordering.
+No ordering is implied between beach 1 and beach 15 for assessor 2.
+```{r}
+beach_tc %>% 
+  filter(assessor == 1, bottom_item %in% c(1, 15), top_item %in% c(1, 15)) %>% 
+  nrow()
+```
+
+Their traces do indeed cross.
+```{r, fig.width=6}
+assess_convergence(test_run, type = "Rtilde", 
+                   assessors = 2, items = c(1, 15))
+```
 
 We delete the test run before going on.
 
@@ -640,12 +687,15 @@ rm(test_run)
 Based on the convergence diagnostics, and being fairly conservative, we set `burnin = 1000`, and take an additional 5,000 samples.
 
 ```{r}
+t1 <- Sys.time()
 model_fit <- compute_mallows(
   rankings = beach_init_rank, 
   preferences = beach_tc,
   nmc = 6000,
   save_augmented_data = TRUE
   )
+t2 <- Sys.time()
+print(t2 - t1)
 ```
 
 ### Posterior Distribution of $\alpha$
@@ -681,8 +731,8 @@ We can also find the posterior probability for each beach of being ranked top-$k
 
 We can do a top-$k$ plot with `plot_top_k`. By default, `k = 3`. It may be necessary to do some experimentation with the `rel_widths` argument to get a good looking plot.
 
-```{r, eval=FALSE}
-plot_top_k(model_fit, burnin = 1000)
+```{r, fig.width=6}
+plot_top_k(model_fit, burnin = 1000, rel_widths = c(1, 8))
 ```
 
 

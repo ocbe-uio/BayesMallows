@@ -92,31 +92,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// find_pairwise_limits
-arma::vec find_pairwise_limits(int u, arma::uvec ordering, arma::vec current_ranking);
-RcppExport SEXP _BayesMallows_find_pairwise_limits(SEXP uSEXP, SEXP orderingSEXP, SEXP current_rankingSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type u(uSEXP);
-    Rcpp::traits::input_parameter< arma::uvec >::type ordering(orderingSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type current_ranking(current_rankingSEXP);
-    rcpp_result_gen = Rcpp::wrap(find_pairwise_limits(u, ordering, current_ranking));
-    return rcpp_result_gen;
-END_RCPP
-}
-// check_pairwise_augmentation
-arma::mat check_pairwise_augmentation(arma::mat& rankings, Rcpp::List linear_ordering);
-RcppExport SEXP _BayesMallows_check_pairwise_augmentation(SEXP rankingsSEXP, SEXP linear_orderingSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type rankings(rankingsSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type linear_ordering(linear_orderingSEXP);
-    rcpp_result_gen = Rcpp::wrap(check_pairwise_augmentation(rankings, linear_ordering));
-    return rcpp_result_gen;
-END_RCPP
-}
 // get_partition_function
 double get_partition_function(int n, double alpha, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> is_fit, std::string metric);
 RcppExport SEXP _BayesMallows_get_partition_function(SEXP nSEXP, SEXP alphaSEXP, SEXP cardinalitiesSEXP, SEXP is_fitSEXP, SEXP metricSEXP) {
@@ -148,14 +123,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_mcmc
-Rcpp::List run_mcmc(arma::mat rankings, int nmc, Rcpp::List linear_ordering, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> is_fit, Rcpp::Nullable<arma::vec> rho_init, std::string metric, int n_clusters, bool include_wcd, int leap_size, double alpha_prop_sd, double alpha_init, int alpha_jump, double lambda, int psi, int thinning, bool save_augmented_data);
-RcppExport SEXP _BayesMallows_run_mcmc(SEXP rankingsSEXP, SEXP nmcSEXP, SEXP linear_orderingSEXP, SEXP cardinalitiesSEXP, SEXP is_fitSEXP, SEXP rho_initSEXP, SEXP metricSEXP, SEXP n_clustersSEXP, SEXP include_wcdSEXP, SEXP leap_sizeSEXP, SEXP alpha_prop_sdSEXP, SEXP alpha_initSEXP, SEXP alpha_jumpSEXP, SEXP lambdaSEXP, SEXP psiSEXP, SEXP thinningSEXP, SEXP save_augmented_dataSEXP) {
+Rcpp::List run_mcmc(arma::mat rankings, int nmc, Rcpp::List constraints, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> is_fit, Rcpp::Nullable<arma::vec> rho_init, std::string metric, int n_clusters, bool include_wcd, int leap_size, double alpha_prop_sd, double alpha_init, int alpha_jump, double lambda, int psi, int thinning, bool save_augmented_data);
+RcppExport SEXP _BayesMallows_run_mcmc(SEXP rankingsSEXP, SEXP nmcSEXP, SEXP constraintsSEXP, SEXP cardinalitiesSEXP, SEXP is_fitSEXP, SEXP rho_initSEXP, SEXP metricSEXP, SEXP n_clustersSEXP, SEXP include_wcdSEXP, SEXP leap_sizeSEXP, SEXP alpha_prop_sdSEXP, SEXP alpha_initSEXP, SEXP alpha_jumpSEXP, SEXP lambdaSEXP, SEXP psiSEXP, SEXP thinningSEXP, SEXP save_augmented_dataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::mat >::type rankings(rankingsSEXP);
     Rcpp::traits::input_parameter< int >::type nmc(nmcSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type linear_ordering(linear_orderingSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type constraints(constraintsSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type cardinalities(cardinalitiesSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type is_fit(is_fitSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type rho_init(rho_initSEXP);
@@ -170,7 +145,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type psi(psiSEXP);
     Rcpp::traits::input_parameter< int >::type thinning(thinningSEXP);
     Rcpp::traits::input_parameter< bool >::type save_augmented_data(save_augmented_dataSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_mcmc(rankings, nmc, linear_ordering, cardinalities, is_fit, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, thinning, save_augmented_data));
+    rcpp_result_gen = Rcpp::wrap(run_mcmc(rankings, nmc, constraints, cardinalities, is_fit, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, thinning, save_augmented_data));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -183,8 +158,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_binomial_coefficient", (DL_FUNC) &_BayesMallows_binomial_coefficient, 2},
     {"_BayesMallows_std_setdiff", (DL_FUNC) &_BayesMallows_std_setdiff, 2},
     {"_BayesMallows_sample_int", (DL_FUNC) &_BayesMallows_sample_int, 1},
-    {"_BayesMallows_find_pairwise_limits", (DL_FUNC) &_BayesMallows_find_pairwise_limits, 3},
-    {"_BayesMallows_check_pairwise_augmentation", (DL_FUNC) &_BayesMallows_check_pairwise_augmentation, 2},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 5},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 17},

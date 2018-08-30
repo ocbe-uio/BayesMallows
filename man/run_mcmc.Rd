@@ -4,7 +4,7 @@
 \alias{run_mcmc}
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
-run_mcmc(rankings, nmc, linear_ordering, cardinalities, is_fit, rho_init,
+run_mcmc(rankings, nmc, constraints, cardinalities, is_fit, rho_init,
   metric = "footrule", n_clusters = 1L, include_wcd = FALSE,
   leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5,
   alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L,
@@ -16,7 +16,7 @@ With n_assessors samples and n_items items, rankings is n_items x n_assessors.}
 
 \item{nmc}{Number of Monte Carlo samples.}
 
-\item{linear_ordering}{List of linear ordering, one element per assessor.}
+\item{constraints}{List of lists of lists, returned from `generate_constraints`.}
 
 \item{cardinalities}{Used when metric equals \code{"footrule"} or
 \code{"spearman"} for computing the partition function. Defaults to
