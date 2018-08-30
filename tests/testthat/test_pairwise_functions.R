@@ -41,11 +41,3 @@ test_that("transitive closure generation works",{
 }
 )
 
-
-test_that("Generation of initial ranks works",{
-  mat <- generate_initial_ranking(pair_comp_tc)
-  expect_equal(TRUE,
-               BayesMallows:::validate_initial_ranking(pair_comp_tc, mat)
-  )
-}
-)

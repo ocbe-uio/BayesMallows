@@ -86,7 +86,7 @@ Inside each list element of `constraints`, we find three objects:
 
 -   `constrained_items`: a numeric vector of the unique items that are constrained for the assessor.
 -   `items_above`: a list of length `n_items`. Each element is a numeric vector of items that are ranked above the given item.
--   `items_below`: a list of length `n_items`. Each element is a numeric vector of items tht are ranked below the given item.
+-   `items_below`: a list of length `n_items`. Each element is a numeric vector of items that are ranked below the given item.
 
 Let us go through these list elements one by one.
 
@@ -126,7 +126,7 @@ setdiff(seq(1, n_items, 1), constraints[[2]][[1]])
 
     ## [1]  3  6 13
 
-Assessor 2 has not ranked items 3, 6, or 13. Let us confirm this, by looking at `beach_tc`:
+Assessor 2 has no implied orderings of items 3, 6, or 13. Let us confirm this, by looking at `beach_tc`:
 
 ``` r
 beach_tc %>% 
@@ -141,7 +141,7 @@ That seems correct.
 
 ### Items Above
 
-The next element in the `constraints` list is called `items_above`. Let us again start by looking at assessor 1. We print out the whole thing. Note that items that have no items above them get an empty vector (`integer(0)`).
+The next element in the `constraints` list is called `items_above`. Let us again start by looking at assessor 1. We print out the whole thing. Note that items that have no items above them get an empty vector `integer(0)`.
 
 ``` r
 constraints[[1]][["items_above"]]
@@ -368,11 +368,11 @@ if(augpair){
 }
 ```
 
-`augment_pairwise` is a void function, which performs in-plase modification of the `rankings` matrix (`rankings` corresponds to `Rtilde` in this case).
+`augment_pairwise` is a void function, which performs in-place modification of the `rankings` matrix (`rankings` corresponds to `Rtilde` in this case).
 
 ### Augment Pairwise
 
-Inside the `augment_pairwise` function, we loop over all assessors and propose new rankings which are either rejected or accepted. Here is the core part of the code. In reality it is a bit longer, to save some statistics.
+Inside the `augment_pairwise` function, we loop over all assessors and propose new rankings which are either rejected or accepted. Here is the core part of the code. In reality it is a bit longer, because it saves acceptance statistics.
 
 ``` cpp
 for(int i = 0; i < n_assessors; ++i){
@@ -385,7 +385,7 @@ for(int i = 0; i < n_assessors; ++i){
     // Draw a uniform random number
     double u = log(arma::randu<double>());
 
-    // Find which cluster the assessor belongs to
+    // Find which cluster the assessor belongs to in this iteration
     int cluster = 0;
     if(clustering){
       cluster = cluster_assignment(i, t);
@@ -423,7 +423,7 @@ if(item_is_constrained){
 }
 
 // Now complete the leap step by drawing a new proposal uniformly between
-// right_limit + 1 and left_limit - 1
+// left_limit + 1 and right_limit - 1
 int proposed_rank = arma::randi<int>(arma::distr_param(left_limit + 1, right_limit - 1));
 
 // Assign the proposal to the (item-1)th item
@@ -454,8 +454,7 @@ The `R` equivalent of this code is (we set `i <- 1` to give an example for asses
 ``` r
 i <- 1
 assessor_constraints <- constraints[[i]]
-constrained_items <- assessor_constraints[[1]]
-constrained_items
+(constrained_items <- assessor_constraints[[1]])
 ```
 
     ##  [1]  4  5  7  8  9 13 14  2  3 12 15  1  6 10 11
@@ -564,7 +563,7 @@ proposal[[item]] <- proposed_rank
 
 #### Shift Step
 
-Finally, we do the shift step.
+Finally, we do the shift step, using exactly the same function that is used for the shift step in the proposal for *ρ*.
 
 ``` cpp
 double delta_r;

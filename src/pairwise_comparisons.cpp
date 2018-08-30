@@ -57,7 +57,7 @@ void propose_pairwise_augmentation(arma::vec& proposal,
   }
 
   // Now complete the leap step by drawing a new proposal uniformly between
-  // right_limit + 1 and left_limit - 1
+  // left_limit + 1 and right_limit - 1
   int proposed_rank = arma::randi<int>(arma::distr_param(left_limit + 1, right_limit - 1));
 
   // Assign the proposal to the (item-1)th item
