@@ -107,14 +107,5 @@ validate_initial_ranking <- function(pair_comp, mat){
 }
 
 
-prepare_alpha_df <- function(alpha_matrix){
-  df <- dplyr::as_tibble(alpha_matrix)
-  names(df) <- paste("Cluster", seq(from = 1, to = ncol(alpha_matrix), by = 1))
-  df <- dplyr::mutate(df, index = dplyr::row_number())
-  df <- tidyr::gather(df, key = "cluster", value = "alpha", -.data$index)
-
-  return(df)
-}
-
 
 
