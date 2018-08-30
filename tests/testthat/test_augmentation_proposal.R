@@ -1,10 +1,6 @@
-context("Testing proposal distribution for data augmentation with preference data")
-
-
-
-# SORRY, THIS TEST IS NOT CORRECT NOW, BECAUSE OF THE BUG IN THE PAIRWISE AUGMENTATION
-
-
+# context("Testing proposal distribution for data augmentation with preference data")
+#
+# library(BayesMallows)
 # # This file is written to test that proposal of augmented
 # # ranks for the case of pairwise preferences, described on
 # # pp. 21-22 of Vitelli et al., JMLR (2018)
@@ -17,7 +13,7 @@ context("Testing proposal distribution for data augmentation with preference dat
 # # assessor.
 #
 # # One can look at: args(BayesMallows:::find_pairwise_limits)
-#
+# #
 # # We set up an example dataset to test this. Here is a set of pairwise comparisons:
 # pair_comp <- dplyr::tribble(
 #   ~assessor, ~bottom_item, ~top_item,
@@ -29,24 +25,43 @@ context("Testing proposal distribution for data augmentation with preference dat
 #   2, 3, 4,
 #   3, 1, 4
 # )
+# n_items <- 5
 #
 # # We generate the transitive closure:
 # pair_comp_tc <- generate_transitive_closure(pair_comp)
 #
-# # We then create a linear ordering per assessor
-# linear_ordering <- create_linear_ordering(pair_comp_tc)
+# # We then create a list of constraints per assessor
+# constraints <- BayesMallows:::generate_constraints(pair_comp_tc, n_items)
 #
-# # Each element of the list linear_ordering is the linear ordering
-# # for the given assessor
+# # The constraints list is used internally and compute_mallows(), and hence the generate_constraints() function
+# # needs to be accessed with :::.
+# # The contraints list contains one element per assessor.
+# # For each assessor, i.e., list element, there are 3 elements. You can see them by running
+# # For assessor 1:
+# # R> j <- 1
+# # R> names(constraints[[j]])
+#
+# # - constrained_items: a vector of the unique items that are constrained for assessor j
+# # - items_above: a list. The ith element of items_above is the set of unique items that are preferred to item i
+# # - items_below: a list. The ith element of items_below is the set of unique items that are disfavored to item i
+#
+# # You can run the following examples to understand:
+# # First, find the constrained items
+# # j <- 1
+# # R> constraints[[j]][1]
+# # Next, find the items above each item
+# # R> constraints[[j]][2]
+# # Finally, find the items below each item
+# # R> constraints[[j]][3]
 #
 # # We set an intial ranking manually
 # init_rank <- matrix(c(5, 5, 4, 2, 4, 1, 4, 3, 5, 3, 2, 2, 1, 1, 3), nrow = 3)
-# n_items <- 5
+#
 #
 # # We are now ready to test the function for left and right limits
 # # We cycle manually through u = 1,...,5 and j = 1, 2.
 #
-# test_that("l_j and r_j of augmentation proposal are correct",{
+# #test_that("l_j and r_j of augmentation proposal are correct",{
 #   #### Consider assessor 1 first
 #   # Note that \mathcal{A}_{j} = \{1, 2, 4, 5\}
 #   j <- 1
@@ -56,9 +71,9 @@ context("Testing proposal distribution for data augmentation with preference dat
 #   u <- 1
 #
 #   # l_{j} is the maximum of the rankings of the elements that
-#   # are preferred to item 1. According to linear_ordering[[1]],
-#   # elements 2, 4, and 5 are preferred to item 1. The maximum
-#   # of their rankings is 3, so we expect l_{j} = 3.
+#   # are preferred to item 1. According to constraints[[j]][["items_above"]][[u]],
+#   # elements 2 and 5 are preferred to item 1. The maximum
+#   # of their rankings is 2, so we expect l_{j} = 2.
 #   # r_{j} is the minimum of the rankings of the elements that
 #   # are disfavored to item 1. Since no items are disfavored to
 #   # item 1, the set is empty, and we expect r_{j} = n_items + 1.

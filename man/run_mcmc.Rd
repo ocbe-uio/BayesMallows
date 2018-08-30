@@ -16,7 +16,7 @@ With n_assessors samples and n_items items, rankings is n_items x n_assessors.}
 
 \item{nmc}{Number of Monte Carlo samples.}
 
-\item{constraints}{List of linear ordering, one element per assessor.}
+\item{constraints}{List of lists of lists, returned from `generate_constraints`.}
 
 \item{cardinalities}{Used when metric equals \code{"footrule"} or
 \code{"spearman"} for computing the partition function. Defaults to

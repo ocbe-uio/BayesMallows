@@ -159,7 +159,12 @@ compute_mallows <- function(rankings = NULL,
   n_items <- ncol(rankings)
 
   # Generate the constraint set
-  constraints <- generate_constraints(preferences, n_items)
+  if(!is.null(preferences)){
+    constraints <- generate_constraints(preferences, n_items)
+  } else {
+    constraints <- list()
+  }
+
 
   # Set leap_size if it is not alredy set.
   if(is.null(leap_size)) leap_size <- floor(n_items / 5)
