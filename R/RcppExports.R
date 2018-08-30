@@ -66,15 +66,15 @@ sample_int <- function(probs) {
 #' @param alpha The value of the alpha parameter.
 #' @param cardinalities Number of occurences for each unique distance.
 #' Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.
-#' @param is_fit Precomputed importance sampling fit.
+#' @param logz_estimate Precomputed importance sampling fit.
 #' @param metric A string. Available options are \code{"footrule"},
 #' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
 #' Defaults to \code{"footrule"}.
 #' @return A scalar, the logarithm of the partition function.
 #' @keywords internal
 #'
-get_partition_function <- function(n, alpha, cardinalities = NULL, is_fit = NULL, metric = "footrule") {
-    .Call(`_BayesMallows_get_partition_function`, n, alpha, cardinalities, is_fit, metric)
+get_partition_function <- function(n, alpha, cardinalities = NULL, logz_estimate = NULL, metric = "footrule") {
+    .Call(`_BayesMallows_get_partition_function`, n, alpha, cardinalities, logz_estimate, metric)
 }
 
 #' Asymptotic Approximation of Partition Function
@@ -106,7 +106,7 @@ asymptotic_partition_function <- function(alpha_grid, metric, K, n_iterations, n
 #' @param cardinalities Used when metric equals \code{"footrule"} or
 #' \code{"spearman"} for computing the partition function. Defaults to
 #' \code{R_NilValue}.
-#' @param is_fit Importance sampling fit.
+#' @param logz_estimate Estimate of the log partition function.
 #' @param metric The distance metric to use. One of \code{"spearman"},
 #' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 #' \code{"hamming"}.
@@ -126,9 +126,12 @@ asymptotic_partition_function <- function(alpha_grid, metric, K, n_iterations, n
 #' sample from the posterior distribution.
 #' @param save_augmented_data Whether or not to save the augmented data every
 #' \code{thinning}th iteration.
+#' @param verbose Logical specifying whether to print out the progress of the
+#' Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
+#' 1000th iteration.
 #' @keywords internal
 #'
-run_mcmc <- function(rankings, nmc, constraints, cardinalities, is_fit, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L, save_augmented_data = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, constraints, cardinalities, is_fit, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, thinning, save_augmented_data)
+run_mcmc <- function(rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L, save_augmented_data = FALSE, verbose = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, thinning, save_augmented_data, verbose)
 }
 

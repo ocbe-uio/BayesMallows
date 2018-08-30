@@ -1,6 +1,8 @@
 #
 #' Compute Posterior Intervals
 #'
+#' Compute posterior intervals of parameters of interest.
+#'
 #' @param model_fit An object returned from \code{\link{compute_mallows}}.
 #'
 #' @param burnin A numeric value specifying the number of iterations to discard
@@ -20,6 +22,8 @@
 #' which may be discontinuous for bimodal distributions, and
 #' the central posterior interval, which is simply defined by the quantiles of the posterior
 #' distribution.
+#'
+#' @seealso \code{\link{compute_mallows}} for an example where this function is used.
 #'
 #' @export
 #'

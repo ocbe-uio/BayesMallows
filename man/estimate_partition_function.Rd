@@ -2,22 +2,27 @@
 % Please edit documentation in R/estimate_partition_function.R
 \name{estimate_partition_function}
 \alias{estimate_partition_function}
-\title{Estimate Partition Function with Importance Sampling}
+\title{Estimate Partition Function}
 \usage{
-estimate_partition_function(alpha_vector, n_items, metric, nmc, degree)
+estimate_partition_function(method = "importance_sampling", alpha_vector,
+  n_items, metric, nmc, degree)
 }
 \arguments{
+\item{method}{Character string specifying the method to use in order to
+estimate the logarithm of the partition function. At the moment only
+\code{"importance_sampling"} is available, but \code{"asymptotic"} will
+be added in the near future.}
+
 \item{alpha_vector}{Numeric vector of \eqn{\alpha} values over which
 to compute the importance sampling estimate.}
 
 \item{n_items}{Integer specifying the number of items.}
 
 \item{metric}{Character string specifying the distance measure to use.
-Available options are \code{"footrule"}, \code{"spearman"},
-\code{"kendall"}, \code{"cayley"}, and \code{"hamming"}.}
+Available options are \code{"footrule"} and \code{"spearman"}}
 
 \item{nmc}{Integer specifying the number of Monte Carlo samples to use in the
-importance sampling.}
+importance sampling. Only used when \code{method = "importance_sampling"}.}
 
 \item{degree}{Integer specifying the degree of the polynomial used to estimate
 \eqn{\log(\alpha)} from the grid of values provided by the importance sampling
@@ -25,9 +30,23 @@ estimate.}
 }
 \value{
 A vector of length \code{degree} which can be supplied to the
-\code{is_fit} argument of \code{\link{compute_mallows}}.
+\code{logz_estimate} argument of \code{\link{compute_mallows}}.
 }
 \description{
-\code{estimate_partition_function} uses importance sampling to estimate
-the logarithm of the partition function of the Mallows rank model.
+Estimate the logarithm of the partition function of the Mallows rank model.
+}
+\examples{
+# Let us estimate logZ(alpha) for 23 items with Spearman distance
+# We create a grid of alpha values from 0 to 10
+alpha_vector <- seq(from = 0.1, to = 10, by = 0.1)
+# We start with 1e3 Monte Carlo samples
+\dontrun{
+# We take 1e4 Monte Carlo samples, and fit log(Z) with a 10-degree polynomial
+estimate <- estimate_partition_function(method = "importance_sampling",
+                                         alpha_vector = alpha_vector,
+                                         n_items = 23,
+                                         metric = "spearman",
+                                         nmc = 1e4,
+                                         degree = 10)
+}
 }

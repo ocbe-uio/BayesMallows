@@ -20,7 +20,7 @@
 //' @param cardinalities Used when metric equals \code{"footrule"} or
 //' \code{"spearman"} for computing the partition function. Defaults to
 //' \code{R_NilValue}.
-//' @param is_fit Importance sampling fit.
+//' @param logz_estimate Estimate of the log partition function.
 //' @param metric The distance metric to use. One of \code{"spearman"},
 //' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 //' \code{"hamming"}.
@@ -40,13 +40,16 @@
 //' sample from the posterior distribution.
 //' @param save_augmented_data Whether or not to save the augmented data every
 //' \code{thinning}th iteration.
+//' @param verbose Logical specifying whether to print out the progress of the
+//' Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
+//' 1000th iteration.
 //' @keywords internal
 //'
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     Rcpp::List constraints,
                     Rcpp::Nullable<arma::vec> cardinalities,
-                    Rcpp::Nullable<arma::vec> is_fit,
+                    Rcpp::Nullable<arma::vec> logz_estimate,
                     Rcpp::Nullable<arma::vec> rho_init,
                     std::string metric = "footrule",
                     int n_clusters = 1,
@@ -58,7 +61,8 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     double lambda = 0.1,
                     int psi = 10,
                     int thinning = 1,
-                    bool save_augmented_data = false
+                    bool save_augmented_data = false,
+                    bool verbose = false
                       ){
 
   // The number of items ranked
@@ -212,7 +216,14 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   for(int t = 1; t < nmc; ++t){
 
     // Check if the user has tried to interrupt.
-    if (t % 1000 == 0) Rcpp::checkUserInterrupt();
+    if (t % 1000 == 0) {
+      Rcpp::checkUserInterrupt();
+      if(verbose){
+        Rcpp::Rcout << "First " << t
+        << " iterations of Metropolis-Hastings algorithm completed." << std::endl;
+      }
+
+    }
 
     if(clustering){
       update_cluster_probs(cluster_probs, cluster_assignment, n_clusters, psi, t);
@@ -250,7 +261,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
         // Call the void function which updates alpha by reference
         update_alpha(alpha, alpha_acceptance, alpha_old, clus_mat, alpha_index,
                      cluster_index, rho_old, alpha_prop_sd, metric, lambda, n_items,
-                     cardinalities, is_fit);
+                     cardinalities, logz_estimate);
       }
 
     }
@@ -259,7 +270,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     // Update the cluster labels, per assessor
     update_cluster_labels(cluster_assignment, dist_mat, rho_old, rankings, cluster_probs,
                           alpha_old, n_items, n_assessors, n_clusters,
-                          t, metric, cardinalities, is_fit);
+                          t, metric, cardinalities, logz_estimate);
   }
 
   if(include_wcd){

@@ -9,7 +9,7 @@ compute_mallows(rankings = NULL, preferences = NULL,
   leap_size = NULL, rho_init = NULL, thinning = 1L,
   alpha_prop_sd = 0.1, alpha_init = 1, alpha_jump = 1L,
   lambda = 0.001, psi = 10L, include_wcd = (n_clusters > 1),
-  save_augmented_data = FALSE, is_fit = NULL)
+  save_augmented_data = FALSE, logz_estimate = NULL, verbose = FALSE)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items, of size \code{n_assessors x
@@ -97,8 +97,12 @@ data or pairwise preferences. Defaults to \code{FALSE}. Saving augmented data
 is useful for predicting the rankings each assessor would give to the items
 not yet ranked, and is required by \code{\link{plot_top_k}}.}
 
-\item{is_fit}{Importance sampling estimate of the partition function,
+\item{logz_estimate}{Estimate of the partition function,
 computed with \code{\link{estimate_partition_function}}.}
+
+\item{verbose}{Logical specifying whether to print out the progress of the
+Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
+1000th iteration.}
 }
 \value{
 A list of class BayesMallows.
@@ -118,7 +122,7 @@ Mallows models, for clustering of assessors with similar preferences.
 # The example datasets potato_visual and potato_weighing contain complete
 # rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
 # model:
-model_fit <- compute_mallows(potato_visual, nmc = 10000)
+model_fit <- compute_mallows(potato_visual)
 
 # We study the trace plot of the parameters
 assess_convergence(model_fit, type = "alpha")
@@ -139,27 +143,86 @@ compute_posterior_intervals(model_fit, burnin = 1000, parameter = "alpha")
 # Then we compute the interval for all the items
 \dontrun{compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho")}
 
+# ANALYSIS OF PAIRWISE PREFERENCES
+\dontrun{
+  # The example dataset beach_preferences contains pairwise
+  # preferences between beaches stated by 60 assessors. There
+  # is a total of 15 beaches in the dataset.
+  # In order to use it, we first generate all the orderings
+  # implied by the pairwise preferences.
+  beach_tc <- generate_transitive_closure(beach_preferences)
+  # We also generate an inital rankings
+  beach_rankings <- generate_initial_ranking(beach_tc, n_items = 15)
+  # We then run the Bayesian Mallows rank model
+  # We save the augmented data for diagnostics purposes.
+  model_fit <- compute_mallows(rankings = beach_rankings,
+                               preferences = beach_preferences,
+                               save_augmented_data = TRUE,
+                               verbose = TRUE)
+  # We can assess the convergence of the scale parameter
+  assess_convergence(model_fit)
+  # We can assess the convergence of latent rankings. Here we
+  # show beaches 1-5.
+  assess_convergence(model_fit, type = "rho", items = 1:5)
+  # We can also look at the convergence of the augmented rankings for
+  # each assessor.
+  assess_convergence(model_fit, type = "Rtilde",
+                     items = c(2, 4), assessors = c(1, 2))
+  # Notice how, for assessor 1, the lines cross each other, while
+  # beach 2 consistently has a higher rank value (lower preference) for
+  # assessor 2. We can see why by looking at the implied orderings in
+  # beach_tc
+  library(dplyr)
+  beach_tc \%>\%
+    filter(assessor \%in\% c(1, 2),
+           bottom_item \%in\% c(2, 4) & top_item \%in\% c(2, 4))
+  # Assessor 1 has no implied ordering between beach 2 and beach 4,
+  # while assessor 2 has the implied ordering that beach 4 is preferred
+  # to beach 2. This is reflected in the trace plots.
+}
+
 # CLUSTERING OF ASSESSORS WITH SIMILAR PREFERENCES
 \dontrun{
-  # The example dataset sushi_rankings contains 5000 complete rankings of 10 types of sushi
+  # The example dataset sushi_rankings contains 5000 complete
+  # rankings of 10 types of sushi
   # We start with computing a 3-cluster solution
-  model_fit <- compute_mallows(sushi_rankings, n_clusters = 3, nmc = 10000)
+  model_fit <- compute_mallows(sushi_rankings, n_clusters = 3,
+                               nmc = 10000, verbose = TRUE)
   # We then assess convergence of the scale parameter alpha
   assess_convergence(model_fit)
   # Next, we assess convergence of the cluster probabilities
   assess_convergence(model_fit, type = "cluster_probs")
-  # Based on this, we set burnin = 2500
+  # Based on this, we set burnin = 1000
   # We now plot the posterior density of the scale parameters alpha in
   # each mixture:
-  plot(model_fit, burnin = 2500, type = "alpha")
+  burnin <- 1000
+  plot(model_fit, burnin = burnin, type = "alpha")
   # We can also compute the posterior density of the cluster probabilities
-  plot(model_fit, burnin = 2500, type = "cluster_probs")
-  # We can also plot the posterior cluster assignment. In this case, the assessors
-  # are sorted according to their maximum a prior cluster estimate.
-  plot(model_fit, burnin = 2500, type = "cluster_assignment")
+  plot(model_fit, burnin = burnin, type = "cluster_probs")
+  # We can also plot the posterior cluster assignment. In this case,
+  # the assessors are sorted according to their maximum a prior cluster estimate.
+  plot(model_fit, burnin = burnin, type = "cluster_assignment")
+  # We can also assign each assessor to a cluster
+  cluster_assignments <- assign_cluster(model_fit, burnin = burnin, soft = FALSE)
   }
 
-
+# DETERMINING THE NUMBER OF CLUSTERS
+\dontrun{
+  # Continuing with the sushi data, we can determine the number of cluster
+  # Let us look at any number of clusters from 1 to 10
+  # We use the map function from the purrr package.
+  library(purrr)
+  n_clusters <- seq(from = 1, to = 10)
+  models <- map(n_clusters, ~ compute_mallows(rankings = sushi_rankings, nmc = 6000,
+                                              n_clusters = .x, include_wcd = TRUE,
+                                              alpha_jump = 10))
+  # models is a list in which each element is an object of class BayesMallows,
+  # returned from compute_mallows
+  # We can create an elbow plot
+  plot_elbow(models, burnin = 1000)
+  # We then select the number of cluster at a point where this plot has
+  # an "elbow", e.g., n_clusters = 5.
+}
 
 
 

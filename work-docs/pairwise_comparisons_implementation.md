@@ -328,7 +328,7 @@ Inside `compute_mallows`, the `C++` function `run_mcmc` is used to do the MCMC. 
 Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     Rcpp::List constraints,
                     Rcpp::Nullable<arma::vec> cardinalities,
-                    Rcpp::Nullable<arma::vec> is_fit,
+                    Rcpp::Nullable<arma::vec> logz_estimate,
                     Rcpp::Nullable<arma::vec> rho_init,
                     std::string metric = "footrule",
                     int n_clusters = 1,

@@ -19,7 +19,7 @@ void update_alpha(arma::mat& alpha,
                   const double& lambda,
                   const int& n_items,
                   const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-                  const Rcpp::Nullable<arma::vec> is_fit = R_NilValue);
+                  const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue);
 
 void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
                 int& rho_index, const int& cluster_index, const int& thinning,

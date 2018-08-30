@@ -23,7 +23,7 @@ void update_cluster_labels(
     const int& t,
     const std::string& metric,
     const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-    const Rcpp::Nullable<arma::vec> is_fit = R_NilValue
+    const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue
 ){
 
   arma::mat assignment_prob(n_assessors, n_clusters);
@@ -31,7 +31,7 @@ void update_cluster_labels(
   for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
     assignment_prob.col(cluster_index) = cluster_probs(cluster_index, t) *
       arma::exp(-alpha_old(cluster_index) / n_items * dist_mat.col(cluster_index)) /
-        exp(get_partition_function(n_items, alpha_old(cluster_index), cardinalities, is_fit, metric));
+        exp(get_partition_function(n_items, alpha_old(cluster_index), cardinalities, logz_estimate, metric));
   }
 
   // Normalize the probabilities, to unit 1-norm per row (assessor)

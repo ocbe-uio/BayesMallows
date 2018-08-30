@@ -3,15 +3,16 @@
 \docType{data}
 \name{sushi_rankings}
 \alias{sushi_rankings}
-\title{Sushi preferences}
+\title{Sushi Rankings}
 \format{An object of class \code{matrix} with 5000 rows and 10 columns.}
 \usage{
 sushi_rankings
 }
 \description{
-Sushi preferences
+Complete rankings of 10 types of sushi from
+5000 assessors \insertCite{kamishima2003}{BayesMallows}.
 }
 \references{
-\insertRef{vitelli2018}{BayesMallows}
+\insertAllCited{}
 }
 \keyword{datasets}

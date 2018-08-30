@@ -20,7 +20,7 @@ void update_cluster_labels(
         const int& t,
         const std::string& metric,
         const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-        const Rcpp::Nullable<arma::vec> is_fit = R_NilValue
+        const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue
 );
 
 void update_cluster_probs(

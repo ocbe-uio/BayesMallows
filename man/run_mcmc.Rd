@@ -4,11 +4,11 @@
 \alias{run_mcmc}
 \title{Worker function for computing the posterior distribtuion.}
 \usage{
-run_mcmc(rankings, nmc, constraints, cardinalities, is_fit, rho_init,
-  metric = "footrule", n_clusters = 1L, include_wcd = FALSE,
-  leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5,
-  alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L,
-  save_augmented_data = FALSE)
+run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate,
+  rho_init, metric = "footrule", n_clusters = 1L,
+  include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5,
+  alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L,
+  thinning = 1L, save_augmented_data = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{rankings}{A set of complete rankings, with one sample per column.
@@ -22,7 +22,7 @@ With n_assessors samples and n_items items, rankings is n_items x n_assessors.}
 \code{"spearman"} for computing the partition function. Defaults to
 \code{R_NilValue}.}
 
-\item{is_fit}{Importance sampling fit.}
+\item{logz_estimate}{Estimate of the log partition function.}
 
 \item{metric}{The distance metric to use. One of \code{"spearman"},
 \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
@@ -53,6 +53,10 @@ sample from the posterior distribution.}
 
 \item{save_augmented_data}{Whether or not to save the augmented data every
 \code{thinning}th iteration.}
+
+\item{verbose}{Logical specifying whether to print out the progress of the
+Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
+1000th iteration.}
 }
 \description{
 Worker function for computing the posterior distribtuion.

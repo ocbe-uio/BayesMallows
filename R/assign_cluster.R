@@ -1,5 +1,8 @@
 #' Assign Assessors to Clusters
 #'
+#' Assign assessors to clusters by finding the cluster with highest
+#' posterior probability.
+#'
 #' @param model_fit An object of type \code{BayesMallows}, returned from
 #'   \code{\link{compute_mallows}}.
 #'
@@ -18,7 +21,11 @@
 #' 0 a posterior assignment probability. Only used when \code{soft = TRUE}. Defaults
 #' to \code{FALSE}.
 #'
-#' @return A dataframe.
+#' @return A dataframe. If \code{soft = FALSE}, it has one row per assessor, and columns \code{assessor},
+#' \code{probability} and \code{map_cluster}. If \code{soft = TRUE}, it has \code{n_cluster}
+#' rows per assessor, and the additional column \code{cluster}.
+#'
+#' @seealso \code{\link{compute_mallows}} for an example where this function is used.
 #'
 #' @export
 #'

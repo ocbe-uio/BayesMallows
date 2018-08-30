@@ -24,11 +24,14 @@ Defaults to \code{0.95}.}
 in posterior intervals and the mean and median. Defaults to \code{3}.}
 }
 \description{
-Compute Posterior Intervals
+Compute posterior intervals of parameters of interest.
 }
 \details{
 This function computes both the Highest Posterior Density Interval (HPDI),
 which may be discontinuous for bimodal distributions, and
 the central posterior interval, which is simply defined by the quantiles of the posterior
 distribution.
+}
+\seealso{
+\code{\link{compute_mallows}} for an example where this function is used.
 }

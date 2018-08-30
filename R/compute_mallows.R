@@ -95,8 +95,12 @@
 #' is useful for predicting the rankings each assessor would give to the items
 #' not yet ranked, and is required by \code{\link{plot_top_k}}.
 #'
-#' @param is_fit Importance sampling estimate of the partition function,
+#' @param logz_estimate Estimate of the partition function,
 #'   computed with \code{\link{estimate_partition_function}}.
+#'
+#' @param verbose Logical specifying whether to print out the progress of the
+#' Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
+#' 1000th iteration.
 #'
 #' @return
 #' A list of class BayesMallows.
@@ -124,7 +128,8 @@ compute_mallows <- function(rankings = NULL,
                             psi = 10L,
                             include_wcd = (n_clusters > 1),
                             save_augmented_data = FALSE,
-                            is_fit = NULL
+                            logz_estimate = NULL,
+                            verbose = FALSE
                             ){
 
   # Check that at most one of rankings and preferences is set
@@ -170,7 +175,7 @@ compute_mallows <- function(rankings = NULL,
   if(is.null(leap_size)) leap_size <- floor(n_items / 5)
 
   # Extract the right sequence of cardinalities, if relevant
-  if(!is.null(is_fit)){
+  if(!is.null(logz_estimate)){
     cardinalities <- NULL
     message("Using user-provided importance sampling estimate of partition function.")
   } else if(metric %in% c("footrule", "spearman")){
@@ -186,19 +191,19 @@ compute_mallows <- function(rankings = NULL,
 
     if(type == "cardinalities") {
       cardinalities <- unlist(relevant_params$values)
-      is_fit <- NULL
+      logz_estimate <- NULL
     } else if(type == "importance_sampling"){
       cardinalities <- NULL
-      is_fit <- unlist(relevant_params$values)
+      logz_estimate <- unlist(relevant_params$values)
     } else {
       stop("Precomputed partition function not available yet. Consider computing one
            with the function estimate_partition_function(), and provide it
-           in the is_fit argument to compute_mallows().")
+           in the logz_estimate argument to compute_mallows().")
     }
 
   } else if (metric %in% c("cayley", "hamming", "kendall")) {
     cardinalities <- NULL
-    is_fit <- NULL
+    logz_estimate <- NULL
   } else {
     stop(paste("Unknown metric", metric))
   }
@@ -209,7 +214,7 @@ compute_mallows <- function(rankings = NULL,
                   nmc = nmc,
                   constraints = constraints,
                   cardinalities = cardinalities,
-                  is_fit = is_fit,
+                  logz_estimate = logz_estimate,
                   rho_init = rho_init,
                   metric = metric,
                   n_clusters = n_clusters,
@@ -220,8 +225,13 @@ compute_mallows <- function(rankings = NULL,
                   alpha_init = alpha_init,
                   alpha_jump = alpha_jump,
                   thinning = thinning,
-                  save_augmented_data = save_augmented_data
+                  save_augmented_data = save_augmented_data,
+                  verbose = verbose
                   )
+
+  if(verbose){
+    print("Metropolis-Hastings algorithm completed. Post-processing data.")
+  }
 
   # Add some arguments
   fit$metric <- metric

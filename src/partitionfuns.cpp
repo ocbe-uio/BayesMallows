@@ -30,7 +30,7 @@ double compute_is_fit(double alpha, arma::vec fit){
 //' @param alpha The value of the alpha parameter.
 //' @param cardinalities Number of occurences for each unique distance.
 //' Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.
-//' @param is_fit Precomputed importance sampling fit.
+//' @param logz_estimate Precomputed importance sampling fit.
 //' @param metric A string. Available options are \code{"footrule"},
 //' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
 //' Defaults to \code{"footrule"}.
@@ -40,7 +40,7 @@ double compute_is_fit(double alpha, arma::vec fit){
 // [[Rcpp::export]]
 double get_partition_function(int n, double alpha,
                               Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-                              Rcpp::Nullable<arma::vec> is_fit = R_NilValue,
+                              Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue,
                               std::string metric = "footrule"){
 
   if(metric == "footrule") {
@@ -50,8 +50,8 @@ double get_partition_function(int n, double alpha,
     if(cardinalities.isNotNull()){
       arma::vec distances = arma::regspace(0, 2, floor(pow(n, 2) / 2));
       return log(arma::sum(Rcpp::as<arma::vec>(cardinalities) % exp(-alpha * distances / n)));
-    } else if(is_fit.isNotNull()){
-      return compute_is_fit(alpha, Rcpp::as<arma::vec>(is_fit));
+    } else if(logz_estimate.isNotNull()){
+      return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
     } else {
       Rcpp::stop("Could not compute partition function");
     }
@@ -62,8 +62,8 @@ double get_partition_function(int n, double alpha,
     if(cardinalities.isNotNull()){
       arma::vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n + 1, 3));
       return log(arma::sum(Rcpp::as<arma::vec>(cardinalities) % exp(-alpha * distances / n)));
-    } else if(is_fit.isNotNull()){
-      return compute_is_fit(alpha, Rcpp::as<arma::vec>(is_fit));
+    } else if(logz_estimate.isNotNull()){
+      return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
     }
 
 

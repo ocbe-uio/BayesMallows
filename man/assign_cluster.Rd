@@ -26,8 +26,14 @@ of each assessor to also include clusters for which the assessor has
 to \code{FALSE}.}
 }
 \value{
-A dataframe.
+A dataframe. If \code{soft = FALSE}, it has one row per assessor, and columns \code{assessor},
+\code{probability} and \code{map_cluster}. If \code{soft = TRUE}, it has \code{n_cluster}
+rows per assessor, and the additional column \code{cluster}.
 }
 \description{
-Assign Assessors to Clusters
+Assign assessors to clusters by finding the cluster with highest
+posterior probability.
+}
+\seealso{
+\code{\link{compute_mallows}} for an example where this function is used.
 }

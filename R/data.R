@@ -22,13 +22,17 @@
 "potato_weighing"
 
 
-#' Pairwise preference data for beaches
+#' Beach Preferences
 #'
+#' Example dataset from \insertCite{vitelli2018}{BayesMallows}, Section 6.2.
 #'
-#' @references \insertRef{vitelli2018}{BayesMallows}
+#' @references \insertAllCited{}
 "beach_preferences"
 
-#' Sushi preferences
+#' Sushi Rankings
 #'
-#' @references \insertRef{vitelli2018}{BayesMallows}
+#' Complete rankings of 10 types of sushi from
+#' 5000 assessors \insertCite{kamishima2003}{BayesMallows}.
+#'
+#' @references \insertAllCited{}
 "sushi_rankings"

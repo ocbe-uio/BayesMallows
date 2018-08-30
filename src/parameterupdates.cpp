@@ -21,7 +21,7 @@ void update_alpha(arma::mat& alpha,
                   const double& lambda,
                   const int& n_items,
                   const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-                  const Rcpp::Nullable<arma::vec> is_fit = R_NilValue) {
+                  const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue) {
 
 
   // Set the number of assessors. Not using the variable from run_mcmc because
@@ -42,8 +42,8 @@ void update_alpha(arma::mat& alpha,
     alpha_diff / n_items * rank_dist +
     lambda * alpha_diff +
     n_assessors * (
-        get_partition_function(n_items, alpha_old(cluster_index), cardinalities, is_fit, metric) -
-          get_partition_function(n_items, alpha_proposal, cardinalities, is_fit, metric)
+        get_partition_function(n_items, alpha_old(cluster_index), cardinalities, logz_estimate, metric) -
+          get_partition_function(n_items, alpha_proposal, cardinalities, logz_estimate, metric)
     ) + log(alpha_proposal) - log(alpha_old(cluster_index));
 
   // Draw a uniform random number
