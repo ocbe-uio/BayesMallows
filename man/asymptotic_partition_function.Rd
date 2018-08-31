@@ -4,18 +4,19 @@
 \alias{asymptotic_partition_function}
 \title{Asymptotic Approximation of Partition Function}
 \usage{
-asymptotic_partition_function(alpha_grid, metric, K, n_iterations, n_items)
+asymptotic_partition_function(alpha_vector, n_items, metric, K,
+  n_iterations)
 }
 \arguments{
-\item{alpha_grid}{A numeric vector of alpha values.}
+\item{alpha_vector}{A numeric vector of alpha values.}
+
+\item{n_items}{Integer specifying the number of items.}
 
 \item{metric}{One of \code{"footrule"} and \code{"spearman"}.}
 
 \item{K}{Integer.}
 
 \item{n_iterations}{Integer specifying the number of iterations.}
-
-\item{n_items}{Integer specifying the number of items.}
 }
 \value{
 A vector, containing the partition function at each value of alpha.

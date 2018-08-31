@@ -107,11 +107,11 @@ double get_partition_function(int n_items, double alpha,
 //' Compute the asymptotic approximation of the logarithm of the partition function,
 //' using the iteration algorithm of \insertCite{mukherjee2016;textual}{BayesMallows}.
 //'
-//' @param alpha_grid A numeric vector of alpha values.
+//' @param alpha_vector A numeric vector of alpha values.
+//' @param n_items Integer specifying the number of items.
 //' @param metric One of \code{"footrule"} and \code{"spearman"}.
 //' @param K Integer.
 //' @param n_iterations Integer specifying the number of iterations.
-//' @param n_items Integer specifying the number of items.
 //'
 //' @return A vector, containing the partition function at each value of alpha.
 //' @keywords internal
@@ -119,8 +119,8 @@ double get_partition_function(int n_items, double alpha,
 //' @references \insertAllCited{}
 //'
 // [[Rcpp::export]]
-arma::vec asymptotic_partition_function(arma::vec alpha_grid, std::string metric,
-                                        int K, int n_iterations, int n_items){
+arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std::string metric,
+                                        int K, int n_iterations){
   // IPFP procedure
   // Initialize a square matrix where each row/column sums to one
   arma::mat A = arma::ones<arma::mat>(K, K) * 1.0 / K;
@@ -142,26 +142,20 @@ arma::vec asymptotic_partition_function(arma::vec alpha_grid, std::string metric
     }
   }
   // Divide each element by K
-  // B corresponds to outer((1:K)/K, (1:K)/K, dist) in R
   B = B * 1.0 / K;
 
-  int n_alpha = alpha_grid.n_elem;
+  int n_alpha = alpha_vector.n_elem;
   arma::vec result(n_alpha);
 
   for(int i = 0; i < n_alpha; ++i){
-    double alpha = alpha_grid(i);
+    double alpha = alpha_vector(i);
 
     A = arma::exp(alpha * B);
     for(int i = 0; i < n_iterations; ++i){
-      // Note: We can use 1-norm because the expenontial never gets negative
-
-      // A <- A/rowSums(A)
-      // 1-norm along rows
+      // Note: We can use 1-norm because the exponential never gets negative
+      // Normalize rows
       A = arma::normalise(A, 1, 1);
-      // A <- A/rep(1, nrow(A)) %*% t(colSums(A)) which is
-      // equivalent to t(t(A)/c(colSums(A)))
-
-      // Divide each column by its sum
+      // Normalize columns
       A = arma::normalise(A, 1, 0);
     }
 
@@ -172,10 +166,8 @@ arma::vec asymptotic_partition_function(arma::vec alpha_grid, std::string metric
       Z0 += log(i + 1);
     }
 
-    // This should be what is called Tranf_Zlim_2 in the R code
     result(i) = (Zlim - Z0lim)/K * n_items + Z0;
   }
-
 
   return(result);
 }

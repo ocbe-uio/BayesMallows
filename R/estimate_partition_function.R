@@ -1,54 +1,73 @@
 #' Estimate Partition Function
 #'
-#' Estimate the logarithm of the partition function of the Mallows rank model.
+#' Estimate the logarithm of the partition function of the Mallows rank model. Choose
+#' between the importance sampling algorithm described in
+#' \insertCite{vitelli2018}{BayesMallows} and the IPFP algorithm for computing an
+#' asymptotic approximation described in \insertCite{mukherjee2016}{BayesMallows}.
 #'
 #' @param method Character string specifying the method to use in order to
-#' estimate the logarithm of the partition function. At the moment only
-#' \code{"importance_sampling"} is available, but \code{"asymptotic"} will
-#' be added in the near future.
+#'   estimate the logarithm of the partition function. Available options are
+#'   \code{"importance_sampling"} and \code{"asymptotic"}.
 #'
-#' @param alpha_vector Numeric vector of \eqn{\alpha} values over which
-#' to compute the importance sampling estimate.
+#' @param alpha_vector Numeric vector of \eqn{\alpha} values over which to
+#'   compute the importance sampling estimate.
 #'
 #' @param n_items Integer specifying the number of items.
 #'
 #' @param metric Character string specifying the distance measure to use.
-#' Available options are \code{"footrule"} and \code{"spearman"}
+#'   Available options are \code{"footrule"} and \code{"spearman"}
 #'
 #' @param nmc Integer specifying the number of Monte Carlo samples to use in the
-#' importance sampling. Only used when \code{method = "importance_sampling"}.
+#'   importance sampling. Only used when \code{method = "importance_sampling"}.
 #'
-#' @param degree Integer specifying the degree of the polynomial used to estimate
-#' \eqn{\log(\alpha)} from the grid of values provided by the importance sampling
-#' estimate.
+#' @param degree Integer specifying the degree of the polynomial used to
+#'   estimate \eqn{\log(\alpha)} from the grid of values provided by the
+#'   importance sampling estimate.
+#'
+#' @param n_iterations Integer specifying the number of iterations to use in the
+#'   asymptotic approximation of the partition function. Only used when
+#'   \code{method = "asymptotic"}.
+#'
+#' @param K Integer specifying the parameter \eqn{K} in the
+#' asymptotic approximation of the partition function. Only used when
+#' \code{method = "asymptotic"}.
 #'
 #' @return A vector of length \code{degree} which can be supplied to the
-#' \code{logz_estimate} argument of \code{\link{compute_mallows}}.
+#'   \code{logz_estimate} argument of \code{\link{compute_mallows}}.
 #'
 #' @export
+#'
+#' @references \insertAllCited{}
 #'
 #' @example /inst/examples/estimate_partition_function_example.R
 #'
 estimate_partition_function <- function(method = "importance_sampling",
                                         alpha_vector, n_items, metric,
-                                        nmc, degree){
+                                        nmc, degree, n_iterations, K){
 
   stopifnot(degree < length(alpha_vector))
 
   if(method == "importance_sampling"){
     # Compute the estimate at each discrete alpha value
-    estimate <- purrr::map_dfr(alpha_vector, function(alpha) {
-      log_z <- compute_importance_sampling_estimate(
-        alpha_vector = alpha, n = n_items, metric = metric, nmc = nmc
-      )
-      return(dplyr::tibble(alpha = alpha, log_z = as.numeric(log_z)))
-    }
+    estimate <- dplyr::tibble(
+      alpha = alpha_vector,
+      log_z = as.numeric(
+        compute_importance_sampling_estimate(
+          alpha_vector = alpha_vector, n_items = n_items,
+          metric = metric, nmc = nmc))
+    )
+  } else if(method == "asymptotic"){
+    estimate <- dplyr::tibble(
+      alpha = alpha_vector,
+      log_z = as.numeric(
+        asymptotic_partition_function(
+          alpha_vector = alpha_vector, n_items = n_items,
+          metric = metric, K = K, n_iterations = n_iterations))
     )
   }
 
-
   # Fit a regression model
-  form <- as.formula(paste("log_z ~ ",
+  form <- stats::as.formula(paste("log_z ~ ",
                            paste("I( alpha^", seq(from = 1, to = degree, by = 1), ")",
                                  collapse = "+")))
   stats::lm(form, data = estimate)$coefficients

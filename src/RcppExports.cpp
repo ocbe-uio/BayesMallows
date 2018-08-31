@@ -108,17 +108,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // asymptotic_partition_function
-arma::vec asymptotic_partition_function(arma::vec alpha_grid, std::string metric, int K, int n_iterations, int n_items);
-RcppExport SEXP _BayesMallows_asymptotic_partition_function(SEXP alpha_gridSEXP, SEXP metricSEXP, SEXP KSEXP, SEXP n_iterationsSEXP, SEXP n_itemsSEXP) {
+arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std::string metric, int K, int n_iterations);
+RcppExport SEXP _BayesMallows_asymptotic_partition_function(SEXP alpha_vectorSEXP, SEXP n_itemsSEXP, SEXP metricSEXP, SEXP KSEXP, SEXP n_iterationsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type alpha_grid(alpha_gridSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type alpha_vector(alpha_vectorSEXP);
+    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< int >::type K(KSEXP);
     Rcpp::traits::input_parameter< int >::type n_iterations(n_iterationsSEXP);
-    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
-    rcpp_result_gen = Rcpp::wrap(asymptotic_partition_function(alpha_grid, metric, K, n_iterations, n_items));
+    rcpp_result_gen = Rcpp::wrap(asymptotic_partition_function(alpha_vector, n_items, metric, K, n_iterations));
     return rcpp_result_gen;
 END_RCPP
 }

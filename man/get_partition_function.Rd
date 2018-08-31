@@ -8,6 +8,8 @@ get_partition_function(n_items, alpha, cardinalities = NULL,
   logz_estimate = NULL, metric = "footrule")
 }
 \arguments{
+\item{n_items}{Number of items.}
+
 \item{alpha}{The value of the alpha parameter.}
 
 \item{cardinalities}{Number of occurences for each unique distance.
@@ -18,8 +20,6 @@ Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.}
 \item{metric}{A string. Available options are \code{"footrule"},
 \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
 Defaults to \code{"footrule"}.}
-
-\item{n}{Number of items.}
 }
 \value{
 A scalar, the logarithm of the partition function.
