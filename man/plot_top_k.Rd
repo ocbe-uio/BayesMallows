@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_top_k.R
 \name{plot_top_k}
 \alias{plot_top_k}
-\title{Predict Top-k Rankings with Pairwise Preferences}
+\title{Plot Top-k Rankings with Pairwise Preferences}
 \usage{
 plot_top_k(model_fit, burnin, k = 3, rel_widths = c(rep(1,
   model_fit$n_clusters), 10))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_elbow.R
 \name{plot_elbow}
 \alias{plot_elbow}
-\title{Within-Cluster Sum of Distances}
+\title{Plot Within-Cluster Sum of Distances}
 \usage{
 plot_elbow(..., burnin)
 }

@@ -4,7 +4,7 @@
 \name{potato_true_ranking}
 \alias{potato_true_ranking}
 \title{True ranking of the weights of 20 potatoes.}
-\format{An integer vector with 20 elements}
+\format{An object of class \code{numeric} of length 20.}
 \usage{
 potato_true_ranking
 }
@@ -12,6 +12,6 @@ potato_true_ranking
 True ranking of the weights of 20 potatoes.
 }
 \references{
-Insert reference to review paper where the potato data is presented.
+\insertRef{liu2018}{BayesMallows}
 }
 \keyword{datasets}
