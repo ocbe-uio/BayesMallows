@@ -21,9 +21,14 @@
 #' @details This function computes both the Highest Posterior Density Interval (HPDI),
 #' which may be discontinuous for bimodal distributions, and
 #' the central posterior interval, which is simply defined by the quantiles of the posterior
-#' distribution.
+#' distribution. The HPDI intervals are computed using the \code{HDInterval} package
+#' \insertCite{meredith2018}{BayesMallows}.
 #'
-#' @seealso \code{\link{compute_mallows}} for an example where this function is used.
+#' @seealso \code{\link{compute_mallows}}
+#'
+#' @references \insertAllCited{}
+#'
+#' @example /inst/examples/compute_posterior_intervals_example.R
 #'
 #' @export
 #'
@@ -101,9 +106,9 @@ compute_posterior_intervals <- function(model_fit, burnin, parameter,
     }
 
 
-    central <- stats::quantile(.data$value, probs = c((1 - level) / 2, level + (1 - level) / 2))
+    central <- unique(stats::quantile(.data$value, probs = c((1 - level) / 2, level + (1 - level) / 2)))
     central <- sprintf(format, central)
-    central <- paste0("[", central[[1]], ",", central[[2]], "]")
+    central <- paste0("[", paste(central, collapse = ","), "]")
 
     dplyr::tibble(
       parameter = parameter,

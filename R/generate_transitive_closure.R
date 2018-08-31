@@ -56,7 +56,8 @@ generate_transitive_closure <- function(df){
 
   # Check if there are any inconsistencies
   check <- dplyr::semi_join(result, result,
-                            by = c("assessor" = "assessor", "bottom_item" = "top_item",
+                            by = c("assessor" = "assessor",
+                                   "bottom_item" = "top_item",
                                    "top_item" = "bottom_item"))
 
   if(nrow(check) > 0){

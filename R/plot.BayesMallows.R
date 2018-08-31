@@ -21,6 +21,8 @@
 #'
 #' @export
 #'
+#' @example /inst/examples/plot.BayesMallows_example.R
+#'
 plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
   # Note, the first argument must be named x, otherwise R CMD CHECK will
   # issue a warning. This is because plot.BayesMallows must have the same
@@ -106,7 +108,6 @@ plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
     # Now make a plot
     ggplot2::ggplot(df, ggplot2::aes(.data$assessor, .data$cluster)) +
       ggplot2::geom_tile(ggplot2::aes(fill = .data$probability)) +
-      ggplot2::scale_fill_gradient(low = "blue", high = "red") +
       ggplot2::theme(
         legend.title = ggplot2::element_blank(),
         axis.title.y = ggplot2::element_blank(),

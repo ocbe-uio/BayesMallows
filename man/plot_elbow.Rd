@@ -2,19 +2,34 @@
 % Please edit documentation in R/plot_elbow.R
 \name{plot_elbow}
 \alias{plot_elbow}
-\title{Posterior plots}
+\title{Within-Cluster Sum of Distances
+
+Plot the within-cluster sum of distances from the corresponding cluster
+consensus for different number of clusters. This function is useful for
+selecting the number of mixture.}
 \usage{
 plot_elbow(..., burnin)
 }
 \arguments{
 \item{...}{One or more objects returned from \code{\link{compute_mallows}},
-separated by comma, or a list of such objects.}
+separated by comma, or a list of such objects. Typically, each object
+has been run with a different number of mixtures, as specified in the
+\code{n_clusters} argument to \code{\link{compute_mallows}}.}
 
-\item{burnin}{Number of iterations to discard as burn-in.}
+\item{burnin}{A numeric value specifying the number of iterations
+to discard as burn-in. See \code{\link{assess_convergence}}.}
 }
 \value{
-A plot.
+A boxplot with the number of clusters on the horizontal axis and the
+with-cluster sum of distances on the vertical axis.
 }
 \description{
-Posterior plots
+Within-Cluster Sum of Distances
+
+Plot the within-cluster sum of distances from the corresponding cluster
+consensus for different number of clusters. This function is useful for
+selecting the number of mixture.
+}
+\seealso{
+\code{\link{compute_mallows}}
 }

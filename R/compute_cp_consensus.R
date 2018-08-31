@@ -14,26 +14,6 @@
 #'
 #' @export
 #'
-#' @examples
-#' # Analysis of complete rankings
-#' # The example datasets potato_visual and potato_weighing contain complete
-#' # rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
-#' # model:
-#' model_fit <- compute_mallows(potato_visual)
-#' # We study the trace plot of the parameters
-#' # alpha is the default
-#' assess_convergence(model_fit)
-#' # When studying convergence of rho, we can also specify which items to plot
-#' assess_convergence(model_fit, type = "rho", items = 1:5)
-#' # Based on these plots, we conclude that the Markov chain has converged well
-#' # before 1,000 iterations. We hence set burnin = 1000.
-#' # Next, we use the generic plot function to study the posterior distributions
-#' # of alpha and rho
-#' plot(model_fit, burnin = 1000)
-#' plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
-#' # We can also compute the CP consensus posterior ranking
-#' compute_cp_consensus(model_fit, burnin = 1000)
-#'
 compute_cp_consensus <- function(model_fit, burnin){
   stopifnot(class(model_fit) == "BayesMallows")
 
