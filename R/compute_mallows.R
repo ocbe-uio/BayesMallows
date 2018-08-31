@@ -191,16 +191,13 @@ compute_mallows <- function(rankings = NULL,
 
     type <- dplyr::pull(relevant_params, type)
 
-    if(type == "cardinalities") {
-      cardinalities <- unlist(relevant_params$values)
-      logz_estimate <- NULL
-    } else if(type == "importance_sampling"){
-      cardinalities <- NULL
-      logz_estimate <- unlist(relevant_params$values)
-    } else {
+    if((length(type) == 0) || !(type %in% c("cardinalities", "importance_sampling"))){
       stop("Precomputed partition function not available yet. Consider computing one
            with the function estimate_partition_function(), and provide it
            in the logz_estimate argument to compute_mallows().")
+    } else {
+      cardinalities <- unlist(relevant_params$values)
+      logz_estimate <- NULL
     }
 
   } else if (metric %in% c("cayley", "kendall")) {

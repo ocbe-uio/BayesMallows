@@ -31,54 +31,5 @@ partition_function_data <- tibble(
   )
 rm(seq2)
 
-# Next we add the importance sampling estimates to the same tibble
-
-# Code for generating off-line importance sampling estimates for Spearman and footrule.
-
-# Should be 1e6
-nmc <- 1e5
-# Should be at least 50
-n_alphas <- 50
-
-# list to hold the parameters
-parameters <- crossing(
-  n_items = 15:20,
-  metric = "spearman",
-  alpha = seq(from = 0.01, to = 20, length.out = n_alphas),
-  nmc = nmc
-  ) %>%
-  split(seq(nrow(.)))
-
-library(parallel)
-cl <- makeCluster(7)
-is_fit <- parLapply(cl = cl, X = parameters, fun = function(X){
-  X[["logZ"]] <- BayesMallows::compute_importance_sampling_estimate(
-    alpha_vector = X[["alpha"]],
-    n = X[["n_items"]],
-    metric = X[["metric"]],
-    nmc = X[["nmc"]]
-  )
-  return(X)
-})
-stopCluster(cl)
-
-# Now we turn the fits into a tibble again and estimate regressions per
-# n_items and metric
-
-is_fit <- bind_rows(is_fit) %>%
-  map_dfr(.f = identity) %>%
-  nest(-n_items, -metric) %>%
-  mutate(
-    values = map(data, ~ list(lm(.$logZ ~ poly(.$alpha, 4))$coefficients))
-    ) %>%
-  select(-data) %>%
-  mutate(type = "importance_sampling")
-
-
-# Finally, add these to the partition function data
-partition_function_data <- partition_function_data %>%
-  bind_rows(is_fit)
-
-
 # Finally, save the fit as internal data
 devtools::use_data(partition_function_data, internal = TRUE, overwrite = TRUE)

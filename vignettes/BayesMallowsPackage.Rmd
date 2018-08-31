@@ -243,11 +243,11 @@ plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
 
 And we can use Spearman distance. In this case, since the number of potatoes (20) is larger than the maximum number for which we have an exact computation of the partition function (14), so precomputed importance sampling estimates are used. This is handled automatically by `compute_mallows`. Note that the posterior ranks are less peaked with Spearman distance. This agrees with the results seen in @liu2018.
 
-```{r}
+```{r, eval=FALSE}
 model_fit <- compute_mallows(potato_visual, metric = "spearman")
 ```
 
-```{r, fig.width=6, fig.height=6}
+```{r, eval = FALSE, fig.width=6, fig.height=6}
 plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
 ```
 
@@ -366,15 +366,10 @@ plot(model_fit, burnin = 1000, type = "rho", items = 1:8)
 
 Like for the complete ranks, we can vary the distance measure used in the Mallows model. We can try with a Spearman model:
 
-```{r}
+```{r, eval=FALSE}
 model_fit <- compute_mallows(potato_top, nmc = 6000, metric = "spearman")
 ```
 
-As for the full ranks described in the intro vignette, the posterior uncertainty is higher with the Spearman distance.
-
-```{r, fig.width=6, fig.height=5}
-plot(model_fit, burnin = 1000, type = "rho", items = 1:8)
-```
 
 # Ranks Missing at Random
 
