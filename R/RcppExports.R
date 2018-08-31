@@ -34,14 +34,14 @@ get_rank_distance <- function(r1, r2, metric = "footrule") {
 #' for footrule and Spearman distances.
 #'
 #' @param alpha_vector Vector of alpha values at which to compute partition function.
-#' @param n Integer specifying the number of ranked items.
+#' @param n_items Integer specifying the number of ranked items.
 #' @param metric Distance measure of the target Mallows distribution. Defaults to \code{footrule}.
-#' @param nmc Number of Monte Carlo samples. Defaults to \code{1e6}.
+#' @param nmc Number of Monte Carlo samples. Defaults to \code{1e4}.
 #'
 #' @keywords internal
 #'
-compute_importance_sampling_estimate <- function(alpha_vector, n, metric = "footrule", nmc = 1e6L) {
-    .Call(`_BayesMallows_compute_importance_sampling_estimate`, alpha_vector, n, metric, nmc)
+compute_importance_sampling_estimate <- function(alpha_vector, n_items, metric = "footrule", nmc = 1e4L) {
+    .Call(`_BayesMallows_compute_importance_sampling_estimate`, alpha_vector, n_items, metric, nmc)
 }
 
 factorial <- function(n) {
@@ -62,7 +62,7 @@ sample_int <- function(probs) {
 
 #' Compute the logarithm of the partition function for a Mallows rank model.
 #'
-#' @param n Number of items.
+#' @param n_items Number of items.
 #' @param alpha The value of the alpha parameter.
 #' @param cardinalities Number of occurences for each unique distance.
 #' Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.
@@ -73,8 +73,8 @@ sample_int <- function(probs) {
 #' @return A scalar, the logarithm of the partition function.
 #' @keywords internal
 #'
-get_partition_function <- function(n, alpha, cardinalities = NULL, logz_estimate = NULL, metric = "footrule") {
-    .Call(`_BayesMallows_get_partition_function`, n, alpha, cardinalities, logz_estimate, metric)
+get_partition_function <- function(n_items, alpha, cardinalities = NULL, logz_estimate = NULL, metric = "footrule") {
+    .Call(`_BayesMallows_get_partition_function`, n_items, alpha, cardinalities, logz_estimate, metric)
 }
 
 #' Asymptotic Approximation of Partition Function

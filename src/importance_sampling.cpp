@@ -11,22 +11,22 @@
 //' for footrule and Spearman distances.
 //'
 //' @param alpha_vector Vector of alpha values at which to compute partition function.
-//' @param n Integer specifying the number of ranked items.
+//' @param n_items Integer specifying the number of ranked items.
 //' @param metric Distance measure of the target Mallows distribution. Defaults to \code{footrule}.
-//' @param nmc Number of Monte Carlo samples. Defaults to \code{1e6}.
+//' @param nmc Number of Monte Carlo samples. Defaults to \code{1e4}.
 //'
 //' @keywords internal
 //'
 // [[Rcpp::export]]
-arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n,
-                          std::string metric = "footrule", int nmc = 1e6
+arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_items,
+                          std::string metric = "footrule", int nmc = 1e4
                           ) {
 
   // The dispersion parameter alpha comes as a vector value
   int n_alphas = alpha_vector.n_elem;
 
   // The reference ranking
-  arma::vec rho = arma::linspace<arma::vec>(1,n,n);
+  arma::vec rho = arma::regspace<arma::vec>(1, n_items);
 
   // Vector which holds the result for all alphas
   arma::vec logZ = arma::zeros(n_alphas);
@@ -41,23 +41,23 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n,
     // Loop over the Monte Carlo samples
     for(int i = 0; i < nmc; ++i){
       // Support set of the proposal distribution
-      arma::vec support = arma::linspace<arma::vec>(1,n,n);
+      arma::vec support = arma::regspace<arma::vec>(1, n_items);
 
       // Vector which holds the proposed ranks
-      arma::vec ranks = arma::zeros(n);
+      arma::vec ranks = arma::zeros(n_items);
 
       // Probability of the ranks we get
       double q = 1;
 
-      // n random uniform numbers
-      arma::vec u = arma::randu(n,1);
+      // n_items random uniform numbers
+      arma::vec u = arma::randu(n_items);
 
       // Loop over possible values given to item j in random order
-      arma::vec myind = arma::shuffle(arma::linspace(0, n-1, n));
+      arma::vec myind = arma::shuffle(arma::regspace(0, n_items - 1));
 
-      for(int j = 0; j < n; ++j){
+      for(int j = 0; j < n_items; ++j){
         int jj = myind(j);
-        arma::vec prob = arma::zeros(n);
+        arma::vec prob = arma::zeros(n_items);
         // Find the elements that have not been taken yet
         arma::uvec inds = arma::find(support != 0);
         // Number of elements
@@ -68,7 +68,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n,
         // Sampled vector
         arma::vec r2 = rho(jj) * arma::ones(k_max);
         // Probability of sample
-        prob(inds) = arma::exp(- alpha / n * arma::pow(arma::abs(r1 - r2), (metric == "footrule") ? 1. : 2.));
+        prob(inds) = arma::exp(- alpha / n_items * arma::pow(arma::abs(r1 - r2), (metric == "footrule") ? 1. : 2.));
         prob = prob / arma::accu(prob);
         arma::vec cpd = arma::cumsum(prob);
 
@@ -80,7 +80,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n,
         support(ranks(jj) - 1) = 0;
       }
       // Increment the partition function
-      Z += exp(- alpha / n * get_rank_distance(ranks, rho, metric))/q;
+      Z += exp(- alpha / n_items * get_rank_distance(ranks, rho, metric))/q;
     }
     // Average over the Monte Carlo samples
     logZ(t) = log(Z / nmc);

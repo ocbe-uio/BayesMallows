@@ -13,9 +13,9 @@
 double compute_is_fit(double alpha, arma::vec fit){
   // The partition function
   double logZ = 0;
-  int n = fit.n_elem;
+  int n_items = fit.n_elem;
 
-  for(int i = 0; i < n; ++i){
+  for(int i = 0; i < n_items; ++i){
     logZ += pow(alpha, i) * fit(i);
   }
   return(logZ);
@@ -26,7 +26,7 @@ double compute_is_fit(double alpha, arma::vec fit){
 
 //' Compute the logarithm of the partition function for a Mallows rank model.
 //'
-//' @param n Number of items.
+//' @param n_items Number of items.
 //' @param alpha The value of the alpha parameter.
 //' @param cardinalities Number of occurences for each unique distance.
 //' Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.
@@ -38,7 +38,7 @@ double compute_is_fit(double alpha, arma::vec fit){
 //' @keywords internal
 //'
 // [[Rcpp::export]]
-double get_partition_function(int n, double alpha,
+double get_partition_function(int n_items, double alpha,
                               Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
                               Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue,
                               std::string metric = "footrule"){
@@ -48,8 +48,8 @@ double get_partition_function(int n, double alpha,
     // If cardinalities are defined, we use them. If importance sampling estimates exist,
     // then we use that
     if(cardinalities.isNotNull()){
-      arma::vec distances = arma::regspace(0, 2, floor(pow(n, 2) / 2));
-      return log(arma::sum(Rcpp::as<arma::vec>(cardinalities) % exp(-alpha * distances / n)));
+      arma::vec distances = arma::regspace(0, 2, floor(pow(n_items, 2) / 2));
+      return log(arma::sum(Rcpp::as<arma::vec>(cardinalities) % exp(-alpha * distances / n_items)));
     } else if(logz_estimate.isNotNull()){
       return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
     } else {
@@ -60,8 +60,8 @@ double get_partition_function(int n, double alpha,
   } else if (metric == "spearman") {
 
     if(cardinalities.isNotNull()){
-      arma::vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n + 1, 3));
-      return log(arma::sum(Rcpp::as<arma::vec>(cardinalities) % exp(-alpha * distances / n)));
+      arma::vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
+      return log(arma::sum(Rcpp::as<arma::vec>(cardinalities) % exp(-alpha * distances / n_items)));
     } else if(logz_estimate.isNotNull()){
       return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
     }
@@ -70,8 +70,8 @@ double get_partition_function(int n, double alpha,
   } else if(metric == "kendall") {
 
     double res = 0;
-    for(int i = 1; i < (n + 1); ++i){
-      res += log( ( 1 - exp(-i * alpha / n ) )/(1 - exp(-alpha / n )));
+    for(int i = 1; i < (n_items + 1); ++i){
+      res += log( ( 1 - exp(-i * alpha / n_items ) )/(1 - exp(-alpha / n_items )));
     }
     return res;
 
@@ -79,8 +79,8 @@ double get_partition_function(int n, double alpha,
 
     double res = 0;
 
-    for(int i = 1; i < n; ++i){
-      res += log( 1 + i * exp(- alpha / n ) );
+    for(int i = 1; i < n_items; ++i){
+      res += log( 1 + i * exp(- alpha / n_items ) );
     }
     return res;
 
@@ -88,8 +88,8 @@ double get_partition_function(int n, double alpha,
 
     double res = 0;
 
-    for(int i = 0; i < (n + 1); ++i){
-      res += factorial(n) * exp(-alpha) * pow((exp(alpha / n) - 1), i) / factorial(i);
+    for(int i = 0; i < (n_items + 1); ++i){
+      res += factorial(n_items) * exp(-alpha) * pow((exp(alpha / n_items) - 1), i) / factorial(i);
     }
 
     return log(res);

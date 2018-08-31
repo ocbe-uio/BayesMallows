@@ -48,6 +48,9 @@ estimate_partition_function <- function(method = "importance_sampling",
 
 
   # Fit a regression model
-  stats::lm(alpha ~ poly(log_z, degree), data = estimate)$coefficients
+  form <- as.formula(paste("log_z ~ ",
+                           paste("I( alpha^", seq(from = 1, to = degree, by = 1), ")",
+                                 collapse = "+")))
+  stats::lm(form, data = estimate)$coefficients
 
 }
