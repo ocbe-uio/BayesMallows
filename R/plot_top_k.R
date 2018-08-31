@@ -1,18 +1,31 @@
-
-#' Find the top-k probabilities
+#' Plot Top-k Rankings with Pairwise Preferences
+#'
+#' Plot the posterior probability, per item, of being ranked among the top-\eqn{k}
+#' for each assessor. This plot is useful when the data take the form of pairwise
+#' preferences.
 #'
 #' @param model_fit An object of type \code{BayesMallows}, returned from
 #'   \code{\link{compute_mallows}}.
-#' @param burnin Number of iterations to discard as burn-in.
-#' @param k The k in top-k
+#'
+#' @param burnin A numeric value specifying the number of iterations
+#' to discard as burn-in. See \code{\link{assess_convergence}}.
+#'
+#' @param k Integer specifying the k in top-\eqn{k}.
+#'
 #' @param rel_widths The relative widths of the plots of \code{rho} per cluster
 #' and the plot of assessors, respectively. This argument is passed on to
-#' \code{cowplot::plot_grid}.
+#' \code{\link[cowplot]{plot_grid}}.
 #'
 #' @export
 #'
+#'
 plot_top_k <- function(model_fit, burnin, k = 3, rel_widths = c(rep(1, model_fit$n_clusters), 10)){
   stopifnot(burnin < model_fit$nmc)
+
+  if(!exists("augmented_data", model_fit)){
+    stop("model_fit must have element augmented_data. Please set save_augmented_data = TRUE
+         in compute_mallows in order to create a top-k plot.")
+  }
 
   n_samples <- sum(unique(model_fit$rho$iteration) > burnin)
 
@@ -40,16 +53,8 @@ plot_top_k <- function(model_fit, burnin, k = 3, rel_widths = c(rep(1, model_fit
     rho <- dplyr::mutate(rho, cluster = "")
   }
 
-  rankings <- dplyr::filter(model_fit$augmented_data, .data$iteration > burnin, .data$value <= k)
-  rankings <- dplyr::mutate(rankings, item = as.character(.data$item))
-  rankings <- dplyr::group_by(rankings, .data$assessor, .data$item)
-  rankings <- dplyr::summarise(rankings, prob = dplyr::n()/n_samples)
-  rankings <- dplyr::ungroup(rankings)
-  rankings <- tidyr::complete(
-    dplyr::group_by(rankings, .data$assessor),
-    item = model_fit$items,
-    fill = list(prob = 0)
-  )
+  rankings <- predict_top_k(model_fit, burnin = burnin, k = k, n_samples = n_samples)
+
   # Sorting the items according to their probability in rho
   rankings <- dplyr::mutate(rankings, item = factor(.data$item, levels = item_ordering))
 
@@ -63,7 +68,6 @@ plot_top_k <- function(model_fit, burnin, k = 3, rel_widths = c(rep(1, model_fit
       axis.text.y = ggplot2::element_blank(),
       axis.ticks.y = ggplot2::element_blank()
       )
-
 
   rho_plot <- ggplot2::ggplot(rho, ggplot2::aes(.data$cluster, .data$item)) +
     ggplot2::geom_tile(ggplot2::aes(fill = .data$prob), colour = "white") +

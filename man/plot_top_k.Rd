@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_top_k.R
 \name{plot_top_k}
 \alias{plot_top_k}
-\title{Find the top-k probabilities}
+\title{Predict Top-k Rankings with Pairwise Preferences}
 \usage{
 plot_top_k(model_fit, burnin, k = 3, rel_widths = c(rep(1,
   model_fit$n_clusters), 10))
@@ -11,14 +11,17 @@ plot_top_k(model_fit, burnin, k = 3, rel_widths = c(rep(1,
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
 \code{\link{compute_mallows}}.}
 
-\item{burnin}{Number of iterations to discard as burn-in.}
+\item{burnin}{A numeric value specifying the number of iterations
+to discard as burn-in. See \code{\link{assess_convergence}}.}
 
-\item{k}{The k in top-k}
+\item{k}{Integer specifying the k in top-\eqn{k}.}
 
 \item{rel_widths}{The relative widths of the plots of \code{rho} per cluster
 and the plot of assessors, respectively. This argument is passed on to
-\code{cowplot::plot_grid}.}
+\code{\link[cowplot]{plot_grid}}.}
 }
 \description{
-Find the top-k probabilities
+Plot the posterior probability, per item, of being ranked among the top-\eqn{k}
+for each assessor. This plot is useful when the data take the form of pairwise
+preferences.
 }

@@ -1,4 +1,4 @@
-#' @title Within-Cluster Sum of Distances
+#' Plot Within-Cluster Sum of Distances
 #'
 #' Plot the within-cluster sum of distances from the corresponding cluster
 #' consensus for different number of clusters. This function is useful for

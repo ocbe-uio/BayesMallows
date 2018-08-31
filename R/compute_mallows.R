@@ -142,10 +142,12 @@ compute_mallows <- function(rankings = NULL,
   # Deal with pairwise comparisons. Generate rankings compatible with them.
   if(!is.null(preferences)){
     if(!("BayesMallowsTC" %in% class(preferences))){
+      message("Generating transitive closure of preferences.")
       preferences <- generate_transitive_closure(preferences)
     }
     if(is.null(rankings)){
-      rankings <- generate_initial_ranking(as.matrix(preferences))
+      message("Generating initial ranking.")
+      rankings <- generate_initial_ranking(preferences)
     }
   }
 

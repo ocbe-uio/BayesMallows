@@ -2,11 +2,7 @@
 % Please edit documentation in R/plot_elbow.R
 \name{plot_elbow}
 \alias{plot_elbow}
-\title{Within-Cluster Sum of Distances
-
-Plot the within-cluster sum of distances from the corresponding cluster
-consensus for different number of clusters. This function is useful for
-selecting the number of mixture.}
+\title{Within-Cluster Sum of Distances}
 \usage{
 plot_elbow(..., burnin)
 }
@@ -24,8 +20,6 @@ A boxplot with the number of clusters on the horizontal axis and the
 with-cluster sum of distances on the vertical axis.
 }
 \description{
-Within-Cluster Sum of Distances
-
 Plot the within-cluster sum of distances from the corresponding cluster
 consensus for different number of clusters. This function is useful for
 selecting the number of mixture.
