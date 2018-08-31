@@ -32,7 +32,7 @@ We also load the `dplyr` package, which we will use a few places.
 library(dplyr)
 ```
 
-# Overview of Functions
+# Overview
 
 Here is an overview of the most used function. You can read their documentation with `?function_name`, or search for an example in this vignette.
 
@@ -51,6 +51,8 @@ Function Name                 Description
  
  `assign_cluster`             Compute the cluster assignment of assessors.
  
+ `compute_map_consensus`       Compute the MAP estimate of the latent ranks. 
+ 
  `compute_cp_consensus`       Rank the items according to their CP consensus. 
  
  `compute_posterior_intervals` Compute Bayesian posterior intervals for the parameters. 
@@ -58,6 +60,8 @@ Function Name                 Description
  `generate_initial_ranking`    Generate an initial ranking, for the case of missing data or pairwise comparisons. 
  
  `generate_transitive_closure` Generate the transitive closure for a set of pairwise comparisons. 
+ 
+ `estimate_partition_function` Estimate the partition function of the Mallows model using either importance sampling or an asymptotic approximation.
 ------------------- --------------------------------------------------
 
 : Main functions in the `BayesMallows` package.
@@ -87,7 +91,7 @@ model_fit <- compute_mallows(potato_visual)
 
 The argument returned is a list object of class `BayesMallows`, which contains a whole lot of information about the MCMC run.
 
-```{r}
+```{r, eval=FALSE}
 class(model_fit)
 names(model_fit)
 ```

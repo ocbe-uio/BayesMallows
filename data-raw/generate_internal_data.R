@@ -2,8 +2,6 @@
 
 # We need these packages to do this nicely
 library(dplyr)
-library(tidyr)
-library(purrr)
 
 # First we load the cardinalities for the footrule
 load("./data-raw/footrule_cardinalities.Rdata", verbose = TRUE)
