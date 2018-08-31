@@ -1,9 +1,9 @@
 \dontrun{
   # IMPORTANCE SAMPLING
-  # Let us estimate logZ(alpha) for 23 items with Spearman distance
+  # Let us estimate logZ(alpha) for 20 items with Spearman distance
   # We create a grid of alpha values from 0 to 10
   alpha_vector <- seq(from = 0, to = 10, by = 0.5)
-  n_items <- 23
+  n_items <- 20
   metric <- "spearman"
   degree <- 10
 
@@ -55,4 +55,11 @@
   # We see that the two importance sampling estimates, which are unbiased,
   # overlap. The asymptotic approximation seems a bit off. It can be worthwhile
   # to try different values of n_iterations and K.
+
+  # When we are happy, we can provide the coefficient vector in the
+  # logz_estimate argument to compute_mallows
+  # Say we choose to use the importance sampling estimate with 1e4 Monte Carlo samples:
+  model_fit <- compute_mallows(potato_visual, metric = "spearman",
+                               logz_estimate = fit2)
+
 }
