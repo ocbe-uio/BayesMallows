@@ -26,10 +26,11 @@ The `BayesMallows` package implements methods for Bayesian preference learning w
 library(BayesMallows)
 ```
 
-We also load the `dplyr` package, which we will use a few places.
-
+We also need some packages for plotting and data wrangling.
 ```{r, message=FALSE}
 library(dplyr)
+library(ggplot2)
+library(tidyr)
 ```
 
 # Overview
@@ -252,39 +253,34 @@ knitr::kable(model_fit$aug_acceptance, digits = 2)
 
 ## Algorithm Tuning
 
-The tuning of $\alpha$ and $\rho$ can be done exactly as described above for the full potato data. It is more interesting to study the convergence of the data augmentation.
+The tuning of $\alpha$ and $\rho$ can be done exactly as described above for the full potato data. Let us now study the convergence of the data augmentation.
 
-```{r}
-assess_convergence(model_fit, type = "Rtilde", assessors = 1, items = 1:8)
+Looking back, we see that assessor 1 does not have values for potatoes 14, 16, and 17. Hence, we expect these to fluctuate between rank 6 and 8, since the 5 ranked items are fixed to values 1,...,5. Below we have plotted potato 14, which fluctuates between 6 and 8. You can confirm that these same happens to 16 and 17.
+
+```{r, fig.width=6}
+assess_convergence(model_fit, type = "Rtilde", assessors = 1, 
+                   items = "P14")
 ```
 
+Assessor 1 has ranks for potatoes 7, 9, 10, 12, and 13, which are fixed. You can confirm that they are fixed by running the following command.
 
+```{r, eval=FALSE}
+assess_convergence(model_fit, type = "Rtilde", assessors = 1, 
+                   items = c("P7", "P9", "P10", "P12", "P13"))
+```
 
 ## Posterior Distributions
 
-We now run `compute_mallows` bit longer, to obtain 5,000 samples from the posterior distribution. There is no need for thinning in this case, since the data fit well into memory.
-
-```{r}
-model_fit <- compute_mallows(potato_top, nmc = 6000)
-```
-
-Here is the posterior distribution of the scale parameter:
-```{r, fig.width=6}
-plot(model_fit, burnin = 1000)
-```
-
-And the posterior distribution of the latent ranks:
-
-```{r, fig.width=6, fig.height=5}
-plot(model_fit, burnin = 1000, type = "rho", items = 1:8)
-```
+We can study the posterior distributions of $\alpha$ and $\rho$ just like we did above.
 
 ## Other Distance Measures
 
-Like for the complete ranks, we can vary the distance measure used in the Mallows model. We can try with a Spearman model:
+Like for the complete ranks, we can vary the distance measure used in the Mallows model. Here are command for running with Cayley, Kendall, and Spearman distance.
 
 ```{r, eval=FALSE}
-model_fit <- compute_mallows(potato_top, nmc = 6000, metric = "spearman")
+model_fit <- compute_mallows(potato_top, metric = "cayley")
+model_fit <- compute_mallows(potato_top, metric = "kendall")
+model_fit <- compute_mallows(potato_top, metric = "spearman")
 ```
 
 
@@ -312,36 +308,36 @@ We supply `potato_missing` to `compute_mallows` as before:
 model_fit <- compute_mallows(potato_missing)
 ```
 
-The convergence of $\alpha$ and $\rho$ seem fine:
-```{r, fig.width=6}
+We check the convergence with the following commands. The plots (not shown) would show good convergence before 1,000 iterations.
+
+```{r, eval=FALSE}
 assess_convergence(model_fit)
 ```
 
-```{r, fig.width=6}
+```{r, eval=FALSE}
 assess_convergence(model_fit, type = "rho", items = 1:6)
 ```
 
+Again, we can look at the acceptance rates for the augmented data. Now let us compare it to the number of missing ranks per assessor.
 
-We can compare the acceptance rates to the number of missing ranks for for each assessor:
-
-```{r}
-apply(potato_missing, 1, function(x) sum(is.na(x)))
+```{r, eval=FALSE}
+bind_cols(model_fit$aug_acceptance, 
+          n_missing = apply(potato_missing, 1, function(x) sum(is.na(x))))
 ```
 
-We see that assessors who have either 0 or 1 missing ranks, always have their augmentations accepted. In the case of 0 missing ranks, there is in fact no augmentation going on at all, but we use the convention that the assessor's own complete data is accepted.
+
+```{r, echo=FALSE, result='asis'}
+knitr::kable(
+  bind_cols(model_fit$aug_acceptance, 
+          n_missing = apply(potato_missing, 1, function(x) sum(is.na(x)))), 
+  digits = 2)
+```
+
+We see that assessors who have either 0 or 1 missing ranks, their augmentations are always accepted. In the case of 0 missing ranks, there is in fact no augmentation going on at all, but we use the convention that the assessor's own complete data is accepted.
 
 ## Posterior Distributions
 
-Again, we can fit a final model, and plot the posterior histogram of the latent ranks.
-
-```{r}
-model_fit <- compute_mallows(potato_visual, nmc = 6000)
-```
-
-```{r, fig.width=6, fig.height=5}
-plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
-```
-
+The posterior distributions can be studied as shown above.
 
 # Pairwise Preferences
 
@@ -386,20 +382,11 @@ pair_comp_tc <- generate_transitive_closure(pair_comp)
 
 As we can see, `pair_comp_tc` has an additional row containing the relation $A_{4} \prec A_{5}$ for assessor 1. For assessor 2, $$\text{tc}(\mathcal{B}_{2}) = \mathcal{B}_{2} \cup \left\{ A_{1} \prec A_{3}, A_{1} \prec A_{4}, A_{2} \prec A_{4}\right\},$$ so three new rows have been added.
 
-```{r, eval=FALSE}
-pair_comp_tc
-```
-
-
 ```{r, results='asis', echo=FALSE}
-knitr::kable(pair_comp_tc)
+knitr::kable(pair_comp_tc, caption = "Dataframe `pair_comp_tc`.")
 ```
 
 The dataframe returned by `generate_transitive_closure` inherits from `tibble`, but has subclass `BayesMallowsTC`. The `compute_mallows` function uses this information to ensure that the object provided has been through the `generate_transitive_closure` function. If it has not, `compute_mallows` will do it for us, but this may lead to additional computing time when running several diagnostic runs and trying out different parameters, since the transitive closure will be recomputed each time.
-
-```{r}
-class(pair_comp_tc)
-```
 
 ### Initial Ranking
 
@@ -409,27 +396,16 @@ We can also generate an initial ranking, consistent with the pairwise comparison
 initial_ranking <- generate_initial_ranking(pair_comp_tc)
 ```
 
-### Mallows Model
-Having generated the transitive closure of each assessor's pairwise preferences and the initial ranking, we can go on and use these as inputs to the Mallows model.
-
-```{r}
-model_fit <- compute_mallows(rankings = initial_ranking, 
-                             preferences = pair_comp_tc, 
-                             save_augmented_data = TRUE)
-```
-
-
-We can study the acceptance rate of the proposed augmented ranks.
-```{r, fig.width=6}
-assess_convergence(model_fit, type = "Rtilde", assessor = 1)
-```
-
-
 Rather than digging deeper into this toy example, we go on with a real application.
 
 
 ## Beach Preferences
 The beach preference dataset is described in Section 6.2 of @vitelli2018, and is available in the dataframe `beach_preferences` in `BayesMallows`. In short, $60$ assessors were each asked to perform a random set of pairwise comparisons between pictures of $15$ beaches. The first few rows are listed below.
+
+```{r, eval=FALSE}
+beach_preferences
+```
+
 
 ```{r, results='asis', echo=FALSE}
 knitr::kable(head(beach_preferences, 6), caption = "Example dataset `beach_preferences`")
