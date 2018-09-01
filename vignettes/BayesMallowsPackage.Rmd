@@ -457,31 +457,13 @@ test_run <- compute_mallows(
   )
 ```
 
-#### Convergence of $\alpha$
-
-The chain for $\alpha$ seems to be close to convergence already after 1,000 iterations.
-
-```{r, fig.width=6}
-assess_convergence(test_run)
-```
-
-#### Convergence of $\rho$
-
-The latent ranks seem to converge quite fast, and definitely after 1,000 iterations.
-
-```{r, fig.width=6}
-assess_convergence(test_run, type = "rho", items = 1:15)
-```
+The trace plots for $\alpha$ and $\rho$ show good convergence.
 
 #### Convergence of Rtilde
 
-We can set `type = "Rtilde"` and choose `assessors` and `items`.
+We can set `type = "Rtilde"` and choose `assessors` and `items`. We no go a bit deeper into some assessors.
 
 ##### Assessor 1
-Let us start by looking at assessor 1:
-```{r, fig.width=6}
-assess_convergence(test_run, type = "Rtilde", assessors = 1, items = 1:15)
-```
 
 Let us look at Beach 2 for assessor 1.
 
@@ -532,11 +514,8 @@ assess_convergence(test_run, type = "Rtilde",
 
 ##### Assessor 2
 
-```{r, fig.width=6}
-assess_convergence(test_run, type = "Rtilde", assessors = 2, items = 1:15)
-```
+We go on with assessor 2. Let us take a look at, say, beach 10. 
 
-Let us take a look at, say, beach 10. 
 ```{r, results='asis'}
 beach_tc %>% 
   filter(assessor == 2, bottom_item == 10 | top_item == 10) %>% 
@@ -551,6 +530,7 @@ assess_convergence(test_run, type = "Rtilde",
 ```
 
 No ordering is implied between beach 1 and beach 15 for assessor 2.
+
 ```{r}
 beach_tc %>% 
   filter(assessor == 1, bottom_item %in% c(1, 15), top_item %in% c(1, 15)) %>% 
@@ -571,48 +551,47 @@ rm(test_run)
 
 
 ## Posterior Distributions
-Based on the convergence diagnostics, and being fairly conservative, we set `burnin = 1000`, and take an additional 5,000 samples.
+Based on the convergence diagnostics, and being fairly conservative, we set `burnin = 1000`, and take an additional 5,000 samples. We do not save the augmented data now.
 
 ```{r}
-t1 <- Sys.time()
 model_fit <- compute_mallows(
   rankings = beach_init_rank, 
   preferences = beach_tc,
   nmc = 6000,
   save_augmented_data = TRUE
   )
-t2 <- Sys.time()
-print(t2 - t1)
 ```
 
-### Posterior Distribution of $\alpha$
-
-
-```{r}
-plot(model_fit, burnin = 1000)
-```
-
-### Posterior Density of $\rho$
-
-We first make a plot matrix for all beaches.
-```{r, fig.width=6, fig.height=5}
-plot(model_fit, type = "rho", burnin = 1000, items = 1:15)
-```
+The posterior densities of $\alpha$ and $\rho$ can be studied as shown above.
 
 ### CP Consensus
 
-We can also rank the beaches according to the cumulative probability (CP) consensus. This functionality is provided by `compute_cp_consensus`, which returns a dataframe.
+We can rank the beaches according to the cumulative probability (CP) consensus. This functionality is provided by `compute_cp_consensus`, which returns a dataframe.
 
-```{r, results='asis'}
+```{r, eval=FALSE}
+compute_cp_consensus(model_fit, burnin = 1000)
+```
+
+
+```{r, results='asis', echo=FALSE}
 knitr::kable(compute_cp_consensus(model_fit, burnin = 1000), digits = 2)
 ```
 
-```{r, results='asis'}
+### Posterior Intervals
+
+We can compute posterior intervals for several parameters. 
+
+```{r, eval=FALSE}
+compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho")
+```
+
+
+```{r, results='asis', echo=FALSE}
 knitr::kable(compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho"))
 ```
 
 
-## Posterior Probability of Being Ranked Top-$k$
+### Posterior Probability of Being Ranked Top-$k$
 
 We can also find the posterior probability for each beach of being ranked top-$k$, both in $\rho$ and among the assessors.
 
