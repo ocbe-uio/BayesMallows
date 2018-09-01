@@ -41,7 +41,10 @@ compute_map_consensus <- function(model_fit, burnin){
   df <- tidyr::gather(df, key = "item", value = "map_ranking",
                 -.data$cluster, -.data$probability)
 
-  if(model_fit$n_clusters >= 1){
+  # Sort according to cluster and ranking
+  df <- dplyr::arrange(df, .data$cluster, .data$map_ranking)
+
+  if(model_fit$n_clusters == 1){
     df <- dplyr::select(df, -.data$cluster)
   }
 
