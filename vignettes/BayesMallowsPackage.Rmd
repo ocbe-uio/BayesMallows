@@ -577,6 +577,19 @@ compute_cp_consensus(model_fit, burnin = 1000)
 knitr::kable(compute_cp_consensus(model_fit, burnin = 1000), digits = 2)
 ```
 
+### MAP Consensus
+
+The maximum a posterior (MAP) consensus ranking is the a posterior most likely value of $\rho$.
+
+```{r, eval=FALSE}
+compute_map_consensus(model_fit, burnin = 1000)
+```
+
+
+```{r, results='asis', echo=FALSE}
+knitr::kable(compute_map_consensus(model_fit, burnin = 1000), digits = 2)
+```
+
 ### Posterior Intervals
 
 We can compute posterior intervals for several parameters. 
@@ -610,11 +623,6 @@ In many situations, it is interesting to divide the assessors into clusters, in 
 
 To illustrate how to perform clustering, let us create some clusters in the `potato_visual` dataset. This dataset has 12 assessors. We leave the first 6 assessors as is, but for the last 6, we revert the rankings.
 
-```{r, echo=FALSE, results='asis'}
-knitr::kable(potato_visual, caption = "Dataset `potato_visual` before manipulation.")
-```
-
-
 ```{r}
 potato_manipulated <- potato_visual
 potato_manipulated[7:12, ] <- 21 - potato_manipulated[7:12, ]
@@ -630,14 +638,9 @@ Let us try first without clustering.
 model_fit <- compute_mallows(rankings = potato_manipulated)
 ```
 
-Looking at the convergence of $\alpha$ and $\rho$, we see that this model does not settle on a consensus ranking.
+Looking at the convergence of $\alpha$, we see that this model does not settle on a consensus ranking.
 ```{r, fig.width=6}
 assess_convergence(model_fit)
-```
-
-
-```{r, fig.width=6}
-assess_convergence(model_fit, type = "rho", items = 1:4)
 ```
 
 Let us instead introduce clustering:
@@ -663,82 +666,28 @@ assess_convergence(model_fit)
 #### Convergence of $\rho$
 
 We plot the potato that is most often ranked heaviest (P8), and the potato that is most often ranked lightest (P12). 
+
 ```{r, fig.width=6}
 assess_convergence(model_fit, type = "rho", items = c(8, 12))
 ```
 
+#### Convergence of Cluster Probabilities
 
+We also see that the probability of each cluster, $\tau_{1}$ and $\tau_{2}$, fluctuate around 0.5, which is just as expected, since we reverted half of the rankings.
 
-### Posterior Distributions
-
-#### Posterior Distribution of $\alpha$
-
-The `plot.BayesMallows` detects that we have two clusters, and plots the estimated densities of $\alpha_{1}$ and $\alpha{2}$ in two separate plots.
 ```{r, fig.width=6}
-plot(model_fit, burnin = 1000)
+assess_convergence(model_fit, type = "cluster_probs")
 ```
 
-#### Posterior Distribution of $\rho$
-
-We start by plotting the three potatoes that had the largest true weights. (The true weights can be found in the vector `potato_true_ranking`). 
-
-```{r, fig.width=6, fig.height=4}
-potato_true_ranking
-plot(model_fit, burnin = 1000, type = "rho", items = which(potato_true_ranking <= 3))
-```
-
-We do the same with the three lightest potatoes.
-
-```{r, fig.width=6, fig.height=4}
-plot(model_fit, burnin = 1000, type = "rho", items = which(potato_true_ranking >= 18))
-```
-
-#### Posterior Intervals
-
-```{r, results='asis'}
-knitr::kable(
-  compute_posterior_intervals(model_fit, burnin = 1000, parameter = "cluster_probs")
-)
-```
-
-
-### Clusterwise CP Consensus
-
-The function `compute_cp_consensus` returns the CP consensus per cluster:
-
-```{r}
-cp_consensus_df <- compute_cp_consensus(model_fit, burnin = 1000)
-```
-
-
-```{r, eval=FALSE}
-filter(cp_consensus_df, cluster == "Cluster 2")
-```
-
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(filter(cp_consensus_df, cluster == "Cluster 2"), digits = 2)
-```
-
-Note that since `compute_cp_consensus` returns a dataframe, we can also analyze it further. For example, we can print out the top-3 in each cluster:
-
-```{r, eval=FALSE}
-cp_consensus_df %>% 
-  filter(ranking <= 3) %>% 
-  arrange(cluster, ranking)
-```
-
-```{r, echo=FALSE, results='asis'}
-cp_consensus_df %>% 
-  filter(ranking <= 3) %>% 
-  arrange(cluster, ranking) %>% 
-  knitr::kable(digits = 3)
-```
- 
-
+We now go on to show clustering in a real data example.
 
 ## Sushi Data
 The `BayesMallows` package comes with a set of sushi preference data, in which 5000 assessors each have ranked a set of 10 types of sushi (@kamishima2003). Here are the first few rows of the dataset.
+
+```{r, eval=FALSE}
+sushi_rankings
+```
+
 
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(head(sushi_rankings), caption = "First 6 rows of example dataset `sushi_rankings`.")
@@ -754,20 +703,10 @@ model_fit2 <- compute_mallows(sushi_rankings, n_clusters = 2, nmc = 1000)
 ### Algorithm Tuning
 
 It is useful to look at the trace plots of $\alpha_{1}, \dots, \alpha_{C}$.
-```{r, eval=FALSE}
-assess_convergence(model_fit1)
-```
-```{r, echo=FALSE, out.width="75%"}
-knitr::include_graphics("./vignette-data/alpha_convergence_1.png")
-```
-
-
-
 
 ```{r, eval=FALSE}
 assess_convergence(model_fit2)
 ```
-
 
 ```{r, echo=FALSE, out.width="75%"}
 knitr::include_graphics("./vignette-data/alpha_convergence_2.png")
@@ -790,6 +729,8 @@ It seems like $\alpha$ is mixing rapidly. Let us set `burnin = 200`, and compute
 ### Posterior Distributions
 
 #### CP Consensus
+
+
 We can find the CP consensus for each of the two clusters.
 ```{r, eval=FALSE}
 cp_consensus_sushi <- compute_cp_consensus(model_fit2, burnin = 200)
@@ -798,7 +739,6 @@ cp_consensus_sushi <- compute_cp_consensus(model_fit2, burnin = 200)
 ```{r, echo=FALSE}
 load("./vignette-data/sushi_clustering_data.RData")
 ```
-
 
 We can now look at each cluster:
 
@@ -829,13 +769,6 @@ args(plot_elbow)
 
 `plot_elbow` requires the model fits for different number of clusters to be provided as the first arguments, either comma separated, or as a list. The other argument is `burnin`, which must be named.
 
-```{r, eval=FALSE}
-plot_elbow(model_fit1, model_fit2, burnin = 200)
-```
-```{r, echo=FALSE, out.width="75%"}
-knitr::include_graphics("./vignette-data/sushi_elbow.png")
-```
-
 In order to systematically investigate how many clusters to include, we can store different solutions in a list, like this:
 
 ```{r, message=FALSE, eval=FALSE}
@@ -845,7 +778,7 @@ models <- map(n_clusters, ~ compute_mallows(rankings = sushi_rankings, nmc = 100
                                             n_clusters = .x, include_wcd = TRUE))
 ```
 
-Here, I used `purrr::map` to call `compute_mallows` repeatedly, and defined an inline function with `~`. One could of course also do this with a for loop.
+Here, I used `purrr::map` to call `compute_mallows` repeatedly, and defined an inline function with `~`. One could of course also do this with a for loop or with `lapply`.
 
 We can now provide the `models` list to `plot_elbow`. 
 

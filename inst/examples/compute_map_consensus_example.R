@@ -17,7 +17,7 @@ compute_map_consensus(model_fit, burnin = burnin)
   model_fit <- compute_mallows(sushi_rankings, n_clusters = 5)
   # Keeping the burnin at 1000, we can compute the MAP consensus per cluster
   map_consensus_df <- compute_map_consensus(model_fit, burnin = burnin)
-  # Using dplyr::select and tidyr::cumprob we can now make a table
+  # Using dplyr::select and tidyr::spread we can now make a table
   # which shows the ranking in each cluster:
   library(dplyr)
   library(tidyr)
