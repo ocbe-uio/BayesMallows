@@ -37,7 +37,8 @@ distances, when \code{include_wcd = TRUE}.}
 
 \item{n_clusters}{Integer specifying the number of clusters, i.e., the number
 of mixture components to use. Defaults to \code{1L}, which means no clustering is
-performed.}
+performed. See \code{\link{compute_mallows_mixtures}} for a convenience function
+for computing several models with varying numbers of mixtures.}
 
 \item{nmc}{Integer specifying the number of iteration of the Metropolis-Hastings
 algorithm. Defaults to \code{2000L}. See \code{\link{assess_convergence}} for
@@ -210,12 +211,10 @@ compute_posterior_intervals(model_fit, burnin = 1000, parameter = "alpha")
 \dontrun{
   # Continuing with the sushi data, we can determine the number of cluster
   # Let us look at any number of clusters from 1 to 10
-  # We use the map function from the purrr package.
-  library(purrr)
+  # We use the convenience function compute_mallows_mixtures
   n_clusters <- seq(from = 1, to = 10)
-  models <- map(n_clusters, ~ compute_mallows(rankings = sushi_rankings, nmc = 6000,
-                                              n_clusters = .x, include_wcd = TRUE,
-                                              alpha_jump = 10))
+  models <- compute_mallows_mixtures(n_clusters = n_clusters, rankings = sushi_rankings,
+                                     nmc = 6000, alpha_jump = 10)
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows
   # We can create an elbow plot
@@ -229,4 +228,8 @@ compute_posterior_intervals(model_fit, burnin = 1000, parameter = "alpha")
 }
 \references{
 \insertAllCited{}
+}
+\seealso{
+\code{\link{compute_mallows_mixtures}} for a function that computes
+separate Mallows models for varying number of clusters.
 }

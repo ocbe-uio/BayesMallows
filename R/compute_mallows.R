@@ -35,7 +35,8 @@
 #'
 #' @param n_clusters Integer specifying the number of clusters, i.e., the number
 #'   of mixture components to use. Defaults to \code{1L}, which means no clustering is
-#'   performed.
+#'   performed. See \code{\link{compute_mallows_mixtures}} for a convenience function
+#'   for computing several models with varying numbers of mixtures.
 #'
 #' @param nmc Integer specifying the number of iteration of the Metropolis-Hastings
 #' algorithm. Defaults to \code{2000L}. See \code{\link{assess_convergence}} for
@@ -104,6 +105,9 @@
 #'
 #' @return
 #' A list of class BayesMallows.
+#'
+#' @seealso \code{\link{compute_mallows_mixtures}} for a function that computes
+#' separate Mallows models for varying number of clusters.
 #'
 #'
 #' @references \insertAllCited{}
