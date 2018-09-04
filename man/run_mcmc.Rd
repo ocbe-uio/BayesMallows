@@ -8,7 +8,8 @@ run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate,
   rho_init, metric = "footrule", n_clusters = 1L,
   include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5,
   alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L,
-  thinning = 1L, save_augmented_data = FALSE, verbose = FALSE)
+  rho_thinning = 1L, aug_thinning = 1L, save_augmented_data = FALSE,
+  verbose = FALSE)
 }
 \arguments{
 \item{rankings}{A set of complete rankings, with one sample per column.
@@ -48,15 +49,15 @@ have to do expensive computation of the partition function.}
 
 \item{psi}{Hyperparameter for the Dirichlet prior distribution used in clustering.}
 
-\item{thinning}{Thinning parameter. Keep only every \code{thinning} rank
-sample from the posterior distribution.}
-
 \item{save_augmented_data}{Whether or not to save the augmented data every
 \code{thinning}th iteration.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
 1000th iteration.}
+
+\item{thinning}{Thinning parameter. Keep only every \code{thinning} rank
+sample from the posterior distribution.}
 }
 \description{
 Worker function for computing the posterior distribtuion.

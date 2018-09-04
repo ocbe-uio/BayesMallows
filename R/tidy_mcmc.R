@@ -30,7 +30,7 @@ tidy_rho <- function(fit){
     times = rho_dims[[3]]
   )
 
-  iteration <- rep(seq(from = 1, to = rho_dims[[3]] * fit$thinning, by = fit$thinning),
+  iteration <- rep(seq(from = 1, to = rho_dims[[3]] * fit$rho_thinning, by = fit$rho_thinning),
                    each = rho_dims[[1]] * rho_dims[[2]])
 
   # Store the final rho as a tibble
@@ -183,7 +183,7 @@ tidy_augmented_data <- function(fit){
     assessor <- rep(seq(from = 1, to = augdata_dims[[2]], by = 1), each = augdata_dims[[1]],
                     times = augdata_dims[[3]])
 
-    iteration <- rep(seq(from = 1, to = augdata_dims[[3]] * fit$thinning, by = fit$thinning),
+    iteration <- rep(seq(from = 1, to = augdata_dims[[3]] * fit$aug_thinning, by = fit$aug_thinning),
                      each = augdata_dims[[1]] * augdata_dims[[2]])
 
     fit$augmented_data <- dplyr::tibble(

@@ -202,7 +202,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     int alpha_jump = 1,
                     double lambda = 0.1,
                     int psi = 10,
-                    int thinning = 1,
+                    int rho_thinning = 1,
                     bool save_augmented_data = false
                       );
 ```

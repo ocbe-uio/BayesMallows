@@ -40,6 +40,8 @@ library(tidyr)
 
 # Overview of Package
 
+## Functions
+
 Here is an overview of the most used function. You can read their documentation with `?function_name`, or search for an example in this vignette.
 
 ----------------------------- ------------------------------------------------------
@@ -73,6 +75,26 @@ Function Name                 Description
 ------------------- --------------------------------------------------
 
 : Main functions in the `BayesMallows` package.
+
+## Datasets
+
+Here is an overview of the example datasets in `BayesMallows`. You can read their documentation with `?dataset_name`, or search for an example in this vignette.
+
+----------------------------- ------------------------------------------------------
+Dataset Name                  Description
+----------------------------- ------------------------------------------------------
+`beach_preferences`           Stated pairwise preferences between random subsets of 15 images of beaches, by 60 assessors.
+
+`sushi_rankings`              Complete rankings of 10 types of sushi by 5000 assessors.
+
+`potato_visual`               Complete rankings of 20 potatoes by weight, based on visual inspection, by 12 assessors.
+
+`potato_weighing`             Complete rankings of 20 potatoes by weight, where the assessors were allowed to weigh the potatoes in their hands, by 12 assessors.
+
+`potato_true_ranking`         Vector of true weight rankings for the 20 potatoes in the example datasets `potato_visual` and `potato_weighing`.
+------------------- --------------------------------------------------
+
+: Example datasets in the `BayesMallows` package.
 
 
 # Mallows' Rank Model
@@ -211,12 +233,12 @@ assess_convergence(model_fit, type = "alpha")
 
 #### Thinning
 
-Saving a large number of iterations of $\rho$ gets quite expensive, so `compute_mallows` has a `thinning` parameter. It specifies that only each `thinning`th iteration of $\rho$ should be saved to memory. We double the number of iterations, while setting `thinning = 2`. This gives us the same number of posterior samples.
+Saving a large number of iterations of $\rho$ gets quite expensive, so `compute_mallows` has a `rho_thinning` parameter. It specifies that only each `rho_thinning`th iteration of $\rho$ should be saved to memory. We double the number of iterations, while setting `rho_thinning = 2`. This gives us the same number of posterior samples.
 
 Please be careful with thinning. In this small data example it is definitely wasteful! Running the same number of iterations without thinning always gives a better approximation of the posterior distribution. Thinning might be useful when you need to run a large number of iterations to explore the space of latent ranks, and the latent ranks from all iterations do not fit in memory. (See, e.g., @gelman2004 for a discussion of thinning).
 
 ```{r, eval=FALSE}
-model_fit <- compute_mallows(potato_visual, alpha_jump = 10, thinning = 2)
+model_fit <- compute_mallows(potato_visual, alpha_jump = 10, rho_thinning = 2)
 ```
 
 
