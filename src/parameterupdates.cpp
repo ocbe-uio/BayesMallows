@@ -63,7 +63,7 @@ void update_alpha(arma::mat& alpha,
 
 
 void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
-                int& rho_index, const int& cluster_index, const int& thinning,
+                int& rho_index, const int& cluster_index, const int& rho_thinning,
                 const double& alpha_old, const int& leap_size, const arma::mat& rankings,
                 const std::string& metric, const int& n_items, const int& t,
                 const arma::uvec& element_indices, bool& rho_accepted) {
@@ -98,7 +98,7 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
   }
 
   // Save rho if appropriate
-  if(t % thinning == 0){
+  if(t % rho_thinning == 0){
     if(cluster_index == 0) ++rho_index;
     rho.slice(rho_index).col(cluster_index) = rho_old.col(cluster_index);
   }

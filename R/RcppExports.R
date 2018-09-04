@@ -122,16 +122,16 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
 #' have to do expensive computation of the partition function.
 #' @param lambda Parameter of the prior distribution.
 #' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
-#' @param thinning Thinning parameter. Keep only every \code{thinning} rank
+#' @param rho_thinning Thinning parameter. Keep only every \code{rho_thinning} rank
 #' sample from the posterior distribution.
 #' @param save_augmented_data Whether or not to save the augmented data every
-#' \code{thinning}th iteration.
+#' \code{aug_thinning}th iteration.
 #' @param verbose Logical specifying whether to print out the progress of the
 #' Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
 #' 1000th iteration.
 #' @keywords internal
 #'
-run_mcmc <- function(rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, thinning = 1L, save_augmented_data = FALSE, verbose = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, thinning, save_augmented_data, verbose)
+run_mcmc <- function(rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, rho_thinning = 1L, aug_thinning = 1L, save_augmented_data = FALSE, verbose = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, rho_thinning, aug_thinning, save_augmented_data, verbose)
 }
 

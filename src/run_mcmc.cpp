@@ -36,10 +36,10 @@
 //' have to do expensive computation of the partition function.
 //' @param lambda Parameter of the prior distribution.
 //' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
-//' @param thinning Thinning parameter. Keep only every \code{thinning} rank
+//' @param rho_thinning Thinning parameter. Keep only every \code{rho_thinning} rank
 //' sample from the posterior distribution.
 //' @param save_augmented_data Whether or not to save the augmented data every
-//' \code{thinning}th iteration.
+//' \code{aug_thinning}th iteration.
 //' @param verbose Logical specifying whether to print out the progress of the
 //' Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
 //' 1000th iteration.
@@ -60,7 +60,8 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     int alpha_jump = 1,
                     double lambda = 0.1,
                     int psi = 10,
-                    int thinning = 1,
+                    int rho_thinning = 1,
+                    int aug_thinning = 1,
                     bool save_augmented_data = false,
                     bool verbose = false
                       ){
@@ -75,7 +76,10 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   int n_alpha = ceil(nmc * 1.0 / alpha_jump);
 
   // Number of rho values to store, per cluster and item
-  int n_rho = ceil(nmc * 1.0 / thinning);
+  int n_rho = ceil(nmc * 1.0 / rho_thinning);
+
+  // Number of augmented data sets to store
+  int n_aug = ceil(nmc * 1.0 / aug_thinning);
 
   // Check if we want to do clustering
   bool clustering = n_clusters > 1;
@@ -140,7 +144,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // If the user wants to save augmented data, we need a cube
   arma::cube augmented_data;
   if(save_augmented_data){
-    augmented_data.set_size(n_items, n_assessors, n_rho);
+    augmented_data.set_size(n_items, n_assessors, n_aug);
     augmented_data.slice(0) = rankings;
   }
 
@@ -201,7 +205,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   }
 
   // Other variables used
-  int alpha_index = 0, rho_index = 0;
+  int alpha_index = 0, rho_index = 0, aug_index = 0;
   arma::vec alpha_old = alpha.col(0);
   arma::mat rho_old = rho(arma::span::all, arma::span::all, arma::span(0));
   bool rho_accepted = false;
@@ -243,11 +247,11 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
       // Call the void function which updates rho by reference
       update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,
-                 thinning, alpha_old(cluster_index), leap_size, clus_mat, metric, n_items, t,
+                 rho_thinning, alpha_old(cluster_index), leap_size, clus_mat, metric, n_items, t,
                  element_indices, rho_accepted);
 
       if((rho_accepted | augmentation_accepted) & (clustering | include_wcd)){
-        // Note: Must use rho_old rather than rho, because when thinning > 1,
+        // Note: Must use rho_old rather than rho, because when rho_thinning > 1,
         // rho does not necessarily have the last accepted value
         update_distance_matrix(dist_mat, rankings, rho_old.col(cluster_index),
                                n_assessors, cluster_index, metric);
@@ -279,16 +283,12 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                dist_mat, n_clusters, t);
   }
 
-
-
   // Perform data augmentation of missing ranks, if needed
   if(any_missing){
     update_missing_ranks(rankings, cluster_assignment, aug_acceptance, missing_indicator,
                          assessor_missing, n_items, n_assessors, alpha_old, rho_old,
                          metric, t, clustering, augmentation_accepted);
   }
-
-
 
     // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
@@ -298,14 +298,11 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
   }
 
-
-
   // Save augmented data if the user wants this. Uses the same index as rho.
-  if(save_augmented_data){
-    augmented_data.slice(rho_index) = rankings;
+  if(save_augmented_data & (t % aug_thinning == 0)){
+    ++aug_index;
+    augmented_data.slice(aug_index) = rankings;
   }
-
-
   }
 
 
