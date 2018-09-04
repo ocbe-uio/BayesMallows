@@ -11,7 +11,7 @@
 //
 // [[Rcpp::depends(RcppArmadillo)]]
 
-//' Worker function for computing the posterior distribtuion.
+//' Worker function for computing the posterior distribution.
 //'
 //' @param rankings A set of complete rankings, with one sample per column.
 //' With n_assessors samples and n_items items, rankings is n_items x n_assessors.

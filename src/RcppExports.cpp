@@ -122,6 +122,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rmallows
+arma::vec rmallows(arma::vec rho0, double alpha0, int n_samples, int burnin, int thinning, int leap_size, std::string metric);
+RcppExport SEXP _BayesMallows_rmallows(SEXP rho0SEXP, SEXP alpha0SEXP, SEXP n_samplesSEXP, SEXP burninSEXP, SEXP thinningSEXP, SEXP leap_sizeSEXP, SEXP metricSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type rho0(rho0SEXP);
+    Rcpp::traits::input_parameter< double >::type alpha0(alpha0SEXP);
+    Rcpp::traits::input_parameter< int >::type n_samples(n_samplesSEXP);
+    Rcpp::traits::input_parameter< int >::type burnin(burninSEXP);
+    Rcpp::traits::input_parameter< int >::type thinning(thinningSEXP);
+    Rcpp::traits::input_parameter< int >::type leap_size(leap_sizeSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(rmallows(rho0, alpha0, n_samples, burnin, thinning, leap_size, metric));
+    return rcpp_result_gen;
+END_RCPP
+}
 // run_mcmc
 Rcpp::List run_mcmc(arma::mat rankings, int nmc, Rcpp::List constraints, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> logz_estimate, Rcpp::Nullable<arma::vec> rho_init, std::string metric, int n_clusters, bool include_wcd, int leap_size, double alpha_prop_sd, double alpha_init, int alpha_jump, double lambda, int psi, int thinning, bool save_augmented_data, bool verbose);
 RcppExport SEXP _BayesMallows_run_mcmc(SEXP rankingsSEXP, SEXP nmcSEXP, SEXP constraintsSEXP, SEXP cardinalitiesSEXP, SEXP logz_estimateSEXP, SEXP rho_initSEXP, SEXP metricSEXP, SEXP n_clustersSEXP, SEXP include_wcdSEXP, SEXP leap_sizeSEXP, SEXP alpha_prop_sdSEXP, SEXP alpha_initSEXP, SEXP alpha_jumpSEXP, SEXP lambdaSEXP, SEXP psiSEXP, SEXP thinningSEXP, SEXP save_augmented_dataSEXP, SEXP verboseSEXP) {
@@ -161,6 +178,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_sample_int", (DL_FUNC) &_BayesMallows_sample_int, 1},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 5},
+    {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 18},
     {NULL, NULL, 0}
 };

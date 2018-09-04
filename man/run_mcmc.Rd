@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{run_mcmc}
 \alias{run_mcmc}
-\title{Worker function for computing the posterior distribtuion.}
+\title{Worker function for computing the posterior distribution.}
 \usage{
 run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate,
   rho_init, metric = "footrule", n_clusters = 1L,
@@ -59,6 +59,6 @@ Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
 1000th iteration.}
 }
 \description{
-Worker function for computing the posterior distribtuion.
+Worker function for computing the posterior distribution.
 }
 \keyword{internal}
