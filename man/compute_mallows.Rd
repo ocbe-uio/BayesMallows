@@ -46,7 +46,7 @@ tools to check convergence of the Markov chain.}
 
 \item{leap_size}{Integer specifying the step size of the leap-and-shift
 proposal distribution. Defaults to NULL, which means that it is set based
-on the data to \code{floor(n_assessors / 5)}.}
+on the data to \code{floor(n_items / 5)}.}
 
 \item{rho_init}{Numeric vector specifying the initial value of the latent
 consensus ranking \eqn{\rho}. Defaults to NULL, which means that the initial

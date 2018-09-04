@@ -44,7 +44,7 @@
 #'
 #' @param leap_size Integer specifying the step size of the leap-and-shift
 #'   proposal distribution. Defaults to NULL, which means that it is set based
-#'   on the data to \code{floor(n_assessors / 5)}.
+#'   on the data to \code{floor(n_items / 5)}.
 #'
 #' @param rho_init Numeric vector specifying the initial value of the latent
 #'   consensus ranking \eqn{\rho}. Defaults to NULL, which means that the initial
