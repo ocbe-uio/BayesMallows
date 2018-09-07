@@ -4,15 +4,16 @@
 \alias{plot_top_k}
 \title{Plot Top-k Rankings with Pairwise Preferences}
 \usage{
-plot_top_k(model_fit, burnin, k = 3, rel_widths = c(rep(1,
-  model_fit$n_clusters), 10))
+plot_top_k(model_fit, burnin = model_fit$burnin, k = 3,
+  rel_widths = c(rep(1, model_fit$n_clusters), 10))
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
 \code{\link{compute_mallows}}.}
 
 \item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. See \code{\link{assess_convergence}}.}
+to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
 
 \item{k}{Integer specifying the k in top-\eqn{k}.}
 

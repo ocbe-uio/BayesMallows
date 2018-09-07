@@ -5,8 +5,9 @@
 #'
 #' @param model_fit An object returned from \code{\link{compute_mallows}}.
 #'
-#' @param burnin A numeric value specifying the number of iterations to discard
-#'   as burn-in. See \code{\link{assess_convergence}}.
+#' @param burnin A numeric value specifying the number of iterations
+#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
 #'
 #' @param parameter Character string defining which parameter to compute
 #' posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
@@ -32,10 +33,16 @@
 #'
 #' @export
 #'
-compute_posterior_intervals <- function(model_fit, burnin, parameter,
-                                        level = 0.95,
+compute_posterior_intervals <- function(model_fit, burnin = model_fit$burnin,
+                                        parameter, level = 0.95,
                                         decimals = 3L){
   stopifnot(class(model_fit) == "BayesMallows")
+
+  if(is.null(burnin)){
+    stop("Please specify the burnin, either by setting x$burnin or
+         as an argument to the plot.BayesMallows function.")
+  }
+
   stopifnot(burnin < model_fit$nmc)
   stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment"))
   stopifnot(level > 0 && level < 1)

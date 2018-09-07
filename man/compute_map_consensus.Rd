@@ -4,14 +4,15 @@
 \alias{compute_map_consensus}
 \title{Maximum a Posterior Consensus Ranking}
 \usage{
-compute_map_consensus(model_fit, burnin)
+compute_map_consensus(model_fit, burnin = model_fit$burnin)
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
 \code{\link{compute_mallows}}.}
 
 \item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. See \code{\link{assess_convergence}}.}
+to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
 }
 \description{
 Compute the maximum a posterior consensus ranking. If a mixture model

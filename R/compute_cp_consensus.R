@@ -6,16 +6,25 @@
 #'
 #' @param model_fit An object returned from \code{\link{compute_mallows}}.
 #'
-#' @param burnin A numeric value specifying the number of iterations to discard
-#'   as burn-in. See \code{\link{assess_convergence}}.
+#' @param burnin A numeric value specifying the number of iterations
+#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
 #'
 #' @references \insertAllCited{}
 #'
 #'
 #' @export
 #'
-compute_cp_consensus <- function(model_fit, burnin){
+compute_cp_consensus <- function(model_fit, burnin = model_fit$burnin){
+
   stopifnot(class(model_fit) == "BayesMallows")
+
+  if(is.null(burnin)){
+    stop("Please specify the burnin, either by setting x$burnin or
+         as an argument to the plot.BayesMallows function.")
+  }
+
+  stopifnot(burnin < model_fit$nmc)
 
   # Filter out the pre-burnin iterations
   df <- dplyr::filter(model_fit$rho, .data$iteration > burnin)

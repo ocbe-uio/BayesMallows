@@ -170,7 +170,12 @@ Next, we study the convergence of $\rho$. To avoid too complicated plots, we pic
 assess_convergence(model_fit, type = "rho", items = 1:5)
 ```
 
-Based on these plots, it looks like the algorithm starts to converge after around 1000 iterations. Discarding the first 1000 iterations as burn-in hence seems like a safe choice.
+Based on these plots, it looks like the algorithm starts to converge after around 1000 iterations. Discarding the first 1000 iterations as burn-in hence seems like a safe choice. We create a new list element for `model_fit` called `burnin`, in which this choice is saved. Having done this, we do not have to provide a `burnin` argument to subsequent analyses of the posterior distributions.
+
+```{r}
+model_fit$burnin <- 1000
+```
+
 
 ### Posterior Distributions
 
@@ -181,14 +186,14 @@ Once we are confident that the algorithm parameters are reasonable, we can study
 With a burnin of 1000, the original `model_fit` object from the previous subsection has 1000 MCMC samples. The default parameter of `plot.BayesMallows` is $alpha$, so we can study the posterior distribution with the simple statement below.
 
 ```{r}
-plot(model_fit, burnin = 1000)
+plot(model_fit)
 ```
+
 
 We can also get the posterior credible intervals for $\alpha$:
 
 ```{r}
-intervals <- compute_posterior_intervals(model_fit, burnin = 1000, 
-                                         parameter = "alpha")
+intervals <- compute_posterior_intervals(model_fit, parameter = "alpha")
 ```
 
 ```{r, echo=FALSE, results='asis'}
@@ -199,19 +204,19 @@ knitr::kable(intervals)
 Obtaining posterior samples from $\rho$ is in general harder than for $\alpha$. Some items tend to be very sticky. We start by plotting the `model_fit` object from above. We now have to tell `plot.BayesMallows` that we want a plot of `type = "rho"` and all the items. This gives us posterior the posterior density of all the items.
 
 ```{r, fig.width=6, fig.height=6}
-plot(model_fit, burnin = 1000, type = "rho", items = 1:20)
+plot(model_fit, type = "rho", items = 1:20)
 ```
 
 
 We can also find the posterior intervals of the latent ranks:
 
 ```{r, eval=FALSE}
-compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho")
+compute_posterior_intervals(model_fit, parameter = "rho")
 ```
 
 
 ```{r, echo=FALSE, results='asis'}
-knitr::kable(compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho"))
+knitr::kable(compute_posterior_intervals(model_fit, parameter = "rho"))
 ```
 
 
@@ -632,6 +637,8 @@ model_fit <- compute_mallows(
   nmc = 6000,
   save_augmented_data = TRUE
   )
+
+model_fit$burnin <- 1000
 ```
 
 The posterior densities of $\alpha$ and $\rho$ can be studied as shown above.
@@ -641,12 +648,12 @@ The posterior densities of $\alpha$ and $\rho$ can be studied as shown above.
 We can rank the beaches according to the cumulative probability (CP) consensus. This functionality is provided by `compute_cp_consensus`, which returns a dataframe.
 
 ```{r, eval=FALSE}
-compute_cp_consensus(model_fit, burnin = 1000)
+compute_cp_consensus(model_fit)
 ```
 
 
 ```{r, results='asis', echo=FALSE}
-knitr::kable(compute_cp_consensus(model_fit, burnin = 1000), digits = 2)
+knitr::kable(compute_cp_consensus(model_fit), digits = 2)
 ```
 
 #### MAP Consensus
@@ -654,12 +661,12 @@ knitr::kable(compute_cp_consensus(model_fit, burnin = 1000), digits = 2)
 The maximum a posterior (MAP) consensus ranking is the a posterior most likely value of $\rho$.
 
 ```{r, eval=FALSE}
-compute_map_consensus(model_fit, burnin = 1000)
+compute_map_consensus(model_fit)
 ```
 
 
 ```{r, results='asis', echo=FALSE}
-knitr::kable(compute_map_consensus(model_fit, burnin = 1000), digits = 2)
+knitr::kable(compute_map_consensus(model_fit), digits = 2)
 ```
 
 #### Posterior Intervals
@@ -667,12 +674,12 @@ knitr::kable(compute_map_consensus(model_fit, burnin = 1000), digits = 2)
 We can compute posterior intervals for several parameters. Here we do it for $\rho$.
 
 ```{r, eval=FALSE}
-compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho")
+compute_posterior_intervals(model_fit, parameter = "rho")
 ```
 
 
 ```{r, results='asis', echo=FALSE}
-knitr::kable(compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho"))
+knitr::kable(compute_posterior_intervals(model_fit, parameter = "rho"))
 ```
 
 
@@ -683,7 +690,7 @@ We can also find the posterior probability for each beach of being ranked top-$k
 We can do a top-$k$ plot with `plot_top_k`. By default, `k = 3`. It may be necessary to do some experimentation with the `rel_widths` argument to get a good looking plot.
 
 ```{r, fig.width=6}
-plot_top_k(model_fit, burnin = 1000, rel_widths = c(1, 8))
+plot_top_k(model_fit, rel_widths = c(1, 8))
 ```
 
 
@@ -793,9 +800,12 @@ assess_convergence(model_fit2, type = "cluster_probs")
 knitr::include_graphics("./vignette-data/cluster_probs_convergence2.png")
 ```
 
-
-
 It seems like $\alpha$ is mixing rapidly. Let us set `burnin = 200`, and compute the CP consensus for the case with two clusters.
+
+```{r, eval=FALSE}
+model_fit$burnin <- 200
+```
+
 
 #### Posterior Distributions
 
@@ -804,7 +814,7 @@ It seems like $\alpha$ is mixing rapidly. Let us set `burnin = 200`, and compute
 
 We can find the CP consensus for each of the two clusters.
 ```{r, eval=FALSE}
-cp_consensus_sushi <- compute_cp_consensus(model_fit2, burnin = 200)
+cp_consensus_sushi <- compute_cp_consensus(model_fit2)
 ```
 
 ```{r, echo=FALSE}
@@ -849,10 +859,12 @@ models <- compute_mallows_mixtures(n_clusters = n_clusters,
                                    nmc = 6000)
 ```
 
+Even though the result of `compute_mallows_mixtures` is a list of fitted models, we can specify `burnin` as an element in this case as well, and it is used by `plot_elbow`.
+
 We can now provide the `models` list to `plot_elbow`. 
 
 ```{r, eval=FALSE}
-plot_elbow(models, burnin = 1000)
+plot_elbow(models)
 ```
 
 

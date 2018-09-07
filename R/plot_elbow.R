@@ -9,8 +9,24 @@
 #' has been run with a different number of mixtures, as specified in the
 #' \code{n_clusters} argument to \code{\link{compute_mallows}}.
 #'
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. See \code{\link{assess_convergence}}.
+#' @param burnin The number of iterations to discard as burnin. The following
+#' options are possible:
+#' \itemize{
+#' \item A numeric vector with one element for each model object provided in
+#' \code{...}.
+#'
+#' \item A single number. In this case, the burnin for each model provided in
+#' \code{...} is taken to be equal to this single number.
+#'
+#' \item If the argument to \code{...} is a list of models, and this list
+#' has an element named \code{burnin}, then this is the default value of \code{burnin}.
+#' The element can either be a vector or a single number, as described in the points
+#' above.
+#'
+#' \item If the arguments to \code{...} are a set of models, and each
+#' models has a \code{burnin} element set, then this is the default value of
+#' \code{burnin}.
+#' }
 #'
 #' @return A boxplot with the number of clusters on the horizontal axis and the
 #' with-cluster sum of distances on the vertical axis.
@@ -19,7 +35,7 @@
 #'
 #' @seealso \code{\link{compute_mallows}}
 #'
-plot_elbow <- function(..., burnin){
+plot_elbow <- function(..., burnin = NULL){
 
   # Put the models into a list. These are typically fitted with different number of clusters
   models <- list(...)
@@ -29,11 +45,33 @@ plot_elbow <- function(..., burnin){
     models <- models[[1]]
   }
 
+
+  #### TODO: Deal with the case where burnin is either
+  # an element of models or an element of the elements inside models.
+
+  # Set the burnin
+  if(!is.null(burnin)){
+    if(length(burnin) == 1 && length(models) > 1){
+      models <- purrr::map(models, function(x) {
+        x$burnin <- burnin
+        return(x)
+      })
+    } else if(length(burnin) == length(models)){
+      models <- purrr::map2(models, burnin, function(x, y){
+        x$burnin <- y
+        return(x)
+      })
+    } else {
+      stop("Burnin must be either a single number or a vector of same length
+           as the number of models.")
+    }
+  }
+
   df <- purrr::map_dfr(models, function(x) {
     stopifnot(class(x) == "BayesMallows")
     if(!x$include_wcd) stop("To get an elbow plot, set include_wcd=TRUE in compute_mallows")
 
-    df <- dplyr::filter(x$within_cluster_distance, .data$iteration > burnin)
+    df <- dplyr::filter(x$within_cluster_distance, .data$iteration > x$burnin)
 
     # Need to sum the within-cluster distances across clusters, for each iteration
     df <- dplyr::group_by(df, .data$iteration)

@@ -4,7 +4,7 @@
 \alias{plot_elbow}
 \title{Plot Within-Cluster Sum of Distances}
 \usage{
-plot_elbow(..., burnin)
+plot_elbow(..., burnin = NULL)
 }
 \arguments{
 \item{...}{One or more objects returned from \code{\link{compute_mallows}},
@@ -12,8 +12,24 @@ separated by comma, or a list of such objects. Typically, each object
 has been run with a different number of mixtures, as specified in the
 \code{n_clusters} argument to \code{\link{compute_mallows}}.}
 
-\item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. See \code{\link{assess_convergence}}.}
+\item{burnin}{The number of iterations to discard as burnin. The following
+options are possible:
+\itemize{
+\item A numeric vector with one element for each model object provided in
+\code{...}.
+
+\item A single number. In this case, the burnin for each model provided in
+\code{...} is taken to be equal to this single number.
+
+\item If the argument to \code{...} is a list of models, and this list
+has an element named \code{burnin}, then this is the default value of \code{burnin}.
+The element can either be a vector or a single number, as described in the points
+above.
+
+\item If the arguments to \code{...} are a set of models, and each
+models has a \code{burnin} element set, then this is the default value of
+\code{burnin}.
+}}
 }
 \value{
 A boxplot with the number of clusters on the horizontal axis and the

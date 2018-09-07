@@ -4,14 +4,15 @@
 \alias{compute_posterior_intervals}
 \title{Compute Posterior Intervals}
 \usage{
-compute_posterior_intervals(model_fit, burnin, parameter, level = 0.95,
-  decimals = 3L)
+compute_posterior_intervals(model_fit, burnin = model_fit$burnin,
+  parameter, level = 0.95, decimals = 3L)
 }
 \arguments{
 \item{model_fit}{An object returned from \code{\link{compute_mallows}}.}
 
-\item{burnin}{A numeric value specifying the number of iterations to discard
-as burn-in. See \code{\link{assess_convergence}}.}
+\item{burnin}{A numeric value specifying the number of iterations
+to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
 
 \item{parameter}{Character string defining which parameter to compute
 posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or

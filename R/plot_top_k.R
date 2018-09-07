@@ -8,7 +8,8 @@
 #'   \code{\link{compute_mallows}}.
 #'
 #' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. See \code{\link{assess_convergence}}.
+#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
 #'
 #' @param k Integer specifying the k in top-\eqn{k}.
 #'
@@ -19,7 +20,14 @@
 #' @export
 #'
 #'
-plot_top_k <- function(model_fit, burnin, k = 3, rel_widths = c(rep(1, model_fit$n_clusters), 10)){
+plot_top_k <- function(model_fit, burnin = model_fit$burnin,
+                       k = 3,
+                       rel_widths = c(rep(1, model_fit$n_clusters), 10)){
+
+  if(is.null(burnin)){
+    stop("Please specify the burnin, either by setting x$burnin or
+         as an argument to the plot.BayesMallows function.")
+  }
   stopifnot(burnin < model_fit$nmc)
 
   if(!exists("augmented_data", model_fit)){
