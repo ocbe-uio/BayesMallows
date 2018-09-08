@@ -16,26 +16,28 @@
   mixture_model <- models[[5]]
   # Delete the models object to free some memory
   rm(models)
+  # Set the burnin
+  mixture_model$burnin <- 1000
   # Plot the posterior distributions of alpha per cluster
-  plot(mixture_model, burnin = 1000)
+  plot(mixture_model)
   # Compute the posterior interval of alpha per cluster
-  compute_posterior_intervals(mixture_model, burnin = 1000,
+  compute_posterior_intervals(mixture_model,
                               parameter = "alpha")
   # Plot the posterior distributions of cluster probabilities
-  plot(mixture_model, burnin = 1000, type = "cluster_probs")
+  plot(mixture_model, type = "cluster_probs")
   # Plot the posterior probability of cluster assignment
-  plot(mixture_model, burnin = 1000, type = "cluster_assignment")
+  plot(mixture_model, type = "cluster_assignment")
   # Plot the posterior distribution of "tuna roll" in each cluster
-  plot(mixture_model, burnin = 1000, type = "rho", items = "tuna roll")
+  plot(mixture_model, type = "rho", items = "tuna roll")
   # Compute the cluster-wise CP consensus, and show one column per cluster
-  cp <- compute_cp_consensus(mixture_model, burnin = 1000)
+  cp <- compute_cp_consensus(mixture_model)
   library(dplyr)
   library(tidyr)
   cp %>%
     select(-cumprob) %>%
     spread(key = cluster, value = item)
   # Compute the MAP consensus, and show one column per cluster
-  map <- compute_map_consensus(mixture_model, burnin = 1000)
+  map <- compute_map_consensus(mixture_model)
   map %>%
     select(-probability) %>%
     spread(key = cluster, value = item)

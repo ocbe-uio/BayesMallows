@@ -140,19 +140,20 @@ assess_convergence(model_fit, type = "alpha")
 \dontrun{assess_convergence(model_fit, type = "rho")}
 
 # Based on these plots, we set burnin = 1000.
+model_fit$burnin <- 1000
 # Next, we use the generic plot function to study the posterior distributions
 # of alpha and rho
-plot(model_fit, burnin = 1000, type = "alpha")
-\dontrun{plot(model_fit, burnin = 1000, type = "rho", items = 10:15)}
+plot(model_fit, type = "alpha")
+\dontrun{plot(model_fit, type = "rho", items = 10:15)}
 
 # We can also compute the CP consensus posterior ranking
-compute_cp_consensus(model_fit, burnin = 1000)
+compute_cp_consensus(model_fit)
 
 # And we can compute the posterior intervals:
 # First we compute the interval for alpha
-compute_posterior_intervals(model_fit, burnin = 1000, parameter = "alpha")
+compute_posterior_intervals(model_fit, parameter = "alpha")
 # Then we compute the interval for all the items
-\dontrun{compute_posterior_intervals(model_fit, burnin = 1000, parameter = "rho")}
+\dontrun{compute_posterior_intervals(model_fit, parameter = "rho")}
 
 # ANALYSIS OF PAIRWISE PREFERENCES
 \dontrun{
@@ -167,7 +168,7 @@ compute_posterior_intervals(model_fit, burnin = 1000, parameter = "alpha")
   # We then run the Bayesian Mallows rank model
   # We save the augmented data for diagnostics purposes.
   model_fit <- compute_mallows(rankings = beach_rankings,
-                               preferences = beach_preferences,
+                               preferences = beach_tc,
                                save_augmented_data = TRUE,
                                verbose = TRUE)
   # We can assess the convergence of the scale parameter
@@ -206,15 +207,15 @@ compute_posterior_intervals(model_fit, burnin = 1000, parameter = "alpha")
   # Based on this, we set burnin = 1000
   # We now plot the posterior density of the scale parameters alpha in
   # each mixture:
-  burnin <- 1000
-  plot(model_fit, burnin = burnin, type = "alpha")
+  model_fit$burnin <- 1000
+  plot(model_fit, type = "alpha")
   # We can also compute the posterior density of the cluster probabilities
-  plot(model_fit, burnin = burnin, type = "cluster_probs")
+  plot(model_fit, type = "cluster_probs")
   # We can also plot the posterior cluster assignment. In this case,
-  # the assessors are sorted according to their maximum a prior cluster estimate.
-  plot(model_fit, burnin = burnin, type = "cluster_assignment")
+  # the assessors are sorted according to their maximum a posteriori cluster estimate.
+  plot(model_fit, type = "cluster_assignment")
   # We can also assign each assessor to a cluster
-  cluster_assignments <- assign_cluster(model_fit, burnin = burnin, soft = FALSE)
+  cluster_assignments <- assign_cluster(model_fit, soft = FALSE)
   }
 
 # DETERMINING THE NUMBER OF CLUSTERS
@@ -230,7 +231,7 @@ compute_posterior_intervals(model_fit, burnin = 1000, parameter = "alpha")
   # We can create an elbow plot
   plot_elbow(models, burnin = 1000)
   # We then select the number of cluster at a point where this plot has
-  # an "elbow", e.g., n_clusters = 5.
+  # an "elbow", e.g., at 6 clusters.
 }
 
 

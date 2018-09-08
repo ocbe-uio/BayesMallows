@@ -130,7 +130,7 @@ For the scale parameters $\alpha_{1}, \dots, \alpha_{C}$ we assume the exponenti
 
 # BayesMallows User Guide
 
-Having described the model, we now show some case studies demonstrating the use of the `BayesMallows` package.
+Having described the model, we now show some case studies demonstrating the use of the `BayesMallows` package. To reduce the computing time, we have typically taken a fairly small number of posterior samples, and rather focused on demonstrating the different methods. In general, we recommend taking a larger number of samples than what we do here, in order to obain good approximations of the posterior distributions.
 
 ## Completely Ranked Data
 `BayesMallows` comes with example data described in @liu2018. A total of 12 assessors were asked to rank 20 potatoes based on their weight. In the first round, the assessors were only allowed to study the potatoes visually, while in the second round, the assessors were also allowed to hold the potatoes in their hands in order to compare them. The data sets are named `potato_visual` and `potato_weighing`, respectively. The true ordering of the potatoes' weights are stored in the vector `potato_true_ranking`.
@@ -800,10 +800,11 @@ assess_convergence(model_fit2, type = "cluster_probs")
 knitr::include_graphics("./vignette-data/cluster_probs_convergence2.png")
 ```
 
-It seems like $\alpha$ is mixing rapidly. Let us set `burnin = 200`, and compute the CP consensus for the case with two clusters.
+It seems like $\alpha$ is mixing rapidly. Let us set `burnin = 400`, and compute the CP consensus for the case with two clusters.
 
 ```{r, eval=FALSE}
-model_fit$burnin <- 200
+model_fit1$burnin <- 400
+model_fit2$burnin <- 400
 ```
 
 
@@ -848,7 +849,7 @@ We can also compute an elbow plot, using `plot_elbow`. Before doing that, we sho
 args(plot_elbow)
 ```
 
-`plot_elbow` requires the model fits for different number of clusters to be provided as the first arguments, either comma separated, or as a list. The other argument is `burnin`, which must be named.
+`plot_elbow` requires the model fits for different number of clusters to be provided as the first arguments, either comma separated, or as a list. The other argument is `burnin`, which must be named. If each model provided has its `burnin` element set, then this is taken as the default value of `burnin`.
 
 In order to systematically investigate how many clusters to include, we can use the function `compute_mallows_mixtures`, which takes a vector that specifies the number of clusters, and calls `compute_mallows` once for each number.
 
@@ -864,7 +865,7 @@ Even though the result of `compute_mallows_mixtures` is a list of fitted models,
 We can now provide the `models` list to `plot_elbow`. 
 
 ```{r, eval=FALSE}
-plot_elbow(models)
+plot_elbow(models, burnin = 1000)
 ```
 
 
@@ -872,7 +873,7 @@ plot_elbow(models)
 knitr::include_graphics("./vignette-data/sushi_elbow_10.png")
 ```
 
-Choosing 5 clusters seems to be an ok solution. We can then find the cluster assignment probabilities for each assessor.
+Let us choose 5 clusters. We can then find the cluster assignment probabilities for each assessor.
 
 ```{r, eval=FALSE}
 plot(models[[5]], burnin = 1000, type = "cluster_assignment")
@@ -884,7 +885,7 @@ knitr::include_graphics("./vignette-data/cluster_assignment_plot_10.png")
 
 We can also the function `assign_cluster` to get the a posteriori cluster assignment for each assessor.
 ```{r, eval=FALSE}
-cluster_assignment <- assign_cluster(models[[7]], 
+cluster_assignment <- assign_cluster(models[[5]], 
                                      burnin = 1000, soft = FALSE)
 ```
 

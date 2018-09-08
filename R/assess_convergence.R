@@ -74,6 +74,10 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
 
   } else if(type == "Rtilde") {
 
+    if(!model_fit$save_augmented_data){
+      stop("Please rerun with compute_mallows with save_augmented_data = TRUE")
+    }
+
     if(is.null(items) && model_fit$n_items > 5){
       message("Items not provided by user. Picking 5 at random.")
       items <- sample.int(model_fit$n_items, 5)

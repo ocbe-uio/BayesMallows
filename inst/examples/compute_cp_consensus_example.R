@@ -5,9 +5,9 @@ model_fit <- compute_mallows(potato_visual)
 
 # Se the documentation to compute_mallows for how to assess the convergence of the algorithm
 # Having chosen burin = 1000, we compute posterior intervals
-burnin <- 1000
+model_fit$burnin <- 1000
 # We then compute the CP consensus.
-compute_cp_consensus(model_fit, burnin = burnin)
+compute_cp_consensus(model_fit)
 
 \dontrun{
   # CLUSTERWISE CP CONSENSUS
@@ -16,7 +16,8 @@ compute_cp_consensus(model_fit, burnin = burnin)
   # example
   model_fit <- compute_mallows(sushi_rankings, n_clusters = 5)
   # Keeping the burnin at 1000, we can compute the CP consensus per cluster
-  cp_consensus_df <- compute_cp_consensus(model_fit, burnin = burnin)
+  model_fit$burnin <- 1000
+  cp_consensus_df <- compute_cp_consensus(model_fit)
   # Using dplyr::select and tidyr::cumprob we can now make a table
   # which shows the ranking in each cluster:
   library(dplyr)

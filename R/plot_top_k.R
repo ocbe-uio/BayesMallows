@@ -68,7 +68,6 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
 
   assessor_plot <- ggplot2::ggplot(rankings, ggplot2::aes(.data$assessor, .data$item)) +
     ggplot2::geom_tile(ggplot2::aes(fill = .data$prob), colour = "white") +
-    ggplot2::scale_fill_gradient(low = "blue", high = "red") +
     ggplot2::xlab("Assessor") +
     ggplot2::theme(
       legend.title = ggplot2::element_blank(),
@@ -79,7 +78,6 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
 
   rho_plot <- ggplot2::ggplot(rho, ggplot2::aes(.data$cluster, .data$item)) +
     ggplot2::geom_tile(ggplot2::aes(fill = .data$prob), colour = "white") +
-    ggplot2::scale_fill_gradient(low = "blue", high = "red") +
     ggplot2::ylab("Item") +
     ggplot2::xlab(expression(rho)) +
     ggplot2::theme(legend.position = "none")
