@@ -7,7 +7,10 @@
 //
 // [[Rcpp::depends(RcppArmadillo)]]
 
-//' Worker function for sampling from the Mallows distribution.
+//' Sample from the Mallows distribution.
+//'
+//' Sample from the Mallows distribution with arbitrary distance metric using
+//' a Metropolis-Hastings algorithm.
 //'
 //' @param rho0 Vector specifying the latent consensus ranking.
 //' @param alpha0 Scalar specifying the scale parameter.
@@ -17,13 +20,15 @@
 //' between each time a random rank vector is sampled.
 //' @param leap_size Integer specifying the step size of the leap-and-shift proposal distribution.
 //' @param metric Character string specifying the distance measure to use. Available
-//' options are \code{"footrule"} (default) and \code{"Spearman"}.
+//' options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
+//' \code{"kendall"}. For sampling from the Mallows model with Cayley and Kendall distances
+//' we recommend using the \code{PerMallows} package \insertCite{irurozki2016}.
 //'
 //'
-//' @keywords internal
+//' @references \insertAllCited{}
 //'
 // [[Rcpp::export]]
-arma::vec rmallows(
+arma::mat rmallows(
     arma::vec rho0,
     double alpha0,
     int n_samples,
@@ -48,7 +53,7 @@ arma::vec rmallows(
 
   int t = 1;
   // This is the Metropolis-Hastings loop
-  while((t < burnin) | (rho_index < n_samples)){
+  while(rho_index < n_samples){
 
     // Check if the user has tried to stop the running
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
@@ -61,10 +66,14 @@ arma::vec rmallows(
     leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
                    rho_iter, leap_size);
 
+
+    // Compute the distances to current and proposed ranks
+    double dist_new = get_rank_distance(rho0(indices), rho_proposal(indices), metric);
+    double dist_old = rank_dist_matrix(rho0(indices), rho_iter(indices), metric);
+
     // Metropolis-Hastings ratio
-    double ratio = - alpha0 / n_items * get_rank_distance(rho_proposal, rho0, metric) +
-      log(prob_backward) + alpha0 / n_items * get_rank_distance(rho_iter, rho0, metric) -
-      log(prob_forward);
+    double ratio = - alpha0 / n_items * (dist_new - dist_old) +
+      log(prob_backward) - log(prob_forward);
 
     // Draw a uniform random number
     double u = log(arma::randu<double>());
@@ -74,17 +83,14 @@ arma::vec rmallows(
     }
 
     // Save every thinning'th iteration after burnin
-    if(t > burnin & t % thinning == 0){
+    if((t > burnin) & (t % thinning == 0)){
       rho.col(rho_index) = rho_iter;
       ++rho_index;
     }
 
     ++t;
   }
-
   return rho;
-
-
 }
 
 

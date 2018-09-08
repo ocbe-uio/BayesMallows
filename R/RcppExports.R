@@ -107,7 +107,8 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
 #' between each time a random rank vector is sampled.
 #' @param leap_size Integer specifying the step size of the leap-and-shift proposal distribution.
 #' @param metric Character string specifying the distance measure to use. Available
-#' options are \code{"footrule"} (default) and \code{"Spearman"}.
+#' options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
+#' \code{"kendall"}.
 #'
 #'
 #' @keywords internal

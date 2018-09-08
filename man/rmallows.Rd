@@ -22,7 +22,8 @@ between each time a random rank vector is sampled.}
 \item{leap_size}{Integer specifying the step size of the leap-and-shift proposal distribution.}
 
 \item{metric}{Character string specifying the distance measure to use. Available
-options are \code{"footrule"} (default) and \code{"Spearman"}.}
+options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
+\code{"kendall"}.}
 }
 \description{
 Worker function for sampling from the Mallows distribution.
