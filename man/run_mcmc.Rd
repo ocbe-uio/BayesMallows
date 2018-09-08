@@ -49,15 +49,15 @@ have to do expensive computation of the partition function.}
 
 \item{psi}{Hyperparameter for the Dirichlet prior distribution used in clustering.}
 
+\item{rho_thinning}{Thinning parameter. Keep only every \code{rho_thinning} rank
+sample from the posterior distribution.}
+
 \item{save_augmented_data}{Whether or not to save the augmented data every
-\code{thinning}th iteration.}
+\code{aug_thinning}th iteration.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
 1000th iteration.}
-
-\item{thinning}{Thinning parameter. Keep only every \code{thinning} rank
-sample from the posterior distribution.}
 }
 \description{
 Worker function for computing the posterior distribtuion.

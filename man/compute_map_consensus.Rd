@@ -4,14 +4,15 @@
 \alias{compute_map_consensus}
 \title{Maximum a Posterior Consensus Ranking}
 \usage{
-compute_map_consensus(model_fit, burnin)
+compute_map_consensus(model_fit, burnin = model_fit$burnin)
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
 \code{\link{compute_mallows}}.}
 
 \item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. See \code{\link{assess_convergence}}.}
+to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
 }
 \description{
 Compute the maximum a posterior consensus ranking. If a mixture model
@@ -26,9 +27,9 @@ model_fit <- compute_mallows(potato_visual)
 
 # Se the documentation to compute_mallows for how to assess the convergence of the algorithm
 # Having chosen burin = 1000, we compute posterior intervals
-burnin <- 1000
+model_fit$burnin <- 1000
 # We then compute the MAP consensus.
-compute_map_consensus(model_fit, burnin = burnin)
+compute_map_consensus(model_fit)
 
 \dontrun{
   # CLUSTERWISE MAP CONSENSUS
@@ -37,7 +38,8 @@ compute_map_consensus(model_fit, burnin = burnin)
   # example
   model_fit <- compute_mallows(sushi_rankings, n_clusters = 5)
   # Keeping the burnin at 1000, we can compute the MAP consensus per cluster
-  map_consensus_df <- compute_map_consensus(model_fit, burnin = burnin)
+  model_fit$burnin <- 1000
+  map_consensus_df <- compute_map_consensus(model_fit)
   # Using dplyr::select and tidyr::spread we can now make a table
   # which shows the ranking in each cluster:
   library(dplyr)
@@ -52,9 +54,9 @@ compute_map_consensus(model_fit, burnin = burnin)
   # We use the example dataset with beach preferences.
   model_fit <- compute_mallows(preferences = beach_preferences)
   # We set burnin = 1000
-  burnin <- 1000
+  model_fit$burnin <- 1000
   # We now compute the MAP consensus
-  map_consensus_df <- compute_map_consensus(model_fit, burnin = burnin)
+  map_consensus_df <- compute_map_consensus(model_fit)
 }
 
 }

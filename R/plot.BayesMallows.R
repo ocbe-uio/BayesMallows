@@ -6,7 +6,8 @@
 #'   \code{\link{compute_mallows}}.
 #'
 #' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. See \code{\link{assess_convergence}}.
+#' to discard as burn-in. Defaults to \code{x$burnin}, and must be
+#' provided if \code{x$burnin} does not exist. See \code{\link{assess_convergence}}.
 #'
 #' @param type Character string defining the parameter to plot. Available
 #' options are \code{"alpha"}, \code{"rho"}, \code{"cluster_probs"}, and
@@ -23,11 +24,15 @@
 #'
 #' @example /inst/examples/plot.BayesMallows_example.R
 #'
-plot.BayesMallows <- function(x, burnin, type = "alpha", items = NULL, ...){
+plot.BayesMallows <- function(x, burnin = x$burnin, type = "alpha", items = NULL, ...){
   # Note, the first argument must be named x, otherwise R CMD CHECK will
   # issue a warning. This is because plot.BayesMallows must have the same
   # required arguments as graphics::plot.
 
+  if(is.null(burnin)){
+    stop("Please specify the burnin, either by setting x$burnin or
+         as an argument to the plot.BayesMallows function.")
+  }
   stopifnot(x$nmc > burnin)
 
   stopifnot(type %in% c("alpha", "rho", "cluster_probs", "cluster_assignment"))

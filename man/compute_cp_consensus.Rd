@@ -4,13 +4,14 @@
 \alias{compute_cp_consensus}
 \title{Compute CP Consensus}
 \usage{
-compute_cp_consensus(model_fit, burnin)
+compute_cp_consensus(model_fit, burnin = model_fit$burnin)
 }
 \arguments{
 \item{model_fit}{An object returned from \code{\link{compute_mallows}}.}
 
-\item{burnin}{A numeric value specifying the number of iterations to discard
-as burn-in. See \code{\link{assess_convergence}}.}
+\item{burnin}{A numeric value specifying the number of iterations
+to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
 }
 \description{
 Compute the cumulative probability (CP) consensus ranking

@@ -4,7 +4,7 @@
 \alias{plot_elbow}
 \title{Plot Within-Cluster Sum of Distances}
 \usage{
-plot_elbow(..., burnin)
+plot_elbow(..., burnin = NULL)
 }
 \arguments{
 \item{...}{One or more objects returned from \code{\link{compute_mallows}},
@@ -12,8 +12,10 @@ separated by comma, or a list of such objects. Typically, each object
 has been run with a different number of mixtures, as specified in the
 \code{n_clusters} argument to \code{\link{compute_mallows}}.}
 
-\item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. See \code{\link{assess_convergence}}.}
+\item{burnin}{The number of iterations to discard as burnin. Either a vector of
+numbers, one for each model, or a single number which is taken to be the burnin for
+all models. If each model provided has a \code{burnin} element, then this is taken
+as the default.}
 }
 \value{
 A boxplot with the number of clusters on the horizontal axis and the
@@ -23,6 +25,55 @@ with-cluster sum of distances on the vertical axis.
 Plot the within-cluster sum of distances from the corresponding cluster
 consensus for different number of clusters. This function is useful for
 selecting the number of mixture.
+}
+\examples{
+# DETERMINING THE NUMBER OF CLUSTERS IN THE SUSHI EXAMPLE DATA
+\dontrun{
+  # Let us look at any number of clusters from 1 to 10
+  # We use the convenience function compute_mallows_mixtures
+  n_clusters <- seq(from = 1, to = 10)
+  models <- compute_mallows_mixtures(n_clusters = n_clusters, rankings = sushi_rankings)
+  # models is a list in which each element is an object of class BayesMallows,
+  # returned from compute_mallows
+  # We can create an elbow plot
+  plot_elbow(models, burnin = 1000)
+  # We then select the number of cluster at a point where this plot has
+  # an "elbow", e.g., n_clusters = 5.
+
+  # Having chosen the number of clusters, we can now study the final model
+  # Extract the model with 5 clusters
+  mixture_model <- models[[5]]
+  # Delete the models object to free some memory
+  rm(models)
+  # Set the burnin
+  mixture_model$burnin <- 1000
+  # Plot the posterior distributions of alpha per cluster
+  plot(mixture_model)
+  # Compute the posterior interval of alpha per cluster
+  compute_posterior_intervals(mixture_model,
+                              parameter = "alpha")
+  # Plot the posterior distributions of cluster probabilities
+  plot(mixture_model, type = "cluster_probs")
+  # Plot the posterior probability of cluster assignment
+  plot(mixture_model, type = "cluster_assignment")
+  # Plot the posterior distribution of "tuna roll" in each cluster
+  plot(mixture_model, type = "rho", items = "tuna roll")
+  # Compute the cluster-wise CP consensus, and show one column per cluster
+  cp <- compute_cp_consensus(mixture_model)
+  library(dplyr)
+  library(tidyr)
+  cp \%>\%
+    select(-cumprob) \%>\%
+    spread(key = cluster, value = item)
+  # Compute the MAP consensus, and show one column per cluster
+  map <- compute_map_consensus(mixture_model)
+  map \%>\%
+    select(-probability) \%>\%
+    spread(key = cluster, value = item)
+}
+
+
+
 }
 \seealso{
 \code{\link{compute_mallows}}

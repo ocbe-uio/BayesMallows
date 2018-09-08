@@ -40,13 +40,18 @@ colnames(beach_init) <- paste("Beach", seq(from = 1, to = ncol(beach_init), by =
 head(beach_init)
 
 \dontrun{
-  # We now give beach_init and beach_tc to compute_mallows:
-  model_fit <- compute_mallows(rankings = beach_init, preferences = beach_tc, nmc = 2000)
+  # We now give beach_init and beach_tc to compute_mallows. We tell compute_mallows
+  # to save the augmented data, in order to study the convergence.
+  model_fit <- compute_mallows(rankings = beach_init,
+                               preferences = beach_tc,
+                               nmc = 2000,
+                               save_augmented_data = TRUE)
 
   # We can study the acceptance rate of the augmented rankings
-  assess_convergence(model_fit, type = "augmentation")
+  assess_convergence(model_fit, type = "Rtilde")
 
   # We can also study the posterior distribution of the consensus rank of each beach
-  plot(model_fit, type = "rho", burnin <- 500, items = 1:15)
+  model_fit$burnin <- 500
+  plot(model_fit, type = "rho", items = 1:15)
 }
 }

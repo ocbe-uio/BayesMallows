@@ -11,7 +11,8 @@ ggsave(filename = "./vignettes/vignette-data/alpha_convergence_2.png",
 ggsave(filename = "./vignettes/vignette-data/cluster_probs_convergence2.png",
        plot = assess_convergence(model_fit2, type = "cluster_probs"), dpi = 100)
 
-cp_consensus_sushi <- compute_cp_consensus(model_fit2, burnin = 200)
+model_fit2$burnin <- 400
+cp_consensus_sushi <- compute_cp_consensus(model_fit2)
 
 n_clusters <- seq(from = 1, to = 10)
 models <- compute_mallows_mixtures(n_clusters = n_clusters,

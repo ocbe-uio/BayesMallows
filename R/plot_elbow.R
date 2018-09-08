@@ -9,8 +9,10 @@
 #' has been run with a different number of mixtures, as specified in the
 #' \code{n_clusters} argument to \code{\link{compute_mallows}}.
 #'
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. See \code{\link{assess_convergence}}.
+#' @param burnin The number of iterations to discard as burnin. Either a vector of
+#' numbers, one for each model, or a single number which is taken to be the burnin for
+#' all models. If each model provided has a \code{burnin} element, then this is taken
+#' as the default.
 #'
 #' @return A boxplot with the number of clusters on the horizontal axis and the
 #' with-cluster sum of distances on the vertical axis.
@@ -19,7 +21,9 @@
 #'
 #' @seealso \code{\link{compute_mallows}}
 #'
-plot_elbow <- function(..., burnin){
+#' @example /inst/examples/compute_mallows_mixtures_example.R
+#'
+plot_elbow <- function(..., burnin = NULL){
 
   # Put the models into a list. These are typically fitted with different number of clusters
   models <- list(...)
@@ -31,9 +35,18 @@ plot_elbow <- function(..., burnin){
 
   df <- purrr::map_dfr(models, function(x) {
     stopifnot(class(x) == "BayesMallows")
+
+    if(!("burnin" %in% names(x))){
+      if(is.null(burnin)){
+        stop("burnin not provided")
+      } else {
+        x$burnin <- burnin
+      }
+    }
+
     if(!x$include_wcd) stop("To get an elbow plot, set include_wcd=TRUE in compute_mallows")
 
-    df <- dplyr::filter(x$within_cluster_distance, .data$iteration > burnin)
+    df <- dplyr::filter(x$within_cluster_distance, .data$iteration > x$burnin)
 
     # Need to sum the within-cluster distances across clusters, for each iteration
     df <- dplyr::group_by(df, .data$iteration)

@@ -8,13 +8,19 @@
 #'   \code{\link{compute_mallows}}.
 #'
 #' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. See \code{\link{assess_convergence}}.
+#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
 #'
 #' @export
 #'
 #' @example /inst/examples/compute_map_consensus_example.R
 #'
-compute_map_consensus <- function(model_fit, burnin){
+compute_map_consensus <- function(model_fit, burnin = model_fit$burnin){
+  if(is.null(burnin)){
+    stop("Please specify the burnin, either by setting x$burnin or
+         as an argument to the plot.BayesMallows function.")
+  }
+
   df <- dplyr::filter(model_fit$rho, .data$iteration > burnin)
 
   # Store the total number of iterations after burnin
