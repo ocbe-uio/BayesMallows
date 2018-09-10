@@ -22,8 +22,9 @@
 //' @param metric Character string specifying the distance measure to use. Available
 //' options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
 //' \code{"kendall"}. For sampling from the Mallows model with Cayley and Kendall distances
-//' we recommend using the \code{PerMallows} package \insertCite{irurozki2016}.
+//' the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.
 //'
+//' @keywords internal
 //'
 //' @references \insertAllCited{}
 //'

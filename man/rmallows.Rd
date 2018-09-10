@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{rmallows}
 \alias{rmallows}
-\title{Worker function for sampling from the Mallows distribution.}
+\title{Sample from the Mallows distribution.}
 \usage{
 rmallows(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L,
   metric = "footrule")
@@ -23,9 +23,14 @@ between each time a random rank vector is sampled.}
 
 \item{metric}{Character string specifying the distance measure to use. Available
 options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
-\code{"kendall"}.}
+\code{"kendall"}. For sampling from the Mallows model with Cayley and Kendall distances
+the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.}
 }
 \description{
-Worker function for sampling from the Mallows distribution.
+Sample from the Mallows distribution with arbitrary distance metric using
+a Metropolis-Hastings algorithm.
+}
+\references{
+\insertAllCited{}
 }
 \keyword{internal}

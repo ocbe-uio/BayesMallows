@@ -97,7 +97,10 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
     .Call(`_BayesMallows_asymptotic_partition_function`, alpha_vector, n_items, metric, K, n_iterations)
 }
 
-#' Worker function for sampling from the Mallows distribution.
+#' Sample from the Mallows distribution.
+#'
+#' Sample from the Mallows distribution with arbitrary distance metric using
+#' a Metropolis-Hastings algorithm.
 #'
 #' @param rho0 Vector specifying the latent consensus ranking.
 #' @param alpha0 Scalar specifying the scale parameter.
@@ -108,10 +111,12 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
 #' @param leap_size Integer specifying the step size of the leap-and-shift proposal distribution.
 #' @param metric Character string specifying the distance measure to use. Available
 #' options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
-#' \code{"kendall"}.
-#'
+#' \code{"kendall"}. For sampling from the Mallows model with Cayley and Kendall distances
+#' the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.
 #'
 #' @keywords internal
+#'
+#' @references \insertAllCited{}
 #'
 rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, metric = "footrule") {
     .Call(`_BayesMallows_rmallows`, rho0, alpha0, n_samples, burnin, thinning, leap_size, metric)
