@@ -97,7 +97,32 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
     .Call(`_BayesMallows_asymptotic_partition_function`, alpha_vector, n_items, metric, K, n_iterations)
 }
 
-#' Worker function for computing the posterior distribtuion.
+#' Sample from the Mallows distribution.
+#'
+#' Sample from the Mallows distribution with arbitrary distance metric using
+#' a Metropolis-Hastings algorithm.
+#'
+#' @param rho0 Vector specifying the latent consensus ranking.
+#' @param alpha0 Scalar specifying the scale parameter.
+#' @param n_samples Integer specyfing the number of random samples to generate.
+#' @param burnin Integer specifying the number of iterations to discard as burn-in.
+#' @param thinning Integer specifying the number of MCMC iterations to perform
+#' between each time a random rank vector is sampled.
+#' @param leap_size Integer specifying the step size of the leap-and-shift proposal distribution.
+#' @param metric Character string specifying the distance measure to use. Available
+#' options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
+#' \code{"kendall"}. For sampling from the Mallows model with Cayley and Kendall distances
+#' the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.
+#'
+#' @keywords internal
+#'
+#' @references \insertAllCited{}
+#'
+rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, metric = "footrule") {
+    .Call(`_BayesMallows_rmallows`, rho0, alpha0, n_samples, burnin, thinning, leap_size, metric)
+}
+
+#' Worker function for computing the posterior distribution.
 #'
 #' @param rankings A set of complete rankings, with one sample per column.
 #' With n_assessors samples and n_items items, rankings is n_items x n_assessors.
