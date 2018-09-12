@@ -1,4 +1,5 @@
 #include "RcppArmadillo.h"
+#include <math.h>
 #include "misc.h"
 #include "leapandshift.h"
 #include "distfuns.h"
@@ -29,15 +30,22 @@ void update_cluster_labels(
   arma::mat assignment_prob(n_assessors, n_clusters);
 
   for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
-    assignment_prob.col(cluster_index) = cluster_probs(cluster_index, t) *
-      arma::exp(-alpha_old(cluster_index) / n_items * dist_mat.col(cluster_index)) /
-        exp(get_partition_function(n_items, alpha_old(cluster_index), cardinalities, logz_estimate, metric));
+    // Compute the logarithm of the unnormalized probability
+    // This is important, to avoid overflow
+    assignment_prob.col(cluster_index) = log(cluster_probs(cluster_index, t)) * arma::ones(n_assessors) -
+      alpha_old(cluster_index) / n_items * dist_mat.col(cluster_index) -
+      get_partition_function(n_items, alpha_old(cluster_index), cardinalities, logz_estimate, metric);
+
   }
 
-  // Normalize the probabilities, to unit 1-norm per row (assessor)
-  assignment_prob = arma::normalise(assignment_prob, 1, 1);
-
   for(int assessor_index = 0; assessor_index < n_assessors; ++assessor_index){
+
+    // Subtract largest element and exponentiate
+    assignment_prob.row(assessor_index) = arma::exp(assignment_prob.row(assessor_index) -
+      arma::max(assignment_prob.row(assessor_index)));
+
+    // Normalize with 1-norm
+    assignment_prob.row(assessor_index) = arma::normalise(assignment_prob.row(assessor_index), 1);
 
     int cluster = sample_int(assignment_prob.row(assessor_index));
 
