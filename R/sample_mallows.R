@@ -84,6 +84,7 @@ sample_mallows <- function(rho0, alpha0, n_samples, burnin = NULL, thinning = NU
     ac_plot <- ggplot2::ggplot(autocorr,
                                ggplot2::aes(x = .data$lag, y = .data$acf, color = .data$item)) +
       ggplot2::geom_line() +
+      ggplot2::theme(legend.title = ggplot2::element_blank()) +
       ggplot2::xlab("Lag") +
       ggplot2::ylab("Autocorrelation") +
       ggplot2::ggtitle("Autocorrelation of Rank Values")
