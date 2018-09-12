@@ -51,6 +51,8 @@ Function Name                 Description
 
 `compute_mallows_mixtures`    Compute multiple Mallows models with different number of mixture components. This is a convenience function for determining the number of mixtures to use.
 
+`sample_mallows`              Sample from the Mallows model.
+
 `plot.BayesMallows`           Quick plots of the posterior densities of $\alpha$ and $\rho$.
 
  `assess_convergence`         Study the convergence of the Markov chain, in order to determine burnin and other algorithm parameters.  
