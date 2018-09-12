@@ -18,10 +18,13 @@
 #' \code{"kendall"}. For sampling from the Mallows model with Cayley and Kendall distances
 #' the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.
 #' @param diagnostic Logical specifying whether to output convergence diagnostics. If \code{TRUE},
-#' a diagnostic plot is returned together with the samples.
+#' a diagnostic plot is printed, together with the returned samples.
 #' @param items_to_plot Integer vector used if \code{diagnostic = TRUE}, in order to
 #' specify the items to plot in the diagnostic output. If not provided, 5 items are picked
 #' at random.
+#' @param max_lag Integer specifying the maximum lag to use in the computation of autocorrelation.
+#' Defaults to 1000L. This argument is passed to \code{stats::acf}. Only used when
+#' \code{diagnostic = TRUE}.
 #'
 #' @references \insertAllCited{}
 #'
@@ -29,11 +32,12 @@
 #'
 #' @example /inst/examples/sample_mallows_example.R
 #'
-sample_mallows <- function(rho0, alpha0, n_samples,
-                           burnin, thinning, leap_size = 1,
+sample_mallows <- function(rho0, alpha0, n_samples, burnin = NULL, thinning = NULL,
+                           leap_size = 1,
                            metric = "footrule",
                            diagnostic = FALSE,
-                           items_to_plot = NULL)
+                           items_to_plot = NULL,
+                           max_lag = 1000L)
                             {
   n_items <- length(rho0)
 
@@ -63,23 +67,47 @@ sample_mallows <- function(rho0, alpha0, n_samples,
       items_to_plot <- sample.int(n_items, 5)
     }
 
+    # Compute the autocorrelation in the samples
+    autocorr <- apply(samples[ , items_to_plot, drop = FALSE], 2, stats::acf,
+                      lag.max = max_lag, plot = FALSE, demean = TRUE)
+    names(autocorr) <- items_to_plot
+
+
+    autocorr <- purrr::map_dfr(autocorr, function(x) {
+      dplyr::tibble(
+        acf = x$acf[, 1, 1],
+        lag = x$lag[, 1, 1]
+      )
+    }, .id = "item")
+    autocorr <- dplyr::mutate(autocorr, item = as.factor(as.integer(.data$item)))
+
+    ac_plot <- ggplot2::ggplot(autocorr,
+                               ggplot2::aes(x = .data$lag, y = .data$acf, color = .data$item)) +
+      ggplot2::geom_line() +
+      ggplot2::xlab("Lag") +
+      ggplot2::ylab("Autocorrelation") +
+      ggplot2::ggtitle("Autocorrelation of Rank Values")
+
     diagnostic <- dplyr::as_tibble(samples)
     names(diagnostic) <- seq(from = 1, to = n_items, by = 1)
     diagnostic <- dplyr::mutate(diagnostic, iteration = dplyr::row_number())
 
-    diagnostic <- tidyr::gather(diagnostic, key = "item", value = "value", -.data$iteration)
+    diagnostic <- tidyr::gather(diagnostic, key = "item",
+                                value = "value", -.data$iteration)
     diagnostic <- dplyr::filter(diagnostic, .data$item %in% items_to_plot)
-    diagnostic <- dplyr::mutate(diagnostic,
-                                item = as.factor(as.integer(.data$item)))
+    diagnostic <- dplyr::mutate(diagnostic, item = as.factor(as.integer(.data$item)))
 
-    p <- ggplot2::ggplot(diagnostic,
-            ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
+
+
+    rho_plot <- ggplot2::ggplot(diagnostic,
+                         ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
       ggplot2::geom_line() +
       ggplot2::theme(legend.title = ggplot2::element_blank()) +
       ggplot2::xlab("Iteration") +
-      ggplot2::ylab("Sampled value")
+      ggplot2::ylab("Rank value") +
+      ggplot2::ggtitle("Trace Plot of Rank Values")
 
-    print(p)
+    print(cowplot::plot_grid(ac_plot, rho_plot, ncol = 1))
 
     samples <- samples[seq(from = burnin + 1, by = thinning, length.out = n_samples), ]
   }

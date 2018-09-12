@@ -67,3 +67,4 @@ test_that("Hamming distance is correct", {
         Rankcluster::distHamming(r1, r2))
     )
   }})
+

@@ -4,8 +4,9 @@
 \alias{sample_mallows}
 \title{Random Samples from the Mallows Rank Model}
 \usage{
-sample_mallows(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1,
-  metric = "footrule", diagnostic = FALSE, items_to_plot = NULL)
+sample_mallows(rho0, alpha0, n_samples, burnin = NULL, thinning = NULL,
+  leap_size = 1, metric = "footrule", diagnostic = FALSE,
+  items_to_plot = NULL, max_lag = 1000L)
 }
 \arguments{
 \item{rho0}{Vector specifying the latent consensus ranking.}
@@ -27,11 +28,15 @@ options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
 the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.}
 
 \item{diagnostic}{Logical specifying whether to output convergence diagnostics. If \code{TRUE},
-a diagnostic plot is returned together with the samples.}
+a diagnostic plot is printed, together with the returned samples.}
 
 \item{items_to_plot}{Integer vector used if \code{diagnostic = TRUE}, in order to
 specify the items to plot in the diagnostic output. If not provided, 5 items are picked
 at random.}
+
+\item{max_lag}{Integer specifying the maximum lag to use in the computation of autocorrelation.
+Defaults to 1000L. This argument is passed to \code{stats::acf}. Only used when
+\code{diagnostic = TRUE}.}
 }
 \description{
 Generate random samples from the Mallows
@@ -41,22 +46,32 @@ Metropolis-Hastings algorithm described in Appendix C of
 \insertCite{vitelli2018;textual}{BayesMallows}.
 }
 \examples{
-# Example coming.
+# Sample 100 random rankings from a Mallows distribution with footrule distance
+set.seed(1)
 # Number of items
 n_items <- 15
 # Set the consensus ranking
 rho0 <- seq(from = 1, to = n_items, by = 1)
 # Set the scale
-alpha0 <- 5
-# Number of samples we want
-n_samples <- 2
-# Burnin
-burnin <- 1000
-# Thinning
-thinning <- 100
-
-sample_mallows(rho0, alpha0, n_samples, burnin, thinning,
-               diagnostic = TRUE)
+alpha0 <- 10
+# Number of samples
+n_samples <- 100
+# We first do a diagnostic run, to find the thinning and burnin to use
+# We set n_samples to 1000, in order to run 1000 diagnostic iterations.
+test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 1000,
+                       burnin = 1, thinning = 1, diagnostic = TRUE)
+# From the autocorrelation plot, it looks like we should use a thinning of at least 200.
+# We set thinning = 1000 to be safe, since the algorithm in any case is fast.
+# The Markov Chain seems to mix quickly, but we set the burnin to 1000 to be safe.
+# We now run sample_mallows again, to get the 100 samples we want
+samples <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 100,
+                          burnin = 1000, thinning = 1000)
+# The samples matrix now contains 100 rows with rankings of 15 items.
+# A good diagnostic, in order to confirm that burnin and thinning are set high
+# enough, is to run compute_mallows on the samples
+model_fit <- compute_mallows(samples, nmc = 10000)
+# The highest posterior density interval covers alpha0 = 10.
+compute_posterior_intervals(model_fit, burnin = 2000, parameter = "alpha")
 }
 \references{
 \insertAllCited{}
