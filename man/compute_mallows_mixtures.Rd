@@ -18,7 +18,7 @@ was computed. This object can be studied with \code{\link{plot_elbow}}.
 }
 \description{
 Convenience function for computing Mallows models with varying
-numbers of mixtures. This is useful for determing the number of
+numbers of mixtures. This is useful for deciding the number of
 mixtures to use in the final model.
 }
 \details{

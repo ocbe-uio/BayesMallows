@@ -28,7 +28,7 @@ double compute_is_fit(double alpha, arma::vec fit){
 //'
 //' @param n_items Number of items.
 //' @param alpha The value of the alpha parameter.
-//' @param cardinalities Number of occurences for each unique distance.
+//' @param cardinalities Number of occurrences for each unique distance.
 //' Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.
 //' @param logz_estimate Precomputed importance sampling fit.
 //' @param metric A string. Available options are \code{"footrule"},

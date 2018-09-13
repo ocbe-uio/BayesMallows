@@ -19,7 +19,7 @@ get_summation_distances <- function(n, cardinalities, metric = "footrule") {
 #'
 #' @param r1 A vector of ranks.
 #' @param r2 A vector of ranks.
-#' @param metric A string. Avaiable options are \code{"footrule"},
+#' @param metric A string. Available options are \code{"footrule"},
 #' \code{"kendall"}, \code{"cayley"}, \code{"hamming"} and \code{"spearman"}. Defaults to \code{"footrule"}.
 #' @return A scalar.
 #' @details Note that the Spearman distance is the squared L2 norm, whereas
@@ -64,7 +64,7 @@ sample_int <- function(probs) {
 #'
 #' @param n_items Number of items.
 #' @param alpha The value of the alpha parameter.
-#' @param cardinalities Number of occurences for each unique distance.
+#' @param cardinalities Number of occurrences for each unique distance.
 #' Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.
 #' @param logz_estimate Precomputed importance sampling fit.
 #' @param metric A string. Available options are \code{"footrule"},
@@ -104,7 +104,7 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
 #'
 #' @param rho0 Vector specifying the latent consensus ranking.
 #' @param alpha0 Scalar specifying the scale parameter.
-#' @param n_samples Integer specyfing the number of random samples to generate.
+#' @param n_samples Integer specifying the number of random samples to generate.
 #' @param burnin Integer specifying the number of iterations to discard as burn-in.
 #' @param thinning Integer specifying the number of MCMC iterations to perform
 #' between each time a random rank vector is sampled.

@@ -1,7 +1,7 @@
 #' Compute Mixtures of Mallows Models
 #'
 #' Convenience function for computing Mallows models with varying
-#' numbers of mixtures. This is useful for determing the number of
+#' numbers of mixtures. This is useful for deciding the number of
 #' mixtures to use in the final model.
 #'
 #' @param n_clusters Integer vector specifying the number of clusters

@@ -132,7 +132,7 @@ For the scale parameters $\alpha_{1}, \dots, \alpha_{C}$ we assume the exponenti
 
 # BayesMallows User Guide
 
-Having described the model, we now show some case studies demonstrating the use of the `BayesMallows` package. To reduce the computing time, we have typically taken a fairly small number of posterior samples, and rather focused on demonstrating the different methods. In general, we recommend taking a larger number of samples than what we do here, in order to obain good approximations of the posterior distributions.
+Having described the model, we now show some case studies demonstrating the use of the `BayesMallows` package. To reduce the computing time, we have typically taken a fairly small number of posterior samples, and rather focused on demonstrating the different methods. In general, we recommend taking a larger number of samples than what we do here, in order to obtain good approximations of the posterior distributions.
 
 ## Completely Ranked Data
 `BayesMallows` comes with example data described in @liu2018. A total of 12 assessors were asked to rank 20 potatoes based on their weight. In the first round, the assessors were only allowed to study the potatoes visually, while in the second round, the assessors were also allowed to hold the potatoes in their hands in order to compare them. The data sets are named `potato_visual` and `potato_weighing`, respectively. The true ordering of the potatoes' weights are stored in the vector `potato_true_ranking`.
@@ -160,7 +160,7 @@ class(model_fit)
 names(model_fit)
 ```
 
-The function `assess_convergence` produces plots for visual convergence assessment. We start by studing $\alpha$, which is the default. The plot is shown below, and looks good enough, at least to begin with.
+The function `assess_convergence` produces plots for visual convergence assessment. We start by studying $\alpha$, which is the default. The plot is shown below, and looks good enough, at least to begin with.
 
 ```{r, fig.width=6}
 assess_convergence(model_fit)

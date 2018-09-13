@@ -6,9 +6,9 @@
 #' Metropolis-Hastings algorithm described in Appendix C of
 #' \insertCite{vitelli2018;textual}{BayesMallows}.
 #'
-#' @param rho0 Vector specifying the latent consensus ranking.
-#' @param alpha0 Scalar specifying the scale parameter.
-#' @param n_samples Integer specyfing the number of random samples to generate.
+#' @param rho0 Vector specifying the latent consensus ranking in the Mallows rank model.
+#' @param alpha0 Scalar specifying the scale parameter in the Mallows rank model.
+#' @param n_samples Integer specifying the number of random samples to generate.
 #' @param burnin Integer specifying the number of iterations to discard as burn-in.
 #' @param thinning Integer specifying the number of MCMC iterations to perform
 #' between each time a random rank vector is sampled.
@@ -16,7 +16,8 @@
 #' @param metric Character string specifying the distance measure to use. Available
 #' options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
 #' \code{"kendall"}. For sampling from the Mallows model with Cayley and Kendall distances
-#' the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.
+#' the \code{rmm} function in the  \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows}
+#' is typically faster.
 #' @param diagnostic Logical specifying whether to output convergence diagnostics. If \code{TRUE},
 #' a diagnostic plot is printed, together with the returned samples.
 #' @param items_to_plot Integer vector used if \code{diagnostic = TRUE}, in order to

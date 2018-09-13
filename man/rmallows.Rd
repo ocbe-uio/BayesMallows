@@ -12,7 +12,7 @@ rmallows(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L,
 
 \item{alpha0}{Scalar specifying the scale parameter.}
 
-\item{n_samples}{Integer specyfing the number of random samples to generate.}
+\item{n_samples}{Integer specifying the number of random samples to generate.}
 
 \item{burnin}{Integer specifying the number of iterations to discard as burn-in.}
 

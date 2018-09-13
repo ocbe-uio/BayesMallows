@@ -14,7 +14,7 @@
 //'
 //' @param rho0 Vector specifying the latent consensus ranking.
 //' @param alpha0 Scalar specifying the scale parameter.
-//' @param n_samples Integer specyfing the number of random samples to generate.
+//' @param n_samples Integer specifying the number of random samples to generate.
 //' @param burnin Integer specifying the number of iterations to discard as burn-in.
 //' @param thinning Integer specifying the number of MCMC iterations to perform
 //' between each time a random rank vector is sampled.

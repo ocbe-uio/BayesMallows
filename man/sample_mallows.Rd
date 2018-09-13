@@ -9,11 +9,11 @@ sample_mallows(rho0, alpha0, n_samples, burnin = NULL, thinning = NULL,
   items_to_plot = NULL, max_lag = 1000L)
 }
 \arguments{
-\item{rho0}{Vector specifying the latent consensus ranking.}
+\item{rho0}{Vector specifying the latent consensus ranking in the Mallows rank model.}
 
-\item{alpha0}{Scalar specifying the scale parameter.}
+\item{alpha0}{Scalar specifying the scale parameter in the Mallows rank model.}
 
-\item{n_samples}{Integer specyfing the number of random samples to generate.}
+\item{n_samples}{Integer specifying the number of random samples to generate.}
 
 \item{burnin}{Integer specifying the number of iterations to discard as burn-in.}
 
@@ -25,7 +25,8 @@ between each time a random rank vector is sampled.}
 \item{metric}{Character string specifying the distance measure to use. Available
 options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
 \code{"kendall"}. For sampling from the Mallows model with Cayley and Kendall distances
-the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.}
+the \code{rmm} function in the  \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows}
+is typically faster.}
 
 \item{diagnostic}{Logical specifying whether to output convergence diagnostics. If \code{TRUE},
 a diagnostic plot is printed, together with the returned samples.}
@@ -65,10 +66,11 @@ test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 1000,
 test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 1000,
                        burnin = 1, thinning = 1, diagnostic = TRUE,
                        items_to_plot = c(1:3, 10, 15), max_lag = 500)
-# From the autocorrelation plot, it looks like we should use a thinning of at least 200.
-# We set thinning = 1000 to be safe, since the algorithm in any case is fast.
-# The Markov Chain seems to mix quickly, but we set the burnin to 1000 to be safe.
-# We now run sample_mallows again, to get the 100 samples we want
+# From the autocorrelation plot, it looks like we should use
+# a thinning of at least 200. We set thinning = 1000 to be safe,
+# since the algorithm in any case is fast. The Markov Chain
+# seems to mix quickly, but we set the burnin to 1000 to be safe.
+# We now run sample_mallows again, to get the 100 samples we want:
 samples <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 100,
                           burnin = 1000, thinning = 1000)
 # The samples matrix now contains 100 rows with rankings of 15 items.
@@ -77,6 +79,23 @@ samples <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 100,
 model_fit <- compute_mallows(samples, nmc = 10000)
 # The highest posterior density interval covers alpha0 = 10.
 compute_posterior_intervals(model_fit, burnin = 2000, parameter = "alpha")
+
+# The PerMallows package has a Gibbs sampler for sampling from the Mallows
+# distribution with Cayley, Kendall, Hamming, and Ulam distances. For these
+# distances, using the PerMallows package is typically faster.
+
+# Let us sample 100 rankings from the Mallows model with Cayley distance,
+# with the same consensus ranking and scale parameter as above.
+library(PerMallows)
+# Set the scale parameter of the PerMallows package corresponding to
+# alpha0 in BayesMallows
+theta0 = alpha0 / n_items
+# Sample with PerMallows::rmm
+sample1 <- rmm(n = 100, sigma0 = rho0, theta = theta0, dist.name = "cayley")
+# Generate the same sample with sample_mallows
+sample2 <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 100,
+                          burnin = 1000, thinning = 1000, metric = "cayley")
+
 }
 \references{
 \insertAllCited{}

@@ -12,7 +12,7 @@ get_partition_function(n_items, alpha, cardinalities = NULL,
 
 \item{alpha}{The value of the alpha parameter.}
 
-\item{cardinalities}{Number of occurences for each unique distance.
+\item{cardinalities}{Number of occurrences for each unique distance.
 Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.}
 
 \item{logz_estimate}{Precomputed importance sampling fit.}

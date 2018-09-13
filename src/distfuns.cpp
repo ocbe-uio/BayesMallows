@@ -50,7 +50,7 @@ arma::vec get_summation_distances(int n, arma::vec cardinalities,
 //'
 //' @param r1 A vector of ranks.
 //' @param r2 A vector of ranks.
-//' @param metric A string. Avaiable options are \code{"footrule"},
+//' @param metric A string. Available options are \code{"footrule"},
 //' \code{"kendall"}, \code{"cayley"}, \code{"hamming"} and \code{"spearman"}. Defaults to \code{"footrule"}.
 //' @return A scalar.
 //' @details Note that the Spearman distance is the squared L2 norm, whereas

@@ -11,7 +11,7 @@ get_rank_distance(r1, r2, metric = "footrule")
 
 \item{r2}{A vector of ranks.}
 
-\item{metric}{A string. Avaiable options are \code{"footrule"},
+\item{metric}{A string. Available options are \code{"footrule"},
 \code{"kendall"}, \code{"cayley"}, \code{"hamming"} and \code{"spearman"}. Defaults to \code{"footrule"}.}
 }
 \value{
