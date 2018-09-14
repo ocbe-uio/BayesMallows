@@ -112,10 +112,18 @@
 #'   Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
 #'   every 1000th iteration.
 #'
+#' @param skip_postprocessing Logical specifying whether to skip the postprocessing
+#' of the output of the Metropolis-Hastings algorithm. This can be useful for
+#' very large datasets, which cause the postprocessing to crash. Note that when
+#' \code{skip_postprocessing=TRUE}, the functions for studying the posterior
+#' distributions will not work unless the internal function
+#' \code{\link{tidy_mcmc}} has been run.
+#'
 #' @return A list of class BayesMallows.
 #'
 #' @seealso \code{\link{compute_mallows_mixtures}} for a function that computes
 #'   separate Mallows models for varying number of clusters.
+#'
 #'
 #'
 #' @references \insertAllCited{}
@@ -142,7 +150,8 @@ compute_mallows <- function(rankings = NULL,
                             save_augmented_data = FALSE,
                             aug_thinning = 1L,
                             logz_estimate = NULL,
-                            verbose = FALSE
+                            verbose = FALSE,
+                            skip_postprocessing = FALSE
                             ){
 
   # Check that at most one of rankings and preferences is set
@@ -268,7 +277,7 @@ compute_mallows <- function(rankings = NULL,
   }
 
   # Tidy MCMC results
-  fit <- tidy_mcmc(fit)
+  if(!skip_postprocessing) fit <- tidy_mcmc(fit)
 
   # Add class attribute
   class(fit) <- "BayesMallows"

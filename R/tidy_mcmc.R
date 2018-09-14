@@ -1,4 +1,36 @@
-tidy_mcmc <- function(fit){
+#' Internal Function for Tidying MCMC Output
+#'
+#' @param fit A fitted object, returned from \code{BayesMallows:::run_mcmc}.
+#' @param tidy_rho Logical specifying whether or not to tidy the output for \code{rho}.
+#' Defaults to \code{TRUE}.
+#' @param tidy_alpha Logical specifying whether or not to tidy the output for \code{alpha}.
+#' Defaults to \code{TRUE}.
+#' @param tidy_cluster_assignment Logical specifying whether or not to tidy the output for
+#' cluster assignments. Defaults to \code{TRUE}.
+#' @param tidy_cluster_probabilities Logical specifying whether or not to tidy the output for
+#' cluster probabilities. Defaults to \code{TRUE}.
+#' @param tidy_wcd Logical specifying whether or not to tidy the output for
+#' within-cluster distances. Defaults to \code{TRUE}.
+#' @param tidy_augmented_data Logical specifying whether or not to tidy the output for
+#' augmented data. Defaults to \code{TRUE}.
+#' @param tidy_augmentation_acceptance Logical specifying whether or not to tidy the output for
+#' augmentation acceptance. Defaults to \code{TRUE}.
+#'
+#' @return
+#' @export
+#'
+#' @keywords internal
+#'
+#' @example /inst/examples/tidy_mcmc_example.R
+#'
+tidy_mcmc <- function(fit,
+                      tidy_rho = TRUE,
+                      tidy_alpha = TRUE,
+                      tidy_cluster_assignment = TRUE,
+                      tidy_cluster_probabilities = TRUE,
+                      tidy_wcd = TRUE,
+                      tidy_augmented_data = TRUE,
+                      tidy_augmentation_acceptance = TRUE){
 
   fit <- tidy_rho(fit)
   fit <- tidy_alpha(fit)

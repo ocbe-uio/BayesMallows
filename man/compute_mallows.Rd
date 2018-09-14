@@ -10,7 +10,7 @@ compute_mallows(rankings = NULL, preferences = NULL,
   alpha_prop_sd = 0.1, alpha_init = 1, alpha_jump = 1L,
   lambda = 0.001, psi = 10L, include_wcd = (n_clusters > 1),
   save_augmented_data = FALSE, aug_thinning = 1L,
-  logz_estimate = NULL, verbose = FALSE)
+  logz_estimate = NULL, verbose = FALSE, skip_postprocessing = FALSE)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items, of size \code{n_assessors x
@@ -113,6 +113,13 @@ data. Only used when \code{save_augmented_data = TRUE}. Defaults to 1L.}
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
 every 1000th iteration.}
+
+\item{skip_postprocessing}{Logical specifying whether to skip the postprocessing
+of the output of the Metropolis-Hastings algorithm. This can be useful for
+very large datasets, which cause the postprocessing to crash. Note that when
+\code{skip_postprocessing=TRUE}, the functions for studying the posterior
+distributions will not work unless the internal function
+\code{\link{tidy_mcmc}} has been run.}
 }
 \value{
 A list of class BayesMallows.
@@ -233,8 +240,6 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
   # We then select the number of cluster at a point where this plot has
   # an "elbow", e.g., at 6 clusters.
 }
-
-
 
 }
 \references{
