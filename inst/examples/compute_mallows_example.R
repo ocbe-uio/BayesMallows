@@ -103,5 +103,3 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
   # an "elbow", e.g., at 6 clusters.
 }
 
-
-
