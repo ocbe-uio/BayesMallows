@@ -112,6 +112,17 @@
 #'   Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
 #'   every 1000th iteration.
 #'
+#' @param validate_rankings Logical specifying whether the rankings provided
+#' (or generated from \code{preferences}) should be validated. Defaults to
+#' \code{TRUE}. Turning off this check will reduce computing time with a large
+#' number of items or assessors.
+#'
+#' @param constraints Optional constraint set returned from \code{\link{generate_constraints}}.
+#' Defaults to \code{NULL}, which means the the constraint set is computed internally.
+#' In repeated calls to \code{compute_mallows}, with very large datasets, computing
+#' the constraint set may be time consuming. In this case it can be
+#' beneficial to precompute it and provide it as a separate argument.
+#'
 #' @param skip_postprocessing Logical specifying whether to skip the postprocessing
 #' of the output of the Metropolis-Hastings algorithm. This can be useful for
 #' very large datasets, which cause the postprocessing to crash. Note that when
@@ -151,6 +162,8 @@ compute_mallows <- function(rankings = NULL,
                             aug_thinning = 1L,
                             logz_estimate = NULL,
                             verbose = FALSE,
+                            validate_rankings = TRUE,
+                            constraints = NULL,
                             skip_postprocessing = FALSE
                             ){
 
@@ -174,7 +187,7 @@ compute_mallows <- function(rankings = NULL,
   }
 
   # Check that all rows of rankings are proper permutations
-  if(!all(apply(rankings, 1, validate_permutation))){
+  if(validate_rankings && !all(apply(rankings, 1, validate_permutation))){
     stop("Not valid permutation.")
   }
 
@@ -187,8 +200,9 @@ compute_mallows <- function(rankings = NULL,
   # Find the number of items
   n_items <- ncol(rankings)
 
+
   # Generate the constraint set
-  if(!is.null(preferences)){
+  if(!is.null(preferences) && is.null(constraints)){
     constraints <- generate_constraints(preferences, n_items)
   } else {
     constraints <- list()
@@ -228,6 +242,7 @@ compute_mallows <- function(rankings = NULL,
   } else {
     stop(paste("Unknown metric", metric))
   }
+
 
   # Transpose rankings to get samples along columns, since we typically want
   # to extract one sample at a time. armadillo is column major, just like rankings

@@ -10,7 +10,8 @@ compute_mallows(rankings = NULL, preferences = NULL,
   alpha_prop_sd = 0.1, alpha_init = 1, alpha_jump = 1L,
   lambda = 0.001, psi = 10L, include_wcd = (n_clusters > 1),
   save_augmented_data = FALSE, aug_thinning = 1L,
-  logz_estimate = NULL, verbose = FALSE, skip_postprocessing = FALSE)
+  logz_estimate = NULL, verbose = FALSE, validate_rankings = TRUE,
+  constraints = NULL, skip_postprocessing = FALSE)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items, of size \code{n_assessors x
@@ -113,6 +114,17 @@ data. Only used when \code{save_augmented_data = TRUE}. Defaults to 1L.}
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
 every 1000th iteration.}
+
+\item{validate_rankings}{Logical specifying whether the rankings provided
+(or generated from \code{preferences}) should be validated. Defaults to
+\code{TRUE}. Turning off this check will reduce computing time with a large
+number of items or assessors.}
+
+\item{constraints}{Optional constraint set returned from \code{\link{generate_constraints}}.
+Defaults to \code{NULL}, which means the the constraint set is computed internally.
+In repeated calls to \code{compute_mallows}, with very large datasets, computing
+the constraint set may be time consuming. In this case it can be
+beneficial to precompute it and provide it as a separate argument.}
 
 \item{skip_postprocessing}{Logical specifying whether to skip the postprocessing
 of the output of the Metropolis-Hastings algorithm. This can be useful for
