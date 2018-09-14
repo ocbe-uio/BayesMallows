@@ -1,6 +1,7 @@
 #' Internal Function for Tidying MCMC Output
 #'
-#' @param fit A fitted object, returned from \code{BayesMallows:::run_mcmc}.
+#' @param fit A fitted object, returned from \code{\link{compute_mallows}} with the option
+#' \code{skip_postprocessing = TRUE}.
 #' @param tidy_rho Logical specifying whether or not to tidy the output for \code{rho}.
 #' Defaults to \code{TRUE}.
 #' @param tidy_alpha Logical specifying whether or not to tidy the output for \code{alpha}.
@@ -16,7 +17,6 @@
 #' @param tidy_augmentation_acceptance Logical specifying whether or not to tidy the output for
 #' augmentation acceptance. Defaults to \code{TRUE}.
 #'
-#' @return
 #' @export
 #'
 #' @keywords internal
