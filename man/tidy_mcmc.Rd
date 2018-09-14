@@ -56,9 +56,7 @@ models <- n_clusters \%>\%
 str(models[[5]]$within_cluster_distance)
 
 # Since we skipped postprocessing, the following will fail:
-\dontrun{
-  plot_elbow(models, burnin = 500)
-}
+\dontrun{plot_elbow(models, burnin = 500)}
 
 # We now tidy the within-cluster distances, which is what is used by
 # plot_elbow
