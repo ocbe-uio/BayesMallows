@@ -775,7 +775,7 @@ knitr::kable(head(sushi_rankings), caption = "First 6 rows of example dataset `s
 
 With clustering, we can see if there are subsets of assessors with similar preferences. We set `nmc = 1000` here, to speed up the vignette building. The argument `include_wcd` specifies whether to compute within-cluster distance during MCMC. When `n_cluster > 1` it defaults to `TRUE`, otherwise to `FALSE`. Hence, in order to get the within-cluster distance for the one-cluster case, we set `include_wcd = TRUE` when calling `compute_mallows`:
 
-```{r, eval=FALSE}
+```{r}
 model_fit1 <- compute_mallows(sushi_rankings, nmc = 1000, include_wcd = TRUE)
 model_fit2 <- compute_mallows(sushi_rankings, n_clusters = 2, nmc = 1000)
 ```
@@ -784,27 +784,20 @@ model_fit2 <- compute_mallows(sushi_rankings, n_clusters = 2, nmc = 1000)
 
 It is useful to look at the trace plots of $\alpha_{1}, \dots, \alpha_{C}$.
 
-```{r, eval=FALSE}
+```{r}
 assess_convergence(model_fit2)
-```
-
-```{r, echo=FALSE, out.width="75%"}
-knitr::include_graphics("./vignette-data/alpha_convergence_2.png")
 ```
 
 We can also look at the trace plot of the cluster probabilities, $\tau_{1}$ and $\tau_{2}$:
 
-```{r, eval=FALSE}
+```{r}
 assess_convergence(model_fit2, type = "cluster_probs")
 ```
 
-```{r, echo=FALSE, out.width="75%"}
-knitr::include_graphics("./vignette-data/cluster_probs_convergence2.png")
-```
 
 It seems like $\alpha$ is mixing rapidly. Let us set `burnin = 400`, and compute the CP consensus for the case with two clusters.
 
-```{r, eval=FALSE}
+```{r}
 model_fit1$burnin <- 400
 model_fit2$burnin <- 400
 ```
@@ -816,12 +809,8 @@ model_fit2$burnin <- 400
 
 
 We can find the CP consensus for each of the two clusters.
-```{r, eval=FALSE}
+```{r}
 cp_consensus_sushi <- compute_cp_consensus(model_fit2)
-```
-
-```{r, echo=FALSE}
-load("./vignette-data/sushi_clustering_data.RData")
 ```
 
 We can now look at each cluster:
@@ -853,42 +842,45 @@ args(plot_elbow)
 
 `plot_elbow` requires the model fits for different number of clusters to be provided as the first arguments, either comma separated, or as a list. The other argument is `burnin`, which must be named. If each model provided has its `burnin` element set, then this is taken as the default value of `burnin`.
 
-In order to systematically investigate how many clusters to include, we can use the function `compute_mallows_mixtures`, which takes a vector that specifies the number of clusters, and calls `compute_mallows` once for each number.
+In order to systematically investigate how many clusters to include, we can use the function `compute_mallows_mixtures`, which takes a vector that specifies the number of clusters, and calls `compute_mallows` once for each number. 
 
-```{r, message=FALSE, eval=FALSE}
+We only need the within-cluster distances to compute the elbow plot. Thus, we can basically "thin out" all the other parameters, since we do not need them. This reduce the amount of memory used.
+
+```{r, message=FALSE}
 n_clusters <- seq(from = 1, to = 10)
+nmc <- 2000
 models <- compute_mallows_mixtures(n_clusters = n_clusters, 
                                    rankings = sushi_rankings,
-                                   nmc = 6000)
+                                   nmc = nmc, 
+                                   cluster_assignment_thinning = nmc - 1,
+                                   rho_thinning = nmc - 1,
+                                   aug_thinning = nmc - 1
+                                   )
 ```
 
 Even though the result of `compute_mallows_mixtures` is a list of fitted models, we can specify `burnin` as an element in this case as well, and it is used by `plot_elbow`.
 
 We can now provide the `models` list to `plot_elbow`. 
 
-```{r, eval=FALSE}
+```{r}
 plot_elbow(models, burnin = 1000)
 ```
 
+Let us choose 5 clusters. We then compute this model, now without the extreme thinning.
 
-```{r, echo=FALSE, out.width="75%"}
-knitr::include_graphics("./vignette-data/sushi_elbow_10.png")
+```{r}
+model <- compute_mallows(rankings = sushi_rankings, nmc = nmc, n_clusters = 5)
 ```
 
-Let us choose 5 clusters. We can then find the cluster assignment probabilities for each assessor.
 
-```{r, eval=FALSE}
-plot(models[[5]], burnin = 1000, type = "cluster_assignment")
+```{r}
+plot(model, burnin = 1000, type = "cluster_assignment")
 ```
 
-```{r, echo=FALSE, out.width="75%"}
-knitr::include_graphics("./vignette-data/cluster_assignment_plot_10.png")
-```
 
 We can also the function `assign_cluster` to get the a posteriori cluster assignment for each assessor.
-```{r, eval=FALSE}
-cluster_assignment <- assign_cluster(models[[5]], 
-                                     burnin = 1000, soft = FALSE)
+```{r}
+cluster_assignment <- assign_cluster(model, burnin = 1000, soft = FALSE)
 ```
 
 
