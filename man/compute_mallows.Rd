@@ -5,13 +5,14 @@
 \title{Preference Learning with the Mallows Rank Model}
 \usage{
 compute_mallows(rankings = NULL, preferences = NULL,
-  metric = "footrule", n_clusters = 1L, nmc = 2000L,
-  leap_size = NULL, rho_init = NULL, rho_thinning = 1L,
-  alpha_prop_sd = 0.1, alpha_init = 1, alpha_jump = 1L,
-  lambda = 0.001, psi = 10L, include_wcd = (n_clusters > 1),
-  save_augmented_data = FALSE, aug_thinning = 1L,
-  logz_estimate = NULL, verbose = FALSE, validate_rankings = TRUE,
-  constraints = NULL, skip_postprocessing = FALSE)
+  metric = "footrule", n_clusters = 1L,
+  cluster_assignment_thinning = 1L, nmc = 2000L, leap_size = NULL,
+  rho_init = NULL, rho_thinning = 1L, alpha_prop_sd = 0.1,
+  alpha_init = 1, alpha_jump = 1L, lambda = 0.001, psi = 10L,
+  include_wcd = (n_clusters > 1), save_augmented_data = FALSE,
+  aug_thinning = 1L, logz_estimate = NULL, verbose = FALSE,
+  validate_rankings = TRUE, constraints = NULL,
+  skip_postprocessing = FALSE)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items, of size \code{n_assessors x
@@ -42,6 +43,9 @@ of mixture components to use. Defaults to \code{1L}, which means no
 clustering is performed. See \code{\link{compute_mallows_mixtures}} for a
 convenience function for computing several models with varying numbers of
 mixtures.}
+
+\item{cluster_assignment_thinning}{Integer specifying the thinning to be applied
+to the cluster assignments. Defaults to \code{1L}.}
 
 \item{nmc}{Integer specifying the number of iteration of the
 Metropolis-Hastings algorithm. Defaults to \code{2000L}. See

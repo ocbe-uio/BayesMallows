@@ -8,7 +8,8 @@ run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate,
   rho_init, metric = "footrule", n_clusters = 1L,
   include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5,
   alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L,
-  rho_thinning = 1L, aug_thinning = 1L, save_augmented_data = FALSE,
+  rho_thinning = 1L, aug_thinning = 1L,
+  cluster_assignment_thinning = 1L, save_augmented_data = FALSE,
   verbose = FALSE)
 }
 \arguments{
@@ -51,6 +52,10 @@ have to do expensive computation of the partition function.}
 
 \item{rho_thinning}{Thinning parameter. Keep only every \code{rho_thinning} rank
 sample from the posterior distribution.}
+
+\item{aug_thinning}{Integer specifying the thinning for data augmentation.}
+
+\item{cluster_assignment_thinning}{Integer specifying the thinning for saving cluster assignments.}
 
 \item{save_augmented_data}{Whether or not to save the augmented data every
 \code{aug_thinning}th iteration.}

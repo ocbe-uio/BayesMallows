@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include "misc.h"
 #include "distfuns.h"
+#include <math.h>
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
@@ -55,7 +56,7 @@ void initialize_missing_ranks(arma::mat& rankings, const arma::mat& missing_indi
   }
 }
 
-void update_missing_ranks(arma::mat& rankings, const arma::umat& cluster_assignment,
+void update_missing_ranks(arma::mat& rankings, const arma::uvec& current_cluster_assignment,
                           arma::vec& aug_acceptance,
                           const arma::mat& missing_indicator,
                           const arma::vec& assessor_missing,
@@ -78,7 +79,7 @@ void update_missing_ranks(arma::mat& rankings, const arma::umat& cluster_assignm
       // Find which cluster the assessor belongs to
       int cluster;
       if(clustering){
-        cluster = cluster_assignment(i, t);
+        cluster = current_cluster_assignment(i);
       } else {
         cluster = 0;
       }

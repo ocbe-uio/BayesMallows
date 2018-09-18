@@ -40,6 +40,9 @@
 #'   convenience function for computing several models with varying numbers of
 #'   mixtures.
 #'
+#' @param cluster_assignment_thinning Integer specifying the thinning to be applied
+#' to the cluster assignments. Defaults to \code{1L}.
+#'
 #' @param nmc Integer specifying the number of iteration of the
 #'   Metropolis-Hastings algorithm. Defaults to \code{2000L}. See
 #'   \code{\link{assess_convergence}} for tools to check convergence of the
@@ -148,6 +151,7 @@ compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
                             metric = "footrule",
                             n_clusters = 1L,
+                            cluster_assignment_thinning = 1L,
                             nmc = 2000L,
                             leap_size = NULL,
                             rho_init = NULL,
@@ -262,6 +266,7 @@ compute_mallows <- function(rankings = NULL,
                   alpha_jump = alpha_jump,
                   rho_thinning = rho_thinning,
                   aug_thinning = aug_thinning,
+                  cluster_assignment_thinning = cluster_assignment_thinning,
                   save_augmented_data = save_augmented_data,
                   verbose = verbose
                   )

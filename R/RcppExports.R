@@ -149,6 +149,8 @@ rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, 
 #' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
 #' @param rho_thinning Thinning parameter. Keep only every \code{rho_thinning} rank
 #' sample from the posterior distribution.
+#' @param aug_thinning Integer specifying the thinning for data augmentation.
+#' @param cluster_assignment_thinning Integer specifying the thinning for saving cluster assignments.
 #' @param save_augmented_data Whether or not to save the augmented data every
 #' \code{aug_thinning}th iteration.
 #' @param verbose Logical specifying whether to print out the progress of the
@@ -156,7 +158,7 @@ rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, 
 #' 1000th iteration.
 #' @keywords internal
 #'
-run_mcmc <- function(rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, rho_thinning = 1L, aug_thinning = 1L, save_augmented_data = FALSE, verbose = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, rho_thinning, aug_thinning, save_augmented_data, verbose)
+run_mcmc <- function(rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, rho_thinning = 1L, aug_thinning = 1L, cluster_assignment_thinning = 1L, save_augmented_data = FALSE, verbose = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, rho_thinning, aug_thinning, cluster_assignment_thinning, save_augmented_data, verbose)
 }
 
