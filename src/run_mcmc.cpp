@@ -38,6 +38,8 @@
 //' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
 //' @param rho_thinning Thinning parameter. Keep only every \code{rho_thinning} rank
 //' sample from the posterior distribution.
+//' @param aug_thinning Integer specifying the thinning for data augmentation.
+//' @param cluster_assignment_thinning Integer specifying the thinning for saving cluster assignments.
 //' @param save_augmented_data Whether or not to save the augmented data every
 //' \code{aug_thinning}th iteration.
 //' @param verbose Logical specifying whether to print out the progress of the
@@ -62,6 +64,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     int psi = 10,
                     int rho_thinning = 1,
                     int aug_thinning = 1,
+                    int cluster_assignment_thinning = 1,
                     bool save_augmented_data = false,
                     bool verbose = false
                       ){
@@ -80,6 +83,9 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
   // Number of augmented data sets to store
   int n_aug = ceil(nmc * 1.0 / aug_thinning);
+
+  // Number of cluster assignments to store
+  int n_cluster_assignments = ceil(nmc * 1.0 / cluster_assignment_thinning);
 
   // Check if we want to do clustering
   bool clustering = n_clusters > 1;
@@ -153,6 +159,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
   // Declare the cluster indicator z
   arma::umat cluster_assignment;
+  arma::uvec current_cluster_assignment;
 
   // Within cluster distance
   arma::mat within_cluster_distance;
@@ -165,7 +172,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
   if(clustering | include_wcd){
 
-    cluster_assignment.set_size(n_assessors, nmc);
+    cluster_assignment.set_size(n_assessors, n_cluster_assignments);
     within_cluster_distance.set_size(n_clusters, nmc);
 
     if(clustering){
@@ -177,7 +184,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
     } else {
       // Set all clusters once and for all
-      cluster_assignment = arma::zeros<arma::umat>(n_assessors, nmc);
+      cluster_assignment = arma::zeros<arma::umat>(n_assessors, 1);
     }
 
     // Initialize the distance matrix. Can be done here since \rho and R already are intialized
@@ -188,10 +195,13 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                              n_assessors, cluster_index, metric);
     }
 
-    update_wcd(within_cluster_distance, cluster_assignment.col(0),
+    current_cluster_assignment = cluster_assignment.col(0);
+
+    update_wcd(within_cluster_distance, current_cluster_assignment,
                dist_mat, n_clusters, 0);
 
   }
+
 
   // Declare indicator vectors to hold acceptance or not
   arma::vec alpha_acceptance = arma::ones(n_clusters);
@@ -205,7 +215,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   }
 
   // Other variables used
-  int alpha_index = 0, rho_index = 0, aug_index = 0;
+  int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
   arma::vec alpha_old = alpha.col(0);
   arma::mat rho_old = rho(arma::span::all, arma::span::all, arma::span(0));
   bool rho_accepted = false;
@@ -230,7 +240,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     }
 
     if(clustering){
-      update_cluster_probs(cluster_probs, cluster_assignment, n_clusters, psi, t);
+      update_cluster_probs(cluster_probs, current_cluster_assignment, n_clusters, psi, t);
     }
 
 
@@ -239,7 +249,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
       // Matrix of ranks for this cluster
       if(clustering){
         clus_mat = rankings.submat(element_indices,
-                                   arma::find(cluster_assignment.col(t - 1) == cluster_index));
+                                   arma::find(current_cluster_assignment == cluster_index));
       } else if (any_missing | augpair){
         // When augmenting data, we need to update in every step, even without clustering
         clus_mat = rankings;
@@ -272,27 +282,27 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
   if(clustering){
     // Update the cluster labels, per assessor
-    update_cluster_labels(cluster_assignment, dist_mat, rho_old, rankings, cluster_probs,
-                          alpha_old, n_items, n_assessors, n_clusters,
+    update_cluster_labels(cluster_assignment, current_cluster_assignment, dist_mat, rho_old, rankings, cluster_probs,
+                          alpha_old, n_items, n_assessors, n_clusters, cluster_assignment_thinning, cluster_assignment_index,
                           t, metric, cardinalities, logz_estimate);
   }
 
   if(include_wcd){
     // Update within_cluster_distance
-    update_wcd(within_cluster_distance, cluster_assignment.col(t),
+    update_wcd(within_cluster_distance, current_cluster_assignment,
                dist_mat, n_clusters, t);
   }
 
   // Perform data augmentation of missing ranks, if needed
   if(any_missing){
-    update_missing_ranks(rankings, cluster_assignment, aug_acceptance, missing_indicator,
+    update_missing_ranks(rankings, current_cluster_assignment, aug_acceptance, missing_indicator,
                          assessor_missing, n_items, n_assessors, alpha_old, rho_old,
                          metric, t, clustering, augmentation_accepted);
   }
 
     // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
-    augment_pairwise(rankings, cluster_assignment, alpha_old, rho_old,
+    augment_pairwise(rankings, current_cluster_assignment, alpha_old, rho_old,
                      metric, constraints, n_assessors, n_items, t,
                      aug_acceptance, clustering, augmentation_accepted);
 

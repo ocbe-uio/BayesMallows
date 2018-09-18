@@ -13,6 +13,7 @@
 
 void update_cluster_labels(
     arma::umat& cluster_assignment,
+    arma::uvec& current_cluster_assignment,
     const arma::mat& dist_mat,
     const arma::mat& rho_old,
     const arma::mat& rankings,
@@ -21,6 +22,8 @@ void update_cluster_labels(
     const int& n_items,
     const int& n_assessors,
     const int& n_clusters,
+    const int& cluster_assignment_thinning,
+    int& cluster_assignment_index,
     const int& t,
     const std::string& metric,
     const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
@@ -50,16 +53,21 @@ void update_cluster_labels(
     int cluster = sample_int(assignment_prob.row(assessor_index));
 
     // Assign the cluster indicator
-    cluster_assignment(assessor_index, t) = cluster;
+    current_cluster_assignment(assessor_index) = cluster;
 
+  }
 
+  // Save if appropriate
+  if(t % cluster_assignment_thinning == 0){
+    cluster_assignment.col(cluster_assignment_index) = current_cluster_assignment;
+    ++cluster_assignment_index;
   }
 
 }
 
 void update_cluster_probs(
     arma::mat& cluster_probs,
-    const arma::umat& cluster_assignment,
+    const arma::uvec& current_cluster_assignment,
     const int& n_clusters,
     const int& psi,
     const int& t
@@ -68,7 +76,7 @@ void update_cluster_probs(
   arma::uvec tau_k(n_clusters);
   for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
     // Find the parameter for this cluster
-    tau_k(cluster_index) = arma::sum(cluster_assignment.col(t - 1) == cluster_index) + psi;
+    tau_k(cluster_index) = arma::sum(current_cluster_assignment == cluster_index) + psi;
 
     // If there are no assessors in the cluster,
     // Save the a draw from the gamma distribution
@@ -83,14 +91,14 @@ void update_cluster_probs(
 }
 
 
-void update_wcd(arma::mat& within_cluster_distance, const arma::uvec& cluster_assignment,
+void update_wcd(arma::mat& within_cluster_distance, const arma::uvec& current_cluster_assignment,
                 const arma::mat& dist_mat, const int& n_clusters, const int& t){
 
   arma::vec dist_vec;
 
   for(int i = 0; i < n_clusters; ++i){
     // Find the assessors in cluster i
-    arma::uvec assessor_inds = arma::find(cluster_assignment == i);
+    arma::uvec assessor_inds = arma::find(current_cluster_assignment == i);
 
     // Extract the distances from R to rho_i
     dist_vec = dist_mat.col(i);
