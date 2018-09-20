@@ -52,6 +52,12 @@ arma::uvec std_setdiff(arma::uvec& x, arma::uvec& y) {
 // Function to sample an integer given a set of probabilities
 // [[Rcpp::export]]
 int sample_int(const arma::rowvec& probs){
+
+  if(abs(arma::sum(probs) - 1) > 1e-7){
+    Rcpp::Rcout << "Error on sample_int(): Probabilities must sum to 1." << std::endl;
+    Rcpp::stop("Cannot sample_int");
+  }
+
   // Draw a uniform random number
   double u = arma::randu();
 

@@ -44,11 +44,21 @@ void update_cluster_labels(
   for(int assessor_index = 0; assessor_index < n_assessors; ++assessor_index){
 
     // Subtract largest element and exponentiate
-    assignment_prob.row(assessor_index) = arma::exp(assignment_prob.row(assessor_index) -
+    arma::rowvec probs = arma::exp(assignment_prob.row(assessor_index) -
       arma::max(assignment_prob.row(assessor_index)));
 
+    probs = arma::normalise(probs, 1);
+
+    if(abs(arma::sum(probs) - 1) > 1e-7){
+      Rcpp::Rcout << "Assessor " << assessor_index + 1 << ", iteration " << t << " assignment probs = " <<
+        probs << std::endl << "Sum is " << arma::sum(probs) << std::endl;
+      Rcpp::stop("Cannot update cluster labels");
+    }
+
     // Normalize with 1-norm
-    assignment_prob.row(assessor_index) = arma::normalise(assignment_prob.row(assessor_index), 1);
+    assignment_prob.row(assessor_index) = probs;
+
+
 
     int cluster = sample_int(assignment_prob.row(assessor_index));
 
@@ -59,8 +69,8 @@ void update_cluster_labels(
 
   // Save if appropriate
   if(t % cluster_assignment_thinning == 0){
-    cluster_assignment.col(cluster_assignment_index) = current_cluster_assignment;
     ++cluster_assignment_index;
+    cluster_assignment.col(cluster_assignment_index) = current_cluster_assignment;
   }
 
 }
