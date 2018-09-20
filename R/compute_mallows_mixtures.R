@@ -24,6 +24,7 @@ compute_mallows_mixtures <- function(n_clusters, ...){
   stopifnot(is.numeric(n_clusters))
 
   models <- purrr::map(n_clusters, function(x) {
+    message(paste0("Computing Mallows model with ", x, " clusters."))
     compute_mallows(..., n_clusters = x, include_wcd = TRUE)
   })
 }
