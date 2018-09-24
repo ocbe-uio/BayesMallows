@@ -34,8 +34,8 @@ estimate <- estimate_partition_function(method = "asymptotic",
 
 
 # mcmc settings
-n_clusters <- 1:20
-nmc <- 1e3
+n_clusters <- 20:1
+nmc <- 1e5
 burnin <- nmc-1
 rho_thin <- nmc-1
 aug_thin <- nmc-1
@@ -46,25 +46,30 @@ alphaJump <- 10
 lambda <- .1
 
 # mcmc
-resList <- NULL
-for(k in n_clusters){
-  fitMallows <- compute_mallows(rankings = movie_init_rank, preferences = movie_tc,
-                                nmc = nmc, n_clusters = k, save_augmented_data = FALSE,
-                                rho_thinning = rho_thin, include_wcd = TRUE, logz_estimate = estimate,
-                                leap_size = L, alpha_prop_sd = sigmaAlpha, alpha_jump = alphaJump,
-                                lambda = lambda, aug_thinning = aug_thin, cluster_assignment_thinning = clus_ass_thin,
-                                verbose = TRUE,
-                                validate_rankings = FALSE, constraints = constraints,
-                                skip_postprocessing = TRUE)
+models <- compute_mallows_mixtures(n_clusters = n_clusters,
+                                   rankings = movie_init_rank,
+                                   preferences = movie_tc,
+                                   nmc = nmc,
+                                   save_augmented_data = FALSE,
+                                   rho_thinning = rho_thin,
+                                   logz_estimate = estimate,
+                                   leap_size = L,
+                                   alpha_prop_sd = sigmaAlpha,
+                                   alpha_jump = alphaJump,
+                                   lambda = lambda,
+                                   aug_thinning = aug_thin,
+                                   cluster_assignment_thinning = clus_ass_thin,
+                                   verbose = TRUE,
+                                   validate_rankings = FALSE,
+                                   constraints = constraints,
+                                   skip_postprocessing = TRUE)
 
-  print(paste('Finished cluster ',k,sep=''))
-  save(fitMallows, file=paste('./work-docs/movielens/BayesMallows_nmc=',nmc,'_cluster',k,'.RData',sep=''))
-  gc()
-  #resList <- c(resList, list(fitMallows))
-}
+# Tidy the WCD
+# NB! This is just my way of using an internal function. We will decide on the user interface later.
+models <- purrr::map(models, BayesMallows:::tidy_wcd)
 
-
-
+plot_elbow(models, burnin = floor(nmc/2))
+ggplot2::ggsave(file = "elbow_20_clusters.png")
 # pdf(file = paste('../../data/valeriv/results/Movielens/BayesMallows_nmc=',nmc,'_elbow.pdf',sep=''), width = 13, height = 7)
 # plot_elbow(resList, burnin = burnin)
 # dev.off()
