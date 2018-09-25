@@ -246,10 +246,12 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
 
+      // Find the members of this cluster
+      arma::uvec matches = arma::find(current_cluster_assignment == cluster_index);
+
       // Matrix of ranks for this cluster
       if(clustering){
-        clus_mat = rankings.submat(element_indices,
-                                   arma::find(current_cluster_assignment == cluster_index));
+        clus_mat = rankings.submat(element_indices, matches);
       } else if (any_missing | augpair){
         // When augmenting data, we need to update in every step, even without clustering
         clus_mat = rankings;
@@ -279,6 +281,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
       }
 
     }
+
 
   if(clustering){
     // Update the cluster labels, per assessor
