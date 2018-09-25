@@ -53,13 +53,15 @@ arma::uvec std_setdiff(arma::uvec& x, arma::uvec& y) {
 // [[Rcpp::export]]
 int sample_int(const arma::rowvec& probs){
 
-  if(abs(arma::sum(probs) - 1) > 1e-7){
-    Rcpp::Rcout << "Error on sample_int(): Probabilities must sum to 1." << std::endl;
-    Rcpp::stop("Cannot sample_int");
+  if(probs.has_nan() || probs.has_inf()){
+    Rcpp::Rcout << "probs = " << probs << std::endl;
+    Rcpp::stop("Cannot sample_int.");
   }
 
   // Draw a uniform random number
   double u = arma::randu();
 
-  return arma::as_scalar(arma::find(arma::cumsum(probs) > u, 1, "first"));
+  arma::uvec matches = arma::find(arma::cumsum(probs) > u, 1, "first");
+
+  return arma::as_scalar(matches);
 }
