@@ -246,13 +246,8 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
 
+      // Find the members of this cluster
       arma::uvec matches = arma::find(current_cluster_assignment == cluster_index);
-
-      // Go on if there are zero in cluster
-      if(matches.n_elem == 0){
-        // Must fix the saving of parameters first
-        //continue;
-      }
 
       // Matrix of ranks for this cluster
       if(clustering){
