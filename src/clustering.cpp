@@ -39,21 +39,9 @@ void update_cluster_labels(
       alpha_old(cluster_index) / n_items * dist_mat.col(cluster_index) -
       get_partition_function(n_items, alpha_old(cluster_index), cardinalities, logz_estimate, metric);
 
-    if(assignment_prob.col(cluster_index).has_nan() || assignment_prob.col(cluster_index).has_inf()){
-      Rcpp::Rcout << "Overflow in cluster " << cluster_index + 1 << std::endl;
-      Rcpp::Rcout << "tau_k = " << cluster_probs(cluster_index, t) << std::endl;
-    }
-
   }
 
   for(int assessor_index = 0; assessor_index < n_assessors; ++assessor_index){
-
-    // Subtract largest element and exponentiate
-    if(assignment_prob.row(assessor_index).has_nan() || assignment_prob.row(assessor_index).has_inf()){
-      Rcpp::Rcout << "overflow on log scale " << std::endl;
-    }
-
-
     arma::rowvec probs = arma::exp(assignment_prob.row(assessor_index) -
       arma::max(assignment_prob.row(assessor_index)));
 
@@ -62,7 +50,7 @@ void update_cluster_labels(
     if(probs.has_nan() || probs.has_inf()){
       Rcpp::Rcout << "Assessor " << assessor_index + 1 << ", iteration " << t << " assignment probs = " <<
         probs << std::endl << "Sum is " << arma::sum(probs) << std::endl;
-      Rcpp::stop("Cannot update cluster labels. Is the model identifiable?");
+      Rcpp::stop("Cannot update cluster labels.");
     }
 
     // Normalize with 1-norm
@@ -98,18 +86,10 @@ void update_cluster_probs(
     // Find the parameter for this cluster
     tau_k(cluster_index) = arma::sum(current_cluster_assignment == cluster_index) + psi;
 
-    arma::uvec a = tau_k.row(cluster_index);
-    if(a.n_elem != 1 || a(0) <= 0){
-      Rcpp::Rcout << a << std::endl;
-      Rcpp::stop("Wrong cluster probs.");
-
-    }
 
     // If there are no assessors in the cluster,
     // Save the a draw from the gamma distribution
     cluster_probs(cluster_index, t) = arma::randg<double>(arma::distr_param(tau_k(cluster_index), 1.0));
-
-
   }
 
 
