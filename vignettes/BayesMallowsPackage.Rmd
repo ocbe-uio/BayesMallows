@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 bibliography: ../inst/REFERENCES.bib
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{BayesMallows Package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
