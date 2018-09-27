@@ -44,8 +44,8 @@ clustering is performed. See \code{\link{compute_mallows_mixtures}} for a
 convenience function for computing several models with varying numbers of
 mixtures.}
 
-\item{cluster_assignment_thinning}{Integer specifying the thinning to be applied
-to the cluster assignments. Defaults to \code{1L}.}
+\item{cluster_assignment_thinning}{Integer specifying the thinning to be
+applied to the cluster assignments. Defaults to \code{1L}.}
 
 \item{nmc}{Integer specifying the number of iteration of the
 Metropolis-Hastings algorithm. Defaults to \code{2000L}. See
@@ -64,9 +64,9 @@ initial value.}
 
 \item{rho_thinning}{Integer specifying the thinning of \code{rho} to be
 performed in the Metropolis- Hastings algorithm. Defaults to \code{1L}.
-\code{compute_mallows} save every \code{rho_thinning}th value of \eqn{\rho}.
-See \insertCite{link2011;textual}{BayesMallows} for a discussion of when it
-is appropriate to use thinning, and when it is not.}
+\code{compute_mallows} save every \code{rho_thinning}th value of
+\eqn{\rho}. See \insertCite{link2011;textual}{BayesMallows} for a
+discussion of when it is appropriate to use thinning, and when it is not.}
 
 \item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
 lognormal proposal distribution used for \eqn{\alpha} in the
@@ -113,28 +113,39 @@ give to the items not yet ranked, and is required by
 data. Only used when \code{save_augmented_data = TRUE}. Defaults to 1L.}
 
 \item{logz_estimate}{Estimate of the partition function, computed with
-\code{\link{estimate_partition_function}}.}
+\code{\link{estimate_partition_function}}. Be aware that when using an
+estimated partition function when \code{n_clusters > 1}, the partition
+function should be estimated over the whole range of \eqn{\alpha} values
+covered by the prior distribution for \eqn{\alpha} with high probability.
+In the case that a cluster \eqn{\alpha_c} becomes empty during the
+Metropolis-Hastings algorihm, the posterior of \eqn{\alpha_c} equals its
+prior. For example, if the rate parameter of the exponential prior equals,
+say \eqn{\lambda = 0.001}, there is about 37 \% (or exactly: \code{1 - pexp(1000, 0.001)})
+prior probability that \eqn{\alpha_c > 1000}. Hence when \code{n_clusters >
+1}, the estimated partition function should cover this range, or
+\eqn{\lambda} should be increased.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
 every 1000th iteration.}
 
-\item{validate_rankings}{Logical specifying whether the rankings provided
-(or generated from \code{preferences}) should be validated. Defaults to
+\item{validate_rankings}{Logical specifying whether the rankings provided (or
+generated from \code{preferences}) should be validated. Defaults to
 \code{TRUE}. Turning off this check will reduce computing time with a large
 number of items or assessors.}
 
-\item{constraints}{Optional constraint set returned from \code{\link{generate_constraints}}.
-Defaults to \code{NULL}, which means the the constraint set is computed internally.
-In repeated calls to \code{compute_mallows}, with very large datasets, computing
-the constraint set may be time consuming. In this case it can be
-beneficial to precompute it and provide it as a separate argument.}
+\item{constraints}{Optional constraint set returned from
+\code{\link{generate_constraints}}. Defaults to \code{NULL}, which means
+the the constraint set is computed internally. In repeated calls to
+\code{compute_mallows}, with very large datasets, computing the constraint
+set may be time consuming. In this case it can be beneficial to precompute
+it and provide it as a separate argument.}
 
-\item{skip_postprocessing}{Logical specifying whether to skip the postprocessing
-of the output of the Metropolis-Hastings algorithm. This can be useful for
-very large datasets, which cause the postprocessing to crash. Note that when
-\code{skip_postprocessing=TRUE}, the functions for studying the posterior
-distributions will not work unless the internal function
+\item{skip_postprocessing}{Logical specifying whether to skip the
+postprocessing of the output of the Metropolis-Hastings algorithm. This can
+be useful for very large datasets, which cause the postprocessing to crash.
+Note that when \code{skip_postprocessing=TRUE}, the functions for studying
+the posterior distributions will not work unless the internal function
 \code{\link{tidy_mcmc}} has been run.}
 }
 \value{
