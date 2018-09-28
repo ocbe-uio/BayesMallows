@@ -1,3 +1,7 @@
+## Comment to Package Reviewer
+This is my second submission. My first submission resulted in a pretest 
+NOTE on Debian regarding Makevars.win. The issue should now be fixed.
+
 ## Test Environments
 * local OS X install, R 3.5.1
 * win-builder (devel and release)
