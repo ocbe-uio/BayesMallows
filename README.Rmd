@@ -35,15 +35,14 @@ Future releases will include:
 
 - Non-transitive pairwise comparisons (@crispino2018).
 
-All feedback and suggestions are very welcome. Feel free to create a [Pull Request](https://github.uio.no/oyss/BayesMallows/pulls) or an [Issue](https://github.uio.no/oyss/BayesMallows/issues). Please also check out the [Suggested Roadmap](https://github.uio.no/oyss/BayesMallows/wiki/Roadmap).
+All feedback and suggestions are very welcome.
 
 ## Installation
-To install the current development version of the package, you should clone or download this repository, and then open `BayesMallows.Rproj` in RStudio and press CTRL + SHIFT + B. If you have trouble, please send me an [email](mailto:oystein.sorensen@medisin.uio.no). 
 
-To get started using the package, generate its vignette with the following command:
+To install the current release, use
 
 ```{r, eval=FALSE}
-rmarkdown::render("./vignettes/BayesMallowsPackage.Rmd")
+install.packages("BayesMallows")
 ```
 
 
