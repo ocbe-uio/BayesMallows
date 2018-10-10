@@ -123,7 +123,7 @@ double rank_dist_matrix(const arma::mat& rankings, const arma::vec& rho, std::st
   double total_distance = 0;
 
   for(int i = 0; i < N; ++i){
-    total_distance += get_rank_distance(rankings.col(i), rho, metric = metric);
+    total_distance += get_rank_distance(rankings.col(i), rho, metric);
   }
 
   return total_distance;
