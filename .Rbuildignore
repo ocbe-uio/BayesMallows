@@ -5,3 +5,4 @@
 ^data-raw$
 ^work-docs$
 cran-comments.md
+^\.travis\.yml$
