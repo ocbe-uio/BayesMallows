@@ -784,13 +784,13 @@ model_fit2 <- compute_mallows(sushi_rankings, n_clusters = 2, nmc = 1000)
 
 It is useful to look at the trace plots of $\alpha_{1}, \dots, \alpha_{C}$.
 
-```{r}
+```{r, fig.width=6}
 assess_convergence(model_fit2)
 ```
 
 We can also look at the trace plot of the cluster probabilities, $\tau_{1}$ and $\tau_{2}$:
 
-```{r}
+```{r, fig.width=6}
 assess_convergence(model_fit2, type = "cluster_probs")
 ```
 
@@ -862,18 +862,18 @@ Even though the result of `compute_mallows_mixtures` is a list of fitted models,
 
 We can now provide the `models` list to `plot_elbow`. 
 
-```{r}
+```{r, fig.width=6}
 plot_elbow(models, burnin = 1000)
 ```
 
 Let us choose 5 clusters. We then compute this model, now without the extreme thinning.
 
-```{r}
+```{r, fig.width=6}
 model <- compute_mallows(rankings = sushi_rankings, nmc = nmc, n_clusters = 5)
 ```
 
 
-```{r}
+```{r, fig.width=6}
 plot(model, burnin = 1000, type = "cluster_assignment")
 ```
 
@@ -885,7 +885,7 @@ cluster_assignment <- assign_cluster(model, burnin = 1000, soft = FALSE)
 
 
 ```{r, echo=FALSE, results='asis'}
-knitr::kable(cluster_assignment, caption = "The first few rows of `cluster_assignment`.")
+knitr::kable(head(cluster_assignment), caption = "The first few rows of `cluster_assignment`.")
 ```
 
 # References
