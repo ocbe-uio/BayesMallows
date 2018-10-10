@@ -14,7 +14,7 @@ Depends: R (>= 2.10)
 Imports: Rcpp (>= 0.12.17),
   ggplot2 (>= 2.2.1),
   Rdpack (>= 0.8),
-  stats (>= 3.5.0),
+  stats,
   igraph (>= 1.2.2),
   dplyr (>= 0.7.6),
   sets (>= 1.0-18),
