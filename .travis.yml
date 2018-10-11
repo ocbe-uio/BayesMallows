@@ -3,3 +3,16 @@
 language: R
 sudo: false
 cache: packages
+
+r_github_packages:
+  - jimhester/covr
+
+warnings_are_errors: true
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+
+after_success:
+  - Rscript -e 'covr::codecov()'
