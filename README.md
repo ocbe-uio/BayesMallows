@@ -6,10 +6,12 @@
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/BayesMallows)](https://cran.r-project.org/package=BayesMallows)
 [![Build
 Status](https://travis-ci.org/osorensen/BayesMallows.svg?branch=master)](https://travis-ci.org/osorensen/BayesMallows)
+[![Coverage
+Status](https://img.shields.io/codecov/c/github/osorensen/BayesMallows/master.svg)](https://codecov.io/github/osorensen/BayesMallows?branch=master)
 
 This package implements the Bayesian Mallows Model described in Vitelli
 et al. (2018). The user can choose between footrule, Spearman, Cayley,
-Kendall, or Hamming distance.
+or Kendall distance.
 
 The following features are currently implemented:
 
