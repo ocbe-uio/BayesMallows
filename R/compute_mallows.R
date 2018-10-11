@@ -49,8 +49,7 @@
 #'   Markov chain.
 #'
 #' @param leap_size Integer specifying the step size of the leap-and-shift
-#'   proposal distribution. Defaults to NULL, which means that it is set based
-#'   on the data to \code{floor(n_items / 5)}.
+#'   proposal distribution. Defaults \code{floor(n_items / 5)}.
 #'
 #' @param rho_init Numeric vector specifying the initial value of the latent
 #'   consensus ranking \eqn{\rho}. Defaults to NULL, which means that the
@@ -164,7 +163,7 @@ compute_mallows <- function(rankings = NULL,
                             n_clusters = 1L,
                             cluster_assignment_thinning = 1L,
                             nmc = 2000L,
-                            leap_size = NULL,
+                            leap_size = floor(n_items / 5),
                             rho_init = NULL,
                             rho_thinning = 1L,
                             alpha_prop_sd = 0.1,
@@ -225,7 +224,7 @@ compute_mallows <- function(rankings = NULL,
 
 
   # Set leap_size if it is not alredy set.
-  if(is.null(leap_size)) leap_size <- floor(n_items / 5)
+  #if(is.null(leap_size)) leap_size <- floor(n_items / 5)
 
   # Extract the right sequence of cardinalities, if relevant
   if(!is.null(logz_estimate)){

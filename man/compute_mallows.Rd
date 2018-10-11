@@ -6,13 +6,13 @@
 \usage{
 compute_mallows(rankings = NULL, preferences = NULL,
   metric = "footrule", n_clusters = 1L,
-  cluster_assignment_thinning = 1L, nmc = 2000L, leap_size = NULL,
-  rho_init = NULL, rho_thinning = 1L, alpha_prop_sd = 0.1,
-  alpha_init = 1, alpha_jump = 1L, lambda = 0.001, psi = 10L,
-  include_wcd = (n_clusters > 1), save_augmented_data = FALSE,
-  aug_thinning = 1L, logz_estimate = NULL, verbose = FALSE,
-  validate_rankings = TRUE, constraints = NULL,
-  skip_postprocessing = FALSE)
+  cluster_assignment_thinning = 1L, nmc = 2000L,
+  leap_size = floor(n_items/5), rho_init = NULL, rho_thinning = 1L,
+  alpha_prop_sd = 0.1, alpha_init = 1, alpha_jump = 1L,
+  lambda = 0.001, psi = 10L, include_wcd = (n_clusters > 1),
+  save_augmented_data = FALSE, aug_thinning = 1L,
+  logz_estimate = NULL, verbose = FALSE, validate_rankings = TRUE,
+  constraints = NULL, skip_postprocessing = FALSE)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items, of size \code{n_assessors x
@@ -53,8 +53,7 @@ Metropolis-Hastings algorithm. Defaults to \code{2000L}. See
 Markov chain.}
 
 \item{leap_size}{Integer specifying the step size of the leap-and-shift
-proposal distribution. Defaults to NULL, which means that it is set based
-on the data to \code{floor(n_items / 5)}.}
+proposal distribution. Defaults \code{floor(n_items / 5)}.}
 
 \item{rho_init}{Numeric vector specifying the initial value of the latent
 consensus ranking \eqn{\rho}. Defaults to NULL, which means that the
