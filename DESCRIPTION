@@ -31,6 +31,7 @@ Suggests:
     knitr,
     PerMallows (>= 1.13),
     rmarkdown,
-    Rankcluster (>= 0.94)
+    Rankcluster (>= 0.94),
+    covr
 VignetteBuilder: knitr
 RdMacros: Rdpack
