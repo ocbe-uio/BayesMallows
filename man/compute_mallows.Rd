@@ -26,11 +26,11 @@ column names, these are assumed to be the names of the items.}
 named \code{assessor}, \code{bottom_item}, and \code{top_item}, and one row
 for each stated preference. Given a set of pairwise preferences, generate a
 transitive closure using \code{\link{generate_transitive_closure}}. This
-will give \code{preferences} the class \code{"BayesMallowsTC"}. Otherwise,
+will give \code{preferences} the class \code{"BayesMallowsTC"}. If
+\code{preferences} is not of class \code{"BayesMallowsTC"},
 \code{compute_mallows} will call \code{\link{generate_transitive_closure}}
-will be called on \code{preferences} before computations are done. In the
-current version, the pairwise preferences are assumed to be mutually
-compatible.}
+on \code{preferences} before computations are done. In the current version,
+the pairwise preferences are assumed to be mutually compatible.}
 
 \item{metric}{A character string specifying the distance metric to use in the
 Bayesian Mallows Model. Available options are \code{"footrule"},
@@ -120,10 +120,10 @@ covered by the prior distribution for \eqn{\alpha} with high probability.
 In the case that a cluster \eqn{\alpha_c} becomes empty during the
 Metropolis-Hastings algorihm, the posterior of \eqn{\alpha_c} equals its
 prior. For example, if the rate parameter of the exponential prior equals,
-say \eqn{\lambda = 0.001}, there is about 37 \% (or exactly: \code{1 - pexp(1000, 0.001)})
-prior probability that \eqn{\alpha_c > 1000}. Hence when \code{n_clusters >
-1}, the estimated partition function should cover this range, or
-\eqn{\lambda} should be increased.}
+say \eqn{\lambda = 0.001}, there is about 37 \% (or exactly: \code{1 -
+pexp(1000, 0.001)}) prior probability that \eqn{\alpha_c > 1000}. Hence
+when \code{n_clusters > 1}, the estimated partition function should cover
+this range, or \eqn{\lambda} should be increased.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
