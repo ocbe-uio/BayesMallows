@@ -29,16 +29,7 @@ partition_function_data <- tibble(
   )
 rm(seq2)
 
-# Then we do importance sampling for Spearman distance
-library(doParallel)
-cl <- makeCluster(6)
-registerDoParallel(cl)
-system.time({estimates <- foreach(it = 15:22) %dopar% {
-  BayesMallows::estimate_partition_function(alpha_vector = seq(from = 0, to = 10, by = .1),
-                                            n_items = it, metric = "spearman", nmc = 1e6,
-                                            degree = 9)
-}})
-stopCluster(cl)
+
 
 # Finally, save the fit as internal data
 devtools::use_data(partition_function_data, internal = TRUE, overwrite = TRUE)
