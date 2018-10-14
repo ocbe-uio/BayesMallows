@@ -29,5 +29,7 @@ partition_function_data <- tibble(
   )
 rm(seq2)
 
+
+
 # Finally, save the fit as internal data
 devtools::use_data(partition_function_data, internal = TRUE, overwrite = TRUE)
