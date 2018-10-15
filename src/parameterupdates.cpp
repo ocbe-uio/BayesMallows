@@ -1,5 +1,4 @@
 #include "RcppArmadillo.h"
-#include "misc.h"
 #include "leapandshift.h"
 #include "distfuns.h"
 #include "partitionfuns.h"

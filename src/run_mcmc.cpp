@@ -1,10 +1,11 @@
 #include <cmath>
 #include "RcppArmadillo.h"
-#include "parameterupdates.h"
-#include "misc.h"
+#include "clustering.h"
+#include "distfuns.h"
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
-#include "clustering.h"
+#include "parameterupdates.h"
+
 
 // via the depends attribute we tell Rcpp to create hooks for
 // RcppArmadillo so that the build process will know what to do

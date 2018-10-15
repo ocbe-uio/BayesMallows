@@ -2,11 +2,8 @@
 #define CLUSTERING_H
 
 #include "RcppArmadillo.h"
-#include <cmath>
-#include "misc.h"
-#include "leapandshift.h"
-#include "distfuns.h"
 #include "partitionfuns.h"
+#include "misc.h"
 
 void update_cluster_labels(
     arma::umat& cluster_assignment,

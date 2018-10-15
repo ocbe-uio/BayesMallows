@@ -1,6 +1,6 @@
 #include "RcppArmadillo.h"
-#include "misc.h"
 #include <cmath>
+#include "misc.h"
 
 
 // via the depends attribute we tell Rcpp to create hooks for
