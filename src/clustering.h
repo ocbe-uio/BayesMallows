@@ -2,7 +2,7 @@
 #define CLUSTERING_H
 
 #include "RcppArmadillo.h"
-#include <math.h>
+#include <cmath>
 #include "misc.h"
 #include "leapandshift.h"
 #include "distfuns.h"

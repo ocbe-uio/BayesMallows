@@ -1,4 +1,4 @@
-#include <math.h>
+#include <cmath>
 #include "RcppArmadillo.h"
 #include "parameterupdates.h"
 #include "misc.h"

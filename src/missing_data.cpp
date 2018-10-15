@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
 #include "misc.h"
 #include "distfuns.h"
-#include <math.h>
+#include <cmath>
 
 // [[Rcpp::depends(RcppArmadillo)]]
 

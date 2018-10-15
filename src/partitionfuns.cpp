@@ -1,7 +1,7 @@
 #include "RcppArmadillo.h"
 #include "misc.h"
 #include "distfuns.h"
-#include <math.h>
+#include <cmath>
 
 
 // via the depends attribute we tell Rcpp to create hooks for
@@ -17,7 +17,7 @@ double compute_is_fit(double alpha, arma::vec fit){
   int n_items = fit.n_elem;
 
   for(int i = 0; i < n_items; ++i){
-    logZ += pow(alpha, i) * fit(i);
+    logZ += std::pow(alpha, i) * fit(i);
   }
   return(logZ);
 }
@@ -49,7 +49,7 @@ double get_partition_function(int n_items, double alpha,
     // If cardinalities are defined, we use them. If importance sampling estimates exist,
     // then we use that
     if(cardinalities.isNotNull()){
-      arma::vec distances = arma::regspace(0, 2, floor(pow(n_items, 2) / 2));
+      arma::vec distances = arma::regspace(0, 2, floor(std::pow(n_items, 2) / 2));
       return log(arma::sum(Rcpp::as<arma::vec>(cardinalities) % exp(-alpha * distances / n_items)));
     } else if(logz_estimate.isNotNull()){
       return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
@@ -90,7 +90,7 @@ double get_partition_function(int n_items, double alpha,
     double res = 0;
 
     for(int i = 0; i < (n_items + 1); ++i){
-      res += factorial(n_items) * exp(-alpha) * pow((exp(alpha / n_items) - 1), i) / factorial(i);
+      res += factorial(n_items) * exp(-alpha) * std::pow((exp(alpha / n_items) - 1), i) / factorial(i);
     }
 
     return log(res);
@@ -138,7 +138,7 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
         // Because 0 is the first index, this is really (i + 1) - (j + 1) = i - j
         B(i, j) = -abs(i - j);
       } else if(metric == "spearman"){
-        B(i, j) = -pow(i - j, 2.0);
+        B(i, j) = -std::pow(i - j, 2.0);
       }
     }
   }
