@@ -83,7 +83,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       Z += exp(- alpha / n_items * get_rank_distance(ranks, rho, metric))/q;
     }
     // Average over the Monte Carlo samples
-    logZ(t) = log(Z / nmc);
+    logZ(t) = std::log(static_cast<double>(Z / nmc));
   }
   return logZ;
 }

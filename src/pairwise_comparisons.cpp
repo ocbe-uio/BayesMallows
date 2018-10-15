@@ -94,7 +94,7 @@ void augment_pairwise(
 
     // Finally, decide whether to accept the proposal or not
     // Draw a uniform random number
-    double u = log(arma::randu<double>());
+    double u = std::log(arma::randu<double>());
 
     // Find which cluster the assessor belongs to
     int cluster;
