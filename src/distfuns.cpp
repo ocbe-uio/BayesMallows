@@ -28,7 +28,7 @@ arma::vec get_summation_distances(int n, arma::vec cardinalities,
 
     if(n > 50) Rcpp::stop("n > 50 currently not supported for footrule");
 
-    int max = floor(std::pow(static_cast<double>(n), 2) / 2.0);
+    int max = std::floor(std::pow(static_cast<double>(n), 2) / 2.0);
     // Sequence from 0 to max with increment 1
     distances = arma::linspace(0, max, max + 1);
 

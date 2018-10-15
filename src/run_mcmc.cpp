@@ -77,16 +77,16 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   int n_assessors = rankings.n_cols;
 
   // Number of alpha values to store, per cluster.
-  int n_alpha = ceil(nmc * 1.0 / alpha_jump);
+  int n_alpha = std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump));
 
   // Number of rho values to store, per cluster and item
-  int n_rho = ceil(nmc * 1.0 / rho_thinning);
+  int n_rho = std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning));
 
   // Number of augmented data sets to store
-  int n_aug = ceil(nmc * 1.0 / aug_thinning);
+  int n_aug = std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning));
 
   // Number of cluster assignments to store
-  int n_cluster_assignments = ceil(nmc * 1.0 / cluster_assignment_thinning);
+  int n_cluster_assignments = std::ceil(static_cast<double>(nmc * 1.0 / cluster_assignment_thinning));
 
   // Check if we want to do clustering
   bool clustering = n_clusters > 1;

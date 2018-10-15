@@ -11,7 +11,22 @@ This is a package update. It attempts to fix the following check results on CRAN
 * win-builder (devel and release)
 
 ## R CMD CHECK results
-The were no ERRORs, WARNINGs or NOTEs in any of the test environments.
+The were no ERRORs or WARNINGs in any of the test environments.
+
+* ubuntu 14.04 issued the following NOTE:
+
+  
+    checking installed package size ... NOTE
+    
+      installed size is  8.7Mb
+      
+      sub-directories of 1Mb or more:
+      
+      libs   7.3Mb
+      
+
+
+
 
 ## Downstream Dependencies
 There are currently no downstream dependencies for this package.

@@ -80,7 +80,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
         support(ranks(jj) - 1) = 0;
       }
       // Increment the partition function
-      Z += exp(- alpha / n_items * get_rank_distance(ranks, rho, metric))/q;
+      Z += std::exp(static_cast<double>(- alpha / n_items * get_rank_distance(ranks, rho, metric)))/q;
     }
     // Average over the Monte Carlo samples
     logZ(t) = std::log(static_cast<double>(Z / nmc));
