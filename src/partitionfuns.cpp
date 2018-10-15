@@ -74,7 +74,7 @@ double get_partition_function(int n_items, double alpha,
 
     double res = 0;
     for(int i = 1; i < (n_items + 1); ++i){
-      res += std::log( ( 1 - exp(-i * alpha / n_items ) )/(1 - std::exp(static_cast<double>(-alpha / n_items ))));
+      res += std::log( ( 1 - std::exp(static_cast<double>(-i * alpha / n_items) ) )/(1 - std::exp(static_cast<double>(-alpha / n_items ))));
     }
     return res;
 
