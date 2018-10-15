@@ -1,5 +1,4 @@
 #include "RcppArmadillo.h"
-#include "misc.h"
 #include "leapandshift.h"
 #include "distfuns.h"
 #include "partitionfuns.h"
@@ -29,8 +28,8 @@ void update_alpha(arma::mat& alpha,
   int n_assessors = rankings.n_cols;
 
   // Sample an alpha proposal
-  double alpha_proposal = exp(arma::randn<double>() * alpha_prop_sd +
-                              log(alpha_old(cluster_index)));
+  double alpha_proposal = std::exp(arma::randn<double>() * alpha_prop_sd +
+                              std::log(alpha_old(cluster_index)));
 
   double rank_dist = rank_dist_matrix(rankings, rho_old.col(cluster_index), metric);
 
@@ -44,10 +43,10 @@ void update_alpha(arma::mat& alpha,
     n_assessors * (
         get_partition_function(n_items, alpha_old(cluster_index), cardinalities, logz_estimate, metric) -
           get_partition_function(n_items, alpha_proposal, cardinalities, logz_estimate, metric)
-    ) + log(alpha_proposal) - log(alpha_old(cluster_index));
+    ) + std::log(alpha_proposal) - std::log(alpha_old(cluster_index));
 
   // Draw a uniform random number
-  double u = log(arma::randu<double>());
+  double u = std::log(arma::randu<double>());
 
   if(ratio > u){
     alpha(cluster_index, alpha_index) = alpha_proposal;
@@ -84,10 +83,10 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
 
   // Metropolis-Hastings ratio
   double ratio = - alpha_old / n_items * (dist_new - dist_old) +
-    log(prob_backward) - log(prob_forward);
+    std::log(prob_backward) - std::log(prob_forward);
 
   // Draw a uniform random number
-  double u = log(arma::randu<double>());
+  double u = std::log(arma::randu<double>());
 
   if(ratio > u){
     rho_old.col(cluster_index) = rho_proposal;

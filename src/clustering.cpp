@@ -1,9 +1,7 @@
 #include "RcppArmadillo.h"
-#include <math.h>
-#include "misc.h"
-#include "leapandshift.h"
-#include "distfuns.h"
+#include <cmath>
 #include "partitionfuns.h"
+#include "misc.h"
 
 // via the depends attribute we tell Rcpp to create hooks for
 // RcppArmadillo so that the build process will know what to do
@@ -35,7 +33,7 @@ void update_cluster_labels(
   for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
     // Compute the logarithm of the unnormalized probability
     // This is important, to avoid overflow
-    assignment_prob.col(cluster_index) = log(cluster_probs(cluster_index, t)) * arma::ones(n_assessors) -
+    assignment_prob.col(cluster_index) = std::log(cluster_probs(cluster_index, t)) * arma::ones(n_assessors) -
       alpha_old(cluster_index) / n_items * dist_mat.col(cluster_index) -
       get_partition_function(n_items, alpha_old(cluster_index), cardinalities, logz_estimate, metric);
 

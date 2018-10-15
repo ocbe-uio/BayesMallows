@@ -1,6 +1,6 @@
 #include "RcppArmadillo.h"
+#include <cmath>
 #include "misc.h"
-#include <math.h>
 
 
 // via the depends attribute we tell Rcpp to create hooks for
@@ -28,7 +28,7 @@ arma::vec get_summation_distances(int n, arma::vec cardinalities,
 
     if(n > 50) Rcpp::stop("n > 50 currently not supported for footrule");
 
-    int max = floor(pow(n, 2) / 2.0);
+    int max = std::floor(std::pow(static_cast<double>(n), 2) / 2.0);
     // Sequence from 0 to max with increment 1
     distances = arma::linspace(0, max, max + 1);
 
@@ -107,7 +107,7 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footr
   } else if (metric == "spearman") {
 
     // Spearman distance is the sum of squares
-    distance = pow(arma::norm(r1 - r2, 2), 2.0);
+    distance = std::pow(arma::norm(r1 - r2, 2), 2.0);
 
   } else {
     Rcpp::stop("Inadmissible value of metric.");

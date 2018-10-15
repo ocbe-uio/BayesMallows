@@ -74,10 +74,10 @@ arma::mat rmallows(
 
     // Metropolis-Hastings ratio
     double ratio = - alpha0 / n_items * (dist_new - dist_old) +
-      log(prob_backward) - log(prob_forward);
+      std::log(prob_backward) - std::log(prob_forward);
 
     // Draw a uniform random number
-    double u = log(arma::randu<double>());
+    double u = std::log(arma::randu<double>());
 
     if(ratio > u){
       rho_iter = rho_proposal;

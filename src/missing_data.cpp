@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
-#include "misc.h"
+#include <cmath>
 #include "distfuns.h"
-#include <math.h>
+#include "misc.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
@@ -74,7 +74,7 @@ void update_missing_ranks(arma::mat& rankings, const arma::uvec& current_cluster
       arma::vec proposal = propose_augmentation(rankings.col(i), missing_indicator.col(i), n_items);
 
       // Draw a uniform random number
-      double u = log(arma::randu<double>());
+      double u = std::log(arma::randu<double>());
 
       // Find which cluster the assessor belongs to
       int cluster;
