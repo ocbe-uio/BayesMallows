@@ -1,54 +1,17 @@
 ## Resubmission Note
-This is a resubmission. On the first submission, we got the following feedback, which is now fixed:
+This is a package update. It attempts to fix the following check results on CRAN:
 
----
-  Thanks, we see:
-  
-     New submission
-  
-     License components with restrictions and base license permitting such:
-       GPL-3 + file LICENSE
-     File 'LICENSE':
-       GNU General Public License
-       ==========================
-  
-       _Version 3, 29 June 2007_   ..
-  
-  
-  Please only use file LICENSE for additional restrictions for the GPL-3. 
-  If there are none, omit it.
-  Do not ship the license file itself. It is part of R already.
-  
-  Best,
-  Uwe Ligges
----
-
+* `r-devel-linux-x86_64-debian-clang` and `r-devel-linux-x86_64-fedora-clang` currently issue a WARNING. The cause of the warning, on line 127 in `distfuns.cpp`, should now be fixed.
+* `r-patched-solaris-x86` currently fails. The `C++` code has been updated according to $1.6.4 of 'Writing R Extensions', and hopefully will succeed with this update.
+* `r-oldrel-windows-ix86+x86_64` and `r-oldrel-osx-x86_64` fail because `stats (>= 3.5.0)` was specified under IMPORTS. This has now been changed to `stats`, not explicitly demanding version 3.5.0 or higher.
 
 ## Test Environments
 * local OS X install, R 3.5.1
+* ubuntu 14.04 (on travis-ci), R 3.5.1
 * win-builder (devel and release)
 
 ## R CMD CHECK results
-The were no ERRORs or WARNINGs in any of the test environments.
-
-
-On local OS X, there were no NOTEs.
-
-On win-builder (devel and release) there was one NOTE:
-
-* checking CRAN incoming feasibility ... NOTE
-Maintainer: 'Oystein Sorensen <oystein.sorensen.1985@gmail.com>'
-
-New submission
-
-Possibly mis-spelled words in DESCRIPTION:
-  Cayley (7:190)
-  IPFP (7:748)
-  Mukherjee (7:764)
-  Vitelli (7:83, 7:695)
-  al (7:94, 7:706)
-  et (7:91, 7:703)
-  footrule (7:198)
+The were no ERRORs, WARNINGs or NOTEs in any of the test environments.
 
 ## Downstream Dependencies
 There are currently no downstream dependencies for this package.
