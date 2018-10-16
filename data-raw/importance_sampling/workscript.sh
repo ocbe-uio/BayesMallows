@@ -3,7 +3,7 @@
 # of the log partition function in parallel.
 
 #SBATCH --ntasks=16
-#SBATCH --account=uio --time=00:10:00 --mem-per-cpu=500M
+#SBATCH --account=uio --time=24:00:00 --mem-per-cpu=500M
 
 source /cluster/bin/jobsetup
 

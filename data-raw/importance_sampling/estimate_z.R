@@ -7,7 +7,7 @@ cl <- makeCluster(num_workers)
 registerDoParallel(cl)
 system.time({estimates <- foreach(it = n_items) %dopar% {
   BayesMallows::estimate_partition_function(alpha_vector = seq(from = 0, to = 20, by = .1),
-                                            n_items = it, metric = "spearman", nmc = 1e3,
+                                            n_items = it, metric = "spearman", nmc = 1e6,
                                             degree = 9)
 }})
 
