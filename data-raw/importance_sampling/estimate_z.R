@@ -1,17 +1,17 @@
 # Then we do importance sampling for Spearman distance
-library(parallel)
+library(doParallel)
 n_items <- seq(from = 15L, to = 29L, by = 1L)
 num_workers <- as.integer(Sys.getenv("SLURM_NTASKS")) - 1
-myCluster <- makeCluster(num_workers)
+cl <- makeCluster(num_workers)
 
-system.time(estimates <- parLapply(myCluster, n_items, function(n_items) {
-  BayesMallows::estimate_partition_function(method = "importance_sampling",
-                                            alpha_vector = seq(from = 0, to = 20, by = 0.1),
-                                            n_items = n_items, metric = "spearman", nmc = 1e6,
+registerDoParallel(cl)
+system.time({estimates <- foreach(it = n_items) %dopar% {
+  BayesMallows::estimate_partition_function(alpha_vector = seq(from = 0, to = 20, by = .1),
+                                            n_items = it, metric = "spearman", nmc = 1e3,
                                             degree = 9)
-}))
+}})
 
-stopCluster(myCluster)
+stopCluster(cl)
 
 
 library(dplyr)
