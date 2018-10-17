@@ -11,10 +11,6 @@
 #' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
 #' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
 #'
-#' @export
-#'
-#' @example /inst/examples/compute_map_consensus_example.R
-#'
 compute_map_consensus <- function(model_fit, burnin = model_fit$burnin){
   if(is.null(burnin)){
     stop("Please specify the burnin, either by setting x$burnin or

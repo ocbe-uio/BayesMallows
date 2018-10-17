@@ -63,9 +63,7 @@ Function Name                 Description
  
  `assign_cluster`             Compute the cluster assignment of assessors.
  
- `compute_map_consensus`       Compute the MAP estimate of the latent ranks. 
- 
- `compute_cp_consensus`       Rank the items according to their CP consensus. 
+ `compute_consensus`       Compute the CP or MAP consensus ranking of the latent ranks. 
  
  `compute_posterior_intervals` Compute Bayesian posterior intervals for the parameters. 
  
@@ -647,15 +645,15 @@ The posterior densities of $\alpha$ and $\rho$ can be studied as shown above.
 
 #### CP Consensus
 
-We can rank the beaches according to the cumulative probability (CP) consensus. This functionality is provided by `compute_cp_consensus`, which returns a dataframe.
+We can rank the beaches according to the cumulative probability (CP) consensus. This functionality is provided by `compute_consensus`, which returns a dataframe.
 
 ```{r, eval=FALSE}
-compute_cp_consensus(model_fit)
+compute_consensus(model_fit, type = "CP")
 ```
 
 
 ```{r, results='asis', echo=FALSE}
-knitr::kable(compute_cp_consensus(model_fit), digits = 2)
+knitr::kable(compute_consensus(model_fit, type = "CP"), digits = 2)
 ```
 
 #### MAP Consensus
@@ -663,12 +661,12 @@ knitr::kable(compute_cp_consensus(model_fit), digits = 2)
 The maximum a posterior (MAP) consensus ranking is the a posterior most likely value of $\rho$.
 
 ```{r, eval=FALSE}
-compute_map_consensus(model_fit)
+compute_consensus(model_fit, type = "MAP")
 ```
 
 
 ```{r, results='asis', echo=FALSE}
-knitr::kable(compute_map_consensus(model_fit), digits = 2)
+knitr::kable(compute_consensus(model_fit, type = "MAP"), digits = 2)
 ```
 
 #### Posterior Intervals
@@ -810,7 +808,7 @@ model_fit2$burnin <- 400
 
 We can find the CP consensus for each of the two clusters.
 ```{r}
-cp_consensus_sushi <- compute_cp_consensus(model_fit2)
+cp_consensus_sushi <- compute_consensus(model_fit2, type = "CP")
 ```
 
 We can now look at each cluster:

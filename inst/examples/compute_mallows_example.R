@@ -16,7 +16,7 @@ plot(model_fit, type = "alpha")
 \dontrun{plot(model_fit, type = "rho", items = 10:15)}
 
 # We can also compute the CP consensus posterior ranking
-compute_cp_consensus(model_fit)
+compute_consensus(model_fit, type = "CP")
 
 # And we can compute the posterior intervals:
 # First we compute the interval for alpha

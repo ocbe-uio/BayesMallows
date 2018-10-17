@@ -59,14 +59,14 @@ function is to create an elbow plot with \code{\link{plot_elbow}}.
   # Plot the posterior distribution of "tuna roll" in each cluster
   plot(mixture_model, type = "rho", items = "tuna roll")
   # Compute the cluster-wise CP consensus, and show one column per cluster
-  cp <- compute_cp_consensus(mixture_model)
+  cp <- compute_consensus(mixture_model, type = "CP")
   library(dplyr)
   library(tidyr)
   cp \%>\%
     select(-cumprob) \%>\%
     spread(key = cluster, value = item)
   # Compute the MAP consensus, and show one column per cluster
-  map <- compute_map_consensus(mixture_model)
+  map <- compute_consensus(mixture_model, type = "MAP")
   map \%>\%
     select(-probability) \%>\%
     spread(key = cluster, value = item)
