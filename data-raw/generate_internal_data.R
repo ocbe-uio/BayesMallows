@@ -32,8 +32,6 @@ partition_function_data <- tibble(
 rm(seq2)
 
 # Then we add importance sampling estimates
-# scp them with this command
-# pscp oyss@abel.uio.no:/usit/abel/u1/oyss/BayesMallows/data-raw/importance_sampling/estimates.RData estimates.RData
 load("./data-raw/importance_sampling/estimates.RData")
 
 partition_function_data <- partition_function_data %>%
