@@ -184,9 +184,7 @@ compute_mallows <- function(rankings = NULL,
   # Check that at most one of rankings and preferences is set
   stopifnot(!is.null(rankings) || !is.null(preferences))
 
-  if(!is.null(rho_init)) {
-    stopifnot(validate_permutation(rho_init) && (sum(is.na(rho_init)) == 0))
-  }
+
 
   # Deal with pairwise comparisons. Generate rankings compatible with them.
   if(!is.null(preferences)){
@@ -213,6 +211,12 @@ compute_mallows <- function(rankings = NULL,
 
   # Find the number of items
   n_items <- ncol(rankings)
+
+  if(!is.null(rho_init)) {
+    stopifnot(validate_permutation(rho_init) && (sum(is.na(rho_init)) == 0))
+    stopifnot(length(rho_init) == n_items)
+  }
+
 
 
   # Generate the constraint set
