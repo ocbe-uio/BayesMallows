@@ -1,6 +1,7 @@
 # This code generates the internal data sets needed for computing the partition functions.
+# Start with the current
+pfd_old <- BayesMallows:::partition_function_data
 
-# We need these packages to do this nicely
 library(dplyr)
 
 # First we load the cardinalities for the footrule
@@ -25,11 +26,23 @@ partition_function_data <- tibble(
   ) %>%
   bind_rows(partition_function_data) %>%
   mutate(
-    type = "cardinalities"
+    type = "cardinalities",
+    message = "Exact partition function"
   )
 rm(seq2)
 
+# Then we add importance sampling estimates
+# scp them with this command
+# pscp oyss@abel.uio.no:/usit/abel/u1/oyss/BayesMallows/data-raw/importance_sampling/estimates.RData estimates.RData
+load("./data-raw/importance_sampling/estimates.RData")
 
+partition_function_data <- partition_function_data %>%
+  bind_rows(estimates)
+
+# Finally, keep the rows in pfd_old which are not in partition_function_data
+partition_function_data <- pfd_old %>%
+  anti_join(partition_function_data, by = c("n_items", "metric", "type")) %>%
+  bind_rows(partition_function_data)
 
 # Finally, save the fit as internal data
 devtools::use_data(partition_function_data, internal = TRUE, overwrite = TRUE)
