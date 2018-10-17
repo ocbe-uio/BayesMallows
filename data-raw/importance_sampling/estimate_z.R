@@ -1,6 +1,6 @@
 # Then we do importance sampling for Spearman distance
 library(doParallel)
-n_items <- seq(from = 15L, to = 29L, by = 1L)
+n_items <- seq(from = 29L, to = 59L, by = 1L)
 num_workers <- as.integer(Sys.getenv("SLURM_NTASKS")) - 1
 cl <- makeCluster(num_workers)
 

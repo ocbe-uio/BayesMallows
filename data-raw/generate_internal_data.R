@@ -27,7 +27,7 @@ partition_function_data <- tibble(
   bind_rows(partition_function_data) %>%
   mutate(
     type = "cardinalities",
-    message = "Exact partition function"
+    message = "Using exact partition function."
   )
 rm(seq2)
 
