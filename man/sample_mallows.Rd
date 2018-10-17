@@ -4,45 +4,54 @@
 \alias{sample_mallows}
 \title{Random Samples from the Mallows Rank Model}
 \usage{
-sample_mallows(rho0, alpha0, n_samples, burnin = NULL, thinning = NULL,
-  leap_size = 1, metric = "footrule", diagnostic = FALSE,
-  items_to_plot = NULL, max_lag = 1000L)
+sample_mallows(rho0, alpha0, n_samples, leap_size = 1,
+  metric = "footrule", diagnostic = FALSE,
+  burnin = ifelse(diagnostic, 0, 1000), thinning = ifelse(diagnostic,
+  1, 1000), items_to_plot = NULL, max_lag = 1000L)
 }
 \arguments{
-\item{rho0}{Vector specifying the latent consensus ranking in the Mallows rank model.}
+\item{rho0}{Vector specifying the latent consensus ranking in the Mallows
+rank model.}
 
-\item{alpha0}{Scalar specifying the scale parameter in the Mallows rank model.}
+\item{alpha0}{Scalar specifying the scale parameter in the Mallows rank
+model.}
 
-\item{n_samples}{Integer specifying the number of random samples to generate.}
+\item{n_samples}{Integer specifying the number of random samples to generate.
+When \code{diagnostic = TRUE}, this number must be larger than 1.}
 
-\item{burnin}{Integer specifying the number of iterations to discard as burn-in.}
+\item{leap_size}{Integer specifying the step size of the leap-and-shift
+proposal distribution.}
+
+\item{metric}{Character string specifying the distance measure to use.
+Available options are \code{"footrule"} (default), \code{"spearman"},
+\code{"cayley"}, and \code{"kendall"}. For sampling from the Mallows model
+with Cayley and Kendall distances the \code{rmm} function in the
+\code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} is
+typically faster.}
+
+\item{diagnostic}{Logical specifying whether to output convergence
+diagnostics. If \code{TRUE}, a diagnostic plot is printed, together with
+the returned samples.}
+
+\item{burnin}{Integer specifying the number of iterations to discard as
+burn-in. Defaults to 1000 when \code{diagnostic = FALSE}, else to 0.}
 
 \item{thinning}{Integer specifying the number of MCMC iterations to perform
-between each time a random rank vector is sampled.}
+between each time a random rank vector is sampled. Defaults to 1000 when
+\code{diagnostic = FALSE}, else to 1.}
 
-\item{leap_size}{Integer specifying the step size of the leap-and-shift proposal distribution.}
+\item{items_to_plot}{Integer vector used if \code{diagnostic = TRUE}, in
+order to specify the items to plot in the diagnostic output. If not
+provided, 5 items are picked at random.}
 
-\item{metric}{Character string specifying the distance measure to use. Available
-options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
-\code{"kendall"}. For sampling from the Mallows model with Cayley and Kendall distances
-the \code{rmm} function in the  \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows}
-is typically faster.}
-
-\item{diagnostic}{Logical specifying whether to output convergence diagnostics. If \code{TRUE},
-a diagnostic plot is printed, together with the returned samples.}
-
-\item{items_to_plot}{Integer vector used if \code{diagnostic = TRUE}, in order to
-specify the items to plot in the diagnostic output. If not provided, 5 items are picked
-at random.}
-
-\item{max_lag}{Integer specifying the maximum lag to use in the computation of autocorrelation.
-Defaults to 1000L. This argument is passed to \code{stats::acf}. Only used when
-\code{diagnostic = TRUE}.}
+\item{max_lag}{Integer specifying the maximum lag to use in the computation
+of autocorrelation. Defaults to 1000L. This argument is passed to
+\code{stats::acf}. Only used when \code{diagnostic = TRUE}.}
 }
 \description{
-Generate random samples from the Mallows
-Rank Model \insertCite{mallows1957}{BayesMallows} with consensus ranking \eqn{\rho}
-and scale parameter \eqn{\alpha}. The samples are obtained by running the
+Generate random samples from the Mallows Rank Model
+\insertCite{mallows1957}{BayesMallows} with consensus ranking \eqn{\rho} and
+scale parameter \eqn{\alpha}. The samples are obtained by running the
 Metropolis-Hastings algorithm described in Appendix C of
 \insertCite{vitelli2018;textual}{BayesMallows}.
 }
@@ -59,12 +68,12 @@ alpha0 <- 10
 n_samples <- 100
 # We first do a diagnostic run, to find the thinning and burnin to use
 # We set n_samples to 1000, in order to run 1000 diagnostic iterations.
-test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 1000,
-                       burnin = 1, thinning = 1, diagnostic = TRUE)
+test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, diagnostic = TRUE,
+                       n_samples = 1000, burnin = 1, thinning = 1)
 # When items_to_plot is not set, 5 items are picked at random. We can change this.
 # We can also reduce the number of lags computed in the autocorrelation plots
-test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 1000,
-                       burnin = 1, thinning = 1, diagnostic = TRUE,
+test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, diagnostic = TRUE,
+                       n_samples = 1000, burnin = 1, thinning = 1,
                        items_to_plot = c(1:3, 10, 15), max_lag = 500)
 # From the autocorrelation plot, it looks like we should use
 # a thinning of at least 200. We set thinning = 1000 to be safe,

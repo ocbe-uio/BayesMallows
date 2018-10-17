@@ -10,12 +10,12 @@ alpha0 <- 10
 n_samples <- 100
 # We first do a diagnostic run, to find the thinning and burnin to use
 # We set n_samples to 1000, in order to run 1000 diagnostic iterations.
-test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 1000,
-                       burnin = 1, thinning = 1, diagnostic = TRUE)
+test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, diagnostic = TRUE,
+                       n_samples = 1000, burnin = 1, thinning = 1)
 # When items_to_plot is not set, 5 items are picked at random. We can change this.
 # We can also reduce the number of lags computed in the autocorrelation plots
-test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 1000,
-                       burnin = 1, thinning = 1, diagnostic = TRUE,
+test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, diagnostic = TRUE,
+                       n_samples = 1000, burnin = 1, thinning = 1,
                        items_to_plot = c(1:3, 10, 15), max_lag = 500)
 # From the autocorrelation plot, it looks like we should use
 # a thinning of at least 200. We set thinning = 1000 to be safe,
