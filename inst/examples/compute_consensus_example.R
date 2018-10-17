@@ -6,24 +6,26 @@ model_fit <- compute_mallows(potato_visual)
 # Se the documentation to compute_mallows for how to assess the convergence of the algorithm
 # Having chosen burin = 1000, we compute posterior intervals
 model_fit$burnin <- 1000
-# We then compute the MAP consensus.
-compute_map_consensus(model_fit)
+# We then compute the CP consensus.
+compute_consensus(model_fit, type = "CP")
+# And we compute the MAP consensus
+compute_consensus(model_fit, type = "MAP")
 
 \dontrun{
-  # CLUSTERWISE MAP CONSENSUS
+  # CLUSTERWISE CONSENSUS
   # We can run a mixture of Mallows models, using the n_clusters argument
   # We use the sushi example data. See the documentation of compute_mallows for a more elaborate
   # example
   model_fit <- compute_mallows(sushi_rankings, n_clusters = 5)
-  # Keeping the burnin at 1000, we can compute the MAP consensus per cluster
+  # Keeping the burnin at 1000, we can compute the consensus ranking per cluster
   model_fit$burnin <- 1000
-  map_consensus_df <- compute_map_consensus(model_fit)
-  # Using dplyr::select and tidyr::spread we can now make a table
+  cp_consensus_df <- compute_consensus(model_fit, type = "CP")
+  # Using dplyr::select and tidyr::cumprob we can now make a table
   # which shows the ranking in each cluster:
   library(dplyr)
   library(tidyr)
-  map_consensus_df %>%
-    select(-probability) %>%
+  cp_consensus_df %>%
+    select(-cumprob) %>%
     spread(key = cluster, value = item)
 }
 
@@ -34,6 +36,5 @@ compute_map_consensus(model_fit)
   # We set burnin = 1000
   model_fit$burnin <- 1000
   # We now compute the MAP consensus
-  map_consensus_df <- compute_map_consensus(model_fit)
+  map_consensus_df <- compute_consensus(model_fit, type = "MAP")
 }
-

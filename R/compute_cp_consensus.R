@@ -13,9 +13,7 @@
 #' @references \insertAllCited{}
 #'
 #'
-#' @export
 #'
-#' @example /inst/examples/compute_cp_consensus_example.R
 #'
 compute_cp_consensus <- function(model_fit, burnin = model_fit$burnin){
 
