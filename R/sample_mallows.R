@@ -11,12 +11,7 @@
 #' @param alpha0 Scalar specifying the scale parameter in the Mallows rank
 #'   model.
 #' @param n_samples Integer specifying the number of random samples to generate.
-#' When \code{diagnostic = TRUE}, this number must be larger than 1.
-#' @param burnin Integer specifying the number of iterations to discard as
-#'   burn-in. Defaults to 1000 when \code{diagnostic = FALSE}, else to 0.
-#' @param thinning Integer specifying the number of MCMC iterations to perform.
-#'   Defaults to 1000. between each time a random rank vector is sampled.
-#'   Defaults to 1000 when \code{diagnostic = FALSE}, else to 1.
+#'   When \code{diagnostic = TRUE}, this number must be larger than 1.
 #' @param leap_size Integer specifying the step size of the leap-and-shift
 #'   proposal distribution.
 #' @param metric Character string specifying the distance measure to use.
@@ -28,6 +23,11 @@
 #' @param diagnostic Logical specifying whether to output convergence
 #'   diagnostics. If \code{TRUE}, a diagnostic plot is printed, together with
 #'   the returned samples.
+#' @param burnin Integer specifying the number of iterations to discard as
+#'   burn-in. Defaults to 1000 when \code{diagnostic = FALSE}, else to 0.
+#' @param thinning Integer specifying the number of MCMC iterations to perform
+#'   between each time a random rank vector is sampled. Defaults to 1000 when
+#'   \code{diagnostic = FALSE}, else to 1.
 #' @param items_to_plot Integer vector used if \code{diagnostic = TRUE}, in
 #'   order to specify the items to plot in the diagnostic output. If not
 #'   provided, 5 items are picked at random.

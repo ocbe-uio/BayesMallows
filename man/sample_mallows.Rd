@@ -36,9 +36,9 @@ the returned samples.}
 \item{burnin}{Integer specifying the number of iterations to discard as
 burn-in. Defaults to 1000 when \code{diagnostic = FALSE}, else to 0.}
 
-\item{thinning}{Integer specifying the number of MCMC iterations to perform.
-Defaults to 1000. between each time a random rank vector is sampled.
-Defaults to 1000 when \code{diagnostic = FALSE}, else to 1.}
+\item{thinning}{Integer specifying the number of MCMC iterations to perform
+between each time a random rank vector is sampled. Defaults to 1000 when
+\code{diagnostic = FALSE}, else to 1.}
 
 \item{items_to_plot}{Integer vector used if \code{diagnostic = TRUE}, in
 order to specify the items to plot in the diagnostic output. If not
