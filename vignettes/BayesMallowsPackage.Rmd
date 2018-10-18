@@ -6,6 +6,7 @@ bibliography: ../inst/REFERENCES.bib
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{BayesMallows Package}
+  
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -42,7 +43,7 @@ library(tidyr)
 
 ## Functions
 
-Here is an overview of the most used function. You can read their documentation with `?function_name`, or search for an example in this vignette.
+Here is an overview of the most used functions. You can read their documentation with `?function_name`, or search for an example in this vignette.
 
 ----------------------------- ------------------------------------------------------
 Function Name                 Description
