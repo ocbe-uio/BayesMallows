@@ -23,9 +23,9 @@
 compute_consensus <- function(model_fit, type = "CP", burnin = model_fit$burnin){
 
   if(type == "CP"){
-    compute_cp_consensus(model_fit, burnin = burnin)
+    .compute_cp_consensus(model_fit, burnin = burnin)
   } else if(type == "MAP"){
-    compute_map_consensus(model_fit, burnin = burnin)
+    .compute_map_consensus(model_fit, burnin = burnin)
   }
 
 
@@ -55,6 +55,12 @@ compute_consensus <- function(model_fit, type = "CP", burnin = model_fit$burnin)
 #'
 compute_cp_consensus <- function(model_fit, burnin = model_fit$burnin){
   .Deprecated("compute_consensus")
+
+  compute_consensus(model_fit = model_fit, type = "CP", burnin = burnin)
+
+}
+
+.compute_cp_consensus <- function(model_fit, burnin = model_fit$burnin){
 
   stopifnot(class(model_fit) == "BayesMallows")
 
@@ -171,6 +177,12 @@ find_cpc <- function(group_df){
 compute_map_consensus <- function(model_fit, burnin = model_fit$burnin){
   .Deprecated("compute_consensus")
 
+  compute_consensus(model_fit = model_fit, type = "MAP", burnin = burnin)
+  }
+
+
+.compute_map_consensus <- function(model_fit, burnin = model_fit$burnin){
+
   if(is.null(burnin)){
     stop("Please specify the burnin, either by setting x$burnin or
          as an argument to the plot.BayesMallows function.")
@@ -211,4 +223,4 @@ compute_map_consensus <- function(model_fit, burnin = model_fit$burnin){
 
   return(df)
 
-  }
+}

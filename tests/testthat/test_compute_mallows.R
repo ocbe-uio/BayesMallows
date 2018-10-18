@@ -1,5 +1,12 @@
 context("Testing compute_mallows")
 
+test_that("miscellaneous input validation", {
+  expect_error(compute_mallows(nmc = 1000, alpha_prop_sd = 1))
+  expect_error(compute_mallows(rankings = potato_visual, nmc = 100, alpha_jump = 102))
+  expect_error(compute_mallows(rankings = potato_visual, lambda = 0))
+  expect_error(compute_mallows(rankings = potato_visual, lambda = -10))
+})
+
 test_that("rho_init is properly validated",{
   m <- potato_visual
   expect_error(compute_mallows(rankings = m, rho_init = 1:(ncol(m) - 1)))

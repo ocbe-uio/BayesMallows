@@ -79,7 +79,7 @@
 #'   computation time, by reducing the number of times the partition function
 #'   for the Mallows model needs to be computed.
 #'
-#' @param lambda Numeric value specifying the rate parameter of the exponential
+#' @param lambda Strictly positive numeric value specifying the rate parameter of the exponential
 #'   prior distribution of \eqn{\alpha}, \eqn{\pi(\alpha) = \lambda
 #'   \exp{(-\lambda \alpha)}}. Defaults to \code{0.1}. When \code{n_cluster >
 #'   1}, each mixture component \eqn{\alpha_{c}} has the same prior
@@ -181,14 +181,21 @@ compute_mallows <- function(rankings = NULL,
                             skip_postprocessing = FALSE
                             ){
 
+  ## First, validate input
+
   # Check that at most one of rankings and preferences is set
-  stopifnot(!is.null(rankings) || !is.null(preferences))
+  if(is.null(rankings) && is.null(preferences)){
+    stop("Either rankings or preferences (or both) must be provided.")
+  }
 
+  # Check that we do not jump over all alphas
+  if(alpha_jump >= nmc) stop("alpha_jump must be strictly smaller than nmc")
 
+  if(lambda <= 0) stop("exponential rate parameter must be strictly positive")
 
   # Deal with pairwise comparisons. Generate rankings compatible with them.
   if(!is.null(preferences)){
-    if(!("BayesMallowsTC" %in% class(preferences))){
+    if(!inherits(preferences, "BayesMallowsTC")){
       message("Generating transitive closure of preferences.")
       preferences <- generate_transitive_closure(preferences)
     }
@@ -203,8 +210,7 @@ compute_mallows <- function(rankings = NULL,
     stop("Not valid permutation.")
   }
 
-  # Check that we do not jump over all alphas
-  stopifnot(alpha_jump < nmc)
+
 
   # Check that we do not jump over all rhos
   stopifnot(rho_thinning < nmc && aug_thinning < nmc)
@@ -226,18 +232,12 @@ compute_mallows <- function(rankings = NULL,
     constraints <- list()
   }
 
-
-  # Set leap_size if it is not alredy set.
-  #if(is.null(leap_size)) leap_size <- floor(n_items / 5)
-
   # Extract the right sequence of cardinalities, if relevant
   if(!is.null(logz_estimate)){
     cardinalities <- NULL
     message("Using user-provided importance sampling estimate of partition function.")
   } else if(metric %in% c("footrule", "spearman")){
     # Extract the relevant rows from partition_function_data
-    # Note that we need to evaluate the right-hand side, in particular metric,
-    # to avoid confusion with columns of the tibble
     relevant_params <- dplyr::filter(partition_function_data,
                                      .data$n_items == !!n_items,
                                      .data$metric == !!metric

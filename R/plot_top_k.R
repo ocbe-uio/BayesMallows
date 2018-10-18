@@ -53,7 +53,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
   rho <- dplyr::ungroup(rho)
 
   # Sort the items according to probability
-  item_ordering <- rev(compute_cp_consensus(model_fit, burnin = burnin)$item)
+  item_ordering <- rev(compute_consensus(model_fit, type = "CP", burnin = burnin)$item)
   rho <- dplyr::mutate(rho, item = factor(.data$item, levels = item_ordering))
 
   # Trick to make the plot look nicer

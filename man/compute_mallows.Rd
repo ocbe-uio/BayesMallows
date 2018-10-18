@@ -83,7 +83,7 @@ parameters like augmented ranks \eqn{\tilde{R}} or cluster assignments
 computation time, by reducing the number of times the partition function
 for the Mallows model needs to be computed.}
 
-\item{lambda}{Numeric value specifying the rate parameter of the exponential
+\item{lambda}{Strictly positive numeric value specifying the rate parameter of the exponential
 prior distribution of \eqn{\alpha}, \eqn{\pi(\alpha) = \lambda
 \exp{(-\lambda \alpha)}}. Defaults to \code{0.1}. When \code{n_cluster >
 1}, each mixture component \eqn{\alpha_{c}} has the same prior
