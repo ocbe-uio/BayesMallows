@@ -31,8 +31,30 @@ compute_consensus <- function(model_fit, type = "CP", burnin = model_fit$burnin)
 
 }
 
-
+#' Compute CP Consensus Ranking
+#'
+#' Compute the cumulative probability (CP) consensus ranking
+#' \insertCite{vitelli2018}{BayesMallows}. For mixture models, the
+#' consensus is given for each mixture.
+#'
+#' @param model_fit An object returned from \code{\link{compute_mallows}}.
+#'
+#' @param burnin A numeric value specifying the number of iterations
+#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
+#'
+#' @details
+#' This function is deprecated. Please use \code{\link{compute_consensus}} instead, with
+#' argument \code{type = "CP"}.
+#'
+#' @references \insertAllCited{}
+#'
+#'
+#' @export
+#'
+#'
 compute_cp_consensus <- function(model_fit, burnin = model_fit$burnin){
+  .Deprecated("compute_consensus")
 
   stopifnot(class(model_fit) == "BayesMallows")
 
@@ -124,8 +146,31 @@ find_cpc <- function(group_df){
 }
 
 
-
+#' Compute MAP Consensus Ranking
+#'
+#' Compute the maximum a posterior (MAP) consensus ranking
+#' \insertCite{vitelli2018}{BayesMallows}. For mixture models, the
+#' consensus is given for each mixture.
+#'
+#' @param model_fit An object returned from \code{\link{compute_mallows}}.
+#'
+#' @param burnin A numeric value specifying the number of iterations
+#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
+#'
+#' @details
+#' This function is deprecated. Please use \code{\link{compute_consensus}} instead, with
+#' argument \code{type = "MAP"}.
+#'
+#' @references \insertAllCited{}
+#'
+#'
+#' @export
+#'
+#'
 compute_map_consensus <- function(model_fit, burnin = model_fit$burnin){
+  .Deprecated("compute_consensus")
+
   if(is.null(burnin)){
     stop("Please specify the burnin, either by setting x$burnin or
          as an argument to the plot.BayesMallows function.")
