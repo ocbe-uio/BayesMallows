@@ -188,10 +188,21 @@ compute_mallows <- function(rankings = NULL,
     stop("Either rankings or preferences (or both) must be provided.")
   }
 
+  if(nmc <= 0) stop("nmc must be strictly positive")
+
   # Check that we do not jump over all alphas
   if(alpha_jump >= nmc) stop("alpha_jump must be strictly smaller than nmc")
 
-  if(lambda <= 0) stop("exponential rate parameter must be strictly positive")
+  # Check that we do not jump over all rhos
+  if(rho_thinning >= nmc) stop("rho_thinning must be strictly smaller than nmc")
+  if(aug_thinning >= nmc) stop("aug_thinning must be strictly smaller than nmc")
+
+  if(lambda <= 0) stop("exponential rate parameter lambda must be strictly positive")
+
+  # Check that all rows of rankings are proper permutations
+  if(!is.null(rankings) && validate_rankings && !all(apply(rankings, 1, validate_permutation))){
+    stop("invalid permutations provided in rankings matrix")
+  }
 
   # Deal with pairwise comparisons. Generate rankings compatible with them.
   if(!is.null(preferences)){
@@ -205,25 +216,14 @@ compute_mallows <- function(rankings = NULL,
     }
   }
 
-  # Check that all rows of rankings are proper permutations
-  if(validate_rankings && !all(apply(rankings, 1, validate_permutation))){
-    stop("Not valid permutation.")
-  }
-
-
-
-  # Check that we do not jump over all rhos
-  stopifnot(rho_thinning < nmc && aug_thinning < nmc)
-
   # Find the number of items
   n_items <- ncol(rankings)
 
   if(!is.null(rho_init)) {
-    stopifnot(validate_permutation(rho_init) && (sum(is.na(rho_init)) == 0))
-    stopifnot(length(rho_init) == n_items)
+    if(!validate_permutation(rho_init)) stop("rho_init must be a proper permutation")
+    if(!(sum(is.na(rho_init)) == 0)) stop("rho_init cannot have missing values")
+    if(length(rho_init) != n_items) stop("rho_init must have the same number of items as implied by rankings or preferences")
   }
-
-
 
   # Generate the constraint set
   if(!is.null(preferences) && is.null(constraints)){
@@ -244,8 +244,7 @@ compute_mallows <- function(rankings = NULL,
     )
 
     type <- dplyr::pull(relevant_params, type)
-    msg <- dplyr::pull(relevant_params, message)
-    message(msg)
+    message(dplyr::pull(relevant_params, message))
 
     if((length(type) == 0) || !(type %in% c("cardinalities", "importance_sampling"))){
       stop("Precomputed partition function not available yet. Consider computing one
@@ -262,10 +261,10 @@ compute_mallows <- function(rankings = NULL,
   } else if (metric %in% c("cayley", "kendall")) {
     cardinalities <- NULL
     logz_estimate <- NULL
+    message("Using exact partition function")
   } else {
     stop(paste("Unknown metric", metric))
   }
-
 
   # Transpose rankings to get samples along columns, since we typically want
   # to extract one sample at a time. armadillo is column major, just like rankings
