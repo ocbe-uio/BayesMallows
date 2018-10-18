@@ -13,7 +13,8 @@
 #'
 #' @param items The items to study in the diagnostic plot for \code{rho}. Either
 #'   a vector of item names, corresponding to \code{model_fit$items} or a
-#'   vector of indices. If NULL, five items are selected randomly. Only used when \code{type = "rho"}.
+#'   vector of indices. If NULL, five items are selected randomly. Only used when
+#'   \code{type = "rho"} or \code{type = "Rtilde"}.
 #'
 #' @param assessors Numeric vector specifying the assessors to study in
 #' the diagnostic plot for \code{"Rtilde"}.
@@ -25,7 +26,8 @@
 assess_convergence <- function(model_fit, type = "alpha", items = NULL,
                                assessors = NULL){
 
-  stopifnot(class(model_fit) == "BayesMallows")
+  stopifnot(inherits(model_fit, "BayesMallows"))
+
 
   if(type == "alpha") {
 
@@ -90,6 +92,10 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       assessors <- sample.int(model_fit$n_assessors, 5)
     } else if (is.null(assessors) && model_fit$n_assessors > 0) {
       assessors <- seq.int(from = 1, to = model_fit$n_assessors)
+    } else if(!is.null(assessors)) {
+      if(length(setdiff(assessors, seq(1, model_fit$n_assessors, 1))) > 0) {
+        stop("assessors vector must contain numeric indices between 1 and the number of assessors")
+      }
     }
 
     if(is.factor(model_fit$augmented_data$item) && is.numeric(items)){
