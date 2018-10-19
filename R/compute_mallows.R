@@ -44,7 +44,7 @@
 #'   applied to the cluster assignments. Defaults to \code{1L}.
 #'
 #' @param nmc Integer specifying the number of iteration of the
-#'   Metropolis-Hastings algorithm. Defaults to \code{2000L}. See
+#'   Metropolis-Hastings algorithm to run. Defaults to \code{2000L}. See
 #'   \code{\link{assess_convergence}} for tools to check convergence of the
 #'   Markov chain.
 #'

@@ -17,7 +17,8 @@ options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"}, or
 
 \item{items}{The items to study in the diagnostic plot for \code{rho}. Either
 a vector of item names, corresponding to \code{model_fit$items} or a
-vector of indices. If NULL, five items are selected randomly. Only used when \code{type = "rho"}.}
+vector of indices. If NULL, five items are selected randomly. Only used when
+\code{type = "rho"} or \code{type = "Rtilde"}.}
 
 \item{assessors}{Numeric vector specifying the assessors to study in
 the diagnostic plot for \code{"Rtilde"}.}
