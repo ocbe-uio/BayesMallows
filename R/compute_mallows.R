@@ -40,7 +40,7 @@
 #'   convenience function for computing several models with varying numbers of
 #'   mixtures.
 #'
-#' @param cluster_assignment_thinning Integer specifying the thinning to be
+#' @param clus_thin Integer specifying the thinning to be
 #'   applied to the cluster assignments. Defaults to \code{1L}.
 #'
 #' @param nmc Integer specifying the number of iteration of the
@@ -161,7 +161,7 @@ compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
                             metric = "footrule",
                             n_clusters = 1L,
-                            cluster_assignment_thinning = 1L,
+                            clus_thin = 1L,
                             nmc = 2000L,
                             leap_size = floor(n_items / 5),
                             rho_init = NULL,
@@ -284,7 +284,7 @@ compute_mallows <- function(rankings = NULL,
                   alpha_jump = alpha_jump,
                   rho_thinning = rho_thinning,
                   aug_thinning = aug_thinning,
-                  cluster_assignment_thinning = cluster_assignment_thinning,
+                  clus_thin = clus_thin,
                   save_augmented_data = save_augmented_data,
                   verbose = verbose
                   )

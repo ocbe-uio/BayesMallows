@@ -16,7 +16,7 @@ void update_cluster_labels(
     const int& n_items,
     const int& n_assessors,
     const int& n_clusters,
-    const int& cluster_assignment_thinning,
+    const int& clus_thin,
     int& cluster_assignment_index,
     const int& t,
     const std::string& metric,
