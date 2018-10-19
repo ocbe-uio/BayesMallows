@@ -19,7 +19,7 @@ items.}
 times n, where N is the number of samples and n is the number of items.}
 }
 \value{
-A vector or matrix of rankings.
+A vector or matrix of rankings. Missing orderings coded as \code{NA} are propagated into corresponding missing ranks and vice versa.
 }
 \description{
 \code{create_ranking} takes a vector or matrix of ordered items \code{orderings} and

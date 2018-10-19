@@ -11,7 +11,7 @@
 #' @param rankings A vector or matrix of ranked items. If a matrix, it should be N
 #'   times n, where N is the number of samples and n is the number of items.
 #'
-#' @return A vector or matrix of rankings.
+#' @return A vector or matrix of rankings. Missing orderings coded as \code{NA} are propagated into corresponding missing ranks and vice versa.
 #'
 #'
 #' @examples
@@ -49,9 +49,33 @@ create_ranking <- function(orderings){
     stopifnot(validate_permutation(orderings))
     return(order(orderings))
   } else if(is.matrix(orderings)){
-    # add code for checking matrix
-    stopifnot(all(apply(orderings, 1, validate_permutation)))
-    return(t(apply(orderings, 1, order)))
+    n_items <- ncol(orderings)
+
+    # Convert to list, for easier functional programming
+    orderings <- purrr::array_branch(orderings, margin = 1)
+
+    # Check that matrix contains permutations
+    check <- purrr::map_lgl(orderings, validate_permutation)
+    if(!all(check)){
+      stop(paste("orderings must contain proper permutations. Problem row(s):", which(!check)))
+    }
+
+    # Convert each ordering to ranking, taking special care of missing values
+    rankings <- purrr::map(orderings, function(x) {
+      # Find out which items are missing
+      missing_items <- setdiff(1:n_items, x)
+      # Possible rankings for each item
+      candidates <- matrix(1:n_items, ncol = n_items, nrow = n_items)
+      candidates[, missing_items] <- NA_real_
+      # Logical matrix specifying which item to pick
+      inds <- outer(X = x, Y = 1:n_items, FUN = "==")
+      inds[1, colSums(inds, na.rm = TRUE) == 0] <- TRUE
+      inds[is.na(inds)] <- FALSE
+      # Extract the correct items
+      candidates[inds]
+    } )
+
+    return(t(matrix(unlist(rankings), ncol = length(rankings))))
   } else {
     stop("orderings must be a vector or matrix")
   }
@@ -60,5 +84,6 @@ create_ranking <- function(orderings){
 #' @describeIn rank_conversion Convert from ranking to ordering.
 #' @export
 create_ordering <- function(rankings){
+
   create_ranking(rankings)
 }
