@@ -851,7 +851,7 @@ nmc <- 2000
 models <- compute_mallows_mixtures(n_clusters = n_clusters, 
                                    rankings = sushi_rankings,
                                    nmc = nmc, 
-                                   cluster_assignment_thinning = nmc - 1,
+                                   clus_thin = nmc - 1,
                                    rho_thinning = nmc - 1,
                                    aug_thinning = nmc - 1
                                    )

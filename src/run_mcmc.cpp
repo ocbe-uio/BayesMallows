@@ -40,7 +40,7 @@
 //' @param rho_thinning Thinning parameter. Keep only every \code{rho_thinning} rank
 //' sample from the posterior distribution.
 //' @param aug_thinning Integer specifying the thinning for data augmentation.
-//' @param cluster_assignment_thinning Integer specifying the thinning for saving cluster assignments.
+//' @param clus_thin Integer specifying the thinning for saving cluster assignments.
 //' @param save_augmented_data Whether or not to save the augmented data every
 //' \code{aug_thinning}th iteration.
 //' @param verbose Logical specifying whether to print out the progress of the
@@ -65,7 +65,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     int psi = 10,
                     int rho_thinning = 1,
                     int aug_thinning = 1,
-                    int cluster_assignment_thinning = 1,
+                    int clus_thin = 1,
                     bool save_augmented_data = false,
                     bool verbose = false
                       ){
@@ -86,7 +86,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   int n_aug = std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning));
 
   // Number of cluster assignments to store
-  int n_cluster_assignments = std::ceil(static_cast<double>(nmc * 1.0 / cluster_assignment_thinning));
+  int n_cluster_assignments = std::ceil(static_cast<double>(nmc * 1.0 / clus_thin));
 
   // Check if we want to do clustering
   bool clustering = n_clusters > 1;
@@ -287,7 +287,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   if(clustering){
     // Update the cluster labels, per assessor
     update_cluster_labels(cluster_assignment, current_cluster_assignment, dist_mat, rho_old, rankings, cluster_probs,
-                          alpha_old, n_items, n_assessors, n_clusters, cluster_assignment_thinning, cluster_assignment_index,
+                          alpha_old, n_items, n_assessors, n_clusters, clus_thin, cluster_assignment_index,
                           t, metric, cardinalities, logz_estimate);
   }
 

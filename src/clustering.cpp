@@ -20,7 +20,7 @@ void update_cluster_labels(
     const int& n_items,
     const int& n_assessors,
     const int& n_clusters,
-    const int& cluster_assignment_thinning,
+    const int& clus_thin,
     int& cluster_assignment_index,
     const int& t,
     const std::string& metric,
@@ -64,7 +64,7 @@ void update_cluster_labels(
 
 
   // Save if appropriate
-  if(t % cluster_assignment_thinning == 0){
+  if(t % clus_thin == 0){
     ++cluster_assignment_index;
     cluster_assignment.col(cluster_assignment_index) = current_cluster_assignment;
   }
