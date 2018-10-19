@@ -2,7 +2,7 @@
 # compute_mallows for how to assess the convergence of the algorithm
 # We need to save the augmented data, so setting this option to TRUE
 model_fit <- compute_mallows(preferences = beach_preferences,
-                             save_augmented_data = TRUE)
+                             save_aug = TRUE)
 # We set burnin = 1000
 model_fit$burnin <- 1000
 # By default, the probability of being top-3 is plotted

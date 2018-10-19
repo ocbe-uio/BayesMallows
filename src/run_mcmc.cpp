@@ -41,7 +41,7 @@
 //' sample from the posterior distribution.
 //' @param aug_thinning Integer specifying the thinning for data augmentation.
 //' @param clus_thin Integer specifying the thinning for saving cluster assignments.
-//' @param save_augmented_data Whether or not to save the augmented data every
+//' @param save_aug Whether or not to save the augmented data every
 //' \code{aug_thinning}th iteration.
 //' @param verbose Logical specifying whether to print out the progress of the
 //' Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
@@ -66,7 +66,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     int rho_thinning = 1,
                     int aug_thinning = 1,
                     int clus_thin = 1,
-                    bool save_augmented_data = false,
+                    bool save_aug = false,
                     bool verbose = false
                       ){
 
@@ -150,7 +150,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
   // If the user wants to save augmented data, we need a cube
   arma::cube augmented_data;
-  if(save_augmented_data){
+  if(save_aug){
     augmented_data.set_size(n_items, n_assessors, n_aug);
     augmented_data.slice(0) = rankings;
   }
@@ -313,7 +313,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   }
 
   // Save augmented data if the user wants this. Uses the same index as rho.
-  if(save_augmented_data & (t % aug_thinning == 0)){
+  if(save_aug & (t % aug_thinning == 0)){
     ++aug_index;
     augmented_data.slice(aug_index) = rankings;
   }

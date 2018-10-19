@@ -200,7 +200,7 @@ tidy_wcd <- function(fit){
 
 tidy_augmented_data <- function(fit){
   # Tidy augmented data, or delete
-  if(fit$save_augmented_data){
+  if(fit$save_aug){
 
     augdata_dims <- dim(fit$augmented_data)
 
