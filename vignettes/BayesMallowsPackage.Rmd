@@ -54,7 +54,7 @@ Function Name                 Description
 
 `sample_mallows`              Sample from the Mallows model.
 
-`plot.BayesMallows`           Quick plots of the posterior densities of $\alpha$ and $\rho$.
+`plot.BayesMallows`           Quick plots of the posterior densities of parameters of the Mallows model.
 
  `assess_convergence`         Study the convergence of the Markov chain, in order to determine burnin and other algorithm parameters.  
  
