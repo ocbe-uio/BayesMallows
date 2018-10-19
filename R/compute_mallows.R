@@ -77,7 +77,7 @@
 #'   parameters like augmented ranks \eqn{\tilde{R}} or cluster assignments
 #'   \eqn{z}. Setting \code{alpha_jump} to a high number can speed up
 #'   computation time, by reducing the number of times the partition function
-#'   for the Mallows model needs to be computed.
+#'   for the Mallows model needs to be computed. Defaults to \code{1L}.
 #'
 #' @param lambda Strictly positive numeric value specifying the rate parameter of the exponential
 #'   prior distribution of \eqn{\alpha}, \eqn{\pi(\alpha) = \lambda
