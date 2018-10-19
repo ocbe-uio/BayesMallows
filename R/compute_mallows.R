@@ -92,7 +92,7 @@
 #'   argument is not used.
 #'
 #' @param include_wcd Logical indicating whether to store the within-cluster
-#'   distances computing during the Metropolis-Hastings algorithm. Defaults to
+#'   distances computed during the Metropolis-Hastings algorithm. Defaults to
 #'   \code{TRUE} if \code{n_clusters > 1} and otherwise \code{FALSE}. Setting
 #'   \code{include_wcd = TRUE} is useful when deciding the number of mixture
 #'   components to include, and is required by \code{\link{plot_elbow}}.
