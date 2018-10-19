@@ -38,7 +38,7 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
   # We save the augmented data for diagnostics purposes.
   model_fit <- compute_mallows(rankings = beach_rankings,
                                preferences = beach_tc,
-                               save_augmented_data = TRUE,
+                               save_aug = TRUE,
                                verbose = TRUE)
   # We can assess the convergence of the scale parameter
   assess_convergence(model_fit)

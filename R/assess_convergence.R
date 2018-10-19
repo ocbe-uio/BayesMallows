@@ -76,8 +76,8 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
 
   } else if(type == "Rtilde") {
 
-    if(!model_fit$save_augmented_data){
-      stop("Please rerun with compute_mallows with save_augmented_data = TRUE")
+    if(!model_fit$save_aug){
+      stop("Please rerun with compute_mallows with save_aug = TRUE")
     }
 
     if(is.null(items) && model_fit$n_items > 5){

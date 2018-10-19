@@ -97,7 +97,7 @@
 #'   \code{include_wcd = TRUE} is useful when deciding the number of mixture
 #'   components to include, and is required by \code{\link{plot_elbow}}.
 #'
-#' @param save_augmented_data Logical specifying whether or not to save the
+#' @param save_aug Logical specifying whether or not to save the
 #'   augmented rankings every \code{aug_thinning}th iteration, for the case of
 #'   missing data or pairwise preferences. Defaults to \code{FALSE}. Saving
 #'   augmented data is useful for predicting the rankings each assessor would
@@ -105,7 +105,7 @@
 #'   \code{\link{plot_top_k}}.
 #'
 #' @param aug_thinning Integer specifying the thinning for saving augmented
-#'   data. Only used when \code{save_augmented_data = TRUE}. Defaults to 1L.
+#'   data. Only used when \code{save_aug = TRUE}. Defaults to 1L.
 #'
 #' @param logz_estimate Estimate of the partition function, computed with
 #'   \code{\link{estimate_partition_function}}. Be aware that when using an
@@ -172,7 +172,7 @@ compute_mallows <- function(rankings = NULL,
                             lambda = 0.001,
                             psi = 10L,
                             include_wcd = (n_clusters > 1),
-                            save_augmented_data = FALSE,
+                            save_aug = FALSE,
                             aug_thinning = 1L,
                             logz_estimate = NULL,
                             verbose = FALSE,
@@ -297,7 +297,7 @@ compute_mallows <- function(rankings = NULL,
                   rho_thinning = rho_thinning,
                   aug_thinning = aug_thinning,
                   clus_thin = clus_thin,
-                  save_augmented_data = save_augmented_data,
+                  save_aug = save_aug,
                   verbose = verbose
                   )
 
@@ -317,7 +317,7 @@ compute_mallows <- function(rankings = NULL,
   fit$leap_size <- leap_size
   fit$alpha_prop_sd <- alpha_prop_sd
   fit$include_wcd <- include_wcd
-  fit$save_augmented_data <- save_augmented_data
+  fit$save_aug <- save_aug
 
   # Add names of item
   if(!is.null(colnames(rankings))) {

@@ -31,7 +31,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
   stopifnot(burnin < model_fit$nmc)
 
   if(!exists("augmented_data", model_fit)){
-    stop("model_fit must have element augmented_data. Please set save_augmented_data = TRUE
+    stop("model_fit must have element augmented_data. Please set save_aug = TRUE
          in compute_mallows in order to create a top-k plot.")
   }
 

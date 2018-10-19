@@ -9,7 +9,7 @@ compute_mallows(rankings = NULL, preferences = NULL,
   nmc = 2000L, leap_size = floor(n_items/5), rho_init = NULL,
   rho_thinning = 1L, alpha_prop_sd = 0.1, alpha_init = 1,
   alpha_jump = 1L, lambda = 0.001, psi = 10L,
-  include_wcd = (n_clusters > 1), save_augmented_data = FALSE,
+  include_wcd = (n_clusters > 1), save_aug = FALSE,
   aug_thinning = 1L, logz_estimate = NULL, verbose = FALSE,
   validate_rankings = TRUE, constraints = NULL,
   skip_postprocessing = FALSE)
@@ -101,7 +101,7 @@ distances computed during the Metropolis-Hastings algorithm. Defaults to
 \code{include_wcd = TRUE} is useful when deciding the number of mixture
 components to include, and is required by \code{\link{plot_elbow}}.}
 
-\item{save_augmented_data}{Logical specifying whether or not to save the
+\item{save_aug}{Logical specifying whether or not to save the
 augmented rankings every \code{aug_thinning}th iteration, for the case of
 missing data or pairwise preferences. Defaults to \code{FALSE}. Saving
 augmented data is useful for predicting the rankings each assessor would
@@ -109,7 +109,7 @@ give to the items not yet ranked, and is required by
 \code{\link{plot_top_k}}.}
 
 \item{aug_thinning}{Integer specifying the thinning for saving augmented
-data. Only used when \code{save_augmented_data = TRUE}. Defaults to 1L.}
+data. Only used when \code{save_aug = TRUE}. Defaults to 1L.}
 
 \item{logz_estimate}{Estimate of the partition function, computed with
 \code{\link{estimate_partition_function}}. Be aware that when using an
@@ -202,7 +202,7 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
   # We save the augmented data for diagnostics purposes.
   model_fit <- compute_mallows(rankings = beach_rankings,
                                preferences = beach_tc,
-                               save_augmented_data = TRUE,
+                               save_aug = TRUE,
                                verbose = TRUE)
   # We can assess the convergence of the scale parameter
   assess_convergence(model_fit)

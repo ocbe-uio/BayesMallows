@@ -9,7 +9,7 @@ run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate,
   include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5,
   alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L,
   rho_thinning = 1L, aug_thinning = 1L, clus_thin = 1L,
-  save_augmented_data = FALSE, verbose = FALSE)
+  save_aug = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{rankings}{A set of complete rankings, with one sample per column.
@@ -56,7 +56,7 @@ sample from the posterior distribution.}
 
 \item{clus_thin}{Integer specifying the thinning for saving cluster assignments.}
 
-\item{save_augmented_data}{Whether or not to save the augmented data every
+\item{save_aug}{Whether or not to save the augmented data every
 \code{aug_thinning}th iteration.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the

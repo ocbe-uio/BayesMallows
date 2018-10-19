@@ -297,10 +297,10 @@ knitr::kable(potato_top, caption = "Example dataset `potato_top`.")
 The `compute_mallows` function automatically recognizes the `NA` values as missing ranks, and augments the data, as described in Section 4.1 of @vitelli2018. Let us try:
 
 ```{r}
-model_fit <- compute_mallows(potato_top, save_augmented_data = TRUE)
+model_fit <- compute_mallows(potato_top, save_aug = TRUE)
 ```
 
-Looking at the returned object, we see that `any_missing` is `TRUE`, so `compute_mallows` has correctly detected that there are missing values. We set `save_augmented_data = TRUE` so we can get a diagnostic plot for the convergence of the data augmentation. After you are confident that the algorithm converges, you might want to use the default `save_augmented_data = FALSE`, because saving the data takes memory.
+Looking at the returned object, we see that `any_missing` is `TRUE`, so `compute_mallows` has correctly detected that there are missing values. We set `save_aug = TRUE` so we can get a diagnostic plot for the convergence of the data augmentation. After you are confident that the algorithm converges, you might want to use the default `save_aug = FALSE`, because saving the data takes memory.
 
 ```{r}
 model_fit$any_missing
@@ -520,7 +520,7 @@ We can now check the convergence, using the same tools as before.
 test_run <- compute_mallows(
   rankings = beach_init_rank, 
   preferences = beach_tc,
-  save_augmented_data = TRUE
+  save_aug = TRUE
   )
 ```
 
@@ -636,7 +636,7 @@ model_fit <- compute_mallows(
   rankings = beach_init_rank, 
   preferences = beach_tc,
   nmc = 6000,
-  save_augmented_data = TRUE
+  save_aug = TRUE
   )
 
 model_fit$burnin <- 1000
