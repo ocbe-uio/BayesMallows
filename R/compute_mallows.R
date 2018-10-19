@@ -181,8 +181,6 @@ compute_mallows <- function(rankings = NULL,
                             skip_postprocessing = FALSE
                             ){
 
-  ## First, validate input
-
   # Check that at most one of rankings and preferences is set
   if(is.null(rankings) && is.null(preferences)){
     stop("Either rankings or preferences (or both) must be provided.")
@@ -204,6 +202,7 @@ compute_mallows <- function(rankings = NULL,
     stop("invalid permutations provided in rankings matrix")
   }
 
+
   # Deal with pairwise comparisons. Generate rankings compatible with them.
   if(!is.null(preferences)){
     if(!inherits(preferences, "BayesMallowsTC")){
@@ -218,6 +217,19 @@ compute_mallows <- function(rankings = NULL,
 
   # Find the number of items
   n_items <- ncol(rankings)
+
+  # If any row of rankings has only one missing value, replace it with the implied ranking
+  if(any(is.na(rankings))){
+    dn <- dimnames(rankings)
+    rankings <- purrr::map(purrr::array_branch(rankings, margin = 1),
+                           function(x) {
+                             if(sum(is.na(x)) == 1) x[is.na(x)] <- setdiff(1:length(x), x)
+                             return(x)
+                           })
+    rankings <- t(matrix(unlist(rankings), nrow = n_items))
+    dimnames(rankings) <- dn
+  }
+
 
   if(!is.null(rho_init)) {
     if(!validate_permutation(rho_init)) stop("rho_init must be a proper permutation")
