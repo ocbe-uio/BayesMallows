@@ -122,7 +122,7 @@
 #'
 #' @param verbose Logical specifying whether to print out the progress of the
 #'   Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
-#'   every 1000th iteration.
+#'   every 1000th iteration. Defaults to \code{FALSE}.
 #'
 #' @param validate_rankings Logical specifying whether the rankings provided (or
 #'   generated from \code{preferences}) should be validated. Defaults to
