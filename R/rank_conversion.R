@@ -43,15 +43,14 @@ NULL
 #' @describeIn rank_conversion Convert from ordering to ranking.
 #' @export
 create_ranking <- function(orderings){
-  n_items <- ncol(orderings)
-  if(n_items <= 2){
-    stop("An orderings matrix must have at least 2 columns")
-  }
+
   # Check that it is a permutation
   if(is.vector(orderings)){
     stopifnot(validate_permutation(orderings))
     return(order(orderings))
   } else if(is.matrix(orderings)){
+    n_items <- ncol(orderings)
+
     # Convert to list, for easier functional programming
     orderings <- purrr::array_branch(orderings, margin = 1)
 
@@ -85,9 +84,6 @@ create_ranking <- function(orderings){
 #' @describeIn rank_conversion Convert from ranking to ordering.
 #' @export
 create_ordering <- function(rankings){
-  n_items <- ncol(rankings)
-  if(n_items <= 2){
-    stop("A rankings matrix must have at least 2 columns")
-  }
+
   create_ranking(rankings)
 }
