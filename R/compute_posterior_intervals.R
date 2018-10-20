@@ -11,7 +11,7 @@
 #'
 #' @param parameter Character string defining which parameter to compute
 #' posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
-#' \code{"cluster_probs"}.
+#' \code{"cluster_probs"}. Default is \code{"alpha"}.
 #'
 #' @param level Decimal number in \eqn{[0,1]} specifying the confidence level.
 #' Defaults to \code{0.95}.
@@ -34,7 +34,7 @@
 #' @export
 #'
 compute_posterior_intervals <- function(model_fit, burnin = model_fit$burnin,
-                                        parameter, level = 0.95,
+                                        parameter = "alpha", level = 0.95,
                                         decimals = 3L){
   stopifnot(class(model_fit) == "BayesMallows")
 
