@@ -1,6 +1,6 @@
 # BayesMallows 0.1.1.9003
 * `compute_posterior_intervals` now has default `parameter = "alpha"`. Until now, this argument has had no default.
-* Argument `type` to `plot.BayesMallows` has been renamed to `parameter`, to be more consistent.
+* Argument `type` to `plot.BayesMallows` and `assess_convergence` has been renamed to `parameter`, to be more consistent.
 
 # BayesMallows 0.1.1.9002
 * Argument `save_augment_data` to `compute_mallows` has been renamed to `save_aug`. 

@@ -53,11 +53,11 @@ function is to create an elbow plot with \code{\link{plot_elbow}}.
   compute_posterior_intervals(mixture_model,
                               parameter = "alpha")
   # Plot the posterior distributions of cluster probabilities
-  plot(mixture_model, type = "cluster_probs")
+  plot(mixture_model, parameter = "cluster_probs")
   # Plot the posterior probability of cluster assignment
-  plot(mixture_model, type = "cluster_assignment")
+  plot(mixture_model, parameter = "cluster_assignment")
   # Plot the posterior distribution of "tuna roll" in each cluster
-  plot(mixture_model, type = "rho", items = "tuna roll")
+  plot(mixture_model, parameter = "rho", items = "tuna roll")
   # Compute the cluster-wise CP consensus, and show one column per cluster
   cp <- compute_consensus(mixture_model, type = "CP")
   library(dplyr)
