@@ -1,3 +1,6 @@
+# BayesMallows 0.1.1.9003
+* `compute_posterior_intervals` now has default `parameter = "alpha"`. Until now, this argument has had no default.
+
 # BayesMallows 0.1.1.9002
 * Argument `save_augment_data` to `compute_mallows` has been renamed to `save_aug`. 
 * `compute_mallows` fills in implied ranks when an assessor has only one missing rank. This avoids unnecessary augmentation in MCMC.
