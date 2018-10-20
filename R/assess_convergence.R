@@ -7,14 +7,14 @@
 #' @param model_fit A fitted model object of class \code{BayesMallows}, obtained
 #'   with \code{\link{compute_mallows}}.
 #'
-#' @param type Character string specifying which plot type we want. Available
+#' @param parameter Character string specifying which parameter to plot. Available
 #' options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"}, or
 #' \code{"cluster_probs"}.
 #'
 #' @param items The items to study in the diagnostic plot for \code{rho}. Either
 #'   a vector of item names, corresponding to \code{model_fit$items} or a
 #'   vector of indices. If NULL, five items are selected randomly. Only used when
-#'   \code{type = "rho"} or \code{type = "Rtilde"}.
+#'   \code{parameter = "rho"} or \code{parameter = "Rtilde"}.
 #'
 #' @param assessors Numeric vector specifying the assessors to study in
 #' the diagnostic plot for \code{"Rtilde"}.
@@ -23,13 +23,13 @@
 #'
 #' @export
 #'
-assess_convergence <- function(model_fit, type = "alpha", items = NULL,
+assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
                                assessors = NULL){
 
   stopifnot(inherits(model_fit, "BayesMallows"))
 
 
-  if(type == "alpha") {
+  if(parameter == "alpha") {
 
     # Create the diagnostic plot for alpha
     p <- ggplot2::ggplot(model_fit$alpha, ggplot2::aes(x = .data$iteration, y = .data$value)) +
@@ -46,7 +46,7 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
 
     print(p)
 
-  } else if(type == "rho"){
+  } else if(parameter == "rho"){
 
     if(is.null(items) && model_fit$n_items > 5){
       message("Items not provided by user. Picking 5 at random.")
@@ -74,7 +74,7 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
 
     print(p)
 
-  } else if(type == "Rtilde") {
+  } else if(parameter == "Rtilde") {
 
     if(!model_fit$save_aug){
       stop("Please rerun with compute_mallows with save_aug = TRUE")
@@ -114,7 +114,7 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       ggplot2::ggtitle(label = "Convergence of Rtilde")
 
 
-  } else if (type == "cluster_probs"){
+  } else if (parameter == "cluster_probs"){
 
     if(!exists("cluster_probs", model_fit)){
       stop("cluster_probs not found")
@@ -130,6 +130,6 @@ assess_convergence <- function(model_fit, type = "alpha", items = NULL,
       ggplot2::ggtitle("Cluster Probabilities")
 
   } else {
-    stop("type must be either \"alpha\", \"rho\", \"augmentation\", or \"cluster_probs\".")
+    stop("parameter must be either \"alpha\", \"rho\", \"augmentation\", or \"cluster_probs\".")
   }
 }

@@ -22,9 +22,9 @@ head(beach_init)
                                save_aug = TRUE)
 
   # We can study the acceptance rate of the augmented rankings
-  assess_convergence(model_fit, type = "Rtilde")
+  assess_convergence(model_fit, parameter = "Rtilde")
 
   # We can also study the posterior distribution of the consensus rank of each beach
   model_fit$burnin <- 500
-  plot(model_fit, type = "rho", items = 1:15)
+  plot(model_fit, parameter = "rho", items = 1:15)
 }

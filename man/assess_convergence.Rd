@@ -4,21 +4,21 @@
 \alias{assess_convergence}
 \title{Trace Plots from Metropolis-Hastings Algorithm}
 \usage{
-assess_convergence(model_fit, type = "alpha", items = NULL,
+assess_convergence(model_fit, parameter = "alpha", items = NULL,
   assessors = NULL)
 }
 \arguments{
 \item{model_fit}{A fitted model object of class \code{BayesMallows}, obtained
 with \code{\link{compute_mallows}}.}
 
-\item{type}{Character string specifying which plot type we want. Available
+\item{parameter}{Character string specifying which parameter to plot. Available
 options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"}, or
 \code{"cluster_probs"}.}
 
 \item{items}{The items to study in the diagnostic plot for \code{rho}. Either
 a vector of item names, corresponding to \code{model_fit$items} or a
 vector of indices. If NULL, five items are selected randomly. Only used when
-\code{type = "rho"} or \code{type = "Rtilde"}.}
+\code{parameter = "rho"} or \code{parameter = "Rtilde"}.}
 
 \item{assessors}{Numeric vector specifying the assessors to study in
 the diagnostic plot for \code{"Rtilde"}.}

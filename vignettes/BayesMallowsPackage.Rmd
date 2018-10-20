@@ -168,7 +168,7 @@ assess_convergence(model_fit)
 Next, we study the convergence of $\rho$. To avoid too complicated plots, we pick 5 items to plot. Again, you can read more about this function by running `?assess_convergence` in the console.
 
 ```{r, fig.width=6}
-assess_convergence(model_fit, type = "rho", items = 1:5)
+assess_convergence(model_fit, parameter = "rho", items = 1:5)
 ```
 
 Based on these plots, it looks like the algorithm starts to converge after around 1000 iterations. Discarding the first 1000 iterations as burn-in hence seems like a safe choice. We create a new list element for `model_fit` called `burnin`, in which this choice is saved. Having done this, we do not have to provide a `burnin` argument to subsequent analyses of the posterior distributions.
@@ -202,10 +202,10 @@ knitr::kable(intervals)
 ```
 
 #### Latent Ranks $\rho$
-Obtaining posterior samples from $\rho$ is in general harder than for $\alpha$. Some items tend to be very sticky. We start by plotting the `model_fit` object from above. We now have to tell `plot.BayesMallows` that we want a plot of `type = "rho"` and all the items. This gives us posterior the posterior density of all the items.
+Obtaining posterior samples from $\rho$ is in general harder than for $\alpha$. Some items tend to be very sticky. We start by plotting the `model_fit` object from above. We now have to tell `plot.BayesMallows` that we want a plot of `parameter = "rho"` and all the items. This gives us posterior the posterior density of all the items.
 
 ```{r, fig.width=6, fig.height=6}
-plot(model_fit, type = "rho", items = 1:20)
+plot(model_fit, parameter = "rho", items = 1:20)
 ```
 
 
@@ -232,7 +232,7 @@ model_fit <- compute_mallows(potato_visual, alpha_jump = 10)
 We should assess convergence again:
 
 ```{r, fig.width=6}
-assess_convergence(model_fit, type = "alpha")
+assess_convergence(model_fit, parameter = "alpha")
 ```
 
 
@@ -325,14 +325,14 @@ The tuning of $\alpha$ and $\rho$ can be done exactly as described above for the
 Looking back, we see that assessor 1 does not have values for potatoes 14, 16, and 17. Hence, we expect these to jump between ranks 6, 7, and 8, since the 5 ranked items are fixed to values 1,...,5. Below we have plotted potato 14, which fluctuates between 6 and 8. You can confirm that these same happens to 16 and 17.
 
 ```{r, fig.width=6}
-assess_convergence(model_fit, type = "Rtilde", assessors = 1, 
+assess_convergence(model_fit, parameter = "Rtilde", assessors = 1, 
                    items = "P14")
 ```
 
 Assessor 1 has ranks for potatoes 7, 9, 10, 12, and 13, which are fixed. You can confirm that they are fixed by running the following command.
 
 ```{r, eval=FALSE}
-assess_convergence(model_fit, type = "Rtilde", assessors = 1, 
+assess_convergence(model_fit, parameter = "Rtilde", assessors = 1, 
                    items = c("P7", "P9", "P10", "P12", "P13"))
 ```
 
@@ -382,7 +382,7 @@ assess_convergence(model_fit)
 ```
 
 ```{r, eval=FALSE}
-assess_convergence(model_fit, type = "rho", items = 1:6)
+assess_convergence(model_fit, parameter = "rho", items = 1:6)
 ```
 
 Again, we can look at the acceptance rates for the augmented data. Now let us compare it to the number of missing ranks per assessor.
@@ -528,7 +528,7 @@ The trace plots for $\alpha$ and $\rho$ show good convergence.
 
 #### Convergence of Rtilde
 
-When using `assess_convergence`, we can set `type = "Rtilde"` and choose `assessors` and `items`. We now illustrate this by going a bit deeper into some assessors. Referring to the mathematical notation in the top of the vignette, `Rtilde` corresponds to the augmented rankings $\tilde{R}_{1}, \dots, \tilde{R}_{N}$.
+When using `assess_convergence`, we can set `parameter = "Rtilde"` and choose `assessors` and `items`. We now illustrate this by going a bit deeper into some assessors. Referring to the mathematical notation in the top of the vignette, `Rtilde` corresponds to the augmented rankings $\tilde{R}_{1}, \dots, \tilde{R}_{N}$.
 
 ##### Assessor 1
 
@@ -549,7 +549,7 @@ beach_tc %>%
 It is implied by the preferences of assessor 1 that $\{B_{2} \prec B_{6}\}$ and $\{B_{2} \prec B_{15}\}$.
 
 ```{r, fig.width=6}
-assess_convergence(test_run, type = "Rtilde", 
+assess_convergence(test_run, parameter = "Rtilde", 
                    assessors = 1, items = c(2, 6, 15))
 ```
 
@@ -565,7 +565,7 @@ beach_tc %>%
 
 The traces of item 2 and 4 do indeed cross.
 ```{r, fig.width=6}
-assess_convergence(test_run, type = "Rtilde", 
+assess_convergence(test_run, parameter = "Rtilde", 
                    assessors = 1, items = c(2, 4))
 ```
 
@@ -580,7 +580,7 @@ beach_tc %>%
 
 The traces of beaches 5 and 8 do indeed cross.
 ```{r, fig.width=6}
-assess_convergence(test_run, type = "Rtilde", 
+assess_convergence(test_run, parameter = "Rtilde", 
                    assessors = 1, items = c(5, 8))
 ```
 
@@ -603,7 +603,7 @@ beach_tc %>%
 Beach 10 is preferred to beach 7, but disfavored to beach 5. The trace plot does indeed show this:
 
 ```{r, fig.width=6}
-assess_convergence(test_run, type = "Rtilde", 
+assess_convergence(test_run, parameter = "Rtilde", 
                    assessors = 2, items = c(5, 7, 10))
 ```
 
@@ -617,7 +617,7 @@ beach_tc %>%
 
 Their traces do indeed cross.
 ```{r, fig.width=6}
-assess_convergence(test_run, type = "Rtilde", 
+assess_convergence(test_run, parameter = "Rtilde", 
                    assessors = 2, items = c(1, 15))
 ```
 
@@ -747,7 +747,7 @@ assess_convergence(model_fit)
 We plot the potato that is most often ranked heaviest (P8), and the potato that is most often ranked lightest (P12). 
 
 ```{r, fig.width=6}
-assess_convergence(model_fit, type = "rho", items = c(8, 12))
+assess_convergence(model_fit, parameter = "rho", items = c(8, 12))
 ```
 
 ##### Convergence of Cluster Probabilities
@@ -755,7 +755,7 @@ assess_convergence(model_fit, type = "rho", items = c(8, 12))
 We also see that the probability of each cluster, $\tau_{1}$ and $\tau_{2}$, fluctuate around 0.5, which is just as expected, since we reverted half of the rankings.
 
 ```{r, fig.width=6}
-assess_convergence(model_fit, type = "cluster_probs")
+assess_convergence(model_fit, parameter = "cluster_probs")
 ```
 
 We now go on to show clustering in a real data example.
@@ -790,7 +790,7 @@ assess_convergence(model_fit2)
 We can also look at the trace plot of the cluster probabilities, $\tau_{1}$ and $\tau_{2}$:
 
 ```{r, fig.width=6}
-assess_convergence(model_fit2, type = "cluster_probs")
+assess_convergence(model_fit2, parameter = "cluster_probs")
 ```
 
 
@@ -873,7 +873,7 @@ model <- compute_mallows(rankings = sushi_rankings, nmc = nmc, n_clusters = 5)
 
 
 ```{r, fig.width=6}
-plot(model, burnin = 1000, type = "cluster_assignment")
+plot(model, burnin = 1000, parameter = "cluster_assignment")
 ```
 
 

@@ -169,15 +169,15 @@ preferences.
 model_fit <- compute_mallows(potato_visual)
 
 # We study the trace plot of the parameters
-assess_convergence(model_fit, type = "alpha")
-\dontrun{assess_convergence(model_fit, type = "rho")}
+assess_convergence(model_fit, parameter = "alpha")
+\dontrun{assess_convergence(model_fit, parameter = "rho")}
 
 # Based on these plots, we set burnin = 1000.
 model_fit$burnin <- 1000
 # Next, we use the generic plot function to study the posterior distributions
 # of alpha and rho
-plot(model_fit, type = "alpha")
-\dontrun{plot(model_fit, type = "rho", items = 10:15)}
+plot(model_fit, parameter = "alpha")
+\dontrun{plot(model_fit, parameter = "rho", items = 10:15)}
 
 # We can also compute the CP consensus posterior ranking
 compute_consensus(model_fit, type = "CP")
@@ -208,10 +208,10 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
   assess_convergence(model_fit)
   # We can assess the convergence of latent rankings. Here we
   # show beaches 1-5.
-  assess_convergence(model_fit, type = "rho", items = 1:5)
+  assess_convergence(model_fit, parameter = "rho", items = 1:5)
   # We can also look at the convergence of the augmented rankings for
   # each assessor.
-  assess_convergence(model_fit, type = "Rtilde",
+  assess_convergence(model_fit, parameter = "Rtilde",
                      items = c(2, 4), assessors = c(1, 2))
   # Notice how, for assessor 1, the lines cross each other, while
   # beach 2 consistently has a higher rank value (lower preference) for
@@ -236,17 +236,17 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
   # We then assess convergence of the scale parameter alpha
   assess_convergence(model_fit)
   # Next, we assess convergence of the cluster probabilities
-  assess_convergence(model_fit, type = "cluster_probs")
+  assess_convergence(model_fit, parameter = "cluster_probs")
   # Based on this, we set burnin = 1000
   # We now plot the posterior density of the scale parameters alpha in
   # each mixture:
   model_fit$burnin <- 1000
-  plot(model_fit, type = "alpha")
+  plot(model_fit, parameter = "alpha")
   # We can also compute the posterior density of the cluster probabilities
-  plot(model_fit, type = "cluster_probs")
+  plot(model_fit, parameter = "cluster_probs")
   # We can also plot the posterior cluster assignment. In this case,
   # the assessors are sorted according to their maximum a posteriori cluster estimate.
-  plot(model_fit, type = "cluster_assignment")
+  plot(model_fit, parameter = "cluster_assignment")
   # We can also assign each assessor to a cluster
   cluster_assignments <- assign_cluster(model_fit, soft = FALSE)
   }

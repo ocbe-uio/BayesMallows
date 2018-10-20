@@ -9,14 +9,14 @@
 #' to discard as burn-in. Defaults to \code{x$burnin}, and must be
 #' provided if \code{x$burnin} does not exist. See \code{\link{assess_convergence}}.
 #'
-#' @param type Character string defining the parameter to plot. Available
+#' @param parameter Character string defining the parameter to plot. Available
 #' options are \code{"alpha"}, \code{"rho"}, \code{"cluster_probs"}, and
 #' \code{"cluster_assignment"}.
 #'
 #' @param items The items to study in the diagnostic plot for \code{rho}. Either
 #'   a vector of item names, corresponding to \code{x$items} or a
 #'   vector of indices. If NULL, five items are selected randomly.
-#'   Only used when \code{type = "rho"}.
+#'   Only used when \code{parameter = "rho"}.
 #'
 #' @param ... Other arguments passed to \code{plot} (not used).
 #'
@@ -24,7 +24,7 @@
 #'
 #' @example /inst/examples/plot.BayesMallows_example.R
 #'
-plot.BayesMallows <- function(x, burnin = x$burnin, type = "alpha", items = NULL, ...){
+plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items = NULL, ...){
   # Note, the first argument must be named x, otherwise R CMD CHECK will
   # issue a warning. This is because plot.BayesMallows must have the same
   # required arguments as graphics::plot.
@@ -35,9 +35,9 @@ plot.BayesMallows <- function(x, burnin = x$burnin, type = "alpha", items = NULL
   }
   if(x$nmc <= burnin) stop("nmc must be <= burnin")
 
-  stopifnot(type %in% c("alpha", "rho", "cluster_probs", "cluster_assignment"))
+  stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment"))
 
-  if(type == "alpha") {
+  if(parameter == "alpha") {
     df <- dplyr::filter(x$alpha, .data$iteration > burnin)
 
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
@@ -52,7 +52,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, type = "alpha", items = NULL
 
     print(p)
 
-  } else if(type == "rho") {
+  } else if(parameter == "rho") {
 
     if(is.null(items) && x$n_items > 5){
       message("Items not provided by user. Picking 5 at random.")
@@ -88,7 +88,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, type = "alpha", items = NULL
     }
 
     print(p)
-  } else if(type == "cluster_probs"){
+  } else if(parameter == "cluster_probs"){
     df <- dplyr::filter(x$cluster_probs, .data$iteration > burnin)
 
     ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
@@ -98,7 +98,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, type = "alpha", items = NULL
       ggplot2::ggtitle(label = "Posterior density of cluster probabilities") +
       ggplot2::facet_wrap(~ .data$cluster)
 
-  } else if(type == "cluster_assignment"){
+  } else if(parameter == "cluster_assignment"){
 
     # First get one cluster per assessor, and sort these
     df <- assign_cluster(x, burnin = burnin, soft = FALSE, expand = FALSE)
