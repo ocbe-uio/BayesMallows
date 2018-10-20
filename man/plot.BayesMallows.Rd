@@ -4,7 +4,7 @@
 \alias{plot.BayesMallows}
 \title{Plot Posterior Distributions}
 \usage{
-\method{plot}{BayesMallows}(x, burnin = x$burnin, type = "alpha",
+\method{plot}{BayesMallows}(x, burnin = x$burnin, parameter = "alpha",
   items = NULL, ...)
 }
 \arguments{
@@ -15,14 +15,14 @@
 to discard as burn-in. Defaults to \code{x$burnin}, and must be
 provided if \code{x$burnin} does not exist. See \code{\link{assess_convergence}}.}
 
-\item{type}{Character string defining the parameter to plot. Available
+\item{parameter}{Character string defining the parameter to plot. Available
 options are \code{"alpha"}, \code{"rho"}, \code{"cluster_probs"}, and
 \code{"cluster_assignment"}.}
 
 \item{items}{The items to study in the diagnostic plot for \code{rho}. Either
 a vector of item names, corresponding to \code{x$items} or a
 vector of indices. If NULL, five items are selected randomly.
-Only used when \code{type = "rho"}.}
+Only used when \code{parameter = "rho"}.}
 
 \item{...}{Other arguments passed to \code{plot} (not used).}
 }
