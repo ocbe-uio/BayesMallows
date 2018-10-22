@@ -2,8 +2,8 @@
 # This is a script for computing importance sampling estimates
 # of the log partition function in parallel.
 
-#SBATCH --ntasks-per-node=16 --nodes=2
-#SBATCH --account=uio --time=48:00:00 --mem-per-cpu=500M
+#SBATCH --ntasks-per-node=16 --nodes=1
+#SBATCH --account=uio --time=72:00:00 --mem-per-cpu=500M
 
 source /cluster/bin/jobsetup
 
