@@ -104,6 +104,8 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
     df <- dplyr::filter(model_fit$augmented_data,
                         .data$assessor %in% assessors,
                         .data$item %in% items)
+    df <- dplyr::mutate(df, assessor = as.factor(.data$assessor))
+    levels(df$assessor) <- paste("Assessor", levels(df$assessor))
 
     ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
       ggplot2::geom_line() +
