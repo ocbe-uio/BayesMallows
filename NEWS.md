@@ -1,3 +1,6 @@
+# BayesMallows 0.1.1.9004
+* `assess_convergence` now adds prefix *Assessor* to plots when `parameter = "Rtilde"`.
+
 # BayesMallows 0.1.1.9003
 * `compute_posterior_intervals` now has default `parameter = "alpha"`. Until now, this argument has had no default.
 * Argument `type` to `plot.BayesMallows` and `assess_convergence` has been renamed to `parameter`, to be more consistent.
