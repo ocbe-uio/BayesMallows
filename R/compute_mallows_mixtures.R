@@ -9,7 +9,8 @@
 #'
 #' @param ... Other named arguments, passed to \code{\link{compute_mallows}}.
 #'
-#' @return A list of Mallows model, one for each number of mixtures that
+#' @return A list of Mallows models of class \code{BayesMallowsMixtures}, with one element
+#' for each number of mixtures that
 #' was computed. This object can be studied with \code{\link{plot_elbow}}.
 #'
 #' @details \code{compute_mallows_mixtures} always sets \code{include_wcd = TRUE}
@@ -27,4 +28,7 @@ compute_mallows_mixtures <- function(n_clusters, ...){
     message(paste0("Computing Mallows model with ", x, " clusters."))
     compute_mallows(..., n_clusters = x, include_wcd = TRUE)
   })
+
+  class(models) <- "BayesMallowsMixtures"
+  return(models)
 }

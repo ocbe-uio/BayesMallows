@@ -1,3 +1,7 @@
+# BayesMallows 0.1.1.9005
+* `assess_convergence` now automatically plots mixtures.
+* `compute_mallows_mixtures` now returns an object of class `BayesMallowsMixtures`.
+
 # BayesMallows 0.1.1.9004
 * `assess_convergence` now adds prefix *Assessor* to plots when `parameter = "Rtilde"`.
 * `predict_top_k` is now an exported function. Previously it was internal.

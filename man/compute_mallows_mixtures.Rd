@@ -13,7 +13,8 @@ to use.}
 \item{...}{Other named arguments, passed to \code{\link{compute_mallows}}.}
 }
 \value{
-A list of Mallows model, one for each number of mixtures that
+A list of Mallows models of class \code{BayesMallowsMixtures}, with one element
+for each number of mixtures that
 was computed. This object can be studied with \code{\link{plot_elbow}}.
 }
 \description{
