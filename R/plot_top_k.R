@@ -17,23 +17,17 @@
 #' and the plot of assessors, respectively. This argument is passed on to
 #' \code{\link[cowplot]{plot_grid}}.
 #'
+#' @seealso \code{\link{predict_top_k}}
+#'
 #' @export
 #'
+#' @example /inst/examples/plot_top_k_example.R
 #'
 plot_top_k <- function(model_fit, burnin = model_fit$burnin,
                        k = 3,
                        rel_widths = c(rep(1, model_fit$n_clusters), 10)){
 
-  if(is.null(burnin)){
-    stop("Please specify the burnin, either by setting x$burnin or
-         as an argument to the plot.BayesMallows function.")
-  }
-  stopifnot(burnin < model_fit$nmc)
-
-  if(!exists("augmented_data", model_fit)){
-    stop("model_fit must have element augmented_data. Please set save_aug = TRUE
-         in compute_mallows in order to create a top-k plot.")
-  }
+  validate_top_k(model_fit, burnin)
 
   n_samples <- sum(unique(model_fit$rho$iteration) > burnin)
 
@@ -61,7 +55,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
     rho <- dplyr::mutate(rho, cluster = "")
   }
 
-  rankings <- predict_top_k(model_fit, burnin = burnin, k = k, n_samples = n_samples)
+  rankings <- .predict_top_k(model_fit, burnin = burnin, k = k, n_samples = n_samples)
 
   # Sorting the items according to their probability in rho
   rankings <- dplyr::mutate(rankings, item = factor(.data$item, levels = item_ordering))

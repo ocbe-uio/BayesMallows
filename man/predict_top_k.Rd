@@ -4,25 +4,29 @@
 \alias{predict_top_k}
 \title{Predict Top-k Rankings with Pairwise Preferences}
 \usage{
-predict_top_k(model_fit, burnin, k, n_samples)
+predict_top_k(model_fit, burnin = model_fit$burnin, k = 3)
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
 \code{\link{compute_mallows}}.}
 
-\item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. See \code{\link{assess_convergence}}.}
+\item{burnin}{A numeric value specifying the number of iterations to discard
+as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
+\code{model_fit$burnin} does not exist. See
+\code{\link{assess_convergence}}.}
 
 \item{k}{Integer specifying the k in top-\eqn{k}.}
-
-\item{n_samples}{The number of samples, after burn-in.}
+}
+\value{
+A dataframe with columns \code{assessor}, \code{item}, and
+  \code{prob}, where each row states the probability that the given assessor
+  rates the given item among top-\eqn{k}.
 }
 \description{
-Predict the posterior probability, per item, of being ranked among the top-\eqn{k}
-for each assessor. This is useful when the data take the form of pairwise
-preferences. This is an internal function used by \code{\link{plot_top_k}}.
+Predict the posterior probability, per item, of being ranked among the
+top-\eqn{k} for each assessor. This is useful when the data take the form of
+pairwise preferences.
 }
 \seealso{
 \code{\link{plot_top_k}}
 }
-\keyword{internal}
