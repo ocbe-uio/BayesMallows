@@ -45,67 +45,24 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
     if(inherits(model_fit, "BayesMallows")){
       trace_rho(model_fit, items)
     } else if(inherits(model_fit, "BayesMallowsMixtures")){
-      cowplot::plot_grid(plotlist = purrr::map(model_fit, trace_rho, clusters = TRUE, items = items))
+      cowplot::plot_grid(plotlist = purrr::map(model_fit, trace_rho, clusters = TRUE, items = items), ...)
     }
-
-
 
   } else if(parameter == "Rtilde") {
 
-    if(!model_fit$save_aug){
-      stop("Please rerun with compute_mallows with save_aug = TRUE")
+    if(inherits(model_fit, "BayesMallows")){
+      trace_rtilde(model_fit, items, assessors)
+    } else if(inherits(model_fit, "BayesMallowsMixtures")){
+      stop("Trace plots of augmented data not supported for BayesMallowsMixtures. Please rerun each component k using the k-th list element.")
     }
-
-    if(is.null(items) && model_fit$n_items > 5){
-      message("Items not provided by user. Picking 5 at random.")
-      items <- sample.int(model_fit$n_items, 5)
-    } else if (is.null(items) && model_fit$n_items > 0) {
-      items <- seq.int(from = 1, to = model_fit$n_items)
-    }
-
-    if(is.null(assessors) && model_fit$n_assessors > 5){
-      message("Assessors not provided by user. Picking 5 at random.")
-      assessors <- sample.int(model_fit$n_assessors, 5)
-    } else if (is.null(assessors) && model_fit$n_assessors > 0) {
-      assessors <- seq.int(from = 1, to = model_fit$n_assessors)
-    } else if(!is.null(assessors)) {
-      if(length(setdiff(assessors, seq(1, model_fit$n_assessors, 1))) > 0) {
-        stop("assessors vector must contain numeric indices between 1 and the number of assessors")
-      }
-    }
-
-    if(is.factor(model_fit$augmented_data$item) && is.numeric(items)){
-      items <- levels(model_fit$augmented_data$item)[items]
-    }
-    df <- dplyr::filter(model_fit$augmented_data,
-                        .data$assessor %in% assessors,
-                        .data$item %in% items)
-    df <- dplyr::mutate(df, assessor = as.factor(.data$assessor))
-    levels(df$assessor) <- paste("Assessor", levels(df$assessor))
-
-    ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
-      ggplot2::geom_line() +
-      ggplot2::facet_wrap(~ .data$assessor) +
-      ggplot2::theme(legend.title = ggplot2::element_blank()) +
-      ggplot2::xlab("Iteration") +
-      ggplot2::ylab("Rtilde") +
-      ggplot2::ggtitle(label = "Convergence of Rtilde")
-
-
   } else if (parameter == "cluster_probs"){
-
-    if(!exists("cluster_probs", model_fit)){
-      stop("cluster_probs not found")
+    if(inherits(model_fit, "BayesMallows")){
+      trace_cluster_probs(model_fit)
+    } else if(inherits(model_fit, "BayesMallowsMixtures")){
+      cowplot::plot_grid(plotlist = purrr::map(model_fit, trace_cluster_probs), ...)
     }
 
-    ggplot2::ggplot(model_fit$cluster_probs,
-                    ggplot2::aes(x = .data$iteration, y = .data$value,
-                                 color = .data$cluster)) +
-      ggplot2::geom_line() +
-      ggplot2::theme(legend.title = ggplot2::element_blank()) +
-      ggplot2::xlab("Iteration") +
-      ggplot2::ylab(expression(tau[k])) +
-      ggplot2::ggtitle("Cluster Probabilities")
+
 
   } else {
     stop("parameter must be either \"alpha\", \"rho\", \"augmentation\", or \"cluster_probs\".")
@@ -157,4 +114,63 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1){
   }
 
   return(p)
+}
+
+
+trace_rtilde <- function(model_fit, items, assessors){
+
+
+  if(!model_fit$save_aug){
+    stop("Please rerun with compute_mallows with save_aug = TRUE")
+  }
+
+  if(is.null(items) && model_fit$n_items > 5){
+    message("Items not provided by user. Picking 5 at random.")
+    items <- sample.int(model_fit$n_items, 5)
+  } else if (is.null(items) && model_fit$n_items > 0) {
+    items <- seq.int(from = 1, to = model_fit$n_items)
+  }
+
+  if(is.null(assessors) && model_fit$n_assessors > 5){
+    message("Assessors not provided by user. Picking 5 at random.")
+    assessors <- sample.int(model_fit$n_assessors, 5)
+  } else if (is.null(assessors) && model_fit$n_assessors > 0) {
+    assessors <- seq.int(from = 1, to = model_fit$n_assessors)
+  } else if(!is.null(assessors)) {
+    if(length(setdiff(assessors, seq(1, model_fit$n_assessors, 1))) > 0) {
+      stop("assessors vector must contain numeric indices between 1 and the number of assessors")
+    }
+  }
+
+  if(is.factor(model_fit$augmented_data$item) && is.numeric(items)){
+    items <- levels(model_fit$augmented_data$item)[items]
+  }
+  df <- dplyr::filter(model_fit$augmented_data,
+                      .data$assessor %in% assessors,
+                      .data$item %in% items)
+  df <- dplyr::mutate(df, assessor = as.factor(.data$assessor))
+  levels(df$assessor) <- paste("Assessor", levels(df$assessor))
+
+  ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
+    ggplot2::geom_line() +
+    ggplot2::facet_wrap(~ .data$assessor) +
+    ggplot2::theme(legend.title = ggplot2::element_blank()) +
+    ggplot2::xlab("Iteration") +
+    ggplot2::ylab("Rtilde")
+}
+
+
+trace_cluster_probs <- function(model_fit){
+  if(!exists("cluster_probs", model_fit)){
+    stop("cluster_probs not found")
+  }
+
+  ggplot2::ggplot(model_fit$cluster_probs,
+                  ggplot2::aes(x = .data$iteration, y = .data$value,
+                               color = .data$cluster)) +
+    ggplot2::geom_line() +
+    ggplot2::theme(legend.title = ggplot2::element_blank()) +
+    ggplot2::theme(legend.position = "bottom") +
+    ggplot2::xlab("Iteration") +
+    ggplot2::ylab(expression(tau[k]))
 }
