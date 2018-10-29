@@ -5,11 +5,12 @@
 \title{Trace Plots from Metropolis-Hastings Algorithm}
 \usage{
 assess_convergence(model_fit, parameter = "alpha", items = NULL,
-  assessors = NULL)
+  assessors = NULL, ...)
 }
 \arguments{
-\item{model_fit}{A fitted model object of class \code{BayesMallows}, obtained
-with \code{\link{compute_mallows}}.}
+\item{model_fit}{A fitted model object of class \code{BayesMallows} returned from
+\code{\link{compute_mallows}} or an object of class \code{BayesMallowsMixtures}
+returned from \code{\link{compute_mallows_mixtures}}.}
 
 \item{parameter}{Character string specifying which parameter to plot. Available
 options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"}, or
@@ -22,6 +23,9 @@ vector of indices. If NULL, five items are selected randomly. Only used when
 
 \item{assessors}{Numeric vector specifying the assessors to study in
 the diagnostic plot for \code{"Rtilde"}.}
+
+\item{...}{Additional arguments passed on to \code{cowplot::plot_grid}. Only used
+when \code{model_fit} is of class \code{BayesMallowsMixtures}.}
 }
 \description{
 \code{assess_convergence} provides trace plots for the parameters of the

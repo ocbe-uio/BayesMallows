@@ -20,12 +20,15 @@
 #' @param assessors Numeric vector specifying the assessors to study in
 #' the diagnostic plot for \code{"Rtilde"}.
 #'
+#' @param ... Additional arguments passed on to \code{cowplot::plot_grid}. Only used
+#' when \code{model_fit} is of class \code{BayesMallowsMixtures}.
+#'
 #' @seealso \code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
 #'
 #' @export
 #'
 assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
-                               assessors = NULL){
+                               assessors = NULL, ...){
 
   stopifnot(inherits(model_fit, "BayesMallows") ||
               inherits(model_fit, "BayesMallowsMixtures"))
@@ -35,36 +38,17 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
     if(inherits(model_fit, "BayesMallows")){
       trace_alpha(model_fit)
     } else if(inherits(model_fit, "BayesMallowsMixtures")){
-      cowplot::plot_grid(plotlist = purrr::map(model_fit, trace_alpha, clusters = TRUE))
+      cowplot::plot_grid(plotlist = purrr::map(model_fit, trace_alpha, clusters = TRUE), ...)
     }
 
   } else if(parameter == "rho"){
-
-    if(is.null(items) && model_fit$n_items > 5){
-      message("Items not provided by user. Picking 5 at random.")
-      items <- sample.int(model_fit$n_items, 5)
-    } else if (is.null(items) && model_fit$n_items > 0) {
-      items <- seq.int(from = 1, to = model_fit$n_items)
+    if(inherits(model_fit, "BayesMallows")){
+      trace_rho(model_fit, items)
+    } else if(inherits(model_fit, "BayesMallowsMixtures")){
+      cowplot::plot_grid(plotlist = purrr::map(model_fit, trace_rho, clusters = TRUE, items = items))
     }
 
-    if(!is.character(items)){
-      items <- model_fit$items[items]
-    }
 
-    df <- dplyr::filter(model_fit$rho, .data$item %in% items)
-
-    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
-      ggplot2::geom_line() +
-      ggplot2::theme(legend.title = ggplot2::element_blank()) +
-      ggplot2::xlab("Iteration") +
-      ggplot2::ylab(expression(rho)) +
-      ggplot2::ggtitle(label = "Convergence of rho")
-
-    if(model_fit$n_clusters > 1){
-      p <- p + ggplot2::facet_wrap(~ .data$cluster)
-    }
-
-    print(p)
 
   } else if(parameter == "Rtilde") {
 
@@ -134,16 +118,43 @@ trace_alpha <- function(model_fit, clusters = model_fit$n_clusters > 1){
   # Create the diagnostic plot for alpha
   p <- ggplot2::ggplot(model_fit$alpha, ggplot2::aes(x = .data$iteration, y = .data$value)) +
     ggplot2::xlab("Iteration") +
-    ggplot2::ylab(expression(alpha)) +
-    ggplot2::theme(legend.title = ggplot2::element_blank()) +
-    ggplot2::ggtitle(label = "Convergence of alpha")
+    ggplot2::ylab(expression(alpha))
 
   if(!clusters){
     p <- p + ggplot2::geom_line()
   } else {
     p <- p +
       ggplot2::geom_line(ggplot2::aes(color = .data$cluster)) +
-      ggplot2::theme(legend.position = "bottom")
+      ggplot2::theme(legend.position = "bottom") +
+      ggplot2::theme(legend.title = ggplot2::element_blank())
   }
+  return(p)
+}
+
+trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1){
+
+  if(is.null(items) && model_fit$n_items > 5){
+    message("Items not provided by user. Picking 5 at random.")
+    items <- sample.int(model_fit$n_items, 5)
+  } else if (is.null(items) && model_fit$n_items > 0) {
+    items <- seq.int(from = 1, to = model_fit$n_items)
+  }
+
+  if(!is.character(items)){
+    items <- model_fit$items[items]
+  }
+
+  df <- dplyr::filter(model_fit$rho, .data$item %in% items)
+
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
+    ggplot2::geom_line() +
+    ggplot2::theme(legend.title = ggplot2::element_blank()) +
+    ggplot2::xlab("Iteration") +
+    ggplot2::ylab(expression(rho))
+
+  if(clusters){
+    p <- p + ggplot2::facet_wrap(~ .data$cluster)
+  }
+
   return(p)
 }
