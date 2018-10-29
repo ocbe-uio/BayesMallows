@@ -4,8 +4,9 @@
 #' Mallows Rank model, in order to study the convergence of the Metropolis-Hastings
 #' algorithm.
 #'
-#' @param model_fit A fitted model object of class \code{BayesMallows}, obtained
-#'   with \code{\link{compute_mallows}}.
+#' @param model_fit A fitted model object of class \code{BayesMallows} returned from
+#'  \code{\link{compute_mallows}} or an object of class \code{BayesMallowsMixtures}
+#'  returned from \code{\link{compute_mallows_mixtures}}.
 #'
 #' @param parameter Character string specifying which parameter to plot. Available
 #' options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"}, or
@@ -26,25 +27,16 @@
 assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
                                assessors = NULL){
 
-  stopifnot(inherits(model_fit, "BayesMallows"))
+  stopifnot(inherits(model_fit, "BayesMallows") ||
+              inherits(model_fit, "BayesMallowsMixtures"))
 
 
   if(parameter == "alpha") {
-
-    # Create the diagnostic plot for alpha
-    p <- ggplot2::ggplot(model_fit$alpha, ggplot2::aes(x = .data$iteration, y = .data$value)) +
-      ggplot2::xlab("Iteration") +
-      ggplot2::ylab(expression(alpha)) +
-      ggplot2::theme(legend.title = ggplot2::element_blank()) +
-      ggplot2::ggtitle(label = "Convergence of alpha")
-
-    if(model_fit$n_clusters == 1){
-      p <- p + ggplot2::geom_line()
-    } else {
-      p <- p + ggplot2::geom_line(ggplot2::aes(color = .data$cluster))
+    if(inherits(model_fit, "BayesMallows")){
+      trace_alpha(model_fit)
+    } else if(inherits(model_fit, "BayesMallowsMixtures")){
+      cowplot::plot_grid(plotlist = purrr::map(model_fit, trace_alpha, clusters = TRUE))
     }
-
-    print(p)
 
   } else if(parameter == "rho"){
 
@@ -134,4 +126,24 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
   } else {
     stop("parameter must be either \"alpha\", \"rho\", \"augmentation\", or \"cluster_probs\".")
   }
+}
+
+
+
+trace_alpha <- function(model_fit, clusters = model_fit$n_clusters > 1){
+  # Create the diagnostic plot for alpha
+  p <- ggplot2::ggplot(model_fit$alpha, ggplot2::aes(x = .data$iteration, y = .data$value)) +
+    ggplot2::xlab("Iteration") +
+    ggplot2::ylab(expression(alpha)) +
+    ggplot2::theme(legend.title = ggplot2::element_blank()) +
+    ggplot2::ggtitle(label = "Convergence of alpha")
+
+  if(!clusters){
+    p <- p + ggplot2::geom_line()
+  } else {
+    p <- p +
+      ggplot2::geom_line(ggplot2::aes(color = .data$cluster)) +
+      ggplot2::theme(legend.position = "bottom")
+  }
+  return(p)
 }
