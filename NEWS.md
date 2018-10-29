@@ -1,5 +1,6 @@
 # BayesMallows 0.1.1.9004
 * `assess_convergence` now adds prefix *Assessor* to plots when `parameter = "Rtilde"`.
+* `predict_top_k` is now an exported function. Previously it was internal.
 
 # BayesMallows 0.1.1.9003
 * `compute_posterior_intervals` now has default `parameter = "alpha"`. Until now, this argument has had no default.
