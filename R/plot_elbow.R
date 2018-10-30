@@ -48,6 +48,8 @@ plot_elbow <- function(..., burnin = NULL){
 
     df <- dplyr::filter(x$within_cluster_distance, .data$iteration > x$burnin)
 
+    if(nrow(df) <= 0) stop("burnin must be strictly smaller than the number of MCMC samples")
+
     # Need to sum the within-cluster distances across clusters, for each iteration
     df <- dplyr::group_by(df, .data$iteration)
     df <- dplyr::summarise(df, value = sum(.data$value))
