@@ -1,3 +1,6 @@
+# BayesMallows 0.1.1.9006
+* Objects of class `BayesMallows` and `BayesMallowsMixtures` now have default print functions, hence avoiding excessive amounts of informations printed to the console if the user happens to write the name of such an object and press Return.
+
 # BayesMallows 0.1.1.9005
 * `assess_convergence` now automatically plots mixtures.
 * `compute_mallows_mixtures` now returns an object of class `BayesMallowsMixtures`.
