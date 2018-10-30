@@ -1,6 +1,7 @@
 # BayesMallows 0.1.1.9006
 * Objects of class `BayesMallows` and `BayesMallowsMixtures` now have default print functions, hence avoiding excessive amounts of informations printed to the console if the user happens to write the name of such an object and press Return.
 * `compute_mallows_mixtures` no longer sets `include_wcd = TRUE` by default. The user can choose this argument.
+* `compute_mallows` has a new argument `save_clus`, which can be set to `FALSE` for not saving cluster assignments.
 
 # BayesMallows 0.1.1.9005
 * `assess_convergence` now automatically plots mixtures.
