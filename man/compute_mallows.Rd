@@ -258,7 +258,7 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
   # We use the convenience function compute_mallows_mixtures
   n_clusters <- seq(from = 1, to = 10)
   models <- compute_mallows_mixtures(n_clusters = n_clusters, rankings = sushi_rankings,
-                                     nmc = 6000, alpha_jump = 10)
+                                     nmc = 6000, alpha_jump = 10, include_wcd = TRUE)
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows
   # We can create an elbow plot

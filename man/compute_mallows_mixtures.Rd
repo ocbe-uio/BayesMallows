@@ -22,18 +22,15 @@ Convenience function for computing Mallows models with varying
 numbers of mixtures. This is useful for deciding the number of
 mixtures to use in the final model.
 }
-\details{
-\code{compute_mallows_mixtures} always sets \code{include_wcd = TRUE}
-in the code to \code{\link{compute_mallows}}, since the purpose of this
-function is to create an elbow plot with \code{\link{plot_elbow}}.
-}
 \examples{
 # DETERMINING THE NUMBER OF CLUSTERS IN THE SUSHI EXAMPLE DATA
 \dontrun{
   # Let us look at any number of clusters from 1 to 10
   # We use the convenience function compute_mallows_mixtures
   n_clusters <- seq(from = 1, to = 10)
-  models <- compute_mallows_mixtures(n_clusters = n_clusters, rankings = sushi_rankings)
+  models <- compute_mallows_mixtures(n_clusters = n_clusters,
+                                     rankings = sushi_rankings,
+                                     include_wcd = TRUE)
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows
   # We can create an elbow plot
