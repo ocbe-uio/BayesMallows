@@ -40,8 +40,13 @@
 #'   convenience function for computing several models with varying numbers of
 #'   mixtures.
 #'
+#'
+#' @param save_clus Logical specifying whether or not to save cluster
+#' assignments. Default to \code{TRUE}.
+#'
 #' @param clus_thin Integer specifying the thinning to be
-#'   applied to the cluster assignments. Defaults to \code{1L}.
+#'   applied to the cluster assignments. Defaults to \code{1L}. Not used
+#'   when \code{save_clus = FALSE}.
 #'
 #' @param nmc Integer specifying the number of iteration of the
 #'   Metropolis-Hastings algorithm to run. Defaults to \code{2000L}. See
@@ -161,6 +166,7 @@ compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
                             metric = "footrule",
                             n_clusters = 1L,
+                            save_clus = TRUE,
                             clus_thin = 1L,
                             nmc = 2000L,
                             leap_size = floor(n_items / 5),
@@ -278,6 +284,8 @@ compute_mallows <- function(rankings = NULL,
     stop(paste("Unknown metric", metric))
   }
 
+  if(!save_clus) clus_thin <- nmc
+
   # Transpose rankings to get samples along columns, since we typically want
   # to extract one sample at a time. armadillo is column major, just like rankings
   fit <- run_mcmc(rankings = t(rankings),
@@ -327,7 +335,9 @@ compute_mallows <- function(rankings = NULL,
   }
 
   # Tidy MCMC results
-  if(!skip_postprocessing) fit <- tidy_mcmc(fit)
+  if(!skip_postprocessing) fit <- tidy_mcmc(fit, tidy_cluster_assignment = save_clus)
+
+  if(!save_clus) fit$cluster_assignment <- NULL
 
   # Add class attribute
   class(fit) <- "BayesMallows"

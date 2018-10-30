@@ -5,10 +5,10 @@
 \title{Preference Learning with the Mallows Rank Model}
 \usage{
 compute_mallows(rankings = NULL, preferences = NULL,
-  metric = "footrule", n_clusters = 1L, clus_thin = 1L,
-  nmc = 2000L, leap_size = floor(n_items/5), rho_init = NULL,
-  rho_thinning = 1L, alpha_prop_sd = 0.1, alpha_init = 1,
-  alpha_jump = 1L, lambda = 0.001, psi = 10L,
+  metric = "footrule", n_clusters = 1L, save_clus = TRUE,
+  clus_thin = 1L, nmc = 2000L, leap_size = floor(n_items/5),
+  rho_init = NULL, rho_thinning = 1L, alpha_prop_sd = 0.1,
+  alpha_init = 1, alpha_jump = 1L, lambda = 0.001, psi = 10L,
   include_wcd = (n_clusters > 1), save_aug = FALSE,
   aug_thinning = 1L, logz_estimate = NULL, verbose = FALSE,
   validate_rankings = TRUE, constraints = NULL,
@@ -44,8 +44,12 @@ clustering is performed. See \code{\link{compute_mallows_mixtures}} for a
 convenience function for computing several models with varying numbers of
 mixtures.}
 
+\item{save_clus}{Logical specifying whether or not to save cluster
+assignments. Default to \code{TRUE}.}
+
 \item{clus_thin}{Integer specifying the thinning to be
-applied to the cluster assignments. Defaults to \code{1L}.}
+applied to the cluster assignments. Defaults to \code{1L}. Not used
+when \code{save_clus = FALSE}.}
 
 \item{nmc}{Integer specifying the number of iteration of the
 Metropolis-Hastings algorithm to run. Defaults to \code{2000L}. See
