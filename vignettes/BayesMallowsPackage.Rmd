@@ -853,7 +853,8 @@ models <- compute_mallows_mixtures(n_clusters = n_clusters,
                                    nmc = nmc, 
                                    clus_thin = nmc - 1,
                                    rho_thinning = nmc - 1,
-                                   aug_thinning = nmc - 1
+                                   aug_thinning = nmc - 1,
+                                   include_wcd = TRUE
                                    )
 ```
 
