@@ -326,6 +326,7 @@ compute_mallows <- function(rankings = NULL,
   fit$alpha_prop_sd <- alpha_prop_sd
   fit$include_wcd <- include_wcd
   fit$save_aug <- save_aug
+  fit$save_clus <- save_clus
 
   # Add names of item
   if(!is.null(colnames(rankings))) {
@@ -337,7 +338,6 @@ compute_mallows <- function(rankings = NULL,
   # Tidy MCMC results
   if(!skip_postprocessing) fit <- tidy_mcmc(fit, tidy_cluster_assignment = save_clus)
 
-  if(!save_clus) fit$cluster_assignment <- NULL
 
   # Add class attribute
   class(fit) <- "BayesMallows"

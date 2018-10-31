@@ -103,34 +103,39 @@ tidy_alpha <- function(fit){
 }
 
 tidy_cluster_assignment <- function(fit){
-  if(is.null(cluster_assignment)) stop("Please rerun with save_clus = TRUE.")
+
   # Tidy cluster assignment
-  if(fit$n_clusters > 1){
-    cluster_dims <- dim(fit$cluster_assignment)
-    value <- paste("Cluster", c(fit$cluster_assignment))
+  if(fit$save_clus){
+    if(fit$n_clusters > 1){
+      cluster_dims <- dim(fit$cluster_assignment)
+      value <- paste("Cluster", c(fit$cluster_assignment))
+    } else {
+      cluster_dims <- c(fit$n_assessors, fit$nmc)
+      value <- paste("Cluster", rep(1, prod(cluster_dims)))
+    }
+
+
+    # Assessor1, Assessor2, ..., Assessor1, Assessor2
+    # Iteration1, Iteration1, ..., Iteration2, Iteration2
+
+    assessor <- rep(
+      seq(from = 1, to = cluster_dims[[1]], by = 1),
+      times = cluster_dims[[2]]
+    )
+    iteration <- rep(
+      seq(from = 1, to = cluster_dims[[2]], by = 1),
+      each = cluster_dims[[1]]
+    )
+
+    fit$cluster_assignment <- dplyr::tibble(
+      assessor = assessor,
+      iteration = iteration,
+      value = value
+    )
   } else {
-    cluster_dims <- c(fit$n_assessors, fit$nmc)
-    value <- paste("Cluster", rep(1, prod(cluster_dims)))
+    fit$cluster_assignment <- NULL
   }
 
-
-  # Assessor1, Assessor2, ..., Assessor1, Assessor2
-  # Iteration1, Iteration1, ..., Iteration2, Iteration2
-
-  assessor <- rep(
-    seq(from = 1, to = cluster_dims[[1]], by = 1),
-    times = cluster_dims[[2]]
-  )
-  iteration <- rep(
-    seq(from = 1, to = cluster_dims[[2]], by = 1),
-    each = cluster_dims[[1]]
-  )
-
-  fit$cluster_assignment <- dplyr::tibble(
-    assessor = assessor,
-    iteration = iteration,
-    value = value
-  )
 
   return(fit)
 }

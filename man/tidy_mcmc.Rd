@@ -53,27 +53,30 @@ models <- compute_mallows_mixtures(n_clusters = 1:10, rankings = potato_visual,
 str(models[[5]]$within_cluster_distance)
 
 # Since we skipped postprocessing, the following will fail:
-\dontrun{plot_elbow(models, burnin = 500)}
+\dontrun{
+  plot_elbow(models, burnin = 500)
 
-# We now tidy the within-cluster distances, which is what is used by
-# plot_elbow
-tidy_models <- models \%>\%
-  map(~ tidy_mcmc(.x,
-                  tidy_rho = FALSE,
-                  tidy_alpha = FALSE,
-                  tidy_cluster_assignment = FALSE,
-                  tidy_cluster_probabilities = FALSE,
-                  tidy_wcd = TRUE,
-                  tidy_augmented_data = TRUE,
-                  tidy_augmentation_acceptance = TRUE)
-      )
+  # We now tidy the within-cluster distances, which is what is used by
+  # plot_elbow
+  library(purrr)
+  tidy_models <- models \%>\%
+    map(~ tidy_mcmc(.x,
+                    tidy_rho = FALSE,
+                    tidy_alpha = FALSE,
+                    tidy_cluster_assignment = FALSE,
+                    tidy_cluster_probabilities = FALSE,
+                    tidy_wcd = TRUE,
+                    tidy_augmented_data = TRUE,
+                    tidy_augmentation_acceptance = TRUE)
+        )
 
-# Let us again look at the within-cluster distances
-# It is a dataframe in "tidy" format.
-str(tidy_models[[5]]$within_cluster_distance)
-tidy_models[[5]]$within_cluster_distance
+  # Let us again look at the within-cluster distances
+  # It is a dataframe in "tidy" format.
+  str(tidy_models[[5]]$within_cluster_distance)
+  tidy_models[[5]]$within_cluster_distance
 
-# We can now call plot_elbow
-plot_elbow(tidy_models, burnin = 500)
+  # We can now call plot_elbow
+  plot_elbow(tidy_models, burnin = 500)
+}
 }
 \keyword{internal}
