@@ -19,13 +19,7 @@ knitr::opts_chunk$set(
 set.seed(232312)
 ```
 
-The `BayesMallows` package implements methods for Bayesian preference learning with the Mallows rank model, as originally described in @vitelli2018, and further developed in @asfaw2016 and @crispino2018. This vignette describes the usage of the package, starting from the complete data cases, through top-$k$ rankings, pairwise comparisons, and finally clustering. We refer to the above mentioned papers, as well as the review @liu2018 for a thorough description of the methods. The necessary methods for data preprocessing, tuning of algorithms, and assessment of the posterior distributions will be described along the way. For ways to compute the partition function of the Mallows rank model with various distance measures, please see the separate vignette.
-
-
-
-## Mixture of Mallows Models
-
-
+The `BayesMallows` package implements methods for Bayesian preference learning with the Mallows rank model, as originally described in @vitelli2018, and further developed in @asfaw2016 and @crispino2018. This vignette describes the usage of the package, starting from the complete data cases, through top-$k$ rankings, pairwise comparisons, and finally clustering. We refer to the above mentioned papers, as well as the review @liu2018 for a thorough description of the methods. The necessary methods for data preprocessing, tuning of algorithms, and assessment of the posterior distributions will be described along the way.
 
 ```{r, message=FALSE}
 library(BayesMallows)
@@ -772,11 +766,11 @@ sushi_rankings
 knitr::kable(head(sushi_rankings), caption = "First 6 rows of example dataset `sushi_rankings`.")
 ```
 
-With clustering, we can see if there are subsets of assessors with similar preferences. We set `nmc = 1000` here, to speed up the vignette building. The argument `include_wcd` specifies whether to compute within-cluster distance during MCMC. When `n_cluster > 1` it defaults to `TRUE`, otherwise to `FALSE`. Hence, in order to get the within-cluster distance for the one-cluster case, we set `include_wcd = TRUE` when calling `compute_mallows`:
+With clustering, we can see if there are subsets of assessors with similar preferences. We set `nmc = 1000` here, to speed up the vignette building. The argument `include_wcd` specifies whether to compute within-cluster distance during MCMC. When `n_cluster > 1` it defaults to `TRUE`, otherwise to `FALSE`. Hence, in order to get the within-cluster distance for the one-cluster case, we set `include_wcd = TRUE` when calling `compute_mallows`. We also set `save_clus = TRUE` to get the cluster assignments.
 
 ```{r}
-model_fit1 <- compute_mallows(sushi_rankings, nmc = 1000, include_wcd = TRUE)
-model_fit2 <- compute_mallows(sushi_rankings, n_clusters = 2, nmc = 1000)
+model_fit1 <- compute_mallows(sushi_rankings, nmc = 1000, include_wcd = TRUE, save_clus = TRUE)
+model_fit2 <- compute_mallows(sushi_rankings, n_clusters = 2, nmc = 1000, save_clus = TRUE)
 ```
 
 #### Algorithm Tuning
@@ -843,7 +837,7 @@ args(plot_elbow)
 
 In order to systematically investigate how many clusters to include, we can use the function `compute_mallows_mixtures`, which takes a vector that specifies the number of clusters, and calls `compute_mallows` once for each number. 
 
-We only need the within-cluster distances to compute the elbow plot. Thus, we can basically "thin out" all the other parameters, since we do not need them. This reduce the amount of memory used.
+We only need the within-cluster distances to compute the elbow plot. Thus, we can basically "thin out" all the other parameters, since we do not need them. This reduces the amount of memory used.
 
 ```{r, message=FALSE}
 n_clusters <- seq(from = 1, to = 10)
@@ -851,7 +845,6 @@ nmc <- 2000
 models <- compute_mallows_mixtures(n_clusters = n_clusters, 
                                    rankings = sushi_rankings,
                                    nmc = nmc, 
-                                   clus_thin = nmc - 1,
                                    rho_thinning = nmc - 1,
                                    aug_thinning = nmc - 1,
                                    include_wcd = TRUE
@@ -866,10 +859,10 @@ We can now provide the `models` list to `plot_elbow`.
 plot_elbow(models, burnin = 1000)
 ```
 
-Let us choose 5 clusters. We then compute this model, now without the extreme thinning.
+Let us choose 5 clusters. We then compute this model, now without the extreme thinning, and also saving cluster assignments.
 
 ```{r, fig.width=6}
-model <- compute_mallows(rankings = sushi_rankings, nmc = nmc, n_clusters = 5)
+model <- compute_mallows(rankings = sushi_rankings, nmc = nmc, n_clusters = 5, save_clus = TRUE)
 ```
 
 

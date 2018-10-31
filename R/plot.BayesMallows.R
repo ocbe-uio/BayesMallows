@@ -100,6 +100,10 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 
   } else if(parameter == "cluster_assignment"){
 
+    if(is.null(x$cluster_assignment)){
+      stop("Please rerun compute_mallows with save_clus = TRUE")
+    }
+
     # First get one cluster per assessor, and sort these
     df <- assign_cluster(x, burnin = burnin, soft = FALSE, expand = FALSE)
     df <- dplyr::arrange(df, .data$map_cluster)

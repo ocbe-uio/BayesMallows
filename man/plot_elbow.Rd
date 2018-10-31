@@ -43,8 +43,9 @@ selecting the number of mixture.
   # an "elbow", e.g., n_clusters = 5.
 
   # Having chosen the number of clusters, we can now study the final model
-  # Extract the model with 5 clusters
-  mixture_model <- models[[5]]
+  # Rerun with 5 clusters, now setting save_clus = TRUE to get cluster assignments
+  mixture_model <- compute_mallows(rankings = sushi_rankings, n_clusters = 5,
+                                   include_wcd = TRUE, save_clus = TRUE)
   # Delete the models object to free some memory
   rm(models)
   # Set the burnin

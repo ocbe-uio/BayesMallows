@@ -42,7 +42,7 @@
 #'
 #'
 #' @param save_clus Logical specifying whether or not to save cluster
-#' assignments. Default to \code{TRUE}.
+#' assignments. Defaults to \code{FALSE}.
 #'
 #' @param clus_thin Integer specifying the thinning to be
 #'   applied to the cluster assignments. Defaults to \code{1L}. Not used
@@ -166,7 +166,7 @@ compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
                             metric = "footrule",
                             n_clusters = 1L,
-                            save_clus = TRUE,
+                            save_clus = FALSE,
                             clus_thin = 1L,
                             nmc = 2000L,
                             leap_size = floor(n_items / 5),

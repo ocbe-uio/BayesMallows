@@ -103,6 +103,7 @@ tidy_alpha <- function(fit){
 }
 
 tidy_cluster_assignment <- function(fit){
+  if(is.null(cluster_assignment)) stop("Please rerun with save_clus = TRUE.")
   # Tidy cluster assignment
   if(fit$n_clusters > 1){
     cluster_dims <- dim(fit$cluster_assignment)

@@ -2,13 +2,10 @@
 # dataset is very large, it may be useful to skip the postprocessing. We
 # demonstrate it here with the example dataset potato_visual (which is not
 # large).
-# Define a vector the number of clusters to try
-n_clusters <- 1:10
 # Use the map function from purrr to compute a model for each number of clusters
-library(purrr)
-models <- n_clusters %>%
-  map(~ compute_mallows(potato_visual, n_clusters = .x,
-                        include_wcd = TRUE, skip_postprocessing = TRUE))
+models <- compute_mallows_mixtures(n_clusters = 1:10, rankings = potato_visual,
+                                   include_wcd = TRUE, save_clus = TRUE,
+                                   skip_postprocessing = TRUE)
 
 # Let us look at the within-cluster distances for one of the models
 # In this case, it is a 5 times 2000 matrix with the values from MCMC,

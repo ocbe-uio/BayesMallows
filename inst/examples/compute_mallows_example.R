@@ -66,9 +66,10 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
 \dontrun{
   # The example dataset sushi_rankings contains 5000 complete
   # rankings of 10 types of sushi
-  # We start with computing a 3-cluster solution
+  # We start with computing a 3-cluster solution, and save
+  # cluster assignments by setting save_clus = TRUE
   model_fit <- compute_mallows(sushi_rankings, n_clusters = 3,
-                               nmc = 10000, verbose = TRUE)
+                               nmc = 10000, save_clus = TRUE, verbose = TRUE)
   # We then assess convergence of the scale parameter alpha
   assess_convergence(model_fit)
   # Next, we assess convergence of the cluster probabilities
