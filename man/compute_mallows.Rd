@@ -113,7 +113,7 @@ give to the items not yet ranked, and is required by
 \code{\link{plot_top_k}}.}
 
 \item{aug_thinning}{Integer specifying the thinning for saving augmented
-data. Only used when \code{save_aug = TRUE}. Defaults to 1L.}
+data. Only used when \code{save_aug = TRUE}. Defaults to \code{1L}.}
 
 \item{logz_estimate}{Estimate of the partition function, computed with
 \code{\link{estimate_partition_function}}. Be aware that when using an
