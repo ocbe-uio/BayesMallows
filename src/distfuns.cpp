@@ -2,11 +2,13 @@
 #include <cmath>
 #include "misc.h"
 
-
 // via the depends attribute we tell Rcpp to create hooks for
 // RcppArmadillo so that the build process will know what to do
 //
 // [[Rcpp::depends(RcppArmadillo)]]
+
+
+
 
 //' Get the distances for computing the partition function given
 //' the cardinalities.
@@ -14,7 +16,7 @@
 //' @param n The number of items.
 //' @param cardinalities Number of times each distance appears.
 //' @param metric A string. Available options are \code{"footrule"},
-//' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
+//' and \code{"spearman"}. Defaults to \code{"footrule"}.
 //' @return A scalar, the logarithm of the partition function.
 //' @keywords internal
 //'
@@ -140,3 +142,7 @@ void update_distance_matrix(arma::mat& dist_mat, const arma::mat& rankings, cons
   }
 
 }
+
+
+
+

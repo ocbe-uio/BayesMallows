@@ -16,10 +16,10 @@
 #'   proposal distribution.
 #' @param metric Character string specifying the distance measure to use.
 #'   Available options are \code{"footrule"} (default), \code{"spearman"},
-#'   \code{"cayley"}, and \code{"kendall"}. For sampling from the Mallows model
-#'   with Cayley and Kendall distances the \code{rmm} function in the
-#'   \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} is
-#'   typically faster.
+#'   \code{"cayley"}, \code{"kendall"}, and \code{"hamming"}. For sampling
+#'   from the Mallows model with Cayley, Kendall, and Hamming distances
+#'   the \code{rmm} function in the \code{PerMallows} package
+#'   \insertCite{irurozki2016}{BayesMallows} is typically faster.
 #' @param diagnostic Logical specifying whether to output convergence
 #'   diagnostics. If \code{TRUE}, a diagnostic plot is printed, together with
 #'   the returned samples.

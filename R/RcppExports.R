@@ -7,7 +7,7 @@
 #' @param n The number of items.
 #' @param cardinalities Number of times each distance appears.
 #' @param metric A string. Available options are \code{"footrule"},
-#' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
+#' and \code{"spearman"}. Defaults to \code{"footrule"}.
 #' @return A scalar, the logarithm of the partition function.
 #' @keywords internal
 #'

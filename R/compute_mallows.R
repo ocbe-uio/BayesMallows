@@ -30,7 +30,7 @@
 #'
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
-#'   \code{"spearman"}, \code{"kendall"}, and \code{"cayley"}. The distance
+#'   \code{"spearman"}, \code{"kendall"}, \code{"cayley"}, and \code{"hamming"}. The distance
 #'   given by \code{metric} is also used to compute within-cluster distances,
 #'   when \code{include_wcd = TRUE}.
 #'
@@ -276,7 +276,7 @@ compute_mallows <- function(rankings = NULL,
       logz_estimate <- unlist(relevant_params$values)
     }
 
-  } else if (metric %in% c("cayley", "kendall")) {
+  } else if (metric %in% c("cayley", "hamming", "kendall")) {
     cardinalities <- NULL
     logz_estimate <- NULL
     message("Using exact partition function")

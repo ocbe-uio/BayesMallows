@@ -13,7 +13,7 @@ get_summation_distances(n, cardinalities, metric = "footrule")
 \item{cardinalities}{Number of times each distance appears.}
 
 \item{metric}{A string. Available options are \code{"footrule"},
-\code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.}
+and \code{"spearman"}. Defaults to \code{"footrule"}.}
 }
 \value{
 A scalar, the logarithm of the partition function.
