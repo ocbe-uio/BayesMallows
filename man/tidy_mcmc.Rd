@@ -58,6 +58,8 @@ str(models[[5]]$within_cluster_distance)
 
   # We now tidy the within-cluster distances, which is what is used by
   # plot_elbow
+  library(dplyr)
+  library(tidyr)
   library(purrr)
   tidy_models <- models \%>\%
     map(~ tidy_mcmc(.x,

@@ -42,14 +42,14 @@ generate_transitive_closure <- function(df){
   # Integers mess up the function, so we use numeric
   df <- dplyr::mutate_all(df, as.numeric)
 
+  get_tc <- function(x){
+    m <- .generate_transitive_closure(cbind(x$bottom_item, x$top_item))
+    colnames(m) <- seq(from = 1, to = ncol(m), by = 1)
+    dplyr::as_tibble(m)
+  }
+
   df <- dplyr::group_by(df, .data$assessor)
-  result <- dplyr::do(
-    df,
-    dplyr::as_tibble(
-      .generate_transitive_closure(
-        cbind(.data$bottom_item, .data$top_item))
-      )
-  )
+  result <- dplyr::do(df, get_tc(.data))
   result <- dplyr::ungroup(result)
 
   names(result) <- names(df)

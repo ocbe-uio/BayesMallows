@@ -25,16 +25,20 @@ generate_initial_ranking <- function(tc,
   }
 
   # Find
+  get_ranks <- function(x) {
+    m <- create_ranks(
+      as.matrix(x[, c("bottom_item", "top_item"), drop = FALSE]),
+      n_items = n_items
+    )
+    colnames(m) <- seq(from = 1, to = n_items, by = 1)
+    dplyr::as_tibble(m)
+  }
+
   tc <- dplyr::group_by(tc, .data$assessor)
-  tc <- dplyr::do(tc, dplyr::as_tibble(
-      x = create_ranks(
-        as.matrix(.data[, c("bottom_item", "top_item"), drop = FALSE]),
-        n_items = n_items)
-      ))
+  tc <- dplyr::do(tc, get_ranks(.data))
 
   mat <- as.matrix(tc[, -1, drop = FALSE])
   rownames(mat) <- tc[["assessor"]]
-  colnames(mat) <- seq(from = 1, to = n_items, by = 1)
   return(mat)
 }
 
