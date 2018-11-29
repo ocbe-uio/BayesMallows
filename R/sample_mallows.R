@@ -113,8 +113,8 @@ sample_mallows <- function(rho0, alpha0, n_samples,
       ggplot2::ylab("Autocorrelation") +
       ggplot2::ggtitle("Autocorrelation of Rank Values")
 
+    colnames(samples) <- seq(from = 1, to = n_items, by = 1)
     diagnostic <- dplyr::as_tibble(samples)
-    names(diagnostic) <- seq(from = 1, to = n_items, by = 1)
     diagnostic <- dplyr::mutate(diagnostic, iteration = dplyr::row_number())
 
     diagnostic <- tidyr::gather(diagnostic, key = "item",

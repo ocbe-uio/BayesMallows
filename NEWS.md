@@ -1,3 +1,6 @@
+# BayesMallows 0.1.1.9007
+* Updated `generate_initial_ranking`, `generate_transitive_closure`, and `sample_mallows` to avoid errors when package `tibble` version 2.0.0 is released. This update is purely internal.
+
 # BayesMallows 0.1.1.9006
 * Objects of class `BayesMallows` and `BayesMallowsMixtures` now have default print functions, hence avoiding excessive amounts of informations printed to the console if the user happens to write the name of such an object and press Return.
 * `compute_mallows_mixtures` no longer sets `include_wcd = TRUE` by default. The user can choose this argument.
