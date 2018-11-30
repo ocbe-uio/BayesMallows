@@ -1,6 +1,6 @@
 # BayesMallows 0.1.1.9008
-* Fixed bug with Cayley distance. For this distance, the computational shortcut on p. 8 of Vitelli et al. (2018), JMLR, does not work. For earlier versions, this shortcut was used also with Cayley distance, and hence gave wrong results. This has now been updated.
-* Fixed bug in the default argument `leap_size` to `compute_mallows`. It used to by `floor(n_items / 5)`, which evaluates to zero when `n_items <= 4`. Updated it to `max(1L, floor(n_items / 5))`.
+* Fixed bug with Cayley distance. For this distance, the computational shortcut on p. 8 of Vitelli et al. (2018), JMLR, does not work. However, it was still used. Now, Cayley distance is always computed with complete rank vectors.
+* Fixed bug in the default argument `leap_size` to `compute_mallows`. It used to be `floor(n_items / 5)`, which evaluates to zero when `n_items <= 4`. Updated it to `max(1L, floor(n_items / 5))`.
 * Added Hamming distance (`metric = "haming"`) as an option to `compute_mallows` and `sample_mallows`.
 
 # BayesMallows 0.1.1.9007
