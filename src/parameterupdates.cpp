@@ -77,9 +77,15 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
   leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
                  rho_cluster, leap_size);
 
+  // These distances do not work with the computational shortcut
+  if(metric == "cayley"){
+    indices = arma::regspace<arma::uvec>(0, n_items - 1);
+  }
+
   // Compute the distances to current and proposed ranks
   double dist_new = rank_dist_matrix(rankings.rows(indices), rho_proposal(indices), metric);
   double dist_old = rank_dist_matrix(rankings.rows(indices), rho_cluster(indices), metric);
+
 
   // Metropolis-Hastings ratio
   double ratio = - alpha_old / n_items * (dist_new - dist_old) +

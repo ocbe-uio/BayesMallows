@@ -20,8 +20,9 @@
 //' between each time a random rank vector is sampled.
 //' @param leap_size Integer specifying the step size of the leap-and-shift proposal distribution.
 //' @param metric Character string specifying the distance measure to use. Available
-//' options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
-//' \code{"kendall"}. For sampling from the Mallows model with Cayley and Kendall distances
+//' options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, and
+//' \code{"kendall"}. For sampling from the Mallows model with Cayley, Hamming, Kendall,
+//' and Ulam distances
 //' the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.
 //'
 //' @keywords internal
@@ -67,6 +68,10 @@ arma::mat rmallows(
     leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
                    rho_iter, leap_size);
 
+    // These distances do not work with the computational shortcut
+    if(metric == "cayley"){
+      indices = arma::regspace<arma::uvec>(0, n_items - 1);
+    }
 
     // Compute the distances to current and proposed ranks
     double dist_new = get_rank_distance(rho0(indices), rho_proposal(indices), metric);

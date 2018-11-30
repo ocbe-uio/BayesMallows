@@ -7,7 +7,7 @@
 #' @param n The number of items.
 #' @param cardinalities Number of times each distance appears.
 #' @param metric A string. Available options are \code{"footrule"},
-#' \code{"kendall"}, and \code{"spearman"}. Defaults to \code{"footrule"}.
+#' and \code{"spearman"}. Defaults to \code{"footrule"}.
 #' @return A scalar, the logarithm of the partition function.
 #' @keywords internal
 #'
@@ -20,7 +20,8 @@ get_summation_distances <- function(n, cardinalities, metric = "footrule") {
 #' @param r1 A vector of ranks.
 #' @param r2 A vector of ranks.
 #' @param metric A string. Available options are \code{"footrule"},
-#' \code{"kendall"}, \code{"cayley"}, \code{"hamming"} and \code{"spearman"}. Defaults to \code{"footrule"}.
+#' \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, and \code{"spearman"}.
+#' Defaults to \code{"footrule"}.
 #' @return A scalar.
 #' @details Note that the Spearman distance is the squared L2 norm, whereas
 #' the footrule distance is the L1 norm.
@@ -110,8 +111,9 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
 #' between each time a random rank vector is sampled.
 #' @param leap_size Integer specifying the step size of the leap-and-shift proposal distribution.
 #' @param metric Character string specifying the distance measure to use. Available
-#' options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
-#' \code{"kendall"}. For sampling from the Mallows model with Cayley and Kendall distances
+#' options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, and
+#' \code{"kendall"}. For sampling from the Mallows model with Cayley, Hamming, Kendall,
+#' and Ulam distances
 #' the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.
 #'
 #' @keywords internal

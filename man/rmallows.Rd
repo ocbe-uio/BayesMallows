@@ -22,8 +22,9 @@ between each time a random rank vector is sampled.}
 \item{leap_size}{Integer specifying the step size of the leap-and-shift proposal distribution.}
 
 \item{metric}{Character string specifying the distance measure to use. Available
-options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, and
-\code{"kendall"}. For sampling from the Mallows model with Cayley and Kendall distances
+options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, and
+\code{"kendall"}. For sampling from the Mallows model with Cayley, Hamming, Kendall,
+and Ulam distances
 the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.}
 }
 \description{
