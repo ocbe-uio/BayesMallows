@@ -6,7 +6,7 @@
 \usage{
 compute_mallows(rankings = NULL, preferences = NULL,
   metric = "footrule", n_clusters = 1L, save_clus = FALSE,
-  clus_thin = 1L, nmc = 2000L, leap_size = floor(n_items/5),
+  clus_thin = 1L, nmc = 2000L, leap_size = max(1L, floor(n_items/5)),
   rho_init = NULL, rho_thinning = 1L, alpha_prop_sd = 0.1,
   alpha_init = 1, alpha_jump = 1L, lambda = 0.001, psi = 10L,
   include_wcd = (n_clusters > 1), save_aug = FALSE,

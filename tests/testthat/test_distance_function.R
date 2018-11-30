@@ -68,4 +68,3 @@ test_that("Hamming distance is correct", {
     )
   }})
 
-
