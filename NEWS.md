@@ -1,3 +1,6 @@
+# BayesMallows 0.2.0
+* New release on CRAN, which contains all the updates in 0.1.1, described below.
+
 # BayesMallows 0.1.1.9009
 * `Rankcluster` package has been removed from dependencies.
 
