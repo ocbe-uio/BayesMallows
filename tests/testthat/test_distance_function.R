@@ -38,7 +38,7 @@ test_that("Kendall distance is correct", {
         get_rank_distance(r1, r2, "kendall")
       }),
       check_dist(n, fun = function(r1, r2)
-        Rankcluster::distKendall(r1, r2, "ranking"))
+        PerMallows::distance(r1, r2, "kendall"))
     )
   }})
 
@@ -51,7 +51,7 @@ test_that("Cayley distance is correct", {
         get_rank_distance(r1, r2, "cayley")
       }),
       check_dist(n, fun = function(r1, r2)
-        Rankcluster::distCayley(r1, r2))
+        PerMallows::distance(r1, r2, "cayley"))
     )
   }})
 
@@ -64,7 +64,7 @@ test_that("Hamming distance is correct", {
         get_rank_distance(r1, r2, "hamming")
       }),
       check_dist(n, fun = function(r1, r2)
-        Rankcluster::distHamming(r1, r2))
+        PerMallows::distance(r1, r2, "hamming"))
     )
   }})
 
