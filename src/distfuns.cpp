@@ -144,4 +144,3 @@ void update_distance_matrix(arma::mat& dist_mat, const arma::mat& rankings, cons
 
 
 
-

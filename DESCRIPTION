@@ -1,7 +1,7 @@
 Package: BayesMallows
 Type: Package
 Title: Bayesian Preference Learning with the Mallows Rank Model
-Version: 0.1.1.9008
+Version: 0.2.0
 Author: Oystein Sorensen, Valeria Vitelli, Marta Crispino, Qinghua Liu
 Maintainer: Oystein Sorensen <oystein.sorensen.1985@gmail.com>
 Description: An implementation of the Bayesian version of the Mallows rank model (Vitelli et al., Journal of Machine Learning Research, 2018 <http://jmlr.org/papers/v18/15-481.html>). Both Cayley, footrule, Kendall, and Spearman distances are supported in the models. The rank data to be analyzed can be the form of complete rankings, top-k rankings, partially missing rankings, as well as consistent pairwise preferences. Several functions for plotting and studying the posterior distributions of parameters are provided. The package also provides functions for estimating the partition function (normalizing constant) of the Mallows rank model, both with the importance sampling algorithm of Vitelli et al. and asymptotic approximation with the IPFP algorithm (Mukherjee, Annals of Statistics, 2016 <doi:10.1214/15-AOS1389>).
@@ -18,7 +18,6 @@ Imports: Rcpp (>= 0.12.17),
   igraph (>= 1.2.2),
   dplyr (>= 0.7.6),
   sets (>= 1.0-18),
-  PerMallows (>= 1.13),
   relations (>= 0.6-8),
   tidyr (>= 0.8.1),
   purrr (>= 0.2.5),
@@ -31,6 +30,7 @@ Suggests:
     gtools (>= 3.8.1),
     knitr,
     rmarkdown,
+    PerMallows (>= 1.13),
     Rankcluster (>= 0.94),
     covr
 VignetteBuilder: knitr
