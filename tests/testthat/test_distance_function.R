@@ -68,3 +68,15 @@ test_that("Hamming distance is correct", {
     )
   }})
 
+
+# Loop over some n values
+test_that("Ulam distance is correct", {
+  for(n in c(2, 3, 5)){
+    expect_equal(
+      check_dist(n, fun = function(r1, r2) {
+        get_rank_distance(r1, r2, "ulam")
+      }),
+      check_dist(n, fun = function(r1, r2)
+        PerMallows::distance(r1, r2, "ulam"))
+    )
+  }})
