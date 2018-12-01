@@ -74,7 +74,11 @@ arma::vec get_summation_distances(int n, arma::vec cardinalities,
 //' @return A scalar.
 //' @details Note that the Spearman distance is the squared L2 norm, whereas
 //' the footrule distance is the L1 norm.
+//'
+//' The Ulam distance uses the SUBSET library developed by John Burkardt, available at http://people.sc.fsu.edu/~jburkardt/cpp_src/subset/subset.html.
+//'
 //' @keywords internal
+//'
 //'
 // [[Rcpp::export]]
 double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footrule"){
