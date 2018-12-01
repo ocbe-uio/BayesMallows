@@ -1,11 +1,28 @@
 #include "RcppArmadillo.h"
 #include <cmath>
 #include "misc.h"
+#include "subset.h"
 
 // via the depends attribute we tell Rcpp to create hooks for
 // RcppArmadillo so that the build process will know what to do
 //
 // [[Rcpp::depends(RcppArmadillo)]]
+
+double ulam_distance (int N, arma::ivec a, arma::ivec b){
+
+  int p1[N];
+  int p2[N];
+
+  int distance;
+
+  for(int i = 0; i < N; ++i){
+    p1[i] = static_cast<int>(arma::as_scalar(a(i)) - 1);
+    p2[i] = static_cast<int>(arma::as_scalar(b(i)) - 1);
+  }
+
+  distance = perm0_distance ( N, p1, p2 );
+  return static_cast<double>(distance);
+}
 
 
 //' Get the distances for computing the partition function given
@@ -52,12 +69,16 @@ arma::vec get_summation_distances(int n, arma::vec cardinalities,
 //' @param r1 A vector of ranks.
 //' @param r2 A vector of ranks.
 //' @param metric A string. Available options are \code{"footrule"},
-//' \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, and \code{"spearman"}.
+//' \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"spearman"}, and \code{"ulam"}.
 //' Defaults to \code{"footrule"}.
 //' @return A scalar.
 //' @details Note that the Spearman distance is the squared L2 norm, whereas
 //' the footrule distance is the L1 norm.
+//'
+//' The Ulam distance uses the SUBSET library developed by John Burkardt, available at http://people.sc.fsu.edu/~jburkardt/cpp_src/subset/subset.html.
+//'
 //' @keywords internal
+//'
 //'
 // [[Rcpp::export]]
 double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footrule"){
@@ -109,6 +130,12 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footr
 
     // Spearman distance is the sum of squares
     distance = std::pow(arma::norm(r1 - r2, 2), 2.0);
+
+  } else if (metric == "ulam") {
+
+    distance = ulam_distance(n,
+                             arma::conv_to<arma::ivec>::from(r1),
+                             arma::conv_to<arma::ivec>::from(r2));
 
   } else {
     Rcpp::stop("Inadmissible value of metric.");
