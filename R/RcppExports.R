@@ -20,7 +20,7 @@ get_summation_distances <- function(n, cardinalities, metric = "footrule") {
 #' @param r1 A vector of ranks.
 #' @param r2 A vector of ranks.
 #' @param metric A string. Available options are \code{"footrule"},
-#' \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, and \code{"spearman"}.
+#' \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"spearman"}, and \code{"ulam"}.
 #' Defaults to \code{"footrule"}.
 #' @return A scalar.
 #' @details Note that the Spearman distance is the squared L2 norm, whereas

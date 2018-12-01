@@ -4,6 +4,7 @@
 # include <ctime>
 # include <iomanip>
 # include <iostream>
+# include <Rcpp.h>
 
 using namespace std;
 
@@ -1133,10 +1134,7 @@ void change_next ( int total, int coin_num, int coin_value[], int &change_num,
     //
     if ( !i4vec_ascends ( coin_num, coin_value ) )
     {
-      cerr << "\n";
-      cerr << "CHANGE_NEXT - Fatal error!\n";
-      cerr << "  COIN_VALUE array is not in ascending order.\n";
-      exit ( 1 );
+      Rcpp::stop("Error");
     }
     //
     //  Start with the greedy change.
@@ -1330,10 +1328,7 @@ int chinese_to_i4 ( int n, int m[], int r[] )
 
   if ( error != 0 )
   {
-    cerr << "\n";
-    cerr << "CHINESE_TO_I4 - Fatal error!\n";
-    cerr << "  The moduluses are not legal.\n";
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   b = new int[n];
@@ -1940,10 +1935,7 @@ void comp_next_grlex ( int kc, int xc[] )
   //
   if ( kc < 1 )
   {
-    cerr << "\n";
-    cerr << "COMP_NEXT_GRLEX - Fatal error!\n";
-    cerr << "  KC < 1\n";
-    exit ( 1 );
+    Rcpp::stop("error");
   }
   //
   //  Ensure that 0 <= XC(I).
@@ -1952,10 +1944,7 @@ void comp_next_grlex ( int kc, int xc[] )
   {
     if ( xc[i] < 0 )
     {
-      cerr << "\n";
-      cerr << "COMP_NEXT_GRLEX - Fatal error!\n";
-      cerr << "  XC[I] < 0\n";
-      exit ( 1 );
+      Rcpp::stop("error");
     }
   }
   //
@@ -2115,30 +2104,24 @@ int *comp_random_grlex ( int kc, int rank1, int rank2, int &seed, int &rank )
   //
   if ( kc < 1 )
   {
-    cerr << "\n";
-    cerr << "COMP_RANDOM_GRLEX - Fatal error!\n";
-    cerr << "  KC < 1\n";
-    exit ( 1 );
+    Rcpp::stop("error");
   }
   //
   //  Ensure that 1 <= RANK1.
   //
   if ( rank1 < 1 )
   {
-    cerr << "\n";
-    cerr << "COMP_RANDOM_GRLEX - Fatal error!\n";
-    cerr << "  RANK1 < 1\n";
-    exit ( 1 );
+    Rcpp::stop("error");
   }
   //
   //  Ensure that RANK1 <= RANK2.
   //
   if ( rank2 < rank1 )
   {
-    cerr << "\n";
-    cerr << "COMP_RANDOM_GRLEX - Fatal error!\n";
-    cerr << "  RANK2 < RANK1\n";
-    exit ( 1 );
+    ////cerr << "\n";
+    ////cerr << "COMP_RANDOM_GRLEX - Fatal error!\n";
+    //cerr << "  RANK2 < RANK1\n";
+    Rcpp::stop("error");
   }
   //
   //  Choose RANK between RANK1 and RANK2.
@@ -2234,10 +2217,10 @@ int comp_rank_grlex ( int kc, int xc[] )
   //
   if ( kc < 1 )
   {
-    cerr << "\n";
-    cerr << "COMP_RANK_GRLEX - Fatal error!\n";
-    cerr << "  KC < 1\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "COMP_RANK_GRLEX - Fatal error!\n";
+    //cerr << "  KC < 1\n";
+    Rcpp::stop("error");
   }
   //
   //  Ensure that 0 <= XC(I).
@@ -2246,10 +2229,10 @@ int comp_rank_grlex ( int kc, int xc[] )
   {
     if ( xc[i] < 0 )
     {
-      cerr << "\n";
-      cerr << "COMP_RANK_GRLEX - Fatal error!\n";
-      cerr << "  XC[I] < 0\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "COMP_RANK_GRLEX - Fatal error!\n";
+      //cerr << "  XC[I] < 0\n";
+      Rcpp::stop("error");
     }
   }
   //
@@ -2415,20 +2398,20 @@ int *comp_unrank_grlex ( int kc, int rank )
   //
   if ( kc < 1 )
   {
-    cerr << "\n";
-    cerr << "COMP_UNRANK_GRLEX - Fatal error!\n";
-    cerr << "  KC < 1\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "COMP_UNRANK_GRLEX - Fatal error!\n";
+    //cerr << "  KC < 1\n";
+    Rcpp::stop("error");
   }
   //
   //  Ensure that 1 <= RANK.
   //
   if ( rank < 1 )
   {
-    cerr << "\n";
-    cerr << "COMP_UNRANK_GRLEX - Fatal error!\n";
-    cerr << "  RANK < 1\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "COMP_UNRANK_GRLEX - Fatal error!\n";
+    //cerr << "  RANK < 1\n";
+    Rcpp::stop("error");
   }
   //
   //  Determine the appropriate value of NC.
@@ -3027,10 +3010,10 @@ int congruence ( int a, int b, int c, bool &error )
     if ( N_MAX < n )
     {
       error = true;
-      cerr << "\n";
-      cerr << "CONGRUENCE - Fatal error!\n";
-      cerr << "  Exceeded number of iterations.\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "CONGRUENCE - Fatal error!\n";
+      //cerr << "  Exceeded number of iterations.\n";
+      Rcpp::stop("error");
     }
   }
   //
@@ -4214,14 +4197,14 @@ void decmat_print ( int m, int n, int a[], int b[], string title )
 
     if ( 0 < title.length ( ) )
     {
-      cout << "\n";
-      cout << title << "\n";
+      Rcpp::Rcout << "\n";
+      Rcpp::Rcout << title << "\n";
     }
 
     if ( 0 < jmin || jmax < n-1 )
     {
-      cout << "Columns " << jmin << " to " << jmax << "\n";
-      cout << "\n";
+      Rcpp::Rcout << "Columns " << jmin << " to " << jmax << "\n";
+      Rcpp::Rcout << "\n";
     }
 
     for ( i = 0; i < m; i++ )
@@ -4231,9 +4214,9 @@ void decmat_print ( int m, int n, int a[], int b[], string title )
         mantissa = a[i+j*m];
         exponent = b[i+j*m];
         s = dec_to_s ( mantissa, exponent );
-        cout << setw(kmax) << s << "  ";
+        Rcpp::Rcout << setw(kmax) << s << "  ";
       }
-      cout << "\n";
+      Rcpp::Rcout << "\n";
     }
   }
 
@@ -5270,13 +5253,13 @@ void digraph_arc_print ( int nedge, int inode[], int jnode[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
   for ( i = 0; i < nedge; i++ )
   {
-    cout << setw(6) << i+1 << "  "
+    Rcpp::Rcout << setw(6) << i+1 << "  "
          << setw(6) << inode[i] << "  "
          << setw(6) << jnode[i] << "\n";
   }
@@ -5486,10 +5469,10 @@ void diophantine ( int a, int b, int c, bool &error, int &x, int &y )
     if ( N_MAX < n )
     {
       error = true;
-      cerr << "\n";
-      cerr << "DIOPHANTINE - Fatal error!\n";
-      cerr << "  Exceeded number of iterations.\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "DIOPHANTINE - Fatal error!\n";
+      //cerr << "  Exceeded number of iterations.\n";
+      Rcpp::stop("error");
     }
   }
   //
@@ -5978,24 +5961,24 @@ void dvec_print ( int n, int dvec[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
-    cout << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
+    Rcpp::Rcout << "\n";
   }
 
   if ( dvec[n-1] == 9 )
   {
-    cout << "-";
+    Rcpp::Rcout << "-";
   }
   else
   {
-    cout << "+";
+    Rcpp::Rcout << "+";
   }
   for ( i = n - 2; 0 <= i; i-- )
   {
-    cout << dvec[i];
+    Rcpp::Rcout << dvec[i];
   }
-  cout << "\n";
+  Rcpp::Rcout << "\n";
 
   return;
 }
@@ -6375,11 +6358,11 @@ void equiv_print ( int n, int iarray[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
-  cout << "  Set    Size  Elements\n";
+  Rcpp::Rcout << "  Set    Size  Elements\n";
 
   karray = new int[n];
 
@@ -6406,9 +6389,9 @@ void equiv_print ( int n, int iarray[], string title )
                            << setw(4) << k << " :: ";
       for ( kk = 0; kk < k; kk++ )
       {
-        cout << setw(4) << karray[kk] << "  ";
+        Rcpp::Rcout << setw(4) << karray[kk] << "  ";
       }
-      cout << "\n";
+      Rcpp::Rcout << "\n";
     }
   }
 
@@ -6478,17 +6461,17 @@ void equiv_print2 ( int n, int s[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
   s_min = i4vec_min ( n, s );
   s_max = i4vec_max ( n, s );
 
-  cout << "  ";
+  Rcpp::Rcout << "  ";
   for ( j = s_min; j <= s_max; j++ )
   {
-    cout << "(";
+    Rcpp::Rcout << "(";
     size = 0;
     for ( i = 0; i < n; i++ )
     {
@@ -6496,15 +6479,15 @@ void equiv_print2 ( int n, int s[], string title )
       {
         if ( 0 < size )
         {
-          cout << ",";
+          Rcpp::Rcout << ",";
         }
-        cout << i;
+        Rcpp::Rcout << i;
         size = size + 1;
       }
     }
-    cout << ")";
+    Rcpp::Rcout << ")";
   }
-  cout << "\n";
+  Rcpp::Rcout << "\n";
 
   return;
 }
@@ -7200,10 +7183,10 @@ void gray_next ( int n, int &change, int &k, int a[] )
 
   if ( n <= 0 )
   {
-    cerr << "\n";
-    cerr << "GRAY_NEXT - Fatal error!\n";
-    cerr << "  Input value of N <= 0.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "GRAY_NEXT - Fatal error!\n";
+    //cerr << "  Input value of N <= 0.\n";
+    Rcpp::stop("error");
   }
 
   if ( change == -n )
@@ -7457,10 +7440,10 @@ int gray_rank2 ( int gray )
 
   if ( gray < 0 )
   {
-    cerr << "\n";
-    cerr << "GRAY_RANK2 - Fatal error!\n";
-    cerr << "  Input value of GRAY < 0.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "GRAY_RANK2 - Fatal error!\n";
+    //cerr << "  Input value of GRAY < 0.\n";
+    Rcpp::stop("error");
   }
 
   if ( gray == 0 )
@@ -7913,10 +7896,10 @@ bool i4_btest ( int i4, int pos )
 
   if ( pos < 0 )
   {
-    cerr << "\n";
-    cerr << "I4_BTEST - Fatal error!\n";
-    cerr << "  POS < 0.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "I4_BTEST - Fatal error!\n";
+    //cerr << "  POS < 0.\n";
+    Rcpp::stop("error");
   }
   else if ( pos < 31 )
   {
@@ -7956,10 +7939,10 @@ bool i4_btest ( int i4, int pos )
   }
   else if ( 31 < pos )
   {
-    cerr << "\n";
-    cerr << "I4_BTEST - Fatal error!\n";
-    cerr << "  31 < POS.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "I4_BTEST - Fatal error!\n";
+    //cerr << "  31 < POS.\n";
+    Rcpp::stop("error");
   } else {
     exit(1);
   }
@@ -8206,11 +8189,11 @@ int i4_factorial ( int n )
   if ( 13 < n )
   {
     value = - 1;
-    cerr << "I4_FACTORIAL - Fatal error!\n";
-    cerr << "  I4_FACTORIAL(N) cannot be computed as an integer\n";
-    cerr << "  for 13 < N.\n";
-    cerr << "  Input value N = " << n << "\n";
-    exit ( 1 );
+    //cerr << "I4_FACTORIAL - Fatal error!\n";
+    //cerr << "  I4_FACTORIAL(N) cannot be computed as an integer\n";
+    //cerr << "  for 13 < N.\n";
+    //cerr << "  Input value N = " << n << "\n";
+    Rcpp::stop("error");
   }
 
   for ( i = 1; i <= n; i++ )
@@ -8725,10 +8708,10 @@ int i4_modp ( int i, int j )
 
   if ( j == 0 )
   {
-    cerr << "\n";
-    cerr << "I4_MODP - Fatal error!\n";
-    cerr << "  I4_MODP ( I, J ) called with J = " << j << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "I4_MODP - Fatal error!\n";
+    //cerr << "  I4_MODP ( I, J ) called with J = " << j << "\n";
+    Rcpp::stop("error");
   }
 
   value = i % j;
@@ -8840,11 +8823,11 @@ int i4_moebius ( int n )
 
   if ( nleft != 1 )
   {
-    cerr << "\n";
-    cerr << "I4_MOEBIUS - Fatal error!\n";
-    cerr << "  Not enough factorization space.\n";
+    //cerr << "\n";
+    //cerr << "I4_MOEBIUS - Fatal error!\n";
+    //cerr << "  Not enough factorization space.\n";
     mu = -3;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   mu = 1;
@@ -9417,11 +9400,11 @@ void i4_partition_next ( bool &done, int a[], int mult[], int n, int &npart )
 
   if ( n <= 0 )
   {
-    cerr << "\n";
-    cerr << "I4_PARTITION_NEXT - Fatal error!\n";
-    cerr << "  N must be positive.\n";
-    cerr << "  The input value of N was " << n << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "I4_PARTITION_NEXT - Fatal error!\n";
+    //cerr << "  N must be positive.\n";
+    //cerr << "  The input value of N was " << n << "\n";
+    Rcpp::stop("error");
   }
 
   if ( done )
@@ -9647,17 +9630,17 @@ void i4_partition_print ( int n, int npart, int a[], int mult[] )
 {
   int i;
 
-  cout << "  " << n << " = ";
+  Rcpp::Rcout << "  " << n << " = ";
 
   for ( i = 0; i < npart; i++ )
   {
     if ( 0 < i )
     {
-      cout << " + ";
+      Rcpp::Rcout << " + ";
     }
-    cout << mult[i] << " * " << a[i];
+    Rcpp::Rcout << mult[i] << " * " << a[i];
   }
-  cout << "\n";
+  Rcpp::Rcout << "\n";
 
   return;
 }
@@ -9957,10 +9940,10 @@ int i4_power ( int i, int j )
     }
     else if ( i == 0 )
     {
-      cerr << "\n";
-      cerr << "I4_POWER - Fatal error!\n";
-      cerr << "  I^J requested, with I = 0 and J negative.\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "I4_POWER - Fatal error!\n";
+      //cerr << "  I^J requested, with I = 0 and J negative.\n";
+      Rcpp::stop("error");
     }
     else
     {
@@ -9971,10 +9954,10 @@ int i4_power ( int i, int j )
   {
     if ( i == 0 )
     {
-      cerr << "\n";
-      cerr << "I4_POWER - Fatal error!\n";
-      cerr << "  I^J requested, with I = 0 and J = 0.\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "I4_POWER - Fatal error!\n";
+      //cerr << "  I^J requested, with I = 0 and J = 0.\n";
+      Rcpp::stop("error");
     }
     else
     {
@@ -10471,10 +10454,10 @@ void i4_to_chinese ( int j, int n, int m[], int r[] )
 
   if ( error != 0 )
   {
-    cerr << "\n";
-    cerr << "I4_TO_CHINESE - Fatal error!\n";
-    cerr << "  The moduluses are not legal.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "I4_TO_CHINESE - Fatal error!\n";
+    //cerr << "  The moduluses are not legal.\n";
+    Rcpp::stop("error");
   }
 
   for ( i = 0; i < n; i++ )
@@ -10854,20 +10837,20 @@ double i4_to_van_der_corput ( int seed, int base )
 
   if ( base <= 1 )
   {
-    cerr << "\n";
-    cerr << "I4_TO_VAN_DER_CORPUT - Fatal error!\n";
-    cerr << "  The input base BASE is <= 1!\n";
-    cerr << "  BASE = " << base << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "I4_TO_VAN_DER_CORPUT - Fatal error!\n";
+    //cerr << "  The input base BASE is <= 1!\n";
+    //cerr << "  BASE = " << base << "\n";
+    Rcpp::stop("error");
   }
 
   if ( seed < 0 )
   {
-    cerr << "\n";
-    cerr << "I4_TO_VAN_DER_CORPUT - Fatal error!\n";
-    cerr << "  SEED < 0.";
-    cerr << "  SEED = " << seed << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "I4_TO_VAN_DER_CORPUT - Fatal error!\n";
+    //cerr << "  SEED < 0.";
+    //cerr << "  SEED = " << seed << "\n";
+    Rcpp::stop("error");
   }
 
   r = 0.0;
@@ -10958,10 +10941,10 @@ int i4_uniform_ab ( int a, int b, int &seed )
 
   if ( seed == 0 )
   {
-    cerr << "\n";
-    cerr << "I4_UNIFORM_AB - Fatal error!\n";
-    cerr << "  Input value of SEED = 0.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "I4_UNIFORM_AB - Fatal error!\n";
+    //cerr << "  Input value of SEED = 0.\n";
+    Rcpp::stop("error");
   }
   //
   //  Guarantee A <= B.
@@ -11125,20 +11108,20 @@ void i4mat_01_rowcolsum ( int m, int n, int r[], int c[], int a[], bool &error )
 
   if ( i4vec_sum ( m, r ) != i4vec_sum ( n, c ) )
   {
-    cerr << "\n";
-    cerr << "I4MAT_01_ROWCOLSUM - Fatal error!\n";
-    cerr << "  Row sums R and column sums C don't have the same sum!\n";
+    //cerr << "\n";
+    //cerr << "I4MAT_01_ROWCOLSUM - Fatal error!\n";
+    //cerr << "  Row sums R and column sums C don't have the same sum!\n";
     error = true;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   if ( !i4vec_descends ( m, r ) )
   {
-    cerr << "\n";
-    cerr << "I4MAT_01_ROWCOLSUM - Fatal error!\n";
-    cerr << "  Row sum vector R is not descending!\n";
+    //cerr << "\n";
+    //cerr << "I4MAT_01_ROWCOLSUM - Fatal error!\n";
+    //cerr << "  Row sum vector R is not descending!\n";
     error = true;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   if ( n < r[0] || r[m-1] < 0 )
@@ -11149,11 +11132,11 @@ void i4mat_01_rowcolsum ( int m, int n, int r[], int c[], int a[], bool &error )
 
   if ( !i4vec_descends ( n, c ) )
   {
-    cerr << "\n";
-    cerr << "I4MAT_01_ROWCOLSUM - Fatal error!\n";
-    cerr << "  Column sum vector C is not descending!\n";
+    //cerr << "\n";
+    //cerr << "I4MAT_01_ROWCOLSUM - Fatal error!\n";
+    //cerr << "  Column sum vector C is not descending!\n";
     error = true;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   if ( m < c[0] || c[n-1] < 0 )
@@ -11887,8 +11870,8 @@ void i4mat_print_some ( int m, int n, int a[], int ilo, int jlo, int ihi,
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
   //
   //  Print the columns of the matrix, in strips of INCX.
@@ -11899,20 +11882,20 @@ void i4mat_print_some ( int m, int n, int a[], int ilo, int jlo, int ihi,
     j2hi = i4_min ( j2hi, n );
     j2hi = i4_min ( j2hi, jhi );
 
-    cout << "\n";
+    Rcpp::Rcout << "\n";
     //
     //  For each column J in the current range...
     //
     //  Write the header.
     //
-    cout << "  Col:    ";
+    Rcpp::Rcout << "  Col:    ";
     for ( j = j2lo; j <= j2hi; j++ )
     {
-      cout << setw(7) << j << "       ";
+      Rcpp::Rcout << setw(7) << j << "       ";
     }
-    cout << "\n";
-    cout << "  Row\n";
-    cout << "  ---\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << "  Row\n";
+    Rcpp::Rcout << "  ---\n";
     //
     //  Determine the range of the rows in this strip.
     //
@@ -11924,12 +11907,12 @@ void i4mat_print_some ( int m, int n, int a[], int ilo, int jlo, int ihi,
       //
       //  Print out (up to INCX) entries in row I, that lie in the current strip.
       //
-      cout << setw(5) << i << "  ";
+      Rcpp::Rcout << setw(5) << i << "  ";
       for ( j = j2lo; j <= j2hi; j++ )
       {
-        cout << setw(6) << a[i-1+(j-1)*m] << "  ";
+        Rcpp::Rcout << setw(6) << a[i-1+(j-1)*m] << "  ";
       }
-      cout << "\n";
+      Rcpp::Rcout << "\n";
     }
   }
 
@@ -12356,10 +12339,10 @@ void i4poly_cyclo ( int n, int phi[] )
       {
         if ( POLY_MAX < num_n + d )
         {
-          cerr << "\n";
-          cerr << "I4POLY_CYCLO - Fatal error!\n";
-          cerr << "  Numerator polynomial degree too high.\n";
-          exit ( 1 );
+          //cerr << "\n";
+          //cerr << "I4POLY_CYCLO - Fatal error!\n";
+          //cerr << "  Numerator polynomial degree too high.\n";
+          Rcpp::stop("error");
         }
 
         i4poly_mul ( num_n, num, d, factor, num );
@@ -12370,10 +12353,10 @@ void i4poly_cyclo ( int n, int phi[] )
       {
         if ( POLY_MAX < den_n + d )
         {
-          cerr << "\n";
-          cerr << "I4POLY_CYCLO - Fatal error!\n";
-          cerr << "  Denominator polynomial degree too high.\n";
-          exit ( 1 );
+          //cerr << "\n";
+          //cerr << "I4POLY_CYCLO - Fatal error!\n";
+          //cerr << "  Denominator polynomial degree too high.\n";
+          Rcpp::stop("error");
         }
 
         i4poly_mul ( den_n, den, d, factor, den );
@@ -12732,8 +12715,8 @@ void i4poly_print ( int n, int a[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
   n2 = i4poly_degree ( n, a );
@@ -12751,15 +12734,15 @@ void i4poly_print ( int n, int a[], string title )
 
   if ( 2 <= n2 )
   {
-    cout << "p(x) = " << plus_minus << mag << " * x^" << n2 << "\n";
+    Rcpp::Rcout << "p(x) = " << plus_minus << mag << " * x^" << n2 << "\n";
   }
   else if ( n2 == 1 )
   {
-    cout << "p(x) = " << plus_minus << mag << " * x" << "\n";
+    Rcpp::Rcout << "p(x) = " << plus_minus << mag << " * x" << "\n";
   }
   else if ( n2 == 0 )
   {
-    cout << "p(x) = " << plus_minus << mag << "\n";
+    Rcpp::Rcout << "p(x) = " << plus_minus << mag << "\n";
   }
 
   for ( i = n2-1; 0 <= i; i-- )
@@ -12779,15 +12762,15 @@ void i4poly_print ( int n, int a[], string title )
     {
       if ( 2 <= i )
       {
-        cout << "       " << plus_minus << mag << " * x^" << i << "\n";
+        Rcpp::Rcout << "       " << plus_minus << mag << " * x^" << i << "\n";
       }
       else if ( i == 1 )
       {
-        cout << "       " << plus_minus << mag << " * x" << "\n";
+        Rcpp::Rcout << "       " << plus_minus << mag << " * x" << "\n";
       }
       else if ( i == 0 )
       {
-        cout << "       " << plus_minus << mag << "\n";
+        Rcpp::Rcout << "       " << plus_minus << mag << "\n";
       }
     }
   }
@@ -13266,26 +13249,26 @@ int i4vec_frac ( int n, int a[], int k )
 
   if ( n <= 0 )
   {
-    cerr << "\n";
-    cerr << "I4VEC_FRAC - Fatal error!\n";
-    cerr << "  Illegal nonpositive value of N = " << n << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "I4VEC_FRAC - Fatal error!\n";
+    //cerr << "  Illegal nonpositive value of N = " << n << "\n";
+    Rcpp::stop("error");
   }
 
   if ( k <= 0 )
   {
-    cerr << "\n";
-    cerr << "I4VEC_FRAC - Fatal error!\n";
-    cerr << "  Illegal nonpositive value of K = " << k << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "I4VEC_FRAC - Fatal error!\n";
+    //cerr << "  Illegal nonpositive value of K = " << k << "\n";
+    Rcpp::stop("error");
   }
 
   if ( n < k )
   {
-    cerr << "\n";
-    cerr << "I4VEC_FRAC - Fatal error!\n";
-    cerr << "  Illegal N < K, K = " << k << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "I4VEC_FRAC - Fatal error!\n";
+    //cerr << "  Illegal N < K, K = " << k << "\n";
+    Rcpp::stop("error");
   }
 
   left = 1;
@@ -13946,13 +13929,13 @@ void i4vec_print ( int n, int a[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
   for ( i = 0; i < n; i++ )
   {
-    cout << "  " << setw(8) << i
+    Rcpp::Rcout << "  " << setw(8) << i
          << ": " << setw(8) << a[i]  << "\n";
   }
   return;
@@ -14519,8 +14502,8 @@ void i4vec_transpose_print ( int n, int a[], string title )
 
   if ( 0 < title_len )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
   if ( 0 < n )
@@ -14534,14 +14517,14 @@ void i4vec_transpose_print ( int n, int a[], string title )
       }
       for ( i = ilo; i <= ihi; i++ )
       {
-        cout << setw(12) << a[i-1];
+        Rcpp::Rcout << setw(12) << a[i-1];
       }
-      cout << "\n";
+      Rcpp::Rcout << "\n";
     }
   }
   else
   {
-    cout << "  (empty vector)\n";
+    Rcpp::Rcout << "  (empty vector)\n";
   }
 
   return;
@@ -14626,10 +14609,10 @@ int *i4vec_uniform_ab_new ( int n, int a, int b, int &seed )
 
   if ( seed == 0 )
   {
-    cerr << "\n";
-    cerr << "I4VEC_UNIFORM_AB_NEW - Fatal error!\n";
-    cerr << "  Input value of SEED = 0.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "I4VEC_UNIFORM_AB_NEW - Fatal error!\n";
+    //cerr << "  Input value of SEED = 0.\n";
+    Rcpp::stop("error");
   }
   //
   //  Guarantee A <= B.
@@ -14716,13 +14699,13 @@ void i4vec0_print ( int n, int a[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
   for ( i = 0; i <= n-1; i++ )
   {
-    cout << setw(6) << i    << "  "
+    Rcpp::Rcout << setw(6) << i    << "  "
          << setw(8) << a[i] << "\n";
   }
 
@@ -14763,8 +14746,8 @@ void i4vec1_print ( int n, int a[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
   for ( i = 0; i <= n-1; i++ )
@@ -15244,11 +15227,11 @@ void index_next0 ( int n, int hi, int a[], bool &more )
     if ( hi < 1 )
     {
       more = false;
-      cerr << "\n";
-      cerr << "INDEX_NEXT0 - Fatal error!\n";
-      cerr << "  HI is " << hi << "\n";
-      cerr << "  but HI must be at least 1.\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "INDEX_NEXT0 - Fatal error!\n";
+      //cerr << "  HI is " << hi << "\n";
+      //cerr << "  but HI must be at least 1.\n";
+      Rcpp::stop("error");
     }
   }
   else
@@ -15374,11 +15357,11 @@ void index_next1 ( int n, int hi[], int a[], bool &more )
       if ( hi[i] < 1 )
       {
         more = false;
-        cerr << "\n";
-        cerr << "INDEX_NEXT1 - Fatal error!\n";
-        cerr << "  Entry " << i << " of HI is " << hi[i] << "\n";
-        cerr << "  but all entries must be at least 1.\n";
-        exit ( 1 );
+        //cerr << "\n";
+        //cerr << "INDEX_NEXT1 - Fatal error!\n";
+        //cerr << "  Entry " << i << " of HI is " << hi[i] << "\n";
+        //cerr << "  but all entries must be at least 1.\n";
+        Rcpp::stop("error");
       }
     }
   }
@@ -15490,12 +15473,12 @@ void index_next2 ( int n, int lo[], int hi[], int a[], bool &more )
       if ( hi[i] < lo[i] )
       {
         more = false;
-        cerr << "\n";
-        cerr << "INDEX_NEXT2 - Fatal error!\n";
-        cerr << "  Entry " << i << " of HI is " << hi[i] << "\n";
-        cerr << "  Entry " << i << " of LO is " << lo[i] << "\n";
-        cerr << "  but LO(I) <= HI(I) is required.\n";
-        exit ( 1 );
+        //cerr << "\n";
+        //cerr << "INDEX_NEXT2 - Fatal error!\n";
+        //cerr << "  Entry " << i << " of HI is " << hi[i] << "\n";
+        //cerr << "  Entry " << i << " of LO is " << lo[i] << "\n";
+        //cerr << "  but LO(I) <= HI(I) is required.\n";
+        Rcpp::stop("error");
       }
     }
   }
@@ -16468,26 +16451,26 @@ int josephus ( int n, int m, int k )
 
   if ( n <= 0 )
   {
-    cerr << "\n";
-    cerr << "JOSEPHUS - Fatal error!\n";
-    cerr << "  N <= 0.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "JOSEPHUS - Fatal error!\n";
+    //cerr << "  N <= 0.\n";
+    Rcpp::stop("error");
   }
 
   if ( m == 0 )
   {
-    cerr << "\n";
-    cerr << "JOSEPHUS - Fatal error!\n";
-    cerr << "  M = 0.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "JOSEPHUS - Fatal error!\n";
+    //cerr << "  M = 0.\n";
+    Rcpp::stop("error");
   }
 
   if ( k <= 0 || n < k )
   {
-    cerr << "\n";
-    cerr << "JOSEPHUS - Fatal error!\n";
-    cerr << "  J <= 0 or N < K.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "JOSEPHUS - Fatal error!\n";
+    //cerr << "  J <= 0 or N < K.\n";
+    Rcpp::stop("error");
   }
   //
   //  In case M is bigger than N, or negative, get the
@@ -16565,21 +16548,21 @@ void ksub_next ( int n, int k, int a[], bool &more, int &m, int &m2 )
 
   if ( k < 0 )
   {
-    cerr << "\n";
-    cerr << "KSUB_NEXT - Fatal error!\n";
-    cerr << "  K = " << k << "\n";
-    cerr << "  but 0 <= K is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_NEXT - Fatal error!\n";
+    //cerr << "  K = " << k << "\n";
+    //cerr << "  but 0 <= K is required!\n";
+    Rcpp::stop("error");
   }
 
   if ( n < k )
   {
-    cerr << "\n";
-    cerr << "KSUB_NEXT - Fatal error!\n";
-    cerr << "  N = " << n << "\n";
-    cerr << "  K = " << k << "\n";
-    cerr << "  but K <= N is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_NEXT - Fatal error!\n";
+    //cerr << "  N = " << n << "\n";
+    //cerr << "  K = " << k << "\n";
+    //cerr << "  but K <= N is required!\n";
+    Rcpp::stop("error");
   }
 
   if ( !more )
@@ -16671,30 +16654,30 @@ void ksub_next2 ( int n, int k, int a[], int &in, int &iout )
 
   if ( n <= 0 )
   {
-    cerr << "\n";
-    cerr << "KSUB_NEXT2 - Fatal error!\n";
-    cerr << "  N = " << n << "\n";
-    cerr << "  but 0 < N is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_NEXT2 - Fatal error!\n";
+    //cerr << "  N = " << n << "\n";
+    //cerr << "  but 0 < N is required!\n";
+    Rcpp::stop("error");
   }
 
   if ( k < 0 )
   {
-    cerr << "\n";
-    cerr << "KSUB_NEXT2 - Fatal error!\n";
-    cerr << "  K = " << k << "\n";
-    cerr << "  but 0 <= K is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_NEXT2 - Fatal error!\n";
+    //cerr << "  K = " << k << "\n";
+    //cerr << "  but 0 <= K is required!\n";
+    Rcpp::stop("error");
   }
 
   if ( n < k )
   {
-    cerr << "\n";
-    cerr << "KSUB_NEXT2 - Fatal error!\n";
-    cerr << "  N = " << n << "\n";
-    cerr << "  K = " << k << "\n";
-    cerr << "  but K <= N is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_NEXT2 - Fatal error!\n";
+    //cerr << "  N = " << n << "\n";
+    //cerr << "  K = " << k << "\n";
+    //cerr << "  but K <= N is required!\n";
+    Rcpp::stop("error");
   }
 
   j = 0;
@@ -16824,30 +16807,30 @@ void ksub_next3 ( int n, int k, int a[], bool &more, int &in, int &iout )
 
   if ( n <= 0 )
   {
-    cerr << "\n";
-    cerr << "KSUB_NEXT3 - Fatal error!\n";
-    cerr << "  N = " << n << "\n";
-    cerr << "  but 0 < N is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_NEXT3 - Fatal error!\n";
+    //cerr << "  N = " << n << "\n";
+    //cerr << "  but 0 < N is required!\n";
+    Rcpp::stop("error");
   }
 
   if ( k < 0 )
   {
-    cerr << "\n";
-    cerr << "KSUB_NEXT3 - Fatal error!\n";
-    cerr << "  K = " << k << "\n";
-    cerr << "  but 0 <= K is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_NEXT3 - Fatal error!\n";
+    //cerr << "  K = " << k << "\n";
+    //cerr << "  but 0 <= K is required!\n";
+    Rcpp::stop("error");
   }
 
   if ( n < k )
   {
-    cerr << "\n";
-    cerr << "KSUB_NEXT3 - Fatal error!\n";
-    cerr << "  N = " << n << "\n";
-    cerr << "  K = " << k << "\n";
-    cerr << "  but K <= N is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_NEXT3 - Fatal error!\n";
+    //cerr << "  N = " << n << "\n";
+    //cerr << "  K = " << k << "\n";
+    //cerr << "  but K <= N is required!\n";
+    Rcpp::stop("error");
   }
 
   if ( !more )
@@ -16998,21 +16981,21 @@ void ksub_next4 ( int n, int k, int a[], bool &done )
 
   if ( k < 0 )
   {
-    cerr << "\n";
-    cerr << "KSUB_NEXT4 - Fatal error!\n";
-    cerr << "  K = " << k << "\n";
-    cerr << "  but 0 <= K is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_NEXT4 - Fatal error!\n";
+    //cerr << "  K = " << k << "\n";
+    //cerr << "  but 0 <= K is required!\n";
+    Rcpp::stop("error");
   }
 
   if ( n < k )
   {
-    cerr << "\n";
-    cerr << "KSUB_NEXT4 - Fatal error!\n";
-    cerr << "  N = " << n << "\n";
-    cerr << "  K = " << k << "\n";
-    cerr << "  but K <= N is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_NEXT4 - Fatal error!\n";
+    //cerr << "  N = " << n << "\n";
+    //cerr << "  K = " << k << "\n";
+    //cerr << "  but K <= N is required!\n";
+    Rcpp::stop("error");
   }
 
   //
@@ -17114,20 +17097,20 @@ void ksub_random ( int n, int k, int &seed, int a[] )
 
   if ( k < 0 )
   {
-    cerr << "\n";
-    cerr << "KSUB_RANDOM - Fatal error!\n";
-    cerr << "  K = " << k << "\n";
-    cerr << "  but 0 <= K is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_RANDOM - Fatal error!\n";
+    //cerr << "  K = " << k << "\n";
+    //cerr << "  but 0 <= K is required!\n";
+    Rcpp::stop("error");
   }
   else if ( n < k )
   {
-    cerr << "\n";
-    cerr << "KSUB_RANDOM - Fatal error!\n";
-    cerr << "  N = " << n << "\n";
-    cerr << "  K = " << k << "\n";
-    cerr << "  K <= N is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_RANDOM - Fatal error!\n";
+    //cerr << "  N = " << n << "\n";
+    //cerr << "  K = " << k << "\n";
+    //cerr << "  K <= N is required!\n";
+    Rcpp::stop("error");
   }
 
   if ( k == 0 )
@@ -17286,12 +17269,12 @@ void ksub_random2 ( int n, int k, int &seed, int a[] )
 
   if ( k < 0 || n < k )
   {
-    cerr << "\n";
-    cerr << "KSUB_RANDOM2 - Fatal error!\n";
-    cerr << "  N = " << n << "\n";
-    cerr << "  K = " << k << "\n";
-    cerr << "  but 0 <= K <= N is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_RANDOM2 - Fatal error!\n";
+    //cerr << "  N = " << n << "\n";
+    //cerr << "  K = " << k << "\n";
+    //cerr << "  but 0 <= K <= N is required!\n";
+    Rcpp::stop("error");
   }
 
   if ( k == 0 )
@@ -17379,12 +17362,12 @@ void ksub_random3 ( int n, int k, int &seed, int a[] )
 
   if ( k < 0 || n < k )
   {
-    cerr << "\n";
-    cerr << "KSUB_RANDOM3 - Fatal error!\n";
-    cerr << "  N = " << n << "\n";
-    cerr << "  K = " << k << "\n";
-    cerr << "  but 0 <= K <= N is required!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "KSUB_RANDOM3 - Fatal error!\n";
+    //cerr << "  N = " << n << "\n";
+    //cerr << "  K = " << k << "\n";
+    //cerr << "  but 0 <= K <= N is required!\n";
+    Rcpp::stop("error");
   }
 
   for ( i = 0; i < n; i++ )
@@ -18725,11 +18708,11 @@ int multinomial_coef1 ( int nfactor, int factor[] )
   {
     if ( factor[i] < 0 )
     {
-      cerr << "\n";
-      cerr << "MULTINOMIAL_COEF1 - Fatal error\n";
-      cerr << "  Factor " << i << " = " << factor[i] << "\n";
-      cerr << "  But this value must be nonnegative.\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "MULTINOMIAL_COEF1 - Fatal error\n";
+      //cerr << "  Factor " << i << " = " << factor[i] << "\n";
+      //cerr << "  But this value must be nonnegative.\n";
+      Rcpp::stop("error");
     }
   }
   //
@@ -18807,11 +18790,11 @@ int multinomial_coef2 ( int nfactor, int factor[] )
   {
     if ( factor[i] < 0 )
     {
-      cerr << "\n";
-      cerr << "MULTINOMIAL_COEF2 - Fatal error!\n";
-      cerr << "  Factor " << i << " = " << factor[i] << "\n";
-      cerr << "  But this value must be nonnegative.\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "MULTINOMIAL_COEF2 - Fatal error!\n";
+      //cerr << "  Factor " << i << " = " << factor[i] << "\n";
+      //cerr << "  But this value must be nonnegative.\n";
+      Rcpp::stop("error");
     }
   }
 
@@ -19364,24 +19347,24 @@ void pell_basic ( int d, int &x0, int &y0 )
   //
   if ( d <= 0 )
   {
-    cerr << "\n";
-    cerr << "PELL_BASIC - Fatal error!\n";
-    cerr << "  Pell coefficient D <= 0.\n";
+    //cerr << "\n";
+    //cerr << "PELL_BASIC - Fatal error!\n";
+    //cerr << "  Pell coefficient D <= 0.\n";
     x0 = 0;
     y0 = 0;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   i4_sqrt ( d, q, r );
 
   if ( r == 0 )
   {
-    cerr << "\n";
-    cerr << "PELL_BASIC - Fatal error!\n";
-    cerr << "  Pell coefficient is a perfect square.\n";
+    //cerr << "\n";
+    //cerr << "PELL_BASIC - Fatal error!\n";
+    //cerr << "  Pell coefficient is a perfect square.\n";
     x0 = 0;
     y0 = 0;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
   //
   //  Find the continued fraction representation of sqrt ( D ).
@@ -19807,10 +19790,10 @@ int perm0_break_count ( int n, int p[] )
   //
   if ( !perm0_check ( n, p ) )
   {
-    cerr << "\n";
-    cerr << "PERM0_BREAK_COUNT - Fatal error!\n";
-    cerr << "  PERM0_CHECK rejects permutation.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_BREAK_COUNT - Fatal error!\n";
+    //cerr << "  PERM0_CHECK rejects permutation.\n";
+    Rcpp::stop("error");
   }
 
   if ( p[0] != 0 )
@@ -19892,9 +19875,9 @@ bool perm0_check ( int n, int p[] )
 
     if ( ! check )
     {
-      cout << "\n";
-      cout << "PERM0_CHECK - Warning!\n";
-      cout << "  Permutation is missing value " << value << "\n";
+      Rcpp::Rcout << "\n";
+      Rcpp::Rcout << "PERM0_CHECK - Warning!\n";
+      Rcpp::Rcout << "  Permutation is missing value " << value << "\n";
       break;
     }
 
@@ -19987,10 +19970,10 @@ void perm0_cycle ( int n, int p[], int &isgn, int &ncycle, int iopt )
 
   if ( !perm0_check ( n, p ) )
   {
-    cerr << "\n";
-    cerr << "PERM0_CYCLE - Fatal error!\n";
-    cerr << "  PERM0_CHECK rejects permutation.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_CYCLE - Fatal error!\n";
+    //cerr << "  PERM0_CHECK rejects permutation.\n";
+    Rcpp::stop("error");
   }
 
   //
@@ -20155,10 +20138,10 @@ void perm0_free ( int npart, int ipart[], int nfree, int ifree[] )
 
   if ( npart < 0 )
   {
-    cerr << "\n";
-    cerr << "PERM0_FREE - Fatal error!\n";
-    cerr << "  NPART < 0.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_FREE - Fatal error!\n";
+    //cerr << "  NPART < 0.\n";
+    Rcpp::stop("error");
   }
   else if ( npart == 0 )
   {
@@ -20166,10 +20149,10 @@ void perm0_free ( int npart, int ipart[], int nfree, int ifree[] )
   }
   else if ( nfree < 0 )
   {
-    cerr << "\n";
-    cerr << "PERM0_FREE - Fatal error!\n";
-    cerr << "  NFREE < 0.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_FREE - Fatal error!\n";
+    //cerr << "  NFREE < 0.\n";
+    Rcpp::stop("error");
   }
   else if ( nfree == 0 )
   {
@@ -20198,23 +20181,23 @@ void perm0_free ( int npart, int ipart[], int nfree, int ifree[] )
 
         if ( nfree < k )
         {
-          cerr << "\n";
-          cerr << "PERM0_FREE - Fatal error!\n";
-          cerr << "  The partial permutation is illegal.\n";
-          cerr << "  Technically, because NFREE < K.\n";
-          cerr << "  N     = " << n << "\n";
-          cerr << "  NPART = " << npart << "\n";
-          cerr << "  NFREE = " << nfree << "\n";
-          cerr << "  K =     " << k << "\n";
-          cerr << "\n";
-          cerr << "  The partial permutation:\n";
-          cerr << "\n";
+          //cerr << "\n";
+          //cerr << "PERM0_FREE - Fatal error!\n";
+          //cerr << "  The partial permutation is illegal.\n";
+          //cerr << "  Technically, because NFREE < K.\n";
+          //cerr << "  N     = " << n << "\n";
+          //cerr << "  NPART = " << npart << "\n";
+          //cerr << "  NFREE = " << nfree << "\n";
+          //cerr << "  K =     " << k << "\n";
+          //cerr << "\n";
+          //cerr << "  The partial permutation:\n";
+          //cerr << "\n";
           for ( i = 0; i < npart; i++ )
           {
-            cerr << setw(2) << ipart[i] << "  ";
+            //cerr << setw(2) << ipart[i] << "  ";
           }
-          cerr << "\n";
-          exit ( 1 );
+          //cerr << "\n";
+          Rcpp::stop("error");
         }
         ifree[k-1] = i;
       }
@@ -20264,18 +20247,18 @@ int *perm0_inverse ( int n, int p1[] )
 
   if ( n <= 0 )
   {
-    cerr << "\n";
-    cerr << "PERM0_INVERSE - Fatal error!\n";
-    cerr << "  Input value of N = " << n << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_INVERSE - Fatal error!\n";
+    //cerr << "  Input value of N = " << n << "\n";
+    Rcpp::stop("error");
   }
 
   if ( !perm0_check ( n, p1 ) )
   {
-    cerr << "\n";
-    cerr << "PERM0_INVERSE - Fatal error!\n";
-    cerr << "  PERM0_CHECK rejects permutation.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_INVERSE - Fatal error!\n";
+    //cerr << "  PERM0_CHECK rejects permutation.\n";
+    Rcpp::stop("error");
   }
 
   p2 = new int[n];
@@ -20386,10 +20369,10 @@ void perm0_inverse2 ( int n, int p[] )
 
   if ( !perm0_check ( n, p ) )
   {
-    cerr << "\n";
-    cerr << "PERM0_INVERSE2 - Fatal error!\n";
-    cerr << "  PERM0_CHECK rejects permutation.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_INVERSE2 - Fatal error!\n";
+    //cerr << "  PERM0_CHECK rejects permutation.\n";
+    Rcpp::stop("error");
   }
 
   for ( i = 0; i < n; i++ )
@@ -20470,10 +20453,10 @@ int *perm0_inverse3_new ( int n, int p[] )
 
   if ( !perm0_check ( n, p ) )
   {
-    cerr << "\n";
-    cerr << "PERM0_INVERSE3 - Fatal error!\n";
-    cerr << "  PERM0_CHECK rejects permutation.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_INVERSE3 - Fatal error!\n";
+    //cerr << "  PERM0_CHECK rejects permutation.\n";
+    Rcpp::stop("error");
   }
 
   p_inv = new int[n];
@@ -20634,18 +20617,18 @@ void perm0_mul ( int n, int p1[], int p2[], int p3[] )
 
   if ( !perm0_check ( n, p1 ) )
   {
-    cerr << "\n";
-    cerr << "PERM0_MUL - Fatal error!\n";
-    cerr << "  PERM0_CHECK rejects permutation.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_MUL - Fatal error!\n";
+    //cerr << "  PERM0_CHECK rejects permutation.\n";
+    Rcpp::stop("error");
   }
 
   if ( !perm0_check ( n, p2 ) )
   {
-    cerr << "\n";
-    cerr << "PERM0_MUL - Fatal error!\n";
-    cerr << "  PERM0_CHECK rejects permutation.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_MUL - Fatal error!\n";
+    //cerr << "  PERM0_CHECK rejects permutation.\n";
+    Rcpp::stop("error");
   }
 
   for ( i = 0; i < n; i++ )
@@ -21197,8 +21180,8 @@ void perm0_print ( int n, int p[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
 
     for ( ilo = 0; ilo < n; ilo = ilo + inc )
     {
@@ -21207,19 +21190,19 @@ void perm0_print ( int n, int p[], string title )
       {
         ihi = n;
       }
-      cout << "\n";
-      cout << "  ";
+      Rcpp::Rcout << "\n";
+      Rcpp::Rcout << "  ";
       for ( i = ilo; i < ihi; i++ )
       {
-        cout << setw(4) << i;
+        Rcpp::Rcout << setw(4) << i;
       }
-      cout << "\n";
-      cout << "  ";
+      Rcpp::Rcout << "\n";
+      Rcpp::Rcout << "  ";
       for ( i = ilo; i < ihi; i++ )
       {
-        cout << setw(4) << p[i];
+        Rcpp::Rcout << setw(4) << p[i];
       }
-      cout << "\n";
+      Rcpp::Rcout << "\n";
     }
   }
   else
@@ -21231,12 +21214,12 @@ void perm0_print ( int n, int p[], string title )
       {
         ihi = n;
       }
-      cout << "  ";
+      Rcpp::Rcout << "  ";
       for ( i = ilo; i < ihi; i++ )
       {
-        cout << setw(4) << p[i];
+        Rcpp::Rcout << setw(4) << p[i];
       }
-      cout << "\n";
+      Rcpp::Rcout << "\n";
     }
   }
 
@@ -21353,11 +21336,11 @@ void perm0_random2 ( int n, int &seed, int p[] )
 
   if ( n < 1 )
   {
-    cerr << "\n";
-    cerr << "PERM0_RANDOM2 - Fatal error!\n";
-    cerr << "  Illegal input value of N  = " << n << "\n";
-    cerr << "  N must be at least 1!\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_RANDOM2 - Fatal error!\n";
+    //cerr << "  Illegal input value of N  = " << n << "\n";
+    //cerr << "  N must be at least 1!\n";
+    Rcpp::stop("error");
   }
 
   if ( n == 1 )
@@ -21451,10 +21434,10 @@ int perm0_rank ( int n, int p[], int invers[] )
   //
   if ( !perm0_check ( n, p ) )
   {
-    cerr << "\n";
-    cerr << "PERM0_RANK - Fatal error!\n";
-    cerr << "  PERM0_CHECK rejects permutation.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_RANK - Fatal error!\n";
+    //cerr << "  PERM0_CHECK rejects permutation.\n";
+    Rcpp::stop("error");
   }
   //
   //  Compute the inverse permutation.
@@ -21569,10 +21552,10 @@ int perm0_sign ( int n, int p[] )
 
   if ( !perm0_check ( n, p ) )
   {
-    cerr << "\n";
-    cerr << "PERM0_SIGN - Fatal error!\n";
-    cerr << "  PERM0_CHECK rejects permutation.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_SIGN - Fatal error!\n";
+    //cerr << "  PERM0_CHECK rejects permutation.\n";
+    Rcpp::stop("error");
   }
   //
   //  Make a temporary copy of the permutation.
@@ -21664,10 +21647,10 @@ void perm0_to_equiv ( int n, int p[], int &npart, int jarray[], int iarray[] )
 
   if ( !perm0_check ( n, p ) )
   {
-    cerr << "\n";
-    cerr << "PERM0_TO_EQUIV - Fatal error!\n";
-    cerr << "  PERM0_CHECK rejects permutation.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_TO_EQUIV - Fatal error!\n";
+    //cerr << "  PERM0_CHECK rejects permutation.\n";
+    Rcpp::stop("error");
   }
   //
   //  Initialize.
@@ -21784,10 +21767,10 @@ void perm0_to_inversion ( int n, int p[], int ins[] )
 
   if ( !perm0_check ( n, p ) )
   {
-    cerr << "\n";
-    cerr << "PERM0_TO_INVERSION - Fatal error!\n";
-    cerr << "  PERM0_CHECK rejects permutation.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_TO_INVERSION - Fatal error!\n";
+    //cerr << "  PERM0_CHECK rejects permutation.\n";
+    Rcpp::stop("error");
   }
 
   for ( i = 0; i < n; i++ )
@@ -21988,12 +21971,12 @@ void perm0_unrank ( int n, int rank, int p[] )
 
   if ( rank < 1 || i4_factorial ( n ) < rank )
   {
-    cerr << "\n";
-    cerr << "PERM0_UNRANK - Fatal error!\n";
-    cerr << "  Illegal input value for RANK.\n";
-    cerr << "  RANK must be between 1 and N!,\n";
-    cerr << "  but the input value is " << rank << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PERM0_UNRANK - Fatal error!\n";
+    //cerr << "  Illegal input value for RANK.\n";
+    //cerr << "  RANK must be between 1 and N!,\n";
+    //cerr << "  but the input value is " << rank << "\n";
+    Rcpp::stop("error");
   }
 
   jrank = rank - 1;
@@ -22171,9 +22154,9 @@ bool perm1_check ( int n, int p[] )
 
     if ( ! check )
     {
-      cout << "\n";
-      cout << "PERM1_CHECK - Warning!\n";
-      cout << "  Permutation is missing value " << value << "\n";
+      Rcpp::Rcout << "\n";
+      Rcpp::Rcout << "PERM1_CHECK - Warning!\n";
+      Rcpp::Rcout << "  Permutation is missing value " << value << "\n";
       break;
     }
 
@@ -22601,8 +22584,8 @@ void perm1_print ( int n, int p[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
 
     for ( ilo = 0; ilo < n; ilo = ilo + inc )
     {
@@ -22611,19 +22594,19 @@ void perm1_print ( int n, int p[], string title )
       {
         ihi = n;
       }
-      cout << "\n";
-      cout << "  ";
+      Rcpp::Rcout << "\n";
+      Rcpp::Rcout << "  ";
       for ( i = ilo; i < ihi; i++ )
       {
-        cout << setw(4) << i + 1;
+        Rcpp::Rcout << setw(4) << i + 1;
       }
-      cout << "\n";
-      cout << "  ";
+      Rcpp::Rcout << "\n";
+      Rcpp::Rcout << "  ";
       for ( i = ilo; i < ihi; i++ )
       {
-        cout << setw(4) << p[i];
+        Rcpp::Rcout << setw(4) << p[i];
       }
-      cout << "\n";
+      Rcpp::Rcout << "\n";
     }
   }
   else
@@ -22635,12 +22618,12 @@ void perm1_print ( int n, int p[], string title )
       {
         ihi = n;
       }
-      cout << "  ";
+      Rcpp::Rcout << "  ";
       for ( i = ilo; i < ihi; i++ )
       {
-        cout << setw(4) << p[i];
+        Rcpp::Rcout << setw(4) << p[i];
       }
-      cout << "\n";
+      Rcpp::Rcout << "\n";
     }
   }
 
@@ -22800,10 +22783,10 @@ bool pord_check ( int n, int a[] )
 
   if ( n <= 0 )
   {
-    cerr << "\n";
-    cerr << "PORD_CHECK - Fatal error!\n";
-    cerr << "  N must be positive, but N = " << n << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PORD_CHECK - Fatal error!\n";
+    //cerr << "  N must be positive, but N = " << n << "\n";
+    Rcpp::stop("error");
   }
 
   for ( i = 0; i < n; i++ )
@@ -22814,13 +22797,13 @@ bool pord_check ( int n, int a[] )
       {
         if ( 0 < a[j+i*n] )
         {
-          cerr << "\n";
-          cerr << "PORD_CHECK - Fatal error!\n";
-          cerr << "  For indices I = " << i << "\n";
-          cerr << "  and J = " << j << "\n";
-          cerr << "  A(I,J) = " << a[i+j*n] << "\n";
-          cerr << "  A(J,I) = " << a[j+i*n] << "\n";
-          exit ( 1 );
+          //cerr << "\n";
+          //cerr << "PORD_CHECK - Fatal error!\n";
+          //cerr << "  For indices I = " << i << "\n";
+          //cerr << "  and J = " << j << "\n";
+          //cerr << "  A(I,J) = " << a[i+j*n] << "\n";
+          //cerr << "  A(J,I) = " << a[j+i*n] << "\n";
+          Rcpp::stop("error");
         }
       }
     }
@@ -23309,10 +23292,10 @@ void power_series4 ( int n, double a[], double b[], double c[] )
 
   if ( a[0] == 0.0 )
   {
-    cerr << "\n";
-    cerr << "POWER_SERIES4 - Fatal error!\n";
-    cerr << "  First entry of A is zero.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "POWER_SERIES4 - Fatal error!\n";
+    //cerr << "  First entry of A is zero.\n";
+    Rcpp::stop("error");
   }
 
   work = new double[n];
@@ -23573,10 +23556,10 @@ int prime ( int n )
   }
   else
   {
-    cerr << "\n";
-    cerr << "PRIME - Fatal error!\n";
-    cerr << "  Unexpected input value of n = " << n << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "PRIME - Fatal error!\n";
+    //cerr << "  Unexpected input value of n = " << n << "\n";
+    Rcpp::stop("error");
   }
 
   return 0;
@@ -24887,10 +24870,10 @@ double r8_uniform_ab ( double a, double b, int &seed )
 
   if ( seed == 0 )
   {
-    cerr << "\n";
-    cerr << "R8_UNIFORM_AB - Fatal error!\n";
-    cerr << "  Input value of SEED = 0.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "R8_UNIFORM_AB - Fatal error!\n";
+    //cerr << "  Input value of SEED = 0.\n";
+    Rcpp::stop("error");
   }
 
   k = seed / 127773;
@@ -25523,8 +25506,8 @@ void r8mat_print_some ( int m, int n, double a[], int ilo, int jlo, int ihi,
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
   //
   //  Print the columns of the matrix, in strips of 5.
@@ -25535,20 +25518,20 @@ void r8mat_print_some ( int m, int n, double a[], int ilo, int jlo, int ihi,
     j2hi = i4_min ( j2hi, n );
     j2hi = i4_min ( j2hi, jhi );
 
-    cout << "\n";
+    Rcpp::Rcout << "\n";
     //
     //  For each column J in the current range...
     //
     //  Write the header.
     //
-    cout << "  Col:    ";
+    Rcpp::Rcout << "  Col:    ";
     for ( j = j2lo; j <= j2hi; j++ )
     {
-      cout << setw(7) << j << "       ";
+      Rcpp::Rcout << setw(7) << j << "       ";
     }
-    cout << "\n";
-    cout << "  Row\n";
-    cout << "  ---\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << "  Row\n";
+    Rcpp::Rcout << "  ---\n";
     //
     //  Determine the range of the rows in this strip.
     //
@@ -25560,12 +25543,12 @@ void r8mat_print_some ( int m, int n, double a[], int ilo, int jlo, int ihi,
       //
       //  Print out (up to) 5 entries in row I, that lie in the current strip.
       //
-      cout << setw(5) << i << "  ";
+      Rcpp::Rcout << setw(5) << i << "  ";
       for ( j = j2lo; j <= j2hi; j++ )
       {
-        cout << setw(12) << a[i-1+(j-1)*m] << "  ";
+        Rcpp::Rcout << setw(12) << a[i-1+(j-1)*m] << "  ";
       }
-      cout << "\n";
+      Rcpp::Rcout << "\n";
     }
   }
 
@@ -25656,8 +25639,8 @@ void r8mat_transpose_print_some ( int m, int n, double a[], int ilo, int jlo,
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
   for ( i2lo = i4_max ( ilo, 1 ); i2lo <= i4_min ( ihi, m ); i2lo = i2lo + INCX )
@@ -25668,28 +25651,28 @@ void r8mat_transpose_print_some ( int m, int n, double a[], int ilo, int jlo,
 
     inc = i2hi + 1 - i2lo;
 
-    cout << "\n";
-    cout << "  Row: ";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << "  Row: ";
     for ( i = i2lo; i <= i2hi; i++ )
     {
-      cout << setw(7) << i << "       ";
+      Rcpp::Rcout << setw(7) << i << "       ";
     }
-    cout << "\n";
-    cout << "  Col\n";
-    cout << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << "  Col\n";
+    Rcpp::Rcout << "\n";
 
     j2lo = i4_max ( jlo, 1 );
     j2hi = i4_min ( jhi, n );
 
     for ( j = j2lo; j <= j2hi; j++ )
     {
-      cout << setw(5) << j << " ";
+      Rcpp::Rcout << setw(5) << j << " ";
       for ( i2 = 1; i2 <= inc; i2++ )
       {
         i = i2lo - 1 + i2;
-        cout << setw(14) << a[(i-1)+(j-1)*m];
+        Rcpp::Rcout << setw(14) << a[(i-1)+(j-1)*m];
       }
-      cout << "\n";
+      Rcpp::Rcout << "\n";
     }
   }
 
@@ -26937,8 +26920,8 @@ void r8poly_print ( int n, double a[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
   n2 = r8poly_degree ( n, a );
@@ -26956,15 +26939,15 @@ void r8poly_print ( int n, double a[], string title )
 
   if ( 2 <= n2 )
   {
-    cout << "  p(x) = " << plus_minus << mag << " * x^" << n2 << "\n";
+    Rcpp::Rcout << "  p(x) = " << plus_minus << mag << " * x^" << n2 << "\n";
   }
   else if ( n2 == 1 )
   {
-    cout << "  p(x) = " << plus_minus << mag << " * x" << "\n";
+    Rcpp::Rcout << "  p(x) = " << plus_minus << mag << " * x" << "\n";
   }
   else if ( n2 == 0 )
   {
-    cout << "  p(x) = " << plus_minus << mag << "\n";
+    Rcpp::Rcout << "  p(x) = " << plus_minus << mag << "\n";
   }
 
   for ( i = n2-1; 0 <= i; i-- )
@@ -26984,15 +26967,15 @@ void r8poly_print ( int n, double a[], string title )
     {
       if ( 2 <= i )
       {
-        cout << "         " << plus_minus << mag << " * x^" << i << "\n";
+        Rcpp::Rcout << "         " << plus_minus << mag << " * x^" << i << "\n";
       }
       else if ( i == 1 )
       {
-        cout << "         " << plus_minus << mag << " * x" << "\n";
+        Rcpp::Rcout << "         " << plus_minus << mag << " * x" << "\n";
       }
       else if ( i == 0 )
       {
-        cout << "         " << plus_minus << mag << "\n";
+        Rcpp::Rcout << "         " << plus_minus << mag << "\n";
       }
     }
   }
@@ -27359,26 +27342,26 @@ double r8vec_frac ( int n, double a[], int k )
 
   if ( n <= 0 )
   {
-    cerr << "\n";
-    cerr << "R8VEC_FRAC - Fatal error!\n";
-    cerr << "  Illegal nonpositive value of N = " << n << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "R8VEC_FRAC - Fatal error!\n";
+    //cerr << "  Illegal nonpositive value of N = " << n << "\n";
+    Rcpp::stop("error");
   }
 
   if ( k <= 0 )
   {
-    cerr << "\n";
-    cerr << "R8VEC_FRAC - Fatal error!\n";
-    cerr << "  Illegal nonpositive value of K = " << k << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "R8VEC_FRAC - Fatal error!\n";
+    //cerr << "  Illegal nonpositive value of K = " << k << "\n";
+    Rcpp::stop("error");
   }
 
   if ( n < k )
   {
-    cerr << "\n";
-    cerr << "R8VEC_FRAC - Fatal error!\n";
-    cerr << "  Illegal N < K, K = " << k << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "R8VEC_FRAC - Fatal error!\n";
+    //cerr << "  Illegal N < K, K = " << k << "\n";
+    Rcpp::stop("error");
   }
 
   left = 1;
@@ -27681,13 +27664,13 @@ void r8vec_print ( int n, double a[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
   for ( i = 0; i <= n - 1; i++ )
   {
-    cout << "  " << setw(8)  << i
+    Rcpp::Rcout << "  " << setw(8)  << i
          << "  " << setw(12) << a[i] << "\n";
   }
 
@@ -27771,10 +27754,10 @@ void r8vec_uniform ( int n, double b, double c, int &seed, double x[] )
 
   if ( seed == 0 )
   {
-    cerr << "\n";
-    cerr << "R8VEC_UNIFORM - Fatal error!\n";
-    cerr << "  Input value of SEED = 0.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "R8VEC_UNIFORM - Fatal error!\n";
+    //cerr << "  Input value of SEED = 0.\n";
+    Rcpp::stop("error");
   }
 
   for ( i = 0; i < n; i++ )
@@ -27869,10 +27852,10 @@ void r8vec_uniform_01 ( int n, int &seed, double r[] )
 
   if ( seed == 0 )
   {
-    cerr << "\n";
-    cerr << "R8VEC_UNIFORM_01 - Fatal error!\n";
-    cerr << "  Input value of SEED = 0.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "R8VEC_UNIFORM_01 - Fatal error!\n";
+    //cerr << "  Input value of SEED = 0.\n";
+    Rcpp::stop("error");
   }
 
   for ( i = 0; i < n; i++ )
@@ -27936,17 +27919,17 @@ unsigned long rand_initialize ( unsigned long seed )
 {
   if ( seed != 0 )
   {
-    cout << "\n";
-    cout << "RAND_INITIALIZE\n";
-    cout << "  Initialize RAND with user SEED = " << seed << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << "RAND_INITIALIZE\n";
+    Rcpp::Rcout << "  Initialize RAND with user SEED = " << seed << "\n";
   }
   else
   {
     seed = get_seed ( );
 
-    cout << "\n";
-    cout << "RAND_INITIALIZE\n";
-    cout << "  Initialize RAND with arbitrary SEED = " << seed << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << "RAND_INITIALIZE\n";
+    Rcpp::Rcout << "  Initialize RAND with arbitrary SEED = " << seed << "\n";
   }
   //
   //  Now set the seed.
@@ -28000,17 +27983,17 @@ unsigned long random_initialize ( unsigned long seed )
 {
   if ( seed != 0 )
   {
-    cout << "\n";
-    cout << "RANDOM_INITIALIZE\n";
-    cout << "  Initialize RANDOM with user SEED = " << seed << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << "RANDOM_INITIALIZE\n";
+    Rcpp::Rcout << "  Initialize RANDOM with user SEED = " << seed << "\n";
   }
   else
   {
     seed = get_seed ( );
 
-    cout << "\n";
-    cout << "RANDOM_INITIALIZE\n";
-    cout << "  Initialize RANDOM with arbitrary SEED = " << seed << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << "RANDOM_INITIALIZE\n";
+    Rcpp::Rcout << "  Initialize RANDOM with arbitrary SEED = " << seed << "\n";
   }
   //
   //  Now set the seed.
@@ -28098,12 +28081,12 @@ void rat_add ( int itop1, int ibot1, int itop2, int ibot2, int &itop, int &ibot,
   if ( ( double ) ( i_max ) < fabs ( ( double ) ( itop1 ) * ( double ) ( ibot2 ) ) )
   {
     error = true;
-    cerr << "\n";
-    cerr << "RAT_ADD - Fatal error!\n";
-    cerr << "  Overflow of top of rational sum.\n";
+    //cerr << "\n";
+    //cerr << "RAT_ADD - Fatal error!\n";
+    //cerr << "  Overflow of top of rational sum.\n";
     itop = 0;
     ibot = 1;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   itop1 = itop1 * ibot2;
@@ -28111,12 +28094,12 @@ void rat_add ( int itop1, int ibot1, int itop2, int ibot2, int &itop, int &ibot,
   if ( ( double ) ( i_max ) < fabs ( ( double ) ( itop2 ) * ( double ) ( ibot1 ) ) )
   {
     error = true;
-    cerr << "\n";
-    cerr << "RAT_ADD - Fatal error!\n";
-    cerr << "  Overflow of top of rational sum.\n";
+    //cerr << "\n";
+    //cerr << "RAT_ADD - Fatal error!\n";
+    //cerr << "  Overflow of top of rational sum.\n";
     itop = 0;
     ibot = 1;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   itop2 = itop2 * ibot1;
@@ -28124,12 +28107,12 @@ void rat_add ( int itop1, int ibot1, int itop2, int ibot2, int &itop, int &ibot,
   if ( ( double ) ( i_max ) < fabs ( ( double ) ( itop1 ) + ( double ) ( itop2 ) ) )
   {
     error = true;
-    cerr << "\n";
-    cerr << "RAT_ADD - Fatal error!\n";
-    cerr << "  Overflow of top of rational sum.\n";
+    //cerr << "\n";
+    //cerr << "RAT_ADD - Fatal error!\n";
+    //cerr << "  Overflow of top of rational sum.\n";
     itop = 0;
     ibot = 1;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   itop = itop1 + itop2;
@@ -28140,12 +28123,12 @@ void rat_add ( int itop1, int ibot1, int itop2, int ibot2, int &itop, int &ibot,
     fabs ( ( double ) ( ibot1 ) * ( double ) ( ibot2 ) * ( double ) ( ibot3 ) ) )
   {
     error = true;
-    cerr << "\n";
-    cerr << "RAT_ADD - Fatal error!\n";
-    cerr << "  Overflow of bottom of rational sum.\n";
+    //cerr << "\n";
+    //cerr << "RAT_ADD - Fatal error!\n";
+    //cerr << "  Overflow of bottom of rational sum.\n";
     itop = 0;
     ibot = 1;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   ibot = ibot1 * ibot2 * ibot3;
@@ -28251,12 +28234,12 @@ void rat_div ( int itop1, int ibot1, int itop2, int ibot2, int &itop,
   if ( ( double ) i_max < fabs ( ( double ) itop1 * ( double ) ibot2 ) )
   {
     error = true;
-    cerr << "\n";
-    cerr << "RAT_DIV - Fatal error!\n";
-    cerr << "  Overflow of top of rational fraction.\n";
+    //cerr << "\n";
+    //cerr << "RAT_DIV - Fatal error!\n";
+    //cerr << "  Overflow of top of rational fraction.\n";
     itop = 0;
     ibot = 0;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   itop = itop1 * ibot2;
@@ -28266,12 +28249,12 @@ void rat_div ( int itop1, int ibot1, int itop2, int ibot2, int &itop,
   if ( ( double ) i_max < fabs ( ( double ) ibot1 * ( double ) itop2 ) )
   {
     error = true;
-    cerr << "\n";
-    cerr << "RAT_DIV - Fatal error!\n";
-    cerr << "  Overflow of bottom of rational fraction.\n";
+    //cerr << "\n";
+    //cerr << "RAT_DIV - Fatal error!\n";
+    //cerr << "  Overflow of bottom of rational fraction.\n";
     itop = 0;
     ibot = 1;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
   ibot = ibot1 * itop2;
   //
@@ -28564,11 +28547,11 @@ void rat_mul ( int itop1, int ibot1, int itop2, int ibot2, int &itop,
   if ( ( double ) ( i_max ) < fabs ( ( double ) itop1 * ( double ) itop2 ) )
   {
     error = true;
-    cerr << "\n";
-    cerr << "RAT_MUL - Fatal error!\n";
-    cerr << "  Overflow of top of rational product.\n";
+    //cerr << "\n";
+    //cerr << "RAT_MUL - Fatal error!\n";
+    //cerr << "  Overflow of top of rational product.\n";
     itop = 0;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   itop = itop1 * itop2;
@@ -28578,11 +28561,11 @@ void rat_mul ( int itop1, int ibot1, int itop2, int ibot2, int &itop,
   if ( ( double ) ( i_max ) < fabs ( ( double ) ibot1 * ( double ) ibot2 ) )
   {
     error = true;
-    cerr << "\n";
-    cerr << "RAT_MUL - Fatal error!\n";
-    cerr << "  Overflow of bottom of rational product.\n";
+    //cerr << "\n";
+    //cerr << "RAT_MUL - Fatal error!\n";
+    //cerr << "  Overflow of bottom of rational product.\n";
     ibot = 1;
-    exit ( 1 );
+    Rcpp::stop("error");
   }
 
   ibot = ibot1 * ibot2;
@@ -29279,15 +29262,15 @@ void ratmat_det ( int n, int iatop[], int iabot[], int &idtop, int &idbot,
 
       if ( error )
       {
-        cerr << "\n";
-        cerr << "RATMAT_DET - Fatal error!\n";
-        cerr << "  An overflow occurred.\n";
-        cerr << "  The determinant calculation cannot be done\n";
-        cerr << "  for this matrix.\n";
+        //cerr << "\n";
+        //cerr << "RATMAT_DET - Fatal error!\n";
+        //cerr << "  An overflow occurred.\n";
+        //cerr << "  The determinant calculation cannot be done\n";
+        //cerr << "  for this matrix.\n";
         idtop = 0;
         idbot = 1;
         delete [] iarray;
-        exit ( 1 );
+        Rcpp::stop("error");
       }
     }
 
@@ -29295,15 +29278,15 @@ void ratmat_det ( int n, int iatop[], int iabot[], int &idtop, int &idbot,
 
     if ( error )
     {
-      cerr << "\n";
-      cerr << "RATMAT_DET - Fatal error!\n";
-      cerr << "  An overflow occurred.\n";
-      cerr << "  The determinant calculation cannot be done\n";
-      cerr << "  for this matrix.\n";
+      //cerr << "\n";
+      //cerr << "RATMAT_DET - Fatal error!\n";
+      //cerr << "  An overflow occurred.\n";
+      //cerr << "  The determinant calculation cannot be done\n";
+      //cerr << "  for this matrix.\n";
       idtop = 0;
       idbot = 1;
       delete [] iarray;
-      exit ( 1 );
+      Rcpp::stop("error");
     }
 
     if ( !more )
@@ -29386,30 +29369,30 @@ void ratmat_print ( int m, int n, int a[], int b[], string title )
   {
     jmax = i4_min ( jmin+npline-1, n-1 );
 
-    cout << "\n";
+    Rcpp::Rcout << "\n";
 
     if ( jmin == 0 )
     {
       if ( 0 < title.length ( ) )
       {
-        cout << "\n";
-        cout << title << "\n";
+        Rcpp::Rcout << "\n";
+        Rcpp::Rcout << title << "\n";
       }
     }
 
     if ( 0 < jmin || jmax < n-1 )
     {
-      cout << "Columns " << jmin << " to " << jmax << "\n";
-      cout << "\n";
+      Rcpp::Rcout << "Columns " << jmin << " to " << jmax << "\n";
+      Rcpp::Rcout << "\n";
     }
 
     for ( i = 0; i < m; i++ )
     {
       for ( j = jmin; j <= jmax; j++ )
       {
-        cout << setw(kmax) << a[i+j*m] << "  ";
+        Rcpp::Rcout << setw(kmax) << a[i+j*m] << "  ";
       }
-      cout << "\n";
+      Rcpp::Rcout << "\n";
       //
       //  Delete each denominator that is 1.  If all are 1, don't
       //  even print out the line.
@@ -29428,9 +29411,9 @@ void ratmat_print ( int m, int n, int a[], int b[], string title )
       {
         for ( j = jmin; j <= jmax; j++ )
         {
-          cout << setw(kmax) << b[i+j*m] << "  ";
+          Rcpp::Rcout << setw(kmax) << b[i+j*m] << "  ";
         }
-        cout << "\n";
+        Rcpp::Rcout << "\n";
       }
 
       if ( jmax == n - 1 && i == m - 1 )
@@ -29438,7 +29421,7 @@ void ratmat_print ( int m, int n, int a[], int b[], string title )
       }
       else
       {
-        cout << "\n";
+        Rcpp::Rcout << "\n";
       }
     }
   }
@@ -29676,10 +29659,10 @@ void rfrac_to_cfrac ( int m, double p[], double q[], double t[], bool &error )
     if ( a[0+(k+1)*(m+1)] == 0.0 )
     {
       error = true;
-      cerr << "\n";
-      cerr << "RFRAC_TO_CFRAC - Fatal error!\n";
-      cerr << "  A[0,K+1] is zero for K = " << k << "\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "RFRAC_TO_CFRAC - Fatal error!\n";
+      //cerr << "  A[0,K+1] is zero for K = " << k << "\n";
+      Rcpp::stop("error");
     }
 
     t[k] = a[0+k*(m+1)] / a[0+(k+1)*(m+1)];
@@ -29760,10 +29743,10 @@ void rfrac_to_jfrac ( int m, double p[], double q[], double r[], double s[] )
 
   if ( m < 1 )
   {
-    cerr << "\n";
-    cerr << "RFRAC_TO_JFRAC - Fatal error!\n";
-    cerr << "  Input M < 1.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "RFRAC_TO_JFRAC - Fatal error!\n";
+    //cerr << "  Input M < 1.\n";
+    Rcpp::stop("error");
   }
 
   a = new double[(m+1)*(m+1)];
@@ -29795,10 +29778,10 @@ void rfrac_to_jfrac ( int m, double p[], double q[], double r[], double s[] )
 
       if ( a[m-2-k+(k+2)*(m+1)] == 0.0 )
       {
-        cerr << "\n";
-        cerr << "RFRAC_TO_JFRAC - Fatal error!\n";
-        cerr << "  A[M-2-K,K+2] = 0 for K = " << k << "\n";
-        exit ( 1 );
+        //cerr << "\n";
+        //cerr << "RFRAC_TO_JFRAC - Fatal error!\n";
+        //cerr << "  A[M-2-K,K+2] = 0 for K = " << k << "\n";
+        Rcpp::stop("error");
       }
 
       r[k+1] = a[m-k-2+(k+2)*(m+1)] / a[m-2-k+1+(k+1)*(m+1)];
@@ -31290,11 +31273,11 @@ void thue_binary_next ( int &n, int thue[] )
     }
     else
     {
-      cerr << "\n";
-      cerr << "THUE_BINARY_NEXT - Fatal error!\n";
-      cerr << "  The input sequence contains a non-binary digit\n";
-      cerr << "  THUE[" << i << "] = " << thue[i] << "\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "THUE_BINARY_NEXT - Fatal error!\n";
+      //cerr << "  The input sequence contains a non-binary digit\n";
+      //cerr << "  THUE[" << i << "] = " << thue[i] << "\n";
+      Rcpp::stop("error");
     }
   }
 
@@ -31409,11 +31392,11 @@ void thue_ternary_next ( int &n, int thue[] )
     }
     else
     {
-      cerr << "\n";
-      cerr << "THUE_TERNARY_NEXT - Fatal error!\n";
-      cerr << "  The input sequence contains a non-ternary digit\n";
-      cerr << "  THUE[" << i << "] = " << thue[i] << "\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "THUE_TERNARY_NEXT - Fatal error!\n";
+      //cerr << "  The input sequence contains a non-ternary digit\n";
+      //cerr << "  THUE[" << i << "] = " << thue[i] << "\n";
+      Rcpp::stop("error");
     }
   }
 
@@ -31470,7 +31453,7 @@ void timestamp ( )
 
   len = std::strftime ( time_buffer, TIME_SIZE, "%d %B %Y %I:%M:%S %p", tm_ptr );
 
-  std::cout << time_buffer << "\n";
+  Rcpp::Rcout << time_buffer << "\n";
 
   return;
 # undef TIME_SIZE
@@ -31558,11 +31541,11 @@ void triang ( int n, int zeta[], int p[] )
 
   if ( error )
   {
-    cerr << "\n";
-    cerr << "TRIANG - Fatal error!\n";
-    cerr << "  The matrix ZETA does not represent a\n";
-    cerr << "  partial ordering.\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "TRIANG - Fatal error!\n";
+    //cerr << "  The matrix ZETA does not represent a\n";
+    //cerr << "  partial ordering.\n";
+    Rcpp::stop("error");
   }
 
   m = 1;
@@ -31839,19 +31822,19 @@ void tuple_next_fast ( int m, int n, int rank, int base[], int x[] )
   {
     if ( m <= 0 )
     {
-      cerr << "\n";
-      cerr << "TUPLE_NEXT_FAST - Fatal error!\n";
-      cerr << "  The value M <= 0 is not legal.\n";
-      cerr << "  M = " << m << "\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "TUPLE_NEXT_FAST - Fatal error!\n";
+      //cerr << "  The value M <= 0 is not legal.\n";
+      //cerr << "  M = " << m << "\n";
+      Rcpp::stop("error");
     }
     if ( n <= 0 )
     {
-      cerr << "\n";
-      cerr << "TUPLE_NEXT_FAST - Fatal error!\n";
-      cerr << "  The value N <= 0 is not legal.\n";
-      cerr << "  N = " << n << "\n";
-      exit ( 1 );
+      //cerr << "\n";
+      //cerr << "TUPLE_NEXT_FAST - Fatal error!\n";
+      //cerr << "  The value N <= 0 is not legal.\n";
+      //cerr << "  N = " << n << "\n";
+      Rcpp::stop("error");
     }
 
     base[n-1] = 1;
@@ -32072,10 +32055,10 @@ void tuple_next2 ( int n, int xmin[], int xmax[], int x[], int &rank )
 
   if ( rank < 0 )
   {
-    cerr << "\n";
-    cerr << "TUPLE_NEXT2 - Fatal error!\n";
-    cerr << "  Illegal value of RANK = " << rank << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "TUPLE_NEXT2 - Fatal error!\n";
+    //cerr << "  Illegal value of RANK = " << rank << "\n";
+    Rcpp::stop("error");
   }
 
   test = 1;
@@ -32086,10 +32069,10 @@ void tuple_next2 ( int n, int xmin[], int xmax[], int x[], int &rank )
 
   if ( test < rank )
   {
-    cerr << "\n";
-    cerr << "TUPLE_NEXT2 - Fatal error!\n";
-    cerr << "  Illegal value of RANK = " << rank << "\n";
-    exit ( 1 );
+    //cerr << "\n";
+    //cerr << "TUPLE_NEXT2 - Fatal error!\n";
+    //cerr << "  Illegal value of RANK = " << rank << "\n";
+    Rcpp::stop("error");
   }
 
   if ( rank == 0 )
@@ -32259,20 +32242,20 @@ void ubvec_print ( int n, unsigned int bvec[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
   for ( ilo = 0; ilo < n; ilo = ilo + 70 )
   {
     ihi = i4_min ( ilo + 70 - 1, n - 1 );
-    cout << "  ";
+    Rcpp::Rcout << "  ";
 
     for ( i = ilo; i <= ihi; i++ )
     {
-      cout << bvec[i];
+      Rcpp::Rcout << bvec[i];
     }
-    cout << "\n";
+    Rcpp::Rcout << "\n";
   }
 
   return;
@@ -32853,11 +32836,11 @@ void vec_gray_next ( int n, int base[], int a[], bool &done, int active[],
     {
       if ( base[i] < 1 )
       {
-        cerr << "\n";
-        cerr << "VEC_GRAY_NEXT - Warning\n";
-        cerr << "  For index I = " << i << "\n";
-        cerr << "  the nonpositive value of BASE[I] = " << base[i] << "\n";
-        cerr << "  which was reset to 1!\n";
+        //cerr << "\n";
+        //cerr << "VEC_GRAY_NEXT - Warning\n";
+        //cerr << "  For index I = " << i << "\n";
+        //cerr << "  the nonpositive value of BASE[I] = " << base[i] << "\n";
+        //cerr << "  which was reset to 1!\n";
         base[i] = 1;
         active[i] = 0;
       }
@@ -34653,8 +34636,8 @@ void ytb_print ( int n, int a[], string title )
 
   if ( 0 < title.length ( ) )
   {
-    cout << "\n";
-    cout << title << "\n";
+    Rcpp::Rcout << "\n";
+    Rcpp::Rcout << title << "\n";
   }
 
   row_i = 0;
@@ -34682,9 +34665,9 @@ void ytb_print ( int n, int a[], string title )
 
     for ( j = 0; j < row_length; j++ )
     {
-      cout << setw(6) << jarray[j]+1 << "  ";
+      Rcpp::Rcout << setw(6) << jarray[j]+1 << "  ";
     }
-    cout << "\n";
+    Rcpp::Rcout << "\n";
 
   }
 
