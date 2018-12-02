@@ -32,17 +32,14 @@ partition_function_data <- tibble(
 rm(seq2)
 
 # Then we compute the integer sequences for Ulam distance
-library(doParallel)
-cl <- makeCluster(8)
-registerDoParallel(cl)
 n_items <- 50
 
-seq_ulam <- foreach(ni = 1:n_items) %dopar% {
-  Z <- numeric(ni)
+seq_ulam <- list(n_items)
+for(ni in 1:n_items){
+  seq_ulam[[ni]] <- numeric(ni)
   for(d in 0:(ni - 1)){
-    Z[d + 1] <- PerMallows::count.perms(perm.length = ni, dist.value = d, dist.name = "ulam")
+    seq_ulam[[ni]][d + 1] <- PerMallows::count.perms(perm.length = ni, dist.value = d, dist.name = "ulam")
   }
-  Z
 }
 
 
