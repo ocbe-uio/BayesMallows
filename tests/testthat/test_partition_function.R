@@ -94,3 +94,17 @@ test_that("Hamming partition function is correct", {
     }
   }})
 
+test_that("Ulam partition function is correct", {
+
+  ulam_sequence <- dplyr::filter(BayesMallows:::partition_function_data,
+                                 metric == "ulam", type == "cardinalities")$values
+  for(n in c(1, 2, 3)){
+    for(alpha in c(0.001, 0.1, 1)){
+      expect_equal(
+        get_partition_function(n = n, alpha = alpha,
+                               cardinalities = ulam_sequence[[n]],
+                               metric = "ulam"),
+        check_log_zn(n, alpha, "ulam")
+      )
+    }
+  }})

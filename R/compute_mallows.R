@@ -30,7 +30,8 @@
 #'
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
-#'   \code{"spearman"}, \code{"kendall"}, \code{"cayley"}, and \code{"hamming"}. The distance
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
+#'   and \code{"ulam"}. The distance
 #'   given by \code{metric} is also used to compute within-cluster distances,
 #'   when \code{include_wcd = TRUE}.
 #'
@@ -254,7 +255,7 @@ compute_mallows <- function(rankings = NULL,
   if(!is.null(logz_estimate)){
     cardinalities <- NULL
     message("Using user-provided importance sampling estimate of partition function.")
-  } else if(metric %in% c("footrule", "spearman")){
+  } else if(metric %in% c("footrule", "spearman", "ulam")){
     # Extract the relevant rows from partition_function_data
     relevant_params <- dplyr::filter(partition_function_data,
                                      .data$n_items == !!n_items,
@@ -265,9 +266,17 @@ compute_mallows <- function(rankings = NULL,
     message(dplyr::pull(relevant_params, message))
 
     if((length(type) == 0) || !(type %in% c("cardinalities", "importance_sampling"))){
-      stop("Precomputed partition function not available yet. Consider computing one
+      if(metric == "ulam"){
+        message("Computing integer sequence for Ulam partition function")
+        cardinalities <- purrr::map_dbl(0:(n_items - 1), ~ PerMallows::count.perms(perm.length = n_items,
+                                                                                   dist.value = .x,
+                                                                                   dist.name = "ulam"))
+      } else {
+        stop("Precomputed partition function not available yet. Consider computing one
            with the function estimate_partition_function(), and provide it
-           in the logz_estimate argument to compute_mallows().")
+             in the logz_estimate argument to compute_mallows().")
+      }
+
     } else if(type == "cardinalities") {
       cardinalities <- unlist(relevant_params$values)
       logz_estimate <- NULL
