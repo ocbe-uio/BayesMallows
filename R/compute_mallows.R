@@ -254,7 +254,7 @@ compute_mallows <- function(rankings = NULL,
   if(!is.null(logz_estimate)){
     cardinalities <- NULL
     message("Using user-provided importance sampling estimate of partition function.")
-  } else if(metric %in% c("footrule", "spearman")){
+  } else if(metric %in% c("footrule", "spearman", "ulam")){
     # Extract the relevant rows from partition_function_data
     relevant_params <- dplyr::filter(partition_function_data,
                                      .data$n_items == !!n_items,

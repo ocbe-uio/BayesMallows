@@ -69,6 +69,16 @@ double get_partition_function(int n_items, double alpha,
       return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
     }
 
+  } else if (metric == "ulam") {
+
+    if(cardinalities.isNotNull()){
+      arma::vec distances = arma::regspace(0, 1, n_items - 1);
+      return std::log(arma::sum(Rcpp::as<arma::vec>(cardinalities) %
+                      arma::exp(-alpha * distances / n_items)));
+    } else if(logz_estimate.isNotNull()){
+      return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
+    }
+
 
   } else if(metric == "kendall") {
 
