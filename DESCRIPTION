@@ -22,6 +22,7 @@ Imports: Rcpp (>= 0.12.17),
   tidyr (>= 0.8.1),
   purrr (>= 0.2.5),
   rlang (>= 0.2.1),
+  PerMallows (>= 1.13),
   HDInterval (>= 0.2.0),
   cowplot (>= 0.9.3)
 LinkingTo: Rcpp, RcppArmadillo
@@ -30,7 +31,6 @@ Suggests:
     gtools (>= 3.8.1),
     knitr,
     rmarkdown,
-    PerMallows (>= 1.13),
     covr
 VignetteBuilder: knitr
 RdMacros: Rdpack

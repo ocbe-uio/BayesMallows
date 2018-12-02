@@ -1,3 +1,6 @@
+# BayesMallows 0.2.0.9000
+* `compute_mallows` and `sample_mallows` now support Ulam distance, with argument `metric = "ulam"`.
+
 # BayesMallows 0.2.0
 * New release on CRAN, which contains all the updates in 0.1.1, described below.
 
