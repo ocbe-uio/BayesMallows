@@ -10,8 +10,8 @@
 
 double ulam_distance (int N, arma::ivec a, arma::ivec b){
 
-  int p1[N];
-  int p2[N];
+  int *p1 = (int*) calloc(N, sizeof (int));
+  int *p2 = (int*) calloc(N, sizeof (int));
 
   int distance;
 
@@ -21,6 +21,9 @@ double ulam_distance (int N, arma::ivec a, arma::ivec b){
   }
 
   distance = perm0_distance ( N, p1, p2 );
+
+  free(p1);
+  free(p2);
   return static_cast<double>(distance);
 }
 
