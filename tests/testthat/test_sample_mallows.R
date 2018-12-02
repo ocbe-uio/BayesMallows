@@ -8,7 +8,7 @@ rho0 <- seq(from = 1, to = n_items, by = 1)
 # Set the scale
 alpha0 <- 10
 
-for(m in c("footrule", "spearman", "cayley", "kendall")){
+for(m in c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam")){
   samples <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 100,
                             burnin = 1000, thinning = 1000, metric = m)
   test_that(

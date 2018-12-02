@@ -24,10 +24,10 @@ proposal distribution.}
 
 \item{metric}{Character string specifying the distance measure to use.
 Available options are \code{"footrule"} (default), \code{"spearman"},
-\code{"cayley"}, \code{"kendall"}, and \code{"hamming"}. For sampling
-from the Mallows model with Cayley, Kendall, and Hamming distances
-the \code{rmm} function in the \code{PerMallows} package
-\insertCite{irurozki2016}{BayesMallows} is typically faster.}
+\code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and \code{"ulam"}.
+See also the \code{rmm} function in the \code{PerMallows} package
+\insertCite{irurozki2016}{BayesMallows} for sampling from the Mallows
+model with Cayley, Hamming, Kendall, and Ulam distances.}
 
 \item{diagnostic}{Logical specifying whether to output convergence
 diagnostics. If \code{TRUE}, a diagnostic plot is printed, together with
