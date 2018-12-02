@@ -266,9 +266,17 @@ compute_mallows <- function(rankings = NULL,
     message(dplyr::pull(relevant_params, message))
 
     if((length(type) == 0) || !(type %in% c("cardinalities", "importance_sampling"))){
-      stop("Precomputed partition function not available yet. Consider computing one
+      if(metric == "ulam"){
+        message("Computing integer sequence for Ulam partition function")
+        cardinalities <- purrr::map_dbl(0:(n_items - 1), ~ PerMallows::count.perms(perm.length = n_items,
+                                                                                   dist.value = .x,
+                                                                                   dist.name = "ulam"))
+      } else {
+        stop("Precomputed partition function not available yet. Consider computing one
            with the function estimate_partition_function(), and provide it
-           in the logz_estimate argument to compute_mallows().")
+             in the logz_estimate argument to compute_mallows().")
+      }
+
     } else if(type == "cardinalities") {
       cardinalities <- unlist(relevant_params$values)
       logz_estimate <- NULL
