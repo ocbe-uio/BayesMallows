@@ -93,7 +93,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 
     ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
-      ggplot2::xlab(expression(tau[k])) +
+      ggplot2::xlab(expression(tau[c])) +
       ggplot2::ylab("Posterior density") +
       ggplot2::ggtitle(label = "Posterior density of cluster probabilities") +
       ggplot2::facet_wrap(~ .data$cluster)
