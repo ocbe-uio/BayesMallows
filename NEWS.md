@@ -1,5 +1,6 @@
 # BayesMallows 0.2.0.9000
 * `compute_mallows` and `sample_mallows` now support Ulam distance, with argument `metric = "ulam"`.
+* Slimmed down the vignette significantly, in order to avoid clang-UBSAN error caused by running the vignette (which was then again caused by `Rcpp`, cf. [this issue](https://github.com/RcppCore/Rcpp/issues/832)). The long vignette is no longer needed in any case, since all the functions are well documented with executable examples.
 
 # BayesMallows 0.2.0
 * New release on CRAN, which contains all the updates in 0.1.1, described below.
