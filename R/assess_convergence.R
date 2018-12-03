@@ -172,5 +172,5 @@ trace_cluster_probs <- function(model_fit){
     ggplot2::theme(legend.title = ggplot2::element_blank()) +
     ggplot2::theme(legend.position = "bottom") +
     ggplot2::xlab("Iteration") +
-    ggplot2::ylab(expression(tau[k]))
+    ggplot2::ylab(expression(tau[c]))
 }
