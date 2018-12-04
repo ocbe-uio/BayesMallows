@@ -50,7 +50,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
       p <- p + ggplot2::facet_wrap(~ .data$cluster, scales = "free_x")
     }
 
-    print(p)
+    return(p)
 
   } else if(parameter == "rho") {
 
@@ -87,7 +87,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
       p <- p + ggplot2::facet_wrap(~ .data$cluster + .data$item)
     }
 
-    print(p)
+    return(p)
   } else if(parameter == "cluster_probs"){
     df <- dplyr::filter(x$cluster_probs, .data$iteration > burnin)
 

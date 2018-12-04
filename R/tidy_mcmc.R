@@ -57,10 +57,12 @@ tidy_rho <- function(fit){
   item <- factor(item, levels = fit$items)
 
   cluster <- rep(
-    paste("Cluster", seq(from = 1, to = rho_dims[[2]], by = 1)),
+    seq(from = 1, to = rho_dims[[2]], by = 1),
     each = rho_dims[[1]],
     times = rho_dims[[3]]
   )
+  cluster <- factor(paste("Cluster", cluster),
+                    levels = paste("Cluster", sort(unique(cluster))))
 
   iteration <- rep(seq(from = 1, to = rho_dims[[3]] * fit$rho_thinning, by = fit$rho_thinning),
                    each = rho_dims[[1]] * rho_dims[[2]])
@@ -84,9 +86,12 @@ tidy_alpha <- function(fit){
   value <- c(fit$alpha)
 
   cluster <- rep(
-    paste("Cluster", seq(from = 1, to = alpha_dims[[1]], by = 1)),
+    seq(from = 1, to = alpha_dims[[1]], by = 1),
     times = alpha_dims[[2]]
   )
+
+  cluster <- factor(paste("Cluster", cluster),
+                    levels = paste("Cluster", sort(unique(cluster))))
 
   iteration <- rep(
     seq(from = 1, to = alpha_dims[[2]] * fit$alpha_jump, by = fit$alpha_jump),
@@ -154,9 +159,12 @@ tidy_cluster_probabilities <- function(fit){
   # Cluster1, Cluster2, ..., Cluster1, Cluster2
   # Iteration1, Iteration1, ..., Iteration2, Iteration2
   cluster <- rep(
-    paste("Cluster", seq(from = 1, to = clusprob_dims[[1]], by = 1)),
+    seq(from = 1, to = clusprob_dims[[1]], by = 1),
     times = clusprob_dims[[2]]
   )
+
+  cluster <- factor(paste("Cluster", cluster),
+                    levels = paste("Cluster", sort(unique(cluster))))
 
   iteration <- rep(
     seq(from = 1, to = clusprob_dims[[2]], by = 1),
@@ -185,6 +193,8 @@ tidy_wcd <- function(fit){
       paste("Cluster", seq(from = 1, to = wcd_dims[[1]], by = 1)),
       times = wcd_dims[[2]]
     )
+    cluster <- factor(paste("Cluster", cluster),
+                      levels = paste("Cluster", sort(unique(cluster))))
 
     iteration <- rep(
       seq(from = 1, to = wcd_dims[[2]], by = 1),
