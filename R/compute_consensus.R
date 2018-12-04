@@ -84,8 +84,9 @@ compute_cp_consensus <- function(model_fit, burnin = model_fit$burnin){
   # the model object
   stopifnot(model_fit$n_clusters * model_fit$n_items == n_rows)
 
-  # Convert items to character, since factor levels are not needed in this case
-  df <- dplyr::mutate(df, item = as.character(.data$item))
+  # Convert items and clustr to character, since factor levels are not needed in this case
+  df <- dplyr::mutate_at(df, dplyr::vars(.data$item, .data$cluster),
+                         dplyr::funs(as.character))
 
   # Group by item, cluster, and value
   df <- dplyr::group_by(df, .data$item, .data$cluster, .data$value)
