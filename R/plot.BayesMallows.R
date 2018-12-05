@@ -30,8 +30,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
   # required arguments as graphics::plot.
 
   if(is.null(burnin)){
-    stop("Please specify the burnin, either by setting x$burnin or
-         as an argument to the plot.BayesMallows function.")
+    stop("Please specify the burnin.")
   }
   if(x$nmc <= burnin) stop("nmc must be <= burnin")
 

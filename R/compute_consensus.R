@@ -65,8 +65,7 @@ compute_cp_consensus <- function(model_fit, burnin = model_fit$burnin){
   stopifnot(class(model_fit) == "BayesMallows")
 
   if(is.null(burnin)){
-    stop("Please specify the burnin, either by setting x$burnin or
-         as an argument to the plot.BayesMallows function.")
+    stop("Please specify the burnin.")
   }
 
   stopifnot(burnin < model_fit$nmc)
@@ -185,8 +184,7 @@ compute_map_consensus <- function(model_fit, burnin = model_fit$burnin){
 .compute_map_consensus <- function(model_fit, burnin = model_fit$burnin){
 
   if(is.null(burnin)){
-    stop("Please specify the burnin, either by setting x$burnin or
-         as an argument to the plot.BayesMallows function.")
+    stop("Please specify the burnin.")
   }
 
   df <- dplyr::filter(model_fit$rho, .data$iteration > burnin)

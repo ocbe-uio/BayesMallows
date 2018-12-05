@@ -33,8 +33,7 @@
 assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, expand = FALSE){
 
   if(is.null(burnin)){
-    stop("Please specify the burnin, either by setting x$burnin or
-         as an argument to the plot.BayesMallows function.")
+    stop("Please specify the burnin.")
   }
   stopifnot(burnin < model_fit$nmc)
 
