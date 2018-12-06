@@ -67,7 +67,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
         arma::vec r1 = inds + arma::ones(k_max);
         // Sampled vector
         arma::vec r2 = rho(jj) * arma::ones(k_max);
-        // Probability of sample
+        // Probability of sample. Note that this is a vector quantity.
         prob(inds) = arma::exp(- alpha / n_items * arma::pow(arma::abs(r1 - r2), (metric == "footrule") ? 1. : 2.));
         prob = prob / arma::accu(prob);
         arma::vec cpd = arma::cumsum(prob);
