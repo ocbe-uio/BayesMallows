@@ -5,7 +5,7 @@
 #include "misc.h"
 #include "subset.h"
 
-double ulam_distance (int N, arma::ivec a, arma::ivec b);
+
 double get_rank_distance(arma::vec, arma::vec, std::string);
 double rank_dist_matrix(const arma::mat&, const arma::vec&, std::string);
 
