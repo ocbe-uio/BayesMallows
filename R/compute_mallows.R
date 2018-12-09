@@ -35,6 +35,11 @@
 #'   given by \code{metric} is also used to compute within-cluster distances,
 #'   when \code{include_wcd = TRUE}.
 #'
+#' @param error_model Character string specifying which model to use for inconsistent
+#'   rankings. Defaults to \code{NULL}, which means that inconsistent rankings are
+#'   not allowed. at the moment, the only available other option is \code{"bernoulli"},
+#'   which means that the Bernoulli error model is used \insertCite{crispino2018}.
+#'
 #' @param n_clusters Integer specifying the number of clusters, i.e., the number
 #'   of mixture components to use. Defaults to \code{1L}, which means no
 #'   clustering is performed. See \code{\link{compute_mallows_mixtures}} for a
@@ -166,6 +171,7 @@
 compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
                             metric = "footrule",
+                            error_model = NULL,
                             n_clusters = 1L,
                             save_clus = FALSE,
                             clus_thin = 1L,
@@ -211,7 +217,7 @@ compute_mallows <- function(rankings = NULL,
 
 
   # Deal with pairwise comparisons. Generate rankings compatible with them.
-  if(!is.null(preferences)){
+  if(!is.null(preferences) && is.null(error_model)){
     if(!inherits(preferences, "BayesMallowsTC")){
       message("Generating transitive closure of preferences.")
       preferences <- generate_transitive_closure(preferences)
@@ -220,6 +226,12 @@ compute_mallows <- function(rankings = NULL,
       message("Generating initial ranking.")
       rankings <- generate_initial_ranking(preferences)
     }
+  } else if(!is.null(error_model)){
+    stopifnot(error_model == "bernoulli")
+    n_items <- max(dplyr::pull(tidyr::gather(dplyr::select(preferences, .data$bottom_item, .data$top_item)), .data$value))
+    n_assessors <- dplyr::pull(dplyr::summarise(preferences, n = dplyr::n_distinct(.data$assessor)), .data$n)
+    rankings <- purrr::rerun(n_assessors, sample(x = n_items, size = n_items))
+    rankings <- matrix(unlist(rankings), ncol = n_items, nrow = n_assessors, byrow = TRUE)
   }
 
   # Find the number of items
@@ -245,7 +257,7 @@ compute_mallows <- function(rankings = NULL,
   }
 
   # Generate the constraint set
-  if(!is.null(preferences) && is.null(constraints)){
+  if(!is.null(preferences) && is.null(constraints) && is.null(error_model)){
     constraints <- generate_constraints(preferences, n_items)
   } else if (is.null(constraints)){
     constraints <- list()

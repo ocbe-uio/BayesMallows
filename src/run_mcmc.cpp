@@ -46,6 +46,8 @@
 //' @param verbose Logical specifying whether to print out the progress of the
 //' Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
 //' 1000th iteration.
+//' @param kappa_1 Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.
+//' @param kappa_2 Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.
 //' @keywords internal
 //'
 // [[Rcpp::export]]
@@ -67,7 +69,9 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     int aug_thinning = 1,
                     int clus_thin = 1,
                     bool save_aug = false,
-                    bool verbose = false
+                    bool verbose = false,
+                    double kappa_1 = 1.0,
+                    double kappa_2 = 1.0
                       ){
 
   // The number of items ranked
