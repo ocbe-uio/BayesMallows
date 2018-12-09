@@ -166,7 +166,7 @@ rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, 
 #' @param kappa_2 Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.
 #' @keywords internal
 #'
-run_mcmc <- function(rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric = "footrule", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, rho_thinning = 1L, aug_thinning = 1L, clus_thin = 1L, save_aug = FALSE, verbose = FALSE, kappa_1 = 1.0, kappa_2 = 1.0) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2)
+run_mcmc <- function(rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric = "footrule", error_model = "none", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L, rho_thinning = 1L, aug_thinning = 1L, clus_thin = 1L, save_aug = FALSE, verbose = FALSE, kappa_1 = 1.0, kappa_2 = 1.0) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, error_model, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2)
 }
 

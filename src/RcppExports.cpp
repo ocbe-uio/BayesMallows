@@ -140,8 +140,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_mcmc
-Rcpp::List run_mcmc(arma::mat rankings, int nmc, Rcpp::List constraints, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> logz_estimate, Rcpp::Nullable<arma::vec> rho_init, std::string metric, int n_clusters, bool include_wcd, int leap_size, double alpha_prop_sd, double alpha_init, int alpha_jump, double lambda, int psi, int rho_thinning, int aug_thinning, int clus_thin, bool save_aug, bool verbose, double kappa_1, double kappa_2);
-RcppExport SEXP _BayesMallows_run_mcmc(SEXP rankingsSEXP, SEXP nmcSEXP, SEXP constraintsSEXP, SEXP cardinalitiesSEXP, SEXP logz_estimateSEXP, SEXP rho_initSEXP, SEXP metricSEXP, SEXP n_clustersSEXP, SEXP include_wcdSEXP, SEXP leap_sizeSEXP, SEXP alpha_prop_sdSEXP, SEXP alpha_initSEXP, SEXP alpha_jumpSEXP, SEXP lambdaSEXP, SEXP psiSEXP, SEXP rho_thinningSEXP, SEXP aug_thinningSEXP, SEXP clus_thinSEXP, SEXP save_augSEXP, SEXP verboseSEXP, SEXP kappa_1SEXP, SEXP kappa_2SEXP) {
+Rcpp::List run_mcmc(arma::mat rankings, int nmc, Rcpp::List constraints, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> logz_estimate, Rcpp::Nullable<arma::vec> rho_init, std::string metric, std::string error_model, int n_clusters, bool include_wcd, int leap_size, double alpha_prop_sd, double alpha_init, int alpha_jump, double lambda, int psi, int rho_thinning, int aug_thinning, int clus_thin, bool save_aug, bool verbose, double kappa_1, double kappa_2);
+RcppExport SEXP _BayesMallows_run_mcmc(SEXP rankingsSEXP, SEXP nmcSEXP, SEXP constraintsSEXP, SEXP cardinalitiesSEXP, SEXP logz_estimateSEXP, SEXP rho_initSEXP, SEXP metricSEXP, SEXP error_modelSEXP, SEXP n_clustersSEXP, SEXP include_wcdSEXP, SEXP leap_sizeSEXP, SEXP alpha_prop_sdSEXP, SEXP alpha_initSEXP, SEXP alpha_jumpSEXP, SEXP lambdaSEXP, SEXP psiSEXP, SEXP rho_thinningSEXP, SEXP aug_thinningSEXP, SEXP clus_thinSEXP, SEXP save_augSEXP, SEXP verboseSEXP, SEXP kappa_1SEXP, SEXP kappa_2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -152,6 +152,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type logz_estimate(logz_estimateSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type rho_init(rho_initSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    Rcpp::traits::input_parameter< std::string >::type error_model(error_modelSEXP);
     Rcpp::traits::input_parameter< int >::type n_clusters(n_clustersSEXP);
     Rcpp::traits::input_parameter< bool >::type include_wcd(include_wcdSEXP);
     Rcpp::traits::input_parameter< int >::type leap_size(leap_sizeSEXP);
@@ -167,7 +168,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< double >::type kappa_1(kappa_1SEXP);
     Rcpp::traits::input_parameter< double >::type kappa_2(kappa_2SEXP);
-    rcpp_result_gen = Rcpp::wrap(run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2));
+    rcpp_result_gen = Rcpp::wrap(run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, error_model, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -183,7 +184,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 5},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},
-    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 22},
+    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 23},
     {NULL, NULL, 0}
 };
 

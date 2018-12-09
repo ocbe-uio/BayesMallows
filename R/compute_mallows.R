@@ -38,7 +38,7 @@
 #' @param error_model Character string specifying which model to use for inconsistent
 #'   rankings. Defaults to \code{NULL}, which means that inconsistent rankings are
 #'   not allowed. at the moment, the only available other option is \code{"bernoulli"},
-#'   which means that the Bernoulli error model is used \insertCite{crispino2018}.
+#'   which means that the Bernoulli error model is used.
 #'
 #' @param n_clusters Integer specifying the number of clusters, i.e., the number
 #'   of mixture components to use. Defaults to \code{1L}, which means no
@@ -316,6 +316,7 @@ compute_mallows <- function(rankings = NULL,
                   logz_estimate = logz_estimate,
                   rho_init = rho_init,
                   metric = metric,
+                  error_model = dplyr::if_else(is.null(error_model), "none", error_model),
                   n_clusters = n_clusters,
                   include_wcd = include_wcd,
                   lambda = lambda,
