@@ -257,7 +257,7 @@ compute_mallows <- function(rankings = NULL,
   }
 
   # Generate the constraint set
-  if(!is.null(preferences) && is.null(constraints) && is.null(error_model)){
+  if(!is.null(preferences) && is.null(constraints)){
     constraints <- generate_constraints(preferences, n_items)
   } else if (is.null(constraints)){
     constraints <- list()
