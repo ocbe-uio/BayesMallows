@@ -78,7 +78,7 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
                  rho_cluster, leap_size);
 
   // These distances do not work with the computational shortcut
-  if(metric == "cayley" | metric == "ulam"){
+  if((metric == "cayley") | (metric == "ulam")){
     indices = arma::regspace<arma::uvec>(0, n_items - 1);
   }
 
