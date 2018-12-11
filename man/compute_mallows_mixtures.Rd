@@ -4,13 +4,16 @@
 \alias{compute_mallows_mixtures}
 \title{Compute Mixtures of Mallows Models}
 \usage{
-compute_mallows_mixtures(n_clusters, ...)
+compute_mallows_mixtures(n_clusters, ..., cl = NULL)
 }
 \arguments{
 \item{n_clusters}{Integer vector specifying the number of clusters
 to use.}
 
 \item{...}{Other named arguments, passed to \code{\link{compute_mallows}}.}
+
+\item{cl}{Optional computing cluster used for parallelization, returned
+from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
 }
 \value{
 A list of Mallows models of class \code{BayesMallowsMixtures}, with one element
@@ -69,6 +72,17 @@ mixtures to use in the final model.
   map \%>\%
     select(-probability) \%>\%
     spread(key = cluster, value = item)
+
+  # RUNNING IN PARALLEL
+  # Computing Mallows models with different number of mixtures in parallel leads to
+  # considerably speedup
+  library(parallel)
+  cl <- makeCluster(detectCores() - 1)
+  n_clusters <- seq(from = 1, to = 10)
+  models <- compute_mallows_mixtures(n_clusters = n_clusters,
+                                     rankings = sushi_rankings,
+                                     include_wcd = TRUE, cl = cl)
+  stopCluster(cl)
 }
 
 

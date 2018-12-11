@@ -24,7 +24,8 @@ Imports: Rcpp (>= 0.12.17),
   rlang (>= 0.2.1),
   PerMallows (>= 1.13),
   HDInterval (>= 0.2.0),
-  cowplot (>= 0.9.3)
+  cowplot (>= 0.9.3),
+  parallel (>= 3.5.1)
 LinkingTo: Rcpp, RcppArmadillo
 Suggests:
     testthat,

@@ -44,6 +44,17 @@
   map %>%
     select(-probability) %>%
     spread(key = cluster, value = item)
+
+  # RUNNING IN PARALLEL
+  # Computing Mallows models with different number of mixtures in parallel leads to
+  # considerably speedup
+  library(parallel)
+  cl <- makeCluster(detectCores() - 1)
+  n_clusters <- seq(from = 1, to = 10)
+  models <- compute_mallows_mixtures(n_clusters = n_clusters,
+                                     rankings = sushi_rankings,
+                                     include_wcd = TRUE, cl = cl)
+  stopCluster(cl)
 }
 
 
