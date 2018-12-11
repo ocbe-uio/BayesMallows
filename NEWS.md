@@ -1,3 +1,6 @@
+# BayesMallows 0.2.0.9003
+* Added parallelization option to `compute_mallows_mixtures` and added `parallel` to **Suggests** field.
+
 # BayesMallows 0.2.0.9002
 * Deprecated functions `compute_cp_consensus` and `compute_map_consensus` have been removed. Use `compute_consensus` instead.
 
