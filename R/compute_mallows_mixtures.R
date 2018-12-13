@@ -26,13 +26,12 @@ compute_mallows_mixtures <- function(n_clusters, ..., cl = NULL){
 
   if(is.null(cl)){
     models <- purrr::map(n_clusters, function(x) {
-      message(paste0("Computing Mallows model with ", x, " clusters."))
       compute_mallows(..., n_clusters = x)
     })
   } else {
     if(inherits(cl, "cluster")){
       args <- list(...)
-      parallel::clusterExport(cl = cl, varlist = "args")
+      parallel::clusterExport(cl = cl, varlist = "args", envir = environment())
       models <- parallel::parLapply(cl = cl, X = n_clusters, fun = function(x){
         args$n_clusters <- x
         do.call(compute_mallows, args)
@@ -41,8 +40,6 @@ compute_mallows_mixtures <- function(n_clusters, ..., cl = NULL){
       stop("cl object must come from parallel::makeCluster")
     }
   }
-
-
 
   class(models) <- "BayesMallowsMixtures"
   return(models)
