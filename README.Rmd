@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![Build Status](https://travis-ci.org/osorensen/BayesMallows.svg?branch=master)](https://travis-ci.org/osorensen/BayesMallows)
 [![Coverage Status](https://img.shields.io/codecov/c/github/osorensen/BayesMallows/master.svg)](https://codecov.io/github/osorensen/BayesMallows?branch=master)
 
-This package implements the Bayesian Mallows Model described in @vitelli2018. The user can choose between footrule, Spearman, Cayley, or Kendall distance. 
+This package implements the Bayesian Mallows Model described in @vitelli2018. The user can choose between footrule, Spearman, Cayley, Hamming, Kendall, or Ulam distance. 
 
 The following features are currently implemented:
 
@@ -31,6 +31,8 @@ The following features are currently implemented:
 
 - Handling transitive pairwise preferences by imputation (@vitelli2018).
 
+- Estimating the partition function of the Mallows model using importance sampling (@vitelli2018) or an asymptotic approximation (@mukherjee2016).
+
 This includes any combination thereof, e.g., clustering assessors based on pairwise preferences.
 
 Future releases will include:
@@ -38,6 +40,8 @@ Future releases will include:
 - Time-varying ranks (@asfaw2016).
 
 - Non-transitive pairwise comparisons (@crispino2018).
+
+- Parallelization of Markov Chains.
 
 All feedback and suggestions are very welcome.
 

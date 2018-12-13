@@ -11,7 +11,7 @@ Status](https://img.shields.io/codecov/c/github/osorensen/BayesMallows/master.sv
 
 This package implements the Bayesian Mallows Model described in Vitelli
 et al. (2018). The user can choose between footrule, Spearman, Cayley,
-or Kendall distance.
+Hamming, Kendall, or Ulam distance.
 
 The following features are currently implemented:
 
@@ -24,6 +24,10 @@ The following features are currently implemented:
   - Handling transitive pairwise preferences by imputation (Vitelli et
     al. (2018)).
 
+  - Estimating the partition function of the Mallows model using
+    importance sampling (Vitelli et al. (2018)) or an asymptotic
+    approximation (Mukherjee (2016)).
+
 This includes any combination thereof, e.g., clustering assessors based
 on pairwise preferences.
 
@@ -32,6 +36,8 @@ Future releases will include:
   - Time-varying ranks (Asfaw et al. (2016)).
 
   - Non-transitive pairwise comparisons (Crispino et al. (2018)).
+
+  - Parallelization of Markov Chains.
 
 All feedback and suggestions are very welcome.
 
@@ -68,6 +74,13 @@ Crispino, M., E. Arjas, V. Vitelli, N. Barrett, and A. Frigessi. 2018.
 “A Bayesian Mallows approach to non-transitive pair comparison data:
 how human are sounds?” *Accepted for Publication in Annals of Applied
 Statistics*.
+
+</div>
+
+<div id="ref-mukherjee2016">
+
+Mukherjee, S. 2016. “Estimation in Exponential Families on
+Permutations.” *The Annals of Statistics* 44 (2): 853–75.
 
 </div>
 
