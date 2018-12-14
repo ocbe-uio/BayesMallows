@@ -37,7 +37,7 @@
 #'
 #' @param error_model Character string specifying which model to use for inconsistent
 #'   rankings. Defaults to \code{NULL}, which means that inconsistent rankings are
-#'   not allowed. at the moment, the only available other option is \code{"bernoulli"},
+#'   not allowed. At the moment, the only available other option is \code{"bernoulli"},
 #'   which means that the Bernoulli error model is used.
 #'
 #' @param n_clusters Integer specifying the number of clusters, i.e., the number

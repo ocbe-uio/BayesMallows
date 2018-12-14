@@ -5,11 +5,12 @@
 \title{Worker function for computing the posterior distribution.}
 \usage{
 run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate,
-  rho_init, metric = "footrule", n_clusters = 1L,
-  include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5,
-  alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L,
-  rho_thinning = 1L, aug_thinning = 1L, clus_thin = 1L,
-  save_aug = FALSE, verbose = FALSE, kappa_1 = 1, kappa_2 = 1)
+  rho_init, metric = "footrule", error_model = "none",
+  n_clusters = 1L, include_wcd = FALSE, leap_size = 1L,
+  alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L,
+  lambda = 0.1, psi = 10L, rho_thinning = 1L, aug_thinning = 1L,
+  clus_thin = 1L, save_aug = FALSE, verbose = FALSE, kappa_1 = 1,
+  kappa_2 = 1)
 }
 \arguments{
 \item{rankings}{A set of complete rankings, with one sample per column.
