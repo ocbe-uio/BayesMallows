@@ -230,8 +230,10 @@ compute_mallows <- function(rankings = NULL,
     stopifnot(error_model == "bernoulli")
     n_items <- max(dplyr::pull(tidyr::gather(dplyr::select(preferences, .data$bottom_item, .data$top_item)), .data$value))
     n_assessors <- dplyr::pull(dplyr::summarise(preferences, n = dplyr::n_distinct(.data$assessor)), .data$n)
-    rankings <- purrr::rerun(n_assessors, sample(x = n_items, size = n_items))
-    rankings <- matrix(unlist(rankings), ncol = n_items, nrow = n_assessors, byrow = TRUE)
+    if(is.null(rankings)){
+      rankings <- purrr::rerun(n_assessors, sample(x = n_items, size = n_items))
+      rankings <- matrix(unlist(rankings), ncol = n_items, nrow = n_assessors, byrow = TRUE)
+    }
   }
 
   # Find the number of items

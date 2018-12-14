@@ -17,7 +17,8 @@ void augment_pairwise(
     const int& t,
     arma::vec& aug_acceptance,
     const bool& clustering,
-    bool& augmentation_accepted
+    bool& augmentation_accepted,
+    std::string error_model
 );
 
 

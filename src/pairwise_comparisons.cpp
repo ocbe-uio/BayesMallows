@@ -84,39 +84,47 @@ void augment_pairwise(
     const int& t,
     arma::vec& aug_acceptance,
     const bool& clustering,
-    bool& augmentation_accepted
+    bool& augmentation_accepted,
+    std::string error_model
 ){
 
-  for(int i = 0; i < n_assessors; ++i){
-    // Call the function which creates a proposal
-    arma::vec proposal;
-    propose_pairwise_augmentation(proposal, rankings, constraints, n_items, i);
+  if(error_model == "none"){
+    for(int i = 0; i < n_assessors; ++i){
+      // Call the function which creates a proposal
+      arma::vec proposal;
+      propose_pairwise_augmentation(proposal, rankings, constraints, n_items, i);
 
-    // Finally, decide whether to accept the proposal or not
-    // Draw a uniform random number
-    double u = std::log(arma::randu<double>());
+      // Finally, decide whether to accept the proposal or not
+      // Draw a uniform random number
+      double u = std::log(arma::randu<double>());
 
-    // Find which cluster the assessor belongs to
-    int cluster;
-    if(clustering){
-      cluster = current_cluster_assignment(i);
-    } else {
-      cluster = 0;
+      // Find which cluster the assessor belongs to
+      int cluster;
+      if(clustering){
+        cluster = current_cluster_assignment(i);
+      } else {
+        cluster = 0;
+      }
+
+      double ratio = -alpha(cluster) / n_items *
+        (get_rank_distance(proposal, rho.col(cluster), metric) -
+        get_rank_distance(rankings.col(i), rho.col(cluster), metric));
+
+      if(ratio > u){
+        rankings.col(i) = proposal;
+        ++aug_acceptance(i);
+        augmentation_accepted = true;
+      } else {
+        augmentation_accepted = false;
+      }
+
     }
-
-    double ratio = -alpha(cluster) / n_items *
-      (get_rank_distance(proposal, rho.col(cluster), metric) -
-      get_rank_distance(rankings.col(i), rho.col(cluster), metric));
-
-    if(ratio > u){
-      rankings.col(i) = proposal;
-      ++aug_acceptance(i);
-      augmentation_accepted = true;
-    } else {
-      augmentation_accepted = false;
-    }
-
+  } else if(error_model == "bernoulli"){
+    Rcpp::Rcout << "Bernoulli comes here" << std::endl;
+  } else {
+    Rcpp::stop("error_model must be 'none' or 'bernoulli'");
   }
+
 
 }
 

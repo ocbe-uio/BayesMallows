@@ -220,6 +220,14 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     aug_acceptance.reset();
   }
 
+  // Declare vector with Bernoulli parameter for the case of intransitive preferences
+  arma::vec theta;
+  if(error_model == "bernoulli"){
+    theta = arma::zeros<arma::vec>(nmc);
+  } else {
+    theta.reset();
+  }
+
   // Other variables used
   int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
   arma::vec alpha_old = alpha.col(0);
@@ -313,7 +321,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   if(augpair){
     augment_pairwise(rankings, current_cluster_assignment, alpha_old, rho_old,
                      metric, constraints, n_assessors, n_items, t,
-                     aug_acceptance, clustering, augmentation_accepted);
+                     aug_acceptance, clustering, augmentation_accepted, error_model);
 
   }
 
@@ -333,6 +341,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     Rcpp::Named("alpha_acceptance") = alpha_acceptance / nmc,
     Rcpp::Named("cluster_assignment") = cluster_assignment + 1,
     Rcpp::Named("cluster_probs") = cluster_probs,
+    Rcpp::Named("theta") = theta,
     Rcpp::Named("within_cluster_distance") = within_cluster_distance,
     Rcpp::Named("augmented_data") = augmented_data,
     Rcpp::Named("any_missing") = any_missing,
