@@ -4,35 +4,11 @@
 \alias{tidy_mcmc}
 \title{Internal Function for Tidying MCMC Output}
 \usage{
-tidy_mcmc(fit, tidy_rho = TRUE, tidy_alpha = TRUE,
-  tidy_cluster_assignment = TRUE, tidy_cluster_probabilities = TRUE,
-  tidy_wcd = TRUE, tidy_augmented_data = TRUE,
-  tidy_augmentation_acceptance = TRUE)
+tidy_mcmc(fit)
 }
 \arguments{
 \item{fit}{A fitted object, returned from \code{\link{compute_mallows}} with the option
 \code{skip_postprocessing = TRUE}.}
-
-\item{tidy_rho}{Logical specifying whether or not to tidy the output for \code{rho}.
-Defaults to \code{TRUE}.}
-
-\item{tidy_alpha}{Logical specifying whether or not to tidy the output for \code{alpha}.
-Defaults to \code{TRUE}.}
-
-\item{tidy_cluster_assignment}{Logical specifying whether or not to tidy the output for
-cluster assignments. Defaults to \code{TRUE}.}
-
-\item{tidy_cluster_probabilities}{Logical specifying whether or not to tidy the output for
-cluster probabilities. Defaults to \code{TRUE}.}
-
-\item{tidy_wcd}{Logical specifying whether or not to tidy the output for
-within-cluster distances. Defaults to \code{TRUE}.}
-
-\item{tidy_augmented_data}{Logical specifying whether or not to tidy the output for
-augmented data. Defaults to \code{TRUE}.}
-
-\item{tidy_augmentation_acceptance}{Logical specifying whether or not to tidy the output for
-augmentation acceptance. Defaults to \code{TRUE}.}
 }
 \description{
 Internal Function for Tidying MCMC Output

@@ -92,19 +92,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rtruncbeta
-double rtruncbeta(int shape1, int shape2, double trunc);
-RcppExport SEXP _BayesMallows_rtruncbeta(SEXP shape1SEXP, SEXP shape2SEXP, SEXP truncSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type shape1(shape1SEXP);
-    Rcpp::traits::input_parameter< int >::type shape2(shape2SEXP);
-    Rcpp::traits::input_parameter< double >::type trunc(truncSEXP);
-    rcpp_result_gen = Rcpp::wrap(rtruncbeta(shape1, shape2, trunc));
-    return rcpp_result_gen;
-END_RCPP
-}
 // get_partition_function
 double get_partition_function(int n_items, double alpha, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> logz_estimate, std::string metric);
 RcppExport SEXP _BayesMallows_get_partition_function(SEXP n_itemsSEXP, SEXP alphaSEXP, SEXP cardinalitiesSEXP, SEXP logz_estimateSEXP, SEXP metricSEXP) {
@@ -194,7 +181,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_binomial_coefficient", (DL_FUNC) &_BayesMallows_binomial_coefficient, 2},
     {"_BayesMallows_std_setdiff", (DL_FUNC) &_BayesMallows_std_setdiff, 2},
     {"_BayesMallows_sample_int", (DL_FUNC) &_BayesMallows_sample_int, 1},
-    {"_BayesMallows_rtruncbeta", (DL_FUNC) &_BayesMallows_rtruncbeta, 3},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 5},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},

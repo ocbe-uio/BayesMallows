@@ -7,15 +7,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
-//' Sample a random number from the truncated beta distribution.
-//'
-//' @param shape1 First shape parameter.
-//' @param shape2 Second shape parameter.
-//' @param trunc Where to truncate.
-//' @value A scalar between \code{0} and \code{trunc}.
-//' @keyword internal
-//'
-// [[Rcpp::export]]
 double rtruncbeta(int shape1, int shape2, double trunc = 1) {
   int i = 0;
   double x;

@@ -12,8 +12,7 @@ compute_mallows(rankings = NULL, preferences = NULL,
   alpha_jump = 1L, lambda = 0.001, psi = 10L,
   include_wcd = (n_clusters > 1), save_aug = FALSE,
   aug_thinning = 1L, logz_estimate = NULL, verbose = FALSE,
-  validate_rankings = TRUE, constraints = NULL,
-  skip_postprocessing = FALSE)
+  validate_rankings = TRUE, constraints = NULL)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items, of size \code{n_assessors x
@@ -150,13 +149,6 @@ the the constraint set is computed internally. In repeated calls to
 \code{compute_mallows}, with very large datasets, computing the constraint
 set may be time consuming. In this case it can be beneficial to precompute
 it and provide it as a separate argument.}
-
-\item{skip_postprocessing}{Logical specifying whether to skip the
-postprocessing of the output of the Metropolis-Hastings algorithm. This can
-be useful for very large datasets, which cause the postprocessing to crash.
-Note that when \code{skip_postprocessing=TRUE}, the functions for studying
-the posterior distributions will not work unless the internal function
-\code{\link{tidy_mcmc}} has been run.}
 }
 \value{
 A list of class BayesMallows.

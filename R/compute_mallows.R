@@ -147,12 +147,6 @@
 #'   set may be time consuming. In this case it can be beneficial to precompute
 #'   it and provide it as a separate argument.
 #'
-#' @param skip_postprocessing Logical specifying whether to skip the
-#'   postprocessing of the output of the Metropolis-Hastings algorithm. This can
-#'   be useful for very large datasets, which cause the postprocessing to crash.
-#'   Note that when \code{skip_postprocessing=TRUE}, the functions for studying
-#'   the posterior distributions will not work unless the internal function
-#'   \code{\link{tidy_mcmc}} has been run.
 #'
 #' @return A list of class BayesMallows.
 #'
@@ -190,8 +184,7 @@ compute_mallows <- function(rankings = NULL,
                             logz_estimate = NULL,
                             verbose = FALSE,
                             validate_rankings = TRUE,
-                            constraints = NULL,
-                            skip_postprocessing = FALSE
+                            constraints = NULL
                             ){
 
   # Check that at most one of rankings and preferences is set
@@ -359,9 +352,7 @@ compute_mallows <- function(rankings = NULL,
     fit$items <- paste("Item", seq(from = 1, to = nrow(fit$rho), by = 1))
   }
 
-  # Tidy MCMC results
-  if(!skip_postprocessing) fit <- tidy_mcmc(fit, tidy_cluster_assignment = save_clus)
-
+  fit <- tidy_mcmc(fit)
 
   # Add class attribute
   class(fit) <- "BayesMallows"
