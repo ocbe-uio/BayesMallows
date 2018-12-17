@@ -28,14 +28,14 @@ The following features are currently implemented:
     importance sampling (Vitelli et al. (2018)) or an asymptotic
     approximation (Mukherjee (2016)).
 
+  - Non-transitive pairwise comparisons (Crispino et al. (2018)).
+
 This includes any combination thereof, e.g., clustering assessors based
 on pairwise preferences.
 
 Future releases will include:
 
   - Time-varying ranks (Asfaw et al. (2016)).
-
-  - Non-transitive pairwise comparisons (Crispino et al. (2018)).
 
   - Parallelization of Markov Chains.
 

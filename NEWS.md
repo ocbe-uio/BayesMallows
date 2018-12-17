@@ -1,3 +1,6 @@
+# BayesMallows 0.2.0.9004
+* Implemented the Bernoulli error model. Set `error_model = "bernoulli"` in `compute_mallows` in order to use it. Examples will come later.
+
 # BayesMallows 0.2.0.9003
 * Added parallelization option to `compute_mallows_mixtures` and added `parallel` to **Suggests** field.
 
