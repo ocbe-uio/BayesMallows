@@ -1,14 +1,3 @@
-#' Internal Function for Tidying MCMC Output
-#'
-#' @param fit A fitted object, returned from \code{\link{compute_mallows}} with the option
-#' \code{skip_postprocessing = TRUE}.
-#'
-#' @export
-#'
-#' @keywords internal
-#'
-#' @example /inst/examples/tidy_mcmc_example.R
-#'
 tidy_mcmc <- function(fit){
 
   fit <- tidy_rho(fit)
