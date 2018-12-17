@@ -4,6 +4,45 @@
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
+// Update shape parameters for the Bernoulli error model
+void update_shape_bernoulli(
+    arma::vec& shape_1,
+    arma::vec& shape_2,
+    const double& kappa_1,
+    const double& kappa_2,
+    const int& n_assessors,
+    const int& n_items,
+    const arma::mat& rankings,
+    const Rcpp::List& constraints,
+    const int& t
+){
+
+  int sum_1 = 0, sum_2 = 0;
+  for(int i = 0; i < n_assessors; ++i){
+
+    Rcpp::List assessor_constraints = Rcpp::as<Rcpp::List>(constraints[i]);
+    for(int j = 0; j < n_items; ++j){
+
+      arma::uvec items_above = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[j]);
+      arma::uvec items_below = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[j]);
+
+      for(int k = 0; k < items_above.size(); ++k){
+        int g = (arma::as_scalar(rankings.col(i).row(j)) < arma::as_scalar(rankings.col(i).row(items_above(k) - 1)));
+        sum_1 += g;
+        sum_2 += 1 - g;
+      }
+      for(int k = 0; k < items_below.size(); ++k){
+        int g = (arma::as_scalar(rankings.col(i).row(j)) > arma::as_scalar(rankings.col(i).row(items_below(k) - 1)));
+        sum_1 += g;
+        sum_2 += 1 - g;
+      }
+    }
+  }
+  shape_1(t) = kappa_1 + sum_1;
+  shape_2(t) = kappa_2 + sum_2;
+
+}
+
 void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
                           const Rcpp::List& assessor_constraints,
                           const arma::vec& current_ranking){
@@ -33,13 +72,11 @@ void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
 
 
 void propose_pairwise_augmentation(arma::vec& proposal,
-                                   const arma::mat& rankings,
-                                   const Rcpp::List& constraints,
-                                   const int& n_items,
-                                   const int& i){
+                                   const arma::vec& ranking,
+                                   const Rcpp::List& assessor_constraints,
+                                   const int& n_items){
 
   // Extract the constraints for this particular assessor
-  Rcpp::List assessor_constraints = Rcpp::as<Rcpp::List>(constraints[i]);
   arma::uvec constrained_items = Rcpp::as<arma::uvec>(assessor_constraints[0]);
 
   // Draw an integer between 1 and n_items
@@ -53,7 +90,7 @@ void propose_pairwise_augmentation(arma::vec& proposal,
 
   if(item_is_constrained){
     find_pairwise_limits(left_limit, right_limit, item,
-                         assessor_constraints, rankings.col(i));
+                         assessor_constraints, ranking);
   }
 
   // Now complete the leap step by drawing a new proposal uniformly between
@@ -61,21 +98,64 @@ void propose_pairwise_augmentation(arma::vec& proposal,
   int proposed_rank = arma::randi<int>(arma::distr_param(left_limit + 1, right_limit - 1));
 
   // Assign the proposal to the (item-1)th item
-  proposal = rankings.col(i);
+  proposal = ranking;
   proposal(item - 1) = proposed_rank;
 
   double delta_r;
   arma::uvec indices;
 
   // Do the shift step
-  shift_step(proposal, rankings.col(i), item, delta_r, indices);
+  shift_step(proposal, ranking, item, delta_r, indices);
 
 }
+
+void propose_swap(arma::vec& proposal,
+                  const arma::vec& ranking,
+                  const Rcpp::List& assessor_constraints,
+                  const int& n_items,
+                  int& g_diff){
+  proposal = ranking;
+
+  // Set L = 1 for now
+  int L = 1;
+  // Draw a random number, representing an item
+  int u = arma::as_scalar(arma::randi(1, arma::distr_param(1, n_items - L)));
+
+  int ind1 = arma::as_scalar(arma::find(ranking == u));
+  int ind2 = arma::as_scalar(arma::find(ranking == (u + L)));
+
+  proposal(ind1) = ranking(ind2);
+  proposal(ind2) = ranking(ind1);
+
+  // First consider the first item that was switched
+  arma::uvec items_above = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[ind1]);
+  arma::uvec items_below = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[ind1]);
+
+  for(int j = 0; j < items_above.size(); ++j){
+    g_diff += (proposal(items_above[j] - 1) > proposal(ind1)) - (ranking(items_above[j] - 1) > ranking(ind1));
+  }
+  for(int j = 0; j < items_below.size(); ++j){
+    g_diff += (proposal(items_below[j] - 1) < proposal(ind1)) - (ranking(items_below[j] - 1) < ranking(ind1));
+  }
+
+  // Now consider the second item
+  items_above = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[ind2]);
+  items_below = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[ind2]);
+
+  for(int j = 0; j < items_above.size(); ++j){
+    g_diff += (proposal(items_above[j] - 1) > proposal(ind1)) - (ranking(items_above[j] - 1) > ranking(ind1));
+  }
+  for(int j = 0; j < items_below.size(); ++j){
+    g_diff += (proposal(items_below[j] - 1) < proposal(ind1)) - (ranking(items_below[j] - 1) < ranking(ind1));
+  }
+}
+
 
 void augment_pairwise(
     arma::mat& rankings,
     const arma::uvec& current_cluster_assignment,
     const arma::vec& alpha,
+    const double& theta,
     const arma::mat& rho,
     const std::string& metric,
     const Rcpp::List& constraints,
@@ -88,43 +168,50 @@ void augment_pairwise(
     std::string error_model
 ){
 
-  if(error_model == "none"){
-    for(int i = 0; i < n_assessors; ++i){
-      // Call the function which creates a proposal
-      arma::vec proposal;
-      propose_pairwise_augmentation(proposal, rankings, constraints, n_items, i);
+  for(int i = 0; i < n_assessors; ++i){
 
-      // Finally, decide whether to accept the proposal or not
-      // Draw a uniform random number
-      double u = std::log(arma::randu<double>());
+    arma::vec proposal;
+    // Summed difference over error function before and after proposal
+    int g_diff = 0;
 
-      // Find which cluster the assessor belongs to
-      int cluster;
-      if(clustering){
-        cluster = current_cluster_assignment(i);
-      } else {
-        cluster = 0;
-      }
-
-      double ratio = -alpha(cluster) / n_items *
-        (get_rank_distance(proposal, rho.col(cluster), metric) -
-        get_rank_distance(rankings.col(i), rho.col(cluster), metric));
-
-      if(ratio > u){
-        rankings.col(i) = proposal;
-        ++aug_acceptance(i);
-        augmentation_accepted = true;
-      } else {
-        augmentation_accepted = false;
-      }
-
+    // Sample a proposal, depending on the error model
+    if(error_model == "none"){
+      propose_pairwise_augmentation(proposal, rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]), n_items);
+    } else if(error_model == "bernoulli"){
+      propose_swap(proposal, rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]), n_items, g_diff);
+    } else {
+      Rcpp::stop("error_model must be 'none' or 'bernoulli'");
     }
-  } else if(error_model == "bernoulli"){
-    Rcpp::Rcout << "Bernoulli comes here" << std::endl;
-  } else {
-    Rcpp::stop("error_model must be 'none' or 'bernoulli'");
-  }
 
+    // Finally, decide whether to accept the proposal or not
+    // Draw a uniform random number
+    double u = std::log(arma::randu<double>());
+
+    // Find which cluster the assessor belongs to
+    int cluster;
+    if(clustering){
+      cluster = current_cluster_assignment(i);
+    } else {
+      cluster = 0;
+    }
+
+    double ratio = -alpha(cluster) / n_items *
+      (get_rank_distance(proposal, rho.col(cluster), metric) -
+      get_rank_distance(rankings.col(i), rho.col(cluster), metric));
+
+    if((theta > 0) & (g_diff != 0)) {
+      ratio += g_diff * std::log(theta / (1 - theta));
+    }
+
+    if(ratio > u){
+      rankings.col(i) = proposal;
+      ++aug_acceptance(i);
+      augmentation_accepted = true;
+    } else {
+      augmentation_accepted = false;
+    }
+
+  }
 
 }
 

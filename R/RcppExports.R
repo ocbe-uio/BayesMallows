@@ -65,6 +65,18 @@ sample_int <- function(probs) {
     .Call(`_BayesMallows_sample_int`, probs)
 }
 
+#' Sample a random number from the truncated beta distribution.
+#'
+#' @param shape1 First shape parameter.
+#' @param shape2 Second shape parameter.
+#' @param trunc Where to truncate.
+#' @value A scalar between \code{0} and \code{trunc}.
+#' @keyword internal
+#'
+rtruncbeta <- function(shape1, shape2, trunc = 1) {
+    .Call(`_BayesMallows_rtruncbeta`, shape1, shape2, trunc)
+}
+
 #' Compute the logarithm of the partition function for a Mallows rank model.
 #'
 #' @param n_items Number of items.

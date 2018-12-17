@@ -84,13 +84,10 @@ void update_cluster_probs(
     // Find the parameter for this cluster
     tau_k(cluster_index) = arma::sum(current_cluster_assignment == cluster_index) + psi;
 
-
     // If there are no assessors in the cluster,
-    // Save the a draw from the gamma distribution
+    // Save a sample from the gamma distribution
     cluster_probs(cluster_index, t) = arma::randg<double>(arma::distr_param(tau_k(cluster_index), 1.0));
   }
-
-
 
   // Finally, normalize cluster_probs. Must specify that it should have unit 1-norm,
   // 2-norm is default!!
