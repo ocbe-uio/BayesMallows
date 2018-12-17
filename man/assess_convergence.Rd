@@ -13,8 +13,8 @@ assess_convergence(model_fit, parameter = "alpha", items = NULL,
 returned from \code{\link{compute_mallows_mixtures}}.}
 
 \item{parameter}{Character string specifying which parameter to plot. Available
-options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"}, or
-\code{"cluster_probs"}.}
+options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"},
+\code{"cluster_probs"}, or \code{"theta"}.}
 
 \item{items}{The items to study in the diagnostic plot for \code{rho}. Either
 a vector of item names, corresponding to \code{model_fit$items} or a

@@ -251,7 +251,7 @@ tidy_error_probability <- function(fit){
 
   if(theta_length > 0){
     fit$theta <- dplyr::tibble(
-      iteration = seq(from = 1, to = , by = 1),
+      iteration = seq(from = 1, to = theta_length, by = 1),
       value = c(fit$theta)
     )
   } else {

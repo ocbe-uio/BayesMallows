@@ -9,8 +9,8 @@
 #'  returned from \code{\link{compute_mallows_mixtures}}.
 #'
 #' @param parameter Character string specifying which parameter to plot. Available
-#' options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"}, or
-#' \code{"cluster_probs"}.
+#' options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"},
+#' \code{"cluster_probs"}, or \code{"theta"}.
 #'
 #' @param items The items to study in the diagnostic plot for \code{rho}. Either
 #'   a vector of item names, corresponding to \code{model_fit$items} or a
@@ -62,10 +62,10 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
       cowplot::plot_grid(plotlist = purrr::map(model_fit, trace_cluster_probs), ...)
     }
 
-
-
+  } else if (parameter == "theta"){
+      trace_theta(model_fit)
   } else {
-    stop("parameter must be either \"alpha\", \"rho\", \"augmentation\", or \"cluster_probs\".")
+    stop("parameter must be either \"alpha\", \"rho\", \"augmentation\", \"cluster_probs\", or \"theta\".")
   }
 }
 
@@ -173,4 +173,18 @@ trace_cluster_probs <- function(model_fit){
     ggplot2::theme(legend.position = "bottom") +
     ggplot2::xlab("Iteration") +
     ggplot2::ylab(expression(tau[c]))
+}
+
+
+trace_theta <- function(model_fit){
+  if(is.null(model_fit$theta)){
+    stop("Theta not available. Run compute_mallows with error_model = 'bernoulli'.")
+  }
+  # Create the diagnostic plot for theta
+  p <- ggplot2::ggplot(model_fit$theta, ggplot2::aes(x = .data$iteration, y = .data$value)) +
+    ggplot2::xlab("Iteration") +
+    ggplot2::ylab(expression(theta)) +
+    ggplot2::geom_line()
+
+  return(p)
 }
