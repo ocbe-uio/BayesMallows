@@ -46,6 +46,8 @@
 //' @param verbose Logical specifying whether to print out the progress of the
 //' Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
 //' 1000th iteration.
+//' @param kappa_1 Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.
+//' @param kappa_2 Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.
 //' @keywords internal
 //'
 // [[Rcpp::export]]
@@ -55,6 +57,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     Rcpp::Nullable<arma::vec> logz_estimate,
                     Rcpp::Nullable<arma::vec> rho_init,
                     std::string metric = "footrule",
+                    std::string error_model = "none",
                     int n_clusters = 1,
                     bool include_wcd = false,
                     int leap_size = 1,
@@ -67,7 +70,9 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     int aug_thinning = 1,
                     int clus_thin = 1,
                     bool save_aug = false,
-                    bool verbose = false
+                    bool verbose = false,
+                    double kappa_1 = 1.0,
+                    double kappa_2 = 1.0
                       ){
 
   // The number of items ranked
@@ -215,9 +220,24 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     aug_acceptance.reset();
   }
 
+  // Declare vector with Bernoulli parameter for the case of intransitive preferences
+  arma::vec theta, shape_1, shape_2;
+  if(error_model == "bernoulli"){
+    theta = arma::zeros<arma::vec>(nmc);
+    shape_1 = arma::zeros<arma::vec>(nmc);
+    shape_2 = arma::zeros<arma::vec>(nmc);
+    shape_1(0) = kappa_1;
+    shape_2(0) = kappa_2;
+  } else {
+    theta.reset();
+    shape_1.reset();
+    shape_2.reset();
+  }
+
   // Other variables used
   int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
   arma::vec alpha_old = alpha.col(0);
+  double theta_old = 0;
   arma::mat rho_old = rho(arma::span::all, arma::span::all, arma::span(0));
   bool rho_accepted = false;
   bool augmentation_accepted = false;
@@ -245,6 +265,19 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     }
 
 
+
+    if(error_model == "bernoulli"){
+
+      update_shape_bernoulli(shape_1, shape_2, kappa_1, kappa_2,
+                             n_assessors, n_items, rankings, constraints, t);
+
+      // Update the theta parameter for the error model, which is independent of cluster
+      theta(t) = rtruncbeta(shape_1(t), shape_2(t), 0.5);
+      // Saving this because it is referenced also when the theta vector is empty
+      theta_old = theta(t);
+    }
+
+
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
 
       // Find the members of this cluster
@@ -257,6 +290,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
         // When augmenting data, we need to update in every step, even without clustering
         clus_mat = rankings;
       }
+
 
       // Call the void function which updates rho by reference
       update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,
@@ -306,9 +340,9 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
     // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
-    augment_pairwise(rankings, current_cluster_assignment, alpha_old, rho_old,
+    augment_pairwise(rankings, current_cluster_assignment, alpha_old, 0.1, rho_old,
                      metric, constraints, n_assessors, n_items, t,
-                     aug_acceptance, clustering, augmentation_accepted);
+                     aug_acceptance, clustering, augmentation_accepted, error_model);
 
   }
 
@@ -326,8 +360,12 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     Rcpp::Named("rho_acceptance") = rho_acceptance / nmc,
     Rcpp::Named("alpha") = alpha,
     Rcpp::Named("alpha_acceptance") = alpha_acceptance / nmc,
+    Rcpp::Named("theta") = theta,
+    Rcpp::Named("shape1") = shape_1,
+    Rcpp::Named("shape2") = shape_2,
     Rcpp::Named("cluster_assignment") = cluster_assignment + 1,
     Rcpp::Named("cluster_probs") = cluster_probs,
+    Rcpp::Named("theta") = theta,
     Rcpp::Named("within_cluster_distance") = within_cluster_distance,
     Rcpp::Named("augmented_data") = augmented_data,
     Rcpp::Named("any_missing") = any_missing,

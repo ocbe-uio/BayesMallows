@@ -1,36 +1,4 @@
-#' Internal Function for Tidying MCMC Output
-#'
-#' @param fit A fitted object, returned from \code{\link{compute_mallows}} with the option
-#' \code{skip_postprocessing = TRUE}.
-#' @param tidy_rho Logical specifying whether or not to tidy the output for \code{rho}.
-#' Defaults to \code{TRUE}.
-#' @param tidy_alpha Logical specifying whether or not to tidy the output for \code{alpha}.
-#' Defaults to \code{TRUE}.
-#' @param tidy_cluster_assignment Logical specifying whether or not to tidy the output for
-#' cluster assignments. Defaults to \code{TRUE}.
-#' @param tidy_cluster_probabilities Logical specifying whether or not to tidy the output for
-#' cluster probabilities. Defaults to \code{TRUE}.
-#' @param tidy_wcd Logical specifying whether or not to tidy the output for
-#' within-cluster distances. Defaults to \code{TRUE}.
-#' @param tidy_augmented_data Logical specifying whether or not to tidy the output for
-#' augmented data. Defaults to \code{TRUE}.
-#' @param tidy_augmentation_acceptance Logical specifying whether or not to tidy the output for
-#' augmentation acceptance. Defaults to \code{TRUE}.
-#'
-#' @export
-#'
-#' @keywords internal
-#'
-#' @example /inst/examples/tidy_mcmc_example.R
-#'
-tidy_mcmc <- function(fit,
-                      tidy_rho = TRUE,
-                      tidy_alpha = TRUE,
-                      tidy_cluster_assignment = TRUE,
-                      tidy_cluster_probabilities = TRUE,
-                      tidy_wcd = TRUE,
-                      tidy_augmented_data = TRUE,
-                      tidy_augmentation_acceptance = TRUE){
+tidy_mcmc <- function(fit){
 
   fit <- tidy_rho(fit)
   fit <- tidy_alpha(fit)
@@ -39,6 +7,7 @@ tidy_mcmc <- function(fit,
   fit <- tidy_wcd(fit)
   fit <- tidy_augmented_data(fit)
   fit <- tidy_augmentation_acceptance(fit)
+  fit <- tidy_error_probability(fit)
 
   return(fit)
 }
@@ -261,5 +230,24 @@ tidy_augmentation_acceptance <- function(fit){
   } else {
     fit$aug_acceptance <- NULL
   }
+  return(fit)
+}
+
+
+
+tidy_error_probability <- function(fit){
+  theta_length <- length(fit$theta)
+
+  if(theta_length > 0){
+    fit$theta <- dplyr::tibble(
+      iteration = seq(from = 1, to = theta_length, by = 1),
+      value = c(fit$theta)
+    )
+  } else {
+    fit$theta <- NULL
+  }
+
+
+
   return(fit)
 }

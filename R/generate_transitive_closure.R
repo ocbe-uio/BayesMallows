@@ -63,7 +63,7 @@ generate_transitive_closure <- function(df){
   if(nrow(check) > 0){
     print("Inconsistent rankings:")
     print(check)
-    stop("Inconsistent rankings are not yet supported.")
+    stop("Cannot compute transitive closure. Please run compute_mallows with error_model='bernoulli'.")
   }
 
   class(result) <- c("BayesMallowsTC", class(result))

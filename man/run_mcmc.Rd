@@ -5,11 +5,12 @@
 \title{Worker function for computing the posterior distribution.}
 \usage{
 run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate,
-  rho_init, metric = "footrule", n_clusters = 1L,
-  include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5,
-  alpha_init = 5, alpha_jump = 1L, lambda = 0.1, psi = 10L,
-  rho_thinning = 1L, aug_thinning = 1L, clus_thin = 1L,
-  save_aug = FALSE, verbose = FALSE)
+  rho_init, metric = "footrule", error_model = "none",
+  n_clusters = 1L, include_wcd = FALSE, leap_size = 1L,
+  alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L,
+  lambda = 0.1, psi = 10L, rho_thinning = 1L, aug_thinning = 1L,
+  clus_thin = 1L, save_aug = FALSE, verbose = FALSE, kappa_1 = 1,
+  kappa_2 = 1)
 }
 \arguments{
 \item{rankings}{A set of complete rankings, with one sample per column.
@@ -62,6 +63,10 @@ sample from the posterior distribution.}
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
 1000th iteration.}
+
+\item{kappa_1}{Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.}
+
+\item{kappa_2}{Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.}
 }
 \description{
 Worker function for computing the posterior distribution.

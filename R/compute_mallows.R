@@ -35,6 +35,11 @@
 #'   given by \code{metric} is also used to compute within-cluster distances,
 #'   when \code{include_wcd = TRUE}.
 #'
+#' @param error_model Character string specifying which model to use for inconsistent
+#'   rankings. Defaults to \code{NULL}, which means that inconsistent rankings are
+#'   not allowed. At the moment, the only available other option is \code{"bernoulli"},
+#'   which means that the Bernoulli error model is used.
+#'
 #' @param n_clusters Integer specifying the number of clusters, i.e., the number
 #'   of mixture components to use. Defaults to \code{1L}, which means no
 #'   clustering is performed. See \code{\link{compute_mallows_mixtures}} for a
@@ -142,12 +147,6 @@
 #'   set may be time consuming. In this case it can be beneficial to precompute
 #'   it and provide it as a separate argument.
 #'
-#' @param skip_postprocessing Logical specifying whether to skip the
-#'   postprocessing of the output of the Metropolis-Hastings algorithm. This can
-#'   be useful for very large datasets, which cause the postprocessing to crash.
-#'   Note that when \code{skip_postprocessing=TRUE}, the functions for studying
-#'   the posterior distributions will not work unless the internal function
-#'   \code{\link{tidy_mcmc}} has been run.
 #'
 #' @return A list of class BayesMallows.
 #'
@@ -166,6 +165,7 @@
 compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
                             metric = "footrule",
+                            error_model = NULL,
                             n_clusters = 1L,
                             save_clus = FALSE,
                             clus_thin = 1L,
@@ -184,8 +184,7 @@ compute_mallows <- function(rankings = NULL,
                             logz_estimate = NULL,
                             verbose = FALSE,
                             validate_rankings = TRUE,
-                            constraints = NULL,
-                            skip_postprocessing = FALSE
+                            constraints = NULL
                             ){
 
   # Check that at most one of rankings and preferences is set
@@ -211,7 +210,7 @@ compute_mallows <- function(rankings = NULL,
 
 
   # Deal with pairwise comparisons. Generate rankings compatible with them.
-  if(!is.null(preferences)){
+  if(!is.null(preferences) && is.null(error_model)){
     if(!inherits(preferences, "BayesMallowsTC")){
       message("Generating transitive closure of preferences.")
       preferences <- generate_transitive_closure(preferences)
@@ -219,6 +218,14 @@ compute_mallows <- function(rankings = NULL,
     if(is.null(rankings)){
       message("Generating initial ranking.")
       rankings <- generate_initial_ranking(preferences)
+    }
+  } else if(!is.null(error_model)){
+    stopifnot(error_model == "bernoulli")
+    n_items <- max(dplyr::pull(tidyr::gather(dplyr::select(preferences, .data$bottom_item, .data$top_item)), .data$value))
+    n_assessors <- dplyr::pull(dplyr::summarise(preferences, n = dplyr::n_distinct(.data$assessor)), .data$n)
+    if(is.null(rankings)){
+      rankings <- purrr::rerun(n_assessors, sample(x = n_items, size = n_items))
+      rankings <- matrix(unlist(rankings), ncol = n_items, nrow = n_assessors, byrow = TRUE)
     }
   }
 
@@ -304,6 +311,7 @@ compute_mallows <- function(rankings = NULL,
                   logz_estimate = logz_estimate,
                   rho_init = rho_init,
                   metric = metric,
+                  error_model = dplyr::if_else(is.null(error_model), "none", error_model),
                   n_clusters = n_clusters,
                   include_wcd = include_wcd,
                   lambda = lambda,
@@ -344,9 +352,7 @@ compute_mallows <- function(rankings = NULL,
     fit$items <- paste("Item", seq(from = 1, to = nrow(fit$rho), by = 1))
   }
 
-  # Tidy MCMC results
-  if(!skip_postprocessing) fit <- tidy_mcmc(fit, tidy_cluster_assignment = save_clus)
-
+  fit <- tidy_mcmc(fit)
 
   # Add class attribute
   class(fit) <- "BayesMallows"

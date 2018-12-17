@@ -5,14 +5,14 @@
 \title{Preference Learning with the Mallows Rank Model}
 \usage{
 compute_mallows(rankings = NULL, preferences = NULL,
-  metric = "footrule", n_clusters = 1L, save_clus = FALSE,
-  clus_thin = 1L, nmc = 2000L, leap_size = max(1L, floor(n_items/5)),
-  rho_init = NULL, rho_thinning = 1L, alpha_prop_sd = 0.1,
-  alpha_init = 1, alpha_jump = 1L, lambda = 0.001, psi = 10L,
+  metric = "footrule", error_model = NULL, n_clusters = 1L,
+  save_clus = FALSE, clus_thin = 1L, nmc = 2000L,
+  leap_size = max(1L, floor(n_items/5)), rho_init = NULL,
+  rho_thinning = 1L, alpha_prop_sd = 0.1, alpha_init = 1,
+  alpha_jump = 1L, lambda = 0.001, psi = 10L,
   include_wcd = (n_clusters > 1), save_aug = FALSE,
   aug_thinning = 1L, logz_estimate = NULL, verbose = FALSE,
-  validate_rankings = TRUE, constraints = NULL,
-  skip_postprocessing = FALSE)
+  validate_rankings = TRUE, constraints = NULL)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items, of size \code{n_assessors x
@@ -38,6 +38,11 @@ Bayesian Mallows Model. Available options are \code{"footrule"},
 and \code{"ulam"}. The distance
 given by \code{metric} is also used to compute within-cluster distances,
 when \code{include_wcd = TRUE}.}
+
+\item{error_model}{Character string specifying which model to use for inconsistent
+rankings. Defaults to \code{NULL}, which means that inconsistent rankings are
+not allowed. At the moment, the only available other option is \code{"bernoulli"},
+which means that the Bernoulli error model is used.}
 
 \item{n_clusters}{Integer specifying the number of clusters, i.e., the number
 of mixture components to use. Defaults to \code{1L}, which means no
@@ -144,13 +149,6 @@ the the constraint set is computed internally. In repeated calls to
 \code{compute_mallows}, with very large datasets, computing the constraint
 set may be time consuming. In this case it can be beneficial to precompute
 it and provide it as a separate argument.}
-
-\item{skip_postprocessing}{Logical specifying whether to skip the
-postprocessing of the output of the Metropolis-Hastings algorithm. This can
-be useful for very large datasets, which cause the postprocessing to crash.
-Note that when \code{skip_postprocessing=TRUE}, the functions for studying
-the posterior distributions will not work unless the internal function
-\code{\link{tidy_mcmc}} has been run.}
 }
 \value{
 A list of class BayesMallows.

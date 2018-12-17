@@ -3,10 +3,23 @@
 #include "distfuns.h"
 #include "partitionfuns.h"
 
-// via the depends attribute we tell Rcpp to create hooks for
-// RcppArmadillo so that the build process will know what to do
-//
+
 // [[Rcpp::depends(RcppArmadillo)]]
+
+
+double rtruncbeta(int shape1, int shape2, double trunc = 1) {
+  int i = 0;
+  double x;
+  while(i < 1000){
+    x = arma::chi2rnd(2 * shape1);
+    x = x / (x + arma::chi2rnd(2 * shape2));
+
+    if(x < trunc) break;
+    ++i;
+  }
+  return x;
+}
+
 
 void update_alpha(arma::mat& alpha,
                   arma::vec& alpha_acceptance,
@@ -109,4 +122,6 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
   }
 
 }
+
+
 
