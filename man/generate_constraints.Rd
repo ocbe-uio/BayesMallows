@@ -7,8 +7,11 @@
 generate_constraints(preferences, n_items)
 }
 \arguments{
-\item{preferences}{Data frame of preferences returned from
-\code{\link{generate_transitive_closure}}.}
+\item{preferences}{Data frame of preferences. For the case of consistent
+rankings, \code{preferences} should be returned from \code{\link{generate_transitive_closure}}.
+For the case of inconsistent preferences, when using an error model as described
+in \insertCite{crispino2018;textual}{BayesMallows}, a dataframe of preferences
+can be directly provided.}
 
 \item{n_items}{Integer specifying the number of items.}
 }
@@ -16,22 +19,28 @@ generate_constraints(preferences, n_items)
 A list which is used internally by the MCMC algorithm.
 }
 \description{
-This function is relevant when compute_mallows is called
+This function is relevant when \code{\link{compute_mallows}} is called
 repeatedly with the same data, e.g., when determining the
 number of clusters. It precomputes a list of constraints used
 internally by the MCMC algorithm, which otherwise would be
-recomputed each time compute_mallows is called.
+recomputed each time \code{\link{compute_mallows}} is called.
 }
 \examples{
 # Here is an example with the beach preference data.
 # First, generate the transitive closure.
 beach_tc <- generate_transitive_closure(beach_preferences)
+
 # Next, generate an initial ranking.
 beach_init_rank <- generate_initial_ranking(beach_tc)
+
 # Then generate the constrain set used intervally by compute_mallows
 constr <- generate_constraints(beach_tc, n_items = 15)
-# Provide all this elements to compute_mallows
+
+# Provide all these elements to compute_mallows
 model_fit <- compute_mallows(rankings = beach_init_rank,
 preferences = beach_tc, constraints = constr)
 
+}
+\references{
+\insertAllCited{}
 }
