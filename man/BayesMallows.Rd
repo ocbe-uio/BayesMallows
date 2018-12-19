@@ -7,6 +7,26 @@
 \title{BayesMallows: Bayesian Preference Learning with the Mallows Rank Model.}
 \description{
 The BayesMallows package provides functionality for fully
-  Bayesian analysis of preference or rank data. To get started, look at
-  \code{\link{compute_mallows}}.
+  Bayesian analysis of preference or rank data. The package implements
+  the Bayesian Mallows model described in \insertCite{vitelli2018}{BayesMallows},
+  which handles complete rankings, top-k rankings, ranks missing at random,
+  and consistent pairwise preference data, as well as mixtures of rank models.
+  In addition, modeling of
+  pairwise preferences containing inconsistencies, as described in
+  \insertCite{crispino2018}{BayesMallows}, is also supported.
+
+The documentation and examples for the following functions are likely most useful
+to get you started:
+\itemize{
+ \item For analysis of rank or preference data, see \code{\link{compute_mallows}}.
+ \item For computation of multiple models with varying numbers of mixture components,
+ see \code{\link{compute_mallows_mixtures}}.
+ \item For estimation of the partition function (normalizing constant) using either
+ the importance sampling algorithm of \insertCite{vitelli2018}{BayesMallows} or
+ the asymptotic algorithm of \insertCite{mukherjee2016}{BayesMallows}, see
+ \code{\link{estimate_partition_function}}.
+}
+}
+\references{
+\insertAllCited{}
 }

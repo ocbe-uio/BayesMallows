@@ -34,15 +34,15 @@ the pairwise preferences are assumed to be mutually compatible.}
 
 \item{metric}{A character string specifying the distance metric to use in the
 Bayesian Mallows Model. Available options are \code{"footrule"},
-\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
-and \code{"ulam"}. The distance
-given by \code{metric} is also used to compute within-cluster distances,
-when \code{include_wcd = TRUE}.}
+\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+\code{"ulam"}. The distance given by \code{metric} is also used to compute
+within-cluster distances, when \code{include_wcd = TRUE}.}
 
-\item{error_model}{Character string specifying which model to use for inconsistent
-rankings. Defaults to \code{NULL}, which means that inconsistent rankings are
-not allowed. At the moment, the only available other option is \code{"bernoulli"},
-which means that the Bernoulli error model is used.}
+\item{error_model}{Character string specifying which model to use for
+inconsistent rankings. Defaults to \code{NULL}, which means that
+inconsistent rankings are not allowed. At the moment, the only available
+other option is \code{"bernoulli"}, which means that the Bernoulli error
+model is used.}
 
 \item{n_clusters}{Integer specifying the number of clusters, i.e., the number
 of mixture components to use. Defaults to \code{1L}, which means no
@@ -53,9 +53,8 @@ mixtures.}
 \item{save_clus}{Logical specifying whether or not to save cluster
 assignments. Defaults to \code{FALSE}.}
 
-\item{clus_thin}{Integer specifying the thinning to be
-applied to the cluster assignments. Defaults to \code{1L}. Not used
-when \code{save_clus = FALSE}.}
+\item{clus_thin}{Integer specifying the thinning to be applied to the cluster
+assignments. Defaults to \code{1L}. Not used when \code{save_clus = FALSE}.}
 
 \item{nmc}{Integer specifying the number of iteration of the
 Metropolis-Hastings algorithm to run. Defaults to \code{2000L}. See
@@ -74,8 +73,7 @@ initial value.}
 \item{rho_thinning}{Integer specifying the thinning of \code{rho} to be
 performed in the Metropolis- Hastings algorithm. Defaults to \code{1L}.
 \code{compute_mallows} save every \code{rho_thinning}th value of
-\eqn{\rho}. See \insertCite{link2011;textual}{BayesMallows} for a
-discussion of when it is appropriate to use thinning, and when it is not.}
+\eqn{\rho}.}
 
 \item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
 lognormal proposal distribution used for \eqn{\alpha} in the
@@ -93,11 +91,11 @@ parameters like augmented ranks \eqn{\tilde{R}} or cluster assignments
 computation time, by reducing the number of times the partition function
 for the Mallows model needs to be computed. Defaults to \code{1L}.}
 
-\item{lambda}{Strictly positive numeric value specifying the rate parameter of the exponential
-prior distribution of \eqn{\alpha}, \eqn{\pi(\alpha) = \lambda
-\exp{(-\lambda \alpha)}}. Defaults to \code{0.1}. When \code{n_cluster >
-1}, each mixture component \eqn{\alpha_{c}} has the same prior
-distribution.}
+\item{lambda}{Strictly positive numeric value specifying the rate parameter
+of the exponential prior distribution of \eqn{\alpha}, \eqn{\pi(\alpha) =
+\lambda \exp{(-\lambda \alpha)}}. Defaults to \code{0.1}. When
+\code{n_cluster > 1}, each mixture component \eqn{\alpha_{c}} has the same
+prior distribution.}
 
 \item{psi}{Integer specifying the concentration parameter \eqn{\psi} of the
 Dirichlet prior distribution used for the cluster probabilities
@@ -111,12 +109,11 @@ distances computed during the Metropolis-Hastings algorithm. Defaults to
 \code{include_wcd = TRUE} is useful when deciding the number of mixture
 components to include, and is required by \code{\link{plot_elbow}}.}
 
-\item{save_aug}{Logical specifying whether or not to save the
-augmented rankings every \code{aug_thinning}th iteration, for the case of
-missing data or pairwise preferences. Defaults to \code{FALSE}. Saving
-augmented data is useful for predicting the rankings each assessor would
-give to the items not yet ranked, and is required by
-\code{\link{plot_top_k}}.}
+\item{save_aug}{Logical specifying whether or not to save the augmented
+rankings every \code{aug_thinning}th iteration, for the case of missing
+data or pairwise preferences. Defaults to \code{FALSE}. Saving augmented
+data is useful for predicting the rankings each assessor would give to the
+items not yet ranked, and is required by \code{\link{plot_top_k}}.}
 
 \item{aug_thinning}{Integer specifying the thinning for saving augmented
 data. Only used when \code{save_aug = TRUE}. Defaults to \code{1L}.}
@@ -154,15 +151,30 @@ it and provide it as a separate argument.}
 A list of class BayesMallows.
 }
 \description{
-Compute the posterior distributions of the parameters of the Bayesian Mallows
-Rank Model \insertCite{mallows1957,vitelli2018}{BayesMallows}, given rankings
-or preferences stated by a set of assessors. \code{compute_mallows} always
-returns posterior distributions of the latent consensus ranking \eqn{\rho}
-and the scale parameter \eqn{\alpha}. Several distance measures are
-supported, and the preferences can take the form of complete or incomplete
-rankings, as well as pairwise preferences. \code{compute_mallows} can also
-compute mixtures of Mallows models, for clustering of assessors with similar
-preferences.
+Compute the posterior distributions of the parameters of the
+  Bayesian Mallows Rank Model, given rankings or preferences stated by a set
+  of assessors.
+
+  The \code{BayesMallows} package uses the following parametrization of the Mallows
+  rank model
+  \insertCite{mallows1957}{BayesMallows}: \deqn{p(r|\alpha,\rho)
+  = (1/Z_{n}(\alpha)) \exp{-\alpha/n d(r,\rho)}} where \eqn{r} is a ranking,
+  \eqn{\alpha} is a scale parameter, \eqn{\rho} is the latent consensus
+  ranking, \eqn{Z_{n}(\alpha)} is the partition function (normalizing
+  constant), and \eqn{d(r,\rho)} is a distance function measuring the
+  distance between \eqn{r} and \eqn{\rho}. Note that some authors use a
+  Mallows model without division by \eqn{n} in the exponent;
+  this includes the \code{PerMallows} package, whose scale parameter \eqn{\theta}
+  corresponds to \eqn{\alpha/n} in the \code{BayesMallows} package. We refer
+  to \insertCite{vitelli2018}{BayesMallows} for further details of the
+  Bayesian Mallows model.
+
+  \code{compute_mallows} always returns posterior distributions of the latent
+  consensus ranking \eqn{\rho} and the scale parameter \eqn{\alpha}. Several
+  distance measures are supported, and the preferences can take the form of
+  complete or incomplete rankings, as well as pairwise preferences.
+  \code{compute_mallows} can also compute mixtures of Mallows models, for
+  clustering of assessors with similar preferences.
 }
 \examples{
 # ANALYSIS OF COMPLETE RANKINGS
@@ -277,5 +289,5 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
 }
 \seealso{
 \code{\link{compute_mallows_mixtures}} for a function that computes
-  separate Mallows models for varying number of clusters.
+  separate Mallows models for varying numbers of clusters.
 }
