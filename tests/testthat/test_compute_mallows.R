@@ -29,3 +29,15 @@ test_that("compute_mallows discovers inconsistent rankings",{
   ))
   }
 )
+
+
+test_that("compute_mallows error model works", {
+  preferences <- data.frame(assessor = c(1, 1, 2, 2),
+                            bottom_item = c(1, 2, 1, 2),
+                            top_item = c(2, 1, 2, 3)
+                            )
+  expect_error(invisible(capture.output(compute_mallows(preferences = preferences, nmc = 10))))
+  expect_s3_class(compute_mallows(preferences = preferences, error_model = "bernoulli", nmc = 10),
+                  "BayesMallows")
+
+})

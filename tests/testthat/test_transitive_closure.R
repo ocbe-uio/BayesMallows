@@ -41,3 +41,10 @@ test_that("transitive closure generation works",{
 }
 )
 
+test_that("transitive closure generation discovers inconsistencies",{
+  pair_comp_inc <- bind_rows(pair_comp,
+                             tibble(assessor = 1, bottom_item = 5L, top_item = 2L))
+  expect_error(invisible(capture.output(generate_transitive_closure(pair_comp_inc))))
+})
+
+

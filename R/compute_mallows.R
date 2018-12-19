@@ -206,6 +206,11 @@ compute_mallows <- function(rankings = NULL,
     stop("Either rankings or preferences (or both) must be provided.")
   }
 
+  if(is.null(preferences) && !is.null(error_model)){
+    stop("Error model requires preferences to be set.")
+  }
+
+
   if(nmc <= 0) stop("nmc must be strictly positive")
 
   # Check that we do not jump over all alphas
@@ -235,8 +240,8 @@ compute_mallows <- function(rankings = NULL,
     }
   } else if(!is.null(error_model)){
     stopifnot(error_model == "bernoulli")
-    n_items <- max(dplyr::pull(tidyr::gather(dplyr::select(preferences, .data$bottom_item, .data$top_item)), .data$value))
-    n_assessors <- dplyr::pull(dplyr::summarise(preferences, n = dplyr::n_distinct(.data$assessor)), .data$n)
+    n_items <- max(c(preferences$bottom_item, preferences$top_item))
+    n_assessors <- length(unique(preferences$assessor))
     if(is.null(rankings)){
       rankings <- purrr::rerun(n_assessors, sample(x = n_items, size = n_items))
       rankings <- matrix(unlist(rankings), ncol = n_items, nrow = n_assessors, byrow = TRUE)
