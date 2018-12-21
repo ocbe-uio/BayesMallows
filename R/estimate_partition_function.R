@@ -60,7 +60,8 @@ estimate_partition_function <- function(method = "importance_sampling",
         nmc_vec[i] <- nmc_vec[i] + 1
         if(i > length(cl)) break()
       }
-      parallel::clusterExport(cl, c("alpha_vector", "n_items", "metric"))
+      parallel::clusterExport(cl, c("alpha_vector", "n_items", "metric"),
+                              envir = environment())
       estimates <- parallel::parLapply(cl, nmc_vec, function(x){
         compute_importance_sampling_estimate(alpha_vector = alpha_vector, n_items = n_items,
                                              metric = metric, nmc = x)
