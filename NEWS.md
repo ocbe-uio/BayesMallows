@@ -1,3 +1,6 @@
+# BayesMallows 0.2.0.9005
+* `estimate_partition_function` now has an option to run in parallel, leading to significant speed-up.
+
 # BayesMallows 0.2.0.9004
 * Implemented the Bernoulli error model. Set `error_model = "bernoulli"` in `compute_mallows` in order to use it. Examples will come later.
 

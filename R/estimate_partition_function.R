@@ -35,6 +35,10 @@
 #' @return A vector of length \code{degree} which can be supplied to the
 #'   \code{logz_estimate} argument of \code{\link{compute_mallows}}.
 #'
+#' @param cl Optional computing cluster used for parallelization, returned
+#' from \code{parallel::makeCluster}. Defaults to \code{NULL}. Only used when
+#' \code{method = "importance_sampling"}.
+#'
 #' @export
 #'
 #' @references \insertAllCited{}
@@ -43,18 +47,36 @@
 #'
 estimate_partition_function <- function(method = "importance_sampling",
                                         alpha_vector, n_items, metric,
-                                        nmc, degree, n_iterations, K){
+                                        nmc, degree, n_iterations, K, cl = NULL){
 
   stopifnot(degree < length(alpha_vector))
 
   if(method == "importance_sampling"){
-    # Compute the estimate at each discrete alpha value
-    estimate <- dplyr::tibble(
-      alpha = alpha_vector,
-      log_z = as.numeric(
+    if(!is.null(cl)){
+      # Split nmc into each cluster
+      nmc_vec <- rep(floor(nmc / length(cl)), length(cl))
+      i <- 1
+      while(sum(nmc_vec) != nmc){
+        nmc_vec[i] <- nmc_vec[i] + 1
+        if(i > length(cl)) break()
+      }
+      parallel::clusterExport(cl, c("alpha_vector", "n_items", "metric"))
+      estimates <- parallel::parLapply(cl, nmc_vec, function(x){
+        compute_importance_sampling_estimate(alpha_vector = alpha_vector, n_items = n_items,
+                                             metric = metric, nmc = x)
+      })
+      log_z <- purrr::map2_dbl(estimates[[1]], estimates[[2]], mean)
+    } else {
+      log_z <- as.numeric(
         compute_importance_sampling_estimate(
           alpha_vector = alpha_vector, n_items = n_items,
           metric = metric, nmc = nmc))
+    }
+
+    # Compute the estimate at each discrete alpha value
+    estimate <- dplyr::tibble(
+      alpha = alpha_vector,
+      log_z = log_z
     )
   } else if(method == "asymptotic"){
     estimate <- dplyr::tibble(

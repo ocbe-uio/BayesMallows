@@ -5,7 +5,7 @@
 \title{Estimate Partition Function}
 \usage{
 estimate_partition_function(method = "importance_sampling", alpha_vector,
-  n_items, metric, nmc, degree, n_iterations, K)
+  n_items, metric, nmc, degree, n_iterations, K, cl = NULL)
 }
 \arguments{
 \item{method}{Character string specifying the method to use in order to
@@ -34,6 +34,10 @@ asymptotic approximation of the partition function. Only used when
 \item{K}{Integer specifying the parameter \eqn{K} in the
 asymptotic approximation of the partition function. Only used when
 \code{method = "asymptotic"}.}
+
+\item{cl}{Optional computing cluster used for parallelization, returned
+from \code{parallel::makeCluster}. Defaults to \code{NULL}. Only used when
+\code{method = "importance_sampling"}.}
 }
 \value{
 A vector of length \code{degree} which can be supplied to the
