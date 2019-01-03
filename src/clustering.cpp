@@ -35,11 +35,7 @@ void update_cluster_labels(
     probs = arma::normalise(probs, 1);
 
     assignment_prob.row(assessor_index) = probs;
-    int cluster = sample_int(assignment_prob.row(assessor_index));
-
-    // Assign the cluster indicator
-    current_cluster_assignment(assessor_index) = cluster;
-
+    current_cluster_assignment(assessor_index) = sample_int(assignment_prob.row(assessor_index));
   }
 }
 
