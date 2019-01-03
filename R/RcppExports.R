@@ -21,20 +21,6 @@ get_rank_distance <- function(r1, r2, metric) {
     .Call(`_BayesMallows_get_rank_distance`, r1, r2, metric)
 }
 
-#' Get the distances for computing the partition function given
-#' the cardinalities.
-#'
-#' @param n The number of items.
-#' @param cardinalities Number of times each distance appears.
-#' @param metric A string. Available options are \code{"footrule"},
-#' and \code{"spearman"}. Defaults to \code{"footrule"}.
-#' @return A scalar, the logarithm of the partition function.
-#' @keywords internal
-#'
-get_summation_distances <- function(n, cardinalities, metric = "footrule") {
-    .Call(`_BayesMallows_get_summation_distances`, n, cardinalities, metric)
-}
-
 #' Compute importance sampling estimates of log partition function
 #' for footrule and Spearman distances.
 #'

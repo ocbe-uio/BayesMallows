@@ -19,19 +19,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// get_summation_distances
-arma::vec get_summation_distances(int n, arma::vec cardinalities, std::string metric);
-RcppExport SEXP _BayesMallows_get_summation_distances(SEXP nSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type cardinalities(cardinalitiesSEXP);
-    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_summation_distances(n, cardinalities, metric));
-    return rcpp_result_gen;
-END_RCPP
-}
 // compute_importance_sampling_estimate
 arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_items, std::string metric, int nmc);
 RcppExport SEXP _BayesMallows_compute_importance_sampling_estimate(SEXP alpha_vectorSEXP, SEXP n_itemsSEXP, SEXP metricSEXP, SEXP nmcSEXP) {
@@ -175,7 +162,6 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
-    {"_BayesMallows_get_summation_distances", (DL_FUNC) &_BayesMallows_get_summation_distances, 3},
     {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 4},
     {"_BayesMallows_factorial", (DL_FUNC) &_BayesMallows_factorial, 1},
     {"_BayesMallows_binomial_coefficient", (DL_FUNC) &_BayesMallows_binomial_coefficient, 2},
