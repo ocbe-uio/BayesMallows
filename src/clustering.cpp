@@ -6,63 +6,43 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 void update_cluster_labels(
-    arma::umat& cluster_assignment,
     arma::uvec& current_cluster_assignment,
     const arma::mat& dist_mat,
     const arma::mat& rho_old,
     const arma::mat& rankings,
     const arma::vec& cluster_probs,
     const arma::vec& alpha_old,
-    const int& n_items,
-    const int& n_assessors,
-    const int& n_clusters,
-    const int& clus_thin,
-    int& cluster_assignment_index,
-    const int& t,
     const std::string& metric,
     const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
     const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue
 ){
+  int n_assessors = current_cluster_assignment.n_elem;
+  int n_items = rho_old.n_rows;
+  int n_clusters = rho_old.n_cols;
 
   arma::mat assignment_prob(n_assessors, n_clusters);
   for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
     // Compute the logarithm of the unnormalized probability
-    // This is important, to avoid overflow
-    assignment_prob.col(cluster_index) = std::log(cluster_probs(cluster_index)) * arma::ones(n_assessors) -
+    assignment_prob.col(cluster_index) = std::log(cluster_probs(cluster_index)) -
       alpha_old(cluster_index) / n_items * dist_mat.col(cluster_index) -
       get_partition_function(n_items, alpha_old(cluster_index), cardinalities, logz_estimate, metric);
   }
 
   for(int assessor_index = 0; assessor_index < n_assessors; ++assessor_index){
+    // Exponentiate to get unnormalized prob relative to max
     arma::rowvec probs = arma::exp(assignment_prob.row(assessor_index) -
       arma::max(assignment_prob.row(assessor_index)));
 
+    // Normalize with 1-norm
     probs = arma::normalise(probs, 1);
 
-    if(probs.has_nan() || probs.has_inf()){
-      Rcpp::Rcout << "Assessor " << assessor_index + 1 << ", iteration " << t << " assignment probs = " <<
-        probs << std::endl << "Sum is " << arma::sum(probs) << std::endl;
-      Rcpp::stop("Cannot update cluster labels.");
-    }
-
-    // Normalize with 1-norm
     assignment_prob.row(assessor_index) = probs;
-
     int cluster = sample_int(assignment_prob.row(assessor_index));
 
     // Assign the cluster indicator
     current_cluster_assignment(assessor_index) = cluster;
 
   }
-
-
-
-  // Save if appropriate
-  if(t % clus_thin == 0){
-    ++cluster_assignment_index;
-    cluster_assignment.col(cluster_assignment_index) = current_cluster_assignment;
-  }
-
 }
 
 void update_cluster_probs(

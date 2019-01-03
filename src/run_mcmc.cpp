@@ -317,10 +317,13 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
 
   if(clustering){
-    // Update the cluster labels, per assessor
-    update_cluster_labels(cluster_assignment, current_cluster_assignment, dist_mat, rho_old, rankings, cluster_probs.col(t),
-                          alpha_old, n_items, n_assessors, n_clusters, clus_thin, cluster_assignment_index,
-                          t, metric, cardinalities, logz_estimate);
+      update_cluster_labels(current_cluster_assignment, dist_mat, rho_old, rankings, cluster_probs.col(t),
+                          alpha_old, metric, cardinalities, logz_estimate);
+
+    if(t % clus_thin == 0){
+      ++cluster_assignment_index;
+      cluster_assignment.col(cluster_assignment_index) = current_cluster_assignment;
+    }
   }
 
   if(include_wcd){

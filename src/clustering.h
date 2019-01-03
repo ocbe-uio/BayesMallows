@@ -6,19 +6,12 @@
 #include "misc.h"
 
 void update_cluster_labels(
-    arma::umat& cluster_assignment,
     arma::uvec& current_cluster_assignment,
     const arma::mat& dist_mat,
     const arma::mat& rho_old,
     const arma::mat& rankings,
     const arma::vec& cluster_probs,
     const arma::vec& alpha_old,
-    const int& n_items,
-    const int& n_assessors,
-    const int& n_clusters,
-    const int& clus_thin,
-    int& cluster_assignment_index,
-    const int& t,
     const std::string& metric,
     const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
     const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue
