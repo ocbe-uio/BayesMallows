@@ -19,7 +19,6 @@ void update_cluster_labels(
 void update_cluster_probs(
         arma::mat& cluster_probs,
         const arma::uvec& current_cluster_assignment,
-        const int& n_clusters,
         const int& psi,
         const int& t
 );

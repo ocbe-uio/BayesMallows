@@ -42,23 +42,17 @@ void update_cluster_labels(
 void update_cluster_probs(
     arma::mat& cluster_probs,
     const arma::uvec& current_cluster_assignment,
-    const int& n_clusters,
     const int& psi,
     const int& t
 ){
-  // Update cluster probabilities, conjugate model
-  arma::uvec tau_k(n_clusters);
-  for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
-    // Find the parameter for this cluster
-    tau_k(cluster_index) = arma::sum(current_cluster_assignment == cluster_index) + psi;
+  int n_clusters = cluster_probs.n_rows;
 
-    // If there are no assessors in the cluster,
-    // Save a sample from the gamma distribution
-    cluster_probs(cluster_index, t) = arma::randg<double>(arma::distr_param(tau_k(cluster_index), 1.0));
+  for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
+    // Find the parameter for this cluster and provide it to the gamma distribution
+    cluster_probs(cluster_index, t) = arma::randg<double>(arma::distr_param(arma::sum(current_cluster_assignment == cluster_index) + psi, 1.0));
   }
 
-  // Finally, normalize cluster_probs. Must specify that it should have unit 1-norm,
-  // 2-norm is default!!
+  // Finally, normalize cluster_probs with 1-norm.
   // cluster_probs.col(t) now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
   cluster_probs.col(t) = arma::normalise(cluster_probs.col(t), 1);
 }
