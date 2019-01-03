@@ -3,12 +3,60 @@
 #include "misc.h"
 #include "subset.h"
 
-// via the depends attribute we tell Rcpp to create hooks for
-// RcppArmadillo so that the build process will know what to do
-//
 // [[Rcpp::depends(RcppArmadillo)]]
 
-double ulam_distance (int N, arma::ivec a, arma::ivec b){
+double cayley_distance(const arma::vec& r1, const arma::vec& r2){
+  double distance = 0;
+  int n = r1.n_elem;
+  double tmp1;
+  arma::vec tmp2 = r1;
+
+  // This is a C++ translation of Rankcluster::distCayley
+  for(int i = 0; i < n; ++i){
+    if(tmp2(i) != r2(i)) {
+      distance += 1;
+      tmp1 = tmp2(i);
+      tmp2(i) = r2(i);
+      arma::uvec inds = arma::find(tmp2 == r2(i));
+      tmp2.elem(inds).fill(tmp1);
+    }
+  }
+  return distance;
+}
+
+double footrule_distance(const arma::vec& r1, const arma::vec& r2){
+  return arma::norm(r1 - r2, 1);
+}
+
+double hamming_distance(const arma::vec& r1, const arma::vec& r2){
+  return arma::sum(r1 != r2);
+}
+
+double kendall_distance(const arma::vec& r1, const arma::vec& r2){
+  double distance = 0;
+  int n = r1.n_elem;
+
+  for(int i = 0; i < n; ++i){
+    for(int j = 0; j < i; ++j){
+      if(((r1(j) > r1(i)) & (r2(j) < r2(i)) ) || ((r1(j) < r1(i)) & (r2(j) > r2(i)))) {
+        distance += 1;
+      }
+    }
+  }
+
+  return distance;
+}
+
+double spearman_distance(const arma::vec& r1, const arma::vec& r2){
+  return std::pow(arma::norm(r1 - r2, 2), 2.0);
+}
+
+double ulam_distance (const arma::vec& r1, const arma::vec& r2){
+
+  int N = r1.n_elem;
+
+  arma::ivec a = arma::conv_to<arma::ivec>::from(r1);
+  arma::ivec b = arma::conv_to<arma::ivec>::from(r2);
 
   int *p1 = (int*) calloc(N, sizeof (int));
   int *p2 = (int*) calloc(N, sizeof (int));
@@ -89,62 +137,23 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footr
   if (r1.n_elem != r2.n_elem){
     Rcpp::stop("r1 and r2 must have the same length");
   }
-  int n = r1.n_elem;
-  double distance = 0;
 
-  if(metric == "footrule") {
-
-    // Footrule is the sum of absolute values
-    distance = arma::norm(r1 - r2, 1);
-
-  } else if(metric == "kendall") {
-
-    // Need loops to compute Kendall distance
-
-    for(int i = 0; i < n; ++i){
-      for(int j = 0; j < i; ++j){
-        if(((r1(j) > r1(i)) & (r2(j) < r2(i)) ) || ((r1(j) < r1(i)) & (r2(j) > r2(i)))) {
-          distance += 1;
-        }
-      }
-    }
-
-  } else if (metric == "cayley") {
-
-    double tmp;
-
-    // This is a C++ translation of Rankcluster::distCayley
-    for(int i = 0; i < n; ++i){
-      if(r1(i) != r2(i)) {
-        distance += 1;
-        tmp = r1(i);
-        r1(i) = r2(i);
-        arma::uvec inds = arma::find(r1 == r2(i));
-        r1.elem(inds).fill(tmp);
-      }
-    }
-
-
+  if (metric == "cayley") {
+    return cayley_distance(r1, r2);
+  } else if(metric == "footrule") {
+    return footrule_distance(r1, r2);
   } else if (metric == "hamming") {
-
-    return arma::sum(r1 != r2);
-
+    return hamming_distance(r1, r2);
+  } else if(metric == "kendall") {
+    return kendall_distance(r1, r2);
   } else if (metric == "spearman") {
-
-    // Spearman distance is the sum of squares
-    distance = std::pow(arma::norm(r1 - r2, 2), 2.0);
-
+    return spearman_distance(r1, r2);
   } else if (metric == "ulam") {
-
-    distance = ulam_distance(n,
-                             arma::conv_to<arma::ivec>::from(r1),
-                             arma::conv_to<arma::ivec>::from(r2));
-
+    return ulam_distance(r1, r2);
   } else {
     Rcpp::stop("Inadmissible value of metric.");
   }
 
-  return distance;
 }
 
 // Compute the distance between all rows in rankings and rho
