@@ -317,8 +317,8 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
 
   if(clustering){
-      update_cluster_labels(current_cluster_assignment, dist_mat, rho_old, rankings, cluster_probs.col(t),
-                          alpha_old, metric, cardinalities, logz_estimate);
+      update_cluster_labels(current_cluster_assignment, dist_mat, cluster_probs.col(t),
+                          alpha_old, n_items, metric, cardinalities, logz_estimate);
 
     if(t % clus_thin == 0){
       ++cluster_assignment_index;

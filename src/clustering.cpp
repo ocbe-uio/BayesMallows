@@ -8,17 +8,15 @@
 void update_cluster_labels(
     arma::uvec& current_cluster_assignment,
     const arma::mat& dist_mat,
-    const arma::mat& rho_old,
-    const arma::mat& rankings,
     const arma::vec& cluster_probs,
     const arma::vec& alpha_old,
+    const int& n_items,
     const std::string& metric,
     const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
     const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue
 ){
   int n_assessors = current_cluster_assignment.n_elem;
-  int n_items = rho_old.n_rows;
-  int n_clusters = rho_old.n_cols;
+  int n_clusters = dist_mat.n_cols;
 
   arma::mat assignment_prob(n_assessors, n_clusters);
   for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
