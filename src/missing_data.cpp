@@ -5,20 +5,6 @@
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-void define_missingness(arma::mat& missing_indicator, arma::vec& assessor_missing,
-                        const arma::mat& rankings,
-                        const int& n_items, const int& n_assessors){
-  for(int i = 0; i < n_assessors; ++i){
-    for(int j = 0; j < n_items; ++j){
-      if(!arma::is_finite(rankings(j, i))){
-        missing_indicator(j, i) = 1;
-        ++assessor_missing(i);
-      }
-    }
-  }
-
-}
-
 
 arma::vec propose_augmentation(const arma::vec& ranks, const arma::vec& indicator,
                                const int& n_items){

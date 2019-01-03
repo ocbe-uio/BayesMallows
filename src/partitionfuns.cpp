@@ -3,8 +3,6 @@
 #include <cmath>
 
 // [[Rcpp::depends(RcppArmadillo)]]
-
-
 double cayley_logz(const int& n_items, const double& alpha) {
 
   double res = 0;

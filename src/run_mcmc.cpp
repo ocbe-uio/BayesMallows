@@ -112,13 +112,9 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   arma::vec assessor_missing;
 
   if(any_missing){
-    missing_indicator = arma::zeros<arma::mat>(n_items, n_assessors);
-
-    // Number of missing items per assessor
-    assessor_missing = arma::zeros<arma::vec>(n_assessors);
-
-    // Fill the two above defined missingness indicators
-    define_missingness(missing_indicator, assessor_missing, rankings, n_items, n_assessors);
+    missing_indicator = rankings;
+    missing_indicator.transform( [](double val) { return (arma::is_finite(val)) ? 0 : 1; } );
+    assessor_missing = arma::conv_to<arma::vec>::from(sum(missing_indicator, 0));
 
   } else {
     missing_indicator.reset();
