@@ -1,6 +1,6 @@
 #include "RcppArmadillo.h"
 #include "misc.h"
-#include "distfuns.h"
+#include "distances.h"
 #include <cmath>
 
 

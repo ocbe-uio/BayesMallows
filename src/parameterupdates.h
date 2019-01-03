@@ -3,7 +3,7 @@
 
 #include "RcppArmadillo.h"
 #include "leapandshift.h"
-#include "distfuns.h"
+#include "distances.h"
 #include "partitionfuns.h"
 
 double rtruncbeta(int shape1, int shape2, double trunc = 1);

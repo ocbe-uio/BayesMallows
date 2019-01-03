@@ -1,7 +1,7 @@
 #include <cmath>
 #include "RcppArmadillo.h"
 #include "clustering.h"
-#include "distfuns.h"
+#include "distances.h"
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
 #include "parameterupdates.h"

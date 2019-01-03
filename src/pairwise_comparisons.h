@@ -3,7 +3,7 @@
 
 #include <RcppArmadillo.h>
 #include "leapandshift.h"
-#include "distfuns.h"
+#include "distances.h"
 
 void update_shape_bernoulli(
     arma::vec& shape_1,

@@ -2,7 +2,7 @@
 #define MISSING_H
 
 #include <RcppArmadillo.h>
-#include "distfuns.h"
+#include "distances.h"
 #include "misc.h"
 
 void define_missingness(arma::mat& missing_indicator, arma::vec& assessor_missing,

@@ -1,5 +1,5 @@
-#ifndef DISTFUNS_H
-#define DISTFUNS_H
+#ifndef DISTANCES_H
+#define DISTANCES_H
 
 #include "RcppArmadillo.h"
 #include "subset.h"

@@ -1,6 +1,6 @@
 #include "RcppArmadillo.h"
 #include "leapandshift.h"
-#include "distfuns.h"
+#include "distances.h"
 
 // via the depends attribute we tell Rcpp to create hooks for
 // RcppArmadillo so that the build process will know what to do

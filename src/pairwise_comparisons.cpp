@@ -1,6 +1,6 @@
 #include <RcppArmadillo.h>
 #include "leapandshift.h"
-#include "distfuns.h"
+#include "distances.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
