@@ -6,7 +6,7 @@
 #include "distances.h"
 #include "partitionfuns.h"
 
-double rtruncbeta(int shape1, int shape2, double trunc = 1);
+double rtruncbeta(int shape1, int shape2, double trunc);
 
 void update_alpha(arma::mat& alpha,
                   arma::vec& alpha_acceptance,

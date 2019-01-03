@@ -7,18 +7,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
-double rtruncbeta(int shape1, int shape2, double trunc = 1) {
-  int i = 0;
-  double x;
-  while(i < 1000){
-    x = arma::chi2rnd(2 * shape1);
-    x = x / (x + arma::chi2rnd(2 * shape2));
 
-    if(x < trunc) break;
-    ++i;
-  }
-  return x;
-}
 
 
 void update_alpha(arma::mat& alpha,

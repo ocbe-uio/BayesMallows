@@ -65,3 +65,17 @@ int sample_int(const arma::rowvec& probs){
 
   return arma::as_scalar(matches);
 }
+
+// Truncated beta distribution
+double rtruncbeta(int shape1, int shape2, double trunc = 1) {
+  int i = 0;
+  double x;
+  while(i < 1000){
+    x = arma::chi2rnd(2 * shape1);
+    x = x / (x + arma::chi2rnd(2 * shape2));
+
+    if(x < trunc) break;
+    ++i;
+  }
+  return x;
+}
