@@ -16,11 +16,10 @@ void update_cluster_labels(
     const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue
 );
 
-void update_cluster_probs(
-        arma::mat& cluster_probs,
-        const arma::uvec& current_cluster_assignment,
-        const int& psi,
-        const int& t
+arma::vec update_cluster_probs(
+    const arma::uvec& current_cluster_assignment,
+    const int& n_clusters,
+    const int& psi
 );
 
 void update_wcd(arma::mat& within_cluster_distance, const arma::uvec& current_cluster_assignment,

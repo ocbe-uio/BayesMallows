@@ -260,7 +260,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     }
 
     if(clustering){
-      update_cluster_probs(cluster_probs, current_cluster_assignment, psi, t);
+      cluster_probs.col(t) = update_cluster_probs(current_cluster_assignment, n_clusters, psi);
     }
 
 

@@ -39,22 +39,22 @@ void update_cluster_labels(
   }
 }
 
-void update_cluster_probs(
-    arma::mat& cluster_probs,
+arma::vec update_cluster_probs(
     const arma::uvec& current_cluster_assignment,
-    const int& psi,
-    const int& t
+    const int& n_clusters,
+    const int& psi
 ){
-  int n_clusters = cluster_probs.n_rows;
+
+  arma::vec cluster_probs(n_clusters);
 
   for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
     // Find the parameter for this cluster and provide it to the gamma distribution
-    cluster_probs(cluster_index, t) = arma::randg<double>(arma::distr_param(arma::sum(current_cluster_assignment == cluster_index) + psi, 1.0));
+    cluster_probs(cluster_index) = arma::randg<double>(arma::distr_param(arma::sum(current_cluster_assignment == cluster_index) + psi, 1.0));
   }
-
   // Finally, normalize cluster_probs with 1-norm.
-  // cluster_probs.col(t) now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
-  cluster_probs.col(t) = arma::normalise(cluster_probs.col(t), 1);
+  // result now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
+  return arma::normalise(cluster_probs, 1);
+
 }
 
 
