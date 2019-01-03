@@ -328,8 +328,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
     augment_pairwise(rankings, current_cluster_assignment, alpha_old, 0.1, rho_old,
-                     metric, constraints, n_assessors, n_items, t,
-                     aug_acceptance, clustering, augmentation_accepted, error_model);
+                     metric, constraints, aug_acceptance, clustering, augmentation_accepted, error_model);
 
   }
 

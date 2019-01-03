@@ -159,14 +159,14 @@ void augment_pairwise(
     const arma::mat& rho,
     const std::string& metric,
     const Rcpp::List& constraints,
-    const int& n_assessors,
-    const int& n_items,
-    const int& t,
     arma::vec& aug_acceptance,
     const bool& clustering,
     bool& augmentation_accepted,
     std::string error_model
 ){
+
+  int n_assessors = rankings.n_cols;
+  int n_items = rankings.n_rows;
 
   for(int i = 0; i < n_assessors; ++i){
 
