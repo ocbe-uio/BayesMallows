@@ -1,14 +1,38 @@
 #include "RcppArmadillo.h"
 #include "misc.h"
-#include "distances.h"
 #include <cmath>
 
-
-// via the depends attribute we tell Rcpp to create hooks for
-// RcppArmadillo so that the build process will know what to do
-//
 // [[Rcpp::depends(RcppArmadillo)]]
 
+
+double cayley_logz(const int& n_items, const double& alpha) {
+
+  double res = 0;
+
+  for(int i = 1; i < n_items; ++i){
+    res += std::log( 1 + i * std::exp(static_cast<double>(- alpha / n_items ) ));
+  }
+  return res;
+}
+
+double hamming_logz(const int& n_items, const double& alpha){
+  double res = 0;
+
+  for(int i = 0; i < (n_items + 1); ++i){
+    res += factorial(n_items) * std::exp(-alpha) *
+      std::pow((std::exp(static_cast<double>(alpha / n_items)) - 1), static_cast<double>(i)) / factorial(i);
+  }
+
+  return std::log(res);
+}
+
+double kendall_logz(const int& n_items, const double& alpha){
+  double res = 0;
+  for(int i = 1; i < (n_items + 1); ++i){
+    res += std::log( ( 1 - std::exp(static_cast<double>(-i * alpha / n_items) ) )/(1 - std::exp(static_cast<double>(-alpha / n_items ))));
+  }
+  return res;
+}
 
 // Helper to compute the importance sampling smoothed fit
 double compute_is_fit(double alpha, arma::vec fit){
@@ -22,8 +46,20 @@ double compute_is_fit(double alpha, arma::vec fit){
   return(logZ);
 }
 
-
-
+double logz_cardinalities(const double& alpha, const int& n_items, const arma::vec& cardinalities, const std::string& metric){
+  if(metric == "footrule"){
+    arma::vec distances = arma::regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
+    return std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
+  } else if (metric == "spearman"){
+    arma::vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
+    return std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
+  } else if (metric == "ulam"){
+    arma::vec distances = arma::regspace(0, 1, n_items - 1);
+    return std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
+  } else {
+    Rcpp::stop("Cardinalities not implemented for the provided metric.");
+  }
+}
 
 //' Compute the logarithm of the partition function for a Mallows rank model.
 //'
@@ -44,75 +80,20 @@ double get_partition_function(int n_items, double alpha,
                               Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue,
                               std::string metric = "footrule"){
 
-  if(metric == "footrule") {
 
-    // If cardinalities are defined, we use them. If importance sampling estimates exist,
-    // then we use that
-    if(cardinalities.isNotNull()){
-      arma::vec distances = arma::regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
-      return std::log(arma::sum(Rcpp::as<arma::vec>(cardinalities) %
-                      arma::exp(-alpha * distances / n_items)));
-    } else if(logz_estimate.isNotNull()){
-      return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
-    } else {
-      Rcpp::stop("Could not compute partition function");
-    }
-
-
-  } else if (metric == "spearman") {
-
-    if(cardinalities.isNotNull()){
-      arma::vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
-      return std::log(arma::sum(Rcpp::as<arma::vec>(cardinalities) %
-                      arma::exp(-alpha * distances / n_items)));
-    } else if(logz_estimate.isNotNull()){
-      return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
-    }
-
-  } else if (metric == "ulam") {
-
-    if(cardinalities.isNotNull()){
-      arma::vec distances = arma::regspace(0, 1, n_items - 1);
-      return std::log(arma::sum(Rcpp::as<arma::vec>(cardinalities) %
-                      arma::exp(-alpha * distances / n_items)));
-    } else if(logz_estimate.isNotNull()){
-      return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
-    }
-
-
-  } else if(metric == "kendall") {
-
-    double res = 0;
-    for(int i = 1; i < (n_items + 1); ++i){
-      res += std::log( ( 1 - std::exp(static_cast<double>(-i * alpha / n_items) ) )/(1 - std::exp(static_cast<double>(-alpha / n_items ))));
-    }
-    return res;
-
-  } else if(metric == "cayley") {
-
-    double res = 0;
-
-    for(int i = 1; i < n_items; ++i){
-      res += std::log( 1 + i * std::exp(static_cast<double>(- alpha / n_items ) ));
-    }
-    return res;
-
+  if(cardinalities.isNotNull()){
+    return logz_cardinalities(alpha, n_items, Rcpp::as<arma::vec>(cardinalities), metric);
+  } else if(logz_estimate.isNotNull()) {
+    return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
+  } else if(metric == "cayley"){
+    return cayley_logz(n_items, alpha);
   } else if(metric == "hamming"){
-
-    double res = 0;
-
-    for(int i = 0; i < (n_items + 1); ++i){
-      res += factorial(n_items) * std::exp(-alpha) *
-        std::pow((std::exp(static_cast<double>(alpha / n_items)) - 1), static_cast<double>(i)) / factorial(i);
-    }
-
-    return std::log(res);
-
+    return hamming_logz(n_items, alpha);
+  } else if(metric == "kendall"){
+    return kendall_logz(n_items, alpha);
   } else {
-    Rcpp::stop("Inadmissible value of metric.");
+    Rcpp::stop("Partition function not available. Please precompute with estimate_partition_functino().");
   }
-
-  return 0;
 }
 
 

@@ -70,12 +70,8 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
   double prob_backward, prob_forward;
 
   leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
-                 rho_cluster, leap_size);
+                 rho_cluster, leap_size, !((metric == "cayley") || (metric == "ulam")));
 
-  // These distances do not work with the computational shortcut
-  if((metric == "cayley") | (metric == "ulam")){
-    indices = arma::regspace<arma::uvec>(0, n_items - 1);
-  }
 
   // Compute the distances to current and proposed ranks
   double dist_new = rank_dist_sum(rankings.rows(indices), rho_proposal(indices), metric);

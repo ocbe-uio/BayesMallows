@@ -66,7 +66,7 @@ arma::mat rmallows(
 
     // Sample a proposal
     leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
-                   rho_iter, leap_size);
+                   rho_iter, leap_size, true);
 
     // These distances do not work with the computational shortcut
     if((metric == "cayley") | (metric == "ulam")){
