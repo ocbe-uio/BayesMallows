@@ -2,50 +2,46 @@
 #include "leapandshift.h"
 #include "distances.h"
 #include "partitionfuns.h"
+#include <cmath>
 
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-
-
-
-
 void update_alpha(arma::mat& alpha,
                   arma::vec& alpha_acceptance,
-                  arma::vec& alpha_old,
+                  const double& alpha_old,
                   const arma::mat& rankings,
                   int& alpha_index,
                   int& cluster_index,
-                  const arma::mat& rho_old,
+                  const arma::vec& rho_old,
                   const double& alpha_prop_sd,
                   const std::string& metric,
                   const double& lambda,
-                  const int& n_items,
                   const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
                   const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue) {
 
 
   // Set the number of assessors. Not using the variable from run_mcmc because
-  // here we want the number of assessors in this cluster #cluster_index
+  // here we want the number of assessors in this cluster
   int n_assessors = rankings.n_cols;
+  int n_items = rho_old.n_elem;
 
-  // Sample an alpha proposal
   double alpha_proposal = std::exp(arma::randn<double>() * alpha_prop_sd +
-                              std::log(alpha_old(cluster_index)));
+                              std::log(alpha_old));
 
-  double rank_dist = rank_dist_sum(rankings, rho_old.col(cluster_index), metric);
+  double rank_dist = rank_dist_sum(rankings, rho_old, metric);
 
   // Difference between current and proposed alpha
-  double alpha_diff = alpha_old(cluster_index) - alpha_proposal;
+  double alpha_diff = alpha_old - alpha_proposal;
 
   // Compute the Metropolis-Hastings ratio
   double ratio =
     alpha_diff / n_items * rank_dist +
     lambda * alpha_diff +
     n_assessors * (
-        get_partition_function(n_items, alpha_old(cluster_index), cardinalities, logz_estimate, metric) -
+        get_partition_function(n_items, alpha_old, cardinalities, logz_estimate, metric) -
           get_partition_function(n_items, alpha_proposal, cardinalities, logz_estimate, metric)
-    ) + std::log(alpha_proposal) - std::log(alpha_old(cluster_index));
+    ) + std::log(alpha_proposal) - std::log(alpha_old);
 
   // Draw a uniform random number
   double u = std::log(arma::randu<double>());
@@ -54,11 +50,8 @@ void update_alpha(arma::mat& alpha,
     alpha(cluster_index, alpha_index) = alpha_proposal;
     ++alpha_acceptance(cluster_index);
   } else {
-    alpha(cluster_index, alpha_index) = alpha_old(cluster_index);
+    alpha(cluster_index, alpha_index) = alpha_old;
   }
-
-
-  alpha_old(cluster_index) = alpha(cluster_index, alpha_index);
 
 }
 

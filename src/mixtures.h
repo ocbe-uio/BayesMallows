@@ -1,5 +1,5 @@
-#ifndef CLUSTERING_H
-#define CLUSTERING_H
+#ifndef MIXTURES_H
+#define MIXTURES_H
 
 #include "RcppArmadillo.h"
 #include "partitionfuns.h"

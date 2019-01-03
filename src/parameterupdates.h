@@ -7,18 +7,16 @@
 #include "partitionfuns.h"
 
 
-
 void update_alpha(arma::mat& alpha,
                   arma::vec& alpha_acceptance,
-                  arma::vec& alpha_old,
+                  const double& alpha_old,
                   const arma::mat& rankings,
                   int& alpha_index,
                   int& cluster_index,
-                  const arma::mat& rho_old,
+                  const arma::vec& rho_old,
                   const double& alpha_prop_sd,
                   const std::string& metric,
                   const double& lambda,
-                  const int& n_items,
                   const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
                   const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue);
 

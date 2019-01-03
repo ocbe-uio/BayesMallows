@@ -307,13 +307,12 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
         if(cluster_index == 0) ++alpha_index;
 
         // Call the void function which updates alpha by reference
-        update_alpha(alpha, alpha_acceptance, alpha_old, clus_mat, alpha_index,
-                     cluster_index, rho_old, alpha_prop_sd, metric, lambda, n_items,
+        update_alpha(alpha, alpha_acceptance, alpha_old(cluster_index), clus_mat, alpha_index,
+                     cluster_index, rho_old.col(cluster_index), alpha_prop_sd, metric, lambda,
                      cardinalities, logz_estimate);
       }
-
     }
-
+    alpha_old = alpha.col(alpha_index);
 
   if(clustering){
       update_cluster_labels(current_cluster_assignment, dist_mat, cluster_probs.col(t),
