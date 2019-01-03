@@ -75,7 +75,7 @@ arma::mat rmallows(
 
     // Compute the distances to current and proposed ranks
     double dist_new = get_rank_distance(rho0(indices), rho_proposal(indices), metric);
-    double dist_old = rank_dist_matrix(rho0(indices), rho_iter(indices), metric);
+    double dist_old = rank_dist_sum(rho0(indices), rho_iter(indices), metric);
 
     // Metropolis-Hastings ratio
     double ratio = - alpha0 / n_items * (dist_new - dist_old) +

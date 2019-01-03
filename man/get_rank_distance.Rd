@@ -4,7 +4,7 @@
 \alias{get_rank_distance}
 \title{Compute the distance between two rank vectors.}
 \usage{
-get_rank_distance(r1, r2, metric = "footrule")
+get_rank_distance(r1, r2, metric)
 }
 \arguments{
 \item{r1}{A vector of ranks.}

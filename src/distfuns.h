@@ -7,9 +7,8 @@
 
 
 double get_rank_distance(arma::vec, arma::vec, std::string);
-double rank_dist_matrix(const arma::mat&, const arma::vec&, std::string);
+double rank_dist_sum(const arma::mat&, const arma::vec&, const std::string&);
 
-arma::vec update_distance_matrix(const arma::mat& rankings, const arma::vec& rho_cluster,
-                                 const std::string& metric);
+arma::vec rank_dist_vec(const arma::mat& rankings, const arma::vec& rho, const std::string& metric);
 
 #endif

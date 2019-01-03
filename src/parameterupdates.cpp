@@ -44,7 +44,7 @@ void update_alpha(arma::mat& alpha,
   double alpha_proposal = std::exp(arma::randn<double>() * alpha_prop_sd +
                               std::log(alpha_old(cluster_index)));
 
-  double rank_dist = rank_dist_matrix(rankings, rho_old.col(cluster_index), metric);
+  double rank_dist = rank_dist_sum(rankings, rho_old.col(cluster_index), metric);
 
   // Difference between current and proposed alpha
   double alpha_diff = alpha_old(cluster_index) - alpha_proposal;
@@ -96,8 +96,8 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
   }
 
   // Compute the distances to current and proposed ranks
-  double dist_new = rank_dist_matrix(rankings.rows(indices), rho_proposal(indices), metric);
-  double dist_old = rank_dist_matrix(rankings.rows(indices), rho_cluster(indices), metric);
+  double dist_new = rank_dist_sum(rankings.rows(indices), rho_proposal(indices), metric);
+  double dist_old = rank_dist_sum(rankings.rows(indices), rho_cluster(indices), metric);
 
 
   // Metropolis-Hastings ratio

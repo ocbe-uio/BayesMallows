@@ -2,6 +2,7 @@
 #include <cmath>
 #include "misc.h"
 #include "subset.h"
+#include "distfuns.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
@@ -117,30 +118,21 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
 }
 
 
-// Compute the distance between all rows in rankings and rho
-double rank_dist_matrix(const arma::mat& rankings, const arma::vec& rho, std::string metric){
-  int N = rankings.n_cols;
-  if(rankings.n_rows != rho.n_elem) Rcpp::stop("rankings and rho have different number of elements");
-
-  double total_distance = 0;
-
-  for(int i = 0; i < N; ++i){
-    total_distance += get_rank_distance(rankings.col(i), rho, metric);
-  }
-
-  return total_distance;
+// Compute the distance between all rows in rankings and rho, and return the sum
+double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho, const std::string& metric){
+  return arma::sum(rank_dist_vec(rankings, rho, metric));
 }
 
 
-// Update the distance matrix between ranking and each cluster consensus
-arma::vec update_distance_matrix(const arma::mat& rankings, const arma::vec& rho_cluster,
+// Compute the distance between each assessor's ranking and the consensus
+arma::vec rank_dist_vec(const arma::mat& rankings, const arma::vec& rho,
                                  const std::string& metric){
 
   int n = rankings.n_cols;
   arma::vec result = arma::zeros(n);
 
   for(int i = 0; i < n; ++i){
-    result(i) = get_rank_distance(rankings.col(i), rho_cluster, metric);
+    result(i) = get_rank_distance(rankings.col(i), rho, metric);
   }
   return(result);
 }
