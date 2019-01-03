@@ -58,22 +58,16 @@ arma::vec update_cluster_probs(
 }
 
 
-void update_wcd(arma::mat& within_cluster_distance, const arma::uvec& current_cluster_assignment,
-                const arma::mat& dist_mat, const int& n_clusters, const int& t){
+arma::vec update_wcd(const arma::uvec& current_cluster_assignment,
+                     const arma::mat& dist_mat){
+  int n_clusters = dist_mat.n_cols;
+  arma::vec wcd(n_clusters);
 
-  arma::vec dist_vec;
-
+  arma::uvec inds = arma::regspace<arma::uvec>(0, n_clusters - 1);
   for(int i = 0; i < n_clusters; ++i){
-    // Find the assessors in cluster i
-    arma::uvec assessor_inds = arma::find(current_cluster_assignment == i);
-
-    // Extract the distances from R to rho_i
-    dist_vec = dist_mat.col(i);
-
-    // Extract the assessors in cluster i
-    dist_vec = dist_vec(assessor_inds);
-
-    // Sum and save
-    within_cluster_distance(i, t) = arma::sum(dist_vec);
+    arma::mat dist_vec = dist_mat.submat(arma::find(current_cluster_assignment == i), inds.subvec(i, i));
+    wcd(i) = arma::sum(arma::conv_to<arma::vec>::from(dist_vec));
   }
+
+  return(wcd);
 }

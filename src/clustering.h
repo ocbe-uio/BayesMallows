@@ -22,7 +22,7 @@ arma::vec update_cluster_probs(
     const int& psi
 );
 
-void update_wcd(arma::mat& within_cluster_distance, const arma::uvec& current_cluster_assignment,
-                const arma::mat& dist_mat, const int& n_clusters, const int& t);
+arma::vec update_wcd(const arma::uvec& current_cluster_assignment,
+                     const arma::mat& dist_mat);
 
 #endif

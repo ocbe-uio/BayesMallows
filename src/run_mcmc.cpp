@@ -202,8 +202,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
     current_cluster_assignment = cluster_assignment.col(0);
 
-    update_wcd(within_cluster_distance, current_cluster_assignment,
-               dist_mat, n_clusters, 0);
+    within_cluster_distance.col(0) = update_wcd(current_cluster_assignment, dist_mat);
 
   }
 
@@ -328,8 +327,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
   if(include_wcd){
     // Update within_cluster_distance
-    update_wcd(within_cluster_distance, current_cluster_assignment,
-               dist_mat, n_clusters, t);
+    within_cluster_distance.col(t) = update_wcd(current_cluster_assignment, dist_mat);
   }
 
   // Perform data augmentation of missing ranks, if needed
