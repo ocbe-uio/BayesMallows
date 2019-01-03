@@ -1,6 +1,4 @@
 #include "RcppArmadillo.h"
-#include <cmath>
-#include "misc.h"
 #include "subset.h"
 #include "distfuns.h"
 
@@ -89,6 +87,11 @@ double ulam_distance (const arma::vec& r1, const arma::vec& r2){
 //' the footrule distance is the L1 norm.
 //'
 //' The Ulam distance uses the SUBSET library developed by John Burkardt, available at http://people.sc.fsu.edu/~jburkardt/cpp_src/subset/subset.html.
+//'
+//' The implementation of Cayley distance is based on a \code{C++} translation of \code{Rankcluster::distCayley} \insertCite{Grimonprez2016}{BayesMallows}.
+//'
+//'
+//' @references \insertAllCited{}
 //'
 //' @keywords internal
 //'

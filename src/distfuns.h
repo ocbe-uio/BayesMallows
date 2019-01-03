@@ -2,7 +2,6 @@
 #define DISTFUNS_H
 
 #include "RcppArmadillo.h"
-#include "misc.h"
 #include "subset.h"
 
 
