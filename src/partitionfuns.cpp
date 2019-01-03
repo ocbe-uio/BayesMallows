@@ -34,6 +34,18 @@ double kendall_logz(const int& n_items, const double& alpha){
   return res;
 }
 
+double exact_logz(const int& n_items, const double& alpha, const std::string& metric){
+  if(metric == "cayley"){
+    return cayley_logz(n_items, alpha);
+  } else if(metric == "hamming"){
+    return hamming_logz(n_items, alpha);
+  } else if(metric == "kendall"){
+    return kendall_logz(n_items, alpha);
+  } else {
+    Rcpp::stop("Partition function not available. Please precompute with estimate_partition_functino().");
+  }
+}
+
 // Helper to compute the importance sampling smoothed fit
 double compute_is_fit(double alpha, arma::vec fit){
   // The partition function
@@ -85,14 +97,8 @@ double get_partition_function(int n_items, double alpha,
     return logz_cardinalities(alpha, n_items, Rcpp::as<arma::vec>(cardinalities), metric);
   } else if(logz_estimate.isNotNull()) {
     return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
-  } else if(metric == "cayley"){
-    return cayley_logz(n_items, alpha);
-  } else if(metric == "hamming"){
-    return hamming_logz(n_items, alpha);
-  } else if(metric == "kendall"){
-    return kendall_logz(n_items, alpha);
   } else {
-    Rcpp::stop("Partition function not available. Please precompute with estimate_partition_functino().");
+    return exact_logz(n_items, alpha, metric);
   }
 }
 
