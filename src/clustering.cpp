@@ -1,7 +1,6 @@
 #include "RcppArmadillo.h"
 #include <cmath>
 #include "partitionfuns.h"
-#include "misc.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 

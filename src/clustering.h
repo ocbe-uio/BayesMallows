@@ -3,7 +3,6 @@
 
 #include "RcppArmadillo.h"
 #include "partitionfuns.h"
-#include "misc.h"
 
 void update_cluster_labels(
     arma::uvec& current_cluster_assignment,
