@@ -76,6 +76,77 @@ double ulam_distance (const arma::vec& r1, const arma::vec& r2){
 }
 
 
+//' Compute the distance between two rank vectors.
+//'
+//' @param r1 A vector of ranks.
+//' @param r2 A vector of ranks.
+//' @param metric A string. Available options are \code{"footrule"},
+//' \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"spearman"}, and \code{"ulam"}.
+//' Defaults to \code{"footrule"}.
+//' @return A scalar.
+//' @details Note that the Spearman distance is the squared L2 norm, whereas
+//' the footrule distance is the L1 norm.
+//'
+//' The Ulam distance uses the SUBSET library developed by John Burkardt, available at http://people.sc.fsu.edu/~jburkardt/cpp_src/subset/subset.html.
+//'
+//' @keywords internal
+//'
+//'
+// [[Rcpp::export]]
+double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
+
+  if (r1.n_elem != r2.n_elem){
+    Rcpp::stop("r1 and r2 must have the same length");
+  }
+
+  if (metric == "cayley") {
+    return cayley_distance(r1, r2);
+  } else if(metric == "footrule") {
+    return footrule_distance(r1, r2);
+  } else if (metric == "hamming") {
+    return hamming_distance(r1, r2);
+  } else if(metric == "kendall") {
+    return kendall_distance(r1, r2);
+  } else if (metric == "spearman") {
+    return spearman_distance(r1, r2);
+  } else if (metric == "ulam") {
+    return ulam_distance(r1, r2);
+  } else {
+    Rcpp::stop("Inadmissible value of metric.");
+  }
+}
+
+
+// Compute the distance between all rows in rankings and rho
+double rank_dist_matrix(const arma::mat& rankings, const arma::vec& rho, std::string metric){
+  int N = rankings.n_cols;
+  if(rankings.n_rows != rho.n_elem) Rcpp::stop("rankings and rho have different number of elements");
+
+  double total_distance = 0;
+
+  for(int i = 0; i < N; ++i){
+    total_distance += get_rank_distance(rankings.col(i), rho, metric);
+  }
+
+  return total_distance;
+}
+
+
+// Update the distance matrix between ranking and each cluster consensus
+arma::vec update_distance_matrix(const arma::mat& rankings, const arma::vec& rho_cluster,
+                                 const std::string& metric){
+
+  int n = rankings.n_cols;
+  arma::vec result = arma::zeros(n);
+
+  for(int i = 0; i < n; ++i){
+    result(i) = get_rank_distance(rankings.col(i), rho_cluster, metric);
+  }
+  return(result);
+}
+
+
+
 //' Get the distances for computing the partition function given
 //' the cardinalities.
 //'
@@ -115,71 +186,10 @@ arma::vec get_summation_distances(int n, arma::vec cardinalities,
 }
 
 
-//' Compute the distance between two rank vectors.
-//'
-//' @param r1 A vector of ranks.
-//' @param r2 A vector of ranks.
-//' @param metric A string. Available options are \code{"footrule"},
-//' \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"spearman"}, and \code{"ulam"}.
-//' Defaults to \code{"footrule"}.
-//' @return A scalar.
-//' @details Note that the Spearman distance is the squared L2 norm, whereas
-//' the footrule distance is the L1 norm.
-//'
-//' The Ulam distance uses the SUBSET library developed by John Burkardt, available at http://people.sc.fsu.edu/~jburkardt/cpp_src/subset/subset.html.
-//'
-//' @keywords internal
-//'
-//'
-// [[Rcpp::export]]
-double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric = "footrule"){
-
-  if (r1.n_elem != r2.n_elem){
-    Rcpp::stop("r1 and r2 must have the same length");
-  }
-
-  if (metric == "cayley") {
-    return cayley_distance(r1, r2);
-  } else if(metric == "footrule") {
-    return footrule_distance(r1, r2);
-  } else if (metric == "hamming") {
-    return hamming_distance(r1, r2);
-  } else if(metric == "kendall") {
-    return kendall_distance(r1, r2);
-  } else if (metric == "spearman") {
-    return spearman_distance(r1, r2);
-  } else if (metric == "ulam") {
-    return ulam_distance(r1, r2);
-  } else {
-    Rcpp::stop("Inadmissible value of metric.");
-  }
-
-}
-
-// Compute the distance between all rows in rankings and rho
-double rank_dist_matrix(const arma::mat& rankings, const arma::vec& rho, std::string metric){
-  int N = rankings.n_cols;
-  if(rankings.n_rows != rho.n_elem) Rcpp::stop("rankings and rho have different number of elements");
-
-  double total_distance = 0;
-
-  for(int i = 0; i < N; ++i){
-    total_distance += get_rank_distance(rankings.col(i), rho, metric);
-  }
-
-  return total_distance;
-}
 
 
-// update the matrix used to speed up clustering
-void update_distance_matrix(arma::mat& dist_mat, const arma::mat& rankings, const arma::vec& rho_cluster,
-                            const int& n_assessors, const int& cluster_index,
-                            const std::string metric){
-  for(int i = 0; i < n_assessors; ++i){
-    dist_mat(i, cluster_index) = get_rank_distance(rankings.col(i), rho_cluster, metric);
-  }
 
-}
+
 
 
 

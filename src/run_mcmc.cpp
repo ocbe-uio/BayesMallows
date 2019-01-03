@@ -197,8 +197,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     dist_mat.set_size(n_assessors, n_clusters);
 
     for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
-      update_distance_matrix(dist_mat, rankings, rho.slice(0).col(cluster_index),
-                             n_assessors, cluster_index, metric);
+      dist_mat.col(cluster_index) = update_distance_matrix(rankings, rho.slice(0).col(cluster_index), metric);
     }
 
     current_cluster_assignment = cluster_assignment.col(0);
@@ -300,8 +299,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
       if((rho_accepted | augmentation_accepted) & (clustering | include_wcd)){
         // Note: Must use rho_old rather than rho, because when rho_thinning > 1,
         // rho does not necessarily have the last accepted value
-        update_distance_matrix(dist_mat, rankings, rho_old.col(cluster_index),
-                               n_assessors, cluster_index, metric);
+        dist_mat.col(cluster_index) = update_distance_matrix(rankings, rho_old.col(cluster_index), metric);
       }
 
       if(t % alpha_jump == 0) {
