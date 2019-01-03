@@ -3,11 +3,7 @@
 #include "partitionfuns.h"
 #include "misc.h"
 
-// via the depends attribute we tell Rcpp to create hooks for
-// RcppArmadillo so that the build process will know what to do
-//
 // [[Rcpp::depends(RcppArmadillo)]]
-
 
 void update_cluster_labels(
     arma::umat& cluster_assignment,
@@ -15,7 +11,7 @@ void update_cluster_labels(
     const arma::mat& dist_mat,
     const arma::mat& rho_old,
     const arma::mat& rankings,
-    const arma::mat& cluster_probs,
+    const arma::vec& cluster_probs,
     const arma::vec& alpha_old,
     const int& n_items,
     const int& n_assessors,
@@ -29,14 +25,12 @@ void update_cluster_labels(
 ){
 
   arma::mat assignment_prob(n_assessors, n_clusters);
-
   for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
     // Compute the logarithm of the unnormalized probability
     // This is important, to avoid overflow
-    assignment_prob.col(cluster_index) = std::log(cluster_probs(cluster_index, t)) * arma::ones(n_assessors) -
+    assignment_prob.col(cluster_index) = std::log(cluster_probs(cluster_index)) * arma::ones(n_assessors) -
       alpha_old(cluster_index) / n_items * dist_mat.col(cluster_index) -
       get_partition_function(n_items, alpha_old(cluster_index), cardinalities, logz_estimate, metric);
-
   }
 
   for(int assessor_index = 0; assessor_index < n_assessors; ++assessor_index){

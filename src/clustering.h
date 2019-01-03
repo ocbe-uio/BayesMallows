@@ -11,7 +11,7 @@ void update_cluster_labels(
     const arma::mat& dist_mat,
     const arma::mat& rho_old,
     const arma::mat& rankings,
-    const arma::mat& cluster_probs,
+    const arma::vec& cluster_probs,
     const arma::vec& alpha_old,
     const int& n_items,
     const int& n_assessors,
