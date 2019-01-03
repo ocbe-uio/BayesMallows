@@ -115,7 +115,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     missing_indicator = rankings;
     missing_indicator.transform( [](double val) { return (arma::is_finite(val)) ? 0 : 1; } );
     assessor_missing = arma::conv_to<arma::vec>::from(sum(missing_indicator, 0));
-
+    initialize_missing_ranks(rankings, missing_indicator, assessor_missing);
   } else {
     missing_indicator.reset();
     assessor_missing.reset();
@@ -141,13 +141,6 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
       rho.slice(0).col(i) = arma::shuffle(arma::regspace<arma::vec>(1, 1, n_items));
     }
   }
-
-  // Fill in missing ranks, if needed
-  if(any_missing){
-    initialize_missing_ranks(rankings, missing_indicator, assessor_missing,
-                             n_items, n_assessors);
-  }
-
 
   // If the user wants to save augmented data, we need a cube
   arma::cube augmented_data;
@@ -328,8 +321,8 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Perform data augmentation of missing ranks, if needed
   if(any_missing){
     update_missing_ranks(rankings, current_cluster_assignment, aug_acceptance, missing_indicator,
-                         assessor_missing, n_items, n_assessors, alpha_old, rho_old,
-                         metric, t, clustering, augmentation_accepted);
+                         assessor_missing, alpha_old, rho_old,
+                         metric, augmentation_accepted);
   }
 
     // Perform data augmentation of pairwise comparisons, if needed

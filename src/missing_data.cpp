@@ -6,8 +6,8 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
-arma::vec propose_augmentation(const arma::vec& ranks, const arma::vec& indicator,
-                               const int& n_items){
+arma::vec propose_augmentation(const arma::vec& ranks, const arma::vec& indicator){
+  int n_items = ranks.n_elem;
 
   // Defining a number of helper variables
   arma::uvec ranked_inds = arma::find(indicator == 0);
@@ -30,14 +30,15 @@ arma::vec propose_augmentation(const arma::vec& ranks, const arma::vec& indicato
 
 
 void initialize_missing_ranks(arma::mat& rankings, const arma::mat& missing_indicator,
-                              const arma::vec& assessor_missing,
-                              const int& n_items, const int& n_assessors) {
+                              const arma::vec& assessor_missing) {
+
+  int n_assessors = rankings.n_cols;
 
   for(int i = 0; i < n_assessors; ++i){
     if(assessor_missing(i) == 0) {
       continue;
     } else {
-      rankings.col(i) = propose_augmentation(rankings.col(i), missing_indicator.col(i), n_items);
+      rankings.col(i) = propose_augmentation(rankings.col(i), missing_indicator.col(i));
     }
   }
 }
@@ -46,43 +47,38 @@ void update_missing_ranks(arma::mat& rankings, const arma::uvec& current_cluster
                           arma::vec& aug_acceptance,
                           const arma::mat& missing_indicator,
                           const arma::vec& assessor_missing,
-                          const int& n_items, const int& n_assessors,
                           const arma::vec& alpha, const arma::mat& rho,
-                          const std::string& metric, const int& t,
-                          const bool& clustering, bool& augmentation_accepted){
+                          const std::string& metric,
+                          bool& augmentation_accepted){
+
+  int n_items = rankings.n_rows;
+  int n_assessors = rankings.n_cols;
 
   for(int i = 0; i < n_assessors; ++i){
     if(assessor_missing(i) == 0){
       ++aug_acceptance(i);
+      continue;
+    }
+
+    // Sample an augmentation proposal
+    arma::vec proposal = propose_augmentation(rankings.col(i), missing_indicator.col(i));
+
+    // Draw a uniform random number
+    double u = std::log(arma::randu<double>());
+
+    // Find which cluster the assessor belongs to
+    int cluster = current_cluster_assignment(i);
+
+    double ratio = -alpha(cluster) / n_items *
+      (get_rank_distance(proposal, rho.col(cluster), metric) -
+      get_rank_distance(rankings.col(i), rho.col(cluster), metric));
+
+    if(ratio > u){
+      rankings.col(i) = proposal;
+      ++aug_acceptance(i);
+      augmentation_accepted = true;
     } else {
-
-      // Sample an augmentation proposal
-      arma::vec proposal = propose_augmentation(rankings.col(i), missing_indicator.col(i), n_items);
-
-      // Draw a uniform random number
-      double u = std::log(arma::randu<double>());
-
-      // Find which cluster the assessor belongs to
-      int cluster;
-      if(clustering){
-        cluster = current_cluster_assignment(i);
-      } else {
-        cluster = 0;
-      }
-
-
-      double ratio = -alpha(cluster) / n_items *
-        (get_rank_distance(proposal, rho.col(cluster), metric) -
-        get_rank_distance(rankings.col(i), rho.col(cluster), metric));
-
-      if(ratio > u){
-        rankings.col(i) = proposal;
-        ++aug_acceptance(i);
-        augmentation_accepted = true;
-      } else {
-        augmentation_accepted = false;
-      }
+      augmentation_accepted = false;
     }
   }
-
 }
