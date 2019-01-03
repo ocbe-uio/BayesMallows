@@ -1,6 +1,6 @@
 #include <cmath>
 #include "RcppArmadillo.h"
-#include "clustering.h"
+#include "mixtures.h"
 #include "distances.h"
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
