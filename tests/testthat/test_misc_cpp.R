@@ -25,18 +25,6 @@ test_that(
 )
 
 test_that(
-  "C++ setdiff is correct",
-  {
-    x <- 1:100
-    y <- sample(x, size = 20)
-    expect_equal(
-      c(BayesMallows:::std_setdiff(x, y)),
-      setdiff(x, y)
-    )
-  }
-)
-
-test_that(
   "C++ sample_int is correct",
   {
 

@@ -48,10 +48,6 @@ binomial_coefficient <- function(n, k) {
     .Call(`_BayesMallows_binomial_coefficient`, n, k)
 }
 
-std_setdiff <- function(x, y) {
-    .Call(`_BayesMallows_std_setdiff`, x, y)
-}
-
 sample_int <- function(probs) {
     .Call(`_BayesMallows_sample_int`, probs)
 }

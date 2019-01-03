@@ -1,33 +1,14 @@
 #include <RcppArmadillo.h>
 #include <cmath>
 #include "distances.h"
-#include "misc.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-
 arma::vec propose_augmentation(const arma::vec& ranks, const arma::vec& indicator){
-  int n_items = ranks.n_elem;
-
-  // Defining a number of helper variables
-  arma::uvec ranked_inds = arma::find(indicator == 0);
-  arma::uvec taken_ranks = arma::conv_to<arma::uvec>::from(ranks).elem(ranked_inds);
-  arma::uvec all_ranks = arma::regspace<arma::uvec>(1, 1, n_items);
-  arma::uvec all_inds = arma::regspace<arma::uvec>(0, 1, n_items - 1);
-
-  // Find the available ranks
-  arma::uvec available_ranks = std_setdiff(all_ranks, taken_ranks);
-  arma::uvec available_inds = std_setdiff(all_inds, ranked_inds);
-
-  // Adding randomness with shuffle
   arma::vec proposal = ranks;
-  proposal(available_inds) = arma::shuffle(arma::conv_to<arma::vec>::from(available_ranks));
-
-  return proposal;
-
-
+  proposal(arma::find(indicator == 1)) = arma::shuffle(ranks(arma::find(indicator == 1)));
+  return(proposal);
 }
-
 
 void initialize_missing_ranks(arma::mat& rankings, const arma::mat& missing_indicator,
                               const arma::vec& assessor_missing) {

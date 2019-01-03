@@ -56,18 +56,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// std_setdiff
-arma::uvec std_setdiff(arma::uvec& x, arma::uvec& y);
-RcppExport SEXP _BayesMallows_std_setdiff(SEXP xSEXP, SEXP ySEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::uvec& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::uvec& >::type y(ySEXP);
-    rcpp_result_gen = Rcpp::wrap(std_setdiff(x, y));
-    return rcpp_result_gen;
-END_RCPP
-}
 // sample_int
 int sample_int(const arma::rowvec& probs);
 RcppExport SEXP _BayesMallows_sample_int(SEXP probsSEXP) {
@@ -165,7 +153,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 4},
     {"_BayesMallows_factorial", (DL_FUNC) &_BayesMallows_factorial, 1},
     {"_BayesMallows_binomial_coefficient", (DL_FUNC) &_BayesMallows_binomial_coefficient, 2},
-    {"_BayesMallows_std_setdiff", (DL_FUNC) &_BayesMallows_std_setdiff, 2},
     {"_BayesMallows_sample_int", (DL_FUNC) &_BayesMallows_sample_int, 1},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 5},
