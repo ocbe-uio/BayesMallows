@@ -146,8 +146,8 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
   // Matrix with precomputed distances d(R_j, \rho_j), used to avoid looping during cluster assignment
   arma::mat dist_mat(n_assessors, n_clusters);
-  for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
-    dist_mat.col(cluster_index) = rank_dist_vec(rankings, rho.slice(0).col(cluster_index), metric);
+  for(int i = 0; i < n_clusters; ++i){
+    dist_mat.col(i) = rank_dist_vec(rankings, rho.slice(0).col(i), metric);
   }
 
   arma::mat within_cluster_distance(n_clusters, include_wcd ? nmc : 1);
@@ -216,25 +216,25 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     }
 
 
-    for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
-      update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,
-                 rho_thinning, alpha_old(cluster_index), leap_size,
-                 clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == cluster_index)) : rankings,
+    for(int i = 0; i < n_clusters; ++i){
+      update_rho(rho, rho_acceptance, rho_old, rho_index, i,
+                 rho_thinning, alpha_old(i), leap_size,
+                 clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
                  metric, n_items, t, element_indices, rho_accepted);
 
       if((rho_accepted | augmentation_accepted) & (clustering | include_wcd)){
         // Note: Must use rho_old rather than rho, because when rho_thinning > 1,
         // rho does not necessarily have the last accepted value
-        dist_mat.col(cluster_index) = rank_dist_vec(rankings, rho_old.col(cluster_index), metric);
+        dist_mat.col(i) = rank_dist_vec(rankings, rho_old.col(i), metric);
       }
     }
 
     if(t % alpha_jump == 0) {
       ++alpha_index;
-      for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
-        alpha(cluster_index, alpha_index) = update_alpha(alpha_acceptance, alpha_old(cluster_index),
-              clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == cluster_index)) : rankings,
-              cluster_index, rho_old.col(cluster_index), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate);
+      for(int i = 0; i < n_clusters; ++i){
+        alpha(i, alpha_index) = update_alpha(alpha_acceptance, alpha_old(i),
+              clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
+              i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate);
       }
       // Update alpha_old
       alpha_old = alpha.col(alpha_index);
