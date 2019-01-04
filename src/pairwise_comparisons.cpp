@@ -69,11 +69,7 @@ void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
 
 }
 
-
-
-void propose_pairwise_augmentation(arma::vec& proposal,
-                                   const arma::vec& ranking,
-                                   const Rcpp::List& assessor_constraints){
+arma::vec propose_pairwise_augmentation(const arma::vec& ranking, const Rcpp::List& assessor_constraints){
 
   int n_items = ranking.n_elem;
 
@@ -82,24 +78,18 @@ void propose_pairwise_augmentation(arma::vec& proposal,
 
   // Sample an integer between 1 and n_items
   int item = arma::randi<int>(arma::distr_param(1, n_items));
-  // Check if the item is constrained for this assessor
-  bool item_is_constrained = arma::any(constrained_items == item);
 
   // Left and right limits of the interval we draw ranks from
   // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
   int left_limit = 0, right_limit = n_items + 1;
+  find_pairwise_limits(left_limit, right_limit, item, assessor_constraints, ranking);
 
-  if(item_is_constrained){
-    find_pairwise_limits(left_limit, right_limit, item,
-                         assessor_constraints, ranking);
-  }
-
-  // Now complete the leap step by drawing a new proposal uniformly between
+  // Now complete the leap step by sampling a new proposal uniformly between
   // left_limit + 1 and right_limit - 1
   int proposed_rank = arma::randi<int>(arma::distr_param(left_limit + 1, right_limit - 1));
 
   // Assign the proposal to the (item-1)th item
-  proposal = ranking;
+  arma::vec proposal = ranking;
   proposal(item - 1) = proposed_rank;
 
   double delta_r;
@@ -108,6 +98,7 @@ void propose_pairwise_augmentation(arma::vec& proposal,
   // Do the shift step
   shift_step(proposal, ranking, item, delta_r, indices);
 
+  return proposal;
 }
 
 void propose_swap(arma::vec& proposal,
@@ -177,7 +168,7 @@ void augment_pairwise(
 
     // Sample a proposal, depending on the error model
     if(error_model == "none"){
-      propose_pairwise_augmentation(proposal, rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]));
+      proposal = propose_pairwise_augmentation(rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]));
     } else if(error_model == "bernoulli"){
       propose_swap(proposal, rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]), n_items, g_diff);
     } else {
