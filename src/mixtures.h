@@ -4,8 +4,9 @@
 #include "RcppArmadillo.h"
 #include "partitionfuns.h"
 
-void update_cluster_labels(
-    arma::uvec& current_cluster_assignment,
+void update_dist_mat(arma::mat& dist_mat, const arma::mat& rankings, const arma::mat& rho_old, const std::string& metric);
+
+arma::uvec update_cluster_labels(
     const arma::mat& dist_mat,
     const arma::vec& cluster_probs,
     const arma::vec& alpha_old,

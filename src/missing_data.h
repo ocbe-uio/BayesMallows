@@ -13,7 +13,6 @@ void update_missing_ranks(arma::mat& rankings, const arma::uvec& current_cluster
                           const arma::mat& missing_indicator,
                           const arma::vec& assessor_missing,
                           const arma::vec& alpha, const arma::mat& rho,
-                          const std::string& metric,
-                          bool& augmentation_accepted);
+                          const std::string& metric);
 
 #endif

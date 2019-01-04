@@ -152,7 +152,6 @@ void augment_pairwise(
     const Rcpp::List& constraints,
     arma::vec& aug_acceptance,
     const bool& clustering,
-    bool& augmentation_accepted,
     std::string error_model
 ){
 
@@ -192,11 +191,7 @@ void augment_pairwise(
     if(ratio > u){
       rankings.col(i) = proposal;
       ++aug_acceptance(i);
-      augmentation_accepted = true;
-    } else {
-      augmentation_accepted = false;
     }
-
   }
 
 }

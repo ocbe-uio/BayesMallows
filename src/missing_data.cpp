@@ -29,8 +29,7 @@ void update_missing_ranks(arma::mat& rankings, const arma::uvec& current_cluster
                           const arma::mat& missing_indicator,
                           const arma::vec& assessor_missing,
                           const arma::vec& alpha, const arma::mat& rho,
-                          const std::string& metric,
-                          bool& augmentation_accepted){
+                          const std::string& metric){
 
   int n_items = rankings.n_rows;
   int n_assessors = rankings.n_cols;
@@ -57,9 +56,6 @@ void update_missing_ranks(arma::mat& rankings, const arma::uvec& current_cluster
     if(ratio > u){
       rankings.col(i) = proposal;
       ++aug_acceptance(i);
-      augmentation_accepted = true;
-    } else {
-      augmentation_accepted = false;
     }
   }
 }

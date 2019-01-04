@@ -7,6 +7,14 @@
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
+// Initialize latent ranks as provided by rho_init, or randomly:
+arma::mat initialize_rho(Rcpp::Nullable<arma::mat> rho_init, int n_items, int n_clusters){
+  if(rho_init.isNotNull()){
+    return arma::repmat(Rcpp::as<arma::mat>(rho_init), 1, n_clusters);
+  } else {
+    return arma::shuffle(arma::repmat(arma::regspace<arma::mat>(1, 1, n_items), 1, n_clusters));
+  }
+};
 
 double update_alpha(arma::vec& alpha_acceptance,
                   const double& alpha_old,
@@ -58,7 +66,7 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
                 int& rho_index, const int& cluster_index, const int& rho_thinning,
                 const double& alpha_old, const int& leap_size, const arma::mat& rankings,
                 const std::string& metric, const int& n_items, const int& t,
-                const arma::uvec& element_indices, bool& rho_accepted) {
+                const arma::uvec& element_indices) {
 
   arma::vec rho_cluster = rho_old.col(cluster_index);
 
@@ -86,9 +94,6 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
   if(ratio > u){
     rho_old.col(cluster_index) = rho_proposal;
     ++rho_acceptance(cluster_index);
-    rho_accepted = true;
-  } else {
-    rho_accepted = false;
   }
 
   // Save rho if appropriate

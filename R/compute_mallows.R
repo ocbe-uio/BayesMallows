@@ -268,6 +268,7 @@ compute_mallows <- function(rankings = NULL,
     if(!validate_permutation(rho_init)) stop("rho_init must be a proper permutation")
     if(!(sum(is.na(rho_init)) == 0)) stop("rho_init cannot have missing values")
     if(length(rho_init) != n_items) stop("rho_init must have the same number of items as implied by rankings or preferences")
+    rho_init <- matrix(rho_init, ncol = 1)
   }
 
   # Generate the constraint set

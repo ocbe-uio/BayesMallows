@@ -4,8 +4,14 @@
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-void update_cluster_labels(
-    arma::uvec& current_cluster_assignment,
+
+void update_dist_mat(arma::mat& dist_mat, const arma::mat& rankings, const arma::mat& rho_old, const std::string& metric){
+  int n_clusters = dist_mat.n_cols;
+  for(int i = 0; i < n_clusters; ++i)
+    dist_mat.col(i) = rank_dist_vec(rankings, rho_old.col(i), metric);
+};
+
+arma::uvec update_cluster_labels(
     const arma::mat& dist_mat,
     const arma::vec& cluster_probs,
     const arma::vec& alpha_old,
@@ -14,8 +20,10 @@ void update_cluster_labels(
     const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
     const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue
 ){
-  int n_assessors = current_cluster_assignment.n_elem;
+  int n_assessors = dist_mat.n_rows;
   int n_clusters = dist_mat.n_cols;
+  arma::uvec new_cluster_assignment(n_assessors);
+
 
   arma::mat assignment_prob(n_assessors, n_clusters);
   for(int i = 0; i < n_clusters; ++i){
@@ -34,8 +42,9 @@ void update_cluster_labels(
     probs = arma::normalise(probs, 1);
 
     assignment_prob.row(i) = probs;
-    current_cluster_assignment(i) = sample_int(assignment_prob.row(i));
+    new_cluster_assignment(i) = sample_int(assignment_prob.row(i));
   }
+  return(new_cluster_assignment);
 }
 
 arma::vec update_cluster_probs(
