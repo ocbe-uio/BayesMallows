@@ -73,13 +73,14 @@ void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
 
 void propose_pairwise_augmentation(arma::vec& proposal,
                                    const arma::vec& ranking,
-                                   const Rcpp::List& assessor_constraints,
-                                   const int& n_items){
+                                   const Rcpp::List& assessor_constraints){
+
+  int n_items = ranking.n_elem;
 
   // Extract the constraints for this particular assessor
   arma::uvec constrained_items = Rcpp::as<arma::uvec>(assessor_constraints[0]);
 
-  // Draw an integer between 1 and n_items
+  // Sample an integer between 1 and n_items
   int item = arma::randi<int>(arma::distr_param(1, n_items));
   // Check if the item is constrained for this assessor
   bool item_is_constrained = arma::any(constrained_items == item);
@@ -176,7 +177,7 @@ void augment_pairwise(
 
     // Sample a proposal, depending on the error model
     if(error_model == "none"){
-      propose_pairwise_augmentation(proposal, rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]), n_items);
+      propose_pairwise_augmentation(proposal, rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]));
     } else if(error_model == "bernoulli"){
       propose_swap(proposal, rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]), n_items, g_diff);
     } else {

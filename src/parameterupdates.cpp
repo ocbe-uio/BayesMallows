@@ -7,6 +7,7 @@
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
+
 void update_alpha(arma::mat& alpha,
                   arma::vec& alpha_acceptance,
                   const double& alpha_old,

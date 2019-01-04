@@ -93,19 +93,8 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Number of cluster assignments to store
   int n_cluster_assignments = std::ceil(static_cast<double>(nmc * 1.0 / clus_thin));
 
-  // Check if we want to do clustering
   bool clustering = n_clusters > 1;
-
-  // Check if we have pairwise preferences
-  bool augpair;
-
-  if(constraints.length() > 0){
-    augpair = true;
-  } else {
-    augpair = false;
-  }
-
-  // Boolean which indicates if ANY assessor has missing ranks
+  bool augpair = (constraints.length() > 0);
   bool any_missing = !arma::is_finite(rankings);
 
   arma::mat missing_indicator;
@@ -121,10 +110,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     assessor_missing.reset();
   }
 
-  // Declare the matrix to hold the latent ranks
-  // Note: Armadillo matrices are stored in column-major ordering. Hence,
-  // we put the items along the column, since they are going to be accessed at the
-  // same time for a given Monte Carlo sample.
+  // Declare the cube to hold the latent ranks
   arma::cube rho(n_items, n_clusters, n_rho);
 
   // Declare the vector to hold the scaling parameter alpha
@@ -133,11 +119,14 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Set the initial alpha value
   alpha.col(0).fill(alpha_init);
 
+  // TODO: Put the block below into a function
   // Initialize latent ranks as provided by rho_init, or randomly:
-  for(int i = 0; i < n_clusters; ++i){
-    if(rho_init.isNotNull()){
+  if(rho_init.isNotNull()){
+    for(int i = 0; i < n_clusters; ++i){
       rho.slice(0).col(i) = Rcpp::as<arma::vec>(rho_init);
-    } else {
+    }
+  } else {
+    for(int i = 0; i < n_clusters; ++i){
       rho.slice(0).col(i) = arma::shuffle(arma::regspace<arma::vec>(1, 1, n_items));
     }
   }
@@ -325,7 +314,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                          metric, augmentation_accepted);
   }
 
-    // Perform data augmentation of pairwise comparisons, if needed
+  // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
     augment_pairwise(rankings, current_cluster_assignment, alpha_old, 0.1, rho_old,
                      metric, constraints, aug_acceptance, clustering, augmentation_accepted, error_model);
