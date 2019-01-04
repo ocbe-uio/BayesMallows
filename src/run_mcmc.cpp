@@ -6,12 +6,6 @@
 #include "pairwise_comparisons.h"
 #include "parameterupdates.h"
 
-
-
-
-// via the depends attribute we tell Rcpp to create hooks for
-// RcppArmadillo so that the build process will know what to do
-//
 // [[Rcpp::depends(RcppArmadillo)]]
 
 //' Worker function for computing the posterior distribution.
