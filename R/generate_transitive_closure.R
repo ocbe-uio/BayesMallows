@@ -26,6 +26,10 @@
 #' }
 #'
 #'
+#' @param cl Optional computing cluster used for parallelization, returned
+#' from \code{parallel::makeCluster}. Defaults to \code{NULL}.
+#'
+#'
 #' @return A dataframe with the same columns as \code{df}, but with its set of rows expanded
 #' to include all pairwise preferences implied by the ones stated in \code{df}. The returned
 #' object has \code{S3} subclass \code{BayesMallowsTC}, to indicate that this is the
@@ -37,25 +41,34 @@
 #'
 #' @example /inst/examples/generate_transitive_closure_example.R
 #'
-generate_transitive_closure <- function(df){
+generate_transitive_closure <- function(df, cl = NULL){
 
-  # Integers mess up the function, so we use numeric
-  df <- dplyr::mutate_all(df, as.numeric)
+  prefs <- split(df[, c("bottom_item", "top_item"), drop = FALSE], df$assessor)
 
-  get_tc <- function(x){
-    m <- .generate_transitive_closure(cbind(x$bottom_item, x$top_item))
-    colnames(m) <- seq(from = 1, to = ncol(m), by = 1)
-    dplyr::as_tibble(m)
+
+
+
+  if(is.null(cl)){
+    prefs <- mapply(function(x, y) cbind(y, .generate_transitive_closure(cbind(x$bottom_item, x$top_item))),
+                    prefs, unique(df$assessor), SIMPLIFY = FALSE)
+  } else {
+    if(inherits(cl, "cluster")){
+
+      prefs <- parallel::clusterMap(cl = cl,
+                                     fun = function(x, y) cbind(y, .generate_transitive_closure(cbind(x$bottom_item, x$top_item))),
+                                     prefs, unique(df$assessor))
+    } else {
+      stop("cl object must come from parallel::makeCluster")
+    }
   }
 
-  df <- dplyr::group_by(df, .data$assessor)
-  result <- dplyr::do(df, get_tc(.data))
-  result <- dplyr::ungroup(result)
 
-  names(result) <- names(df)
+  prefs <- do.call(rbind.data.frame, prefs)
+  rownames(prefs) <- NULL
+  colnames(prefs) <- colnames(df)
 
   # Check if there are any inconsistencies
-  check <- dplyr::semi_join(result, result,
+  check <- dplyr::semi_join(prefs, prefs,
                             by = c("assessor" = "assessor",
                                    "bottom_item" = "top_item",
                                    "top_item" = "bottom_item"))
@@ -66,9 +79,9 @@ generate_transitive_closure <- function(df){
     stop("Cannot compute transitive closure. Please run compute_mallows with error_model='bernoulli'.")
   }
 
-  class(result) <- c("BayesMallowsTC", class(result))
+  class(prefs) <- c("BayesMallowsTC", class(prefs))
 
-  return(result)
+  return(prefs)
 }
 
 
@@ -89,10 +102,11 @@ generate_transitive_closure <- function(df){
 
   new_mat <- which(incidence == 1, arr.ind = TRUE)
 
-  result <- cbind(
-    as.integer(rownames(incidence)[new_mat[, 1, drop = FALSE]]),
-    as.integer(colnames(incidence)[new_mat[, 2, drop = FALSE]])
-  )
+  result <- data.frame(
+    bottom_item = as.numeric(rownames(incidence)[new_mat[, 1, drop = FALSE]]),
+    top_item = as.numeric(colnames(incidence)[new_mat[, 2, drop = FALSE]])
+    )
+
 
   return(result)
 
