@@ -6,17 +6,16 @@
 
 // Update shape parameters for the Bernoulli error model
 void update_shape_bernoulli(
-    arma::vec& shape_1,
-    arma::vec& shape_2,
+    double& shape_1,
+    double& shape_2,
     const double& kappa_1,
     const double& kappa_2,
-    const int& n_assessors,
-    const int& n_items,
     const arma::mat& rankings,
-    const Rcpp::List& constraints,
-    const int& t
+    const Rcpp::List& constraints
 ){
 
+  int n_items = rankings.n_rows;
+  int n_assessors = rankings.n_cols;
   int sum_1 = 0, sum_2 = 0;
   for(int i = 0; i < n_assessors; ++i){
 
@@ -38,8 +37,8 @@ void update_shape_bernoulli(
       }
     }
   }
-  shape_1(t) = kappa_1 + sum_1;
-  shape_2(t) = kappa_2 + sum_2;
+  shape_1 = kappa_1 + sum_1;
+  shape_2 = kappa_2 + sum_2;
 
 }
 

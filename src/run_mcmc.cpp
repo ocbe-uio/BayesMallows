@@ -174,15 +174,14 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
     if(error_model == "bernoulli"){
 
-      update_shape_bernoulli(shape_1, shape_2, kappa_1, kappa_2,
-                             n_assessors, n_items, rankings, constraints, t);
+      update_shape_bernoulli(shape_1(t), shape_2(t), kappa_1, kappa_2,
+                             rankings, constraints);
 
       // Update the theta parameter for the error model, which is independent of cluster
       theta(t) = rtruncbeta(shape_1(t), shape_2(t), 0.5);
       // Saving this because it is referenced also when the theta vector is empty
       theta_old = theta(t);
     }
-
 
     for(int i = 0; i < n_clusters; ++i){
       update_rho(rho, rho_acceptance, rho_old, rho_index, i,

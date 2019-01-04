@@ -6,15 +6,12 @@
 #include "distances.h"
 
 void update_shape_bernoulli(
-    arma::vec& shape_1,
-    arma::vec& shape_2,
+    double& shape_1,
+    double& shape_2,
     const double& kappa_1,
     const double& kappa_2,
-    const int& n_assessors,
-    const int& n_items,
     const arma::mat& rankings,
-    const Rcpp::List& constraints,
-    const int& t
+    const Rcpp::List& constraints
 );
 
 void augment_pairwise(
