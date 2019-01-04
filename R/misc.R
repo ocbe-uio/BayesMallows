@@ -33,3 +33,40 @@ scalefun <- function(x) sprintf("%d", as.integer(x))
 
 
 
+prepare_partition_function <- function(logz_estimate, metric, n_items){
+  # First, has the user supplied an estimate?
+  if(!is.null(logz_estimate)){
+    return(list(cardinalities = NULL, logz_estimate = logz_estimate))
+  }
+
+  # Second, do we have a sequence?
+  relevant_params <- dplyr::filter(partition_function_data, .data$n_items == !!n_items,
+                                   .data$metric == !!metric, type == "cardinalities")
+  if(nrow(relevant_params) == 1){
+    return(list(cardinalities = unlist(relevant_params$values), logz_estimate = NULL))
+  }
+
+  # Third, do we have an importance sampling estimate?
+  relevant_params <- dplyr::filter(partition_function_data, .data$n_items == !!n_items,
+                                   .data$metric == !!metric, type == "importance_sampling")
+
+  if(nrow(relevant_params) == 1){
+    return(list(cardinalities = NULL, logz_estimate = unlist(relevant_params$values)))
+  }
+
+  # Fourth, is it the Ulam distance?
+  if(metric == "ulam"){
+    return(list(
+      cardinalities = unlist(lapply(0:(n_items - 1),
+                                    function(x) PerMallows::count.perms(perm.length = n_items, dist.value = x, dist.name = "ulam")))
+    ))
+  }
+
+  # Fifth, can we compute the partition function in our C++ code?
+  if(metric %in% c("cayley", "hamming", "kendall")){
+    return(list(cardinalities = NULL, logz_estimate = NULL))
+  }
+
+  stop("Partition function not available. Please compute an estimate using estimate_partition_function().")
+
+}
