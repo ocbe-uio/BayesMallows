@@ -77,15 +77,6 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // The number of assessors
   int n_assessors = rankings.n_cols;
 
-  // Number of alpha values to store, per cluster.
-  int n_alpha = std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump));
-
-  // Number of rho values to store, per cluster and item
-  int n_rho = std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning));
-
-  // Number of augmented data sets to store
-  int n_aug = std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning));
-
   bool augpair = (constraints.length() > 0);
   bool any_missing = !arma::is_finite(rankings);
 
@@ -103,18 +94,18 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   }
 
   // Declare the cube to hold the latent ranks
-  arma::cube rho(n_items, n_clusters, n_rho);
+  arma::cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
   rho.slice(0) = initialize_rho(rho_init, n_items, n_clusters);
   arma::mat rho_old = rho(arma::span::all, arma::span::all, arma::span(0));
 
   // Declare the vector to hold the scaling parameter alpha
-  arma::mat alpha(n_clusters, n_alpha);
+  arma::mat alpha(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
   alpha.col(0).fill(alpha_init);
 
   // If the user wants to save augmented data, we need a cube
   arma::cube augmented_data;
   if(save_aug){
-    augmented_data.set_size(n_items, n_assessors, n_aug);
+    augmented_data.set_size(n_items, n_assessors, std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
     augmented_data.slice(0) = rankings;
   }
 
