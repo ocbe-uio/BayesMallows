@@ -101,13 +101,10 @@ arma::vec propose_pairwise_augmentation(const arma::vec& ranking, const Rcpp::Li
   return proposal;
 }
 
-void propose_swap(arma::vec& proposal,
-                  const arma::vec& ranking,
-                  const Rcpp::List& assessor_constraints,
-                  const int& n_items,
-                  int& g_diff){
-  proposal = ranking;
+arma::vec propose_swap(const arma::vec& ranking, const Rcpp::List& assessor_constraints,
+                       int& g_diff){
 
+  int n_items = ranking.n_elem;
   // Set L = 1 for now
   int L = 1;
   // Draw a random number, representing an item
@@ -116,6 +113,7 @@ void propose_swap(arma::vec& proposal,
   int ind1 = arma::as_scalar(arma::find(ranking == u));
   int ind2 = arma::as_scalar(arma::find(ranking == (u + L)));
 
+  arma::vec proposal = ranking;
   proposal(ind1) = ranking(ind2);
   proposal(ind2) = ranking(ind1);
 
@@ -140,6 +138,7 @@ void propose_swap(arma::vec& proposal,
   for(int j = 0; j < items_below.size(); ++j){
     g_diff += (proposal(items_below[j] - 1) < proposal(ind1)) - (ranking(items_below[j] - 1) < ranking(ind1));
   }
+  return proposal;
 }
 
 
@@ -170,7 +169,7 @@ void augment_pairwise(
     if(error_model == "none"){
       proposal = propose_pairwise_augmentation(rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]));
     } else if(error_model == "bernoulli"){
-      propose_swap(proposal, rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]), n_items, g_diff);
+      proposal = propose_swap(rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]), g_diff);
     } else {
       Rcpp::stop("error_model must be 'none' or 'bernoulli'");
     }
@@ -180,12 +179,7 @@ void augment_pairwise(
     double u = std::log(arma::randu<double>());
 
     // Find which cluster the assessor belongs to
-    int cluster;
-    if(clustering){
-      cluster = current_cluster_assignment(i);
-    } else {
-      cluster = 0;
-    }
+    int cluster = current_cluster_assignment(i);
 
     double ratio = -alpha(cluster) / n_items *
       (get_rank_distance(proposal, rho.col(cluster), metric) -

@@ -8,12 +8,10 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
-void update_alpha(arma::mat& alpha,
-                  arma::vec& alpha_acceptance,
+double update_alpha(arma::vec& alpha_acceptance,
                   const double& alpha_old,
                   const arma::mat& rankings,
-                  int& alpha_index,
-                  int& cluster_index,
+                  const int& cluster_index,
                   const arma::vec& rho_old,
                   const double& alpha_prop_sd,
                   const std::string& metric,
@@ -48,12 +46,11 @@ void update_alpha(arma::mat& alpha,
   double u = std::log(arma::randu<double>());
 
   if(ratio > u){
-    alpha(cluster_index, alpha_index) = alpha_proposal;
     ++alpha_acceptance(cluster_index);
+    return alpha_proposal;
   } else {
-    alpha(cluster_index, alpha_index) = alpha_old;
+    return alpha_old;
   }
-
 }
 
 

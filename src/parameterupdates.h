@@ -7,12 +7,10 @@
 #include "partitionfuns.h"
 
 
-void update_alpha(arma::mat& alpha,
-                  arma::vec& alpha_acceptance,
+double update_alpha(arma::vec& alpha_acceptance,
                   const double& alpha_old,
                   const arma::mat& rankings,
-                  int& alpha_index,
-                  int& cluster_index,
+                  const int& cluster_index,
                   const arma::vec& rho_old,
                   const double& alpha_prop_sd,
                   const std::string& metric,
