@@ -179,8 +179,6 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
       // Update the theta parameter for the error model, which is independent of cluster
       theta(t) = rtruncbeta(shape_1(t), shape_2(t), 0.5);
-      // Saving this because it is referenced also when the theta vector is empty
-      theta_old = theta(t);
     }
 
     for(int i = 0; i < n_clusters; ++i){
