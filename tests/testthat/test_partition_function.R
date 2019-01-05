@@ -108,3 +108,14 @@ test_that("Ulam partition function is correct", {
       )
     }
   }})
+
+
+test_that("partition function data is sane", {
+  expect_equal(
+    BayesMallows:::partition_function_data %>%
+      group_by(n_items, metric, type) %>%
+      count() %>%
+      filter(n > 1) %>%
+      nrow(),
+    0)
+})
