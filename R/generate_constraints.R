@@ -13,6 +13,9 @@
 #' can be directly provided.
 #' @param n_items Integer specifying the number of items.
 #'
+#' @param cl Optional computing cluster used for parallelization, returned
+#' from \code{parallel::makeCluster}. Defaults to \code{NULL}.
+#'
 #' @return A list which is used internally by the MCMC algorithm.
 #' @export
 #'
@@ -33,11 +36,18 @@
 #' model_fit <- compute_mallows(rankings = beach_init_rank,
 #' preferences = beach_tc, constraints = constr)
 #'
-generate_constraints <- function(preferences, n_items){
+generate_constraints <- function(preferences, n_items, cl = NULL){
+
+  stopifnot(is.null(cl) || inherits(cl, "cluster"))
+
   # Turn the preferences dataframe into a list of dataframes,
   # one list element per assessor
   constraints <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE], preferences$assessor)
-  lapply(constraints, constraint_fun, n_items)
+  if(is.null(cl)) {
+    lapply(constraints, constraint_fun, n_items)
+  } else {
+    parallel::parLapply(cl = cl, X = constraints, fun = constraint_fun, n_items)
+  }
 }
 
 

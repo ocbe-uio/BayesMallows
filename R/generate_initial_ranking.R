@@ -27,6 +27,7 @@ generate_initial_ranking <- function(tc,
   if(!("BayesMallowsTC" %in% class(tc))){
     stop("tc must be an object returned from generate_transitive_closure")
   }
+  stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
   prefs <- split(tc[, c("bottom_item", "top_item"), drop = FALSE], tc$assessor)
   if(is.null(cl)){
