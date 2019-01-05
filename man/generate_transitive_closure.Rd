@@ -87,6 +87,15 @@ pair_comp <- tribble(
   # This causes an error message and prints out the problematic rankings:
   (pair_comp_tc <- generate_transitive_closure(pair_comp))
 }
+
+
+\dontrun{
+  # The computations can also be done in parallel
+  library(parallel)
+  cl <- makeCluster(detectCores() - 1)
+  beach_tc <- generate_transitive_closure(beach_preferences, cl = cl)
+  stopCluster(cl)
+}
 }
 \seealso{
 \code{\link{generate_initial_ranking}}
