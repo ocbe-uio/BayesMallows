@@ -4,7 +4,7 @@
 \alias{generate_constraints}
 \title{Generate Constraint Set from Pairwise Comparisons}
 \usage{
-generate_constraints(preferences, n_items)
+generate_constraints(preferences, n_items, cl = NULL)
 }
 \arguments{
 \item{preferences}{Data frame of preferences. For the case of consistent
@@ -14,6 +14,9 @@ in \insertCite{crispino2018;textual}{BayesMallows}, a dataframe of preferences
 can be directly provided.}
 
 \item{n_items}{Integer specifying the number of items.}
+
+\item{cl}{Optional computing cluster used for parallelization, returned
+from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
 }
 \value{
 A list which is used internally by the MCMC algorithm.
