@@ -45,9 +45,6 @@ generate_transitive_closure <- function(df, cl = NULL){
 
   prefs <- split(df[, c("bottom_item", "top_item"), drop = FALSE], df$assessor)
 
-
-
-
   if(is.null(cl)){
     prefs <- mapply(function(x, y) cbind(y, .generate_transitive_closure(cbind(x$bottom_item, x$top_item))),
                     prefs, unique(df$assessor), SIMPLIFY = FALSE)

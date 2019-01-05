@@ -24,26 +24,14 @@ generate_initial_ranking <- function(tc,
     stop("tc must be an object returned from generate_transitive_closure")
   }
 
-  # Find
-  get_ranks <- function(x) {
-    m <- create_ranks(
-      as.matrix(x[, c("bottom_item", "top_item"), drop = FALSE]),
-      n_items = n_items
-    )
-    colnames(m) <- seq(from = 1, to = n_items, by = 1)
-    dplyr::as_tibble(m)
-  }
-
-  tc <- dplyr::group_by(tc, .data$assessor)
-  tc <- dplyr::do(tc, get_ranks(.data))
-
-  mat <- as.matrix(tc[, -1, drop = FALSE])
-  rownames(mat) <- tc[["assessor"]]
-  return(mat)
+  prefs <- split(tc[, c("bottom_item", "top_item"), drop = FALSE], tc$assessor)
+  prefs <- mapply(function(x) create_ranks(as.matrix(x), n_items), prefs, SIMPLIFY = FALSE)
+  do.call(rbind, prefs)
 }
 
 create_ranks <- function(mat, n_items){
-  g <- .create_linear_ordering(mat)
+  g <- igraph::graph_from_edgelist(mat)
+  g <- as.integer(igraph::topological.sort(g))
 
   # Add unranked elements at the end
   all_items <- seq(from = 1, to = n_items, by = 1)
@@ -54,11 +42,4 @@ create_ranks <- function(mat, n_items){
   mat <- matrix(r, nrow = 1)
 
   return(mat)
-}
-
-.create_linear_ordering <- function(mat){
-  g <- igraph::graph_from_edgelist(mat)
-  g <- as.integer(igraph::topological.sort(g))
-
-  return(g)
 }

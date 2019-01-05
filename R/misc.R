@@ -41,14 +41,14 @@ prepare_partition_function <- function(logz_estimate, metric, n_items){
 
   # Second, do we have a sequence?
   relevant_params <- dplyr::filter(partition_function_data, .data$n_items == !!n_items,
-                                   .data$metric == !!metric, type == "cardinalities")
+                                   .data$metric == !!metric, .data$type == "cardinalities")
   if(nrow(relevant_params) == 1){
     return(list(cardinalities = unlist(relevant_params$values), logz_estimate = NULL))
   }
 
   # Third, do we have an importance sampling estimate?
   relevant_params <- dplyr::filter(partition_function_data, .data$n_items == !!n_items,
-                                   .data$metric == !!metric, type == "importance_sampling")
+                                   .data$metric == !!metric, .data$type == "importance_sampling")
 
   if(nrow(relevant_params) == 1){
     return(list(cardinalities = NULL, logz_estimate = unlist(relevant_params$values)))
