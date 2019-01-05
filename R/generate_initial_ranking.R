@@ -10,6 +10,9 @@
 #'   equal the largest item index found in \code{tc}, i.e.,
 #'   \code{max(tc[, c("bottom_item", "top_item")])}.
 #'
+#' @param cl Optional computing cluster used for parallelization, returned
+#' from \code{parallel::makeCluster}. Defaults to \code{NULL}.
+#'
 #' @return A matrix of rankings which can be given in the \code{rankings} argument
 #' to \code{\link{compute_mallows}}.
 #'
@@ -18,14 +21,21 @@
 #' @example /inst/examples/generate_initial_ranking_example.R
 #'
 generate_initial_ranking <- function(tc,
-                                     n_items = max(tc[, c("bottom_item", "top_item")])){
+                                     n_items = max(tc[, c("bottom_item", "top_item")]),
+                                     cl = NULL){
 
   if(!("BayesMallowsTC" %in% class(tc))){
     stop("tc must be an object returned from generate_transitive_closure")
   }
 
   prefs <- split(tc[, c("bottom_item", "top_item"), drop = FALSE], tc$assessor)
-  prefs <- mapply(function(x) create_ranks(as.matrix(x), n_items), prefs, SIMPLIFY = FALSE)
+  if(is.null(cl)){
+    prefs <- lapply(prefs, function(x, y) create_ranks(as.matrix(x), y), n_items)
+  } else {
+    prefs <- parallel::parLapply(cl = cl, X = prefs,
+                                 fun = function(x, y) create_ranks(as.matrix(x), y), n_items)
+  }
+
   do.call(rbind, prefs)
 }
 

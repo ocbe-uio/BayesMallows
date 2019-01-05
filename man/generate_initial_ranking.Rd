@@ -5,7 +5,7 @@
 \title{Generate Initial Ranking}
 \usage{
 generate_initial_ranking(tc, n_items = max(tc[, c("bottom_item",
-  "top_item")]))
+  "top_item")]), cl = NULL)
 }
 \arguments{
 \item{tc}{A dataframe with pairwise comparisons of \code{S3} subclass
@@ -14,6 +14,9 @@ generate_initial_ranking(tc, n_items = max(tc[, c("bottom_item",
 \item{n_items}{The total number of items. If not provided, it is assumed to
 equal the largest item index found in \code{tc}, i.e.,
 \code{max(tc[, c("bottom_item", "top_item")])}.}
+
+\item{cl}{Optional computing cluster used for parallelization, returned
+from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
 }
 \value{
 A matrix of rankings which can be given in the \code{rankings} argument
