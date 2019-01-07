@@ -54,8 +54,8 @@ mixtures.}
 \item{save_clus}{Logical specifying whether or not to save cluster
 assignments. Defaults to \code{FALSE}.}
 
-\item{clus_thin}{Integer specifying the thinning to be applied to the cluster
-assignments. Defaults to \code{1L}. Not used when \code{save_clus = FALSE}.}
+\item{clus_thin}{Integer specifying the thinning to be applied to cluster
+assignments and cluster probabilities. Defaults to \code{1L}. Not used when \code{save_clus = FALSE}.}
 
 \item{nmc}{Integer specifying the number of iteration of the
 Metropolis-Hastings algorithm to run. Defaults to \code{2000L}. See

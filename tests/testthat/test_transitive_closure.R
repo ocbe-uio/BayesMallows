@@ -15,16 +15,16 @@ pair_comp <- tribble(
 
 pair_comp_tc <- tribble(
   ~assessor, ~bottom_item, ~top_item,
-  1, 1L, 2L,
-  1, 2L, 5L,
-  1, 4L, 5L,
-  1, 1L, 5L,
-  2, 1L, 2L,
-  2, 2L, 3L,
-  2, 3L, 4L,
-  2, 1L, 3L,
-  2, 1L, 4L,
-  2, 2L, 4L
+  1, 1, 2,
+  1, 2, 5,
+  1, 4, 5,
+  1, 1, 5,
+  2, 1, 2,
+  2, 2, 3,
+  2, 3, 4,
+  2, 1, 3,
+  2, 1, 4,
+  2, 2, 4
 ) %>%
   arrange(assessor, bottom_item, top_item)
 

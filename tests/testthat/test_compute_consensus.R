@@ -1,7 +1,7 @@
 context("Testing compute_consensus")
 
-b <- compute_mallows(preferences = beach_preferences)
-b$burnin <- 1000
+b <- compute_mallows(preferences = beach_preferences, nmc = 500)
+b$burnin <- 200
 cp <- compute_consensus(b)
 map <- compute_consensus(b, type = "MAP")
 

@@ -1,8 +1,5 @@
 #include "RcppArmadillo.h"
 
-// via the depends attribute we tell Rcpp to create hooks for
-// RcppArmadillo so that the build process will know what to do
-//
 // [[Rcpp::depends(RcppArmadillo)]]
 
 void shift_step(arma::vec& rho_proposal, const arma::vec& rho,
@@ -31,9 +28,9 @@ void shift_step(arma::vec& rho_proposal, const arma::vec& rho,
 
 void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
                     double& prob_backward, double& prob_forward,
-                    const arma::vec& rho, int leap_size){
+                    const arma::vec& rho, int leap_size, bool reduce_indices){
 
-  // Declare the proposed rank vector
+  // Set proposal equal to current
   rho_proposal = rho;
 
   // Help vectors
@@ -51,7 +48,6 @@ void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
   u = arma::as_scalar(arma::randi(1, arma::distr_param(1, n)));
 
   // 2, compute the set S for sampling the new rank
-  // Defining versions of leap_size and n converted to double, to avoid duplication in code
   double dobL = static_cast<double>(leap_size);
   double dobn = static_cast<double>(n);
 
@@ -60,25 +56,13 @@ void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
   double length2 = std::min(n - rho(u - 1), dobL);
 
   if((rho(u - 1) > 1) & (rho(u - 1) < n)){
-    support = arma::join_cols(
-      arma::linspace(
-        std::max(1.0, rho(u - 1) - leap_size), rho(u - 1) - 1, length1
-      ),
-      arma::linspace(
-        rho(u - 1) + 1, std::min(dobn, rho(u - 1) + leap_size), length2
-      )
-    );
+    support = arma::join_cols(arma::linspace(
+      std::max(1.0, rho(u - 1) - leap_size), rho(u - 1) - 1, length1),
+      arma::linspace(rho(u - 1) + 1, std::min(dobn, rho(u - 1) + leap_size), length2));
   } else if(rho(u - 1) == 1){
-    support = arma::linspace(
-      rho(u - 1) + 1,
-      std::min(dobn, rho(u - 1) + leap_size),
-      length2
-    );
-
+    support = arma::linspace(rho(u - 1) + 1, std::min(dobn, rho(u - 1) + leap_size), length2);
   } else if(rho(u - 1) == n){
-    support = arma::linspace(
-      std::max(1.0, rho(u - 1) - leap_size), rho(u - 1) - 1,
-      length1);
+    support = arma::linspace(std::max(1.0, rho(u - 1) - leap_size), rho(u - 1) - 1, length1);
   }
 
   // 3. assign a random element of the support set, this completes the leap step
@@ -86,7 +70,7 @@ void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
   // Picked element index-1 from the support set
   rho_proposal(u-1) = support(index);
 
-  // Compute the associated transition probabilities (BEFORE THE SHIFT STEP, WHICH IS DETERMINISTIC --> EASIER)
+  // Compute the associated transition probabilities
   if(std::abs(rho_proposal(u - 1) - rho(u - 1)) == 1){
     // in this case the transition probabilities coincide! (and in fact for leap_size = 1 the L&S is symmetric)
     support_new = std::min(rho_proposal(u - 1) - 1, dobL) + std::min(n - rho_proposal(u - 1), dobL);
@@ -102,7 +86,9 @@ void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
 
   shift_step(rho_proposal, rho, u, delta_r, indices);
 
-
+  if(!reduce_indices){
+    indices = arma::regspace<arma::uvec>(0, n - 1);
+  }
 }
 
 

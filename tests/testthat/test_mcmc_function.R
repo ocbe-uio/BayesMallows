@@ -3,10 +3,10 @@ context("Testing MCMC function on potato data")
 library(dplyr)
 library(tidyr)
 
-
 # Testing with footrule
-model_fit <- compute_mallows(potato_weighing, metric = "footrule", nmc = 10000)
-mean_alpha <- pull(summarise(model_fit$alpha, mean(value)))
+set.seed(200)
+model_fit <- compute_mallows(potato_weighing, metric = "footrule", nmc = 1000)
+mean_alpha <- pull(summarise(slice(model_fit$alpha, 501:1000), mean(value)))
 
 test_that(
   "alpha is in a decent range for footrule",

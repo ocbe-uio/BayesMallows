@@ -67,8 +67,8 @@
 #' @param save_clus Logical specifying whether or not to save cluster
 #'   assignments. Defaults to \code{FALSE}.
 #'
-#' @param clus_thin Integer specifying the thinning to be applied to the cluster
-#'   assignments. Defaults to \code{1L}. Not used when \code{save_clus = FALSE}.
+#' @param clus_thin Integer specifying the thinning to be applied to cluster
+#'   assignments and cluster probabilities. Defaults to \code{1L}. Not used when \code{save_clus = FALSE}.
 #'
 #' @param nmc Integer specifying the number of iteration of the
 #'   Metropolis-Hastings algorithm to run. Defaults to \code{2000L}. See
@@ -268,6 +268,7 @@ compute_mallows <- function(rankings = NULL,
     if(!validate_permutation(rho_init)) stop("rho_init must be a proper permutation")
     if(!(sum(is.na(rho_init)) == 0)) stop("rho_init cannot have missing values")
     if(length(rho_init) != n_items) stop("rho_init must have the same number of items as implied by rankings or preferences")
+    rho_init <- matrix(rho_init, ncol = 1)
   }
 
   # Generate the constraint set
@@ -277,47 +278,7 @@ compute_mallows <- function(rankings = NULL,
     constraints <- list()
   }
 
-  # Extract the right sequence of cardinalities, if relevant
-  if(!is.null(logz_estimate)){
-    cardinalities <- NULL
-    message("Using user-provided importance sampling estimate of partition function.")
-  } else if(metric %in% c("footrule", "spearman", "ulam")){
-    # Extract the relevant rows from partition_function_data
-    relevant_params <- dplyr::filter(partition_function_data,
-                                     .data$n_items == !!n_items,
-                                     .data$metric == !!metric
-    )
-
-    type <- dplyr::pull(relevant_params, type)
-    message(dplyr::pull(relevant_params, message))
-
-    if((length(type) == 0) || !(type %in% c("cardinalities", "importance_sampling"))){
-      if(metric == "ulam"){
-        message("Computing integer sequence for Ulam partition function")
-        cardinalities <- purrr::map_dbl(0:(n_items - 1), ~ PerMallows::count.perms(perm.length = n_items,
-                                                                                   dist.value = .x,
-                                                                                   dist.name = "ulam"))
-      } else {
-        stop("Precomputed partition function not available yet. Consider computing one
-           with the function estimate_partition_function(), and provide it
-             in the logz_estimate argument to compute_mallows().")
-      }
-
-    } else if(type == "cardinalities") {
-      cardinalities <- unlist(relevant_params$values)
-      logz_estimate <- NULL
-    } else if(type == "importance_sampling") {
-      cardinalities <- NULL
-      logz_estimate <- unlist(relevant_params$values)
-    }
-
-  } else if (metric %in% c("cayley", "hamming", "kendall")) {
-    cardinalities <- NULL
-    logz_estimate <- NULL
-    message("Using exact partition function")
-  } else {
-    stop(paste("Unknown metric", metric))
-  }
+  logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
 
   if(!save_clus) clus_thin <- nmc
 
@@ -326,8 +287,8 @@ compute_mallows <- function(rankings = NULL,
   fit <- run_mcmc(rankings = t(rankings),
                   nmc = nmc,
                   constraints = constraints,
-                  cardinalities = cardinalities,
-                  logz_estimate = logz_estimate,
+                  cardinalities = logz_list$cardinalities,
+                  logz_estimate = logz_list$logz_estimate,
                   rho_init = rho_init,
                   metric = metric,
                   error_model = dplyr::if_else(is.null(error_model), "none", error_model),

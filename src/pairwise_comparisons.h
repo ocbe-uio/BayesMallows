@@ -3,18 +3,15 @@
 
 #include <RcppArmadillo.h>
 #include "leapandshift.h"
-#include "distfuns.h"
+#include "distances.h"
 
 void update_shape_bernoulli(
-    arma::vec& shape_1,
-    arma::vec& shape_2,
+    double& shape_1,
+    double& shape_2,
     const double& kappa_1,
     const double& kappa_2,
-    const int& n_assessors,
-    const int& n_items,
     const arma::mat& rankings,
-    const Rcpp::List& constraints,
-    const int& t
+    const Rcpp::List& constraints
 );
 
 void augment_pairwise(
@@ -25,12 +22,8 @@ void augment_pairwise(
     const arma::mat& rho,
     const std::string& metric,
     const Rcpp::List& constraints,
-    const int& n_assessors,
-    const int& n_items,
-    const int& t,
     arma::vec& aug_acceptance,
     const bool& clustering,
-    bool& augmentation_accepted,
     std::string error_model
 );
 

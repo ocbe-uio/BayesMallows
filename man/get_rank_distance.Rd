@@ -4,7 +4,7 @@
 \alias{get_rank_distance}
 \title{Compute the distance between two rank vectors.}
 \usage{
-get_rank_distance(r1, r2, metric = "footrule")
+get_rank_distance(r1, r2, metric)
 }
 \arguments{
 \item{r1}{A vector of ranks.}
@@ -26,5 +26,10 @@ Note that the Spearman distance is the squared L2 norm, whereas
 the footrule distance is the L1 norm.
 
 The Ulam distance uses the SUBSET library developed by John Burkardt, available at http://people.sc.fsu.edu/~jburkardt/cpp_src/subset/subset.html.
+
+The implementation of Cayley distance is based on a \code{C++} translation of \code{Rankcluster::distCayley} \insertCite{Grimonprez2016}{BayesMallows}.
+}
+\references{
+\insertAllCited{}
 }
 \keyword{internal}

@@ -10,6 +10,9 @@
 #'   equal the largest item index found in \code{tc}, i.e.,
 #'   \code{max(tc[, c("bottom_item", "top_item")])}.
 #'
+#' @param cl Optional computing cluster used for parallelization, returned
+#' from \code{parallel::makeCluster}. Defaults to \code{NULL}.
+#'
 #' @return A matrix of rankings which can be given in the \code{rankings} argument
 #' to \code{\link{compute_mallows}}.
 #'
@@ -18,32 +21,28 @@
 #' @example /inst/examples/generate_initial_ranking_example.R
 #'
 generate_initial_ranking <- function(tc,
-                                     n_items = max(tc[, c("bottom_item", "top_item")])){
+                                     n_items = max(tc[, c("bottom_item", "top_item")]),
+                                     cl = NULL){
 
   if(!("BayesMallowsTC" %in% class(tc))){
     stop("tc must be an object returned from generate_transitive_closure")
   }
+  stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
-  # Find
-  get_ranks <- function(x) {
-    m <- create_ranks(
-      as.matrix(x[, c("bottom_item", "top_item"), drop = FALSE]),
-      n_items = n_items
-    )
-    colnames(m) <- seq(from = 1, to = n_items, by = 1)
-    dplyr::as_tibble(m)
+  prefs <- split(tc[, c("bottom_item", "top_item"), drop = FALSE], tc$assessor)
+  if(is.null(cl)){
+    prefs <- lapply(prefs, function(x, y) create_ranks(as.matrix(x), y), n_items)
+  } else {
+    prefs <- parallel::parLapply(cl = cl, X = prefs,
+                                 fun = function(x, y) create_ranks(as.matrix(x), y), n_items)
   }
 
-  tc <- dplyr::group_by(tc, .data$assessor)
-  tc <- dplyr::do(tc, get_ranks(.data))
-
-  mat <- as.matrix(tc[, -1, drop = FALSE])
-  rownames(mat) <- tc[["assessor"]]
-  return(mat)
+  do.call(rbind, prefs)
 }
 
 create_ranks <- function(mat, n_items){
-  g <- .create_linear_ordering(mat)
+  g <- igraph::graph_from_edgelist(mat)
+  g <- as.integer(igraph::topological.sort(g))
 
   # Add unranked elements at the end
   all_items <- seq(from = 1, to = n_items, by = 1)
@@ -54,11 +53,4 @@ create_ranks <- function(mat, n_items){
   mat <- matrix(r, nrow = 1)
 
   return(mat)
-}
-
-.create_linear_ordering <- function(mat){
-  g <- igraph::graph_from_edgelist(mat)
-  g <- as.integer(igraph::topological.sort(g))
-
-  return(g)
 }

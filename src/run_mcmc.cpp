@@ -1,15 +1,11 @@
 #include <cmath>
 #include "RcppArmadillo.h"
-#include "clustering.h"
-#include "distfuns.h"
+#include "mixtures.h"
+#include "distances.h"
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
 #include "parameterupdates.h"
 
-
-// via the depends attribute we tell Rcpp to create hooks for
-// RcppArmadillo so that the build process will know what to do
-//
 // [[Rcpp::depends(RcppArmadillo)]]
 
 //' Worker function for computing the posterior distribution.
@@ -55,7 +51,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     Rcpp::List constraints,
                     Rcpp::Nullable<arma::vec> cardinalities,
                     Rcpp::Nullable<arma::vec> logz_estimate,
-                    Rcpp::Nullable<arma::vec> rho_init,
+                    Rcpp::Nullable<arma::mat> rho_init,
                     std::string metric = "footrule",
                     std::string error_model = "none",
                     int n_clusters = 1,
@@ -81,132 +77,52 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // The number of assessors
   int n_assessors = rankings.n_cols;
 
-  // Number of alpha values to store, per cluster.
-  int n_alpha = std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump));
-
-  // Number of rho values to store, per cluster and item
-  int n_rho = std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning));
-
-  // Number of augmented data sets to store
-  int n_aug = std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning));
-
-  // Number of cluster assignments to store
-  int n_cluster_assignments = std::ceil(static_cast<double>(nmc * 1.0 / clus_thin));
-
-  // Check if we want to do clustering
-  bool clustering = n_clusters > 1;
-
-  // Check if we have pairwise preferences
-  bool augpair;
-
-  if(constraints.length() > 0){
-    augpair = true;
-  } else {
-    augpair = false;
-  }
-
-  // Boolean which indicates if ANY assessor has missing ranks
+  bool augpair = (constraints.length() > 0);
   bool any_missing = !arma::is_finite(rankings);
 
   arma::mat missing_indicator;
   arma::vec assessor_missing;
 
   if(any_missing){
-    missing_indicator = arma::zeros<arma::mat>(n_items, n_assessors);
-
-    // Number of missing items per assessor
-    assessor_missing = arma::zeros<arma::vec>(n_assessors);
-
-    // Fill the two above defined missingness indicators
-    define_missingness(missing_indicator, assessor_missing, rankings, n_items, n_assessors);
-
+    missing_indicator = rankings;
+    missing_indicator.transform( [](double val) { return (arma::is_finite(val)) ? 0 : 1; } );
+    assessor_missing = arma::conv_to<arma::vec>::from(sum(missing_indicator, 0));
+    initialize_missing_ranks(rankings, missing_indicator, assessor_missing);
   } else {
     missing_indicator.reset();
     assessor_missing.reset();
   }
 
-  // Declare the matrix to hold the latent ranks
-  // Note: Armadillo matrices are stored in column-major ordering. Hence,
-  // we put the items along the column, since they are going to be accessed at the
-  // same time for a given Monte Carlo sample.
-  arma::cube rho(n_items, n_clusters, n_rho);
+  // Declare the cube to hold the latent ranks
+  arma::cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
+  rho.slice(0) = initialize_rho(rho_init, n_items, n_clusters);
+  arma::mat rho_old = rho(arma::span::all, arma::span::all, arma::span(0));
 
   // Declare the vector to hold the scaling parameter alpha
-  arma::mat alpha(n_clusters, n_alpha);
-
-  // Set the initial alpha value
+  arma::mat alpha(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
   alpha.col(0).fill(alpha_init);
-
-  // Initialize latent ranks as provided by rho_init, or randomly:
-  for(int i = 0; i < n_clusters; ++i){
-    if(rho_init.isNotNull()){
-      rho.slice(0).col(i) = Rcpp::as<arma::vec>(rho_init);
-    } else {
-      rho.slice(0).col(i) = arma::shuffle(arma::regspace<arma::vec>(1, 1, n_items));
-    }
-  }
-
-  // Fill in missing ranks, if needed
-  if(any_missing){
-    initialize_missing_ranks(rankings, missing_indicator, assessor_missing,
-                             n_items, n_assessors);
-  }
-
 
   // If the user wants to save augmented data, we need a cube
   arma::cube augmented_data;
   if(save_aug){
-    augmented_data.set_size(n_items, n_assessors, n_aug);
+    augmented_data.set_size(n_items, n_assessors, std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
     augmented_data.slice(0) = rankings;
   }
 
-  // Cluster probabilities
-  arma::mat cluster_probs;
-
-  // Declare the cluster indicator z
-  arma::umat cluster_assignment;
-  arma::uvec current_cluster_assignment;
-
-  // Within cluster distance
-  arma::mat within_cluster_distance;
-
-  // Submatrix of rankings to be updated in each clustering step
-  arma::mat clus_mat = rankings;
-
+  // Clustering
+  bool clustering = n_clusters > 1;
+  int n_cluster_assignments = n_clusters > 1 ? std::ceil(static_cast<double>(nmc * 1.0 / clus_thin)) : 1;
+  arma::mat cluster_probs(n_clusters, n_cluster_assignments);
+  cluster_probs.col(0).fill(1.0 / n_clusters);
+  arma::vec current_cluster_probs = cluster_probs.col(0);
+  arma::umat cluster_assignment(n_assessors, n_cluster_assignments);
+  cluster_assignment.col(0) = arma::randi<arma::uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
+  arma::uvec current_cluster_assignment = cluster_assignment.col(0);
   // Matrix with precomputed distances d(R_j, \rho_j), used to avoid looping during cluster assignment
-  arma::mat dist_mat;
-
-  if(clustering | include_wcd){
-
-    cluster_assignment.set_size(n_assessors, n_cluster_assignments);
-    within_cluster_distance.set_size(n_clusters, nmc);
-
-    if(clustering){
-      cluster_probs.set_size(n_clusters, nmc);
-      cluster_probs.col(0).fill(1.0/n_clusters);
-
-      // Initialize clusters randomly
-      cluster_assignment.col(0) = arma::randi<arma::uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
-
-    } else {
-      // Set all clusters once and for all
-      cluster_assignment = arma::zeros<arma::umat>(n_assessors, 1);
-    }
-
-    // Initialize the distance matrix. Can be done here since \rho and R already are intialized
-    dist_mat.set_size(n_assessors, n_clusters);
-
-    for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
-      update_distance_matrix(dist_mat, rankings, rho.slice(0).col(cluster_index),
-                             n_assessors, cluster_index, metric);
-    }
-
-    current_cluster_assignment = cluster_assignment.col(0);
-
-    update_wcd(within_cluster_distance, current_cluster_assignment,
-               dist_mat, n_clusters, 0);
-
-  }
+  arma::mat dist_mat(n_assessors, n_clusters);
+  update_dist_mat(dist_mat, rankings, rho_old, metric);
+  arma::mat within_cluster_distance(n_clusters, include_wcd ? nmc : 1);
+  within_cluster_distance.col(0) = update_wcd(current_cluster_assignment, dist_mat);
 
 
   // Declare indicator vectors to hold acceptance or not
@@ -238,9 +154,6 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
   arma::vec alpha_old = alpha.col(0);
   double theta_old = 0;
-  arma::mat rho_old = rho(arma::span::all, arma::span::all, arma::span(0));
-  bool rho_accepted = false;
-  bool augmentation_accepted = false;
 
   arma::uvec element_indices = arma::regspace<arma::uvec>(0, rankings.n_rows - 1);
 
@@ -254,95 +167,67 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     if (t % 1000 == 0) {
       Rcpp::checkUserInterrupt();
       if(verbose){
-        Rcpp::Rcout << "First " << t
-        << " iterations of Metropolis-Hastings algorithm completed." << std::endl;
+        Rcpp::Rcout << "First " << t << " iterations of Metropolis-Hastings algorithm completed." << std::endl;
       }
 
     }
-
-    if(clustering){
-      update_cluster_probs(cluster_probs, current_cluster_assignment, n_clusters, psi, t);
-    }
-
-
 
     if(error_model == "bernoulli"){
 
-      update_shape_bernoulli(shape_1, shape_2, kappa_1, kappa_2,
-                             n_assessors, n_items, rankings, constraints, t);
+      update_shape_bernoulli(shape_1(t), shape_2(t), kappa_1, kappa_2,
+                             rankings, constraints);
 
       // Update the theta parameter for the error model, which is independent of cluster
       theta(t) = rtruncbeta(shape_1(t), shape_2(t), 0.5);
-      // Saving this because it is referenced also when the theta vector is empty
-      theta_old = theta(t);
     }
 
-
-    for(int cluster_index = 0; cluster_index < n_clusters; ++cluster_index){
-
-      // Find the members of this cluster
-      arma::uvec matches = arma::find(current_cluster_assignment == cluster_index);
-
-      // Matrix of ranks for this cluster
-      if(clustering){
-        clus_mat = rankings.submat(element_indices, matches);
-      } else if (any_missing | augpair){
-        // When augmenting data, we need to update in every step, even without clustering
-        clus_mat = rankings;
-      }
-
-
-      // Call the void function which updates rho by reference
-      update_rho(rho, rho_acceptance, rho_old, rho_index, cluster_index,
-                 rho_thinning, alpha_old(cluster_index), leap_size, clus_mat, metric, n_items, t,
-                 element_indices, rho_accepted);
-
-      if((rho_accepted | augmentation_accepted) & (clustering | include_wcd)){
-        // Note: Must use rho_old rather than rho, because when rho_thinning > 1,
-        // rho does not necessarily have the last accepted value
-        update_distance_matrix(dist_mat, rankings, rho_old.col(cluster_index),
-                               n_assessors, cluster_index, metric);
-      }
-
-      if(t % alpha_jump == 0) {
-
-        // Increment alpha_index only once, and not n_cluster times!
-        if(cluster_index == 0) ++alpha_index;
-
-        // Call the void function which updates alpha by reference
-        update_alpha(alpha, alpha_acceptance, alpha_old, clus_mat, alpha_index,
-                     cluster_index, rho_old, alpha_prop_sd, metric, lambda, n_items,
-                     cardinalities, logz_estimate);
-      }
+    for(int i = 0; i < n_clusters; ++i){
+      update_rho(rho, rho_acceptance, rho_old, rho_index, i,
+                 rho_thinning, alpha_old(i), leap_size,
+                 clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
+                 metric, n_items, t, element_indices);
 
     }
 
+    if(t % alpha_jump == 0) {
+      ++alpha_index;
+      for(int i = 0; i < n_clusters; ++i){
+        alpha(i, alpha_index) = update_alpha(alpha_acceptance, alpha_old(i),
+              clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
+              i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate);
+      }
+      // Update alpha_old
+      alpha_old = alpha.col(alpha_index);
+    }
 
   if(clustering){
-    // Update the cluster labels, per assessor
-    update_cluster_labels(cluster_assignment, current_cluster_assignment, dist_mat, rho_old, rankings, cluster_probs,
-                          alpha_old, n_items, n_assessors, n_clusters, clus_thin, cluster_assignment_index,
-                          t, metric, cardinalities, logz_estimate);
+    current_cluster_probs = update_cluster_probs(current_cluster_assignment, n_clusters, psi);
+
+    current_cluster_assignment = update_cluster_labels(dist_mat, current_cluster_probs,
+                                                       alpha_old, n_items, metric, cardinalities, logz_estimate);
+
+    if(t % clus_thin == 0){
+      ++cluster_assignment_index;
+      cluster_assignment.col(cluster_assignment_index) = current_cluster_assignment;
+      cluster_probs.col(cluster_assignment_index) = current_cluster_probs;
+    }
   }
 
   if(include_wcd){
     // Update within_cluster_distance
-    update_wcd(within_cluster_distance, current_cluster_assignment,
-               dist_mat, n_clusters, t);
+    within_cluster_distance.col(t) = update_wcd(current_cluster_assignment, dist_mat);
   }
 
   // Perform data augmentation of missing ranks, if needed
   if(any_missing){
     update_missing_ranks(rankings, current_cluster_assignment, aug_acceptance, missing_indicator,
-                         assessor_missing, n_items, n_assessors, alpha_old, rho_old,
-                         metric, t, clustering, augmentation_accepted);
+                         assessor_missing, alpha_old, rho_old, metric);
   }
 
-    // Perform data augmentation of pairwise comparisons, if needed
+  // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
     augment_pairwise(rankings, current_cluster_assignment, alpha_old, 0.1, rho_old,
-                     metric, constraints, n_assessors, n_items, t,
-                     aug_acceptance, clustering, augmentation_accepted, error_model);
+                     metric, constraints, aug_acceptance, clustering, error_model);
 
   }
 
@@ -351,7 +236,12 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     ++aug_index;
     augmented_data.slice(aug_index) = rankings;
   }
+
+  if(clustering | include_wcd){
+    update_dist_mat(dist_mat, rankings, rho_old, metric);
+    }
   }
+
 
 
   // Return everything that might be of interest

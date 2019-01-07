@@ -28,3 +28,12 @@ head(beach_init)
   model_fit$burnin <- 500
   plot(model_fit, parameter = "rho", items = 1:15)
 }
+
+\dontrun{
+  # The computations can also be done in parallel
+  library(parallel)
+  cl <- makeCluster(detectCores() - 1)
+  beach_tc <- generate_transitive_closure(beach_preferences, cl = cl)
+  beach_init <- generate_initial_ranking(beach_tc, cl = cl)
+  stopCluster(cl)
+}

@@ -4,7 +4,7 @@
 \alias{generate_transitive_closure}
 \title{Generate Transitive Closure}
 \usage{
-generate_transitive_closure(df)
+generate_transitive_closure(df, cl = NULL)
 }
 \arguments{
 \item{df}{A data frame with one row per pairwise comparison, and columns
@@ -28,6 +28,9 @@ item 1 to item 5, while assessor 2 prefers item 3 to item 5, we have the followi
 1 \tab 5 \tab 1\cr
 2 \tab 5 \tab 3\cr
 }}
+
+\item{cl}{Optional computing cluster used for parallelization, returned
+from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
 }
 \value{
 A dataframe with the same columns as \code{df}, but with its set of rows expanded
@@ -83,6 +86,15 @@ pair_comp <- tribble(
 
   # This causes an error message and prints out the problematic rankings:
   (pair_comp_tc <- generate_transitive_closure(pair_comp))
+}
+
+
+\dontrun{
+  # The computations can also be done in parallel
+  library(parallel)
+  cl <- makeCluster(detectCores() - 1)
+  beach_tc <- generate_transitive_closure(beach_preferences, cl = cl)
+  stopCluster(cl)
 }
 }
 \seealso{

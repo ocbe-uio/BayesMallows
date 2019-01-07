@@ -1,6 +1,6 @@
 #include "RcppArmadillo.h"
 #include "leapandshift.h"
-#include "distfuns.h"
+#include "distances.h"
 
 // via the depends attribute we tell Rcpp to create hooks for
 // RcppArmadillo so that the build process will know what to do
@@ -66,7 +66,7 @@ arma::mat rmallows(
 
     // Sample a proposal
     leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
-                   rho_iter, leap_size);
+                   rho_iter, leap_size, true);
 
     // These distances do not work with the computational shortcut
     if((metric == "cayley") | (metric == "ulam")){
@@ -75,7 +75,7 @@ arma::mat rmallows(
 
     // Compute the distances to current and proposed ranks
     double dist_new = get_rank_distance(rho0(indices), rho_proposal(indices), metric);
-    double dist_old = rank_dist_matrix(rho0(indices), rho_iter(indices), metric);
+    double dist_old = rank_dist_sum(rho0(indices), rho_iter(indices), metric);
 
     // Metropolis-Hastings ratio
     double ratio = - alpha0 / n_items * (dist_new - dist_old) +
