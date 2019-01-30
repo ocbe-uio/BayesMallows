@@ -1,3 +1,6 @@
+# BayesMallows 0.3.0
+* See all bullet points below, since 0.2.0.
+
 # BayesMallows 0.2.0.9006
 * `generate_transitive_closure`, `generate_initial_ranking`, and `generate_constraints` now are able to run in parallel.
 * Large changes to the underlying code base which should make it more maintainable but not affect the user.
