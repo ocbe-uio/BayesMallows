@@ -34,7 +34,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // factorial
-int factorial(int n);
+long int factorial(int n);
 RcppExport SEXP _BayesMallows_factorial(SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
