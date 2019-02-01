@@ -1,3 +1,6 @@
+# BayesMallows 0.3.1
+This is an update of some parts of the C++ code, to avoid failing the sanitizer checks clang-UBSAN and gcc-UBSAN.
+
 # BayesMallows 0.3.0
 * See all bullet points below, since 0.2.0.
 
