@@ -9,7 +9,7 @@ void update_dist_mat(arma::mat& dist_mat, const arma::mat& rankings, const arma:
   int n_clusters = dist_mat.n_cols;
   for(int i = 0; i < n_clusters; ++i)
     dist_mat.col(i) = rank_dist_vec(rankings, rho_old.col(i), metric);
-};
+}
 
 arma::uvec update_cluster_labels(
     const arma::mat& dist_mat,

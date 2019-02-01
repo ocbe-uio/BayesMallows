@@ -25,12 +25,12 @@ void update_shape_bernoulli(
       arma::uvec items_above = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[j]);
       arma::uvec items_below = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[j]);
 
-      for(int k = 0; k < items_above.size(); ++k){
+      for(unsigned int k = 0; k < items_above.size(); ++k){
         int g = (arma::as_scalar(rankings.col(i).row(j)) < arma::as_scalar(rankings.col(i).row(items_above(k) - 1)));
         sum_1 += g;
         sum_2 += 1 - g;
       }
-      for(int k = 0; k < items_below.size(); ++k){
+      for(unsigned int k = 0; k < items_below.size(); ++k){
         int g = (arma::as_scalar(rankings.col(i).row(j)) > arma::as_scalar(rankings.col(i).row(items_below(k) - 1)));
         sum_1 += g;
         sum_2 += 1 - g;
@@ -120,10 +120,10 @@ arma::vec propose_swap(const arma::vec& ranking, const Rcpp::List& assessor_cons
   arma::uvec items_above = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[ind1]);
   arma::uvec items_below = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[ind1]);
 
-  for(int j = 0; j < items_above.size(); ++j){
+  for(unsigned int j = 0; j < items_above.size(); ++j){
     g_diff += (proposal(items_above[j] - 1) > proposal(ind1)) - (ranking(items_above[j] - 1) > ranking(ind1));
   }
-  for(int j = 0; j < items_below.size(); ++j){
+  for(unsigned int j = 0; j < items_below.size(); ++j){
     g_diff += (proposal(items_below[j] - 1) < proposal(ind1)) - (ranking(items_below[j] - 1) < ranking(ind1));
   }
 
@@ -131,10 +131,10 @@ arma::vec propose_swap(const arma::vec& ranking, const Rcpp::List& assessor_cons
   items_above = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[ind2]);
   items_below = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[ind2]);
 
-  for(int j = 0; j < items_above.size(); ++j){
+  for(unsigned int j = 0; j < items_above.size(); ++j){
     g_diff += (proposal(items_above[j] - 1) > proposal(ind1)) - (ranking(items_above[j] - 1) > ranking(ind1));
   }
-  for(int j = 0; j < items_below.size(); ++j){
+  for(unsigned int j = 0; j < items_below.size(); ++j){
     g_diff += (proposal(items_below[j] - 1) < proposal(ind1)) - (ranking(items_below[j] - 1) < ranking(ind1));
   }
   return proposal;

@@ -6,7 +6,7 @@
 // Function to compute the factorial
 // taken from http://www.cplusplus.com/forum/unices/33379/
 // [[Rcpp::export]]
-int factorial(int n)
+long int factorial(int n)
 {
   return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n;
 }

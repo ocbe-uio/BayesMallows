@@ -14,7 +14,7 @@ arma::mat initialize_rho(Rcpp::Nullable<arma::mat> rho_init, int n_items, int n_
   } else {
     return arma::shuffle(arma::repmat(arma::regspace<arma::mat>(1, 1, n_items), 1, n_clusters));
   }
-};
+}
 
 double update_alpha(arma::vec& alpha_acceptance,
                   const double& alpha_old,
