@@ -36,7 +36,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
     // The current value of alpha
     double alpha = alpha_vector(t);
     // The current value of the partition function
-    double Z = 0;
+    arma::vec partfun(nmc);
 
     // Loop over the Monte Carlo samples
     for(int i = 0; i < nmc; ++i){
@@ -45,21 +45,23 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
 
       // Vector which holds the proposed ranks
       arma::vec ranks = arma::zeros(n_items);
+      arma::vec ranks2 = arma::zeros(n_items);
 
       // Probability of the ranks we get
-      double q = 1;
+      double log_q = 0;
 
       // n_items random uniform numbers
-      arma::vec u = arma::randu(n_items);
+      arma::vec u = arma::log(arma::randu(n_items));
 
       // Loop over possible values given to item j in random order
       arma::vec myind = arma::shuffle(arma::regspace(0, n_items - 1));
 
       for(int j = 0; j < n_items; ++j){
         int jj = myind(j);
-        arma::vec prob = arma::zeros(n_items);
         // Find the elements that have not been taken yet
         arma::uvec inds = arma::find(support != 0);
+        arma::vec log_prob(inds.size());
+
         // Number of elements
         int k_max = inds.n_elem;
 
@@ -68,22 +70,27 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
         // Sampled vector
         arma::vec r2 = rho(jj) * arma::ones(k_max);
         // Probability of sample. Note that this is a vector quantity.
-        prob(inds) = arma::exp(- alpha / n_items * arma::pow(arma::abs(r1 - r2), (metric == "footrule") ? 1. : 2.));
-        prob = prob / arma::accu(prob);
-        arma::vec cpd = arma::cumsum(prob);
+        log_prob = - alpha / n_items * arma::pow(arma::abs(r1 - r2), (metric == "footrule") ? 1. : 2.);
+        log_prob = log_prob - std::log(arma::accu(arma::exp(log_prob)));
+        arma::vec log_cpd = arma::log(arma::cumsum(arma::exp(log_prob)));
 
-        // Draw a random sampl
-        inds = find(cpd > u(jj));
-        ranks(jj) = inds(0) + 1;
-        q = q * prob(inds(0));
+        // Draw a random sample
+        int item_index = arma::as_scalar(arma::find(log_cpd > u(jj), 1));
+        ranks(jj) = arma::as_scalar(inds(item_index)) + 1;
+
+        log_q += log_prob(item_index);
+
         // Remove the realized rank from support
         support(ranks(jj) - 1) = 0;
       }
+
       // Increment the partition function
-      Z += std::exp(static_cast<double>(- alpha / n_items * get_rank_distance(ranks, rho, metric)))/q;
+      partfun(i) = - alpha / n_items * get_rank_distance(ranks, rho, metric) - log_q;
     }
     // Average over the Monte Carlo samples
-    logZ(t) = std::log(static_cast<double>(Z / nmc));
+    // Using this trick: https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/
+    double maxval = arma::max(partfun);
+    logZ(t) = maxval + std::log(arma::accu(arma::exp(partfun - maxval))) - std::log(static_cast<double>(nmc));
   }
   return logZ;
 }
