@@ -1,3 +1,6 @@
+# BayesMallows 0.3.1.9002
+* Added functionality for checking label switching. See `?label_switching` for more info.
+
 # BayesMallows 0.3.1.9001
 * The internal function `compute_importance_sampling_estimate` has been updated to avoid numerical overflow. Previusly, importance sampling failed at below 200 items. Now it works way above 10,000 items.
 

@@ -11,9 +11,11 @@ arma::uvec update_cluster_labels(
     const arma::vec& cluster_probs,
     const arma::vec& alpha_old,
     const int& n_items,
+    const int& t,
     const std::string& metric,
     const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-    const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue
+    const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue,
+    const bool& save_individual_cluster_probs = false
 );
 
 arma::vec update_cluster_probs(

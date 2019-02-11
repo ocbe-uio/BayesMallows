@@ -10,7 +10,7 @@ run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate,
   alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L,
   lambda = 0.1, psi = 10L, rho_thinning = 1L, aug_thinning = 1L,
   clus_thin = 1L, save_aug = FALSE, verbose = FALSE, kappa_1 = 1,
-  kappa_2 = 1)
+  kappa_2 = 1, save_individual_cluster_probs = FALSE)
 }
 \arguments{
 \item{rankings}{A set of complete rankings, with one sample per column.
@@ -67,6 +67,11 @@ Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
 \item{kappa_1}{Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.}
 
 \item{kappa_2}{Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.}
+
+\item{save_individual_cluster_probs}{Whether or not to save the individual cluster probabilities in each step,
+thinned as specified in argument \code{clus_thin}. This results in csv files \code{cluster_probs1.csv},
+\code{cluster_probs2.csv}, ..., being saved in the calling directory. This option may slow down the code
+considerably, but is necessary for detecting label switching using Stephen's algorithm.}
 }
 \description{
 Worker function for computing the posterior distribution.

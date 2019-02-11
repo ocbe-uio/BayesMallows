@@ -161,6 +161,12 @@
 #'   set may be time consuming. In this case it can be beneficial to precompute
 #'   it and provide it as a separate argument.
 #'
+#' @param save_individual_cluster_probs Whether or not to save the individual cluster probabilities in each step,
+#' thinned as specified in argument \code{clus_thin}. This results in csv files \code{cluster_probs1.csv},
+#' \code{cluster_probs2.csv}, ..., being saved in the calling directory. This option may slow down the code
+#' considerably, but is necessary for detecting label switching using Stephen's algorithm. See \code{\link{label_switching}}
+#' for more information.
+#'
 #'
 #' @return A list of class BayesMallows.
 #'
@@ -198,7 +204,8 @@ compute_mallows <- function(rankings = NULL,
                             logz_estimate = NULL,
                             verbose = FALSE,
                             validate_rankings = TRUE,
-                            constraints = NULL
+                            constraints = NULL,
+                            save_individual_cluster_probs = FALSE
                             ){
 
   # Check that at most one of rankings and preferences is set
@@ -303,7 +310,8 @@ compute_mallows <- function(rankings = NULL,
                   aug_thinning = aug_thinning,
                   clus_thin = clus_thin,
                   save_aug = save_aug,
-                  verbose = verbose
+                  verbose = verbose,
+                  save_individual_cluster_probs = save_individual_cluster_probs
                   )
 
   if(verbose){
