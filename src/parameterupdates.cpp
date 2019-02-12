@@ -25,7 +25,8 @@ double update_alpha(arma::vec& alpha_acceptance,
                   const std::string& metric,
                   const double& lambda,
                   const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-                  const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue) {
+                  const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue,
+                  double alpha_max = 1e6) {
 
 
   // Set the number of assessors. Not using the variable from run_mcmc because
@@ -53,7 +54,7 @@ double update_alpha(arma::vec& alpha_acceptance,
   // Draw a uniform random number
   double u = std::log(arma::randu<double>());
 
-  if(ratio > u){
+  if(ratio > u && alpha_proposal < alpha_max){
     ++alpha_acceptance(cluster_index);
     return alpha_proposal;
   } else {

@@ -8,9 +8,10 @@ run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate,
   rho_init, metric = "footrule", error_model = "none",
   n_clusters = 1L, include_wcd = FALSE, leap_size = 1L,
   alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L,
-  lambda = 0.1, psi = 10L, rho_thinning = 1L, aug_thinning = 1L,
-  clus_thin = 1L, save_aug = FALSE, verbose = FALSE, kappa_1 = 1,
-  kappa_2 = 1, save_individual_cluster_probs = FALSE)
+  lambda = 0.1, alpha_max = 1e+06, psi = 10L, rho_thinning = 1L,
+  aug_thinning = 1L, clus_thin = 1L, save_aug = FALSE,
+  verbose = FALSE, kappa_1 = 1, kappa_2 = 1,
+  save_individual_cluster_probs = FALSE)
 }
 \arguments{
 \item{rankings}{A set of complete rankings, with one sample per column.
@@ -47,6 +48,8 @@ number can significantly speed up computation time, since we then do not
 have to do expensive computation of the partition function.}
 
 \item{lambda}{Parameter of the prior distribution.}
+
+\item{alpha_max}{Maximum value of \code{alpha}, used for truncating the exponential prior distribution.}
 
 \item{psi}{Hyperparameter for the Dirichlet prior distribution used in clustering.}
 

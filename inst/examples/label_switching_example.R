@@ -14,8 +14,7 @@
                                    n_clusters = 6, nmc = 2000, save_clus = TRUE,
                                    save_individual_cluster_probs = FALSE))
   # With this options, compute_mallows will save cluster_probs2.csv,
-  # cluster_probs3.csv, ..., cluster_probs[nmc].csv, possibly reduced according
-  # to the clus_thin argument
+  # cluster_probs3.csv, ..., cluster_probs[nmc].csv.
   system.time(m <- compute_mallows(rankings = sushi_rankings, n_clusters = 6,
                                    nmc = 2000, save_clus = TRUE,
                                    save_individual_cluster_probs = TRUE))

@@ -106,10 +106,11 @@
 #'   for the Mallows model needs to be computed. Defaults to \code{1L}.
 #'
 #' @param lambda Strictly positive numeric value specifying the rate parameter
-#'   of the exponential prior distribution of \eqn{\alpha}, \eqn{\pi(\alpha) =
-#'   \lambda \exp{(-\lambda \alpha)}}. Defaults to \code{0.1}. When
+#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults to \code{0.1}. When
 #'   \code{n_cluster > 1}, each mixture component \eqn{\alpha_{c}} has the same
 #'   prior distribution.
+#'
+#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential prior distribution.
 #'
 #' @param psi Integer specifying the concentration parameter \eqn{\psi} of the
 #'   Dirichlet prior distribution used for the cluster probabilities
@@ -161,8 +162,8 @@
 #'   set may be time consuming. In this case it can be beneficial to precompute
 #'   it and provide it as a separate argument.
 #'
-#' @param save_individual_cluster_probs Whether or not to save the individual cluster probabilities in each step,
-#' thinned as specified in argument \code{clus_thin}. This results in csv files \code{cluster_probs1.csv},
+#' @param save_individual_cluster_probs Whether or not to save the individual cluster probabilities in each step.
+#' This results in csv files \code{cluster_probs1.csv},
 #' \code{cluster_probs2.csv}, ..., being saved in the calling directory. This option may slow down the code
 #' considerably, but is necessary for detecting label switching using Stephen's algorithm. See \code{\link{label_switching}}
 #' for more information.
@@ -197,6 +198,7 @@ compute_mallows <- function(rankings = NULL,
                             alpha_init = 1,
                             alpha_jump = 1L,
                             lambda = 0.001,
+                            alpha_max = 1e6,
                             psi = 10L,
                             include_wcd = (n_clusters > 1),
                             save_aug = FALSE,
@@ -289,6 +291,13 @@ compute_mallows <- function(rankings = NULL,
 
   if(!save_clus) clus_thin <- nmc
 
+  if(save_individual_cluster_probs){
+    abort <- readline(
+      prompt = paste(nmc, "csv files will be saved in your current working directory.",
+                     "Proceed? (yes/no): "))
+    if(tolower(abort) %in% c("n", "no")) stop()
+  }
+
   # Transpose rankings to get samples along columns, since we typically want
   # to extract one sample at a time. armadillo is column major, just like rankings
   fit <- run_mcmc(rankings = t(rankings),
@@ -302,6 +311,7 @@ compute_mallows <- function(rankings = NULL,
                   n_clusters = n_clusters,
                   include_wcd = include_wcd,
                   lambda = lambda,
+                  alpha_max = alpha_max,
                   leap_size = leap_size,
                   alpha_prop_sd = alpha_prop_sd,
                   alpha_init = alpha_init,
