@@ -105,12 +105,12 @@ arma::vec propose_swap(const arma::vec& ranking, const Rcpp::List& assessor_cons
 
   int n_items = ranking.n_elem;
   // Set L = 1 for now
-  int L = 1;
+  int Lswap = 1;
   // Draw a random number, representing an item
-  int u = arma::as_scalar(arma::randi(1, arma::distr_param(1, n_items - L)));
+  int u = arma::as_scalar(arma::randi(1, arma::distr_param(1, n_items - Lswap)));
 
   int ind1 = arma::as_scalar(arma::find(ranking == u));
-  int ind2 = arma::as_scalar(arma::find(ranking == (u + L)));
+  int ind2 = arma::as_scalar(arma::find(ranking == (u + Lswap)));
 
   arma::vec proposal = ranking;
   proposal(ind1) = ranking(ind2);
