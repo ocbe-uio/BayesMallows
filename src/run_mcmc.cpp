@@ -21,6 +21,8 @@
 //' @param metric The distance metric to use. One of \code{"spearman"},
 //' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 //' \code{"hamming"}.
+//' @param error_model Error model to use.
+//' @param Lswap Swap parameter used by Swap proposal for proposing rank augmentations in the case of non-transitive pairwise comparisons.
 //' @param n_clusters Number of clusters. Defaults to 1.
 //' @param include_wcd Boolean defining whether or
 //' not to store the within-cluster distance.
@@ -59,6 +61,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     Rcpp::Nullable<arma::mat> rho_init,
                     std::string metric = "footrule",
                     std::string error_model = "none",
+                    int Lswap = 1,
                     int n_clusters = 1,
                     bool include_wcd = false,
                     int leap_size = 1,
@@ -235,7 +238,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
     augment_pairwise(rankings, current_cluster_assignment, alpha_old, 0.1, rho_old,
-                     metric, constraints, aug_acceptance, clustering, error_model);
+                     metric, constraints, aug_acceptance, clustering, error_model, Lswap);
 
   }
 

@@ -68,7 +68,7 @@
 #'   assignments. Defaults to \code{FALSE}.
 #'
 #' @param clus_thin Integer specifying the thinning to be applied to cluster
-#'   assignments and cluster probabilities. Defaults to \code{1L}. Not used when \code{save_clus = FALSE}.
+#'   assignments and cluster probabilities. Defaults to \code{1L}.
 #'
 #' @param nmc Integer specifying the number of iteration of the
 #'   Metropolis-Hastings algorithm to run. Defaults to \code{2000L}. See
@@ -77,6 +77,10 @@
 #'
 #' @param leap_size Integer specifying the step size of the leap-and-shift
 #'   proposal distribution. Defaults \code{floor(n_items / 5)}.
+#'
+#' @param swap_leap Integer specifying the step size of the Swap proposal.
+#' Only used when \code{error_model} is not \code{NULL}.
+#'
 #'
 #' @param rho_init Numeric vector specifying the initial value of the latent
 #'   consensus ranking \eqn{\rho}. Defaults to NULL, which means that the
@@ -192,6 +196,7 @@ compute_mallows <- function(rankings = NULL,
                             clus_thin = 1L,
                             nmc = 2000L,
                             leap_size = max(1L, floor(n_items / 5)),
+                            swap_leap = 1L,
                             rho_init = NULL,
                             rho_thinning = 1L,
                             alpha_prop_sd = 0.1,
@@ -219,7 +224,7 @@ compute_mallows <- function(rankings = NULL,
     stop("Error model requires preferences to be set.")
   }
 
-
+  if(!swap_leap > 0) stop("swap_leap must be strictly positive")
   if(nmc <= 0) stop("nmc must be strictly positive")
 
   # Check that we do not jump over all alphas
@@ -289,8 +294,6 @@ compute_mallows <- function(rankings = NULL,
 
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
 
-  if(!save_clus) clus_thin <- nmc
-
   if(save_ind_clus){
     abort <- readline(
       prompt = paste(nmc, "csv files will be saved in your current working directory.",
@@ -308,6 +311,7 @@ compute_mallows <- function(rankings = NULL,
                   rho_init = rho_init,
                   metric = metric,
                   error_model = dplyr::if_else(is.null(error_model), "none", error_model),
+                  Lswap = swap_leap,
                   n_clusters = n_clusters,
                   include_wcd = include_wcd,
                   lambda = lambda,

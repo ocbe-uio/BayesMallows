@@ -11,7 +11,7 @@ The BayesMallows package provides functionality for fully
   the Bayesian Mallows model described in \insertCite{vitelli2018;textual}{BayesMallows},
   which handles complete rankings, top-k rankings, ranks missing at random,
   and consistent pairwise preference data, as well as mixtures of rank models.
-  In addition, modeling of
+  Modeling of
   pairwise preferences containing inconsistencies, as described in
   \insertCite{crispino2018;textual}{BayesMallows}, is also supported.
 

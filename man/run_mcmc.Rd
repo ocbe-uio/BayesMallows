@@ -5,7 +5,7 @@
 \title{Worker function for computing the posterior distribution.}
 \usage{
 run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate,
-  rho_init, metric = "footrule", error_model = "none",
+  rho_init, metric = "footrule", error_model = "none", Lswap = 1L,
   n_clusters = 1L, include_wcd = FALSE, leap_size = 1L,
   alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L,
   lambda = 0.1, alpha_max = 1e+06, psi = 10L, rho_thinning = 1L,
@@ -29,6 +29,10 @@ With n_assessors samples and n_items items, rankings is n_items x n_assessors.}
 \item{metric}{The distance metric to use. One of \code{"spearman"},
 \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 \code{"hamming"}.}
+
+\item{error_model}{Error model to use.}
+
+\item{Lswap}{Swap parameter used by Swap proposal for proposing rank augmentations in the case of non-transitive pairwise comparisons.}
 
 \item{n_clusters}{Number of clusters. Defaults to 1.}
 

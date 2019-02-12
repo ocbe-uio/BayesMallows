@@ -101,11 +101,10 @@ arma::vec propose_pairwise_augmentation(const arma::vec& ranking, const Rcpp::Li
 }
 
 arma::vec propose_swap(const arma::vec& ranking, const Rcpp::List& assessor_constraints,
-                       int& g_diff){
+                       int& g_diff, const int& Lswap){
 
   int n_items = ranking.n_elem;
-  // Set L = 1 for now
-  int Lswap = 1;
+
   // Draw a random number, representing an item
   int u = arma::as_scalar(arma::randi(1, arma::distr_param(1, n_items - Lswap)));
 
@@ -151,7 +150,8 @@ void augment_pairwise(
     const Rcpp::List& constraints,
     arma::vec& aug_acceptance,
     const bool& clustering,
-    std::string error_model
+    const std::string& error_model,
+    const int& Lswap
 ){
 
   int n_assessors = rankings.n_cols;
@@ -167,7 +167,7 @@ void augment_pairwise(
     if(error_model == "none"){
       proposal = propose_pairwise_augmentation(rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]));
     } else if(error_model == "bernoulli"){
-      proposal = propose_swap(rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]), g_diff);
+      proposal = propose_swap(rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]), g_diff, Lswap);
     } else {
       Rcpp::stop("error_model must be 'none' or 'bernoulli'");
     }

@@ -128,6 +128,8 @@ rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, 
 #' @param metric The distance metric to use. One of \code{"spearman"},
 #' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
 #' \code{"hamming"}.
+#' @param error_model Error model to use.
+#' @param Lswap Swap parameter used by Swap proposal for proposing rank augmentations in the case of non-transitive pairwise comparisons.
 #' @param n_clusters Number of clusters. Defaults to 1.
 #' @param include_wcd Boolean defining whether or
 #' not to store the within-cluster distance.
@@ -158,7 +160,7 @@ rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, 
 #' considerably, but is necessary for detecting label switching using Stephen's algorithm.
 #' @keywords internal
 #'
-run_mcmc <- function(rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric = "footrule", error_model = "none", n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, alpha_max = 1e6, psi = 10L, rho_thinning = 1L, aug_thinning = 1L, clus_thin = 1L, save_aug = FALSE, verbose = FALSE, kappa_1 = 1.0, kappa_2 = 1.0, save_ind_clus = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, error_model, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, alpha_max, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2, save_ind_clus)
+run_mcmc <- function(rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric = "footrule", error_model = "none", Lswap = 1L, n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, alpha_max = 1e6, psi = 10L, rho_thinning = 1L, aug_thinning = 1L, clus_thin = 1L, save_aug = FALSE, verbose = FALSE, kappa_1 = 1.0, kappa_2 = 1.0, save_ind_clus = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, error_model, Lswap, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, alpha_max, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2, save_ind_clus)
 }
 

@@ -24,7 +24,8 @@ void augment_pairwise(
     const Rcpp::List& constraints,
     arma::vec& aug_acceptance,
     const bool& clustering,
-    std::string error_model
+    const std::string& error_model,
+    const int& Lswap
 );
 
 

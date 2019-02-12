@@ -7,12 +7,12 @@
 compute_mallows(rankings = NULL, preferences = NULL,
   metric = "footrule", error_model = NULL, n_clusters = 1L,
   save_clus = FALSE, clus_thin = 1L, nmc = 2000L,
-  leap_size = max(1L, floor(n_items/5)), rho_init = NULL,
-  rho_thinning = 1L, alpha_prop_sd = 0.1, alpha_init = 1,
-  alpha_jump = 1L, lambda = 0.001, alpha_max = 1e+06, psi = 10L,
-  include_wcd = (n_clusters > 1), save_aug = FALSE,
-  aug_thinning = 1L, logz_estimate = NULL, verbose = FALSE,
-  validate_rankings = TRUE, constraints = NULL,
+  leap_size = max(1L, floor(n_items/5)), swap_leap = 1L,
+  rho_init = NULL, rho_thinning = 1L, alpha_prop_sd = 0.1,
+  alpha_init = 1, alpha_jump = 1L, lambda = 0.001,
+  alpha_max = 1e+06, psi = 10L, include_wcd = (n_clusters > 1),
+  save_aug = FALSE, aug_thinning = 1L, logz_estimate = NULL,
+  verbose = FALSE, validate_rankings = TRUE, constraints = NULL,
   save_ind_clus = FALSE)
 }
 \arguments{
@@ -56,7 +56,7 @@ mixtures.}
 assignments. Defaults to \code{FALSE}.}
 
 \item{clus_thin}{Integer specifying the thinning to be applied to cluster
-assignments and cluster probabilities. Defaults to \code{1L}. Not used when \code{save_clus = FALSE}.}
+assignments and cluster probabilities. Defaults to \code{1L}.}
 
 \item{nmc}{Integer specifying the number of iteration of the
 Metropolis-Hastings algorithm to run. Defaults to \code{2000L}. See
@@ -65,6 +65,9 @@ Markov chain.}
 
 \item{leap_size}{Integer specifying the step size of the leap-and-shift
 proposal distribution. Defaults \code{floor(n_items / 5)}.}
+
+\item{swap_leap}{Integer specifying the step size of the Swap proposal.
+Only used when \code{error_model} is not \code{NULL}.}
 
 \item{rho_init}{Numeric vector specifying the initial value of the latent
 consensus ranking \eqn{\rho}. Defaults to NULL, which means that the
