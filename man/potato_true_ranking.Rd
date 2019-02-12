@@ -12,6 +12,6 @@ potato_true_ranking
 True ranking of the weights of 20 potatoes.
 }
 \references{
-\insertRef{liu2018}{BayesMallows}
+\insertRef{liu2019}{BayesMallows}
 }
 \keyword{datasets}

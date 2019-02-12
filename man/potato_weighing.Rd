@@ -14,6 +14,6 @@ Result of ranking potatoes by weight, where the assessors were
 allowed to lift the potatoes. 12 assessors ranked 20 potatoes.
 }
 \references{
-\insertRef{liu2018}{BayesMallows}
+\insertRef{liu2019}{BayesMallows}
 }
 \keyword{datasets}

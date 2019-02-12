@@ -1,18 +1,18 @@
 #' True ranking of the weights of 20 potatoes.
 #'
-#' @references \insertRef{liu2018}{BayesMallows}
+#' @references \insertRef{liu2019}{BayesMallows}
 "potato_true_ranking"
 
 #' Result of ranking potatoes by weight, where the assessors were only allowed
 #' to inspected the potatoes visually. 12 assessors ranked 20 potatoes.
 #'
-#' @references \insertRef{liu2018}{BayesMallows}
+#' @references \insertRef{liu2019}{BayesMallows}
 "potato_visual"
 
 #' Result of ranking potatoes by weight, where the assessors were
 #' allowed to lift the potatoes. 12 assessors ranked 20 potatoes.
 #'
-#' @references \insertRef{liu2018}{BayesMallows}
+#' @references \insertRef{liu2019}{BayesMallows}
 "potato_weighing"
 
 #' Beach Preferences
