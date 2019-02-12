@@ -162,7 +162,7 @@
 #'   set may be time consuming. In this case it can be beneficial to precompute
 #'   it and provide it as a separate argument.
 #'
-#' @param save_individual_cluster_probs Whether or not to save the individual cluster probabilities in each step.
+#' @param save_ind_clus Whether or not to save the individual cluster probabilities in each step.
 #' This results in csv files \code{cluster_probs1.csv},
 #' \code{cluster_probs2.csv}, ..., being saved in the calling directory. This option may slow down the code
 #' considerably, but is necessary for detecting label switching using Stephen's algorithm. See \code{\link{label_switching}}
@@ -207,7 +207,7 @@ compute_mallows <- function(rankings = NULL,
                             verbose = FALSE,
                             validate_rankings = TRUE,
                             constraints = NULL,
-                            save_individual_cluster_probs = FALSE
+                            save_ind_clus = FALSE
                             ){
 
   # Check that at most one of rankings and preferences is set
@@ -291,7 +291,7 @@ compute_mallows <- function(rankings = NULL,
 
   if(!save_clus) clus_thin <- nmc
 
-  if(save_individual_cluster_probs){
+  if(save_ind_clus){
     abort <- readline(
       prompt = paste(nmc, "csv files will be saved in your current working directory.",
                      "Proceed? (yes/no): "))
@@ -321,7 +321,7 @@ compute_mallows <- function(rankings = NULL,
                   clus_thin = clus_thin,
                   save_aug = save_aug,
                   verbose = verbose,
-                  save_individual_cluster_probs = save_individual_cluster_probs
+                  save_ind_clus = save_ind_clus
                   )
 
   if(verbose){

@@ -13,7 +13,7 @@ compute_mallows(rankings = NULL, preferences = NULL,
   include_wcd = (n_clusters > 1), save_aug = FALSE,
   aug_thinning = 1L, logz_estimate = NULL, verbose = FALSE,
   validate_rankings = TRUE, constraints = NULL,
-  save_individual_cluster_probs = FALSE)
+  save_ind_clus = FALSE)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items, of size \code{n_assessors x
@@ -150,7 +150,7 @@ the the constraint set is computed internally. In repeated calls to
 set may be time consuming. In this case it can be beneficial to precompute
 it and provide it as a separate argument.}
 
-\item{save_individual_cluster_probs}{Whether or not to save the individual cluster probabilities in each step.
+\item{save_ind_clus}{Whether or not to save the individual cluster probabilities in each step.
 This results in csv files \code{cluster_probs1.csv},
 \code{cluster_probs2.csv}, ..., being saved in the calling directory. This option may slow down the code
 considerably, but is necessary for detecting label switching using Stephen's algorithm. See \code{\link{label_switching}}

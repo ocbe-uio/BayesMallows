@@ -21,7 +21,7 @@ arma::uvec update_cluster_labels(
     const std::string& metric,
     const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
     const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue,
-    const bool& save_individual_cluster_probs = false
+    const bool& save_ind_clus = false
 ){
   int n_assessors = dist_mat.n_rows;
   int n_clusters = dist_mat.n_cols;
@@ -48,7 +48,7 @@ arma::uvec update_cluster_labels(
     new_cluster_assignment(i) = sample_int(assignment_prob.row(i));
   }
 
-  if(save_individual_cluster_probs){
+  if(save_ind_clus){
     assignment_prob.save(std::string("cluster_probs") + std::to_string(t + 1) + std::string(".csv"), arma::csv_ascii);
   }
   return(new_cluster_assignment);

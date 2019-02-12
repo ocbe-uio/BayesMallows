@@ -1,3 +1,6 @@
+# BayesMallows 0.3.1.9004
+* Changed the name of `save_individual_cluster_probs` to `save_ind_clus`, to save typing.
+
 # BayesMallows 0.3.1.9003
 * Added a user prompt asking if the user really wants to save csv files, when `save_individual_cluster_probs = TRUE` in compute_mallows.
 * Added `alpha_max`, the truncation of the exponential prior for `alpha`, as a user option in `compute_mallows`.

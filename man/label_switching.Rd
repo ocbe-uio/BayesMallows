@@ -32,12 +32,12 @@ determine the directory and filenames of the csv files.
   # the cluster probabilites
   system.time(m <- compute_mallows(rankings = sushi_rankings,
                                    n_clusters = 6, nmc = 2000, save_clus = TRUE,
-                                   save_individual_cluster_probs = FALSE))
+                                   save_ind_clus = FALSE))
   # With this options, compute_mallows will save cluster_probs2.csv,
   # cluster_probs3.csv, ..., cluster_probs[nmc].csv.
   system.time(m <- compute_mallows(rankings = sushi_rankings, n_clusters = 6,
                                    nmc = 2000, save_clus = TRUE,
-                                   save_individual_cluster_probs = TRUE))
+                                   save_ind_clus = TRUE))
 
   # Next, we check convergence of alpha
   assess_convergence(m)

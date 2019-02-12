@@ -45,7 +45,7 @@
 //' 1000th iteration.
 //' @param kappa_1 Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.
 //' @param kappa_2 Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.
-//' @param save_individual_cluster_probs Whether or not to save the individual cluster probabilities in each step,
+//' @param save_ind_clus Whether or not to save the individual cluster probabilities in each step,
 //' thinned as specified in argument \code{clus_thin}. This results in csv files \code{cluster_probs1.csv},
 //' \code{cluster_probs2.csv}, ..., being saved in the calling directory. This option may slow down the code
 //' considerably, but is necessary for detecting label switching using Stephen's algorithm.
@@ -75,7 +75,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
                     bool verbose = false,
                     double kappa_1 = 1.0,
                     double kappa_2 = 1.0,
-                      bool save_individual_cluster_probs = false
+                      bool save_ind_clus = false
                       ){
 
   // The number of items ranked
@@ -212,7 +212,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
     current_cluster_assignment = update_cluster_labels(dist_mat, current_cluster_probs,
                                                        alpha_old, n_items, t, metric, cardinalities,
-                                                       logz_estimate, save_individual_cluster_probs);
+                                                       logz_estimate, save_ind_clus);
 
     if(t % clus_thin == 0){
       ++cluster_assignment_index;
