@@ -44,7 +44,9 @@ test_that("compute_mallows error model works", {
 
 test_that("compute_mallows with missing data works", {
   mat <- potato_visual * ifelse(runif(length(potato_visual)) > 0.8, NA_real_, 1)
-  expect_s3_class(compute_mallows(mat, nmc = 3), "BayesMallows")
+  m <- compute_mallows(rankings = mat, nmc = 3)
+  expect_gt(sd(m$rho$value), 0)
+  expect_s3_class(m, "BayesMallows")
 
 })
 
@@ -53,5 +55,12 @@ test_that("compute_mallows runs with the right distances", {
   for(metric in c("footrule", "spearman", "cayley", "kendall", "ulam", "hamming")){
     expect_s3_class(compute_mallows(potato_visual, metric = metric, nmc = 3), "BayesMallows")
   }
+
+})
+
+test_that("compute_mallows handles integer preferences", {
+  m <- beach_preferences %>%
+    mutate_all(as.integer) %>%
+    compute_mallows(preferences = .)
 
 })

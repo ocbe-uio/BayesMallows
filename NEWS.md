@@ -1,3 +1,7 @@
+# BayesMallows 0.3.1.9005
+* Fixed a bug which caused `compute_mallows` not to work (without giving any errors) when `rankings` contained missing values.
+* Fixed a bug which caused `compute_mallows` to fail when `preferences` had integer columns.
+
 # BayesMallows 0.3.1.9004
 * Changed the name of `save_individual_cluster_probs` to `save_ind_clus`, to save typing.
 

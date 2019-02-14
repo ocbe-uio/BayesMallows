@@ -64,3 +64,18 @@ double rtruncbeta(int shape1, int shape2, double trunc = 1) {
   }
   return x;
 }
+
+// From https://stackoverflow.com/questions/29724083
+arma::uvec arma_setdiff(arma::uvec x, arma::uvec y){
+
+  x = arma::unique(x);
+  y = arma::unique(y);
+
+  for (size_t j = 0; j < y.n_elem; j++) {
+    arma::uvec q1 = arma::find(x == y[j]);
+    if (!q1.empty()) {
+      x.shed_row(q1(0));
+    }
+  }
+  return x;
+}

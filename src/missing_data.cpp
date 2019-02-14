@@ -1,17 +1,18 @@
 #include <RcppArmadillo.h>
 #include <cmath>
 #include "distances.h"
+#include "misc.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-arma::vec propose_augmentation(const arma::vec& ranks, const arma::vec& indicator){
+arma::vec propose_augmentation(const arma::vec& ranks, const arma::uvec& indicator){
   arma::vec proposal = ranks;
   proposal(arma::find(indicator == 1)) = arma::shuffle(ranks(arma::find(indicator == 1)));
   return(proposal);
 }
 
-void initialize_missing_ranks(arma::mat& rankings, const arma::mat& missing_indicator,
-                              const arma::vec& assessor_missing) {
+void initialize_missing_ranks(arma::mat& rankings, const arma::umat& missing_indicator,
+                              const arma::uvec& assessor_missing) {
 
   int n_assessors = rankings.n_cols;
 
@@ -19,15 +20,27 @@ void initialize_missing_ranks(arma::mat& rankings, const arma::mat& missing_indi
     if(assessor_missing(i) == 0) {
       continue;
     } else {
-      rankings.col(i) = propose_augmentation(rankings.col(i), missing_indicator.col(i));
+      arma::vec rank_vector = rankings.col(i);
+      arma::uvec present_inds = arma::find(missing_indicator.col(i) == 0);
+      arma::uvec missing_inds = arma::find(missing_indicator.col(i) == 1);
+      // Find the available ranks and permute them
+      arma::uvec new_ranks = arma::shuffle(arma_setdiff(
+        arma::linspace<arma::uvec>(1, rank_vector.size()),
+        arma::conv_to<arma::uvec>::from(rank_vector(present_inds))
+      ));
+
+      for(int j = 0; j < missing_inds.size(); ++j){
+        rank_vector(missing_inds(j)) = static_cast<double>(arma::as_scalar(new_ranks(j)));
+      }
+      rankings.col(i) = rank_vector;
     }
   }
 }
 
 void update_missing_ranks(arma::mat& rankings, const arma::uvec& current_cluster_assignment,
                           arma::vec& aug_acceptance,
-                          const arma::mat& missing_indicator,
-                          const arma::vec& assessor_missing,
+                          const arma::umat& missing_indicator,
+                          const arma::uvec& assessor_missing,
                           const arma::vec& alpha, const arma::mat& rho,
                           const std::string& metric){
 

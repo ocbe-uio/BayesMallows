@@ -244,6 +244,12 @@ compute_mallows <- function(rankings = NULL,
 
   # Deal with pairwise comparisons. Generate rankings compatible with them.
   if(!is.null(preferences) && is.null(error_model)){
+    # Make sure the preference columns are double
+    preferences <- dplyr::mutate(preferences,
+                                 bottom_item = as.numeric(.data$bottom_item),
+                                 top_item = as.numeric(.data$top_item)
+                                 )
+
     if(!inherits(preferences, "BayesMallowsTC")){
       message("Generating transitive closure of preferences.")
       preferences <- generate_transitive_closure(preferences)
@@ -267,6 +273,7 @@ compute_mallows <- function(rankings = NULL,
 
   # If any row of rankings has only one missing value, replace it with the implied ranking
   if(any(is.na(rankings))){
+
     dn <- dimnames(rankings)
     rankings <- purrr::map(purrr::array_branch(rankings, margin = 1),
                            function(x) {
