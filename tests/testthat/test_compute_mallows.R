@@ -44,8 +44,9 @@ test_that("compute_mallows error model works", {
 
 test_that("compute_mallows with missing data works", {
   mat <- potato_visual * ifelse(runif(length(potato_visual)) > 0.8, NA_real_, 1)
-  m <- compute_mallows(rankings = mat, nmc = 3)
+  m <- compute_mallows(rankings = mat, nmc = 30)
   expect_gt(sd(m$rho$value), 0)
+  expect_gt(sd(m$alpha$value), 0.001)
   expect_s3_class(m, "BayesMallows")
 
 })
