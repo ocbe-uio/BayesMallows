@@ -1,3 +1,4 @@
+library(dplyr)
 context("Testing compute_mallows")
 
 test_that("miscellaneous input validation", {
@@ -65,3 +66,26 @@ test_that("compute_mallows handles integer preferences", {
     compute_mallows(preferences = .)
 
 })
+
+test_that("compute_mallows handles data with lots of missings",{
+  R_partial2 <- structure(c(NA, NA, NA, NA, NA, NA, 9, NA, NA, 7, NA, NA, NA,
+                            NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+                            NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+                            NA, NA, NA, NA, NA, NA, NA, 7, 8, 10, NA, NA, 9, NA, NA, NA,
+                            NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 6, NA, 5, 2,
+                            6, 5, 6, 6, 5, 7, 8, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+                            NA, NA, 3, 4, NA, 3, 3, 3, 3, 4, 5, 3, 3, 3, NA, 3, 3, 4, NA,
+                            7, 8, 3, 3, 10, 5, 4, NA, NA, NA, 8, NA, NA, NA, NA, NA, 11,
+                            NA, NA, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 4, 2,
+                            2, 2, 4, 2, 2, 2, NA, NA, 4, 7, 5, 4, 6, 7, 2, 6, 6, 7, NA, NA,
+                            NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 9,
+                            7, 8, NA, 8, 10, 6, NA, 5, NA, 6, 6, 5, 4, 5, NA, 4, 4, 5, NA,
+                            NA, NA, NA, 8, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+                            NA, NA, NA, NA, NA, 8, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+                            NA, 9, NA), .Dim = c(12L, 20L))
+
+  m <- compute_mallows(R_partial2)
+  expect_s3_class(assess_convergence(m), "gg")
+
+}
+          )
