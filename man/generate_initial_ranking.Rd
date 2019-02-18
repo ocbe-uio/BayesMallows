@@ -5,7 +5,7 @@
 \title{Generate Initial Ranking}
 \usage{
 generate_initial_ranking(tc, n_items = max(tc[, c("bottom_item",
-  "top_item")]), cl = NULL)
+  "top_item")]), cl = NULL, seed = NULL)
 }
 \arguments{
 \item{tc}{A dataframe with pairwise comparisons of \code{S3} subclass
@@ -17,6 +17,8 @@ equal the largest item index found in \code{tc}, i.e.,
 
 \item{cl}{Optional computing cluster used for parallelization, returned
 from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
+
+\item{seed}{Optional integer to be used as random number seed.}
 }
 \value{
 A matrix of rankings which can be given in the \code{rankings} argument

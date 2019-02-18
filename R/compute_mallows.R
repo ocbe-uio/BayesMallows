@@ -172,6 +172,8 @@
 #' considerably, but is necessary for detecting label switching using Stephen's algorithm. See \code{\link{label_switching}}
 #' for more information.
 #'
+#' @param seed Optional integer to be used as random number seed.
+#'
 #'
 #' @return A list of class BayesMallows.
 #'
@@ -212,8 +214,11 @@ compute_mallows <- function(rankings = NULL,
                             verbose = FALSE,
                             validate_rankings = TRUE,
                             constraints = NULL,
-                            save_ind_clus = FALSE
+                            save_ind_clus = FALSE,
+                            seed = NULL
                             ){
+
+  if(!is.null(seed)) set.seed(seed)
 
   # Check that at most one of rankings and preferences is set
   if(is.null(rankings) && is.null(preferences)){
@@ -244,14 +249,15 @@ compute_mallows <- function(rankings = NULL,
 
   # Deal with pairwise comparisons. Generate rankings compatible with them.
   if(!is.null(preferences) && is.null(error_model)){
-    # Make sure the preference columns are double
-    preferences <- dplyr::mutate(preferences,
-                                 bottom_item = as.numeric(.data$bottom_item),
-                                 top_item = as.numeric(.data$top_item)
-                                 )
 
     if(!inherits(preferences, "BayesMallowsTC")){
       message("Generating transitive closure of preferences.")
+      # Make sure the preference columns are double
+      preferences <- dplyr::mutate(preferences,
+                                   bottom_item = as.numeric(.data$bottom_item),
+                                   top_item = as.numeric(.data$top_item)
+      )
+
       preferences <- generate_transitive_closure(preferences)
     }
     if(is.null(rankings)){

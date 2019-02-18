@@ -12,6 +12,7 @@
 #' @param cl Optional computing cluster used for parallelization, returned
 #' from \code{parallel::makeCluster}. Defaults to \code{NULL}.
 #'
+#'
 #' @return A list of Mallows models of class \code{BayesMallowsMixtures}, with one element
 #' for each number of mixtures that
 #' was computed. This object can be studied with \code{\link{plot_elbow}}.

@@ -13,7 +13,7 @@ compute_mallows(rankings = NULL, preferences = NULL,
   alpha_max = 1e+06, psi = 10L, include_wcd = (n_clusters > 1),
   save_aug = FALSE, aug_thinning = 1L, logz_estimate = NULL,
   verbose = FALSE, validate_rankings = TRUE, constraints = NULL,
-  save_ind_clus = FALSE)
+  save_ind_clus = FALSE, seed = NULL)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items, of size \code{n_assessors x
@@ -158,6 +158,8 @@ This results in csv files \code{cluster_probs1.csv},
 \code{cluster_probs2.csv}, ..., being saved in the calling directory. This option may slow down the code
 considerably, but is necessary for detecting label switching using Stephen's algorithm. See \code{\link{label_switching}}
 for more information.}
+
+\item{seed}{Optional integer to be used as random number seed.}
 }
 \value{
 A list of class BayesMallows.

@@ -13,6 +13,8 @@
 #' @param cl Optional computing cluster used for parallelization, returned
 #' from \code{parallel::makeCluster}. Defaults to \code{NULL}.
 #'
+#' @param seed Optional integer to be used as random number seed.
+#'
 #' @return A matrix of rankings which can be given in the \code{rankings} argument
 #' to \code{\link{compute_mallows}}.
 #'
@@ -22,7 +24,9 @@
 #'
 generate_initial_ranking <- function(tc,
                                      n_items = max(tc[, c("bottom_item", "top_item")]),
-                                     cl = NULL){
+                                     cl = NULL, seed = NULL){
+
+  if(!is.null(seed)) set.seed(seed)
 
   if(!("BayesMallowsTC" %in% class(tc))){
     stop("tc must be an object returned from generate_transitive_closure")
