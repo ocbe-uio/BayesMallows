@@ -64,7 +64,6 @@ arma::vec update_cluster_probs(
 
   for(int i = 0; i < n_clusters; ++i){
     // Find the parameter for this cluster and provide it to the gamma distribution
-    //cluster_probs(i) = arma::randg<double>(arma::distr_param(arma::sum(current_cluster_assignment == i) + psi, 1.0));
     cluster_probs(i) = R::rgamma(arma::sum(current_cluster_assignment == i) + psi, 1.0);
   }
   // Finally, normalize cluster_probs with 1-norm.
