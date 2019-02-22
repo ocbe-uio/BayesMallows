@@ -1,6 +1,7 @@
 # BayesMallows 0.4.0
 * Implements all fixes since version 0.3.1 below.
 * Fixed typo on y-axis label of elbow plot.
+* Fixed an issue which caused the cluster probabilities to differ across platforms, despite using the same seed. https://stackoverflow.com/questions/54822702
 
 # BayesMallows 0.3.1.9005
 * Fixed a bug which caused `compute_mallows` not to work (without giving any errors) when `rankings` contained missing values.
