@@ -1,3 +1,7 @@
+# BayesMallows 0.4.0.9000
+* Added CITATION.
+* Updated test of random number seed.
+
 # BayesMallows 0.4.0
 * Implements all fixes since version 0.3.1 below.
 * Fixed typo on y-axis label of elbow plot.

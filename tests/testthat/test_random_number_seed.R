@@ -5,7 +5,7 @@ bmm <- compute_mallows_mixtures(n_clusters = c(1, 4),
                                 save_clus = FALSE, include_wcd = FALSE, seed = 432)
 
 
-all.equal(bmm[[2]]$cluster_probs$value[1:50],
+expect_equal(bmm[[2]]$cluster_probs$value[1:50],
           c(0.25, 0.25, 0.25, 0.25, 0.250115858981958, 0.245833894814954,
             0.24776442243802, 0.256285823765068, 0.257600323634538, 0.252693727395573,
             0.244502697360398, 0.245203251609491, 0.253418557368672, 0.260601888760137,
@@ -23,7 +23,7 @@ all.equal(bmm[[2]]$cluster_probs$value[1:50],
 
 m <- compute_mallows(sushi_rankings, n_clusters = 5, seed = 123, nmc = 20)
 
-all.equal(m$cluster_probs$value,
+expect_equal(m$cluster_probs$value,
           c(0.2, 0.2, 0.2, 0.2, 0.2, 0.211429132832491, 0.187035286787252,
             0.199569648079635, 0.196576755493794, 0.205389176806829, 0.21580404196551,
             0.178357519344898, 0.211977904759912, 0.202815160891299, 0.191045373038381,
