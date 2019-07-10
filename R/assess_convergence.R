@@ -20,8 +20,8 @@
 #' @param assessors Numeric vector specifying the assessors to study in
 #' the diagnostic plot for \code{"Rtilde"}.
 #'
-#' @param ... Additional arguments passed on to \code{cowplot::plot_grid}. Only used
-#' when \code{model_fit} is of class \code{BayesMallowsMixtures}.
+#' @param ... Additional arguments passed on to \code{cowplot::plot_grid} when
+#' \code{model_fit} is of class \code{BayesMallowsMixtures} or to \code{ggplot2::facet_wrap}.
 #'
 #' @seealso \code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
 #'
@@ -51,7 +51,7 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
   } else if(parameter == "Rtilde") {
 
     if(inherits(model_fit, "BayesMallows")){
-      trace_rtilde(model_fit, items, assessors)
+      trace_rtilde(model_fit, items, assessors, ...)
     } else if(inherits(model_fit, "BayesMallowsMixtures")){
       stop("Trace plots of augmented data not supported for BayesMallowsMixtures. Please rerun each component k using the k-th list element.")
     }
@@ -82,8 +82,7 @@ trace_alpha <- function(model_fit, clusters = model_fit$n_clusters > 1){
   } else {
     p <- p +
       ggplot2::geom_line(ggplot2::aes(color = .data$cluster)) +
-      ggplot2::theme(legend.position = "bottom") +
-      ggplot2::theme(legend.title = ggplot2::element_blank())
+      ggplot2::theme(legend.position = "none")
   }
   return(p)
 }
@@ -117,7 +116,7 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1){
 }
 
 
-trace_rtilde <- function(model_fit, items, assessors){
+trace_rtilde <- function(model_fit, items, assessors, ...){
 
 
   if(!model_fit$save_aug){
@@ -153,7 +152,7 @@ trace_rtilde <- function(model_fit, items, assessors){
 
   ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
     ggplot2::geom_line() +
-    ggplot2::facet_wrap(~ .data$assessor) +
+    ggplot2::facet_wrap(~ .data$assessor, ...) +
     ggplot2::theme(legend.title = ggplot2::element_blank()) +
     ggplot2::xlab("Iteration") +
     ggplot2::ylab("Rtilde")
@@ -169,8 +168,7 @@ trace_cluster_probs <- function(model_fit){
                   ggplot2::aes(x = .data$iteration, y = .data$value,
                                color = .data$cluster)) +
     ggplot2::geom_line() +
-    ggplot2::theme(legend.title = ggplot2::element_blank()) +
-    ggplot2::theme(legend.position = "bottom") +
+    ggplot2::theme(legend.position = "none") +
     ggplot2::xlab("Iteration") +
     ggplot2::ylab(expression(tau[c]))
 }

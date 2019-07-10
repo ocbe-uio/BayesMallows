@@ -94,7 +94,8 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   arma::uvec assessor_missing;
 
   if(any_missing){
-    // Converting to umat will convert NA to 0
+    // Converting to umat will convert NA to 0, but might cause clang-UBSAN error, so converting explicitly.
+    rankings.replace(arma::datum::nan, 0);
     missing_indicator = arma::conv_to<arma::umat>::from(rankings);
     missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
     assessor_missing = arma::conv_to<arma::uvec>::from(arma::sum(missing_indicator, 0));

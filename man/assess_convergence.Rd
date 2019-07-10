@@ -24,8 +24,8 @@ vector of indices. If NULL, five items are selected randomly. Only used when
 \item{assessors}{Numeric vector specifying the assessors to study in
 the diagnostic plot for \code{"Rtilde"}.}
 
-\item{...}{Additional arguments passed on to \code{cowplot::plot_grid}. Only used
-when \code{model_fit} is of class \code{BayesMallowsMixtures}.}
+\item{...}{Additional arguments passed on to \code{cowplot::plot_grid} when
+\code{model_fit} is of class \code{BayesMallowsMixtures} or to \code{ggplot2::facet_wrap}.}
 }
 \description{
 \code{assess_convergence} provides trace plots for the parameters of the

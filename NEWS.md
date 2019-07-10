@@ -1,3 +1,6 @@
+# BayesMallows 0.4.0.9001
+* assess_convergence no longer prints legends for clusters, as the cluster number is essentially arbitrary.
+
 # BayesMallows 0.4.0.9000
 * Added CITATION.
 * Updated test of random number seed.
