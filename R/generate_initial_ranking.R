@@ -13,7 +13,6 @@
 #' @param cl Optional computing cluster used for parallelization, returned
 #' from \code{parallel::makeCluster}. Defaults to \code{NULL}.
 #'
-#' @param seed Optional integer to be used as random number seed.
 #'
 #' @return A matrix of rankings which can be given in the \code{rankings} argument
 #' to \code{\link{compute_mallows}}.

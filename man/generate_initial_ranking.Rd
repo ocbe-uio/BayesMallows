@@ -17,8 +17,6 @@ equal the largest item index found in \code{tc}, i.e.,
 
 \item{cl}{Optional computing cluster used for parallelization, returned
 from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
-
-\item{seed}{Optional integer to be used as random number seed.}
 }
 \value{
 A matrix of rankings which can be given in the \code{rankings} argument
