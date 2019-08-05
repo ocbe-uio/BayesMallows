@@ -23,9 +23,8 @@
 #'
 generate_initial_ranking <- function(tc,
                                      n_items = max(tc[, c("bottom_item", "top_item")]),
-                                     cl = NULL, seed = NULL){
+                                     cl = NULL){
 
-  if(!is.null(seed)) set.seed(seed)
 
   if(!("BayesMallowsTC" %in% class(tc))){
     stop("tc must be an object returned from generate_transitive_closure")
