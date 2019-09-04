@@ -42,8 +42,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
       ggplot2::xlab(expression(alpha)) +
-      ggplot2::ylab("Posterior density") +
-      ggplot2::ggtitle(label = "Posterior density of alpha")
+      ggplot2::ylab("Posterior density")
 
     if(x$n_clusters > 1){
       p <- p + ggplot2::facet_wrap(~ .data$cluster, scales = "free_x")
@@ -76,7 +75,6 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
       ggplot2::geom_col() +
       ggplot2::scale_x_continuous(labels = scalefun) +
-      ggplot2::ggtitle("Posterior ranks for items") +
       ggplot2::xlab("rank") +
       ggplot2::ylab("Posterior probability")
 
@@ -94,7 +92,6 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
       ggplot2::geom_density() +
       ggplot2::xlab(expression(tau[c])) +
       ggplot2::ylab("Posterior density") +
-      ggplot2::ggtitle(label = "Posterior density of cluster probabilities") +
       ggplot2::facet_wrap(~ .data$cluster)
 
   } else if(parameter == "cluster_assignment"){
@@ -122,8 +119,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
         axis.ticks.x = ggplot2::element_blank(),
         axis.text.x = ggplot2::element_blank()
       ) +
-      ggplot2::xlab(paste0("Assessors (", min(assessor_order), " - ", max(assessor_order), ")")) +
-      ggplot2::ggtitle("Posterior Probabilities of Cluster Assignment")
+      ggplot2::xlab(paste0("Assessors (", min(assessor_order), " - ", max(assessor_order), ")"))
 
   } else if(parameter == "theta") {
 
@@ -136,8 +132,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
       ggplot2::xlab(expression(theta)) +
-      ggplot2::ylab("Posterior density") +
-      ggplot2::ggtitle(label = "Posterior density of theta")
+      ggplot2::ylab("Posterior density")
 
 
     return(p)
