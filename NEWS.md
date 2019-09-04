@@ -1,3 +1,6 @@
+# BayesMallows 0.4.0.9002
+* plot.BayesMallows no longer prints titles automatically.
+
 # BayesMallows 0.4.0.9001
 * assess_convergence no longer prints legends for clusters, as the cluster number is essentially arbitrary.
 
