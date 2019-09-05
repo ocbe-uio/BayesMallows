@@ -1,3 +1,7 @@
+# BayesMallows 0.4.1
+
+* Improvement of plotting functions, as noted below.
+
 # BayesMallows 0.4.0.9002
 * plot.BayesMallows and plot_elbow no longer print titles automatically.
 
