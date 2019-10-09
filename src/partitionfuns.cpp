@@ -159,11 +159,7 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
     }
 
     double Zlim = alpha * arma::accu(B % A) - 2 * std::log(K) - arma::accu(A % arma::log(A));
-
-    double Z0 = 0;
-    for(int i = 0; i < n_items; ++i){
-      Z0 += std::log(static_cast<double>(i + 1));
-    }
+    double Z0 = arma::sum(arma::log(arma::regspace(1, n_items)));
 
     result(i) = (Zlim - Z0lim)/K * n_items + Z0;
   }
