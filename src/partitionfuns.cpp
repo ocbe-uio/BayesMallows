@@ -162,8 +162,6 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
       A = arma::normalise(A, 1, 0);
 
       double diff = arma::abs((A - A_old)/A_old).max();
-      Rcpp::Rcout << "diff = " << diff << std::endl;
-
       if(diff < tol) break;
 
       A_old = A;
