@@ -79,14 +79,17 @@ get_partition_function <- function(n_items, alpha, cardinalities = NULL, logz_es
 #' @param metric One of \code{"footrule"} and \code{"spearman"}.
 #' @param K Integer.
 #' @param n_iterations Integer specifying the number of iterations.
+#' @param tol Stopping criterion for algorithm. The previous matrix is subtracted
+#' from the updated, and if the maximum absolute relative difference is below \code{tol},
+#' the iteration stops.
 #'
 #' @return A vector, containing the partition function at each value of alpha.
 #' @keywords internal
 #'
 #' @references \insertAllCited{}
 #'
-asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_iterations) {
-    .Call(`_BayesMallows_asymptotic_partition_function`, alpha_vector, n_items, metric, K, n_iterations)
+asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_iterations, tol = 1e-9) {
+    .Call(`_BayesMallows_asymptotic_partition_function`, alpha_vector, n_items, metric, K, n_iterations, tol)
 }
 
 #' Sample from the Mallows distribution.

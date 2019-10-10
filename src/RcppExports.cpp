@@ -83,8 +83,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // asymptotic_partition_function
-arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std::string metric, int K, int n_iterations);
-RcppExport SEXP _BayesMallows_asymptotic_partition_function(SEXP alpha_vectorSEXP, SEXP n_itemsSEXP, SEXP metricSEXP, SEXP KSEXP, SEXP n_iterationsSEXP) {
+arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std::string metric, int K, int n_iterations, double tol);
+RcppExport SEXP _BayesMallows_asymptotic_partition_function(SEXP alpha_vectorSEXP, SEXP n_itemsSEXP, SEXP metricSEXP, SEXP KSEXP, SEXP n_iterationsSEXP, SEXP tolSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -93,7 +93,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< int >::type K(KSEXP);
     Rcpp::traits::input_parameter< int >::type n_iterations(n_iterationsSEXP);
-    rcpp_result_gen = Rcpp::wrap(asymptotic_partition_function(alpha_vector, n_items, metric, K, n_iterations));
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    rcpp_result_gen = Rcpp::wrap(asymptotic_partition_function(alpha_vector, n_items, metric, K, n_iterations, tol));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -158,7 +159,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_binomial_coefficient", (DL_FUNC) &_BayesMallows_binomial_coefficient, 2},
     {"_BayesMallows_sample_int", (DL_FUNC) &_BayesMallows_sample_int, 1},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
-    {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 5},
+    {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 26},
     {NULL, NULL, 0}

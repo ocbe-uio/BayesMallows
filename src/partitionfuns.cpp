@@ -111,6 +111,9 @@ double get_partition_function(int n_items, double alpha,
 //' @param metric One of \code{"footrule"} and \code{"spearman"}.
 //' @param K Integer.
 //' @param n_iterations Integer specifying the number of iterations.
+//' @param tol Stopping criterion for algorithm. The previous matrix is subtracted
+//' from the updated, and if the maximum absolute relative difference is below \code{tol},
+//' the iteration stops.
 //'
 //' @return A vector, containing the partition function at each value of alpha.
 //' @keywords internal
@@ -119,7 +122,7 @@ double get_partition_function(int n_items, double alpha,
 //'
 // [[Rcpp::export]]
 arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std::string metric,
-                                        int K, int n_iterations){
+                                        int K, int n_iterations, double tol = 1e-9){
   // IPFP procedure
   // Initialize a square matrix where each row/column sums to one
   arma::mat A = arma::ones<arma::mat>(K, K) * 1.0 / K;
@@ -150,12 +153,20 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
     double alpha = alpha_vector(i);
 
     A = arma::exp(alpha * B);
+    arma::mat A_old = A;
     for(int i = 0; i < n_iterations; ++i){
       // Note: We can use 1-norm because the exponential never gets negative
       // Normalize rows
       A = arma::normalise(A, 1, 1);
       // Normalize columns
       A = arma::normalise(A, 1, 0);
+
+      double diff = arma::abs((A - A_old)/A_old).max();
+      Rcpp::Rcout << "diff = " << diff << std::endl;
+
+      if(diff < tol) break;
+
+      A_old = A;
     }
 
     double Zlim = alpha * arma::accu(B % A) - 2 * std::log(K) - arma::accu(A % arma::log(A));
