@@ -5,7 +5,7 @@
 \title{Asymptotic Approximation of Partition Function}
 \usage{
 asymptotic_partition_function(alpha_vector, n_items, metric, K,
-  n_iterations, tol = 1e-09)
+  n_iterations = 1000L, tol = 1e-09)
 }
 \arguments{
 \item{alpha_vector}{A numeric vector of alpha values.}

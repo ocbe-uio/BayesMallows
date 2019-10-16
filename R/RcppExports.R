@@ -88,7 +88,7 @@ get_partition_function <- function(n_items, alpha, cardinalities = NULL, logz_es
 #'
 #' @references \insertAllCited{}
 #'
-asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_iterations, tol = 1e-9) {
+asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_iterations = 1000L, tol = 1e-9) {
     .Call(`_BayesMallows_asymptotic_partition_function`, alpha_vector, n_items, metric, K, n_iterations, tol)
 }
 

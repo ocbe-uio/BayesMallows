@@ -122,7 +122,7 @@ double get_partition_function(int n_items, double alpha,
 //'
 // [[Rcpp::export]]
 arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std::string metric,
-                                        int K, int n_iterations, double tol = 1e-9){
+                                        int K, int n_iterations = 1000, double tol = 1e-9){
   // IPFP procedure
   // Initialize a square matrix where each row/column sums to one
   arma::mat A = arma::ones<arma::mat>(K, K) * 1.0 / K;
