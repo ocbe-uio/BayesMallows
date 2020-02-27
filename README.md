@@ -5,8 +5,8 @@
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/BayesMallows)](https://cran.r-project.org/package=BayesMallows)
 [![Build
-Status](https://travis-ci.org/osorensen/BayesMallows.svg?branch=master)](https://travis-ci.org/osorensen/BayesMallows)
-[![codecov](https://codecov.io/gh/osorensen/BayesMallows/branch/master/graph/badge.svg)](https://codecov.io/gh/osorensen/BayesMallows)
+Status](https://travis-ci.org/ocbe-uio/BayesMallows.svg?branch=master)](https://travis-ci.org/ocbe-uio/BayesMallows)
+[![codecov](https://codecov.io/gh/ocbe-uio/BayesMallows/branch/master/graph/badge.svg)](https://codecov.io/gh/ocbe-uio/BayesMallows)
 
 This package implements the Bayesian Mallows Model described in Vitelli
 et al. (2018). The user can choose between footrule, Spearman, Cayley,
@@ -52,7 +52,7 @@ To install the current development version, use
 
 ``` r
 #install.packages("devtools")
-devtools::install_github("osorensen/BayesMallows")
+devtools::install_github("ocbe-uio/BayesMallows")
 ```
 
 ## References
