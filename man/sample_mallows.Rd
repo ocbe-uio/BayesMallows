@@ -4,10 +4,18 @@
 \alias{sample_mallows}
 \title{Random Samples from the Mallows Rank Model}
 \usage{
-sample_mallows(rho0, alpha0, n_samples, leap_size = 1,
-  metric = "footrule", diagnostic = FALSE,
-  burnin = ifelse(diagnostic, 0, 1000), thinning = ifelse(diagnostic,
-  1, 1000), items_to_plot = NULL, max_lag = 1000L)
+sample_mallows(
+  rho0,
+  alpha0,
+  n_samples,
+  leap_size = 1,
+  metric = "footrule",
+  diagnostic = FALSE,
+  burnin = ifelse(diagnostic, 0, 1000),
+  thinning = ifelse(diagnostic, 1, 1000),
+  items_to_plot = NULL,
+  max_lag = 1000L
+)
 }
 \arguments{
 \item{rho0}{Vector specifying the latent consensus ranking in the Mallows

@@ -36,7 +36,7 @@ test_that("transitive closure generation works",{
   pair_comp_returned <- generate_transitive_closure(pair_comp) %>%
     arrange(assessor, bottom_item, top_item)
 
-  expect_equal(pair_comp_tc, pair_comp_returned)
+  expect_equal(as.matrix(pair_comp_tc), as.matrix(pair_comp_returned))
 
 }
 )

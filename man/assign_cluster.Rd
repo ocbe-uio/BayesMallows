@@ -4,8 +4,12 @@
 \alias{assign_cluster}
 \title{Assign Assessors to Clusters}
 \usage{
-assign_cluster(model_fit, burnin = model_fit$burnin, soft = TRUE,
-  expand = FALSE)
+assign_cluster(
+  model_fit,
+  burnin = model_fit$burnin,
+  soft = TRUE,
+  expand = FALSE
+)
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from

@@ -4,8 +4,15 @@
 \alias{rmallows}
 \title{Sample from the Mallows distribution.}
 \usage{
-rmallows(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L,
-  metric = "footrule")
+rmallows(
+  rho0,
+  alpha0,
+  n_samples,
+  burnin,
+  thinning,
+  leap_size = 1L,
+  metric = "footrule"
+)
 }
 \arguments{
 \item{rho0}{Vector specifying the latent consensus ranking.}
