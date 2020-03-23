@@ -4,16 +4,35 @@
 \alias{compute_mallows}
 \title{Preference Learning with the Mallows Rank Model}
 \usage{
-compute_mallows(rankings = NULL, preferences = NULL,
-  metric = "footrule", error_model = NULL, n_clusters = 1L,
-  save_clus = FALSE, clus_thin = 1L, nmc = 2000L,
-  leap_size = max(1L, floor(n_items/5)), swap_leap = 1L,
-  rho_init = NULL, rho_thinning = 1L, alpha_prop_sd = 0.1,
-  alpha_init = 1, alpha_jump = 1L, lambda = 0.001,
-  alpha_max = 1e+06, psi = 10L, include_wcd = (n_clusters > 1),
-  save_aug = FALSE, aug_thinning = 1L, logz_estimate = NULL,
-  verbose = FALSE, validate_rankings = TRUE, constraints = NULL,
-  save_ind_clus = FALSE, seed = NULL)
+compute_mallows(
+  rankings = NULL,
+  preferences = NULL,
+  metric = "footrule",
+  error_model = NULL,
+  n_clusters = 1L,
+  save_clus = FALSE,
+  clus_thin = 1L,
+  nmc = 2000L,
+  leap_size = max(1L, floor(n_items/5)),
+  swap_leap = 1L,
+  rho_init = NULL,
+  rho_thinning = 1L,
+  alpha_prop_sd = 0.1,
+  alpha_init = 1,
+  alpha_jump = 1L,
+  lambda = 0.001,
+  alpha_max = 1e+06,
+  psi = 10L,
+  include_wcd = (n_clusters > 1),
+  save_aug = FALSE,
+  aug_thinning = 1L,
+  logz_estimate = NULL,
+  verbose = FALSE,
+  validate_rankings = TRUE,
+  constraints = NULL,
+  save_ind_clus = FALSE,
+  seed = NULL
+)
 }
 \arguments{
 \item{rankings}{A matrix of ranked items, of size \code{n_assessors x

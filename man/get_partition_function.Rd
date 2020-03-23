@@ -4,8 +4,13 @@
 \alias{get_partition_function}
 \title{Compute the logarithm of the partition function for a Mallows rank model.}
 \usage{
-get_partition_function(n_items, alpha, cardinalities = NULL,
-  logz_estimate = NULL, metric = "footrule")
+get_partition_function(
+  n_items,
+  alpha,
+  cardinalities = NULL,
+  logz_estimate = NULL,
+  metric = "footrule"
+)
 }
 \arguments{
 \item{n_items}{Number of items.}

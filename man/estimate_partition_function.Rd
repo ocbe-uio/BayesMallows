@@ -4,8 +4,17 @@
 \alias{estimate_partition_function}
 \title{Estimate Partition Function}
 \usage{
-estimate_partition_function(method = "importance_sampling", alpha_vector,
-  n_items, metric, nmc, degree, n_iterations, K, cl = NULL)
+estimate_partition_function(
+  method = "importance_sampling",
+  alpha_vector,
+  n_items,
+  metric,
+  nmc,
+  degree,
+  n_iterations,
+  K,
+  cl = NULL
+)
 }
 \arguments{
 \item{method}{Character string specifying the method to use in order to

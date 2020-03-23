@@ -4,7 +4,9 @@
 \name{potato_true_ranking}
 \alias{potato_true_ranking}
 \title{True ranking of the weights of 20 potatoes.}
-\format{An object of class \code{numeric} of length 20.}
+\format{
+An object of class \code{numeric} of length 20.
+}
 \usage{
 potato_true_ranking
 }

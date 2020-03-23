@@ -4,8 +4,7 @@
 \alias{plot.BayesMallows}
 \title{Plot Posterior Distributions}
 \usage{
-\method{plot}{BayesMallows}(x, burnin = x$burnin, parameter = "alpha",
-  items = NULL, ...)
+\method{plot}{BayesMallows}(x, burnin = x$burnin, parameter = "alpha", items = NULL, ...)
 }
 \arguments{
 \item{x}{An object of type \code{BayesMallows}, returned from

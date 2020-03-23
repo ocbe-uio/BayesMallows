@@ -4,13 +4,34 @@
 \alias{run_mcmc}
 \title{Worker function for computing the posterior distribution.}
 \usage{
-run_mcmc(rankings, nmc, constraints, cardinalities, logz_estimate,
-  rho_init, metric = "footrule", error_model = "none", Lswap = 1L,
-  n_clusters = 1L, include_wcd = FALSE, leap_size = 1L,
-  alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L,
-  lambda = 0.1, alpha_max = 1e+06, psi = 10L, rho_thinning = 1L,
-  aug_thinning = 1L, clus_thin = 1L, save_aug = FALSE,
-  verbose = FALSE, kappa_1 = 1, kappa_2 = 1, save_ind_clus = FALSE)
+run_mcmc(
+  rankings,
+  nmc,
+  constraints,
+  cardinalities,
+  logz_estimate,
+  rho_init,
+  metric = "footrule",
+  error_model = "none",
+  Lswap = 1L,
+  n_clusters = 1L,
+  include_wcd = FALSE,
+  leap_size = 1L,
+  alpha_prop_sd = 0.5,
+  alpha_init = 5,
+  alpha_jump = 1L,
+  lambda = 0.1,
+  alpha_max = 1e+06,
+  psi = 10L,
+  rho_thinning = 1L,
+  aug_thinning = 1L,
+  clus_thin = 1L,
+  save_aug = FALSE,
+  verbose = FALSE,
+  kappa_1 = 1,
+  kappa_2 = 1,
+  save_ind_clus = FALSE
+)
 }
 \arguments{
 \item{rankings}{A set of complete rankings, with one sample per column.

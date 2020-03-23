@@ -4,8 +4,12 @@
 \alias{assess_convergence}
 \title{Trace Plots from Metropolis-Hastings Algorithm}
 \usage{
-assess_convergence(model_fit, parameter = "alpha", items = NULL,
-  assessors = NULL)
+assess_convergence(
+  model_fit,
+  parameter = "alpha",
+  items = NULL,
+  assessors = NULL
+)
 }
 \arguments{
 \item{model_fit}{A fitted model object of class \code{BayesMallows} returned from

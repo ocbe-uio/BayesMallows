@@ -4,8 +4,12 @@
 \alias{plot_top_k}
 \title{Plot Top-k Rankings with Pairwise Preferences}
 \usage{
-plot_top_k(model_fit, burnin = model_fit$burnin, k = 3,
-  rel_widths = c(rep(1, model_fit$n_clusters), 10))
+plot_top_k(
+  model_fit,
+  burnin = model_fit$burnin,
+  k = 3,
+  rel_widths = c(rep(1, model_fit$n_clusters), 10)
+)
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from

@@ -5,7 +5,9 @@
 \alias{potato_visual}
 \title{Result of ranking potatoes by weight, where the assessors were only allowed
 to inspected the potatoes visually. 12 assessors ranked 20 potatoes.}
-\format{An object of class \code{matrix} with 12 rows and 20 columns.}
+\format{
+An object of class \code{matrix} with 12 rows and 20 columns.
+}
 \usage{
 potato_visual
 }

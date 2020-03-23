@@ -4,8 +4,11 @@
 \alias{generate_initial_ranking}
 \title{Generate Initial Ranking}
 \usage{
-generate_initial_ranking(tc, n_items = max(tc[, c("bottom_item",
-  "top_item")]), cl = NULL)
+generate_initial_ranking(
+  tc,
+  n_items = max(tc[, c("bottom_item", "top_item")]),
+  cl = NULL
+)
 }
 \arguments{
 \item{tc}{A dataframe with pairwise comparisons of \code{S3} subclass
