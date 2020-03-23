@@ -1,22 +1,13 @@
 ## Resubmission Note
-This is a package update, mainly improving the plotting functions. It also fixes the random number seed used in tests.
+This is a package update, fixing a unit test which failed with dplyr version 1.0.0, which will be submitted to CRAN on May 1.
 
 ## Test Environments
-* local OS X install, R 3.6.1
-* local Windows install, R 3.6.1
-* ubuntu 16.04.6 LTS on Travis, R 3.6.1
-* win-build (devel, release and oldrelease)
-* Debian Linux, R-devel, GCC ASAN/UBSAN, via R-hub
-* Debian Linux, R-release, GCC, with valgrind, via R-hub
+* local OS X install, R 3.6.2
+* ubuntu 16.04.6 LTS on Travis, R 3.6.2
 
 ## R CMD CHECK results
 
-Debian Linux, R-release, GCC, with valgrind, via R-hub gave the following note:
-
-* checking installed package size ... NOTE
-  installed size is 10.8Mb
-  sub-directories of 1Mb or more:
-    libs  10.2Mb
+No NOTEs, WARNINGs, or ERRORs.
 
 ## Downstream Dependencies
-There are currently no downstream dependencies for this package.
+The package has one downstream dependency, the package PlackettLuce. This package is not affected by this change, as only a unit test has changed.

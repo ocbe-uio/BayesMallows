@@ -1,3 +1,7 @@
+# BayesMallows 0.4.2
+
+* Updating a unit test to make sure BayesMallows is compatible with dplyr version 1.0.0.
+
 # BayesMallows 0.4.1
 
 * Improvement of plotting functions, as noted below.
