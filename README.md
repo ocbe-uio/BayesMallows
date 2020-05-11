@@ -27,7 +27,7 @@ The following features are currently implemented:
     importance sampling (Vitelli et al. (2018)) or an asymptotic
     approximation (Mukherjee (2016)).
 
-  - Non-transitive pairwise comparisons (Crispino et al. (2018)).
+  - Non-transitive pairwise comparisons (Crispino et al. (2019)).
 
 This includes any combination thereof, e.g., clustering assessors based
 on pairwise preferences.
@@ -61,25 +61,26 @@ devtools::install_github("ocbe-uio/BayesMallows")
 
 <div id="ref-asfaw2016">
 
-Asfaw, D., V. Vitelli, O. Sorensen, E. Arjas, and A. Frigessi. 2016.
-“Time‐varying Rankings with the Bayesian Mallows Model.” *Stat* 6 (1):
-14–30. <https://onlinelibrary.wiley.com/doi/abs/10.1002/sta4.132>.
+Asfaw, Derbachew, Valeria Vitelli, Øystein Sørensen, Elja Arjas, and
+Arnoldo Frigessi. 2016. “Time-Varying Rankings with the Bayesian Mallows
+Model.” *Stat* 6 (1): 14–30. <https://doi.org/10.1002/sta4.132>.
 
 </div>
 
-<div id="ref-crispino2018">
+<div id="ref-crispino2019">
 
-Crispino, M., E. Arjas, V. Vitelli, N. Barrett, and A. Frigessi. 2018.
-“A Bayesian Mallows approach to non-transitive pair comparison data:
-how human are sounds?” *Accepted for Publication in Annals of Applied
-Statistics*.
+Crispino, Marta, Elja Arjas, Valeria Vitelli, Natasha Barrett, and
+Arnoldo Frigessi. 2019. “A Bayesian Mallows Approach to Nontransitive
+Pair Comparison Data: How Human Are Sounds?” *The Annals of Applied
+Statistics* 13 (1): 492–519. <https://doi.org/10.1214/18-aoas1203>.
 
 </div>
 
 <div id="ref-mukherjee2016">
 
-Mukherjee, S. 2016. “Estimation in Exponential Families on
+Mukherjee, Sumit. 2016. “Estimation in Exponential Families on
 Permutations.” *The Annals of Statistics* 44 (2): 853–75.
+<https://doi.org/10.1214/15-aos1389>.
 
 </div>
 

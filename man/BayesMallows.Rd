@@ -12,7 +12,7 @@ The BayesMallows package provides functionality for fully
   and consistent pairwise preference data, as well as mixtures of rank models.
   Modeling of
   pairwise preferences containing inconsistencies, as described in
-  \insertCite{crispino2018;textual}{BayesMallows}, is also supported.
+  \insertCite{crispino2019;textual}{BayesMallows}, is also supported.
 
 The documentation and examples for the following functions are likely most useful
 to get you started:

@@ -54,7 +54,7 @@
 #'   inconsistent rankings. Defaults to \code{NULL}, which means that
 #'   inconsistent rankings are not allowed. At the moment, the only available
 #'   other option is \code{"bernoulli"}, which means that the Bernoulli error
-#'   model is used. See \insertCite{crispino2018;textual}{BayesMallows} for a definition
+#'   model is used. See \insertCite{crispino2019;textual}{BayesMallows} for a definition
 #'   of the Bernoulli model.
 #'
 #' @param n_clusters Integer specifying the number of clusters, i.e., the number

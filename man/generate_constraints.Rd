@@ -10,7 +10,7 @@ generate_constraints(preferences, n_items, cl = NULL)
 \item{preferences}{Data frame of preferences. For the case of consistent
 rankings, \code{preferences} should be returned from \code{\link{generate_transitive_closure}}.
 For the case of inconsistent preferences, when using an error model as described
-in \insertCite{crispino2018;textual}{BayesMallows}, a dataframe of preferences
+in \insertCite{crispino2019;textual}{BayesMallows}, a dataframe of preferences
 can be directly provided.}
 
 \item{n_items}{Integer specifying the number of items.}

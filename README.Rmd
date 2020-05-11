@@ -33,7 +33,7 @@ The following features are currently implemented:
 
 - Estimating the partition function of the Mallows model using importance sampling (@vitelli2018) or an asymptotic approximation (@mukherjee2016).
 
-- Non-transitive pairwise comparisons (@crispino2018).
+- Non-transitive pairwise comparisons (@crispino2019).
 
 This includes any combination thereof, e.g., clustering assessors based on pairwise preferences.
 

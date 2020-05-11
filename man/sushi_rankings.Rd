@@ -5,7 +5,7 @@
 \alias{sushi_rankings}
 \title{Sushi Rankings}
 \format{
-An object of class \code{matrix} with 5000 rows and 10 columns.
+An object of class \code{matrix} (inherits from \code{array}) with 5000 rows and 10 columns.
 }
 \usage{
 sushi_rankings
