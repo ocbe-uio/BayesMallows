@@ -1,10 +1,10 @@
 note <- sprintf("R package version %s", meta$Version)
 
 bibentry(bibtype = "Article",
-         author = c(person("S{\\o}rensen", "{\\O}ystein"),
-                    person("Crispino", "Marta"),
-                    person("Liu", "Qinghua"),
-                    person("Vitelli", "Valeria")),
+         author = c(person("{\\O}ystein", "S{\\o}rensen"),
+                    person("Marta", "Crispino"),
+                    person("Qinghua", "Liu"),
+                    person("Valeria", "Vitelli")),
          title = "BayesMallows: An R Package for the Bayesian Mallows Model",
          journal = "R Journal",
          year = "2020")
