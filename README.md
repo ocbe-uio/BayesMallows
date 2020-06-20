@@ -68,9 +68,9 @@ plot(fit, burnin = 500)
 
 ![](man/figures/README-unnamed-chunk-6-1.png)<!-- -->
 
-For more examples, please see the function documentation and the
-vignette. The latter contains an overview of the implemented methods as
-well as several use cases, and can be opened by the following R command:
+For more examples, please see the vignette, which is based on Sørensen
+et al. (2020), and the function documentation. The vignette can be
+opened by issuing the following command.
 
 ``` r
 vignette("BayesMallows")
