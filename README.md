@@ -88,15 +88,15 @@ non-transitive pairwise comparisons by Crispino et al. (2019) is also
 implemented. In addition, the partition function of the Mallows model
 can be estimated using the importance sampling algorithm of Vitelli et
 al. (2018) and the asymptotic approximation of Mukherjee (2016). For a
-review of ranking models in general, see Liu, Crispino, et al. (2019).
-Crispino and Antoniano-Villalobos (2019) outlines how informative priors
-can be used within the model.
+review of ranking models in general, see Q. Liu et al. (2019). Crispino
+and Antoniano-Villalobos (2019) outlines how informative priors can be
+used within the model.
 
 ### Applications
 
-Among the current applications, Liu, Reiner, et al. (2019) applied the
-Bayesian Mallows model for providing personalized recommendations based
-on clicking data, and Barrett and Crispino (2018) used the model of
+Among the current applications, Liu et al. (2019) applied the Bayesian
+Mallows model for providing personalized recommendations based on
+clicking data, and Barrett and Crispino (2018) used the model of
 Crispino et al. (2019) to analyze listeners’ understanding of music.
 
 ### Future Extensions
@@ -145,15 +145,15 @@ us.
 
 <div id="ref-asfaw2016">
 
-Asfaw, Derbachew, Valeria Vitelli, Øystein Sørensen, Elja Arjas, and
-Arnoldo Frigessi. 2016. “Time-Varying Rankings with the Bayesian Mallows
-Model.” *Stat* 6 (1): 14–30. <https://doi.org/10.1002/sta4.132>.
+Asfaw, D., V. Vitelli, Ø Sørensen, E. Arjas, and A. Frigessi. 2016.
+“Time-Varying Rankings with the Bayesian Mallows Model.” *Stat* 6 (1):
+14–30. <https://doi.org/10.1002/sta4.132>.
 
 </div>
 
 <div id="ref-barrett2018">
 
-Barrett, Natasha, and Marta Crispino. 2018. “The Impact of 3-d Sound
+Barrett, N., and M. Crispino. 2018. “The Impact of 3-d Sound
 Spatialisation on Listeners’ Understanding of Human Agency in Acousmatic
 Music.” *Journal of New Music Research* 47 (5): 399–415.
 <https://doi.org/10.1080/09298215.2018.1437187>.
@@ -162,43 +162,42 @@ Music.” *Journal of New Music Research* 47 (5): 399–415.
 
 <div id="ref-crispino2019informative">
 
-Crispino, Marta, and Isadora Antoniano-Villalobos. 2019. “Informative
-Extended Mallows Priors in the Bayesian Mallows Model.”
+Crispino, M., and I. Antoniano-Villalobos. 2019. “Informative Extended
+Mallows Priors in the Bayesian Mallows Model.”
 <https://arxiv.org/abs/1901.10870>.
 
 </div>
 
 <div id="ref-crispino2019">
 
-Crispino, Marta, Elja Arjas, Valeria Vitelli, Natasha Barrett, and
-Arnoldo Frigessi. 2019. “A Bayesian Mallows Approach to Nontransitive
-Pair Comparison Data: How Human Are Sounds?” *The Annals of Applied
-Statistics* 13 (1): 492–519. <https://doi.org/10.1214/18-aoas1203>.
+Crispino, M., E. Arjas, V. Vitelli, N. Barrett, and A. Frigessi. 2019.
+“A Bayesian Mallows Approach to Nontransitive Pair Comparison Data:
+How Human Are Sounds?” *The Annals of Applied Statistics* 13 (1):
+492–519. <https://doi.org/10.1214/18-aoas1203>.
 
 </div>
 
 <div id="ref-liu2019">
 
-Liu, Qinghua, Marta Crispino, Ida Scheel, Valeria Vitelli, and Arnoldo
-Frigessi. 2019. “Model-Based Learning from Preference Data.” *Annual
-Review of Statistics and Its Application* 6 (1).
+Liu, Q, M Crispino, I Scheel, V Vitelli, and A Frigessi. 2019.
+“Model-Based Learning from Preference Data.” *Annual Review of
+Statistics and Its Application* 6 (1).
 <https://doi.org/10.1146/annurev-statistics-031017-100213>.
 
 </div>
 
 <div id="ref-liu2019b">
 
-Liu, Qinghua, Andrew Henry Reiner, Arnoldo Frigessi, and Ida Scheel.
-2019. “Diverse Personalized Recommendations with Uncertainty from
-Implicit Preference Data with the Bayesian Mallows Model.”
-*Knowledge-Based Systems* 186 (December): 104960.
-<https://doi.org/10.1016/j.knosys.2019.104960>.
+Liu, Q., A. H. Reiner, A. Frigessi, and I. Scheel. 2019. “Diverse
+Personalized Recommendations with Uncertainty from Implicit Preference
+Data with the Bayesian Mallows Model.” *Knowledge-Based Systems* 186
+(December): 104960. <https://doi.org/10.1016/j.knosys.2019.104960>.
 
 </div>
 
 <div id="ref-mukherjee2016">
 
-Mukherjee, Sumit. 2016. “Estimation in Exponential Families on
+Mukherjee, S. 2016. “Estimation in Exponential Families on
 Permutations.” *The Annals of Statistics* 44 (2): 853–75.
 <https://doi.org/10.1214/15-aos1389>.
 
@@ -206,9 +205,8 @@ Permutations.” *The Annals of Statistics* 44 (2): 853–75.
 
 <div id="ref-sorensen2020">
 
-Sørensen, Marta Crispino, Qinghua Liu, and Valeria Vitelli. 2020.
-“BayesMallows: An R Package for the Bayesian Mallows Model.” *R
-Journal*.
+Sørensen, Ø, M. Crispino, Q. Liu, and V. Vitelli. 2020. “BayesMallows:
+An R Package for the Bayesian Mallows Model.” *R Journal*.
 
 </div>
 
