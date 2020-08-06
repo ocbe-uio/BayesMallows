@@ -29,15 +29,15 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
 
   validate_top_k(model_fit, burnin)
 
-  n_samples <- sum(unique(model_fit$rho$iteration) > burnin)
+  #n_samples <- sum(unique(model_fit$rho$iteration) > burnin)
 
   # Extract post burn-in rows with value <= k
   rho <- dplyr::filter(model_fit$rho, .data$iteration > burnin, .data$value <= k)
+  n_samples <- length(unique(rho$iteration))
   # Factors are not needed in this case
   rho <- dplyr::mutate(rho, item = as.character(.data$item))
   rho <- dplyr::group_by(rho, .data$item, .data$cluster)
-  rho <- dplyr::summarise(rho, prob = dplyr::n()/n_samples)
-  rho <- dplyr::ungroup(rho)
+  rho <- dplyr::summarise(rho, prob = dplyr::n()/n_samples, .groups = "drop")
 
   # Find the complete set of items per cluster
   rho <- tidyr::complete(
@@ -55,7 +55,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
     rho <- dplyr::mutate(rho, cluster = "")
   }
 
-  rankings <- .predict_top_k(model_fit, burnin = burnin, k = k, n_samples = n_samples)
+  rankings <- .predict_top_k(model_fit, burnin = burnin, k = k)
 
   # Sorting the items according to their probability in rho
   rankings <- dplyr::mutate(rankings, item = factor(.data$item, levels = item_ordering))
