@@ -26,21 +26,19 @@ predict_top_k <- function(model_fit, burnin = model_fit$burnin,
                           k = 3){
 
   validate_top_k(model_fit, burnin)
-
-  n_samples <- sum(unique(model_fit$rho$iteration) > burnin)
-
-  .predict_top_k(model_fit, burnin, k, n_samples)
+  .predict_top_k(model_fit, burnin, k)
 }
 
 
 
-.predict_top_k <- function(model_fit, burnin, k, n_samples){
+.predict_top_k <- function(model_fit, burnin, k){
 
   rankings <- dplyr::filter(model_fit$augmented_data, .data$iteration > burnin, .data$value <= k)
+  n_samples <- length(unique(rankings$iteration))
   rankings <- dplyr::mutate(rankings, item = as.character(.data$item))
   rankings <- dplyr::group_by(rankings, .data$assessor, .data$item)
-  rankings <- dplyr::summarise(rankings, prob = dplyr::n()/n_samples)
-  rankings <- dplyr::ungroup(rankings)
+  rankings <- dplyr::summarise(rankings, prob = dplyr::n()/n_samples, .groups = "drop")
+
   rankings <- tidyr::complete(
     dplyr::group_by(rankings, .data$assessor),
     item = model_fit$items,
