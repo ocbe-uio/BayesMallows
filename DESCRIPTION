@@ -1,7 +1,7 @@
 Package: BayesMallows
 Type: Package
 Title: Bayesian Preference Learning with the Mallows Rank Model
-Version: 0.4.3
+Version: 0.4.4
 Author: Oystein Sorensen, Valeria Vitelli, Marta Crispino, Qinghua Liu
 Maintainer: Oystein Sorensen <oystein.sorensen.1985@gmail.com>
 Description: An implementation of the Bayesian version of the Mallows rank model 

@@ -1,3 +1,7 @@
+# BayesMallows 0.4.4
+
+* Fixed bug in predict_top_k and plot_top_k when using aug_thinning > 1.
+
 # BayesMallows 0.4.3
 
 * Updated README and vignette.
