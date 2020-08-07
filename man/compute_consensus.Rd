@@ -4,7 +4,13 @@
 \alias{compute_consensus}
 \title{Compute Consensus Ranking}
 \usage{
-compute_consensus(model_fit, type = "CP", burnin = model_fit$burnin)
+compute_consensus(
+  model_fit,
+  type = "CP",
+  burnin = model_fit$burnin,
+  parameter = "rho",
+  assessors = 1L
+)
 }
 \arguments{
 \item{model_fit}{An object returned from \code{\link{compute_mallows}}.}
@@ -15,6 +21,14 @@ compute_consensus(model_fit, type = "CP", burnin = model_fit$burnin)
 \item{burnin}{A numeric value specifying the number of iterations
 to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
 provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
+
+\item{parameter}{Character string defining the parameter for which to compute the
+consensus. Defaults to \code{"rho"}. Available options are \code{"rho"} and \code{"Rtilde"},
+with the latter giving consensus rankings for augmented ranks.}
+
+\item{assessors}{When \code{parameter = "rho"}, this integer vector is used to
+define the assessors for which to compute the augmented ranking. Defaults to
+\code{1L}, which yields augmented rankings for assessor 1.}
 }
 \description{
 Compute the consensus ranking using either cumulative probability (CP) or maximum a posteriori (MAP) consensus
@@ -61,6 +75,30 @@ compute_consensus(model_fit, type = "MAP")
   model_fit$burnin <- 1000
   # We now compute the MAP consensus
   map_consensus_df <- compute_consensus(model_fit, type = "MAP")
+}
+
+\dontrun{
+  # CP CONSENSUS FOR AUGMENTED RANKINGS
+  # We use the example dataset with beach preferences.
+  model_fit <- compute_mallows(preferences = beach_preferences, save_aug = TRUE,
+                               aug_thinning = 2, seed = 123L)
+  # We set burnin = 1000
+  model_fit$burnin <- 1000
+  # We now compute the CP consensus of augmented ranks for assessors 1 and 3
+  cp_consensus_df <- compute_consensus(model_fit, type = "CP",
+                                       parameter = "Rtilde", assessors = c(1L, 3L))
+  # We can also compute the MAP consensus for assessor 2
+  map_consensus_df <- compute_consensus(model_fit, type = "MAP",
+                                        parameter = "Rtilde", assessors = 2L)
+
+  # Caution!
+  # With very sparse data or with too few iterations, there may be ties in the MAP consensus
+  # This is illustrated below for the case of only 5 post-burnin iterations. Two MAP rankings are
+  # equally likely in this case (and for this seed).
+  model_fit <- compute_mallows(preferences = beach_preferences, nmc = 1005,
+                               save_aug = TRUE, aug_thinning = 1, seed = 123L)
+  model_fit$burnin <- 1000
+  compute_consensus(model_fit, type = "MAP", parameter = "Rtilde", assessors = 2L)
 }
 }
 \references{
