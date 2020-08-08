@@ -33,7 +33,8 @@ define the assessors for which to compute the augmented ranking. Defaults to
 \description{
 Compute the consensus ranking using either cumulative probability (CP) or maximum a posteriori (MAP) consensus
 \insertCite{vitelli2018}{BayesMallows}. For mixture models, the
-consensus is given for each mixture.
+consensus is given for each mixture. Consensus of augmented ranks can also be computed
+for each assessor, by setting \code{parameter = "Rtilde"}.
 }
 \examples{
 # The example datasets potato_visual and potato_weighing contain complete
