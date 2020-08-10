@@ -1,5 +1,5 @@
 ## Resubmission Note
-This is a package update, which fixes a bug.
+This is a package update, which adds a feature to the compute_consensus function.
 
 ## Test Environments
 * local OS X install, R 4.0.2

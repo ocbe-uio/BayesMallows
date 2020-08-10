@@ -1,3 +1,7 @@
+# BayesMallows 0.5.0
+
+* Function compute_consensus now includes an option for computing consensus of augmented ranks.
+
 # BayesMallows 0.4.4
 
 * Fixed bug in predict_top_k and plot_top_k when using aug_thinning > 1.
