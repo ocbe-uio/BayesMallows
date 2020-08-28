@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 [![Build Status](https://travis-ci.org/ocbe-uio/BayesMallows.svg?branch=master)](https://travis-ci.org/ocbe-uio/BayesMallows)
 [![codecov](https://codecov.io/gh/ocbe-uio/BayesMallows/branch/master/graph/badge.svg)](https://codecov.io/gh/ocbe-uio/BayesMallows)
 
-This package provides a general framework for analyzing rank and preference data based on the Bayesian Mallows model first described in [Vitelli et al.(2018)](http://www.jmlr.org/papers/volume18/15-481/15-481.pdf).
+This package provides a general framework for analyzing rank and preference data based on the Bayesian Mallows model first described in [Vitelli et al.(2018)](https://jmlr.org/papers/v18/15-481.html).
 
 ## Installation
 

@@ -10,8 +10,7 @@ Status](https://travis-ci.org/ocbe-uio/BayesMallows.svg?branch=master)](https://
 
 This package provides a general framework for analyzing rank and
 preference data based on the Bayesian Mallows model first described in
-[Vitelli et
-al.(2018)](http://www.jmlr.org/papers/volume18/15-481/15-481.pdf).
+[Vitelli et al.(2018)](https://jmlr.org/papers/v18/15-481.html).
 
 ## Installation
 
@@ -215,7 +214,7 @@ An R Package for the Bayesian Mallows Model.” *R Journal*.
 Vitelli, V., Ø. Sørensen, M. Crispino, E. Arjas, and A. Frigessi. 2018.
 “Probabilistic Preference Learning with the Mallows Rank Model.”
 *Journal of Machine Learning Research* 18 (1): 1–49.
-<http://jmlr.org/papers/v18/15-481.html>.
+<https://jmlr.org/papers/v18/15-481.html>.
 
 </div>
 
