@@ -23,7 +23,7 @@ Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.}
 \item{logz_estimate}{Precomputed importance sampling fit.}
 
 \item{metric}{A string. Available options are \code{"footrule"},
-\code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
+\code{"kendall"}, \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, and \code{"ulam"}.
 Defaults to \code{"footrule"}.}
 }
 \value{

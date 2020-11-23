@@ -79,7 +79,7 @@ double logz_cardinalities(const double& alpha, const int& n_items, const arma::v
 //' Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.
 //' @param logz_estimate Precomputed importance sampling fit.
 //' @param metric A string. Available options are \code{"footrule"},
-//' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, and \code{"hamming"}.
+//' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, and \code{"ulam"}.
 //' Defaults to \code{"footrule"}.
 //' @return A scalar, the logarithm of the partition function.
 //' @keywords internal
