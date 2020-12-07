@@ -42,7 +42,7 @@
 #' @example /inst/examples/sample_mallows_example.R
 #'
 sample_mallows <- function(rho0, alpha0, n_samples,
-                           leap_size = 1,
+                           leap_size = max(1L, floor(n_items/5)),
                            metric = "footrule",
                            diagnostic = FALSE,
                            burnin = ifelse(diagnostic, 0, 1000),
