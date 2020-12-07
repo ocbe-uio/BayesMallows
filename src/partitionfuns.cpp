@@ -40,7 +40,7 @@ double exact_logz(const int& n_items, const double& alpha, const std::string& me
   } else if(metric == "kendall"){
     return kendall_logz(n_items, alpha);
   } else {
-    Rcpp::stop("Partition function not available. Please precompute with estimate_partition_functino().");
+    Rcpp::stop("Partition function not available. Please precompute with estimate_partition_function().");
   }
 }
 
@@ -82,6 +82,7 @@ double logz_cardinalities(const double& alpha, const int& n_items, const arma::v
 //' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, and \code{"ulam"}.
 //' Defaults to \code{"footrule"}.
 //' @return A scalar, the logarithm of the partition function.
+//' @export
 //' @keywords internal
 //'
 // [[Rcpp::export]]
