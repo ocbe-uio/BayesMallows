@@ -15,7 +15,9 @@
 #' @param n_items Integer specifying the number of items.
 #'
 #' @param metric Character string specifying the distance measure to use.
-#'   Available options are \code{"footrule"} and \code{"spearman"}
+#'   Available options are \code{"footrule"} and \code{"spearman"} when
+#'   \code{method = "asymptotic"} and in addition \code{"cayley"}, \code{"hamming"},
+#'   \code{"kendall"}, and \code{"ulam"} when \code{method = "importance_sampling"}.
 #'
 #' @param nmc Integer specifying the number of Monte Carlo samples to use in the
 #'   importance sampling. Only used when \code{method = "importance_sampling"}.
@@ -80,6 +82,8 @@ estimate_partition_function <- function(method = "importance_sampling",
       log_z = log_z
     )
   } else if(method == "asymptotic"){
+    stopifnot(metric %in% c("footrule", "spearman"))
+
     estimate <- dplyr::tibble(
       alpha = alpha_vector,
       log_z = as.numeric(
