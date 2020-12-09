@@ -10,7 +10,7 @@ alpha0 <- 10
 
 for(m in c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam")){
   samples <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 100,
-                            burnin = 1000, thinning = 1000, metric = m)
+                            burnin = 1000, thinning = 1000, metric = m, leap_size = 1)
   test_that(
     "sample_mallows returns correct values",
     expect_true(mean(samples[, 1]) < mean(samples[, n_items]))
