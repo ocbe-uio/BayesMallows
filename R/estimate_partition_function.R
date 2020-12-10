@@ -15,7 +15,9 @@
 #' @param n_items Integer specifying the number of items.
 #'
 #' @param metric Character string specifying the distance measure to use.
-#'   Available options are \code{"footrule"} and \code{"spearman"}
+#'   Available options are \code{"footrule"} and \code{"spearman"} when
+#'   \code{method = "asymptotic"} and in addition \code{"cayley"}, \code{"hamming"},
+#'   \code{"kendall"}, and \code{"ulam"} when \code{method = "importance_sampling"}.
 #'
 #' @param nmc Integer specifying the number of Monte Carlo samples to use in the
 #'   importance sampling. Only used when \code{method = "importance_sampling"}.
@@ -39,6 +41,8 @@
 #' from \code{parallel::makeCluster}. Defaults to \code{NULL}. Only used when
 #' \code{method = "importance_sampling"}.
 #'
+#' @param seed Optional random number seed.
+#'
 #' @export
 #'
 #' @references \insertAllCited{}
@@ -47,7 +51,8 @@
 #'
 estimate_partition_function <- function(method = "importance_sampling",
                                         alpha_vector, n_items, metric,
-                                        nmc, degree, n_iterations, K, cl = NULL){
+                                        nmc, degree, n_iterations, K, cl = NULL,
+                                        seed = NULL){
 
   stopifnot(degree < length(alpha_vector))
 
@@ -60,14 +65,16 @@ estimate_partition_function <- function(method = "importance_sampling",
         nmc_vec[i] <- nmc_vec[i] + 1
         if(i > length(cl)) break()
       }
-      parallel::clusterExport(cl, c("alpha_vector", "n_items", "metric"),
+      parallel::clusterExport(cl, c("alpha_vector", "n_items", "metric", "seed"),
                               envir = environment())
       estimates <- parallel::parLapply(cl, nmc_vec, function(x){
+        if(!is.null(seed)) set.seed(seed)
         compute_importance_sampling_estimate(alpha_vector = alpha_vector, n_items = n_items,
                                              metric = metric, nmc = x)
       })
       log_z <- purrr::map2_dbl(estimates[[1]], estimates[[2]], mean)
     } else {
+      if(!is.null(seed)) set.seed(seed)
       log_z <- as.numeric(
         compute_importance_sampling_estimate(
           alpha_vector = alpha_vector, n_items = n_items,
@@ -80,6 +87,8 @@ estimate_partition_function <- function(method = "importance_sampling",
       log_z = log_z
     )
   } else if(method == "asymptotic"){
+    stopifnot(metric %in% c("footrule", "spearman"))
+
     estimate <- dplyr::tibble(
       alpha = alpha_vector,
       log_z = as.numeric(
