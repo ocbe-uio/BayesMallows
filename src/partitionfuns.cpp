@@ -40,7 +40,7 @@ double exact_logz(const int& n_items, const double& alpha, const std::string& me
   } else if(metric == "kendall"){
     return kendall_logz(n_items, alpha);
   } else {
-    Rcpp::stop("Partition function not available. Please precompute with estimate_partition_function().");
+    Rcpp::stop("Partition function not available. Please precompute with estimate_partition_function ().");
   }
 }
 
