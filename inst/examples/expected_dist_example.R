@@ -1,0 +1,6 @@
+expected_dist(1,5,metric="kendall")
+expected_dist(2,6,metric="cayley")
+expected_dist(1.5,7,metric="hamming")
+expected_dist(5,30,"ulam")
+expected_dist(3.5,45,"footrule")
+expected_dist(4,10,"spearman")
