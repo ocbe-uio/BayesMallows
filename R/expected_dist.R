@@ -10,23 +10,23 @@
 #'
 #' @example /inst/examples/expected_dist_example.R
 
-expected_dist=function(alpha,n_items,metric){
+expected_dist <- function(alpha,n_items,metric){
   if(alpha<0){
     stop("alpha must be a non-negative value")
   }else{
     if(metric=="kendall"){
-      out=exp_d_tau(alpha,n_items)
+      out <- exp_d_tau(alpha,n_items)
     }
     if(metric=="cayley"){
-      out=exp_d_cay(alpha,n_items)
+      out <- exp_d_cay(alpha,n_items)
     }
     if(metric=="hamming"){
-      out=exp_d_ham(alpha,n_items)
+      out <- exp_d_ham(alpha,n_items)
     }
     if(metric%in%c("ulam","footrule","spearman")){
-      pfd=Bpartition_function_data
-      card=pfd$values[pfd$metric==metric][[n_items]]
-      out=exp(log_expected_dist(alpha=alpha*n_items,n_items=n_items,cardinalities=card,metric=metric))
+      pfd <- Bpartition_function_data
+      card <- pfd$values[pfd$metric==metric][[n_items]]
+      out <- exp(log_expected_dist(alpha=alpha*n_items,n_items=n_items,cardinalities=card,metric=metric))
     }
   }
   return(out)
