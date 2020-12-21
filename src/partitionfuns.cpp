@@ -71,18 +71,19 @@ double logz_cardinalities(const double& alpha, const int& n_items, const arma::v
   }
 }
 
-// Compute the logarithm of the expected distance of metrics for a Mallows rank model
-//
-// @param n_items Number of items.
-// @param alpha The value of the alpha parameter.
-// @param cardinalities Number of occurrences for each unique distance.
-// Applicable for Footrule and Spearman distance.
-// @param metric A string. Available options are \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
-// @return A scalar, the logarithm of the partition function.
-// @keywords internal
-//
-//
-double log_expected_dist(const double& alpha, const int& n_items, const arma::vec& cardinalities, const std::string& metric){
+//' Compute the logarithm of the expected distance of metrics for a Mallows rank model
+//'
+//' @param n_items Number of items.
+//' @param alpha The value of the alpha parameter.
+//' @param cardinalities Number of occurrences for each unique distance.
+//' Applicable for Footrule and Spearman distance.
+//' @param metric A string. Available options are \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
+//' @return A scalar, the logarithm of the partition function.
+//' @keywords internal
+//'
+// [[Rcpp::export]]
+double log_expected_dist(const double& alpha, const int& n_items,
+                         const arma::vec& cardinalities, const std::string& metric){
   if(metric == "footrule"){
     arma::vec distances = arma::regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
     return std::log(arma::sum(distances % cardinalities % arma::exp(-alpha * distances / n_items)))
@@ -102,23 +103,21 @@ double log_expected_dist(const double& alpha, const int& n_items, const arma::ve
 
 
 
-
-
-// Compute the logarithm of the partition function for a Mallows rank model
-//
-// @param n_items Number of items.
-// @param alpha The value of the alpha parameter.
-// @param cardinalities Number of occurrences for each unique distance.
-// Applicable for Footrule and Spearman distance. Defaults to \code{R_NilValue}.
-// @param logz_estimate Precomputed importance sampling fit.
-// @param metric A string. Available options are \code{"footrule"},
-// \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, and \code{"ulam"}.
-// Defaults to \code{"footrule"}.
-// @return A scalar, the logarithm of the partition function.
-// @keywords internal
-//
-// @references \insertAllCited{}
-//
+//' Compute the logarithm of the partition function for a Mallows rank model
+//'
+//' @param n_items Number of items.
+//' @param alpha The value of the alpha parameter.
+//' @param cardinalities Number of occurrences for each unique distance.
+//' Applicable for Footrule and Spearman distance. Defaults to \code{R_NilValue}.
+//' @param logz_estimate Precomputed importance sampling fit.
+//' @param metric A string. Available options are \code{"footrule"},
+//' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, and \code{"ulam"}.
+//' Defaults to \code{"footrule"}.
+//' @return A scalar, the logarithm of the partition function.
+//' @keywords internal
+//'
+//' @references \insertAllCited{}
+//'
 // [[Rcpp::export]]
 double get_partition_function(int n_items, double alpha,
                               const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,

@@ -52,6 +52,35 @@ sample_int <- function(probs) {
     .Call(`_BayesMallows_sample_int`, probs)
 }
 
+#' Compute the logarithm of the expected distance of metrics for a Mallows rank model
+#'
+#' @param n_items Number of items.
+#' @param alpha The value of the alpha parameter.
+#' @param cardinalities Number of occurrences for each unique distance.
+#' Applicable for Footrule and Spearman distance.
+#' @param metric A string. Available options are \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
+#' @return A scalar, the logarithm of the partition function.
+#' @keywords internal
+#'
+log_expected_dist <- function(alpha, n_items, cardinalities, metric) {
+    .Call(`_BayesMallows_log_expected_dist`, alpha, n_items, cardinalities, metric)
+}
+
+#' Compute the logarithm of the partition function for a Mallows rank model
+#'
+#' @param n_items Number of items.
+#' @param alpha The value of the alpha parameter.
+#' @param cardinalities Number of occurrences for each unique distance.
+#' Applicable for Footrule and Spearman distance. Defaults to \code{R_NilValue}.
+#' @param logz_estimate Precomputed importance sampling fit.
+#' @param metric A string. Available options are \code{"footrule"},
+#' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, and \code{"ulam"}.
+#' Defaults to \code{"footrule"}.
+#' @return A scalar, the logarithm of the partition function.
+#' @keywords internal
+#'
+#' @references \insertAllCited{}
+#'
 get_partition_function <- function(n_items, alpha, cardinalities = NULL, logz_estimate = NULL, metric = "footrule") {
     .Call(`_BayesMallows_get_partition_function`, n_items, alpha, cardinalities, logz_estimate, metric)
 }
