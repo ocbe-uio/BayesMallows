@@ -61,7 +61,7 @@ exp_d_ham=function(alpha,n_items){
 
 exp_d_ulam=function(alpha,n_items){ # for n_items<=95
   idx=0:(n_items-1)
-  pfd=BayesMallows:::partition_function_data
+  pfd=partition_function_data
   card=pfd$values[pfd$metric=="ulam"][[n_items]]
   norm_const=exp(get_partition_function(alpha=alpha*n_items,n_items=n_items,
                                         metric="ulam",
@@ -79,7 +79,7 @@ exp_d_ulam=function(alpha,n_items){ # for n_items<=95
 
 exp_d_foot=function(alpha,n_items){ # for n_items<=50
   idx=seq(0,floor(n_items^2/2),by=2)
-  pfd=BayesMallows:::partition_function_data
+  pfd=partition_function_data
   card=pfd$values[pfd$metric=="footrule"][[n_items]]
   norm_const=exp(get_partition_function(alpha=alpha*n_items,n_items=n_items,
                                         metric="footrule",
@@ -99,7 +99,7 @@ exp_d_foot=function(alpha,n_items){ # for n_items<=50
 
 exp_d_spear=function(alpha,n_items){ # for n_items<=14
   idx=seq(0,2*base::choose(n_items+1,3),by=2)
-  pfd=BayesMallows:::partition_function_data
+  pfd=partition_function_data
   card=pfd$values[pfd$metric=="spearman"][[n_items]]
   norm_const=exp(get_partition_function(alpha=alpha*n_items,n_items=n_items,
                                         metric="spearman",

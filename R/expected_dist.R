@@ -24,7 +24,7 @@ expected_dist=function(alpha,n_items,metric){
       out=exp_d_ham(alpha,n_items)
     }
     if(metric%in%c("ulam","footrule","spearman")){
-      pfd=BayesMallows:::partition_function_data
+      pfd=Bpartition_function_data
       card=pfd$values[pfd$metric==metric][[n_items]]
       out=exp(log_expected_dist(alpha=alpha*n_items,n_items=n_items,cardinalities=card,metric=metric))
     }
