@@ -67,6 +67,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// log_expected_dist
+double log_expected_dist(const double& alpha, const int& n_items, const arma::vec& cardinalities, const std::string& metric);
+RcppExport SEXP _BayesMallows_log_expected_dist(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const double& >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n_items(n_itemsSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type cardinalities(cardinalitiesSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(log_expected_dist(alpha, n_items, cardinalities, metric));
+    return rcpp_result_gen;
+END_RCPP
+}
 // get_partition_function
 double get_partition_function(int n_items, double alpha, const Rcpp::Nullable<arma::vec> cardinalities, const Rcpp::Nullable<arma::vec> logz_estimate, std::string metric);
 RcppExport SEXP _BayesMallows_get_partition_function(SEXP n_itemsSEXP, SEXP alphaSEXP, SEXP cardinalitiesSEXP, SEXP logz_estimateSEXP, SEXP metricSEXP) {
@@ -158,6 +172,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_factorial", (DL_FUNC) &_BayesMallows_factorial, 1},
     {"_BayesMallows_binomial_coefficient", (DL_FUNC) &_BayesMallows_binomial_coefficient, 2},
     {"_BayesMallows_sample_int", (DL_FUNC) &_BayesMallows_sample_int, 1},
+    {"_BayesMallows_log_expected_dist", (DL_FUNC) &_BayesMallows_log_expected_dist, 4},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},

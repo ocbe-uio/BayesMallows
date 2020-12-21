@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{get_partition_function}
 \alias{get_partition_function}
-\title{Compute the logarithm of the partition function for a Mallows rank model.}
+\title{Compute the logarithm of the partition function for a Mallows rank model}
 \usage{
 get_partition_function(
   n_items,
@@ -18,7 +18,7 @@ get_partition_function(
 \item{alpha}{The value of the alpha parameter.}
 
 \item{cardinalities}{Number of occurrences for each unique distance.
-Applicable for footrule and Spearman distance. Defaults to \code{R_NilValue}.}
+Applicable for Footrule and Spearman distance. Defaults to \code{R_NilValue}.}
 
 \item{logz_estimate}{Precomputed importance sampling fit.}
 
@@ -30,6 +30,9 @@ Defaults to \code{"footrule"}.}
 A scalar, the logarithm of the partition function.
 }
 \description{
-Compute the logarithm of the partition function for a Mallows rank model.
+Compute the logarithm of the partition function for a Mallows rank model
+}
+\references{
+\insertAllCited{}
 }
 \keyword{internal}
