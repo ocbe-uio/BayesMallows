@@ -12,7 +12,7 @@
 
 expected_dist <- function(alpha,n_items,metric){
 
-  if(n_items < 1){
+  if(n_items < 1 | floor(n_items) != n_items){
     stop("Number of items must be a positive integer")
   }
 
@@ -29,7 +29,7 @@ expected_dist <- function(alpha,n_items,metric){
       out <- exp_d_ham(alpha,n_items)
     }
     if(metric%in%c("ulam","footrule","spearman")){
-      pfd <- Bpartition_function_data
+      pfd <- partition_function_data
       card <- pfd$values[pfd$metric==metric][[n_items]]
       out <- exp(log_expected_dist(alpha=alpha*n_items,n_items=n_items,cardinalities=card,metric=metric))
     }
