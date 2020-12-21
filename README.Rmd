@@ -97,7 +97,6 @@ If using the BayesMallows package in academic work, please cite @sorensen2020, i
 citation("BayesMallows")
 ```
 
-The paper is accepted for publication in the R Journal, and a link will be posted here as soon as it appears online. It is identical to the package vignette mentioned above.
 
 ## Contribution
 
