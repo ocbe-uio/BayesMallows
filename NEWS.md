@@ -1,3 +1,7 @@
+# BayesMallows 0.5.0.9000
+
+* Function expected_dist added for computing expectation of several metrics under the Mallows model.
+
 # BayesMallows 0.5.0
 
 * Function compute_consensus now includes an option for computing consensus of augmented ranks.
