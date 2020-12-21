@@ -11,6 +11,11 @@
 #' @example /inst/examples/expected_dist_example.R
 
 expected_dist <- function(alpha,n_items,metric){
+
+  if(n_items < 1){
+    stop("Number of items must be a positive integer")
+  }
+
   if(alpha<0){
     stop("alpha must be a non-negative value")
   }else{

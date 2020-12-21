@@ -7,7 +7,7 @@
 
 exp_d_tau <- function(alpha,n_items){
   if(alpha>0){
-    idx <- 1:n_items
+    idx <- seq(from = 1, to = n_items, by = 1)
     out <- n_items*exp(-alpha)/(1-exp(-alpha))-sum((idx*exp(-idx*alpha))/(1-exp(-idx*alpha)))
   }else{
     if(alpha==0){
@@ -27,7 +27,7 @@ exp_d_tau <- function(alpha,n_items){
 #/' @return Expected value of the Cayley metric under the Mallows rank model with the Cayley distance.
 
 exp_d_cay <- function(alpha,n_items){
-  idx <- 1:(n_items-1)
+  idx <- seq(from = 1, to = n_items - 1, by = 1)
   out <- sum(idx/(idx+exp(alpha)))
   return(out)
 }
@@ -40,7 +40,7 @@ exp_d_cay <- function(alpha,n_items){
 #/' @return Expected value of the Hamming metric under the Mallows rank model with the Hamming distance.
 
 exp_d_ham <- function(alpha,n_items){
-  idx <- 0:n_items
+  idx <- seq(from = 0, to = n_items, by = 1)
   out <- n_items-exp(alpha)*sum(((exp(alpha)-1)^idx[-(n_items+1)])/base::factorial(idx[-(n_items+1)]))/sum(((exp(alpha)-1)^idx)/base::factorial(idx))
   return(out)
 }
@@ -60,7 +60,7 @@ exp_d_ham <- function(alpha,n_items){
 # }
 
 exp_d_ulam <- function(alpha,n_items){ # for n_items<=95
-  idx <- 0:(n_items-1)
+  idx <- seq(from = 0, to = n_items - 1, by = 1)
   pfd <- partition_function_data
   card <- pfd$values[pfd$metric=="ulam"][[n_items]]
   norm_const <- exp(get_partition_function(alpha=alpha*n_items,n_items=n_items,
