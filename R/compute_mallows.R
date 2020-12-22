@@ -48,7 +48,8 @@
 #'   rank pattern. Defaults to \code{NULL}, which means that each row of
 #'   \code{rankings} is multiplied by 1. If provided, \code{weights} must have
 #'   the same number of elements as there are rows in \code{rankings}, and
-#'   \code{rankings} cannot be \code{NULL}.
+#'   \code{rankings} cannot be \code{NULL}. See \code{\link{sample_weights}} for
+#'   more information.
 #'
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},

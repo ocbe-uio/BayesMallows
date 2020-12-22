@@ -115,3 +115,6 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
 set.seed(1234)
 weights <- sample.int(n = 5, size = nrow(potato_visual), replace = TRUE)
 m <- compute_mallows(rankings = potato_visual, weights = weights)
+
+# See the separate help page for more examples, with the following code
+help("sample_weights")
