@@ -1,4 +1,5 @@
 library(dplyr)
+library(tidyr)
 library(purrr)
 context("Testing compute_mallows")
 
@@ -117,6 +118,7 @@ test_that("compute_mallows treats weights properly",{
   # We generate the initial rankings for the repeated and the "unrepeated"
   # data
   set.seed(1223)
+  beach_tc <- generate_transitive_closure(beach_preferences)
   beach_rankings <- generate_initial_ranking(beach_tc, n_items = 15)
   beach_rankings_rep <- generate_initial_ranking(beach_tc_rep, n_items = 15)
 
