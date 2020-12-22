@@ -6,10 +6,12 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
-void update_dist_mat(arma::mat& dist_mat, const arma::mat& rankings, const arma::mat& rho_old, const std::string& metric){
+void update_dist_mat(arma::mat& dist_mat, const arma::mat& rankings,
+                     const arma::mat& rho_old, const std::string& metric,
+                     const arma::vec& weights){
   int n_clusters = dist_mat.n_cols;
   for(int i = 0; i < n_clusters; ++i)
-    dist_mat.col(i) = rank_dist_vec(rankings, rho_old.col(i), metric);
+    dist_mat.col(i) = rank_dist_vec(rankings, rho_old.col(i), metric, weights);
 }
 
 arma::uvec update_cluster_labels(

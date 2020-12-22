@@ -324,7 +324,7 @@ compute_mallows <- function(rankings = NULL,
     constraints <- list()
   }
 
-
+  if(is.null(weights)) weights <- rep(1, nrow(rankings))
 
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
 
@@ -338,6 +338,7 @@ compute_mallows <- function(rankings = NULL,
   # Transpose rankings to get samples along columns, since we typically want
   # to extract one sample at a time. armadillo is column major, just like rankings
   fit <- run_mcmc(rankings = t(rankings),
+                  weights = weights,
                   nmc = nmc,
                   constraints = constraints,
                   cardinalities = logz_list$cardinalities,

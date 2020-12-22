@@ -114,6 +114,7 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
 #' a Metropolis-Hastings algorithm.
 #'
 #' @param rho0 Vector specifying the latent consensus ranking.
+#' @param weights Vector of weights to apply to each sample.
 #' @param alpha0 Scalar specifying the scale parameter.
 #' @param n_samples Integer specifying the number of random samples to generate.
 #' @param burnin Integer specifying the number of iterations to discard as burn-in.
@@ -130,14 +131,15 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
 #'
 #' @references \insertAllCited{}
 #'
-rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, metric = "footrule") {
-    .Call(`_BayesMallows_rmallows`, rho0, alpha0, n_samples, burnin, thinning, leap_size, metric)
+rmallows <- function(rho0, weights, alpha0, n_samples, burnin, thinning, leap_size = 1L, metric = "footrule") {
+    .Call(`_BayesMallows_rmallows`, rho0, weights, alpha0, n_samples, burnin, thinning, leap_size, metric)
 }
 
 #' Worker function for computing the posterior distribution.
 #'
 #' @param rankings A set of complete rankings, with one sample per column.
 #' With n_assessors samples and n_items items, rankings is n_items x n_assessors.
+#' @param weights  A vector of weights to apply to the rankings.
 #' @param nmc Number of Monte Carlo samples.
 #' @param constraints List of lists of lists, returned from `generate_constraints`.
 #' @param cardinalities Used when metric equals \code{"footrule"} or
@@ -179,7 +181,7 @@ rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, 
 #' considerably, but is necessary for detecting label switching using Stephen's algorithm.
 #' @keywords internal
 #'
-run_mcmc <- function(rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric = "footrule", error_model = "none", Lswap = 1L, n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, alpha_max = 1e6, psi = 10L, rho_thinning = 1L, aug_thinning = 1L, clus_thin = 1L, save_aug = FALSE, verbose = FALSE, kappa_1 = 1.0, kappa_2 = 1.0, save_ind_clus = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, error_model, Lswap, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, alpha_max, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2, save_ind_clus)
+run_mcmc <- function(rankings, weights, nmc, constraints, cardinalities, logz_estimate, rho_init, metric = "footrule", error_model = "none", Lswap = 1L, n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, alpha_max = 1e6, psi = 10L, rho_thinning = 1L, aug_thinning = 1L, clus_thin = 1L, save_aug = FALSE, verbose = FALSE, kappa_1 = 1.0, kappa_2 = 1.0, save_ind_clus = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, weights, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, error_model, Lswap, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, alpha_max, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2, save_ind_clus)
 }
 

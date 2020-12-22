@@ -80,7 +80,8 @@ sample_mallows <- function(rho0, alpha0, n_samples,
     burnin = internal_burnin,
     thinning = internal_thinning,
     leap_size = leap_size,
-    metric = metric
+    metric = metric,
+    weights = rep(1, internal_n_samples)
   ))
 
   if(diagnostic){

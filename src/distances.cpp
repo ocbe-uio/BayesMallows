@@ -97,7 +97,7 @@ double ulam_distance (const arma::vec& r1, const arma::vec& r2){
 //'
 //'
 // [[Rcpp::export]]
-double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
+double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
 
   if (r1.n_elem != r2.n_elem){
     Rcpp::stop("r1 and r2 must have the same length");
@@ -122,20 +122,23 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
 
 
 // Compute the distance between all rows in rankings and rho, and return the sum
-double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho, const std::string& metric){
-  return arma::sum(rank_dist_vec(rankings, rho, metric));
+double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho,
+                     const std::string& metric, const arma::vec& weights){
+  return arma::sum(rank_dist_vec(rankings, rho, metric, weights));
 }
 
 
 // Compute the distance between each assessor's ranking and the consensus
-arma::vec rank_dist_vec(const arma::mat& rankings, const arma::vec& rho,
-                                 const std::string& metric){
+arma::vec rank_dist_vec(const arma::mat& rankings,
+                        const arma::vec& rho,
+                        const std::string& metric,
+                        const arma::vec& weights){
 
   int n = rankings.n_cols;
   arma::vec result = arma::zeros(n);
 
   for(int i = 0; i < n; ++i){
-    result(i) = get_rank_distance(rankings.col(i), rho, metric);
+    result(i) = get_rank_distance(rankings.col(i), rho, metric) * weights(i);
   }
   return(result);
 }
