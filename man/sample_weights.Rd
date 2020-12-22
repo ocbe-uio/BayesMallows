@@ -12,6 +12,7 @@ here.
 }
 \examples{
 library(dplyr)
+library(tidyr)
 library(purrr)
 # The first example uses full rankings in the potato_visual dataset, but we assume
 # that each row in the data corresponds to between 100 and 500 assessors.
@@ -51,6 +52,7 @@ system.time({
   plot(m_weights, burnin = 2000, "rho", items = 1:4)
   plot(m_rep, burnin = 2000, "rho", items = 1:4)
 }
+
 
 # Next we repeated the exercise with the pairwise preference data
 # in the beach dataset. Note that we first must compute the
@@ -98,6 +100,7 @@ length(unique(beach_tc_rep$assessor))
 beach_rankings <- generate_initial_ranking(beach_tc, n_items = 15)
 beach_rankings_rep <- generate_initial_ranking(beach_tc_rep, n_items = 15)
 
+\dontrun{
 # We then run the Bayesian Mallows rank model, first for the
 # unrepeated data with a weights argument. This takes about 1.9 seconds
 system.time({
@@ -121,4 +124,6 @@ system.time({
 # As demonstrated here, using a weights argument to exploit patterns in data
 # where multiple assessors have given identical rankings or preferences, may
 # lead to considerable speedup.
+
+}
 }
