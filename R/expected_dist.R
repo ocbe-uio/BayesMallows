@@ -29,8 +29,16 @@ expected_dist <- function(alpha,n_items,metric){
       out <- exp_d_ham(alpha,n_items)
     }
     if(metric%in%c("ulam","footrule","spearman")){
-      pfd <- partition_function_data
-      card <- pfd$values[pfd$metric==metric][[n_items]]
+      pfd <- dplyr::filter(partition_function_data,
+                           .data$metric == !!metric, .data$n_items == !!n_items,
+                           .data$type == "cardinalities")
+      if(nrow(pfd) == 0){
+        stop("Given number of items currently not available for the specified metric")
+      } else{
+        card <- pfd$values[[1]]
+      }
+
+
       out <- exp(log_expected_dist(alpha=alpha*n_items,n_items=n_items,cardinalities=card,metric=metric))
     }
   }
