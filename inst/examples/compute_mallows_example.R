@@ -104,3 +104,17 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
   # an "elbow", e.g., at 6 clusters.
 }
 
+# SPEEDING UP COMPUTION WITH WEIGHTS
+# With a large number of assessors taking on a relatively low number of unique rankings,
+# the weights argument allows providing a rankings matrix with the unique set of rankings,
+# and the weights vector giving the number of assessors with each ranking.
+# This is illustrated here for the potato_visual dataset
+#
+# assume each row of potato_visual corresponds to between 1 and 5 assessors, as
+# given by the weights vector
+set.seed(1234)
+weights <- sample.int(n = 5, size = nrow(potato_visual), replace = TRUE)
+m <- compute_mallows(rankings = potato_visual, weights = weights)
+
+# See the separate help page for more examples, with the following code
+help("sample_weights")

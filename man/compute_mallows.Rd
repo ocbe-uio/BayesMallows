@@ -7,6 +7,7 @@
 compute_mallows(
   rankings = NULL,
   preferences = NULL,
+  weights = NULL,
   metric = "footrule",
   error_model = NULL,
   n_clusters = 1L,
@@ -52,6 +53,14 @@ will give \code{preferences} the class \code{"BayesMallowsTC"}. If
 on \code{preferences} before computations are done. In the current version,
 the pairwise preferences are assumed to be mutually compatible.}
 
+\item{weights}{A vector of weights to apply do each row in \code{rankings}.
+This can speed up computation if a large number of assessors share the same
+rank pattern. Defaults to \code{NULL}, which means that each row of
+\code{rankings} is multiplied by 1. If provided, \code{weights} must have
+the same number of elements as there are rows in \code{rankings}, and
+\code{rankings} cannot be \code{NULL}. See \code{\link{sample_weights}} for
+more information.}
+
 \item{metric}{A character string specifying the distance metric to use in the
 Bayesian Mallows Model. Available options are \code{"footrule"},
 \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
@@ -62,8 +71,8 @@ within-cluster distances, when \code{include_wcd = TRUE}.}
 inconsistent rankings. Defaults to \code{NULL}, which means that
 inconsistent rankings are not allowed. At the moment, the only available
 other option is \code{"bernoulli"}, which means that the Bernoulli error
-model is used. See \insertCite{crispino2019;textual}{BayesMallows} for a definition
-of the Bernoulli model.}
+model is used. See \insertCite{crispino2019;textual}{BayesMallows} for a
+definition of the Bernoulli model.}
 
 \item{n_clusters}{Integer specifying the number of clusters, i.e., the number
 of mixture components to use. Defaults to \code{1L}, which means no
@@ -85,8 +94,8 @@ Markov chain.}
 \item{leap_size}{Integer specifying the step size of the leap-and-shift
 proposal distribution. Defaults \code{floor(n_items / 5)}.}
 
-\item{swap_leap}{Integer specifying the step size of the Swap proposal.
-Only used when \code{error_model} is not \code{NULL}.}
+\item{swap_leap}{Integer specifying the step size of the Swap proposal. Only
+used when \code{error_model} is not \code{NULL}.}
 
 \item{rho_init}{Numeric vector specifying the initial value of the latent
 consensus ranking \eqn{\rho}. Defaults to NULL, which means that the
@@ -116,11 +125,12 @@ computation time, by reducing the number of times the partition function
 for the Mallows model needs to be computed. Defaults to \code{1L}.}
 
 \item{lambda}{Strictly positive numeric value specifying the rate parameter
-of the truncated exponential prior distribution of \eqn{\alpha}. Defaults to \code{0.1}. When
-\code{n_cluster > 1}, each mixture component \eqn{\alpha_{c}} has the same
-prior distribution.}
+of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+to \code{0.1}. When \code{n_cluster > 1}, each mixture component
+\eqn{\alpha_{c}} has the same prior distribution.}
 
-\item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential prior distribution.}
+\item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential
+prior distribution.}
 
 \item{psi}{Integer specifying the concentration parameter \eqn{\psi} of the
 Dirichlet prior distribution used for the cluster probabilities
@@ -172,11 +182,12 @@ the the constraint set is computed internally. In repeated calls to
 set may be time consuming. In this case it can be beneficial to precompute
 it and provide it as a separate argument.}
 
-\item{save_ind_clus}{Whether or not to save the individual cluster probabilities in each step.
-This results in csv files \code{cluster_probs1.csv},
-\code{cluster_probs2.csv}, ..., being saved in the calling directory. This option may slow down the code
-considerably, but is necessary for detecting label switching using Stephen's algorithm. See \code{\link{label_switching}}
-for more information.}
+\item{save_ind_clus}{Whether or not to save the individual cluster
+probabilities in each step. This results in csv files
+\code{cluster_probs1.csv}, \code{cluster_probs2.csv}, ..., being saved in
+the calling directory. This option may slow down the code considerably, but
+is necessary for detecting label switching using Stephen's algorithm. See
+\code{\link{label_switching}} for more information.}
 
 \item{seed}{Optional integer to be used as random number seed.}
 }
@@ -188,19 +199,18 @@ Compute the posterior distributions of the parameters of the
   Bayesian Mallows Rank Model, given rankings or preferences stated by a set
   of assessors.
 
-  The \code{BayesMallows} package uses the following parametrization of the Mallows
-  rank model
-  \insertCite{mallows1957}{BayesMallows}: \deqn{p(r|\alpha,\rho)
-  = (1/Z_{n}(\alpha)) \exp{-\alpha/n d(r,\rho)}} where \eqn{r} is a ranking,
-  \eqn{\alpha} is a scale parameter, \eqn{\rho} is the latent consensus
-  ranking, \eqn{Z_{n}(\alpha)} is the partition function (normalizing
-  constant), and \eqn{d(r,\rho)} is a distance function measuring the
-  distance between \eqn{r} and \eqn{\rho}. Note that some authors use a
-  Mallows model without division by \eqn{n} in the exponent;
-  this includes the \code{PerMallows} package, whose scale parameter \eqn{\theta}
-  corresponds to \eqn{\alpha/n} in the \code{BayesMallows} package. We refer
-  to \insertCite{vitelli2018}{BayesMallows} for further details of the
-  Bayesian Mallows model.
+  The \code{BayesMallows} package uses the following parametrization of the
+  Mallows rank model \insertCite{mallows1957}{BayesMallows}:
+  \deqn{p(r|\alpha,\rho) = (1/Z_{n}(\alpha)) \exp{-\alpha/n d(r,\rho)}} where
+  \eqn{r} is a ranking, \eqn{\alpha} is a scale parameter, \eqn{\rho} is the
+  latent consensus ranking, \eqn{Z_{n}(\alpha)} is the partition function
+  (normalizing constant), and \eqn{d(r,\rho)} is a distance function
+  measuring the distance between \eqn{r} and \eqn{\rho}. Note that some
+  authors use a Mallows model without division by \eqn{n} in the exponent;
+  this includes the \code{PerMallows} package, whose scale parameter
+  \eqn{\theta} corresponds to \eqn{\alpha/n} in the \code{BayesMallows}
+  package. We refer to \insertCite{vitelli2018}{BayesMallows} for further
+  details of the Bayesian Mallows model.
 
   \code{compute_mallows} always returns posterior distributions of the latent
   consensus ranking \eqn{\rho} and the scale parameter \eqn{\alpha}. Several
@@ -316,6 +326,20 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
   # an "elbow", e.g., at 6 clusters.
 }
 
+# SPEEDING UP COMPUTION WITH WEIGHTS
+# With a large number of assessors taking on a relatively low number of unique rankings,
+# the weights argument allows providing a rankings matrix with the unique set of rankings,
+# and the weights vector giving the number of assessors with each ranking.
+# This is illustrated here for the potato_visual dataset
+#
+# assume each row of potato_visual corresponds to between 1 and 5 assessors, as
+# given by the weights vector
+set.seed(1234)
+weights <- sample.int(n = 5, size = nrow(potato_visual), replace = TRUE)
+m <- compute_mallows(rankings = potato_visual, weights = weights)
+
+# See the separate help page for more examples, with the following code
+help("sample_weights")
 }
 \references{
 \insertAllCited{}

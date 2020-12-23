@@ -13,6 +13,7 @@
 //' a Metropolis-Hastings algorithm.
 //'
 //' @param rho0 Vector specifying the latent consensus ranking.
+//' @param weights Vector of weights to apply to each sample.
 //' @param alpha0 Scalar specifying the scale parameter.
 //' @param n_samples Integer specifying the number of random samples to generate.
 //' @param burnin Integer specifying the number of iterations to discard as burn-in.
@@ -32,6 +33,7 @@
 // [[Rcpp::export]]
 arma::mat rmallows(
     arma::vec rho0,
+    arma::vec weights,
     double alpha0,
     int n_samples,
     int burnin,
@@ -75,7 +77,7 @@ arma::mat rmallows(
 
     // Compute the distances to current and proposed ranks
     double dist_new = get_rank_distance(rho0(indices), rho_proposal(indices), metric);
-    double dist_old = rank_dist_sum(rho0(indices), rho_iter(indices), metric);
+    double dist_old = rank_dist_sum(rho0(indices), rho_iter(indices), metric, weights);
 
     // Metropolis-Hastings ratio
     double ratio = - alpha0 / n_items * (dist_new - dist_old) +

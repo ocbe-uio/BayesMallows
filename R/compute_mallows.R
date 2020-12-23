@@ -4,19 +4,18 @@
 #'   Bayesian Mallows Rank Model, given rankings or preferences stated by a set
 #'   of assessors.
 #'
-#'   The \code{BayesMallows} package uses the following parametrization of the Mallows
-#'   rank model
-#'   \insertCite{mallows1957}{BayesMallows}: \deqn{p(r|\alpha,\rho)
-#'   = (1/Z_{n}(\alpha)) \exp{-\alpha/n d(r,\rho)}} where \eqn{r} is a ranking,
-#'   \eqn{\alpha} is a scale parameter, \eqn{\rho} is the latent consensus
-#'   ranking, \eqn{Z_{n}(\alpha)} is the partition function (normalizing
-#'   constant), and \eqn{d(r,\rho)} is a distance function measuring the
-#'   distance between \eqn{r} and \eqn{\rho}. Note that some authors use a
-#'   Mallows model without division by \eqn{n} in the exponent;
-#'   this includes the \code{PerMallows} package, whose scale parameter \eqn{\theta}
-#'   corresponds to \eqn{\alpha/n} in the \code{BayesMallows} package. We refer
-#'   to \insertCite{vitelli2018}{BayesMallows} for further details of the
-#'   Bayesian Mallows model.
+#'   The \code{BayesMallows} package uses the following parametrization of the
+#'   Mallows rank model \insertCite{mallows1957}{BayesMallows}:
+#'   \deqn{p(r|\alpha,\rho) = (1/Z_{n}(\alpha)) \exp{-\alpha/n d(r,\rho)}} where
+#'   \eqn{r} is a ranking, \eqn{\alpha} is a scale parameter, \eqn{\rho} is the
+#'   latent consensus ranking, \eqn{Z_{n}(\alpha)} is the partition function
+#'   (normalizing constant), and \eqn{d(r,\rho)} is a distance function
+#'   measuring the distance between \eqn{r} and \eqn{\rho}. Note that some
+#'   authors use a Mallows model without division by \eqn{n} in the exponent;
+#'   this includes the \code{PerMallows} package, whose scale parameter
+#'   \eqn{\theta} corresponds to \eqn{\alpha/n} in the \code{BayesMallows}
+#'   package. We refer to \insertCite{vitelli2018}{BayesMallows} for further
+#'   details of the Bayesian Mallows model.
 #'
 #'   \code{compute_mallows} always returns posterior distributions of the latent
 #'   consensus ranking \eqn{\rho} and the scale parameter \eqn{\alpha}. Several
@@ -44,6 +43,14 @@
 #'   on \code{preferences} before computations are done. In the current version,
 #'   the pairwise preferences are assumed to be mutually compatible.
 #'
+#' @param weights A vector of weights to apply do each row in \code{rankings}.
+#'   This can speed up computation if a large number of assessors share the same
+#'   rank pattern. Defaults to \code{NULL}, which means that each row of
+#'   \code{rankings} is multiplied by 1. If provided, \code{weights} must have
+#'   the same number of elements as there are rows in \code{rankings}, and
+#'   \code{rankings} cannot be \code{NULL}. See \code{\link{sample_weights}} for
+#'   more information.
+#'
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
 #'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
@@ -54,8 +61,8 @@
 #'   inconsistent rankings. Defaults to \code{NULL}, which means that
 #'   inconsistent rankings are not allowed. At the moment, the only available
 #'   other option is \code{"bernoulli"}, which means that the Bernoulli error
-#'   model is used. See \insertCite{crispino2019;textual}{BayesMallows} for a definition
-#'   of the Bernoulli model.
+#'   model is used. See \insertCite{crispino2019;textual}{BayesMallows} for a
+#'   definition of the Bernoulli model.
 #'
 #' @param n_clusters Integer specifying the number of clusters, i.e., the number
 #'   of mixture components to use. Defaults to \code{1L}, which means no
@@ -78,8 +85,8 @@
 #' @param leap_size Integer specifying the step size of the leap-and-shift
 #'   proposal distribution. Defaults \code{floor(n_items / 5)}.
 #'
-#' @param swap_leap Integer specifying the step size of the Swap proposal.
-#' Only used when \code{error_model} is not \code{NULL}.
+#' @param swap_leap Integer specifying the step size of the Swap proposal. Only
+#'   used when \code{error_model} is not \code{NULL}.
 #'
 #'
 #' @param rho_init Numeric vector specifying the initial value of the latent
@@ -110,11 +117,12 @@
 #'   for the Mallows model needs to be computed. Defaults to \code{1L}.
 #'
 #' @param lambda Strictly positive numeric value specifying the rate parameter
-#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults to \code{0.1}. When
-#'   \code{n_cluster > 1}, each mixture component \eqn{\alpha_{c}} has the same
-#'   prior distribution.
+#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+#'   to \code{0.1}. When \code{n_cluster > 1}, each mixture component
+#'   \eqn{\alpha_{c}} has the same prior distribution.
 #'
-#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential prior distribution.
+#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
+#'   prior distribution.
 #'
 #' @param psi Integer specifying the concentration parameter \eqn{\psi} of the
 #'   Dirichlet prior distribution used for the cluster probabilities
@@ -166,11 +174,12 @@
 #'   set may be time consuming. In this case it can be beneficial to precompute
 #'   it and provide it as a separate argument.
 #'
-#' @param save_ind_clus Whether or not to save the individual cluster probabilities in each step.
-#' This results in csv files \code{cluster_probs1.csv},
-#' \code{cluster_probs2.csv}, ..., being saved in the calling directory. This option may slow down the code
-#' considerably, but is necessary for detecting label switching using Stephen's algorithm. See \code{\link{label_switching}}
-#' for more information.
+#' @param save_ind_clus Whether or not to save the individual cluster
+#'   probabilities in each step. This results in csv files
+#'   \code{cluster_probs1.csv}, \code{cluster_probs2.csv}, ..., being saved in
+#'   the calling directory. This option may slow down the code considerably, but
+#'   is necessary for detecting label switching using Stephen's algorithm. See
+#'   \code{\link{label_switching}} for more information.
 #'
 #' @param seed Optional integer to be used as random number seed.
 #'
@@ -191,6 +200,7 @@
 #'
 compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
+                            weights = NULL,
                             metric = "footrule",
                             error_model = NULL,
                             n_clusters = 1L,
@@ -227,6 +237,16 @@ compute_mallows <- function(rankings = NULL,
 
   if(is.null(preferences) && !is.null(error_model)){
     stop("Error model requires preferences to be set.")
+  }
+
+  # Check if weights are provided
+  if(!is.null(weights)){
+    if(is.null(rankings)){
+      stop("rankings matrix must be provided when weights are provided")
+    }
+    if(nrow(rankings) != length(weights)){
+      stop("weights must be of same length as the number of rows in rankings")
+    }
   }
 
   if(!swap_leap > 0) stop("swap_leap must be strictly positive")
@@ -305,6 +325,8 @@ compute_mallows <- function(rankings = NULL,
     constraints <- list()
   }
 
+  if(is.null(weights)) weights <- rep(1, nrow(rankings))
+
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
 
   if(save_ind_clus){
@@ -317,6 +339,7 @@ compute_mallows <- function(rankings = NULL,
   # Transpose rankings to get samples along columns, since we typically want
   # to extract one sample at a time. armadillo is column major, just like rankings
   fit <- run_mcmc(rankings = t(rankings),
+                  weights = weights,
                   nmc = nmc,
                   constraints = constraints,
                   cardinalities = logz_list$cardinalities,
