@@ -43,12 +43,12 @@
 #'   on \code{preferences} before computations are done. In the current version,
 #'   the pairwise preferences are assumed to be mutually compatible.
 #'
-#' @param weights A vector of weights to apply do each row in \code{rankings}.
+#' @param obs_freq A vector of observation frequencies (weights) to apply do each row in \code{rankings}.
 #'   This can speed up computation if a large number of assessors share the same
 #'   rank pattern. Defaults to \code{NULL}, which means that each row of
-#'   \code{rankings} is multiplied by 1. If provided, \code{weights} must have
+#'   \code{rankings} is multiplied by 1. If provided, \code{obs_freq} must have
 #'   the same number of elements as there are rows in \code{rankings}, and
-#'   \code{rankings} cannot be \code{NULL}. See \code{\link{sample_weights}} for
+#'   \code{rankings} cannot be \code{NULL}. See \code{\link{obs_freq}} for
 #'   more information.
 #'
 #' @param metric A character string specifying the distance metric to use in the
@@ -200,7 +200,7 @@
 #'
 compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
-                            weights = NULL,
+                            obs_freq = NULL,
                             metric = "footrule",
                             error_model = NULL,
                             n_clusters = 1L,
@@ -239,13 +239,13 @@ compute_mallows <- function(rankings = NULL,
     stop("Error model requires preferences to be set.")
   }
 
-  # Check if weights are provided
-  if(!is.null(weights)){
+  # Check if obs_freq are provided
+  if(!is.null(obs_freq)){
     if(is.null(rankings)){
-      stop("rankings matrix must be provided when weights are provided")
+      stop("rankings matrix must be provided when obs_freq are provided")
     }
-    if(nrow(rankings) != length(weights)){
-      stop("weights must be of same length as the number of rows in rankings")
+    if(nrow(rankings) != length(obs_freq)){
+      stop("obs_freq must be of same length as the number of rows in rankings")
     }
   }
 
@@ -325,7 +325,7 @@ compute_mallows <- function(rankings = NULL,
     constraints <- list()
   }
 
-  if(is.null(weights)) weights <- rep(1, nrow(rankings))
+  if(is.null(obs_freq)) obs_freq <- rep(1, nrow(rankings))
 
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
 
@@ -339,7 +339,7 @@ compute_mallows <- function(rankings = NULL,
   # Transpose rankings to get samples along columns, since we typically want
   # to extract one sample at a time. armadillo is column major, just like rankings
   fit <- run_mcmc(rankings = t(rankings),
-                  weights = weights,
+                  obs_freq = obs_freq,
                   nmc = nmc,
                   constraints = constraints,
                   cardinalities = logz_list$cardinalities,

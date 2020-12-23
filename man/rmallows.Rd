@@ -6,7 +6,7 @@
 \usage{
 rmallows(
   rho0,
-  weights,
+  obs_freq,
   alpha0,
   n_samples,
   burnin,
@@ -18,7 +18,7 @@ rmallows(
 \arguments{
 \item{rho0}{Vector specifying the latent consensus ranking.}
 
-\item{weights}{Vector of weights to apply to each sample.}
+\item{obs_freq}{Vector of observation frequencies (weights) to apply to each sample.}
 
 \item{alpha0}{Scalar specifying the scale parameter.}
 

@@ -123,8 +123,8 @@ double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
 
 // Compute the distance between all rows in rankings and rho, and return the sum
 double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho,
-                     const std::string& metric, const arma::vec& weights){
-  return arma::sum(rank_dist_vec(rankings, rho, metric, weights));
+                     const std::string& metric, const arma::vec& obs_freq){
+  return arma::sum(rank_dist_vec(rankings, rho, metric, obs_freq));
 }
 
 
@@ -132,13 +132,13 @@ double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho,
 arma::vec rank_dist_vec(const arma::mat& rankings,
                         const arma::vec& rho,
                         const std::string& metric,
-                        const arma::vec& weights){
+                        const arma::vec& obs_freq){
 
   int n = rankings.n_cols;
   arma::vec result = arma::zeros(n);
 
   for(int i = 0; i < n; ++i){
-    result(i) = get_rank_distance(rankings.col(i), rho, metric) * weights(i);
+    result(i) = get_rank_distance(rankings.col(i), rho, metric) * obs_freq(i);
   }
   return(result);
 }

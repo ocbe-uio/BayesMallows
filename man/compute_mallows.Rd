@@ -7,7 +7,7 @@
 compute_mallows(
   rankings = NULL,
   preferences = NULL,
-  weights = NULL,
+  obs_freq = NULL,
   metric = "footrule",
   error_model = NULL,
   n_clusters = 1L,
@@ -53,12 +53,12 @@ will give \code{preferences} the class \code{"BayesMallowsTC"}. If
 on \code{preferences} before computations are done. In the current version,
 the pairwise preferences are assumed to be mutually compatible.}
 
-\item{weights}{A vector of weights to apply do each row in \code{rankings}.
+\item{obs_freq}{A vector of observation frequencies (weights) to apply do each row in \code{rankings}.
 This can speed up computation if a large number of assessors share the same
 rank pattern. Defaults to \code{NULL}, which means that each row of
-\code{rankings} is multiplied by 1. If provided, \code{weights} must have
+\code{rankings} is multiplied by 1. If provided, \code{obs_freq} must have
 the same number of elements as there are rows in \code{rankings}, and
-\code{rankings} cannot be \code{NULL}. See \code{\link{sample_weights}} for
+\code{rankings} cannot be \code{NULL}. See \code{\link{obs_freq}} for
 more information.}
 
 \item{metric}{A character string specifying the distance metric to use in the
@@ -326,20 +326,20 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
   # an "elbow", e.g., at 6 clusters.
 }
 
-# SPEEDING UP COMPUTION WITH WEIGHTS
+# SPEEDING UP COMPUTION WITH OBSERVATION FREQUENCIES
 # With a large number of assessors taking on a relatively low number of unique rankings,
-# the weights argument allows providing a rankings matrix with the unique set of rankings,
-# and the weights vector giving the number of assessors with each ranking.
+# the obs_freq argument allows providing a rankings matrix with the unique set of rankings,
+# and the obs_freq vector giving the number of assessors with each ranking.
 # This is illustrated here for the potato_visual dataset
 #
 # assume each row of potato_visual corresponds to between 1 and 5 assessors, as
-# given by the weights vector
+# given by the obs_freq vector
 set.seed(1234)
-weights <- sample.int(n = 5, size = nrow(potato_visual), replace = TRUE)
-m <- compute_mallows(rankings = potato_visual, weights = weights)
+obs_freq <- sample.int(n = 5, size = nrow(potato_visual), replace = TRUE)
+m <- compute_mallows(rankings = potato_visual, obs_freq = obs_freq)
 
 # See the separate help page for more examples, with the following code
-help("sample_weights")
+help("obs_freq")
 }
 \references{
 \insertAllCited{}
