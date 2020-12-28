@@ -6,7 +6,7 @@
 
 void update_dist_mat(arma::mat& dist_mat, const arma::mat& rankings,
                      const arma::mat& rho_old, const std::string& metric,
-                     const arma::vec& weights);
+                     const arma::vec& obs_freq);
 
 arma::uvec update_cluster_labels(
     const arma::mat& dist_mat,

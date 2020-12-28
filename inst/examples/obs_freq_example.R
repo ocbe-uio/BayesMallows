@@ -4,20 +4,20 @@ library(purrr)
 # The first example uses full rankings in the potato_visual dataset, but we assume
 # that each row in the data corresponds to between 100 and 500 assessors.
 set.seed(1234)
-# We start by generating random sample weights
-weights <- sample(x = seq(from = 100L, to = 500L, by = 1L),
+# We start by generating random observation frequencies
+obs_freq <- sample(x = seq(from = 100L, to = 500L, by = 1L),
                   size = nrow(potato_visual), replace = TRUE)
 # We also create a set of repeated indices, used to extend the matrix rows
-repeated_indices <- unlist(map2(1:nrow(potato_visual), weights, ~ rep(.x, each = .y)))
+repeated_indices <- unlist(map2(1:nrow(potato_visual), obs_freq, ~ rep(.x, each = .y)))
 # The potato_repeated matrix consists of all rows repeated corresponding to
-# the number of assessors in the weights vector. This is how a large dataset
-# would look like without using the weights argument
+# the number of assessors in the obs_freq vector. This is how a large dataset
+# would look like without using the obs_freq argument
 potato_repeated <- potato_visual[repeated_indices, ]
 
-# We now first compute the Mallows model using weights
+# We now first compute the Mallows model using obs_freq
 # This takes about 0.2 seconds
 system.time({
-  m_weights <- compute_mallows(rankings = potato_visual, weights = weights, nmc = 10000)
+  m_obs_freq <- compute_mallows(rankings = potato_visual, obs_freq = obs_freq, nmc = 10000)
 })
 # Next we use the full ranking matrix
 # This takes about 11.3 seconds, about 50 times longer!
@@ -27,16 +27,16 @@ system.time({
 })
 
   # We set the burnin to 2000 for both
-  m_weights$burnin <- 2000
+  m_obs_freq$burnin <- 2000
   m_rep$burnin <- 2000
 
   # Note that the MCMC algorithms did not run with the same
   # random number seeds in these two experiments, but still
   # the posterior distributions look similar
-  plot(m_weights, burnin = 2000, "alpha")
+  plot(m_obs_freq, burnin = 2000, "alpha")
   plot(m_rep, burnin = 2000, "alpha")
 
-  plot(m_weights, burnin = 2000, "rho", items = 1:4)
+  plot(m_obs_freq, burnin = 2000, "rho", items = 1:4)
   plot(m_rep, burnin = 2000, "rho", items = 1:4)
 }
 
@@ -62,15 +62,15 @@ beach_tc %>%
   filter(num_assessors > 1)
 
 # We now illustrate the weighting procedure by assuming that there are
-# more than one assessor per unique transitive closure. We generate a
-# weights vector such that each unique transitive closure is repeated 1-4 times.
+# more than one assessor per unique transitive closure. We generate an
+# obs_freq vector such that each unique transitive closure is repeated 1-4 times.
 set.seed(9988)
-weights <- sample(x = 1:4, size = length(unique(beach_preferences$assessor)), replace = TRUE)
+obs_freq <- sample(x = 1:4, size = length(unique(beach_preferences$assessor)), replace = TRUE)
 
 # Next, we create a new hypthetical beach_preferences dataframe where each
 # assessor is replicated 1-4 times
 beach_pref_rep <- beach_preferences %>%
-  mutate(new_assessor = map(weights[assessor], ~ 1:.x)) %>%
+  mutate(new_assessor = map(obs_freq[assessor], ~ 1:.x)) %>%
   unnest(cols = new_assessor) %>%
   mutate(assessor = paste(assessor, new_assessor, sep = ",")) %>%
   select(-new_assessor)
@@ -78,8 +78,8 @@ beach_pref_rep <- beach_preferences %>%
 # We generate transitive closure for these preferences
 beach_tc_rep <- generate_transitive_closure(beach_pref_rep)
 # We can check that the number of unique assessors is now larger,
-# and equal to the sum of weights
-sum(weights)
+# and equal to the sum of obs_freq
+sum(obs_freq)
 length(unique(beach_tc_rep$assessor))
 
 # We generate the initial rankings for the repeated and the "unrepeated"
@@ -89,11 +89,11 @@ beach_rankings_rep <- generate_initial_ranking(beach_tc_rep, n_items = 15)
 
 \dontrun{
 # We then run the Bayesian Mallows rank model, first for the
-# unrepeated data with a weights argument. This takes about 1.9 seconds
+# unrepeated data with a obs_freq argument. This takes about 1.9 seconds
 system.time({
-  model_fit_weights <- compute_mallows(rankings = beach_rankings,
+  model_fit_obs_freq <- compute_mallows(rankings = beach_rankings,
                                        preferences = beach_tc,
-                                       weights = weights,
+                                       obs_freq = obs_freq,
                                        save_aug = TRUE,
                                        nmc = 10000)
 
@@ -108,7 +108,7 @@ system.time({
 
 })
 
-# As demonstrated here, using a weights argument to exploit patterns in data
+# As demonstrated here, using a obs_freq argument to exploit patterns in data
 # where multiple assessors have given identical rankings or preferences, may
 # lead to considerable speedup.
 
