@@ -20,7 +20,7 @@ A vector of distances according to the given \code{metric}.
 Compute the distance between a matrix of rankings and a rank sequence.
 }
 \examples{
-data0=sample_mallows(rho0=1:10,alpha=20,n_samples=1000)
+data0 <- sample_mallows(rho0=1:10,alpha=20,n_samples=1000)
 
 rank_distance_vec(rankings=data0,rho=1:10,metric="kendall")
 }
