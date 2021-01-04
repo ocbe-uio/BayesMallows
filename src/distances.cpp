@@ -2,7 +2,7 @@
 #include "subset.h"
 #include "distances.h"
 
-// [[Rcpp::depends(RcppArmadillo)]]
+//' [[Rcpp::depends(RcppArmadillo)]]
 
 double cayley_distance(const arma::vec& r1, const arma::vec& r2){
   double distance = 0;
@@ -10,7 +10,7 @@ double cayley_distance(const arma::vec& r1, const arma::vec& r2){
   double tmp1;
   arma::vec tmp2 = r1;
 
-  // This is a C++ translation of Rankcluster::distCayley
+  //' This is a C++ translation of Rankcluster::distCayley
   for(int i = 0; i < n; ++i){
     if(tmp2(i) != r2(i)) {
       distance += 1;
@@ -75,26 +75,24 @@ double ulam_distance (const arma::vec& r1, const arma::vec& r2){
 }
 
 
-//' Compute the distance between two rank vectors.
+//' Compute the Distance between two rankings
 //'
+//' @description Compute the distance between two rankings according to several metrics.
 //' @param r1 A vector of ranks.
 //' @param r2 A vector of ranks.
 //' @param metric A string. Available options are \code{"footrule"},
 //' \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"spearman"}, and \code{"ulam"}.
-//' Defaults to \code{"footrule"}.
 //' @return A scalar.
 //' @details Note that the Spearman distance is the squared L2 norm, whereas
 //' the footrule distance is the L1 norm.
 //'
-//' The Ulam distance uses the SUBSET library developed by John Burkardt, available at http://people.sc.fsu.edu/~jburkardt/cpp_src/subset/subset.html.
+//' The Ulam distance uses the SUBSET library developed by John Burkardt, available at http://'people.sc.fsu.edu/~jburkardt/cpp_src/subset/subset.html.
 //'
 //' The implementation of Cayley distance is based on a \code{C++} translation of \code{Rankcluster::distCayley} \insertCite{Grimonprez2016}{BayesMallows}.
 //'
 //'
 //' @references \insertAllCited{}
-//'
 //' @keywords internal
-//'
 //'
 // [[Rcpp::export]]
 double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
@@ -122,12 +120,35 @@ double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
 
 
 // Compute the distance between all rows in rankings and rho, and return the sum
+//
+// @param rankings A matrix of size \eqn{n_items}\eqn{\times}{x}\eqn{N} of rankings in each column.
+// @param rho A vector of ranks corresponding to the consensus permutation.
+// @param metric A string. Available options are \code{"footrule"},
+// \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"spearman"}, and \code{"ulam"}.
+// @return A scalar.
+//
+// @references \insertAllCited{}
+//
+// @keywords internal
 double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho, const std::string& metric){
   return arma::sum(rank_dist_vec(rankings, rho, metric));
 }
 
 
-// Compute the distance between each assessor's ranking and the consensus
+//' Compute the distance between a set of rankings and a given sequence
+//'
+//' @description Compute the distance between a given ranking and a set of rankings collected into the columns of a matrix.
+//' @param rankings A matrix of size \eqn{n_items }\eqn{\times}{x}\eqn{ N} of rankings in each column.
+//' @param rho A ranking sequence.
+//' @param metric A string. Available options are \code{"footrule"},
+//' \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"spearman"}, and \code{"ulam"}.
+//' @return A vector of distances.
+//'
+//'
+//' @references \insertAllCited{}
+//' @keywords internal
+//'
+// [[Rcpp::export]]
 arma::vec rank_dist_vec(const arma::mat& rankings, const arma::vec& rho,
                                  const std::string& metric){
 
@@ -139,4 +160,6 @@ arma::vec rank_dist_vec(const arma::mat& rankings, const arma::vec& rho,
   }
   return(result);
 }
+
+
 
