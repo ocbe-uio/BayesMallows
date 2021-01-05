@@ -119,6 +119,7 @@ double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
 }
 
 
+
 // [[Rcpp::export]]
 double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho,
                      const std::string& metric, const arma::vec& obs_freq){

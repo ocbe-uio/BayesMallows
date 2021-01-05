@@ -1,3 +1,4 @@
+
 # Distance between two vectors of rankings:
 rank_distance(1:5,5:1, metric = "kendall")
 rank_distance(c(2, 4, 3, 6, 1, 7, 5), c(3, 5, 4, 7, 6, 2, 1), metric = "cayley")
