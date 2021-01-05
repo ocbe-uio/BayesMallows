@@ -93,9 +93,9 @@ used within the model.
 
 ### Applications
 
-Among the current applications, Liu et al. (2019) applied the Bayesian
-Mallows model for providing personalized recommendations based on
-clicking data, and Barrett and Crispino (2018) used the model of
+Among the current applications, Q. Liu et al. (2019) applied the
+Bayesian Mallows model for providing personalized recommendations based
+on clicking data, and Barrett and Crispino (2018) used the model of
 Crispino et al. (2019) to analyze listeners’ understanding of music.
 
 ### Future Extensions
@@ -114,21 +114,25 @@ et al. (2020), in addition to the relevant methodological papers.
 citation("BayesMallows")
 #> 
 #> Sørensen Ø, Crispino M, Liu Q, Vitelli V (2020). "BayesMallows: An R
-#> Package for the Bayesian Mallows Model." _R Journal_.
+#> Package for the Bayesian Mallows Model." _The R Journal_, *12*(1),
+#> 324-342. doi: 10.32614/RJ-2020-026 (URL:
+#> https://doi.org/10.32614/RJ-2020-026), <URL:
+#> https://doi.org/10.32614/RJ-2020-026>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Article{,
 #>     author = {{\O}ystein S{\o}rensen and Marta Crispino and Qinghua Liu and Valeria Vitelli},
+#>     doi = {10.32614/RJ-2020-026},
 #>     title = {BayesMallows: An R Package for the Bayesian Mallows Model},
-#>     journal = {R Journal},
+#>     journal = {The R Journal},
+#>     number = {1},
+#>     pages = {324--342},
+#>     volume = {12},
+#>     url = {https://doi.org/10.32614/RJ-2020-026},
 #>     year = {2020},
 #>   }
 ```
-
-The paper is accepted for publication in the R Journal, and a link will
-be posted here as soon as it appears online. It is identical to the
-package vignette mentioned above.
 
 ## Contribution
 
@@ -140,9 +144,9 @@ us.
 
 ## References
 
-<div id="refs" class="references hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent">
 
-<div id="ref-asfaw2016">
+<div id="ref-asfaw2016" class="csl-entry">
 
 Asfaw, D., V. Vitelli, Ø Sørensen, E. Arjas, and A. Frigessi. 2016.
 “Time-Varying Rankings with the Bayesian Mallows Model.” *Stat* 6 (1):
@@ -150,7 +154,7 @@ Asfaw, D., V. Vitelli, Ø Sørensen, E. Arjas, and A. Frigessi. 2016.
 
 </div>
 
-<div id="ref-barrett2018">
+<div id="ref-barrett2018" class="csl-entry">
 
 Barrett, N., and M. Crispino. 2018. “The Impact of 3-d Sound
 Spatialisation on Listeners’ Understanding of Human Agency in Acousmatic
@@ -159,7 +163,7 @@ Music.” *Journal of New Music Research* 47 (5): 399–415.
 
 </div>
 
-<div id="ref-crispino2019informative">
+<div id="ref-crispino2019informative" class="csl-entry">
 
 Crispino, M., and I. Antoniano-Villalobos. 2019. “Informative Extended
 Mallows Priors in the Bayesian Mallows Model.”
@@ -167,25 +171,16 @@ Mallows Priors in the Bayesian Mallows Model.”
 
 </div>
 
-<div id="ref-crispino2019">
+<div id="ref-crispino2019" class="csl-entry">
 
 Crispino, M., E. Arjas, V. Vitelli, N. Barrett, and A. Frigessi. 2019.
-“A Bayesian Mallows Approach to Nontransitive Pair Comparison Data:
-How Human Are Sounds?” *The Annals of Applied Statistics* 13 (1):
-492–519. <https://doi.org/10.1214/18-aoas1203>.
+“A Bayesian Mallows Approach to Nontransitive Pair Comparison Data: How
+Human Are Sounds?” *The Annals of Applied Statistics* 13 (1): 492–519.
+<https://doi.org/10.1214/18-aoas1203>.
 
 </div>
 
-<div id="ref-liu2019">
-
-Liu, Q, M Crispino, I Scheel, V Vitelli, and A Frigessi. 2019.
-“Model-Based Learning from Preference Data.” *Annual Review of
-Statistics and Its Application* 6 (1).
-<https://doi.org/10.1146/annurev-statistics-031017-100213>.
-
-</div>
-
-<div id="ref-liu2019b">
+<div id="ref-liu2019b" class="csl-entry">
 
 Liu, Q., A. H. Reiner, A. Frigessi, and I. Scheel. 2019. “Diverse
 Personalized Recommendations with Uncertainty from Implicit Preference
@@ -194,7 +189,16 @@ Data with the Bayesian Mallows Model.” *Knowledge-Based Systems* 186
 
 </div>
 
-<div id="ref-mukherjee2016">
+<div id="ref-liu2019" class="csl-entry">
+
+Liu, Q, M Crispino, I Scheel, V Vitelli, and A Frigessi. 2019.
+“Model-Based Learning from Preference Data.” *Annual Review of
+Statistics and Its Application* 6 (1).
+<https://doi.org/10.1146/annurev-statistics-031017-100213>.
+
+</div>
+
+<div id="ref-mukherjee2016" class="csl-entry">
 
 Mukherjee, S. 2016. “Estimation in Exponential Families on
 Permutations.” *The Annals of Statistics* 44 (2): 853–75.
@@ -202,14 +206,15 @@ Permutations.” *The Annals of Statistics* 44 (2): 853–75.
 
 </div>
 
-<div id="ref-sorensen2020">
+<div id="ref-sorensen2020" class="csl-entry">
 
-Sørensen, Ø, M. Crispino, Q. Liu, and V. Vitelli. 2020. “BayesMallows:
-An R Package for the Bayesian Mallows Model.” *R Journal*.
+Sørensen, Øystein, Marta Crispino, Qinghua Liu, and Valeria Vitelli.
+2020. “BayesMallows: An R Package for the Bayesian Mallows Model.” *The
+R Journal* 12 (1): 324–42. <https://doi.org/10.32614/RJ-2020-026>.
 
 </div>
 
-<div id="ref-vitelli2018">
+<div id="ref-vitelli2018" class="csl-entry">
 
 Vitelli, V., Ø. Sørensen, M. Crispino, E. Arjas, and A. Frigessi. 2018.
 “Probabilistic Preference Learning with the Mallows Rank Model.”

@@ -6,3 +6,10 @@ test_that("expected dist works", {
   expect_equal(round(expected_dist(3.5,45,"footrule"), 6), 0.080459)
   expect_equal(round(expected_dist(4,10,"spearman"), 6), 0.006033)
 })
+
+
+test_that("expected dist fails when it should", {
+  expect_error(expected_dist(10, 15, "spearman"))
+  expect_error(expected_dist(10, 150, "footrule"))
+  expect_error(expected_dist(10, 150, "ulam"))
+})

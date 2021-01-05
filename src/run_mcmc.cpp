@@ -12,6 +12,7 @@
 //'
 //' @param rankings A set of complete rankings, with one sample per column.
 //' With n_assessors samples and n_items items, rankings is n_items x n_assessors.
+//' @param obs_freq  A vector of observation frequencies (weights) to apply to the rankings.
 //' @param nmc Number of Monte Carlo samples.
 //' @param constraints List of lists of lists, returned from `generate_constraints`.
 //' @param cardinalities Used when metric equals \code{"footrule"} or
@@ -54,7 +55,7 @@
 //' @keywords internal
 //'
 // [[Rcpp::export]]
-Rcpp::List run_mcmc(arma::mat rankings, int nmc,
+Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
                     Rcpp::List constraints,
                     Rcpp::Nullable<arma::vec> cardinalities,
                     Rcpp::Nullable<arma::vec> logz_estimate,
@@ -133,7 +134,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
 
   // Matrix with precomputed distances d(R_j, \rho_j), used to avoid looping during cluster assignment
   arma::mat dist_mat(n_assessors, n_clusters);
-  update_dist_mat(dist_mat, rankings, rho_old, metric);
+  update_dist_mat(dist_mat, rankings, rho_old, metric, obs_freq);
   arma::mat within_cluster_distance(n_clusters, include_wcd ? nmc : 1);
   within_cluster_distance.col(0) = update_wcd(current_cluster_assignment, dist_mat);
 
@@ -197,7 +198,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
       update_rho(rho, rho_acceptance, rho_old, rho_index, i,
                  rho_thinning, alpha_old(i), leap_size,
                  clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
-                 metric, n_items, t, element_indices);
+                 metric, n_items, t, element_indices, obs_freq);
 
     }
 
@@ -206,7 +207,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
       for(int i = 0; i < n_clusters; ++i){
         alpha(i, alpha_index) = update_alpha(alpha_acceptance, alpha_old(i),
               clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
-              i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate, alpha_max);
+              obs_freq, i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate, alpha_max);
       }
       // Update alpha_old
       alpha_old = alpha.col(alpha_index);
@@ -251,7 +252,7 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
   }
 
   if(clustering | include_wcd){
-    update_dist_mat(dist_mat, rankings, rho_old, metric);
+    update_dist_mat(dist_mat, rankings, rho_old, metric, obs_freq);
     }
   }
 
@@ -274,7 +275,8 @@ Rcpp::List run_mcmc(arma::mat rankings, int nmc,
     Rcpp::Named("any_missing") = any_missing,
     Rcpp::Named("augpair") = augpair,
     Rcpp::Named("aug_acceptance") = aug_acceptance / nmc,
-    Rcpp::Named("n_assessors") = n_assessors
+    Rcpp::Named("n_assessors") = n_assessors,
+    Rcpp::Named("obs_freq") = obs_freq
   );
 
 

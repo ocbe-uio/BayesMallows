@@ -1,4 +1,6 @@
 library(dplyr)
+library(tidyr)
+library(purrr)
 context("Testing compute_mallows")
 
 test_that("miscellaneous input validation", {
@@ -16,6 +18,9 @@ test_that("rho_init is properly validated",{
   expect_error(compute_mallows(rankings = m, rho_init = 1:(ncol(m) - 1)))
   expect_error(compute_mallows(rankings = m, rho_init = c(potato_true_ranking[-1], 22)))
   expect_error(compute_mallows(rankings = m, rho_init = c(NA_real_, 2:ncol(m))))
+  expect_error(compute_mallows(rankings = m, obs_freq = -1))
+  expect_error(compute_mallows(rankings = m, obs_freq = 1))
+  expect_error(compute_mallows(rankings = m, obs_freq = 1:11))
 }
 )
 
@@ -89,3 +94,76 @@ test_that("compute_mallows handles data with lots of missings",{
 
 }
           )
+
+test_that("compute_mallows treats obs_freq properly",{
+  m1 <- compute_mallows(rankings = potato_visual,
+                        obs_freq = rep(1, nrow(potato_visual)), seed = 2233)
+  m2 <- compute_mallows(rankings = potato_visual, seed = 2233)
+  expect_equal(m1, m2)
+
+  # Test with repeated beach preferences
+  obs_freq <- rep(1:4, each = 15)
+
+  # Next, we create a new hypthetical beach_preferences dataframe where each
+  # assessor is replicated 1-4 times
+  beach_pref_rep <- beach_preferences %>%
+    mutate(new_assessor = map(obs_freq[assessor], ~ 1:.x)) %>%
+    unnest(cols = new_assessor) %>%
+    mutate(assessor = paste(assessor, new_assessor, sep = ",")) %>%
+    select(-new_assessor)
+
+  # We generate transitive closure for these preferences
+  beach_tc_rep <- generate_transitive_closure(beach_pref_rep)
+
+  # We generate the initial rankings for the repeated and the "unrepeated"
+  # data
+  set.seed(1223)
+  beach_tc <- generate_transitive_closure(beach_preferences)
+  beach_rankings <- generate_initial_ranking(beach_tc, n_items = 15)
+  beach_rankings_rep <- generate_initial_ranking(beach_tc_rep, n_items = 15)
+
+  model_fit_obs_freq <- compute_mallows(rankings = beach_rankings,
+                                       preferences = beach_tc,
+                                       obs_freq = obs_freq,
+                                       save_aug = TRUE,
+                                       nmc = 10, seed = 3344L)
+
+  expect_equal(model_fit_obs_freq$rho$value,
+               c(15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 3, 12,
+                 13, 8, 6, 1, 14, 2, 11, 10, 4, 9, 7, 5, 15, 2, 12, 13, 8, 6,
+                 3, 14, 1, 11, 10, 4, 9, 7, 5, 15, 2, 12, 13, 8, 6, 5, 14, 1,
+                 11, 10, 3, 9, 7, 4, 15, 2, 12, 13, 8, 6, 5, 14, 1, 11, 10, 3,
+                 9, 7, 4, 15, 2, 12, 13, 8, 6, 5, 14, 1, 11, 10, 3, 9, 7, 4, 15,
+                 2, 12, 13, 9, 6, 5, 14, 1, 11, 7, 3, 10, 8, 4, 15, 2, 12, 13,
+                 8, 6, 5, 14, 1, 11, 7, 3, 10, 9, 4, 15, 2, 11, 13, 8, 6, 5, 14,
+                 1, 12, 7, 3, 10, 9, 4, 15, 2, 12, 13, 8, 6, 5, 14, 1, 9, 7, 3,
+                 11, 10, 4))
+
+  expect_equal(model_fit_obs_freq$alpha$value,
+               c(1, 1, 1, 0.86535647165335, 0.86535647165335, 0.825179803947417,
+                 0.751782270910306, 0.751782270910306, 0.751782270910306, 0.751782270910306
+               ))
+
+  # Next for the repeated data.
+  model_fit_rep <- compute_mallows(rankings = beach_rankings_rep,
+                                   preferences = beach_tc_rep,
+                                   save_aug = TRUE,
+                                   nmc = 10, seed = 3344L)
+
+
+  expect_equal(model_fit_rep$rho$value,
+               c(15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 4, 12,
+                 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 4, 12, 13, 8, 6,
+                 2, 14, 3, 11, 10, 1, 9, 7, 5, 14, 4, 12, 13, 8, 6, 2, 15, 3,
+                 11, 10, 1, 9, 7, 5, 15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1,
+                 9, 7, 5, 15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15,
+                 4, 12, 13, 9, 6, 2, 14, 3, 11, 10, 1, 8, 7, 5, 15, 4, 12, 13,
+                 9, 6, 2, 14, 3, 11, 10, 1, 8, 7, 5, 14, 4, 12, 13, 9, 6, 2, 15,
+                 3, 11, 10, 1, 8, 7, 5, 14, 4, 12, 13, 9, 6, 2, 15, 3, 11, 10,
+                 1, 8, 7, 5))
+
+  expect_equal(model_fit_rep$alpha$value,
+               c(1, 1, 0.903043979825357, 0.903043979825357, 0.861700605603424,
+                 0.861700605603424, 0.861700605603424, 0.742080897545894, 0.742080897545894,
+                 0.742080897545894))
+})

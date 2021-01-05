@@ -95,7 +95,7 @@ double ulam_distance (const arma::vec& r1, const arma::vec& r2){
 //' @keywords internal
 //'
 // [[Rcpp::export]]
-double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
+double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
 
   if (r1.n_elem != r2.n_elem){
     Rcpp::stop("r1 and r2 must have the same length");
@@ -156,7 +156,7 @@ arma::vec rank_dist_vec(const arma::mat& rankings, const arma::vec& rho,
   arma::vec result = arma::zeros(n);
 
   for(int i = 0; i < n; ++i){
-    result(i) = get_rank_distance(rankings.col(i), rho, metric);
+    result(i) = get_rank_distance(rankings.col(i), rho, metric) * obs_freq(i);
   }
   return(result);
 }

@@ -13,7 +13,8 @@ estimate_partition_function(
   degree,
   n_iterations,
   K,
-  cl = NULL
+  cl = NULL,
+  seed = NULL
 )
 }
 \arguments{
@@ -27,7 +28,9 @@ compute the importance sampling estimate.}
 \item{n_items}{Integer specifying the number of items.}
 
 \item{metric}{Character string specifying the distance measure to use.
-Available options are \code{"footrule"} and \code{"spearman"}}
+Available options are \code{"footrule"} and \code{"spearman"} when
+\code{method = "asymptotic"} and in addition \code{"cayley"}, \code{"hamming"},
+\code{"kendall"}, and \code{"ulam"} when \code{method = "importance_sampling"}.}
 
 \item{nmc}{Integer specifying the number of Monte Carlo samples to use in the
 importance sampling. Only used when \code{method = "importance_sampling"}.}
@@ -47,6 +50,8 @@ asymptotic approximation of the partition function. Only used when
 \item{cl}{Optional computing cluster used for parallelization, returned
 from \code{parallel::makeCluster}. Defaults to \code{NULL}. Only used when
 \code{method = "importance_sampling"}.}
+
+\item{seed}{Optional random number seed.}
 }
 \value{
 A vector of length \code{degree} which can be supplied to the

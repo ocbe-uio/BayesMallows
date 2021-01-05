@@ -6,6 +6,7 @@
 \usage{
 run_mcmc(
   rankings,
+  obs_freq,
   nmc,
   constraints,
   cardinalities,
@@ -36,6 +37,8 @@ run_mcmc(
 \arguments{
 \item{rankings}{A set of complete rankings, with one sample per column.
 With n_assessors samples and n_items items, rankings is n_items x n_assessors.}
+
+\item{obs_freq}{A vector of observation frequencies (weights) to apply to the rankings.}
 
 \item{nmc}{Number of Monte Carlo samples.}
 
