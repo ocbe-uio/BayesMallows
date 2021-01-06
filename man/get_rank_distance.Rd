@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{get_rank_distance}
 \alias{get_rank_distance}
-\title{Compute the distance between two rank vectors.}
+\title{Compute the Distance between two rankings}
 \usage{
 get_rank_distance(r1, r2, metric)
 }
@@ -12,14 +12,13 @@ get_rank_distance(r1, r2, metric)
 \item{r2}{A vector of ranks.}
 
 \item{metric}{A string. Available options are \code{"footrule"},
-\code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"spearman"}, and \code{"ulam"}.
-Defaults to \code{"footrule"}.}
+\code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"spearman"}, and \code{"ulam"}.}
 }
 \value{
 A scalar.
 }
 \description{
-Compute the distance between two rank vectors.
+Compute the distance between two rankings according to several metrics.
 }
 \details{
 Note that the Spearman distance is the squared L2 norm, whereas
