@@ -16,10 +16,15 @@ Numeric matrix with the distinct rankings in each row and the
 }
 \description{
 Construct the frequency distribution of the distinct ranking
-  sequences from the dataset of the individual rankings.
+  sequences from the dataset of the individual rankings. This can be of
+  interest in itself, but also used to speed up computation by providing
+  the \code{obs_freq} argument to \code{\link{compute_mallows}}.
 }
 \examples{
-data0 <- sample_mallows(rho0=1:5,alpha=10,n_samples=1000)
-
+# Create example data. We set the burn-in and thinning very low
+# for the sampling to go fast
+data0 <- sample_mallows(rho0 = 1:5, alpha=10, n_samples = 1000,
+                        burnin = 10, thinning = 1)
+# Find the frequency distribution
 rank_freq_distr(rankings=data0)
 }
