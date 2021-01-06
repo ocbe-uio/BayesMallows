@@ -7,7 +7,9 @@
 #'   and consistent pairwise preference data, as well as mixtures of rank models.
 #'   Modeling of
 #'   pairwise preferences containing inconsistencies, as described in
-#'   \insertCite{crispino2019;textual}{BayesMallows}, is also supported.
+#'   \insertCite{crispino2019;textual}{BayesMallows}, is also supported. See also
+#'   \insertCite{sorensen2020;textual}{BayesMallows} for an overview of the methods
+#'   and a tutorial.
 #'
 #' The documentation and examples for the following functions are likely most useful
 #' to get you started:
