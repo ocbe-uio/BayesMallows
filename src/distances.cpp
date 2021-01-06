@@ -50,7 +50,7 @@ double spearman_distance(const arma::vec& r1, const arma::vec& r2){
   return std::pow(arma::norm(r1 - r2, 2), 2.0);
 }
 
-double ulam_distance (const arma::vec& r1, const arma::vec& r2){
+double ulam_distance(const arma::vec& r1, const arma::vec& r2){
 
   int N = r1.n_elem;
 
