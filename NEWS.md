@@ -1,3 +1,7 @@
+# BayesMallows 0.5.0.9001
+
+* Function rank_distance added, for computing the distance between rankings.
+
 # BayesMallows 0.5.0.9000
 
 * Function expected_dist added for computing expectation of several metrics under the Mallows model.
