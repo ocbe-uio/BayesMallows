@@ -10,10 +10,13 @@ rank_freq_distr(rankings)
 \item{rankings}{A matrix with the individual rankings in each row.}
 }
 \value{
-Numeric matrix with the distinct rankings in each row and the corresponding frequencies indicated in the last \code{(n_items+1)}-th column.
+Numeric matrix with the distinct rankings in each row and the
+  corresponding frequencies indicated in the last \code{(n_items+1)}-th
+  column.
 }
 \description{
-Construct the frequency distribution of the distinct ranking sequences from the dataset of the individual rankings.
+Construct the frequency distribution of the distinct ranking
+  sequences from the dataset of the individual rankings.
 }
 \examples{
 data0 <- sample_mallows(rho0=1:5,alpha=10,n_samples=1000)
