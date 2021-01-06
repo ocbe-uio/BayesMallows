@@ -171,9 +171,10 @@
 #'   the \code{rankings} matrix, if provided. Defaults to \code{"augment"}, which
 #'   means that missing values are automatically filled in using the Bayesian
 #'   data augmentation scheme described in \insertCite{vitelli2018;textual}{BayesMallows}.
-#'   The other option for this argument is \code{"fail"}, which means that an error
-#'   message is printed and the algorithm stops, if there are \code{NA}s in
-#'   \code{rankings}.
+#'   The other options for this argument are \code{"fail"}, which means that an error
+#'   message is printed and the algorithm stops if there are \code{NA}s in
+#'   \code{rankings}, and \code{"omit"} which simply deletes rows with \code{NA}s
+#'   in them.
 #'
 #' @param constraints Optional constraint set returned from
 #'   \code{\link{generate_constraints}}. Defaults to \code{NULL}, which means
@@ -240,9 +241,15 @@ compute_mallows <- function(rankings = NULL,
   if(!is.null(seed)) set.seed(seed)
 
   # Check if there are NAs in rankings, if it is provided
-  if(!is.null(rankings) && na_action == "fail"){
-    if(any(is.na(rankings))){
+  if(!is.null(rankings)){
+    if(na_action == "fail" && any(is.na(rankings))){
       stop("rankings matrix contains NA values")
+    }
+
+    if(na_action == "omit" && any(is.na(rankings))){
+      keeps <- apply(rankings, 1, function(x) !any(is.na(x)))
+      print(paste("Omitting", sum(keeps), "rows from rankings due to NA values"))
+      rankings <- rankings[keeps, , drop = FALSE]
     }
   }
 

@@ -182,9 +182,10 @@ number of items or assessors.}
 the \code{rankings} matrix, if provided. Defaults to \code{"augment"}, which
 means that missing values are automatically filled in using the Bayesian
 data augmentation scheme described in \insertCite{vitelli2018;textual}{BayesMallows}.
-The other option for this argument is \code{"fail"}, which means that an error
-message is printed and the algorithm stops, if there are \code{NA}s in
-\code{rankings}.}
+The other options for this argument are \code{"fail"}, which means that an error
+message is printed and the algorithm stops if there are \code{NA}s in
+\code{rankings}, and \code{"omit"} which simply deletes rows with \code{NA}s
+in them.}
 
 \item{constraints}{Optional constraint set returned from
 \code{\link{generate_constraints}}. Defaults to \code{NULL}, which means
