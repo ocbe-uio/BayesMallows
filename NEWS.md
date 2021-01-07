@@ -1,3 +1,8 @@
+# BayesMallows 0.5.0.9002
+
+* Options for dealing with missing values added, and documentation now states how missing values are dealt with.
+* Function rank_freq_distr added, for computing the frequency distribution of ranking patterns.
+
 # BayesMallows 0.5.0.9001
 
 * Function rank_distance added, for computing the distance between rankings.
