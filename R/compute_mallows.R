@@ -49,7 +49,8 @@
 #'   \code{rankings} is multiplied by 1. If provided, \code{obs_freq} must have
 #'   the same number of elements as there are rows in \code{rankings}, and
 #'   \code{rankings} cannot be \code{NULL}. See \code{\link{obs_freq}} for
-#'   more information.
+#'   more information and \code{\link{rank_freq_distr}} for a convenience function
+#'   for computing it.
 #'
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},

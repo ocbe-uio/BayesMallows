@@ -42,9 +42,11 @@ rank_distance(c(8, 7, 1, 2, 6, 5, 3, 4), c(1, 2, 8, 7, 3, 4, 6, 5), "footrule")
 rank_distance(c(1, 6, 2, 5, 3, 4), c(4, 3, 5, 2, 6, 1), "spearman")
 
 # Difference between a metric and a vector
-data0 <- sample_mallows(rho0=1:10,alpha=20,n_samples=1000)
+# We set the burn-in and thinning too low for the example to run fast
+data0 <- sample_mallows(rho0 = 1:10, alpha = 20, n_samples = 1000,
+                        burnin = 10, thinning = 1)
 
-rank_distance(rankings=data0,rho=1:10,metric="kendall")
+rank_distance(rankings = data0, rho = 1:10, metric = "kendall")
 }
 \references{
 \insertAllCited
