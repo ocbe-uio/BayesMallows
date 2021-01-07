@@ -4,6 +4,13 @@ library(purrr)
 context("Testing compute_mallows")
 
 test_that("miscellaneous input validation", {
+  namat <- potato_visual
+  namat[c(1,2, 3), c(7, 9)] <- NA_real_
+  expect_error(compute_mallows(rankings = namat, na_action = "fail"))
+  expect_output(compute_mallows(rankings = namat, nmc = 2, na_action = "omit"),
+                "Omitting 9 rows from rankings due to NA values")
+  expect_s3_class(compute_mallows(rankings = namat, na_action = "augment", nmc = 3), "BayesMallows")
+  expect_s3_class(compute_mallows(rankings = namat, nmc = 3), "BayesMallows")
   expect_error(compute_mallows(nmc = 1000, alpha_prop_sd = 1))
   expect_error(compute_mallows(rankings = potato_visual, nmc = 100, alpha_jump = 102))
   expect_error(compute_mallows(rankings = potato_visual, lambda = 0))
