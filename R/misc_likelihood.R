@@ -11,7 +11,7 @@
 #/' @return The log-likelihood value corresponding to one or more observed rankings under the Mallows rank model with distance specified by the \code{metric} argument.
 #/'
 
-Log_lik_DB <- function(rho,alpha,metric,rankings,obs_freq){
+log_lik_db <- function(rho,alpha,metric,rankings,obs_freq){
 
   N <- sum(obs_freq)
   n_items <- ncol(rankings)
@@ -55,14 +55,14 @@ Log_lik_DB <- function(rho,alpha,metric,rankings,obs_freq){
 #/' @return The log-likelihood value corresponding to one or more observed rankings under the Mallows mixture model with distance specified by the \code{metric} argument.
 #/'
 
-Log_lik_DB_MIX <- function(rho,alpha,weights,metric,rankings,obs_freq){
+log_lik_db_mix <- function(rho,alpha,weights,metric,rankings,obs_freq){
 
   L <- length(obs_freq)
   G <- length(weights)
   temp <- matrix(NA,nrow=G,ncol=L)
   for(l in 1:L){
     for(g in 1:G){
-      temp[g,l] <- exp(Log_lik_DB(rho=rho[g,],alpha=alpha[g],metric=metric,rankings=rankings[l,,drop=FALSE],obs_freq=obs_freq[l]))
+      temp[g,l] <- exp(log_lik_db(rho=rho[g,],alpha=alpha[g],metric=metric,rankings=rankings[l,,drop=FALSE],obs_freq=obs_freq[l]))
     }
   }
   log_lik <- sum(log(weights%*%temp))

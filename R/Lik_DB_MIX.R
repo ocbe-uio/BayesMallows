@@ -28,9 +28,9 @@
 #'   distance specified by the \code{metric} argument.
 #' @export
 #'
-#' @example /inst/examples/Lik_DB_MIX_example.R
+#' @example /inst/examples/lik_db_mix_example.R
 #'
-Lik_DB_MIX <- function(rho, alpha, weights, metric,
+lik_db_mix <- function(rho, alpha, weights, metric,
                        rankings, obs_freq = NULL, log = FALSE){
 
   if(!is.matrix(rankings)){
@@ -52,9 +52,9 @@ Lik_DB_MIX <- function(rho, alpha, weights, metric,
   }
 
   if(log){
-    out <- Log_lik_DB_MIX(rho=rho,alpha=alpha,weights=weights,metric=metric,rankings=rankings,obs_freq=obs_freq)
+    out <- log_lik_db_mix(rho=rho,alpha=alpha,weights=weights,metric=metric,rankings=rankings,obs_freq=obs_freq)
   }else{
-    out <- exp(Log_lik_DB_MIX(rho=rho,alpha=alpha,weights=weights,metric=metric,rankings=rankings,obs_freq=obs_freq))
+    out <- exp(log_lik_db_mix(rho=rho,alpha=alpha,weights=weights,metric=metric,rankings=rankings,obs_freq=obs_freq))
   }
   return(out)
 }

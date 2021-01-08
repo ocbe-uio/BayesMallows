@@ -1,4 +1,4 @@
-test_that("Lik_DB_MIX works", {
+test_that("lik_db_mix works", {
   set.seed(1)
   n_items <- 5
   mydata <- sample_mallows(
@@ -9,7 +9,7 @@ test_that("Lik_DB_MIX works", {
 
   # Compute the likelihood and log-likelihood values under the true model...
   expect_equal(
-    sprintf("%.3e", Lik_DB_MIX(
+    sprintf("%.3e", lik_db_mix(
     rho = rbind(1:n_items,1:n_items),
     alpha = c(2,2),
     weights = c(0.5,0.5),
@@ -17,7 +17,7 @@ test_that("Lik_DB_MIX works", {
     rankings = mydata
   )), "1.434e-74")
 
-  expect_equal(round(Lik_DB_MIX(
+  expect_equal(round(lik_db_mix(
     rho = rbind(1:n_items, 1:n_items),
     alpha = c(2, 2),
     weights = c(0.5, 0.5),
@@ -29,7 +29,7 @@ test_that("Lik_DB_MIX works", {
   # or equivalently, by using the frequency distribution
   freq_distr <- rank_freq_distr(mydata)
   expect_equal(
-    sprintf("%.3e", Lik_DB_MIX(
+    sprintf("%.3e", lik_db_mix(
     rho = rbind(1:n_items,1:n_items),
     alpha = c(2,2),
     weights = c(0.5, 0.5),
@@ -38,7 +38,7 @@ test_that("Lik_DB_MIX works", {
     obs_freq = freq_distr[,n_items+1]
   )), "1.434e-74")
 
-  expect_equal(round(Lik_DB_MIX(
+  expect_equal(round(lik_db_mix(
     rho = rbind(1:n_items, 1:n_items),
     alpha = c(2, 2),
     weights=c(0.5, 0.5),
@@ -49,7 +49,7 @@ test_that("Lik_DB_MIX works", {
   ), 4), -170.0306)
 
   expect_error(
-    Lik_DB_MIX(
+    lik_db_mix(
       rho = rbind(1:n_items,1:n_items),
       alpha = c(2,2),
       weights = c(0.5,0.5),

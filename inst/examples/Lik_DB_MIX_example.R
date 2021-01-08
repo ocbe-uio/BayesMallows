@@ -8,7 +8,7 @@ mydata <- sample_mallows(
   metric="kendall")
 
 # Compute the likelihood and log-likelihood values under the true model...
-Lik_DB_MIX(
+lik_db_mix(
   rho = rbind(1:n_items,1:n_items),
   alpha = c(2,2),
   weights = c(0.5,0.5),
@@ -16,7 +16,7 @@ Lik_DB_MIX(
   rankings = mydata
   )
 
-Lik_DB_MIX(
+lik_db_mix(
   rho = rbind(1:n_items, 1:n_items),
   alpha = c(2, 2),
   weights = c(0.5, 0.5),
@@ -27,7 +27,7 @@ Lik_DB_MIX(
 
 # or equivalently, by using the frequency distribution
 freq_distr <- rank_freq_distr(mydata)
-Lik_DB_MIX(
+lik_db_mix(
   rho = rbind(1:n_items,1:n_items),
   alpha = c(2,2),
   weights = c(0.5, 0.5),
@@ -35,7 +35,7 @@ Lik_DB_MIX(
   rankings = freq_distr[, 1:n_items],
   obs_freq = freq_distr[,n_items+1]
   )
-Lik_DB_MIX(
+lik_db_mix(
   rho = rbind(1:n_items, 1:n_items),
   alpha = c(2, 2),
   weights=c(0.5, 0.5),
