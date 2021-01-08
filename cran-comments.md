@@ -1,8 +1,8 @@
 ## Resubmission Note
-This is a package update, which adds a feature to the compute_consensus function. Based on feedback from a recent submission, the link http://jmlr.org/papers/v18/15-481.html has been changed to https://jmlr.org/papers/v18/15-481.html throughout the packagee.
+This is a package update, which adds a large number of new features.
 
 ## Test Environments
-* local OS X install, R 4.0.2
+* local OS X install, R 4.0.3
 * windows, win-devel
 * Linux on Travis CI.
 
