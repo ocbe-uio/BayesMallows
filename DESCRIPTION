@@ -3,7 +3,7 @@ Type: Package
 Title: Bayesian Preference Learning with the Mallows Rank Model
 Version: 1.0.0
 Authors@R: c(person("Oystein", "Sorensen", 
-                    email = "oystein.sorensen@psykologi.uio.no", 
+                    email = "oystein.sorensen.1985@gmail.com", 
                     role = c("aut", "cre"),
                     comment = c(ORCID = "0000-0003-0724-3542")),
             person("Valeria", "Vitelli",

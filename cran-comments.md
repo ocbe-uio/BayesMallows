@@ -3,12 +3,12 @@ This is a package update, which adds a large number of new features.
 
 ## Test Environments
 * local OS X install, R 4.0.3
-* windows, win-devel
+* windows, win-devel, release, and oldrelease.
 * Linux on Travis CI.
 
 ## R CMD CHECK results
 
-1 NOTE, 0 WARNINGs, 0 ERRORs.
+0 NOTE, 0 WARNINGs, 0 ERRORs.
 
 The NOTE was:
 
