@@ -5,13 +5,13 @@ test_that("lik_db_mix works", {
     n_samples = 100,
     rho0 = 1:n_items,
     alpha0 = 10,
-    metric="kendall")
+    metric = "kendall")
 
   # Compute the likelihood and log-likelihood values under the true model...
   expect_equal(
     sprintf("%.3e", lik_db_mix(
     rho = rbind(1:n_items,1:n_items),
-    alpha = c(2,2),
+    alpha = c(2 * n_items, 2 * n_items),
     weights = c(0.5,0.5),
     metric = "kendall",
     rankings = mydata
@@ -19,7 +19,7 @@ test_that("lik_db_mix works", {
 
   expect_equal(round(lik_db_mix(
     rho = rbind(1:n_items, 1:n_items),
-    alpha = c(2, 2),
+    alpha = c(2 * n_items, 2 * n_items),
     weights = c(0.5, 0.5),
     metric = "kendall",
     rankings = mydata,
@@ -31,7 +31,7 @@ test_that("lik_db_mix works", {
   expect_equal(
     sprintf("%.3e", lik_db_mix(
     rho = rbind(1:n_items,1:n_items),
-    alpha = c(2,2),
+    alpha = c(2 * n_items, 2 * n_items),
     weights = c(0.5, 0.5),
     metric = "kendall",
     rankings = freq_distr[, 1:n_items],
@@ -40,7 +40,7 @@ test_that("lik_db_mix works", {
 
   expect_equal(round(lik_db_mix(
     rho = rbind(1:n_items, 1:n_items),
-    alpha = c(2, 2),
+    alpha = c(2 * n_items, 2 * n_items),
     weights=c(0.5, 0.5),
     metric = "kendall",
     rankings = freq_distr[, 1:n_items],
@@ -51,7 +51,7 @@ test_that("lik_db_mix works", {
   expect_error(
     lik_db_mix(
       rho = rbind(1:n_items,1:n_items),
-      alpha = c(2,2),
+      alpha = c(2 * n_items, 2 * n_items),
       weights = c(0.5,0.5),
       metric = "kendall",
       rankings = mydata,

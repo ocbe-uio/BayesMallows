@@ -39,7 +39,12 @@ expected_dist <- function(alpha,n_items,metric){
       }
 
 
-      out <- exp(log_expected_dist(alpha=alpha*n_items,n_items=n_items,cardinalities=card,metric=metric))
+      out <- exp(
+        log_expected_dist(
+          alpha = alpha * n_items,
+          n_items = n_items,
+          cardinalities = card,
+          metric = metric))
     }
   }
   return(out)
