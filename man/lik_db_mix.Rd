@@ -56,7 +56,7 @@ mydata <- sample_mallows(
 # Compute the likelihood and log-likelihood values under the true model...
 lik_db_mix(
   rho = rbind(1:n_items,1:n_items),
-  alpha = c(2,2),
+  alpha = c(10, 10),
   weights = c(0.5,0.5),
   metric = "kendall",
   rankings = mydata
@@ -64,7 +64,7 @@ lik_db_mix(
 
 lik_db_mix(
   rho = rbind(1:n_items, 1:n_items),
-  alpha = c(2, 2),
+  alpha = c(10, 10),
   weights = c(0.5, 0.5),
   metric = "kendall",
   rankings = mydata,
@@ -75,15 +75,16 @@ lik_db_mix(
 freq_distr <- rank_freq_distr(mydata)
 lik_db_mix(
   rho = rbind(1:n_items,1:n_items),
-  alpha = c(2,2),
+  alpha = c(10, 10),
   weights = c(0.5, 0.5),
   metric = "kendall",
   rankings = freq_distr[, 1:n_items],
   obs_freq = freq_distr[,n_items+1]
   )
+
 lik_db_mix(
   rho = rbind(1:n_items, 1:n_items),
-  alpha = c(2, 2),
+  alpha = c(10, 10),
   weights=c(0.5, 0.5),
   metric = "kendall",
   rankings = freq_distr[, 1:n_items],
