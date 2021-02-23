@@ -51,10 +51,27 @@ lik_db_mix <- function(rho, alpha, weights, metric,
     obs_freq <- rep(1, nrow(rankings))
   }
 
+  # Fix to get log likelihood on the right scale
+  n_items <- ncol(rankings)
+  alpha <- alpha / n_items
+
   if(log){
-    out <- log_lik_db_mix(rho=rho,alpha=alpha,weights=weights,metric=metric,rankings=rankings,obs_freq=obs_freq)
-  }else{
-    out <- exp(log_lik_db_mix(rho=rho,alpha=alpha,weights=weights,metric=metric,rankings=rankings,obs_freq=obs_freq))
+    out <- log_lik_db_mix(
+      rho = rho,
+      alpha =alpha,
+      weights = weights,
+      metric = metric,
+      rankings = rankings,
+      obs_freq = obs_freq)
+  } else {
+    out <- exp(
+      log_lik_db_mix(
+        rho = rho,
+        alpha = alpha,
+        weights = weights,
+        metric = metric,
+        rankings = rankings,
+        obs_freq = obs_freq))
   }
   return(out)
 }

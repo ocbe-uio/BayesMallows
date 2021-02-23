@@ -16,7 +16,10 @@ expected_dist <- function(alpha,n_items,metric){
     stop("Number of items must be a positive integer")
   }
 
-  if(alpha<0){
+  # Scale alpha to parametrization used
+  alpha <- alpha / n_items
+
+  if(alpha < 0){
     stop("alpha must be a non-negative value")
   }else{
     if(metric=="kendall"){
@@ -39,7 +42,12 @@ expected_dist <- function(alpha,n_items,metric){
       }
 
 
-      out <- exp(log_expected_dist(alpha=alpha*n_items,n_items=n_items,cardinalities=card,metric=metric))
+      out <- exp(
+        log_expected_dist(
+          alpha = alpha * n_items,
+          n_items = n_items,
+          cardinalities = card,
+          metric = metric))
     }
   }
   return(out)
