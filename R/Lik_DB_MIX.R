@@ -28,7 +28,7 @@
 #'   distance specified by the \code{metric} argument.
 #' @export
 #'
-#' @example /inst/examples/lik_db_mix_example.R
+#' @example inst/examples/lik_db_mix_example.R
 #'
 lik_db_mix <- function(rho, alpha, weights, metric,
                        rankings, obs_freq = NULL, log = FALSE){
