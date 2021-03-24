@@ -1,6 +1,3 @@
-source("leap_and_shift_probs.R")
-source("get_mallows_loglik.R")
-
 metropolis_hastings_rho <- function(alpha, n_items, rankings, metric, rho, leap_size){
 
   # @description Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
@@ -28,9 +25,9 @@ metropolis_hastings_rho <- function(alpha, n_items, rankings, metric, rho, leap_
   backwards_prob = kernel$backwards_prob #rho|rho_prime
 
   # evaluate the log-likelihood with current rankings
-  mallows_loglik_curr =  get_mallows_loglik(alpha = alpha, rho = rho, n = n_items, rankings = rankings, metric = metric)
+  mallows_loglik_curr =  get_mallows_loglik(alpha = alpha, rho = rho, n_items = n_items, rankings = rankings, metric = metric)
   print(mallows_loglik_curr)
-  mallows_loglik_prop = get_mallows_loglik(alpha = alpha, rho = rho_prime, n = n_items, rankings = rankings, metric = metric)
+  mallows_loglik_prop = get_mallows_loglik(alpha = alpha, rho = rho_prime, n_items = n_items, rankings = rankings, metric = metric)
   print(mallows_loglik_prop)
 
   # calculate acceptance probability

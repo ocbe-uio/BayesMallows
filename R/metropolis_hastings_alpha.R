@@ -1,5 +1,4 @@
-source("get_mallows_loglik.R")
-
+#' @importFrom stats dexp rlnorm runif
 metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, logz_estimate){
 
   # @decscription Function to perform Metropolis-Hastings for new alpha under the Mallows model
@@ -24,16 +23,16 @@ metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, log
   # log x ~ N(mu, sigma^2)
   # in C, this is written as
   # double alpha_proposal = std::exp(arma::randn<double>() * alpha_prop_sd + std::log(alpha_old));.
-  exp_alpha_prime = rlnorm(1, mean = alpha, sd = 0.15) # 1
+  exp_alpha_prime = rlnorm(1, meanlog = alpha, sdlog = 0.15) # 1
   alpha_prime = log(exp_alpha_prime)
 
   # evaluate the log-likelihood with current rankings
-  mallows_loglik_prop = get_mallows_loglik(alpha = (alpha_prime - alpha), rho = rho, n = n_items, rankings = rankings,
+  mallows_loglik_prop = get_mallows_loglik(alpha = (alpha_prime - alpha), rho = rho, n_items = n_items, rankings = rankings,
                                            metric = metric)
 
   # evaluate the log estimate of the partition function for a particular value of alpha
-  logz_alpha = BayesMallows:::get_partition_function(n_items = n_items, alpha = alpha, logz_estimate = logz_estimate, metric = metric)
-  logz_alpha_prime = BayesMallows:::get_partition_function(n_items = n_items, alpha = alpha_prime, logz_estimate = logz_estimate, metric = metric)
+  logz_alpha = get_partition_function(n_items = n_items, alpha = alpha, logz_estimate = logz_estimate, metric = metric)
+  logz_alpha_prime = get_partition_function(n_items = n_items, alpha = alpha_prime, logz_estimate = logz_estimate, metric = metric)
 
 
   n_users = length(rankings)/n_items

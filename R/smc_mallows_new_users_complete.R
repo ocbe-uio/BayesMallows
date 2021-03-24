@@ -1,32 +1,4 @@
-##############################################################################
-#SMC-Mallows using New Users with Complete Rankings as Observed Data
-##############################################################################
-
-require(BayesMallows)
-require(tibble)
-require(Rcpp)
-require(ggplot2)
-require(plotrix)
-require(purrr)
-require(crayon)
-require(utf8)
-require(fields)
-require(tidyr)
-require(dplyr)
-require(gridExtra)
-require(prodlim)
-
-source("leap_and_shift_probs.R")
-source("get_mallows_loglik.R")
-source("metropolis_hastings_rho.R")
-source("metropolis_hastings_alpha.R")
-source("post_processing_functions.R")
-
-
-#################################################################################################
-############################### SCRIPT ##########################################################
-#################################################################################################
-
+#' @importFrom stats rexp
 smc_mallows_new_users_complete<- function(R_obs, n_items, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, num_new_obs){
 
   # @description Function to perform resample-move SMC algorithm where we receive new users with complete rankings at each time step
@@ -140,5 +112,3 @@ smc_mallows_new_users_complete<- function(R_obs, n_items, metric, leap_size, N, 
   smc_list <- list("rho_samples" = rho_samples, "alpha_samples" = alpha_samples)
   return(smc_list)
 }
-
-
