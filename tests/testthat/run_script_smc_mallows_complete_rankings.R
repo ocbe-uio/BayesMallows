@@ -1,31 +1,3 @@
-# running script to assess results
-
-require(BayesMallows)
-require(PerMallows)
-require(dplyr)
-require(tibble)
-require(Rcpp)
-require(ggplot2)
-require(plotrix)
-require(purrr)
-require(crayon)
-require(utf8)
-require(fields)
-require(tidyr)
-require(dplyr)
-require(gridExtra)
-require(nimble)
-######################
-## Source Functions
-######################
-
-source("get_mallows_loglik.R")
-source("metropolis_hastings_rho.R")
-source("leap_and_shift_probs.R")
-source("metropolis_hastings_alpha.R")
-source("smc_mallows_new_users_complete.R")
-source("post_processing_functions.R")
-
 #########################
 # Generate Dataset
 #########################
@@ -56,7 +28,7 @@ logz_estimate <- estimate_partition_function(method = "importance_sampling",
 ######################################
 nmc = 10000
 burnin=5000
-model_fit <- compute_mallows(rankings = data, nmc = nmc, metric = metric, leap_size =leap_size, 
+model_fit <- compute_mallows(rankings = data, nmc = nmc, metric = metric, leap_size =leap_size,
                              alpha_prop_sd = 0.15, logz_estimate = logz_estimate)
 
 model_fit$burnin = burnin
@@ -74,8 +46,8 @@ plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes(x = al
   ggplot2::xlab(expression(alpha)) +
   scale_x_continuous(limits = c(1.3, 2.1)) +
   ggplot2::ylab("Posterior density") +
-  ggplot2::ggtitle(label = "BayesMallows") + 
-  theme(plot.title = element_text(hjust = 0.5)) 
+  ggplot2::ggtitle(label = "BayesMallows") +
+  theme(plot.title = element_text(hjust = 0.5))
 print(plot_posterior_alpha)
 
 # We can also compute the CP consensus posterior ranking
@@ -105,8 +77,8 @@ Time = dim(data)[1]/num_new_obs
 N = 100
 
 test =  smc_mallows_new_users_complete(R_obs = data, n_items = n_items, metric = metric,
-                                       leap_size = leap_size, N = N, Time = Time, 
-                                       logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times, 
+                                       leap_size = leap_size, N = N, Time = Time,
+                                       logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
                                        num_new_obs = num_new_obs)
 
 ###############################
@@ -132,8 +104,8 @@ plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes(x = al
   ggplot2::xlab(expression(alpha)) +
   scale_x_continuous(limits = c(1.3, 2.1)) +
   ggplot2::ylab("Posterior density") +
-  ggplot2::ggtitle(label = "Implemented SMC scheme") + 
-  theme(plot.title = element_text(hjust = 0.5)) 
+  ggplot2::ggtitle(label = "Implemented SMC scheme") +
+  theme(plot.title = element_text(hjust = 0.5))
 print(plot_posterior_alpha)
 
 # posterior confidence intervals
