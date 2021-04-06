@@ -1,3 +1,5 @@
+# BayesMallows (development version)
+
 # BayesMallows 1.0.1
 
 * Fixes a bug in lik_db_mix and expected_dist, in which the scaling parameter used a different parametrization than the rest of the package. All functions in the package now use consistent parametrization of the Mallows model, as stated in the vignette.
