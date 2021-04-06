@@ -14,7 +14,7 @@ smc_processing<-function(output){
   cnames   <- c(paste(cletters, cindexes, sep=" "))
   colnames(df) = cnames
 
-  new_df = gather(df, key = "item", value = "value")
+  new_df = tidyr::gather(df, key = "item", value = "value")
   #new_df = df %>% gather("item", "value")
   return(new_df)
 
@@ -29,12 +29,12 @@ plot_rho_trace <- function(output, nmc){
   df = data.frame(data = cbind(iteration,output))
 
   # Naming the columns as items
-  cletters <- rep(c("Item"), times=n_items)
+  cletters <- rep(c("Item"), times=n_items) # ASK: n_items is out of scope: gather from other objects or add as argument?
   cindexes <- (c(1:n_items))
   cnames   <- c("iteration", paste(cletters, cindexes, sep=" "))
   colnames(df) = cnames
 
-  new_df = gather(df, key = "item", value = "value", -iteration)
+  new_df = tidyr::gather(df, key = "item", value = "value", -iteration)
   return(new_df)
 
 }
@@ -60,7 +60,7 @@ heatPlot_fixed <-function(mat,t_rank){
     }
 
   par(mfrow=c(1,1))
-  image.plot(mat,col=tim.colors(64*10),axes=F, cex.lab=1.5, zlim=range(0,1),
+  fields::image.plot(mat,col=fields::tim.colors(64*10),axes=F, cex.lab=1.5, zlim=range(0,1),
              axis.args = list(at = seq(0,1,0.1), labels = seq(0,1,0.1), cex.axis =1.2),
              xlab = "True Consensus Ranking", ylab = "Rank")#, title = "Heat plot of the posterior probabilties for rho")
   # mtext for changing the x, y labels and titles
@@ -82,7 +82,7 @@ heatPlot2 <-function(mat,t_rank){
     }
 
   par(mfrow=c(1,1))
-  image.plot(mat,col=tim.colors(64*10),axes=F, cex.lab=1.5, zlim=range(0,1),
+  fields::image.plot(mat,col=fields::tim.colors(64*10),axes=F, cex.lab=1.5, zlim=range(0,1),
              axis.args = list(at = seq(0,1,0.1), labels = seq(0,1,0.1), cex.axis =1.2),
              xlab = "Items", ylab = "Rank")#, title = "Heat plot of the posterior probabilties for R_tilde")
   # mtext for changing the x, y labels and titles
@@ -418,7 +418,7 @@ compute_rho_consensus = function(output, nmc, burnin, C, type){
   n_items = dim(output)[2]
   smc_plot = smc_processing(output = output)
 
-  iteration = array(rep((1:N),n_items))
+  iteration = array(rep((1:N),n_items)) # ASK: what is N? It is out of scope. Gather from other objects or add as argument?
   smc_plot = data.frame(data = cbind(iteration,smc_plot))
   colnames(smc_plot) = c("iteration", "item", "value")
 
@@ -453,7 +453,7 @@ plot_alpha_posterior = function(output, nmc, burnin){
     ggplot2::xlab(expression(alpha)) +
     ggplot2::ylab("Posterior density") +
     ggplot2::ggtitle(label = "Implemented SMC scheme") +
-    theme(plot.title = element_text(hjust = 0.5))
+    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
   print(plot_posterior_alpha)
   #return(alpha_samples_table)
