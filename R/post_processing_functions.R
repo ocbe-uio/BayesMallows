@@ -2,6 +2,8 @@
 
 # Analysis
 
+#' @title SMC Processing
+#' @param output output
 smc_processing<-function(output){
 
   df = data.frame(data = output)
@@ -18,7 +20,9 @@ smc_processing<-function(output){
 
 }
 
-
+#' @title Plot rho trace
+#' @inheritParams smc_processing
+#' @param nmc nmc
 plot_rho_trace <- function(output, nmc){
 
   iteration = array(1:nmc)
@@ -35,10 +39,6 @@ plot_rho_trace <- function(output, nmc){
 
 }
 
-
-
-
-# Function that computes matrix of posterior marginal probabilities for each item
 heatMat<-function(mcmcOutput,burnin,t_rank){
   n<-dim(mcmcOutput)[2]
   lim1<-burnin:dim(mcmcOutput)[1]
@@ -236,20 +236,18 @@ compute_posterior_intervals_edited <- function(model_fit, burnin = model_fit$bur
 #' @param burnin A numeric value specifying the number of iterations
 #' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
 #' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
-#'
-
-# compute_consensus_edited <- function(model_fit, type, burnin){
-
-#   if(type == "CP"){
-#     .compute_cp_consensus(model_fit, burnin = burnin)
-#   } else if(type == "MAP"){
-#     .compute_map_consensus(model_fit, burnin = burnin)
-#   }
-
-
-# }
+compute_consensus_edited <- function(model_fit, type, burnin){
+  if(type == "CP"){
+    stop("Not yet implemented")
+    # .compute_cp_consensus(model_fit, burnin = burnin)
+  } else if(type == "MAP"){
+    stop("Not yet implemented")
+    # .compute_map_consensus(model_fit, burnin = burnin)
+  }
+}
 
 # .compute_cp_consensus <- function(model_fit, burnin){
+  # FIXME: this function already exists on compute_consensus.R. Add S3 method?
 
 #   #stopifnot(class(model_fit) == "BayesMallows") # commented out
 
@@ -313,6 +311,7 @@ compute_posterior_intervals_edited <- function(model_fit, burnin = model_fit$bur
 
 # Internal function for finding CP consensus.
 # find_cpc <- function(group_df){
+  # FIXME: this function already exists on compute_consensus.R. Add S3 method?
 #   # Declare the result dataframe before adding rows to it
 #   result <- dplyr::tibble(
 #     cluster = character(),
@@ -345,6 +344,7 @@ compute_posterior_intervals_edited <- function(model_fit, burnin = model_fit$bur
 # }
 
 # .compute_map_consensus <- function(model_fit, burnin = model_fit$burnin){
+  # FIXME: this function already exists on compute_consensus.R. Add S3 method?
 
 #   if(is.null(burnin)){
 #     stop("Please specify the burnin.")
@@ -390,78 +390,87 @@ compute_posterior_intervals_edited <- function(model_fit, burnin = model_fit$bur
 
 # }
 
-# posterior confidence intervals for rho
-# compute_posterior_intervals_rho = function(output, nmc, burnin){
+#' @title Compute Posterior Intervals Rho
+#' @description posterior confidence intervals for rho
+#' @inheritParams plot_rho_trace
+#' @param burnin burn-in
+compute_posterior_intervals_rho = function(output, nmc, burnin){
 
-#   smc_plot = smc_processing(output = output)
-#   smc_plot$n_clusters = 1
-#   smc_plot$cluster = "Cluster 1"
+  smc_plot = smc_processing(output = output)
+  smc_plot$n_clusters = 1
+  smc_plot$cluster = "Cluster 1"
 
-#   rho_posterior_interval = compute_posterior_intervals_edited(model_fit = smc_plot, burnin = burnin,
-#                                                               parameter = "rho", level = 0.95, decimals = 2)
+  rho_posterior_interval = compute_posterior_intervals_edited(model_fit = smc_plot, burnin = burnin,
+                                                              parameter = "rho", level = 0.95, decimals = 2)
 
-#   print(rho_posterior_interval)
-#   return(rho_posterior_interval)
+  print(rho_posterior_interval)
+  return(rho_posterior_interval)
 
-# }
+}
 
-# MAP AND CP consensus ranking estimates
-# compute_rho_consensus = function(output, nmc, burnin, C, type){
+#' @title Compute rho consensus
+#' @description MAP AND CP consensus ranking estimates
+#' @inheritParams compute_posterior_intervals_rho
+#' @param C C
+#' @param type type
+compute_rho_consensus = function(output, nmc, burnin, C, type){
 
-#   n_items = dim(output)[2]
-#   smc_plot = smc_processing(output = output)
+  n_items = dim(output)[2]
+  smc_plot = smc_processing(output = output)
 
-#   iteration = array(rep((1:N),n_items))
-#   smc_plot = data.frame(data = cbind(iteration,smc_plot))
-#   colnames(smc_plot) = c("iteration", "item", "value")
+  iteration = array(rep((1:N),n_items))
+  smc_plot = data.frame(data = cbind(iteration,smc_plot))
+  colnames(smc_plot) = c("iteration", "item", "value")
 
-#   smc_plot$n_clusters = C
-#   smc_plot$parameter = "rho"
-#   smc_plot$cluster = "cluster 1"
+  smc_plot$n_clusters = C
+  smc_plot$parameter = "rho"
+  smc_plot$cluster = "cluster 1"
 
-#   # rho estimation using cumulative probability
-#   if (type == "CP"){
-#     results = compute_consensus_edited(model_fit = smc_plot, type = "CP", burnin = burnin)
-#     print(results)
-#   }else{
-#     results = compute_consensus_edited(model_fit = smc_plot, type = "MAP", burnin = burnin)
-#     print(results)
-#   }
+  # rho estimation using cumulative probability
+  if (type == "CP"){
+    results = compute_consensus_edited(model_fit = smc_plot, type = "CP", burnin = burnin)
+    print(results)
+  }else{
+    results = compute_consensus_edited(model_fit = smc_plot, type = "MAP", burnin = burnin)
+    print(results)
+  }
 
-#   return(results)
-# }
+  return(results)
+}
 
-# posterior for alpha
-# plot_alpha_posterior = function(output, nmc, burnin){
+#' @title Plot Alpha Posterior
+#' @description posterior for alpha
+#' @inheritParams compute_posterior_intervals_rho
+plot_alpha_posterior = function(output, nmc, burnin){
 
-#   alpha_samples_table = data.frame(iteration = 1:nmc , value = output)
-#   #final_alpha_chain = alpha_mcmc_samples_all[(burnin+1):nmc,]
-#   #df_alpha_posterior = gather(final_alpha_chain, value = "value", -iteration)
-
-
-#   plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes(x = alpha_samples_table$value)) +
-#     ggplot2::geom_density() +
-#     ggplot2::xlab(expression(alpha)) +
-#     ggplot2::ylab("Posterior density") +
-#     ggplot2::ggtitle(label = "Implemented SMC scheme") +
-#     theme(plot.title = element_text(hjust = 0.5))
-
-#   print(plot_posterior_alpha)
-#   #return(alpha_samples_table)
-# }
+  alpha_samples_table = data.frame(iteration = 1:nmc , value = output)
+  #final_alpha_chain = alpha_mcmc_samples_all[(burnin+1):nmc,]
+  #df_alpha_posterior = gather(final_alpha_chain, value = "value", -iteration)
 
 
+  plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes(x = alpha_samples_table$value)) +
+    ggplot2::geom_density() +
+    ggplot2::xlab(expression(alpha)) +
+    ggplot2::ylab("Posterior density") +
+    ggplot2::ggtitle(label = "Implemented SMC scheme") +
+    theme(plot.title = element_text(hjust = 0.5))
 
-# posterior confidence intervals
-# compute_posterior_intervals_alpha = function(output, nmc, burnin){
+  print(plot_posterior_alpha)
+  #return(alpha_samples_table)
+}
 
-#   alpha_samples_table = data.frame(iteration = 1:nmc , value = output)
-#   alpha_samples_table$n_clusters = 1
-#   alpha_samples_table$cluster = "Cluster 1"
+#' @title Compute Posterior Intervals Alpha
+#' @description posterior confidence intervals
+#' @inheritParams compute_posterior_intervals_rho
+compute_posterior_intervals_alpha = function(output, nmc, burnin){
+
+  alpha_samples_table = data.frame(iteration = 1:nmc , value = output)
+  alpha_samples_table$n_clusters = 1
+  alpha_samples_table$cluster = "Cluster 1"
 
 
-#   alpha_mixture_posterior_interval = compute_posterior_intervals_edited(alpha_samples_table, burnin = burnin,
-#                                                                         parameter = "alpha", level = 0.95, decimals = 2)
-#   print(alpha_mixture_posterior_interval)
-#   return(alpha_mixture_posterior_interval)
-# }
+  alpha_mixture_posterior_interval = compute_posterior_intervals_edited(alpha_samples_table, burnin = burnin,
+                                                                        parameter = "alpha", level = 0.95, decimals = 2)
+  print(alpha_mixture_posterior_interval)
+  return(alpha_mixture_posterior_interval)
+}
