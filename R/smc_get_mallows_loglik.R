@@ -9,6 +9,7 @@
 #' @param metric Character string specifying the distance measure to use.
 #' Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
 #' \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
+#' @param rankings # TODO: describe
 #' @return Mallows log-likelihood
 #' @export
 #' @examples
