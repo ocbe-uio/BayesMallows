@@ -4,7 +4,7 @@
 #' @param leap_size Integer specifying the step size of the leap-and-shift
 #' proposal distribution.
 #' @param n_items Integer is the number of items in a ranking
-
+#' @export
 #' @return A list containing:
 #' \itemize{
 #' \item \code{rho_prime} A ranking sequence proposed consensus ranking

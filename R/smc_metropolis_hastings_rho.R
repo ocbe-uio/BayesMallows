@@ -9,6 +9,8 @@
 #' @param leap_size Integer specifying the step size of the leap-and-shift
 #' proposal distribution.
 #' @return \code{rho} or \code{rho_prime}: A ranking sequence vector to be the next value of rho in the MCMC chain
+#' @export
+
 metropolis_hastings_rho <- function(alpha, n_items, rankings, metric, rho, leap_size) {
 
 
