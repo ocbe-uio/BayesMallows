@@ -4,132 +4,140 @@
 
 #' @title SMC Processing
 #' @param output output
-smc_processing<-function(output){
-
-  df = data.frame(data = output)
+smc_processing <- function(output) {
+  df <- data.frame(data = output)
 
   # Naming the columns as items
-  cletters <- rep(c("Item"), times=n_items)
+  cletters <- rep(c("Item"), times = n_items)
   cindexes <- (c(1:n_items))
-  cnames   <- c(paste(cletters, cindexes, sep=" "))
-  colnames(df) = cnames
+  cnames <- c(paste(cletters, cindexes, sep = " "))
+  colnames(df) <- cnames
 
-  new_df = tidyr::gather(df, key = "item", value = "value")
-  #new_df = df %>% gather("item", "value")
+  new_df <- tidyr::gather(df, key = "item", value = "value")
+  # new_df = df %>% gather("item", "value")
   return(new_df)
-
 }
 
 #' @title Plot rho trace
 #' @inheritParams smc_processing
 #' @param nmc nmc
-plot_rho_trace <- function(output, nmc){
-
-  iteration = array(1:nmc)
-  df = data.frame(data = cbind(iteration,output))
+plot_rho_trace <- function(output, nmc) {
+  iteration <- array(1:nmc)
+  df <- data.frame(data = cbind(iteration, output))
 
   # Naming the columns as items
-  cletters <- rep(c("Item"), times=n_items) # ASK: n_items is out of scope: gather from other objects or add as argument?
+  cletters <- rep(c("Item"), times = n_items) # ASK: n_items is out of scope: gather from other objects or add as argument?
   cindexes <- (c(1:n_items))
-  cnames   <- c("iteration", paste(cletters, cindexes, sep=" "))
-  colnames(df) = cnames
+  cnames <- c("iteration", paste(cletters, cindexes, sep = " "))
+  colnames(df) <- cnames
 
-  new_df = tidyr::gather(df, key = "item", value = "value", -iteration)
+  new_df <- tidyr::gather(df, key = "item", value = "value", -iteration)
   return(new_df)
-
 }
 
-heatMat<-function(mcmcOutput,burnin,t_rank){
-  n<-dim(mcmcOutput)[2]
-  lim1<-burnin:dim(mcmcOutput)[1]
-  f<-matrix(nrow=n, ncol=n)
-  colnames(mcmcOutput)<-NULL
-  for(j in 1:n){
-    ind <- which(t_rank==j)
-    f[j, ] <- sapply(1:n, function(x) sum(mcmcOutput[lim1,ind] == x))
+heatMat <- function(mcmcOutput, burnin, t_rank) {
+  n <- dim(mcmcOutput)[2]
+  lim1 <- burnin:dim(mcmcOutput)[1]
+  f <- matrix(nrow = n, ncol = n)
+  colnames(mcmcOutput) <- NULL
+  for (j in 1:n) {
+    ind <- which(t_rank == j)
+    f[j, ] <- sapply(1:n, function(x) sum(mcmcOutput[lim1, ind] == x))
   }
-  f <- f/length(lim1)
+  f <- f / length(lim1)
   return(f)
 }
 
-heatPlot_fixed <-function(mat,t_rank){
-  n<-length(t_rank)
-  if(is.character(names(t_rank))){
-    items<-names(sort(t_rank))}else{
-      items<-paste("0",order(t_rank),sep="")
-    }
+heatPlot_fixed <- function(mat, t_rank) {
+  n <- length(t_rank)
+  if (is.character(names(t_rank))) {
+    items <- names(sort(t_rank))
+  } else {
+    items <- paste("0", order(t_rank), sep = "")
+  }
 
-  par(mfrow=c(1,1))
-  fields::image.plot(mat,col=fields::tim.colors(64*10),axes=F, cex.lab=1.5, zlim=range(0,1),
-             axis.args = list(at = seq(0,1,0.1), labels = seq(0,1,0.1), cex.axis =1.2),
-             xlab = "True Consensus Ranking", ylab = "Rank")#, title = "Heat plot of the posterior probabilties for rho")
+  par(mfrow = c(1, 1))
+  fields::image.plot(mat,
+    col = fields::tim.colors(64 * 10), axes = F, cex.lab = 1.5, zlim = range(0, 1),
+    axis.args = list(at = seq(0, 1, 0.1), labels = seq(0, 1, 0.1), cex.axis = 1.2),
+    xlab = "True Consensus Ranking", ylab = "Rank"
+  ) # , title = "Heat plot of the posterior probabilties for rho")
   # mtext for changing the x, y labels and titles
-  mtext(text=items, side=1, line=0.3,
-        at=seq(0,1,1/(n-1)), las=2, cex=0.6)
-  mtext(text=c(1:n), side=2, line=0.3,
-        at=seq(0,1,1/(n-1)), las=2, cex=0.6)
+  mtext(
+    text = items, side = 1, line = 0.3,
+    at = seq(0, 1, 1 / (n - 1)), las = 2, cex = 0.6
+  )
+  mtext(
+    text = c(1:n), side = 2, line = 0.3,
+    at = seq(0, 1, 1 / (n - 1)), las = 2, cex = 0.6
+  )
 
-  mtext(text="Posterior probabilties for rho", side=3, line=0.3,
-        at=, las=1, cex=1.8)
+  mtext(
+    text = "Posterior probabilties for rho", side = 3, line = 0.3,
+    at = , las = 1, cex = 1.8
+  )
 }
 
 
-heatPlot2 <-function(mat,t_rank){
-  n<-length(t_rank)
-  if(is.character(names(t_rank))){
-    items<-names(sort(t_rank))}else{
-      items<-paste("0",order(t_rank),sep="")
-    }
+heatPlot2 <- function(mat, t_rank) {
+  n <- length(t_rank)
+  if (is.character(names(t_rank))) {
+    items <- names(sort(t_rank))
+  } else {
+    items <- paste("0", order(t_rank), sep = "")
+  }
 
-  par(mfrow=c(1,1))
-  fields::image.plot(mat,col=fields::tim.colors(64*10),axes=F, cex.lab=1.5, zlim=range(0,1),
-             axis.args = list(at = seq(0,1,0.1), labels = seq(0,1,0.1), cex.axis =1.2),
-             xlab = "Items", ylab = "Rank")#, title = "Heat plot of the posterior probabilties for R_tilde")
+  par(mfrow = c(1, 1))
+  fields::image.plot(mat,
+    col = fields::tim.colors(64 * 10), axes = F, cex.lab = 1.5, zlim = range(0, 1),
+    axis.args = list(at = seq(0, 1, 0.1), labels = seq(0, 1, 0.1), cex.axis = 1.2),
+    xlab = "Items", ylab = "Rank"
+  ) # , title = "Heat plot of the posterior probabilties for R_tilde")
   # mtext for changing the x, y labels and titles
-  mtext(text=items, side=1, line=0.3,
-        at=seq(0,1,1/(n-1)), las=2, cex=0.6)
-  mtext(text=c(1:n), side=2, line=0.3,
-        at=seq(0,1,1/(n-1)), las=2, cex=0.6)
+  mtext(
+    text = items, side = 1, line = 0.3,
+    at = seq(0, 1, 1 / (n - 1)), las = 2, cex = 0.6
+  )
+  mtext(
+    text = c(1:n), side = 2, line = 0.3,
+    at = seq(0, 1, 1 / (n - 1)), las = 2, cex = 0.6
+  )
 
-  mtext(text="Posterior probabilties for R_tilde", side=3, line=0.3,
-        at=, las=1, cex=1.8)
+  mtext(
+    text = "Posterior probabilties for R_tilde", side = 3, line = 0.3,
+    at = , las = 1, cex = 1.8
+  )
 }
 
 
-plot_rho_heatplot <- function(output, nmc, burnin, n_items, rho_0){
-
-  smc_plot = smc_processing(output = output)
+plot_rho_heatplot <- function(output, nmc, burnin, n_items, rho_0) {
+  smc_plot <- smc_processing(output = output)
 
   # heatplot - there is no burnin!
-  smc_rho_matrix = matrix(smc_plot$value, ncol = n_items, nrow = nmc, byrow=FALSE)
-  smc_heatmat_rho = heatMat(mcmcOutput = smc_rho_matrix, burnin = burnin, t_rank = rho_0)
+  smc_rho_matrix <- matrix(smc_plot$value, ncol = n_items, nrow = nmc, byrow = FALSE)
+  smc_heatmat_rho <- heatMat(mcmcOutput = smc_rho_matrix, burnin = burnin, t_rank = rho_0)
 
-  smc_heatplot_full = heatPlot_fixed(mat = smc_heatmat_rho, t_rank = rho_0)
-
-
+  smc_heatplot_full <- heatPlot_fixed(mat = smc_heatmat_rho, t_rank = rho_0)
 }
 
-plot_rho_heatplot_partial <- function(output, nmc, burnin, n_items, rho_0){
-
-  smc_plot = smc_processing(output = output)
+plot_rho_heatplot_partial <- function(output, nmc, burnin, n_items, rho_0) {
+  smc_plot <- smc_processing(output = output)
 
   # heatplot - there is no burnin!
-  smc_rho_matrix = matrix(smc_plot$value, ncol = n_items, nrow = nmc, byrow=FALSE)
-  smc_heatmat_rho = heatMat(mcmcOutput = smc_rho_matrix, burnin = burnin, t_rank = rho_0)
+  smc_rho_matrix <- matrix(smc_plot$value, ncol = n_items, nrow = nmc, byrow = FALSE)
+  smc_heatmat_rho <- heatMat(mcmcOutput = smc_rho_matrix, burnin = burnin, t_rank = rho_0)
 
-  smc_heatplot_full = heatPlot_fixed(mat = smc_heatmat_rho, t_rank = rho_0)
-
-
+  smc_heatplot_full <- heatPlot_fixed(mat = smc_heatmat_rho, t_rank = rho_0)
 }
 
 
 # same as compute_posterior_intervals, but removed the bayesmallows object and some other columns
 compute_posterior_intervals_edited <- function(model_fit, burnin = model_fit$burnin,
                                                parameter = "alpha", level = 0.95,
-                                               decimals = 3L){
-  #stopifnot(class(model_fit) == "BayesMallows") # remove object
+                                               decimals = 3L) {
+  # stopifnot(class(model_fit) == "BayesMallows") # remove object
 
-  if(is.null(burnin)){
+  if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
 
@@ -138,44 +146,44 @@ compute_posterior_intervals_edited <- function(model_fit, burnin = model_fit$bur
   stopifnot(level > 0 && level < 1)
 
 
-  if(burnin!=0){
-  df <- dplyr::filter(model_fit, .data$iteration > burnin) #removed model_fit[[parameter]]
-  }else {df <- model_fit}
+  if (burnin != 0) {
+    df <- dplyr::filter(model_fit, .data$iteration > burnin) # removed model_fit[[parameter]]
+  } else {
+    df <- model_fit
+  }
 
-  if(parameter == "alpha" || parameter == "cluster_probs"){
-
+  if (parameter == "alpha" || parameter == "cluster_probs") {
     df <- dplyr::group_by(df, .data$cluster)
     df <- .compute_posterior_intervals(df, parameter, level, decimals)
-
-  } else if(parameter == "rho"){
+  } else if (parameter == "rho") {
     decimals <- 0
     df <- dplyr::group_by(df, .data$cluster, .data$item)
     df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
-
   }
 
   df <- dplyr::ungroup(df)
 
-  if(model_fit$n_clusters == 1) df <- dplyr::select(df, -.data$cluster) # commented out
+  if (model_fit$n_clusters == 1) df <- dplyr::select(df, -.data$cluster) # commented out
 
   return(df)
 }
 
 
-.compute_posterior_intervals <- function(df, parameter, level, decimals, discrete = FALSE){
+.compute_posterior_intervals <- function(df, parameter, level, decimals, discrete = FALSE) {
   dplyr::do(df, {
     format <- paste0("%.", decimals, "f")
 
     posterior_mean <- round(base::mean(.data$value), decimals)
     posterior_median <- round(stats::median(.data$value), decimals)
 
-    if(discrete) {
-
+    if (discrete) {
       df <- dplyr::group_by(.data, .data$value)
       df <- dplyr::summarise(df, n = dplyr::n())
       df <- dplyr::arrange(df, dplyr::desc(.data$n))
-      df <- dplyr::mutate(df, cumprob = cumsum(.data$n) / sum(.data$n),
-                          lagcumprob = dplyr::lag(.data$cumprob, default = 0))
+      df <- dplyr::mutate(df,
+        cumprob = cumsum(.data$n) / sum(.data$n),
+        lagcumprob = dplyr::lag(.data$cumprob, default = 0)
+      )
 
       df <- dplyr::filter(df, .data$lagcumprob <= level)
 
@@ -191,12 +199,11 @@ compute_posterior_intervals_edited <- function(model_fit, burnin = model_fit$bur
       }, values = values, breaks = breaks)
 
       hpdi <- paste(hpdi, collapse = ",")
-
     } else {
       hpdi <- HDInterval::hdi(.data$value, credMass = level, allowSplit = TRUE)
 
       hpdi[] <- sprintf(format, hpdi)
-      if(is.matrix(hpdi)){
+      if (is.matrix(hpdi)) {
         # Discontinous case
         hpdi <- paste(apply(hpdi, 1, function(x) paste0("[", x[[1]], ",", x[[2]], "]")))
       } else {
@@ -236,18 +243,18 @@ compute_posterior_intervals_edited <- function(model_fit, burnin = model_fit$bur
 #' @param burnin A numeric value specifying the number of iterations
 #' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
 #' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
-compute_consensus_edited <- function(model_fit, type, burnin){
-  if(type == "CP"){
+compute_consensus_edited <- function(model_fit, type, burnin) {
+  if (type == "CP") {
     stop("Not yet implemented")
     # .compute_cp_consensus(model_fit, burnin = burnin)
-  } else if(type == "MAP"){
+  } else if (type == "MAP") {
     stop("Not yet implemented")
     # .compute_map_consensus(model_fit, burnin = burnin)
   }
 }
 
 # .compute_cp_consensus <- function(model_fit, burnin){
-  # FIXME: this function already exists on compute_consensus.R. Add S3 method?
+# FIXME: this function already exists on compute_consensus.R. Add S3 method?
 
 #   #stopifnot(class(model_fit) == "BayesMallows") # commented out
 
@@ -311,7 +318,7 @@ compute_consensus_edited <- function(model_fit, type, burnin){
 
 # Internal function for finding CP consensus.
 # find_cpc <- function(group_df){
-  # FIXME: this function already exists on compute_consensus.R. Add S3 method?
+# FIXME: this function already exists on compute_consensus.R. Add S3 method?
 #   # Declare the result dataframe before adding rows to it
 #   result <- dplyr::tibble(
 #     cluster = character(),
@@ -344,7 +351,7 @@ compute_consensus_edited <- function(model_fit, type, burnin){
 # }
 
 # .compute_map_consensus <- function(model_fit, burnin = model_fit$burnin){
-  # FIXME: this function already exists on compute_consensus.R. Add S3 method?
+# FIXME: this function already exists on compute_consensus.R. Add S3 method?
 
 #   if(is.null(burnin)){
 #     stop("Please specify the burnin.")
@@ -394,18 +401,18 @@ compute_consensus_edited <- function(model_fit, type, burnin){
 #' @description posterior confidence intervals for rho
 #' @inheritParams plot_rho_trace
 #' @param burnin burn-in
-compute_posterior_intervals_rho = function(output, nmc, burnin){
+compute_posterior_intervals_rho <- function(output, nmc, burnin) {
+  smc_plot <- smc_processing(output = output)
+  smc_plot$n_clusters <- 1
+  smc_plot$cluster <- "Cluster 1"
 
-  smc_plot = smc_processing(output = output)
-  smc_plot$n_clusters = 1
-  smc_plot$cluster = "Cluster 1"
-
-  rho_posterior_interval = compute_posterior_intervals_edited(model_fit = smc_plot, burnin = burnin,
-                                                              parameter = "rho", level = 0.95, decimals = 2)
+  rho_posterior_interval <- compute_posterior_intervals_edited(
+    model_fit = smc_plot, burnin = burnin,
+    parameter = "rho", level = 0.95, decimals = 2
+  )
 
   print(rho_posterior_interval)
   return(rho_posterior_interval)
-
 }
 
 #' @title Compute rho consensus
@@ -413,25 +420,24 @@ compute_posterior_intervals_rho = function(output, nmc, burnin){
 #' @inheritParams compute_posterior_intervals_rho
 #' @param C C
 #' @param type type
-compute_rho_consensus = function(output, nmc, burnin, C, type){
+compute_rho_consensus <- function(output, nmc, burnin, C, type) {
+  n_items <- dim(output)[2]
+  smc_plot <- smc_processing(output = output)
 
-  n_items = dim(output)[2]
-  smc_plot = smc_processing(output = output)
+  iteration <- array(rep((1:N), n_items)) # ASK: what is N? It is out of scope. Gather from other objects or add as argument?
+  smc_plot <- data.frame(data = cbind(iteration, smc_plot))
+  colnames(smc_plot) <- c("iteration", "item", "value")
 
-  iteration = array(rep((1:N),n_items)) # ASK: what is N? It is out of scope. Gather from other objects or add as argument?
-  smc_plot = data.frame(data = cbind(iteration,smc_plot))
-  colnames(smc_plot) = c("iteration", "item", "value")
-
-  smc_plot$n_clusters = C
-  smc_plot$parameter = "rho"
-  smc_plot$cluster = "cluster 1"
+  smc_plot$n_clusters <- C
+  smc_plot$parameter <- "rho"
+  smc_plot$cluster <- "cluster 1"
 
   # rho estimation using cumulative probability
-  if (type == "CP"){
-    results = compute_consensus_edited(model_fit = smc_plot, type = "CP", burnin = burnin)
+  if (type == "CP") {
+    results <- compute_consensus_edited(model_fit = smc_plot, type = "CP", burnin = burnin)
     print(results)
-  }else{
-    results = compute_consensus_edited(model_fit = smc_plot, type = "MAP", burnin = burnin)
+  } else {
+    results <- compute_consensus_edited(model_fit = smc_plot, type = "MAP", burnin = burnin)
     print(results)
   }
 
@@ -441,11 +447,10 @@ compute_rho_consensus = function(output, nmc, burnin, C, type){
 #' @title Plot Alpha Posterior
 #' @description posterior for alpha
 #' @inheritParams compute_posterior_intervals_rho
-plot_alpha_posterior = function(output, nmc, burnin){
-
-  alpha_samples_table = data.frame(iteration = 1:nmc , value = output)
-  #final_alpha_chain = alpha_mcmc_samples_all[(burnin+1):nmc,]
-  #df_alpha_posterior = gather(final_alpha_chain, value = "value", -iteration)
+plot_alpha_posterior <- function(output, nmc, burnin) {
+  alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
+  # final_alpha_chain = alpha_mcmc_samples_all[(burnin+1):nmc,]
+  # df_alpha_posterior = gather(final_alpha_chain, value = "value", -iteration)
 
 
   plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes(x = alpha_samples_table$value)) +
@@ -456,21 +461,22 @@ plot_alpha_posterior = function(output, nmc, burnin){
     ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
   print(plot_posterior_alpha)
-  #return(alpha_samples_table)
+  # return(alpha_samples_table)
 }
 
 #' @title Compute Posterior Intervals Alpha
 #' @description posterior confidence intervals
 #' @inheritParams compute_posterior_intervals_rho
-compute_posterior_intervals_alpha = function(output, nmc, burnin){
+compute_posterior_intervals_alpha <- function(output, nmc, burnin) {
+  alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
+  alpha_samples_table$n_clusters <- 1
+  alpha_samples_table$cluster <- "Cluster 1"
 
-  alpha_samples_table = data.frame(iteration = 1:nmc , value = output)
-  alpha_samples_table$n_clusters = 1
-  alpha_samples_table$cluster = "Cluster 1"
 
-
-  alpha_mixture_posterior_interval = compute_posterior_intervals_edited(alpha_samples_table, burnin = burnin,
-                                                                        parameter = "alpha", level = 0.95, decimals = 2)
+  alpha_mixture_posterior_interval <- compute_posterior_intervals_edited(alpha_samples_table,
+    burnin = burnin,
+    parameter = "alpha", level = 0.95, decimals = 2
+  )
   print(alpha_mixture_posterior_interval)
   return(alpha_mixture_posterior_interval)
 }
