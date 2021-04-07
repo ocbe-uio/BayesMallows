@@ -1,13 +1,13 @@
 #' @title Metropolis-Hastings Rho
 #' @description Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
-#'   @param alpha Numeric value og the scale parameter
-#'   @param n_items Integer is the number of items in a ranking
-#'   @param rankings A matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
-#'   rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
-#'   can be a vector.
-#'   @param rho A ranking sequence vector
-#'   @param leap_size Integer specifying the step size of the leap-and-shift
-#'   proposal distribution.
+#' @param alpha Numeric value og the scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param rankings A matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
+#' rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
+#' can be a vector.
+#' @param rho A ranking sequence vector
+#' @param leap_size Integer specifying the step size of the leap-and-shift
+#' proposal distribution.
 #' @return \code{rho} or \code{rho_prime}: A ranking sequence vector to be the next value of rho in the MCMC chain
 metropolis_hastings_rho <- function(alpha, n_items, rankings, metric, rho, leap_size) {
 
