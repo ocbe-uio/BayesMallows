@@ -14,36 +14,37 @@
 #'   \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
 #' @return \code{alpha} or \code{alpha_prime}: Numeric value to be used as the proposal of a new alpha
 #'' @importFrom stats dexp rlnorm runif
-metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, logz_estimate){
+metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, logz_estimate) {
 
 
   # select alpha_prime from log normal distribution with some variance lambda
   # log x ~ N(mu, sigma^2)
   # in C, this is written as
   # double alpha_proposal = std::exp(arma::randn<double>() * alpha_prop_sd + std::log(alpha_old));.
-  exp_alpha_prime = rlnorm(1, meanlog = alpha, sdlog = 0.15) # 1
-  alpha_prime = log(exp_alpha_prime)
+  exp_alpha_prime <- rlnorm(1, meanlog = alpha, sdlog = 0.15) # 1
+  alpha_prime <- log(exp_alpha_prime)
 
   # evaluate the log-likelihood with current rankings
-  mallows_loglik_prop = get_mallows_loglik(alpha = (alpha_prime - alpha), rho = rho, n_items = n_items, rankings = rankings,
-                                           metric = metric)
+  mallows_loglik_prop <- get_mallows_loglik(
+    alpha = (alpha_prime - alpha), rho = rho, n_items = n_items, rankings = rankings,
+    metric = metric
+  )
 
   # evaluate the log estimate of the partition function for a particular value of alpha
-  logz_alpha = get_partition_function(n_items = n_items, alpha = alpha, logz_estimate = logz_estimate, metric = metric)
-  logz_alpha_prime = get_partition_function(n_items = n_items, alpha = alpha_prime, logz_estimate = logz_estimate, metric = metric)
+  logz_alpha <- get_partition_function(n_items = n_items, alpha = alpha, logz_estimate = logz_estimate, metric = metric)
+  logz_alpha_prime <- get_partition_function(n_items = n_items, alpha = alpha_prime, logz_estimate = logz_estimate, metric = metric)
 
 
-  n_users = length(rankings)/n_items
+  n_users <- length(rankings) / n_items
 
-  loga = n_users* (logz_alpha - logz_alpha_prime) + dexp(alpha_prime, log=TRUE) - dexp(alpha, log=TRUE) +
+  loga <- n_users * (logz_alpha - logz_alpha_prime) + dexp(alpha_prime, log = TRUE) - dexp(alpha, log = TRUE) +
     alpha_prime - alpha + mallows_loglik_prop
 
   # determine whether to accept or reject proposed rho and return now consensus ranking
-  p = runif(1, min = 0, max = 1)
-  if(log(p) <= loga){
+  p <- runif(1, min = 0, max = 1)
+  if (log(p) <= loga) {
     return(alpha_prime)
-  } else{
+  } else {
     return(alpha)
   }
-
 }
