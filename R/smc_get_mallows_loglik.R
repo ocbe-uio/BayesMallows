@@ -10,6 +10,7 @@
 #' Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
 #' \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
 #' @return Mallows log-likelihood
+#' @export
 get_mallows_loglik <- function(alpha, rho, n_items, rankings, metric) {
   sum_distance <- 0
   num_rankings <- dim(rankings)[1]
