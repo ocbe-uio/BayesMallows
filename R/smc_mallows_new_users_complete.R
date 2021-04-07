@@ -1,25 +1,23 @@
+#' @title SMC-Mallows New Users Complete
+#'  @description Function to perform resample-move SMC algorithm where we receive new users with complete rankings at each time step
+#'   @param R_obs Matrix containing the full set of observed rankings of size n_assessors by n_items
+#'   @param n_items Integer is the number of items in a ranking
+#'   @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#'   @param leap_size leap_size Integer specifying the step size of the leap-and-shift
+#'   proposal distribution
+#'   @param N Integer specifying the number of particles
+#'   @param Time Integer specifying the number of time steps in the SMC algorithm
+#'   @param logz_estimate Estimate of the partition function, computed with
+#'   \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
+#'   @param mcmc_kernel_app Interger value for the number of applications we apply the MCMC move kernel
+#'   @param num_new_obs Integer value for the number of new observations (complete rankings) for each time step
+#' @return a set of particles each containing a value of rho and alpha
 #' @importFrom stats rexp
 smc_mallows_new_users_complete<- function(R_obs, n_items, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, num_new_obs){
 
-  # @description Function to perform resample-move SMC algorithm where we receive new users with complete rankings at each time step
-
-  # INPUT:
-  #   @param R_obs Matrix containing the full set of observed rankings of size n_assessors by n_items
-  #   @param n_items Integer is the number of items in a ranking
-  #   @param metric A character string specifying the distance metric to use in the
-  #   Bayesian Mallows Model. Available options are \code{"footrule"},
-  #   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-  #   \code{"ulam"}.
-  #   @param leap_size leap_size Integer specifying the step size of the leap-and-shift
-  #   proposal distribution
-  #   @param N Integer specifying the number of particles
-  #   @param Time Integer specifying the number of time steps in the SMC algorithm
-  #   @param logz_estimate Estimate of the partition function, computed with
-  #   \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
-  #   @param mcmc_kernel_app Interger value for the number of applications we apply the MCMC move kernel
-  #   @param num_new_obs Integer value for the number of new observations (complete rankings) for each time step
-
-  # OUTPUT: a set of particles each containing a value of rho and alpha
 
   ######################
   ## Initialise Phase
