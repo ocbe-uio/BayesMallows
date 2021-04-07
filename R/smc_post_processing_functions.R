@@ -5,6 +5,7 @@
 #' @title SMC Processing
 #' @param output output
 smc_processing <- function(output) {
+  #FIXME: depends on `n_items`, which is out of scope (#68)
   df <- data.frame(data = output)
 
   # Naming the columns as items
@@ -410,7 +411,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin) {
     model_fit = smc_plot, burnin = burnin,
     parameter = "rho", level = 0.95, decimals = 2
   )
-
+  # TODO: #73 add verbose switch to suppress output, change print() to message()/cat()
   print(rho_posterior_interval)
   return(rho_posterior_interval)
 }
