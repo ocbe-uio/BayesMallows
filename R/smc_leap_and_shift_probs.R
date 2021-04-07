@@ -1,17 +1,17 @@
+#' @title Leap and Shift Probabilities
+#'  @description Determine the new Calculates transition probabilities for proposing a new rho
+#'   @param rho A ranking sequence
+#'   @param leap_size Integer specifying the step size of the leap-and-shift
+#'   proposal distribution.
+#'   @param n_items Integer is the number of items in a ranking
+
+#' @return A list containing:
+#' \itemize{
+#'   \item \code{rho_prime} A ranking sequence proposed consensus ranking
+#'   \item \code{forwards_prob} Numeric value to account for transition probability from rho to rho_prime
+#'   \item \code{backwards_prob} Numeric Value to account for the transition probability from \code{rho_prime} to \code{rho}
+#' }
 leap_and_shift_probs<- function(rho, leap_size, n_items){
-
-  # @description Determine the new Calculates transition probabilities for proposing a new rho
-
-  # INPUT:
-  #   @param rho A ranking sequence
-  #   @param leap_size Integer specifying the step size of the leap-and-shift
-  #   proposal distribution.
-  #   @param n_items Integer is the number of items in a ranking
-
-  # OUTPUT:  (List)
-  #   rho_prime A ranking sequence proposed consensus ranking
-  #   forwards probability Numeric value to account for transition probability from rho to rho_prime
-  #   backwards probability Numeric Value to account for the transition probability from rho_prime to rho
 
   # draw u uniformly from {1,...,n}
   u = sample.int(n_items, 1)
