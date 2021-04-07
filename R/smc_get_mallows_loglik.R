@@ -11,6 +11,30 @@
 #' \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
 #' @return Mallows log-likelihood
 #' @export
+#' @examples
+#' set.seed(101)
+#' rho <- c(1,2,3,4,5,6)
+#' alpha <- 2
+#' metric <- "footrule"
+#' n_items <- 6
+#' get_mallows_loglik(
+#'   alpha = alpha, rho = rho, n_items = length(rho), rankings = rho,
+#'   metric = metric
+#' )
+#'
+#' # return 0 because you are comparing the consensus ranking with itself
+#' # if you change alpha or metric, then the result shall remain as 0
+#'
+#' rankings <- sample_mallows(
+#'   rho0 = rho, alpha0 = alpha, n_samples = 10, burnin = 1000, thinning = 500
+#' )
+#'
+#' # depending on your seed, you will get a different collection of rankings in R and C++
+#'
+#' get_mallows_loglik(
+#'   alpha = alpha, rho = rho,  n_items = n_items, rankings = rankings ,
+#'   metric = metric
+#' )
 get_mallows_loglik <- function(alpha, rho, n_items, rankings, metric) {
   sum_distance <- 0
   num_rankings <- dim(rankings)[1]
