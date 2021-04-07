@@ -11,6 +11,15 @@
 #' \item \code{forwards_prob} Numeric value to account for transition probability from rho to rho_prime
 #' \item \code{backwards_prob} Numeric Value to account for the transition probability from \code{rho_prime} to \code{rho}
 #' }
+#'
+#' @examples
+#' rho <- c(1, 2, 3, 4, 5, 6)
+#' n_items <- 6
+#'
+#' leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 1)
+#' leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 2)
+#' leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 3)
+#'
 leap_and_shift_probs <- function(rho, leap_size, n_items) {
 
 
