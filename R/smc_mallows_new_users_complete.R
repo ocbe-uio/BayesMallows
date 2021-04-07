@@ -17,6 +17,7 @@
 #' @return a set of particles each containing a value of rho and alpha
 #' @importFrom stats rexp
 smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, num_new_obs) {
+  # TODO: #73 add verbose switch to suppress output, change print() to message()/cat()
 
 
   ######################
