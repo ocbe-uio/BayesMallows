@@ -10,21 +10,19 @@
 #'   Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
 #'   \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
 #'  @return Mallows log-likelihood
-get_mallows_loglik <- function(alpha, rho, n_items, rankings, metric){
-
-
-  sum_distance = 0
-  num_rankings = dim(rankings)[1]
+get_mallows_loglik <- function(alpha, rho, n_items, rankings, metric) {
+  sum_distance <- 0
+  num_rankings <- dim(rankings)[1]
 
   # calculate the sum of the distances
-  if (is.null(num_rankings)){
-    sum_distance = sum_distance + get_rank_distance(rho, rankings, metric = metric)
-  }else{
-    for (jj in 1:num_rankings){
-      sum_distance = sum_distance + get_rank_distance(rho, rankings[jj,], metric = metric)
+  if (is.null(num_rankings)) {
+    sum_distance <- sum_distance + get_rank_distance(rho, rankings, metric = metric)
+  } else {
+    for (jj in 1:num_rankings) {
+      sum_distance <- sum_distance + get_rank_distance(rho, rankings[jj, ], metric = metric)
     }
   }
 
-  mallows_loglik = -alpha/n_items *sum_distance
+  mallows_loglik <- -alpha / n_items * sum_distance
   return(mallows_loglik)
 }
