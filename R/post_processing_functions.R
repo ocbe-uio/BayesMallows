@@ -36,7 +36,6 @@ plot_rho_trace <- function(output, nmc){
 
   new_df = tidyr::gather(df, key = "item", value = "value", -iteration)
   return(new_df)
-
 }
 
 heatMat<-function(mcmcOutput,burnin,t_rank){
