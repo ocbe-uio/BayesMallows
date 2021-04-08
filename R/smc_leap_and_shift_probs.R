@@ -19,6 +19,7 @@
 #' leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 1)
 #' leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 2)
 #' leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 3)
+#' @author Anja Stein
 #'
 leap_and_shift_probs <- function(rho, leap_size, n_items) {
 

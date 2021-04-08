@@ -12,6 +12,7 @@
 #' @param rankings # TODO: describe
 #' @return Mallows log-likelihood
 #' @export
+#' @author Anja Stein
 #' @examples
 #' set.seed(101)
 #' rho <- c(1,2,3,4,5,6)
