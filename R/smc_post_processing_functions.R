@@ -6,7 +6,6 @@
 #' @author Anja Stein
 #' @param output output
 smc_processing <- function(output) {
-  #FIXME: depends on `n_items`, which is out of scope (#68)
   df <- data.frame(data = output)
   n_items <- ncol(df)
 
@@ -31,7 +30,7 @@ plot_rho_trace <- function(output, nmc) {
   n_items <- ncol(df)
 
   # Naming the columns as items
-  cletters <- rep(c("Item"), times = n_items) # ASK: n_items is out of scope: gather from other objects or add as argument?
+  cletters <- rep(c("Item"), times = n_items)
   cindexes <- (c(1:n_items))
   cnames <- c("iteration", paste(cletters, cindexes, sep = " "))
   colnames(df) <- cnames
