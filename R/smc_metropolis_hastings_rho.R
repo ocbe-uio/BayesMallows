@@ -11,6 +11,7 @@
 #' @param metric # TODO: describe
 #' @return \code{rho} or \code{rho_prime}: A ranking sequence vector to be the next value of rho in the MCMC chain
 #' @export
+#' @author Anja Stein
 #' @examples
 #' rho <- c(1,2,3,4,5,6)
 #' alpha <- 2

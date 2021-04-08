@@ -20,8 +20,12 @@ Authors@R: c(person("Oystein", "Sorensen",
                    email = "cristina.mollica@uniroma1.it",
                    role = c("aut")),
             person("Luca", "Tardella",
-                   role = c("aut"))
-                    )
+                   role = c("aut")),
+            person("Anja", "Stein",
+                   role = c("aut")),
+            person("Waldir", "Leoncio",
+                   email = "w.l.netto@medisin.uio.no",
+                   role = c("ctr")))
 Maintainer: Oystein Sorensen <oystein.sorensen.1985@gmail.com>
 Description: An implementation of the Bayesian version of the Mallows rank model
     (Vitelli et al., Journal of Machine Learning Research, 2018 <https://jmlr.org/papers/v18/15-481.html>;
