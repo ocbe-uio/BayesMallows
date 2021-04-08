@@ -6,7 +6,6 @@
 #' @author Anja Stein
 #' @param output output
 smc_processing <- function(output) {
-  #FIXME: depends on `n_items`, which is out of scope (#68)
   df <- data.frame(data = output)
   n_items <- ncol(df)
 
@@ -31,7 +30,7 @@ plot_rho_trace <- function(output, nmc) {
   n_items <- ncol(df)
 
   # Naming the columns as items
-  cletters <- rep(c("Item"), times = n_items) # ASK: n_items is out of scope: gather from other objects or add as argument?
+  cletters <- rep(c("Item"), times = n_items)
   cindexes <- (c(1:n_items))
   cnames <- c("iteration", paste(cletters, cindexes, sep = " "))
   colnames(df) <- cnames
@@ -431,10 +430,9 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, verbose=FALSE) 
 #'
 compute_rho_consensus <- function(output, nmc, burnin, C, type, verbose=FALSE) {
   n_items <- dim(output)[2]
-  N <- dim(output)[1]
   smc_plot <- smc_processing(output = output)
 
-  iteration <- array(rep((1:N), n_items)) # ASK: what is N? It is out of scope. Gather from other objects or add as argument?
+  iteration <- array(rep((1:nmc), n_items))
   smc_plot <- data.frame(data = cbind(iteration, smc_plot))
   colnames(smc_plot) <- c("iteration", "item", "value")
 
