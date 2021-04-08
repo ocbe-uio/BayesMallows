@@ -402,7 +402,8 @@ compute_consensus_edited <- function(model_fit, type, burnin) {
 #' @description posterior confidence intervals for rho
 #' @inheritParams plot_rho_trace
 #' @param burnin burn-in
-compute_posterior_intervals_rho <- function(output, nmc, burnin) {
+#' @param verbose if \code{TRUE}, prints the final output even if the function is assigned to an object. Defaults to \code{FALSE}.
+compute_posterior_intervals_rho <- function(output, nmc, burnin, verbose=FALSE) {
   smc_plot <- smc_processing(output = output)
   smc_plot$n_clusters <- 1
   smc_plot$cluster <- "Cluster 1"
@@ -411,8 +412,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin) {
     model_fit = smc_plot, burnin = burnin,
     parameter = "rho", level = 0.95, decimals = 2
   )
-  # TODO: #73 add verbose switch to suppress output, change print() to message()/cat()
-  print(rho_posterior_interval)
+  if(verbose) print(rho_posterior_interval)
   return(rho_posterior_interval)
 }
 
@@ -421,7 +421,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin) {
 #' @inheritParams compute_posterior_intervals_rho
 #' @param C C
 #' @param type type
-compute_rho_consensus <- function(output, nmc, burnin, C, type) {
+compute_rho_consensus <- function(output, nmc, burnin, C, type, verbose=FALSE) {
   n_items <- dim(output)[2]
   smc_plot <- smc_processing(output = output)
 
@@ -435,12 +435,15 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type) {
 
   # rho estimation using cumulative probability
   if (type == "CP") {
-    results <- compute_consensus_edited(model_fit = smc_plot, type = "CP", burnin = burnin)
-    print(results)
+    results <- compute_consensus_edited(
+      model_fit = smc_plot, type = "CP", burnin = burnin
+    )
   } else {
-    results <- compute_consensus_edited(model_fit = smc_plot, type = "MAP", burnin = burnin)
-    print(results)
+    results <- compute_consensus_edited(
+      model_fit = smc_plot, type = "MAP", burnin = burnin
+    )
   }
+  if (verbose) print(results)
 
   return(results)
 }
@@ -448,7 +451,7 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type) {
 #' @title Plot Alpha Posterior
 #' @description posterior for alpha
 #' @inheritParams compute_posterior_intervals_rho
-plot_alpha_posterior <- function(output, nmc, burnin) {
+plot_alpha_posterior <- function(output, nmc, burnin, verbose=FALSE) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
   # final_alpha_chain = alpha_mcmc_samples_all[(burnin+1):nmc,]
   # df_alpha_posterior = gather(final_alpha_chain, value = "value", -iteration)
@@ -461,14 +464,14 @@ plot_alpha_posterior <- function(output, nmc, burnin) {
     ggplot2::ggtitle(label = "Implemented SMC scheme") +
     ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
-  print(plot_posterior_alpha)
+  if (verbose) print(plot_posterior_alpha)
   # return(alpha_samples_table)
 }
 
 #' @title Compute Posterior Intervals Alpha
 #' @description posterior confidence intervals
 #' @inheritParams compute_posterior_intervals_rho
-compute_posterior_intervals_alpha <- function(output, nmc, burnin) {
+compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
   alpha_samples_table$n_clusters <- 1
   alpha_samples_table$cluster <- "Cluster 1"
@@ -478,6 +481,6 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin) {
     burnin = burnin,
     parameter = "alpha", level = 0.95, decimals = 2
   )
-  print(alpha_mixture_posterior_interval)
+  if (verbose) print(alpha_mixture_posterior_interval)
   return(alpha_mixture_posterior_interval)
 }
