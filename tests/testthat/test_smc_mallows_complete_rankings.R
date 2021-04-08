@@ -76,11 +76,12 @@ test_that("Output of smc_mallows_new_users_complete is OK", {
 rho_temp <- compute_posterior_intervals_rho(
 	output = test$rho_samples[,,Time+1], nmc = N, burnin = 0
 ) # FIXME: trace and fix warning
-# # MAP AND CP consensus ranking estimates
-# rho_cp = compute_rho_consensus(
-# 	output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, C = 1, type = "CP"
-# ) # FIXME: broken until Issue #69 is solved
-# rho_map = compute_rho_consensus(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, C = 1, type = "MAP") # FIXME: broken until Issue #69 is solved
+
+# MAP AND CP consensus ranking estimates
+rho_cp <- compute_rho_consensus(
+	output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, C = 1, type = "CP"
+)
+rho_map <- compute_rho_consensus(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, C = 1, type = "MAP")
 
 test_that("Output of compute_posterior_intervals_rho is OK", {
 	expect_is(rho_temp, "tbl_df")
