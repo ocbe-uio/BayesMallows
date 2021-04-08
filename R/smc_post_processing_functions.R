@@ -135,7 +135,7 @@ plot_rho_heatplot_partial <- function(output, nmc, burnin, n_items, rho_0) {
 
 
 # same as compute_posterior_intervals, but removed the bayesmallows object and some other columns
-compute_posterior_intervals_edited <- function(model_fit, burnin = model_fit$burnin,
+compute_posterior_intervals_smc <- function(model_fit, burnin = model_fit$burnin,
                                                parameter = "alpha", level = 0.95,
                                                decimals = 3L) {
   # stopifnot(class(model_fit) == "BayesMallows") # remove object
@@ -412,7 +412,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, verbose=FALSE) 
   smc_plot$n_clusters <- 1
   smc_plot$cluster <- "Cluster 1"
 
-  rho_posterior_interval <- compute_posterior_intervals_edited(
+  rho_posterior_interval <- compute_posterior_intervals_smc(
     model_fit = smc_plot, burnin = burnin,
     parameter = "rho", level = 0.95, decimals = 2
   )
@@ -487,7 +487,7 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE
   alpha_samples_table$cluster <- "Cluster 1"
 
 
-  alpha_mixture_posterior_interval <- compute_posterior_intervals_edited(alpha_samples_table,
+  alpha_mixture_posterior_interval <- compute_posterior_intervals_smc(alpha_samples_table,
     burnin = burnin,
     parameter = "alpha", level = 0.95, decimals = 2
   )
