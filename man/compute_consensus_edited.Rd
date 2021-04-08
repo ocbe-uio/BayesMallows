@@ -21,3 +21,6 @@ Compute the consensus ranking using either cumulative probability (CP) or maximu
 \insertCite{vitelli2018}{BayesMallows}. For mixture models, the
 consensus is given for each mixture.
 }
+\author{
+Anja Stein
+}

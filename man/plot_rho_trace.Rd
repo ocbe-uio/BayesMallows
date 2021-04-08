@@ -14,3 +14,6 @@ plot_rho_trace(output, nmc)
 \description{
 Plot rho trace
 }
+\author{
+Anja Stein
+}

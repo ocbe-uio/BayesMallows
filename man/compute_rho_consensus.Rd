@@ -4,7 +4,7 @@
 \alias{compute_rho_consensus}
 \title{Compute rho consensus}
 \usage{
-compute_rho_consensus(output, nmc, burnin, C, type)
+compute_rho_consensus(output, nmc, burnin, C, type, verbose = FALSE)
 }
 \arguments{
 \item{output}{output}
@@ -16,7 +16,12 @@ compute_rho_consensus(output, nmc, burnin, C, type)
 \item{C}{C}
 
 \item{type}{type}
+
+\item{verbose}{if \code{TRUE}, prints the final output even if the function is assigned to an object. Defaults to \code{FALSE}.}
 }
 \description{
 MAP AND CP consensus ranking estimates
+}
+\author{
+Anja Stein
 }

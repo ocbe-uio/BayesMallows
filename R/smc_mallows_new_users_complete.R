@@ -14,12 +14,11 @@
 #' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
 #' @param mcmc_kernel_app Interger value for the number of applications we apply the MCMC move kernel
 #' @param num_new_obs Integer value for the number of new observations (complete rankings) for each time step
+#' @param verbose Logical specifying whether to print out the progress of the
+#'   SMC-Mallows algorithm. Defaults to \code{FALSE}.
 #' @return a set of particles each containing a value of rho and alpha
 #' @importFrom stats rexp
-#' @author Anja Stein
-smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, num_new_obs) {
-  # TODO: #73 add verbose switch to suppress output, change print() to message()/cat()
-
+smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, num_new_obs, verbose=FALSE) {
 
   ######################
   ## Initialise Phase
@@ -43,7 +42,7 @@ smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N,
   num_obs <- 0
 
   for (tt in 1:Time) {
-    print(paste("observe", tt, "out of", Time))
+    if (verbose) message(paste("observe", tt, "out of", Time))
 
     # keep tally of how many ranking observations we have so far
     num_obs <- num_obs + num_new_obs

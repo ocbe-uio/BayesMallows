@@ -12,3 +12,6 @@ smc_processing(output)
 \description{
 SMC Processing
 }
+\author{
+Anja Stein
+}

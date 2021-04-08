@@ -58,3 +58,6 @@ metropolis_hastings_rho(
 )
 
 }
+\author{
+Anja Stein
+}
