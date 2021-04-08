@@ -98,9 +98,9 @@ test_that("smc_leap_and_shift_probs() works as expected", {
 	expect_equal(dist_2, 1)
 
 	test_3 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 3)
-	expect_equal(test_2$rho_prime, c(3, 1, 2, 4, 5, 6)) # FIXME: #74 fails
-	expect_equivalent(test_2$forwards_prob, 0.05555556, tol=1e-6) # FIXME: #74
-	expect_equivalent(test_2$backwards_prob, 0.03333333, tol=1e-6) # FIXME: #74
+	expect_equal(test_3$rho_prime, c(3, 1, 2, 4, 5, 6))
+	expect_equivalent(test_3$forwards_prob, 0.05555556, tol=1e-6)
+	expect_equivalent(test_3$backwards_prob, 0.03333333, tol=1e-6)
 
 	dist_3 <- BayesMallows:::get_rank_distance(
 		rho, test_3$rho_prime, metric= "ulam"
