@@ -18,3 +18,6 @@ compute_posterior_intervals_rho(output, nmc, burnin, verbose = FALSE)
 \description{
 posterior confidence intervals for rho
 }
+\author{
+Anja Stein
+}

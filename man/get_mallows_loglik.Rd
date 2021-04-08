@@ -53,3 +53,6 @@ get_mallows_loglik(
   metric = metric
 )
 }
+\author{
+Anja Stein
+}

@@ -31,3 +31,6 @@ Bayesian Mallows Model. Available options are \code{"footrule"},
 \description{
 Function to perform Metropolis-Hastings for new alpha under the Mallows model
 }
+\author{
+Anja Stein
+}

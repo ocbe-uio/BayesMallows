@@ -18,3 +18,6 @@ compute_posterior_intervals_alpha(output, nmc, burnin, verbose = FALSE)
 \description{
 posterior confidence intervals
 }
+\author{
+Anja Stein
+}

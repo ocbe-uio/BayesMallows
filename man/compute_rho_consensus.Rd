@@ -22,3 +22,6 @@ compute_rho_consensus(output, nmc, burnin, C, type, verbose = FALSE)
 \description{
 MAP AND CP consensus ranking estimates
 }
+\author{
+Anja Stein
+}

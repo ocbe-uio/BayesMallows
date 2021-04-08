@@ -18,3 +18,6 @@ plot_alpha_posterior(output, nmc, burnin, verbose = FALSE)
 \description{
 posterior for alpha
 }
+\author{
+Anja Stein
+}
