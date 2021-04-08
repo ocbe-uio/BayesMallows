@@ -13,7 +13,8 @@ smc_mallows_new_users_complete(
   Time,
   logz_estimate,
   mcmc_kernel_app,
-  num_new_obs
+  num_new_obs,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -39,6 +40,9 @@ proposal distribution}
 \item{mcmc_kernel_app}{Interger value for the number of applications we apply the MCMC move kernel}
 
 \item{num_new_obs}{Integer value for the number of new observations (complete rankings) for each time step}
+
+\item{verbose}{Logical specifying whether to print out the progress of the
+SMC-Mallows algorithm. Defaults to \code{FALSE}.}
 }
 \value{
 a set of particles each containing a value of rho and alpha
