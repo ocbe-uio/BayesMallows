@@ -3,6 +3,7 @@
 # Analysis
 
 #' @title SMC Processing
+#' @author Anja Stein
 #' @param output output
 smc_processing <- function(output) {
   #FIXME: depends on `n_items`, which is out of scope (#68)
@@ -20,6 +21,7 @@ smc_processing <- function(output) {
 }
 
 #' @title Plot rho trace
+#' @author Anja Stein
 #' @inheritParams smc_processing
 #' @param nmc nmc
 plot_rho_trace <- function(output, nmc) {
@@ -244,6 +246,8 @@ compute_posterior_intervals_edited <- function(model_fit, burnin = model_fit$bur
 #' @param burnin A numeric value specifying the number of iterations
 #' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
 #' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
+#' @author Anja Stein
+#'
 compute_consensus_edited <- function(model_fit, type, burnin) {
   if (type == "CP") {
     stop("Not yet implemented")
@@ -402,6 +406,8 @@ compute_consensus_edited <- function(model_fit, type, burnin) {
 #' @description posterior confidence intervals for rho
 #' @inheritParams plot_rho_trace
 #' @param burnin burn-in
+#' @author Anja Stein
+#'
 compute_posterior_intervals_rho <- function(output, nmc, burnin) {
   smc_plot <- smc_processing(output = output)
   smc_plot$n_clusters <- 1
@@ -421,6 +427,8 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin) {
 #' @inheritParams compute_posterior_intervals_rho
 #' @param C C
 #' @param type type
+#' @author Anja Stein
+#'
 compute_rho_consensus <- function(output, nmc, burnin, C, type) {
   n_items <- dim(output)[2]
   smc_plot <- smc_processing(output = output)
@@ -448,6 +456,8 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type) {
 #' @title Plot Alpha Posterior
 #' @description posterior for alpha
 #' @inheritParams compute_posterior_intervals_rho
+#' @author Anja Stein
+#'
 plot_alpha_posterior <- function(output, nmc, burnin) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
   # final_alpha_chain = alpha_mcmc_samples_all[(burnin+1):nmc,]
@@ -468,6 +478,8 @@ plot_alpha_posterior <- function(output, nmc, burnin) {
 #' @title Compute Posterior Intervals Alpha
 #' @description posterior confidence intervals
 #' @inheritParams compute_posterior_intervals_rho
+#' @author Anja Stein
+#'
 compute_posterior_intervals_alpha <- function(output, nmc, burnin) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
   alpha_samples_table$n_clusters <- 1
