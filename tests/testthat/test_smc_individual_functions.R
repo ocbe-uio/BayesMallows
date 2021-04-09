@@ -56,8 +56,8 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
 		rho = rho, leap_size = 3
 	)
 	dist_3 <- BayesMallows:::get_rank_distance(rho, test_3, metric = "ulam")
-	expect_equal(test_3, c(1, 3, 4, 2, 5, 6)) # FIXME: #74 failing test
-	expect_equal(dist_3, 1) # FIXME: #74 failing test
+	expect_equal(test_3, c(1, 2, 3, 4, 5, 6))
+	expect_equal(dist_3, 0)
 
 	# we have a ranking data set containing 10 rankings over 6 items
 	test_4 <- metropolis_hastings_rho(
