@@ -6,6 +6,9 @@ dist: xenial
 os: linux
 cache: packages
 
+apt_packages:
+  - libmpfr-dev
+
 r_github_packages:
   - jimhester/covr
 
