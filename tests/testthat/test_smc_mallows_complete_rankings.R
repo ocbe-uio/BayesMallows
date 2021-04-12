@@ -75,13 +75,13 @@ test_that("Output of smc_mallows_new_users_complete is OK", {
 # posterior confidence intervals for rho
 rho_temp <- compute_posterior_intervals_rho(
 	output = test$rho_samples[,,Time+1], nmc = N, burnin = 0
-) # FIXME: #74 trace and fix warning
+) # FIXME: #74 trace and fix warning. Only use 1st column
 
 # MAP AND CP consensus ranking estimates
 rho_cp <- compute_rho_consensus(
 	output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, C = 1, type = "CP"
-) # FIXME: #74 trace and fix warning
-rho_map <- compute_rho_consensus(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, C = 1, type = "MAP") # FIXME: #74 trace and fix warning
+) # FIXME: #74 trace and fix warning. Only use 1st column
+rho_map <- compute_rho_consensus(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, C = 1, type = "MAP") # FIXME: #74 trace and fix warning. Only use 1st column
 
 test_that("Output of compute_posterior_intervals_rho is OK", {
 	expect_is(rho_temp, "tbl_df")
@@ -104,7 +104,7 @@ alpha_samples_table = data.frame(
 # posterior confidence intervals
 alpha_posterior_intervals = compute_posterior_intervals_alpha(
 	output = test$alpha_samples[,Time+1], nmc = N, burnin = 0
-) # FIXME: #74 trace and fix warning
+) # FIXME: #74 trace and fix warning. Only use 1st column
 
 test_that("Output of compute_posterior_intervals_alpha is OK", {
 	expect_is(alpha_posterior_intervals, "tbl_df")
