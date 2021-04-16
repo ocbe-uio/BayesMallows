@@ -167,7 +167,7 @@ compute_posterior_intervals_smc <- function(model_fit, burnin = model_fit$burnin
 
   df <- dplyr::ungroup(df)
 
-  if (model_fit$n_clusters == 1) df <- dplyr::select(df, -.data$cluster) # commented out
+  if (model_fit$n_clusters[1] == 1) df <- dplyr::select(df, -.data$cluster) # commented out
 
   return(df)
 }
@@ -311,7 +311,7 @@ compute_consensus_smc <- function(model_fit, type, burnin) {
   df <- dplyr::ungroup(df)
 
   # If there is only one cluster, we drop the cluster column
-  if(model_fit$n_clusters == 1){
+  if (model_fit$n_clusters[1] == 1) {
     df <- dplyr::select(df, -.data$cluster)
   }
 
@@ -393,7 +393,7 @@ find_cpc_smc <- function(group_df){
   # Sort according to cluster and ranking
   df <- dplyr::arrange(df, .data$cluster, .data$map_ranking)
 
-  if(model_fit$n_clusters == 1){
+  if (model_fit$n_clusters[1] == 1) {
     df <- dplyr::select(df, -.data$cluster)
   }
 
