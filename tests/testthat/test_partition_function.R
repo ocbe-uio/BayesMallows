@@ -24,7 +24,7 @@ check_log_zn <- function(n, alpha, metric){
                                     r2 = 1:n, metric = "hamming"))))
   } else if(metric == "ulam") {
     log(sum(unlist(lapply(seq(0, n - 1, by = 1), function(x) {
-      PerMallows::count.perms(perm.length = n, dist.value = x, dist.name = "ulam") * exp(-alpha / n * x) # FIXME: #84 suddenly failing
+      PerMallows::count.perms(perm.length = n, dist.value = x, dist.name = "ulam") * exp(-alpha / n * x)
     }))))
   } else {
     stop("Unknown metric.")
