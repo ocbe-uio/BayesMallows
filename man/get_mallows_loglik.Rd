@@ -16,7 +16,9 @@ A matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
 rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
 can be a vector.}
 
-\item{rankings}{# TODO: describe}
+\item{rankings}{A matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
+rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
+can be a vector.}
 
 \item{metric}{Character string specifying the distance measure to use.
 Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},

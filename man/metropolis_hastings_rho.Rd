@@ -7,23 +7,25 @@
 metropolis_hastings_rho(alpha, n_items, rankings, metric, rho, leap_size)
 }
 \arguments{
-\item{alpha}{Numeric value og the scale parameter}
+\item{alpha}{Numeric value of the scale parameter}
 
-\item{n_items}{Integer is the number of items in a ranking}
+\item{n_items}{Integer is the number of items in a ranking
+A matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
+rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
+can be a vector.}
 
 \item{rankings}{A matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
 rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
 can be a vector.}
 
-\item{metric}{# TODO: describe}
+\item{metric}{Character string specifying the distance measure to use.
+Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
+\code{"ulam"}, \code{"footrule"} and \code{"spearman"}.}
 
-\item{rho}{A ranking sequence vector}
+\item{rho}{A ranking sequence}
 
 \item{leap_size}{Integer specifying the step size of the leap-and-shift
 proposal distribution.}
-}
-\value{
-\code{rho} or \code{rho_prime}: A ranking sequence vector to be the next value of rho in the MCMC chain
 }
 \description{
 Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
