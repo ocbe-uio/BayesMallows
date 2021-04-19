@@ -4,13 +4,7 @@
 \alias{compute_posterior_intervals}
 \title{Compute Posterior Intervals}
 \usage{
-compute_posterior_intervals(
-  model_fit,
-  burnin = model_fit$burnin,
-  parameter = "alpha",
-  level = 0.95,
-  decimals = 3L
-)
+compute_posterior_intervals(model_fit, ...)
 }
 \arguments{
 \item{model_fit}{An object returned from \code{\link{compute_mallows}}.}

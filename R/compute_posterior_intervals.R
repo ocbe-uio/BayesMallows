@@ -33,7 +33,14 @@
 #'
 #' @export
 #'
-compute_posterior_intervals <- function(model_fit, burnin = model_fit$burnin,
+compute_posterior_intervals <- function(model_fit, ...) {
+  UseMethod("compute_posterior_intervals")
+}
+.compute_posterior_intervals <- function(df, ...) {
+  UseMethod((".compute_posterior_intervals"))
+}
+
+compute_posterior_intervals.BayesMallows <- function(model_fit, burnin = model_fit$burnin,
                                         parameter = "alpha", level = 0.95,
                                         decimals = 3L){
   stopifnot(class(model_fit) == "BayesMallows")
@@ -68,7 +75,7 @@ compute_posterior_intervals <- function(model_fit, burnin = model_fit$burnin,
 }
 
 
-.compute_posterior_intervals <- function(df, parameter, level, decimals, discrete = FALSE){
+.compute_posterior_intervals.BayesMallows <- function(df, parameter, level, decimals, discrete = FALSE){
   dplyr::do(df, {
     format <- paste0("%.", decimals, "f")
 

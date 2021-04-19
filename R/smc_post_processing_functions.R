@@ -101,7 +101,7 @@ plot_rho_heatplot <- function(output, nmc, burnin, n_items, rho) {
 }
 
 # same as compute_posterior_intervals, but removed the bayesmallows object and some other columns
-compute_posterior_intervals_smc <- function(model_fit, burnin = model_fit$burnin,
+compute_posterior_intervals.SMCMallows <- function(model_fit, burnin = model_fit$burnin,
                                                parameter = "alpha", level = 0.95,
                                                decimals = 3L) {
   if (is.null(burnin)) {
@@ -136,7 +136,7 @@ compute_posterior_intervals_smc <- function(model_fit, burnin = model_fit$burnin
 }
 
 
-.compute_posterior_intervals <- function(df, parameter, level, decimals, discrete = FALSE) {
+.compute_posterior_intervals.SMCMallows <- function(df, parameter, level, decimals, discrete = FALSE) {
   dplyr::do(df, {
     format <- paste0("%.", decimals, "f")
 
@@ -393,7 +393,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
   smc_plot$n_clusters <- 1
   smc_plot$cluster <- "Cluster 1"
 
-  rho_posterior_interval <- compute_posterior_intervals_smc(
+  rho_posterior_interval <- compute_posterior_intervals(
     model_fit = smc_plot, burnin = burnin,
     parameter = "rho", level = 0.95, decimals = 2
   )
@@ -485,7 +485,7 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE
   alpha_samples_table$cluster <- "Cluster 1"
 
 
-  alpha_mixture_posterior_interval <- compute_posterior_intervals_smc(alpha_samples_table,
+  alpha_mixture_posterior_interval <- compute_posterior_intervals(alpha_samples_table,
     burnin = burnin,
     parameter = "alpha", level = 0.95, decimals = 2
   )
