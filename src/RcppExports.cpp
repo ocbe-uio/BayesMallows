@@ -210,26 +210,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// smc_mallows_new_users_complete_CPP
-Rcpp::List smc_mallows_new_users_complete_CPP(arma::mat R_obs, int n_items, std::string metric, int leap_size, int N, int Time, int mcmc_kernel_app, int num_new_obs, const Rcpp::Nullable<arma::vec> logz_estimate, bool verbose);
-RcppExport SEXP _BayesMallows_smc_mallows_new_users_complete_CPP(SEXP R_obsSEXP, SEXP n_itemsSEXP, SEXP metricSEXP, SEXP leap_sizeSEXP, SEXP NSEXP, SEXP TimeSEXP, SEXP mcmc_kernel_appSEXP, SEXP num_new_obsSEXP, SEXP logz_estimateSEXP, SEXP verboseSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type R_obs(R_obsSEXP);
-    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
-    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
-    Rcpp::traits::input_parameter< int >::type leap_size(leap_sizeSEXP);
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
-    Rcpp::traits::input_parameter< int >::type Time(TimeSEXP);
-    Rcpp::traits::input_parameter< int >::type mcmc_kernel_app(mcmc_kernel_appSEXP);
-    Rcpp::traits::input_parameter< int >::type num_new_obs(num_new_obsSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::vec> >::type logz_estimate(logz_estimateSEXP);
-    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_users_complete_CPP(R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate, verbose));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
@@ -245,7 +225,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 8},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 27},
     {"_BayesMallows_get_mallows_loglik", (DL_FUNC) &_BayesMallows_get_mallows_loglik, 5},
-    {"_BayesMallows_smc_mallows_new_users_complete_CPP", (DL_FUNC) &_BayesMallows_smc_mallows_new_users_complete_CPP, 10},
     {NULL, NULL, 0}
 };
 

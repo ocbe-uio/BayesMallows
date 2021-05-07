@@ -236,37 +236,3 @@ get_mallows_loglik <- function(alpha, rho, n_items, rankings, metric) {
     .Call(`_BayesMallows_get_mallows_loglik`, alpha, rho, n_items, rankings, metric)
 }
 
-#' @title SMC-Mallows New Users Complete (CPP version)
-#' @description Function to perform resample-move SMC algorithm where we
-#' receive new users with complete rankings at each time step
-#'
-#' @param R_obs Matrix containing the full set of observed rankings of size
-#' n_assessors by n_items
-#' @param n_items Integer is the number of items in a ranking
-#' @param metric A character string specifying the distance metric to use
-#' in the Bayesian Mallows Model. Available options are \code{"footrule"},
-#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-#' \code{"ulam"}.
-#' @param leap_size leap_size Integer specifying the step size of the
-#' leap-and-shift proposal distribution
-#' @param N Integer specifying the number of particles
-#' @param Time Integer specifying the number of time steps in the SMC algorithm
-#' @param logz_estimate Estimate of the partition function, computed with
-#' \code{\link{estimate_partition_function}} in the BayesMallow R package
-#' {estimate_partition_function}.
-#' @param mcmc_kernel_app Interger value for the number of applications we
-#' apply the MCMC move kernel
-#' @param num_new_obs Integer value for the number of new observations
-#' (complete rankings) for each time step
-#' @param verbose Logical specifying whether to print out the progress of the
-#' SMC-Mallows algorithm. Defaults to \code{FALSE}.
-#'
-#' @return a set of particles each containing a value of rho and alpha
-#'
-#' @importFrom stats rexp
-#' @export
-#'
-smc_mallows_new_users_complete_CPP <- function(R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate = NULL, verbose = FALSE) {
-    .Call(`_BayesMallows_smc_mallows_new_users_complete_CPP`, R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate, verbose)
-}
-
