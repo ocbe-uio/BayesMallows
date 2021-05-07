@@ -191,7 +191,7 @@ run_mcmc <- function(rankings, obs_freq, nmc, constraints, cardinalities, logz_e
     .Call(`_BayesMallows_run_mcmc`, rankings, obs_freq, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, error_model, Lswap, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, alpha_max, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2, save_ind_clus)
 }
 
-#' @title Get Mallows log-likelihood (CPP version)
+#' @title Get Mallows log-likelihood
 #' @description Calculates the Mallows log-likelihood given a set of rankings and a given rank sequence
 #' @param alpha Numeric value of the scale parameter
 #' @param rho A ranking sequence
@@ -232,8 +232,8 @@ run_mcmc <- function(rankings, obs_freq, nmc, constraints, cardinalities, logz_e
 #'   alpha = alpha, rho = rho,  n_items = n_items, rankings = rankings ,
 #'   metric = metric
 #' )
-get_mallows_loglik_CPP <- function(alpha, rho, n_items, rankings, metric) {
-    .Call(`_BayesMallows_get_mallows_loglik_CPP`, alpha, rho, n_items, rankings, metric)
+get_mallows_loglik <- function(alpha, rho, n_items, rankings, metric) {
+    .Call(`_BayesMallows_get_mallows_loglik`, alpha, rho, n_items, rankings, metric)
 }
 
 #' @title SMC-Mallows New Users Complete (CPP version)

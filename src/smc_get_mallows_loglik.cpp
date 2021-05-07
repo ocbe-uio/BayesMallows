@@ -2,7 +2,7 @@
 #include "distances.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
-//' @title Get Mallows log-likelihood (CPP version)
+//' @title Get Mallows log-likelihood
 //' @description Calculates the Mallows log-likelihood given a set of rankings and a given rank sequence
 //' @param alpha Numeric value of the scale parameter
 //' @param rho A ranking sequence
@@ -44,7 +44,7 @@
 //'   metric = metric
 //' )
 // [[Rcpp::export]]
-double get_mallows_loglik_CPP(
+double get_mallows_loglik(
   double alpha,
   arma::vec rho,
   int n_items,
