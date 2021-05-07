@@ -56,10 +56,10 @@ double get_mallows_loglik_CPP(
 
   /* calculate the sum of the distances ------------------- */
   if (num_rankings == 1) {
-    sum_distance = sum_distance + get_rank_distance(rho, rankings, metric);
+    sum_distance = sum_distance + get_rank_distance(rho, rankings.t(), metric);
   } else {
-    for (int jj = 0; jj < num_rankings; ++jj) {
-      sum_distance = sum_distance + get_rank_distance(rho, rankings.row(jj), metric);
+    for (arma::uword jj = 0; jj < num_rankings; ++jj) {
+      sum_distance = sum_distance + get_rank_distance(rho, rankings.row(jj).t(), metric);
     }
   }
   double mallows_loglik = -alpha / n_items * sum_distance;
