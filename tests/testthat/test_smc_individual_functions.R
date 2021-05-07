@@ -8,7 +8,7 @@ n_items <- 6
 test_that("get_mallows_loglik() works as expected", {
 	set.seed(101)
 	loglik <- get_mallows_loglik(
-		alpha = alpha, rho = rho,  n_items = length(rho), rankings = rho,
+		alpha = alpha, rho = t(rho),  n_items = length(rho), rankings = t(rho),
 		metric = metric
 	)
 	expect_equal(loglik, 0)
@@ -34,7 +34,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
 
 	# you can confirm the print statements inside the metropolis_hastings_rho match get_mallows_loglik and leap_and_shift_probs
 	test_1 <- metropolis_hastings_rho(
-		alpha = alpha, n_items = n_items, rankings = rho, metric = metric,
+		alpha = alpha, n_items = n_items, rankings = t(rho), metric = metric,
 		rho = rho, leap_size = 1
 	)
 	dist_1 <- BayesMallows:::get_rank_distance(rho, test_1, metric= "ulam")
@@ -44,7 +44,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
 	expect_equal(dist_1, 1)
 
 	test_2 <- metropolis_hastings_rho(
-		alpha = alpha, n_items = n_items, rankings = rho, metric = metric,
+		alpha = alpha, n_items = n_items, rankings = t(rho), metric = metric,
 		rho = rho, leap_size = 2
 	)
 	dist_2 <- BayesMallows:::get_rank_distance(rho, test_2, metric = "ulam")
@@ -52,7 +52,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
 	expect_equal(dist_2, 0)
 
 	test_3 <- metropolis_hastings_rho(
-		alpha = alpha, n_items = n_items, rankings = rho, metric = metric,
+		alpha = alpha, n_items = n_items, rankings = t(rho), metric = metric,
 		rho = rho, leap_size = 3
 	)
 	dist_3 <- BayesMallows:::get_rank_distance(rho, test_3, metric = "ulam")

@@ -195,6 +195,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// get_mallows_loglik
+double get_mallows_loglik(double alpha, arma::vec rho, int n_items, arma::mat rankings, std::string metric);
+RcppExport SEXP _BayesMallows_get_mallows_loglik(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP rankingsSEXP, SEXP metricSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type rankings(rankingsSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_mallows_loglik(alpha, rho, n_items, rankings, metric));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
@@ -209,6 +224,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 8},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 27},
+    {"_BayesMallows_get_mallows_loglik", (DL_FUNC) &_BayesMallows_get_mallows_loglik, 5},
     {NULL, NULL, 0}
 };
 
