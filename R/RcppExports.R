@@ -191,3 +191,82 @@ run_mcmc <- function(rankings, obs_freq, nmc, constraints, cardinalities, logz_e
     .Call(`_BayesMallows_run_mcmc`, rankings, obs_freq, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, error_model, Lswap, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, alpha_max, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2, save_ind_clus)
 }
 
+#' @title Get Mallows log-likelihood (CPP version)
+#' @description Calculates the Mallows log-likelihood given a set of rankings and a given rank sequence
+#' @param alpha Numeric value of the scale parameter
+#' @param rho A ranking sequence
+#' @param n_items Integer is the number of items in a ranking
+#' A matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
+#' rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
+#' can be a vector.
+#' @param rankings A matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
+#' rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
+#' can be a vector.
+#' @param metric Character string specifying the distance measure to use.
+#' Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
+#' \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
+#' @return Mallows log-likelihood
+#' @export
+#' @author Anja Stein
+#' @examples
+#' set.seed(101)
+#' rho <- c(1,2,3,4,5,6)
+#' alpha <- 2
+#' metric <- "footrule"
+#' n_items <- 6
+#' get_mallows_loglik(
+#'   alpha = alpha, rho = rho, n_items = length(rho), rankings = rho,
+#'   metric = metric
+#' )
+#'
+#' # return 0 because you are comparing the consensus ranking with itself
+#' # if you change alpha or metric, then the result shall remain as 0
+#'
+#' rankings <- sample_mallows(
+#'   rho0 = rho, alpha0 = alpha, n_samples = 10, burnin = 1000, thinning = 500
+#' )
+#'
+#' # depending on your seed, you will get a different collection of rankings in R and C++
+#'
+#' get_mallows_loglik(
+#'   alpha = alpha, rho = rho,  n_items = n_items, rankings = rankings ,
+#'   metric = metric
+#' )
+get_mallows_loglik_CPP <- function(alpha, rho, n_items, rankings, metric) {
+    .Call(`_BayesMallows_get_mallows_loglik_CPP`, alpha, rho, n_items, rankings, metric)
+}
+
+#' @title SMC-Mallows New Users Complete (CPP version)
+#' @description Function to perform resample-move SMC algorithm where we
+#' receive new users with complete rankings at each time step
+#'
+#' @param R_obs Matrix containing the full set of observed rankings of size
+#' n_assessors by n_items
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use
+#' in the Bayesian Mallows Model. Available options are \code{"footrule"},
+#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#' \code{"ulam"}.
+#' @param leap_size leap_size Integer specifying the step size of the
+#' leap-and-shift proposal distribution
+#' @param N Integer specifying the number of particles
+#' @param Time Integer specifying the number of time steps in the SMC algorithm
+#' @param logz_estimate Estimate of the partition function, computed with
+#' \code{\link{estimate_partition_function}} in the BayesMallow R package
+#' {estimate_partition_function}.
+#' @param mcmc_kernel_app Interger value for the number of applications we
+#' apply the MCMC move kernel
+#' @param num_new_obs Integer value for the number of new observations
+#' (complete rankings) for each time step
+#' @param verbose Logical specifying whether to print out the progress of the
+#' SMC-Mallows algorithm. Defaults to \code{FALSE}.
+#'
+#' @return a set of particles each containing a value of rho and alpha
+#'
+#' @importFrom stats rexp
+#' @export
+#'
+smc_mallows_new_users_complete_CPP <- function(R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate = NULL, verbose = FALSE) {
+    .Call(`_BayesMallows_smc_mallows_new_users_complete_CPP`, R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate, verbose)
+}
+

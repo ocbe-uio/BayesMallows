@@ -1,4 +1,5 @@
 #include "RcppArmadillo.h"
+#include "distances.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Get Mallows log-likelihood (CPP version)
@@ -43,20 +44,24 @@
 //'   metric = metric
 //' )
 // [[Rcpp::export]]
+double get_mallows_loglik_CPP(
+  double alpha,
+  arma::vec rho,
+  int n_items,
+  arma::mat rankings,
+  std::string metric
+) {
+  double sum_distance = 0;
+  arma::uword num_rankings = rankings.n_rows;
 
-// get_mallows_loglik <- function(alpha, rho, n_items, rankings, metric) {
-//   sum_distance <- 0
-//   num_rankings <- dim(rankings)[1]
-
-//   # calculate the sum of the distances
-//   if (is.null(num_rankings)) {
-//     sum_distance <- sum_distance + get_rank_distance(rho, rankings, metric = metric)
-//   } else {
-//     for (jj in 1:num_rankings) {
-//       sum_distance <- sum_distance + get_rank_distance(rho, rankings[jj, ], metric = metric)
-//     }
-//   }
-
-//   mallows_loglik <- -alpha / n_items * sum_distance
-//   return(mallows_loglik)
-// }
+  /* calculate the sum of the distances ------------------- */
+  if (num_rankings == 1) {
+    sum_distance = sum_distance + get_rank_distance(rho, rankings, metric);
+  } else {
+    for (int jj = 0; jj < num_rankings; ++jj) {
+      sum_distance = sum_distance + get_rank_distance(rho, rankings.row(jj), metric);
+    }
+  }
+  double mallows_loglik = -alpha / n_items * sum_distance;
+  return(mallows_loglik);
+}
