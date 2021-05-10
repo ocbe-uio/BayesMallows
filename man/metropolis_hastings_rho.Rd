@@ -31,7 +31,7 @@ proposal distribution.}
 Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
 }
 \examples{
-rho <- c(1,2,3,4,5,6)
+rho <- t(c(1,2,3,4,5,6))
 alpha <- 2
 metric <- "footrule"
 n_items <- 6

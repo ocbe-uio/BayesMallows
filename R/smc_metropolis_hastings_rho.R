@@ -6,7 +6,7 @@
 #' @export
 #' @author Anja Stein
 #' @examples
-#' rho <- c(1,2,3,4,5,6)
+#' rho <- t(c(1,2,3,4,5,6))
 #' alpha <- 2
 #' metric <- "footrule"
 #' n_items <- 6
