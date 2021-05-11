@@ -210,6 +210,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// leap_and_shift_probs_CPP
+Rcpp::List leap_and_shift_probs_CPP(arma::vec rho, int leap_size, int n_items);
+RcppExport SEXP _BayesMallows_leap_and_shift_probs_CPP(SEXP rhoSEXP, SEXP leap_sizeSEXP, SEXP n_itemsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type leap_size(leap_sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
+    rcpp_result_gen = Rcpp::wrap(leap_and_shift_probs_CPP(rho, leap_size, n_items));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
@@ -225,6 +238,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 8},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 27},
     {"_BayesMallows_get_mallows_loglik", (DL_FUNC) &_BayesMallows_get_mallows_loglik, 5},
+    {"_BayesMallows_leap_and_shift_probs_CPP", (DL_FUNC) &_BayesMallows_leap_and_shift_probs_CPP, 3},
     {NULL, NULL, 0}
 };
 

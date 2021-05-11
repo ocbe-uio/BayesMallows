@@ -236,3 +236,30 @@ get_mallows_loglik <- function(alpha, rho, n_items, rankings, metric) {
     .Call(`_BayesMallows_get_mallows_loglik`, alpha, rho, n_items, rankings, metric)
 }
 
+#' @title Leap and Shift Probabilities
+#' @description Determine the new Calculates transition probabilities for proposing a new rho
+#' @param rho A ranking sequence
+#' @param leap_size Integer specifying the step size of the leap-and-shift
+#' proposal distribution.
+#' @param n_items Integer is the number of items in a ranking
+#' @export
+#' @return A list containing:
+#' \itemize{
+#' \item \code{rho_prime} A ranking sequence proposed consensus ranking
+#' \item \code{forwards_prob} Numeric value to account for transition probability from rho to rho_prime
+#' \item \code{backwards_prob} Numeric Value to account for the transition probability from \code{rho_prime} to \code{rho}
+#' }
+#'
+#' @examples
+#' rho <- c(1, 2, 3, 4, 5, 6)
+#' n_items <- 6
+#'
+#' leap_and_shift_probs(rho, 1, n_items)
+#' leap_and_shift_probs(rho, 2, n_items)
+#' leap_and_shift_probs(rho, 3, n_items)
+#' @author Anja Stein
+#'
+leap_and_shift_probs_CPP <- function(rho, leap_size, n_items) {
+    .Call(`_BayesMallows_leap_and_shift_probs_CPP`, rho, leap_size, n_items)
+}
+
