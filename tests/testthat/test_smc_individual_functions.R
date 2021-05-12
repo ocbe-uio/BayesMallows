@@ -24,6 +24,7 @@ test_that("get_mallows_loglik() works as expected", {
 	expect_equivalent(loglik, -22.6667, tol=1e-4)
 })
 
+#FIXME: metropolis_hastings_rho unit tests failing
 test_that("smc_metropolis_hastings_rho() works as expected", {
 	set.seed(101)
 	# This functions uses get_mallows_log_lik and leap_and_shift_probs so if the checks match in those worker functions then it is very likely that this function will return the correct outputs.
@@ -69,6 +70,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
 	expect_equal(dist_4, 1)
 })
 
+#FIXME: leap_and_shift_probs tests failing
 test_that("smc_leap_and_shift_probs() works as expected", {
 	# set.seed() will produce different random results in R and C++
 	set.seed(101)
