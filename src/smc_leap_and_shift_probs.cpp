@@ -42,11 +42,11 @@ Rcpp::List leap_and_shift_probs_CPP(arma::vec rho, int leap_size, int n_items) {
 
   // draw a random number r from S
   int r = Rcpp::as<int>(Rcpp::sample(S, 1));
+  r = r - 1; // adjusting index for R correspondence
 
   // Create leap step
   arma::vec rho_star = rho;
-  rho_star(u) = r; // replace u-th entry with r
-
+  rho_star(u) = r + 1; // replace u-th entry with r
 
   // here, two elements are the same so we need to shift element and replace the repeated r with u
   int delta = rho_star(u) - rho(u);
@@ -76,21 +76,17 @@ Rcpp::List leap_and_shift_probs_CPP(arma::vec rho, int leap_size, int n_items) {
 
   // calculate forward and backwards probabilities
   Rcpp::NumericVector forwards_prob, backwards_prob;
-  if (abs(rho_star(u) - rho(u)) == 1) {
+  if (std::abs(rho_star(u) - rho(u)) == 1) {
     // p(proposed|current)
-    forwards_prob = 1 / (n_items * S.length()) + 1 / (n_items * S_star.length());
-
+    forwards_prob = 1.0 / (n_items * S.length()) + 1.0 / (n_items * S_star.length());
     // p(current|proposed)
     backwards_prob = forwards_prob;
   } else {
     // p(proposed|current)
-    forwards_prob = 1 / (n_items * S.length());
-
+    forwards_prob = 1.0 / (n_items * S.length());
     // p(current|proposed)
-    backwards_prob = 1 / (n_items * S_star.length());
+    backwards_prob = 1.0 / (n_items * S_star.length());
   }
-
-  // leap_shift_list <- list("rho_prime" = rho_prime, "forwards_prob" = forwards_prob, "backwards_prob" = backwards_prob)
 
   // return(leap_shift_list)
   return Rcpp::List::create(
