@@ -15,6 +15,8 @@
 #' @return \code{alpha} or \code{alpha_prime}: Numeric value to be used as the proposal of a new alpha
 #' @importFrom stats dexp rlnorm runif
 #' @author Anja Stein
+#' #ASK: Ask Anja for example to aid translation to C++
+#' #TODO wait for Anja's update on function before translating
 #' @export
 metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, logz_estimate) {
 
