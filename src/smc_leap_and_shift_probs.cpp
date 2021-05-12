@@ -26,7 +26,7 @@
 //' @author Anja Stein
 //'
 // [[Rcpp::export]]
-Rcpp::List leap_and_shift_probs_CPP(arma::vec rho, int leap_size, int n_items) {
+Rcpp::List leap_and_shift_probs(arma::vec rho, int leap_size, int n_items) {
 
   // draw one u uniformly from {1,...,n} to use as index for rho
   int u = Rcpp::as<int>(Rcpp::sample(n_items, 1));

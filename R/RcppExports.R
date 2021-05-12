@@ -259,7 +259,7 @@ get_mallows_loglik <- function(alpha, rho, n_items, rankings, metric) {
 #' leap_and_shift_probs(rho, 3, n_items)
 #' @author Anja Stein
 #'
-leap_and_shift_probs_CPP <- function(rho, leap_size, n_items) {
-    .Call(`_BayesMallows_leap_and_shift_probs_CPP`, rho, leap_size, n_items)
+leap_and_shift_probs <- function(rho, leap_size, n_items) {
+    .Call(`_BayesMallows_leap_and_shift_probs`, rho, leap_size, n_items)
 }
 
