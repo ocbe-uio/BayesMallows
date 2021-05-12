@@ -37,7 +37,7 @@ Rcpp::List leap_and_shift_probs(arma::vec rho, int leap_size, int n_items) {
   int rho_plus_leap = rho(u) + leap_size;
   int low_bd = std::max(1, rho_minus_leap);
   int max_bd = std::min(n_items, rho_plus_leap);
-  Rcpp::IntegerVector S = Rcpp::seq(low_bd, max_bd);
+  Rcpp::IntegerVector S = Rcpp::seq(low_bd, max_bd); // TODO reclassify as arma::
   S = S[S != rho(u)];
 
   // draw a random number r from S

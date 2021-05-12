@@ -33,4 +33,5 @@ Function to perform Metropolis-Hastings for new alpha under the Mallows model
 }
 \author{
 Anja Stein
+#ASK: Ask Anja for example to aid translation to C++
 }
