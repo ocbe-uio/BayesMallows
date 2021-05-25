@@ -1,4 +1,6 @@
 #include "RcppArmadillo.h"
+#include "smc.h"
+#include "partitionfuns.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Metropolis-Hastings Alpha
@@ -29,7 +31,7 @@ double metropolis_hastings_alpha(
   arma::mat rankings,
   std::string metric,
   arma::vec rho,
-  arma::vec logz_estimate,
+  const Rcpp::Nullable<arma::vec> logz_estimate,
   double alpha_prop_sd,
   double lambda,
   double alpha_max
@@ -38,37 +40,27 @@ double metropolis_hastings_alpha(
   double alpha_prime_log = rand * alpha_prop_sd + std::log(alpha);
   double alpha_prime = std::exp(alpha_prime_log);
 
-// Difference between current and proposed alpha
-//   alpha_diff <- alpha - alpha_prime
-//   mallows_loglik_prop <- get_mallows_loglik(
-//     alpha = (alpha_prime - alpha), rho = rho, n = n_items, rankings = rankings,
-//     metric = metric
-//   )
+  // Difference between current and proposed alpha
+  double alpha_diff = alpha - alpha_prime;
+  double mallows_loglik_prop = get_mallows_loglik(alpha_prime - alpha, rho, n_items, rankings, metric);
 
-// evaluate the log estimate of the partition function for a particular value of alpha
-//   logz_alpha <- get_partition_function(
-//     n_items = n_items, alpha = alpha,
-//     logz_estimate = logz_estimate, metric = metric
-//   )
-//   logz_alpha_prime <- get_partition_function(
-//     n_items = n_items, alpha = alpha_prime,
-//     logz_estimate = logz_estimate, metric = metric
-//   )
+  // evaluate the log estimate of the partition function for a particular
+  // value of alpha
+  const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue;
+  double logz_alpha = get_partition_function(n_items, alpha, cardinalities, logz_estimate, metric);
+  double logz_alpha_prime = get_partition_function(n_items, alpha_prime, cardinalities, logz_estimate, metric);
 
-//   obs_freq <- length(rankings) / n_items
+  double obs_freq = rankings.n_elem / n_items;
 
-// Compute the Metropolis-Hastings ratio
-//   loga <- mallows_loglik_prop +
-//     lambda * alpha_diff +
-//     obs_freq * (logz_alpha - logz_alpha_prime) +
-//     log(alpha_prime) - log(alpha)
+  // Compute the Metropolis-Hastings ratio
+  double loga = mallows_loglik_prop + lambda * alpha_diff + obs_freq * (logz_alpha - logz_alpha_prime) + log(alpha_prime) - log(alpha);
 
-// determine whether to accept or reject proposed rho and return now consensus
-// ranking
-//   p <- runif(1, min = 0, max = 1)
-//   if(log(p) <= loga && alpha_prime < alpha_max) {
-//     return(alpha_prime)
-//   } else {
-//     return(alpha)
-//   }
+  // determine whether to accept or reject proposed rho and return now consensus
+  // ranking
+  double p = Rcpp::as<double>(Rcpp::runif(1, 0, 1));
+  if (log(p) <= loga && alpha_prime < alpha_max) {
+    return(alpha_prime);
+  } else {
+    return(alpha);
+  }
 }

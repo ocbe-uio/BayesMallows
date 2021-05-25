@@ -224,7 +224,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // metropolis_hastings_alpha
-double metropolis_hastings_alpha(double alpha, int n_items, arma::mat rankings, std::string metric, arma::vec rho, arma::vec logz_estimate, double alpha_prop_sd, double lambda, double alpha_max);
+double metropolis_hastings_alpha(double alpha, int n_items, arma::mat rankings, std::string metric, arma::vec rho, const Rcpp::Nullable<arma::vec> logz_estimate, double alpha_prop_sd, double lambda, double alpha_max);
 RcppExport SEXP _BayesMallows_metropolis_hastings_alpha(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP rankingsSEXP, SEXP metricSEXP, SEXP rhoSEXP, SEXP logz_estimateSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -234,7 +234,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type rankings(rankingsSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type rho(rhoSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type logz_estimate(logz_estimateSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::vec> >::type logz_estimate(logz_estimateSEXP);
     Rcpp::traits::input_parameter< double >::type alpha_prop_sd(alpha_prop_sdSEXP);
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< double >::type alpha_max(alpha_maxSEXP);
