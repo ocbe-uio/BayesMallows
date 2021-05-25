@@ -109,3 +109,96 @@ test_that("smc_leap_and_shift_probs() works as expected", {
 	)
 	expect_equal(dist_3, 1)
 })
+
+# ======================================================== #
+# unit test for metropolis_hastings_alpha.R                #
+# ======================================================== #
+
+metropolis_hastings_alpha_old <- function(
+	alpha, n_items, rankings, metric, rho, logz_estimate
+) {
+	exp_alpha_prime <- rlnorm(1, mean = alpha, sd = 0.15) # 1
+	alpha_prime <- log(exp_alpha_prime)
+
+	# evaluate the log-likelihood with current rankings
+	mallows_loglik_prop <- get_mallows_loglik(
+		alpha = (alpha_prime - alpha), rho = rho, n = n_items,
+		rankings = rankings, metric = metric
+	)
+
+	# evaluate the log estimate of the partition function
+	# for a particular value of alpha
+	logz_alpha <- get_partition_function(
+		n_items = n_items, alpha = alpha, logz_estimate = logz_estimate,
+		metric = metric
+	)
+	logz_alpha_prime <- get_partition_function(
+		n_items = n_items, alpha = alpha_prime, logz_estimate = logz_estimate,
+		metric = metric
+	)
+
+	n_users <- length(rankings) / n_items
+
+	loga <- n_users * (logz_alpha - logz_alpha_prime) +
+		dexp(alpha_prime, log=TRUE) - dexp(alpha, log=TRUE) +
+		alpha_prime - alpha + mallows_loglik_prop
+
+	# determine whether to accept or reject proposed rho and return now consensus ranking
+	p <- runif(1, min = 0, max = 1)
+	if (log(p) <= loga) {
+		return(alpha_prime)
+	} else {
+		return(alpha)
+	}
+}
+
+set.seed(101)
+rho <- c(1,2,3,4,5,6)
+alpha <- 2
+metric <- "footrule"
+n_items <- 6
+rankings <- sample_mallows(
+	rho0 = rho, alpha0 = alpha, n_samples = 10, burnin = 1000, thinning = 500
+)
+alpha_vector <- seq(from = 0, to = 20, by = 0.1)
+iter <- 1e4
+degree <- 10
+
+# Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
+logz_estimate <- estimate_partition_function(
+	method = "importance_sampling", alpha_vector = alpha_vector,
+	n_items = n_items, metric = "footrule", nmc = iter, degree = degree
+)
+set.seed(101)
+test_1_a <- metropolis_hastings_alpha_old(alpha, n_items, rankings, metric, rho, logz_estimate)
+test_1_b <- metropolis_hastings_alpha(
+	alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd = 0.5,
+	lambda = 0.1, alpha_max = 20
+)
+set.seed(101)
+test_2_a <- metropolis_hastings_alpha_old(
+	alpha, n_items, rankings, metric, rho, logz_estimate
+)
+test_2_b <- metropolis_hastings_alpha(
+	alpha, n_items, rankings, metric, rho, logz_estimate,
+	alpha_prop_sd = 0.15, lambda = 0.1, alpha_max = 20
+)
+set.seed(101)
+test_3_b <- metropolis_hastings_alpha(
+	alpha, n_items, rankings, metric, rho, logz_estimate,
+	alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 20
+)
+set.seed(101)
+test_4_b <- metropolis_hastings_alpha(
+	alpha, n_items, rankings, metric, rho, logz_estimate,
+	alpha_prop_sd = 0.15, lambda = 0.15, alpha_max = 20
+)
+
+test_that("metropolis_hastings_alpha() works as expected", {
+	expect_equivalent(test_1_a, 1.951095, tol=1e-5)
+	expect_equivalent(test_1_b, 2.450351, tol=1e-5)
+	expect_equivalent(test_2_a, 1.951095, tol=1e-5)
+	expect_equivalent(test_2_b, 2.125639, tol=1e-5)
+	expect_equivalent(test_3_b, 2)
+	expect_equivalent(test_4_b, 1.904542, tol=1e-5)
+})

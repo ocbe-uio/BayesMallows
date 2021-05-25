@@ -4,32 +4,83 @@
 \alias{metropolis_hastings_alpha}
 \title{Metropolis-Hastings Alpha}
 \usage{
-metropolis_hastings_alpha(alpha, n_items, rankings, metric, rho, logz_estimate)
+metropolis_hastings_alpha(
+  alpha,
+  n_items,
+  rankings,
+  metric,
+  rho,
+  logz_estimate,
+  alpha_prop_sd,
+  lambda,
+  alpha_max
+)
 }
 \arguments{
 \item{alpha}{Numeric value og the scale parameter}
 
 \item{n_items}{Integer is the number of items in a ranking}
 
-\item{rankings}{A matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
-rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
-can be a vector.}
+\item{rankings}{the observed rankings, i.e, preference data}
 
 \item{metric}{A character string specifying the distance metric to use in the
 Bayesian Mallows Model. Available options are \code{"footrule"},
 \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 \code{"ulam"}.}
 
-\item{rho}{Numeric vector specifying the consensus ranking}
+\item{rho}{Numeric vector specifying the current consensus ranking}
 
-\item{logz_estimate}{Estimate of the partition function, computed with
+\item{logz_estimate}{Estimate  grid of log of partition function, computed with
 \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.}
 }
 \value{
 \code{alpha} or \code{alpha_prime}: Numeric value to be used as the proposal of a new alpha
 }
 \description{
-Function to perform Metropolis-Hastings for new alpha under the Mallows model
+Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
+}
+\details{
+\code{rankings} is a matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
+rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
+can be a vector.
+}
+\examples{
+rho <- c(1,2,3,4,5,6)
+alpha <- 2
+metric <- "footrule"
+n_items <- 6
+rankings <- sample_mallows(
+	rho0 = rho, alpha0 = alpha, n_samples = 10, burnin = 1000, thinning = 500
+)
+alpha_vector <- seq(from = 0, to = 20, by = 0.1)
+iter <- 1e4
+degree <- 10
+
+# Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
+logz_estimate <- estimate_partition_function(
+	method = "importance_sampling", alpha_vector = alpha_vector,
+	n_items = n_items, metric = "footrule", nmc = iter, degree = degree
+)
+
+metropolis_hastings_alpha(
+	alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd = 0.5,
+	lambda = 0.1, alpha_max = 20
+)
+
+metropolis_hastings_alpha(
+	alpha, n_items, rankings, metric, rho, logz_estimate,
+	alpha_prop_sd = 0.15, lambda = 0.1, alpha_max = 20
+)
+
+metropolis_hastings_alpha(
+	alpha, n_items, rankings, metric, rho, logz_estimate,
+	alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 20
+)
+
+metropolis_hastings_alpha(
+	alpha, n_items, rankings, metric, rho, logz_estimate,
+	alpha_prop_sd = 0.15, lambda = 0.15, alpha_max = 20
+)
 }
 \author{
 Anja Stein
