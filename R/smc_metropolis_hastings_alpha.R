@@ -15,39 +15,52 @@
 #' @return \code{alpha} or \code{alpha_prime}: Numeric value to be used as the proposal of a new alpha
 #' @importFrom stats dexp rlnorm runif
 #' @author Anja Stein
-#' #TODO Adapt ../aux/2021-05-12 metropolis_hastings_alpha.R
 #' @export
-metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, logz_estimate) {
+metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd,
+                                             lambda, alpha_max){
 
+  # Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
 
-  # select alpha_prime from log normal distribution with some variance lambda
-  # log x ~ N(mu, sigma^2)
-  # in C, this is written as
-  # double alpha_proposal = std::exp(arma::randn<double>() * alpha_prop_sd + std::log(alpha_old));.
-  exp_alpha_prime <- rlnorm(1, meanlog = alpha, sdlog = 0.15) # 1
-  alpha_prime <- log(exp_alpha_prime)
+  # INPUT:
+  #   rho is the current consensus ranking
+  #   rankings = the observed rankings, i.e, preference data
+  #   leap_size is the leap size
+  #   n_items is the number of items
+  #   alpha_0 is the current alpha
+  #   logz_estimate is estimate grid of log of partition function
+  #   alpha_prop_sd
+  #   lambda
 
-  # evaluate the log-likelihood with current rankings
-  mallows_loglik_prop <- get_mallows_loglik(
-    alpha = (alpha_prime - alpha), rho = rho, n_items = n_items, rankings = rankings,
-    metric = metric
-  )
+  # OUTPUT: an alpha to be used for the next time step
+
+  #alpha_prime = exp(arma::randn<double>() * alpha_prop_sd + log(alpha));
+  alpha_prime = exp(rnorm(n = 1, mean = 0, sd = 1) * alpha_prop_sd + log(alpha))
+  #alpha_prime
+
+  # Difference between current and proposed alpha
+  alpha_diff = alpha - alpha_prime;
+  mallows_loglik_prop = get_mallows_loglik(alpha = (alpha_prime - alpha), rho = rho, n = n_items, rankings = rankings,
+                                           metric = metric)
 
   # evaluate the log estimate of the partition function for a particular value of alpha
-  logz_alpha <- get_partition_function(n_items = n_items, alpha = alpha, logz_estimate = logz_estimate, metric = metric)
-  logz_alpha_prime <- get_partition_function(n_items = n_items, alpha = alpha_prime, logz_estimate = logz_estimate, metric = metric)
+  logz_alpha = BayesMallows:::get_partition_function(n_items = n_items, alpha = alpha,
+                                                     logz_estimate = logz_estimate, metric = metric)
+  logz_alpha_prime = BayesMallows:::get_partition_function(n_items = n_items, alpha = alpha_prime,
+                                                           logz_estimate = logz_estimate, metric = metric)
 
+  obs_freq = length(rankings)/n_items
 
-  n_users <- length(rankings) / n_items
-
-  loga <- n_users * (logz_alpha - logz_alpha_prime) + dexp(alpha_prime, log = TRUE) - dexp(alpha, log = TRUE) +
-    alpha_prime - alpha + mallows_loglik_prop
+  # Compute the Metropolis-Hastings ratio
+  loga =  mallows_loglik_prop +
+    lambda * alpha_diff +
+    obs_freq * (logz_alpha - logz_alpha_prime)+
+    log(alpha_prime) - log(alpha)
 
   # determine whether to accept or reject proposed rho and return now consensus ranking
-  p <- runif(1, min = 0, max = 1)
-  if (log(p) <= loga) {
+  p = runif(1, min = 0, max = 1)
+  if(log(p) <= loga  &&  alpha_prime < alpha_max){
     return(alpha_prime)
-  } else {
+  } else{
     return(alpha)
   }
 }
