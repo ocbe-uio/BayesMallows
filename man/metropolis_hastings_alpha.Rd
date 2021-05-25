@@ -84,5 +84,4 @@ metropolis_hastings_alpha(
 }
 \author{
 Anja Stein
-#ASK: Ask Anja for example to aid translation to C++
 }
