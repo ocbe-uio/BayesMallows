@@ -263,3 +263,28 @@ leap_and_shift_probs <- function(rho, leap_size, n_items) {
     .Call(`_BayesMallows_leap_and_shift_probs`, rho, leap_size, n_items)
 }
 
+#' @title Metropolis-Hastings Alpha
+#' @description Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
+#' @param alpha Numeric value og the scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param rankings the observed rankings, i.e, preference data
+#' @details \code{rankings} is a matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
+#' rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
+#' can be a vector.
+#' @param metric A character string specifying the distance metric to use in the
+#' Bayesian Mallows Model. Available options are \code{"footrule"},
+#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#' \code{"ulam"}.
+#' @param rho Numeric vector specifying the current consensus ranking
+#' @param logz_estimate Estimate  grid of log of partition function, computed with
+#' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
+#' @return \code{alpha} or \code{alpha_prime}: Numeric value to be used as the proposal of a new alpha
+#' @importFrom stats dexp rlnorm runif
+#' @author Anja Stein
+#' @example /inst/examples/metropolis_hastings_alpha.R
+#'
+#' @export
+metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max) {
+    .Call(`_BayesMallows_metropolis_hastings_alpha`, alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max)
+}
+
