@@ -109,3 +109,62 @@ test_that("smc_leap_and_shift_probs() works as expected", {
 	)
 	expect_equal(dist_3, 1)
 })
+
+################################################
+# unit test for metropolis_hastings_alpha.R
+################################################
+
+set.seed(101)
+
+rho = c(1,2,3,4,5,6)
+alpha = 2
+metric = "footrule"
+n_items= 6
+
+rankings =   sample_mallows(rho0 = rho, alpha0 = alpha, n_samples = 10,
+                            burnin = 1000, thinning = 500)
+
+alpha_vector <- seq(from = 0, to = 20, by = 0.1)
+iter = 1e4
+degree <- 10
+
+# Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
+logz_estimate <- estimate_partition_function(method = "importance_sampling",
+                                             alpha_vector = alpha_vector,
+                                             n_items = n_items, metric = "footrule",
+                                             nmc = iter, degree = degree)
+
+require("BayesMallows")
+set.seed(101)
+test_1_a = metropolis_hastings_alpha(alpha, n_items, rankings, metric, rho, logz_estimate)
+print(test_1_a)
+#1.951095
+
+test_1_b = metropolis_hastings_alpha_update(alpha, n_items, rankings, metric, rho, logz_estimate,
+                                           alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 20)
+print(test_1_b)
+# 2.450351
+
+set.seed(101)
+test_2_a = metropolis_hastings_alpha(alpha, n_items, rankings, metric, rho, logz_estimate)
+print(test_2_a)
+#1.951095
+
+test_2_b = metropolis_hastings_alpha_update(alpha, n_items, rankings, metric, rho, logz_estimate,
+                                            alpha_prop_sd = 0.15, lambda = 0.1, alpha_max = 20)
+print(test_2_b)
+# 2.125639
+
+
+set.seed(101)
+test_3_b = metropolis_hastings_alpha_update(alpha, n_items, rankings, metric, rho, logz_estimate,
+                                            alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 20)
+print(test_3_b)
+# 2
+
+set.seed(101)
+test_4_b = metropolis_hastings_alpha_update(alpha, n_items, rankings, metric, rho, logz_estimate,
+                                            alpha_prop_sd = 0.15, lambda = 0.15, alpha_max = 20)
+print(test_4_b)
+# 1.904542
+
