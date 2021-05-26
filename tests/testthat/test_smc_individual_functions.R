@@ -39,7 +39,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
 		rho = rho, leap_size = 1
 	)
 	dist_1 <- BayesMallows:::get_rank_distance(rho, test_1, metric= "ulam")
-	expect_equal(test_1, c(1, 2, 3, 5, 4, 6))
+	expect_equal(test_1, as.matrix(c(1, 2, 3, 5, 4, 6)))
 	# if rho != rho_prime, then it should have a ulam distance of 1
 	# if rho == rho_prime, then it should have ulam distance of 0
 	expect_equal(dist_1, 1)
@@ -49,7 +49,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
 		rho = rho, leap_size = 2
 	)
 	dist_2 <- BayesMallows:::get_rank_distance(rho, test_2, metric = "ulam")
-	expect_equal(test_2, c(1, 2, 3, 4, 5, 6))
+	expect_equal(test_2, as.matrix(c(1, 2, 3, 4, 5, 6)))
 	expect_equal(dist_2, 0)
 
 	test_3 <- metropolis_hastings_rho(
@@ -57,7 +57,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
 		rho = rho, leap_size = 3
 	)
 	dist_3 <- BayesMallows:::get_rank_distance(rho, test_3, metric = "ulam")
-	expect_equal(test_3, c(1, 2, 3, 4, 5, 6))
+	expect_equal(test_3, as.matrix(c(1, 2, 3, 4, 5, 6)))
 	expect_equal(dist_3, 0)
 
 	# we have a ranking data set containing 10 rankings over 6 items
@@ -66,7 +66,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
 		rho = rho, leap_size = 1
 	)
 	dist_4 <- BayesMallows:::get_rank_distance(rho, test_4, metric = "ulam")
-	expect_equal(test_4, c(1, 2, 3, 4, 5, 6))
+	expect_equal(test_4, as.matrix(c(1, 2, 3, 4, 5, 6)))
 	expect_equal(dist_4, 0)
 })
 
