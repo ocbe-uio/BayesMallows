@@ -102,6 +102,7 @@ smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N,
           metric = metric, rho = rho_samples[ii, , tt + 1],
           leap_size = leap_size
         )
+        # FIXME: needs reparametrization (#87)
         alpha_samples[ii, tt + 1] <- metropolis_hastings_alpha(
           alpha = alpha_samples[ii, tt + 1], n_items = n_items,
           rankings = all_observed_rankings,
