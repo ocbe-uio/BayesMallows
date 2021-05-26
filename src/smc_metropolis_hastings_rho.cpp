@@ -1,4 +1,6 @@
 #include "RcppArmadillo.h"
+#include "smc.h"
+#include <cmath>
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Metropolis-Hastings Rho
@@ -38,36 +40,34 @@
 //' )
 //'
 // [[Rcpp::export]]
-double metropolis_hastings_rho(
+arma::vec metropolis_hastings_rho(
 	double alpha,
 	int n_items,
-	amra::mat rankings,
-	std:string metric,
+	arma::mat rankings,
+	std::string metric,
 	arma::vec rho,
 	int leap_size
 ) {
-//   # create new potential consensus ranking
-//   kernel <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = leap_size)
+  // create new potential consensus ranking
+  Rcpp::List kernel = leap_and_shift_probs(rho, leap_size, n_items);
 
-//   # output from leap-and-shift is of the following
-//   # leap_shift_list <- list("rho_prime" = rho_prime, "forwards_prob" = forwards_prob, "backwards_prob" = backwards_prob)
-//   rho_prime <- kernel$rho_prime
-//   forwards_prob <- kernel$forwards_prob # rho_prime|rho
-//   backwards_prob <- kernel$backwards_prob # rho|rho_prime
+  // output from leap-and-shift is of the following
+  arma::vec rho_prime = Rcpp::as<arma::vec>(kernel["rho_prime"]);
+  double forwards_prob = Rcpp::as<double>(kernel["forwards_prob"]); // rho_prime|rho
+  double backwards_prob = Rcpp::as<double>(kernel["backwards_prob"]); // rho|rho_prime
 
-//   # evaluate the log-likelihood with current rankings
-//   mallows_loglik_curr <- get_mallows_loglik(alpha = alpha, rho = rho, n_items = n_items, rankings = rankings, metric = metric)
-//   mallows_loglik_prop <- get_mallows_loglik(alpha = alpha, rho = rho_prime, n_items = n_items, rankings = rankings, metric = metric)
+  // evaluate the log-likelihood with current rankings
+  double mallows_loglik_curr = get_mallows_loglik(alpha, rho, n_items, rankings, metric);
+  double mallows_loglik_prop = get_mallows_loglik(alpha, rho_prime, n_items, rankings, metric);
 
-//   # calculate acceptance probability
-//   loga <- log(backwards_prob) - log(forwards_prob) + mallows_loglik_prop - mallows_loglik_curr
+  // calculate acceptance probability
+  double loga = std::log(backwards_prob) - std::log(forwards_prob) + mallows_loglik_prop - mallows_loglik_curr;
 
-
-//   # determine whether to accept or reject proposed rho and return now consensus ranking
-//   p <- runif(1, min = 0, max = 1)
-//   if (log(p) <= loga) {
-//     return(rho_prime)
-//   } else {
-//     return(rho)
-//   }
+  // determine whether to accept or reject proposed rho and return now consensus ranking
+  double p = Rcpp::as<double>(Rcpp::runif(1, 0, 1));
+  if (std::log(p) <= loga) {
+    return(rho_prime);
+  } else {
+    return(rho);
+  }
 }
