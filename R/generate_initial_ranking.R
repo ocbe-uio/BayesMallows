@@ -13,6 +13,9 @@
 #' @param cl Optional computing cluster used for parallelization, returned
 #' from \code{parallel::makeCluster}. Defaults to \code{NULL}.
 #'
+#' @param random Logical specifying whether or not to use a random initial ranking.
+#'   Defaults to \code{FALSE}.
+#'
 #'
 #' @return A matrix of rankings which can be given in the \code{rankings} argument
 #' to \code{\link{compute_mallows}}.
@@ -23,7 +26,7 @@
 #'
 generate_initial_ranking <- function(tc,
                                      n_items = max(tc[, c("bottom_item", "top_item")]),
-                                     cl = NULL){
+                                     cl = NULL, random = FALSE){
 
 
   if(!("BayesMallowsTC" %in% class(tc))){
@@ -44,7 +47,7 @@ generate_initial_ranking <- function(tc,
 
 create_ranks <- function(mat, n_items){
   g <- igraph::graph_from_edgelist(mat)
-  g <- as.integer(igraph::topological.sort(g))
+  g <- as.integer(igraph::topo_sort(g))
 
   # Add unranked elements at the end
   all_items <- seq(from = 1, to = n_items, by = 1)

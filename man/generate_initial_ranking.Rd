@@ -7,7 +7,8 @@
 generate_initial_ranking(
   tc,
   n_items = max(tc[, c("bottom_item", "top_item")]),
-  cl = NULL
+  cl = NULL,
+  random = FALSE
 )
 }
 \arguments{
@@ -20,6 +21,9 @@ equal the largest item index found in \code{tc}, i.e.,
 
 \item{cl}{Optional computing cluster used for parallelization, returned
 from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
+
+\item{random}{Logical specifying whether or not to use a random initial ranking.
+Defaults to \code{FALSE}.}
 }
 \value{
 A matrix of rankings which can be given in the \code{rankings} argument
