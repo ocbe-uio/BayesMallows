@@ -36,26 +36,53 @@ generate_initial_ranking <- function(tc,
 
   prefs <- split(tc[, c("bottom_item", "top_item"), drop = FALSE], tc$assessor)
   if(is.null(cl)){
-    prefs <- lapply(prefs, function(x, y) create_ranks(as.matrix(x), y), n_items)
+    prefs <- lapply(prefs, function(x, y, r) create_ranks(as.matrix(x), y, r), n_items, random)
   } else {
     prefs <- parallel::parLapply(cl = cl, X = prefs,
-                                 fun = function(x, y) create_ranks(as.matrix(x), y), n_items)
+                                 fun = function(x, y, r) create_ranks(as.matrix(x), y, r), n_items, random)
   }
 
   do.call(rbind, prefs)
 }
 
-create_ranks <- function(mat, n_items){
-  g <- igraph::graph_from_edgelist(mat)
-  g <- as.integer(igraph::topo_sort(g))
+create_ranks <- function(mat, n_items, random){
 
-  # Add unranked elements at the end
-  all_items <- seq(from = 1, to = n_items, by = 1)
-  g <- c(g, setdiff(all_items, g))
+  if(!random){
+    g <- igraph::graph_from_edgelist(mat)
+    g <- as.integer(igraph::topo_sort(g))
 
-  # Convert from ordering to ranking
-  r <- create_ranking(rev(g))
-  mat <- matrix(r, nrow = 1)
+    # Add unranked elements at the end
+    all_items <- seq(from = 1, to = n_items, by = 1)
+    g <- c(g, setdiff(all_items, g))
+
+    # Convert from ordering to ranking
+    r <- create_ranking(rev(g))
+    mat <- matrix(r, nrow = 1)
+  } else {
+    graph <- list()
+    for(i in seq_len(n_items)){
+      graph[[i]] <- unique(mat[mat[, "top_item"] == i, "bottom_item"])
+    }
+    indegree_init <- rep(0, n_items)
+    indegree <- table(unlist(graph))
+    indegree_init[as.integer(names(indegree))] <- indegree
+    attr(graph, "indegree") <- indegree_init
+    rm(indegree, indegree_init)
+    discovered <- rep(FALSE, n_items)
+    path <- numeric()
+
+    stdout <- vector('character')
+    con <- textConnection('stdout', 'wr', local = TRUE)
+    sink(con)
+    all_topological_sorts(graph, path, discovered, n_items)
+    sink()
+    close(con)
+
+    res <- gsub("\\[1\\] ", "", stdout[sample(length(stdout), 1)])
+
+    mat <- matrix(as.numeric(strsplit(res, split = "[^0-9]+")[[1]]), nrow = 1)
+  }
+
 
   return(mat)
 }

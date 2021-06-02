@@ -34,7 +34,7 @@ Given a consistent set of pairwise preferences, generate a complete ranking
 of items which is consistent with the preferences.
 }
 \examples{
-# The example dataset beach_preferences contains pairwise prefences of beach.
+# The example dataset beach_preferences contains pairwise preferences of beach.
 # We must first generate the transitive closure
 beach_tc <- generate_transitive_closure(beach_preferences)
 
@@ -48,6 +48,15 @@ head(beach_init)
 # to get nicer posterior plots:
 colnames(beach_init) <- paste("Beach", seq(from = 1, to = ncol(beach_init), by = 1))
 head(beach_init)
+
+# It is also possible to pick a random sample among all topological sorts.
+# This requires first enumerating all possible sorts, and might hence be computationally
+# demanding. Here is an example, where we reduce the data considerable to speed up computation.
+small_tc <- beach_tc[beach_tc$assessor \%in\% 1:6 & beach_tc$bottom_item \%in\% 1:4 & beach_tc$top_item \%in\% 1:4, ]
+set.seed(123)
+init_small <- generate_initial_ranking(tc = small_tc, n_items = 4, random = TRUE)
+# Look at the initial rankings generated
+init_small
 
 \dontrun{
   # We now give beach_init and beach_tc to compute_mallows. We tell compute_mallows
