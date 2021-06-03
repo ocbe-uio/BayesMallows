@@ -33,6 +33,16 @@ to \code{\link{compute_mallows}}.
 Given a consistent set of pairwise preferences, generate a complete ranking
 of items which is consistent with the preferences.
 }
+\note{
+Setting \code{random=TRUE} means that all possible orderings of each assessor's
+preferences are generated, and one of them is picked at random. This can be useful
+when experiencing convergence issues, e.g., if the MCMC algorithm does not mixed
+properly. However, finding all possible orderings is a combinatorial problem,
+which may be computationally very hard. The result may not even be possible to fit in
+memory, which may cause the R session to crash. When using this option,
+please try to increase the size of the problem incrementally, by starting with smaller
+subsets of the complete data. An example is given below.
+}
 \examples{
 # The example dataset beach_preferences contains pairwise preferences of beach.
 # We must first generate the transitive closure
