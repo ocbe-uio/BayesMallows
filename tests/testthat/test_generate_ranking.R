@@ -23,3 +23,21 @@ test_that("generate_initial_ranking works",{
 }
 )
 
+test_that("generate_initial_ranking with random works",{
+  beach_tc <- generate_transitive_closure(beach_preferences)
+
+  small_tc <- beach_tc[beach_tc$assessor %in% 1:6 & beach_tc$bottom_item %in% 1:4 & beach_tc$top_item %in% 1:4, ]
+  set.seed(123)
+  init_small <- generate_initial_ranking(tc = small_tc, n_items = 4, random = TRUE)
+  expect_equal(init_small, structure(c(3, 1, 1, 1, 4, 3, 1, 4, 3, 4, 2, 1, 4, 3, 2, 3, 3,
+                                       4, 2, 2, 4, 2, 1, 2), .Dim = c(6L, 4L)))
+
+  set.seed(321)
+  init_small <- generate_initial_ranking(tc = small_tc, n_items = 4, random = TRUE)
+  expect_equal(init_small, structure(c(3, 1, 1, 3, 4, 3, 1, 4, 3, 4, 1, 1, 2, 2, 2, 2, 3,
+                                       4, 4, 3, 4, 1, 2, 2), .Dim = c(6L, 4L)))
+
+  expect_error(generate_initial_ranking(pair_comp, random = TRUE))
+}
+)
+
