@@ -104,7 +104,8 @@ head(beach_init)
 # It is also possible to pick a random sample among all topological sorts.
 # This requires first enumerating all possible sorts, and might hence be computationally
 # demanding. Here is an example, where we reduce the data considerable to speed up computation.
-small_tc <- beach_tc[beach_tc$assessor \%in\% 1:6 & beach_tc$bottom_item \%in\% 1:4 & beach_tc$top_item \%in\% 1:4, ]
+small_tc <- beach_tc[beach_tc$assessor \%in\% 1:6 &
+                       beach_tc$bottom_item \%in\% 1:4 & beach_tc$top_item \%in\% 1:4, ]
 set.seed(123)
 init_small <- generate_initial_ranking(tc = small_tc, n_items = 4, random = TRUE)
 # Look at the initial rankings generated
