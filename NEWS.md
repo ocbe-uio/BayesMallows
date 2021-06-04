@@ -64,7 +64,7 @@
 * Added functionality for checking label switching. See `?label_switching` for more info.
 
 # BayesMallows 0.3.1.9001
-* The internal function `compute_importance_sampling_estimate` has been updated to avoid numerical overflow. Previusly, importance sampling failed at below 200 items. Now it works way above 10,000 items.
+* The internal function `compute_importance_sampling_estimate` has been updated to avoid numerical overflow. Previously, importance sampling failed at below 200 items. Now it works way above 10,000 items.
 
 # BayesMallows 0.3.1
 * This is an update of some parts of the C++ code, to avoid failing the sanitizer checks clang-UBSAN and gcc-UBSAN.

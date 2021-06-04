@@ -3,7 +3,7 @@
 #' @description Label switching may sometimes be a problem when running mixture models.
 #' The algorithm by Stephens \insertCite{Stephens2000}{BayesMallows}, implemented
 #' in the \code{label.switching} package \insertCite{Papastamoulis2016}{BayesMallows}, allows
-#' assessment of label switching after MCMC. At the moment, this is the only avaiable option
+#' assessment of label switching after MCMC. At the moment, this is the only available option
 #' in the \code{BayesMallows} package. The Stephens algorithms requires the individual cluster
 #' probabilities of each assessor to be saved in each iteration of the MCMC algorithm. As this
 #' potentially requires much memory, the current implementation of \code{\link{compute_mallows}}
