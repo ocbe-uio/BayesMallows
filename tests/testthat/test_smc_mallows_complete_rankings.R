@@ -106,7 +106,6 @@ test_that("Output of compute_posterior_intervals_rho is OK", {
 	expect_equivalent(sapply(rho_temp, length), rep(10, 7))
 })
 
-
 # posterior for alpha
 alpha_samples_table = data.frame(
 	iteration = 1:N , value = test$alpha_samples[,Time+1]

@@ -77,10 +77,9 @@ Rcpp::List smc_mallows_new_users_complete_CPP(
   /* ====================================================== */
   /* New user situation                                     */
   /* ====================================================== */
-
   int num_obs = 0;
 
-  for (int tt = 0; tt < Time; ++tt) {
+  for (arma::uword tt = 0; tt < Time; ++tt) {
     if (verbose) REprintf("observe %i out of %i \n", tt + 1, Time);
 
     // keep tally of how many ranking observations we have so far
@@ -89,7 +88,6 @@ Rcpp::List smc_mallows_new_users_complete_CPP(
     /* ====================================================== */
     /* New Information                                        */
     /* ====================================================== */
-
     // create two ranking dataset to use for the reweight and move stages of the
     // algorithm
     int n_o_r_row_start = num_obs - num_new_obs;
@@ -134,20 +132,26 @@ Rcpp::List smc_mallows_new_users_complete_CPP(
     /* ====================================================== */
     /* Resample                                               */
     /* ====================================================== */
+    // TODO: simplify this section
 
     /* Resample particles using multinomial resampling ------ */
-    Rcpp::NumericVector norm_wgt_rcpp;  // FIXME: Simplify!
+    Rcpp::NumericVector norm_wgt_rcpp;
     norm_wgt_rcpp = norm_wgt;
-    Rcpp::NumericVector index;  // TODO: change to IntegerVector ASAP
-    index = Rcpp::sample(N, N, true, norm_wgt_rcpp);
-    arma::uvec index_uvec, tt_uvec;
-    index_uvec = Rcpp::as<arma::uvec>(index);
-    tt_uvec = tt;
+    arma::uvec index, tt_vec;
+    index = Rcpp::as<arma::uvec>(Rcpp::sample(N, N, true, norm_wgt_rcpp));
+    index = index - 1;
+    tt_vec = tt;
+
+    /* Replacing tt + 1 slice on rho_samples ---------------- */
     arma::mat rho_samples_slice_11p1 = rho_samples.slice(tt + 1);
-    rho_samples_slice_11p1.col(tt + 1) = rho_samples_slice_11p1(index_uvec, tt_uvec + 1);
+    // IDEA: error is in the creation of index. So much so that
+    // FIXME: OOB error on the line below
+    // IDEA: index cannot include 100, so index must go until N - 1 on line 142
+    rho_samples_slice_11p1 = rho_samples_slice_11p1.rows(index);
     rho_samples.slice(tt + 1) = rho_samples_slice_11p1;
-    alpha_samples.col(tt + 1) =  alpha_samples(index_uvec, tt_uvec + 1);
-    // FIXME: OOB error somewhere here (maybe translating next step fixes this)
+
+    /* Replacing tt + 1 column on alpha_samples ------------- */
+    alpha_samples.col(tt + 1) =  alpha_samples.submat(index, tt_vec + 1);
 
     /* ====================================================== */
     /* Move step                                              */
@@ -156,12 +160,12 @@ Rcpp::List smc_mallows_new_users_complete_CPP(
       for (int kk = 0; kk < mcmc_kernel_app; ++kk) {
         // move each particle containing sample of rho and alpha by using the MCMC kernels
         double as = alpha_samples(ii, tt + 1);
-        arma::vec rs = rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
-        rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)) = metropolis_hastings_rho(as, n_items, all_observed_rankings, metric, rs, leap_size);
+        arma::rowvec rs = rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
+        rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)) = metropolis_hastings_rho(as, n_items, all_observed_rankings, metric, rs.t(), leap_size);
         double alpha_prop_sd = 0.1;
         double lambda = 0.001;
         double alpha_max = 1e6;
-        alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(as, n_items, all_observed_rankings, metric, rs, logz_estimate, alpha_prop_sd, lambda, alpha_max);
+        alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(as, n_items, all_observed_rankings, metric, rs.t(), logz_estimate, alpha_prop_sd, lambda, alpha_max);
       }
     }
   }
