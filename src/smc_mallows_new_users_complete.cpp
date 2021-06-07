@@ -158,7 +158,10 @@ Rcpp::List smc_mallows_new_users_complete_CPP(
         double as = alpha_samples(ii, tt + 1);
         arma::vec rs = rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
         rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)) = metropolis_hastings_rho(as, n_items, all_observed_rankings, metric, rs, leap_size);
-        // alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(as, n_items, all_observed_rankings, metric, rs, logz_estimate); // FIXME: needs more arguments after function overhaul (#87)
+        double alpha_prop_sd = 0.1;
+        double lambda = 0.001;
+        double alpha_max = 1e6;
+        alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(as, n_items, all_observed_rankings, metric, rs, logz_estimate, alpha_prop_sd, lambda, alpha_max);
       }
     }
   }
