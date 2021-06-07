@@ -7,30 +7,78 @@
 generate_initial_ranking(
   tc,
   n_items = max(tc[, c("bottom_item", "top_item")]),
-  cl = NULL
+  cl = NULL,
+  shuffle_unranked = FALSE,
+  random = FALSE,
+  random_limit = 8L
 )
 }
 \arguments{
 \item{tc}{A dataframe with pairwise comparisons of \code{S3} subclass
-\code{BayesMallowsTC}, returned from \code{\link{generate_transitive_closure}}.}
+\code{BayesMallowsTC}, returned from
+\code{\link{generate_transitive_closure}}.}
 
 \item{n_items}{The total number of items. If not provided, it is assumed to
-equal the largest item index found in \code{tc}, i.e.,
-\code{max(tc[, c("bottom_item", "top_item")])}.}
+equal the largest item index found in \code{tc}, i.e., \code{max(tc[,
+c("bottom_item", "top_item")])}.}
 
-\item{cl}{Optional computing cluster used for parallelization, returned
-from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
+\item{cl}{Optional computing cluster used for parallelization, returned from
+\code{parallel::makeCluster}. Defaults to \code{NULL}.}
+
+\item{shuffle_unranked}{Logical specifying whether or not to randomly
+permuted unranked items in the intial ranking. When
+\code{shuffle_unranked=TRUE} and \code{random=FALSE}, all unranked items
+for each assessor are randomly permuted. Otherwise, the first ordering
+returned by \code{igraph::topo_sort()} is returned.}
+
+\item{random}{Logical specifying whether or not to use a random initial
+ranking. Defaults to \code{FALSE}. Setting this to \code{TRUE} means that
+all possible orderings consistent with the stated pairwise preferences are
+generated for each assessor, and one of them is picked at random.}
+
+\item{random_limit}{Integer specifying the maximum number of items allowed
+when all possible orderings are computed, i.e., when \code{random=TRUE}.
+Defaults to \code{8L}.}
 }
 \value{
-A matrix of rankings which can be given in the \code{rankings} argument
-to \code{\link{compute_mallows}}.
+A matrix of rankings which can be given in the \code{rankings}
+  argument to \code{\link{compute_mallows}}.
 }
 \description{
 Given a consistent set of pairwise preferences, generate a complete ranking
 of items which is consistent with the preferences.
 }
+\note{
+Setting \code{random=TRUE} means that all possible orderings of each
+  assessor's preferences are generated, and one of them is picked at random.
+  This can be useful when experiencing convergence issues, e.g., if the MCMC
+  algorithm does not mixed properly. However, finding all possible orderings
+  is a combinatorial problem, which may be computationally very hard. The
+  result may not even be possible to fit in memory, which may cause the R
+  session to crash. When using this option, please try to increase the size
+  of the problem incrementally, by starting with smaller subsets of the
+  complete data. An example is given below.
+
+  As detailed in the documentation to \code{\link{generate_transitive_closure}},
+  it is assumed that the items are labeled starting from 1. For example, if a single
+  comparison of the following form is provided, it is assumed that there is a total
+  of 30 items (\code{n_items=30}), and the initial ranking is a permutation of these 30
+  items consistent with the preference 29<30.
+
+\tabular{rrr}{
+\strong{assessor} \tab \strong{bottom_item} \tab \strong{top_item}\cr
+1 \tab 29 \tab 30\cr
+}
+
+If in reality there are only two items, they should be relabeled to 1 and 2, as follows:
+
+\tabular{rrr}{
+\strong{assessor} \tab \strong{bottom_item} \tab \strong{top_item}\cr
+1 \tab 1 \tab 2\cr
+}
+}
 \examples{
-# The example dataset beach_preferences contains pairwise prefences of beach.
+# The example dataset beach_preferences contains pairwise preferences of beach.
 # We must first generate the transitive closure
 beach_tc <- generate_transitive_closure(beach_preferences)
 
@@ -44,6 +92,41 @@ head(beach_init)
 # to get nicer posterior plots:
 colnames(beach_init) <- paste("Beach", seq(from = 1, to = ncol(beach_init), by = 1))
 head(beach_init)
+
+# By default, the algorithm for generating the initial ranking is deterministic.
+# It is possible to randomly permuted the unranked items with the argument shuffle_unranked,
+# as demonstrated below. This algorithm is computationally efficient, but defaults to FALSE
+# for backward compatibility.
+set.seed(2233)
+beach_init <- generate_initial_ranking(beach_tc, shuffle_unranked = TRUE)
+head(beach_init)
+
+# It is also possible to pick a random sample among all topological sorts.
+# This requires first enumerating all possible sorts, and might hence be computationally
+# demanding. Here is an example, where we reduce the data considerable to speed up computation.
+small_tc <- beach_tc[beach_tc$assessor \%in\% 1:6 &
+                       beach_tc$bottom_item \%in\% 1:4 & beach_tc$top_item \%in\% 1:4, ]
+set.seed(123)
+init_small <- generate_initial_ranking(tc = small_tc, n_items = 4, random = TRUE)
+# Look at the initial rankings generated
+init_small
+
+# For this small dataset, we can also study the effect of setting shuffle_unranked=TRUE
+# in more detail. We consider assessors 1 and 2 only.
+# First is the deterministic ordering. This one is equal for each run.
+generate_initial_ranking(tc = small_tc[small_tc$assessor \%in\% c(1, 2), ],
+                         n_items = 4, shuffle_unranked = FALSE, random = FALSE)
+# Next we shuffle the unranked, setting the seed for reproducibility.
+# For assessor 1, item 2 is unranked, and by rerunning the code multiple times,
+# we see that element (1, 2) indeed changes ranking randomly.
+# For assessor 2, item 3 is unranked, and we can also see that this item changes
+# ranking randomly when rerunning the function multiple times.
+# The ranked items also change their ranking from one random realiziation to another,
+# but their relative ordering is constant.
+set.seed(123)
+generate_initial_ranking(tc = small_tc[small_tc$assessor \%in\% c(1, 2), ],
+                         n_items = 4, shuffle_unranked = TRUE, random = FALSE)
+
 
 \dontrun{
   # We now give beach_init and beach_tc to compute_mallows. We tell compute_mallows

@@ -1,8 +1,8 @@
 ## Resubmission Note
-This is a bug fix, making the parametization of the Mallows model consistent throughout the package.
+This is a resubmission which features an improvement in the generation of initial rankings based on pairwise comparisons.
 
 ## Test Environments
-* local OS X install, R 4.0.3
+* local Windows install, R 4.1.0
 * windows, win-devel, release, and oldrelease.
 * Linux on Travis CI.
 

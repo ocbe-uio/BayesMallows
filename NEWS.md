@@ -1,5 +1,9 @@
 # BayesMallows (development version)
 
+# BayesMallows 1.0.2
+
+* Function generate_initial_ranking() now has two additional options for generating random initial rankings. This can help with convergence problems, by allowing the MCMC algorithm to run from a range of different starting points.
+
 # BayesMallows 1.0.1
 
 * Fixes a bug in lik_db_mix and expected_dist, in which the scaling parameter used a different parametrization than the rest of the package. All functions in the package now use consistent parametrization of the Mallows model, as stated in the vignette.
@@ -62,7 +66,7 @@
 * Added functionality for checking label switching. See `?label_switching` for more info.
 
 # BayesMallows 0.3.1.9001
-* The internal function `compute_importance_sampling_estimate` has been updated to avoid numerical overflow. Previusly, importance sampling failed at below 200 items. Now it works way above 10,000 items.
+* The internal function `compute_importance_sampling_estimate` has been updated to avoid numerical overflow. Previously, importance sampling failed at below 200 items. Now it works way above 10,000 items.
 
 # BayesMallows 0.3.1
 * This is an update of some parts of the C++ code, to avoid failing the sanitizer checks clang-UBSAN and gcc-UBSAN.
@@ -126,7 +130,7 @@
 * Argument `type` to `plot.BayesMallows` and `assess_convergence` has been renamed to `parameter`, to be more consistent.
 
 # BayesMallows 0.1.1.9002
-* Argument `save_augment_data` to `compute_mallows` has been renamed to `save_aug`. 
+* Argument `save_augment_data` to `compute_mallows` has been renamed to `save_aug`.
 * `compute_mallows` fills in implied ranks when an assessor has only one missing rank. This avoids unnecessary augmentation in MCMC.
 * `generate_ranking` and `generate_ordering` now work with missing ranks.
 
