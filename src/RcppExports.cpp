@@ -224,19 +224,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // smc_mallows_new_users_complete
-Rcpp::List smc_mallows_new_users_complete(arma::mat R_obs, int n_items, std::string metric, int leap_size, int N, int Time, int mcmc_kernel_app, int num_new_obs, const Rcpp::Nullable<arma::vec>& logz_estimate, bool verbose);
+Rcpp::List smc_mallows_new_users_complete(arma::mat& R_obs, int& n_items, std::string& metric, int& leap_size, int& N, int Time, int& mcmc_kernel_app, int& num_new_obs, const Rcpp::Nullable<arma::vec>& logz_estimate, bool verbose);
 RcppExport SEXP _BayesMallows_smc_mallows_new_users_complete(SEXP R_obsSEXP, SEXP n_itemsSEXP, SEXP metricSEXP, SEXP leap_sizeSEXP, SEXP NSEXP, SEXP TimeSEXP, SEXP mcmc_kernel_appSEXP, SEXP num_new_obsSEXP, SEXP logz_estimateSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type R_obs(R_obsSEXP);
-    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
-    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
-    Rcpp::traits::input_parameter< int >::type leap_size(leap_sizeSEXP);
-    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type R_obs(R_obsSEXP);
+    Rcpp::traits::input_parameter< int& >::type n_items(n_itemsSEXP);
+    Rcpp::traits::input_parameter< std::string& >::type metric(metricSEXP);
+    Rcpp::traits::input_parameter< int& >::type leap_size(leap_sizeSEXP);
+    Rcpp::traits::input_parameter< int& >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type Time(TimeSEXP);
-    Rcpp::traits::input_parameter< int >::type mcmc_kernel_app(mcmc_kernel_appSEXP);
-    Rcpp::traits::input_parameter< int >::type num_new_obs(num_new_obsSEXP);
+    Rcpp::traits::input_parameter< int& >::type mcmc_kernel_app(mcmc_kernel_appSEXP);
+    Rcpp::traits::input_parameter< int& >::type num_new_obs(num_new_obsSEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::vec>& >::type logz_estimate(logz_estimateSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     rcpp_result_gen = Rcpp::wrap(smc_mallows_new_users_complete(R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate, verbose));
