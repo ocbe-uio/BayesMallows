@@ -263,7 +263,7 @@ leap_and_shift_probs <- function(rho, leap_size, n_items) {
     .Call(`_BayesMallows_leap_and_shift_probs`, rho, leap_size, n_items)
 }
 
-#' @title SMC-Mallows New Users Complete (CPP version)
+#' @title SMC-Mallows New Users Complete
 #' @description Function to perform resample-move SMC algorithm where we
 #' receive new users with complete rankings at each time step
 #'
@@ -293,8 +293,8 @@ leap_and_shift_probs <- function(rho, leap_size, n_items) {
 #' @importFrom stats rexp
 #' @export
 #'
-smc_mallows_new_users_complete_CPP <- function(R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate = NULL, verbose = FALSE) {
-    .Call(`_BayesMallows_smc_mallows_new_users_complete_CPP`, R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate, verbose)
+smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate = NULL, verbose = FALSE) {
+    .Call(`_BayesMallows_smc_mallows_new_users_complete`, R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate, verbose)
 }
 
 #' @title Metropolis-Hastings Alpha

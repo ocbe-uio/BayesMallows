@@ -4,7 +4,7 @@
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-//' @title SMC-Mallows New Users Complete (CPP version)
+//' @title SMC-Mallows New Users Complete
 //' @description Function to perform resample-move SMC algorithm where we
 //' receive new users with complete rankings at each time step
 //'
@@ -35,7 +35,7 @@
 //' @export
 //'
 // [[Rcpp::export]]
-Rcpp::List smc_mallows_new_users_complete_CPP(
+Rcpp::List smc_mallows_new_users_complete(
   arma::mat R_obs,
   int n_items,
   std::string metric,

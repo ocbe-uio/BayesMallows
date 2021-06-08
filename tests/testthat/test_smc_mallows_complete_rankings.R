@@ -60,16 +60,6 @@ test <- smc_mallows_new_users_complete(
 	num_new_obs = num_new_obs, verbose = TRUE
 )
 
-test_cpp <- smc_mallows_new_users_complete_CPP(
-	R_obs = data, n_items = n_items, metric = metric,
-	leap_size = leap_size, N = N, Time = Time,
-	logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-	num_new_obs = num_new_obs, verbose = TRUE
-)
-# TODO: benchmark test against smc_mallows_new_users_complete_CPP()
-print(str(test))
-print(str(test_cpp))
-
 test_that("Output of smc_mallows_new_users_complete is OK", {
 	expect_is(test, "list")
 	expect_length(test, 2)
