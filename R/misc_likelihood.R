@@ -11,16 +11,16 @@
 #/' @return The log-likelihood value corresponding to one or more observed rankings under the Mallows rank model with distance specified by the \code{metric} argument.
 #/'
 
-log_lik_db <- function(rho,alpha,metric,rankings,obs_freq){
+log_lik_db <- function(rho, alpha, metric, rankings, obs_freq){
 
   N <- sum(obs_freq)
   n_items <- ncol(rankings)
 
-  if(metric%in%c("kendall","cayley","hamming")){
+  if(metric %in% c("kendall", "cayley", "hamming")){
     log_lik <- -(alpha*rank_dist_sum(rankings=t(rankings),rho=rho,metric=metric,obs_freq=obs_freq)+N*get_partition_function(n_items=n_items,alpha=alpha*n_items,metric=metric))
   }
 
-  if(metric%in%c("ulam","footrule","spearman")){
+  if(metric %in% c( "ulam", "footrule", "spearman")){
     pfd <- dplyr::filter(partition_function_data,
                          .data$metric == !!metric, .data$n_items == !!n_items,
                          .data$type == "cardinalities")
@@ -29,7 +29,13 @@ log_lik_db <- function(rho,alpha,metric,rankings,obs_freq){
     } else{
       card <- pfd$values[[1]]
     }
-    log_lik <- -(alpha*rank_dist_sum(rankings=t(rankings),rho=rho,metric=metric,obs_freq=obs_freq)+N*get_partition_function(alpha=alpha*n_items,n_items=n_items,metric=metric,cardinalities=card)) # TODO: write as new function? (#91)
+
+    log_lik <- -(
+      alpha * rank_dist_sum(rankings = t(rankings), rho = rho,
+                            metric = metric, obs_freq = obs_freq) +
+        N * get_partition_function( alpha = alpha * n_items,
+                                    n_items = n_items, metric = metric,
+                                    cardinalities = card)) # TODO: write as new function? (#91)
   }
 
   return(log_lik)
@@ -55,14 +61,18 @@ log_lik_db <- function(rho,alpha,metric,rankings,obs_freq){
 #/' @return The log-likelihood value corresponding to one or more observed rankings under the Mallows mixture model with distance specified by the \code{metric} argument.
 #/'
 
-log_lik_db_mix <- function(rho,alpha,weights,metric,rankings,obs_freq){
+log_lik_db_mix <- function(rho, alpha, weights, metric,
+                           rankings,obs_freq){
 
   L <- length(obs_freq)
   n_clusters <- length(weights)
-  temp <- matrix(NA,nrow=n_clusters,ncol=L)
-  for(l in 1:L){
-    for(g in 1:n_clusters){
-      temp[g,l] <- exp(log_lik_db(rho=rho[g,],alpha=alpha[g],metric=metric,rankings=rankings[l,,drop=FALSE],obs_freq=obs_freq[l]))
+  temp <- matrix(NA, nrow = n_clusters, ncol = L)
+  for(l in seq_len(L)){
+    for(g in seq_len(n_clusters)){
+      temp[g, l] <- exp(log_lik_db(
+        rho = rho[g, ], alpha = alpha[g], metric = metric,
+        rankings = rankings[ l, , drop = FALSE],
+        obs_freq = obs_freq[l]))
     }
   }
   log_lik <- sum(log(weights%*%temp))
