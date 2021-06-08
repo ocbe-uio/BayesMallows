@@ -23,26 +23,41 @@ metropolis_hastings_alpha(
 
 \item{rankings}{the observed rankings, i.e, preference data}
 
-\item{metric}{A character string specifying the distance metric to use in the
-Bayesian Mallows Model. Available options are \code{"footrule"},
-\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-\code{"ulam"}.}
+\item{metric}{A character string specifying the distance metric to use
+in the Bayesian Mallows Model. Available options are \code{"footrule"},
+\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
+and \code{"ulam"}.}
 
 \item{rho}{Numeric vector specifying the current consensus ranking}
 
-\item{logz_estimate}{Estimate  grid of log of partition function, computed with
-\code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.}
+\item{logz_estimate}{Estimate  grid of log of partition function,
+computed with \code{\link{estimate_partition_function}} in
+the BayesMallow R package {estimate_partition_function}.}
+
+\item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
+lognormal proposal distribution used for \eqn{\alpha} in the
+Metropolis-Hastings algorithm. Defaults to \code{0.1}.}
+
+\item{lambda}{Strictly positive numeric value specifying the rate parameter
+of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+to \code{0.1}. When \code{n_cluster > 1}, each mixture component
+\eqn{\alpha_{c}} has the same prior distribution.}
+
+\item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential
+prior distribution.}
 }
 \value{
-\code{alpha} or \code{alpha_prime}: Numeric value to be used as the proposal of a new alpha
+\code{alpha} or \code{alpha_prime}: Numeric value to be used
+  as the proposal of a new alpha
 }
 \description{
-Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
+Function to perform Metropolis-Hastings for new rho under
+  the Mallows model with footrule distance metric!
 }
 \details{
-\code{rankings} is a matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
-rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
-can be a vector.
+\code{rankings} is a matrix of size
+  \eqn{N }\eqn{\times}{x}\eqn{ n_items} of rankings in each row.
+  Alternatively, if \eqn{N} equals 1, \code{rankings} can be a vector.
 }
 \examples{
 rho <- c(1,2,3,4,5,6)
@@ -56,7 +71,8 @@ alpha_vector <- seq(from = 0, to = 20, by = 0.1)
 iter <- 1e4
 degree <- 10
 
-# Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
+# Estimate the logarithm of the partition function of the Mallows rank model
+# using the estimate partition function
 logz_estimate <- estimate_partition_function(
 	method = "importance_sampling", alpha_vector = alpha_vector,
 	n_items = n_items, metric = "footrule", nmc = iter, degree = degree

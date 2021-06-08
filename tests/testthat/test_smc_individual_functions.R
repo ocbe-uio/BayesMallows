@@ -5,6 +5,7 @@ alpha <- 2
 metric <- "footrule"
 n_items <- 6
 
+# TODO: investigate further. Output in R matches C++? (#92)
 test_that("get_mallows_loglik() works as expected", {
 	set.seed(101)
 	loglik <- get_mallows_loglik(
@@ -24,16 +25,18 @@ test_that("get_mallows_loglik() works as expected", {
 	expect_equivalent(loglik, -22.6667, tol=1e-4)
 })
 
-#FIXME: #86 metropolis_hastings_rho unit tests failing after translation to C++
 test_that("smc_metropolis_hastings_rho() works as expected", {
 	set.seed(101)
-	# This functions uses get_mallows_log_lik and leap_and_shift_probs so if the checks match in those worker functions then it is very likely that this function will return the correct outputs.
+	# This functions uses get_mallows_log_lik and leap_and_shift_probs
+	# so if the checks match in those worker functions then it is very likely
+	# that this function will return the correct outputs.
 	rankings <- sample_mallows(
 		rho0 = rho, alpha0 = alpha, n_samples = 10,
 		burnin = 1000, thinning = 500
 	)
 
-	# you can confirm the print statements inside the metropolis_hastings_rho match get_mallows_loglik and leap_and_shift_probs
+	# you can confirm the print statements inside the metropolis_hastings_rho
+	# match get_mallows_loglik and leap_and_shift_probs
 	test_1 <- metropolis_hastings_rho(
 		alpha = alpha, n_items = n_items, rankings = t(rho), metric = metric,
 		rho = rho, leap_size = 1

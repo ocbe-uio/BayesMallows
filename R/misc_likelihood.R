@@ -29,7 +29,7 @@ log_lik_db <- function(rho,alpha,metric,rankings,obs_freq){
     } else{
       card <- pfd$values[[1]]
     }
-    log_lik <- -(alpha*rank_dist_sum(rankings=t(rankings),rho=rho,metric=metric,obs_freq=obs_freq)+N*get_partition_function(alpha=alpha*n_items,n_items=n_items,metric=metric,cardinalities=card)) # TODO: write as new function?
+    log_lik <- -(alpha*rank_dist_sum(rankings=t(rankings),rho=rho,metric=metric,obs_freq=obs_freq)+N*get_partition_function(alpha=alpha*n_items,n_items=n_items,metric=metric,cardinalities=card)) # TODO: write as new function? (#91)
   }
 
   return(log_lik)

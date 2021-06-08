@@ -298,21 +298,33 @@ smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N,
 }
 
 #' @title Metropolis-Hastings Alpha
-#' @description Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
+#' @description Function to perform Metropolis-Hastings for new rho under
+#'   the Mallows model with footrule distance metric!
 #' @param alpha Numeric value og the scale parameter
 #' @param n_items Integer is the number of items in a ranking
 #' @param rankings the observed rankings, i.e, preference data
-#' @details \code{rankings} is a matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
-#' rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
-#' can be a vector.
-#' @param metric A character string specifying the distance metric to use in the
-#' Bayesian Mallows Model. Available options are \code{"footrule"},
-#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-#' \code{"ulam"}.
+#' @details \code{rankings} is a matrix of size
+#'   \eqn{N }\eqn{\times}{x}\eqn{ n_items} of rankings in each row.
+#'   Alternatively, if \eqn{N} equals 1, \code{rankings} can be a vector.
+#' @param metric A character string specifying the distance metric to use
+#'   in the Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
+#'   and \code{"ulam"}.
 #' @param rho Numeric vector specifying the current consensus ranking
-#' @param logz_estimate Estimate  grid of log of partition function, computed with
-#' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
-#' @return \code{alpha} or \code{alpha_prime}: Numeric value to be used as the proposal of a new alpha
+#' @param logz_estimate Estimate  grid of log of partition function,
+#'   computed with \code{\link{estimate_partition_function}} in
+#'   the BayesMallow R package {estimate_partition_function}.
+#' @param alpha_prop_sd Numeric value specifying the standard deviation of the
+#'   lognormal proposal distribution used for \eqn{\alpha} in the
+#'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
+#' @return \code{alpha} or \code{alpha_prime}: Numeric value to be used
+#'   as the proposal of a new alpha
+#' @param lambda Strictly positive numeric value specifying the rate parameter
+#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+#'   to \code{0.1}. When \code{n_cluster > 1}, each mixture component
+#'   \eqn{\alpha_{c}} has the same prior distribution.
+#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
+#'   prior distribution.
 #' @importFrom stats dexp rlnorm runif
 #' @author Anja Stein
 #' @example /inst/examples/metropolis_hastings_alpha.R

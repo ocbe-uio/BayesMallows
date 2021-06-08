@@ -53,14 +53,16 @@ Rcpp::List smc_mallows_new_users_complete(
   /* ====================================================== */
   int n_users = R_obs.n_rows; // total number of users
   if (Time > n_users / num_new_obs) {
-    Rcpp::warning("Time should not exceed n_users / num_new_obs. Recalculating.");
+    Rcpp::warning(\
+      "Time should not exceed n_users / num_new_obs. Recalculating."\
+    );
     Time = n_users / num_new_obs;
   }
 
   /* generate rho samples using uniform prior ------------- */
   arma::cube rho_samples(N, n_items, (n_users + Time + 1), arma::fill::zeros);
   for (int i = 0; i < N; ++i) {
-    // TODO: replace Rcpp vectors with compatible arma equivalents
+    // TODO: replace Rcpp vectors with compatible arma equivalents (#90)
     Rcpp::IntegerVector items = Rcpp::seq_len(n_items);
     Rcpp::IntegerVector items_sample = Rcpp::sample(items, n_items, false);
 
@@ -90,10 +92,11 @@ Rcpp::List smc_mallows_new_users_complete(
     /* ====================================================== */
     // create two ranking dataset to use for the reweight and move stages of the
     // algorithm
-    int n_o_r_row_start = num_obs - num_new_obs;
-    arma::mat new_observed_rankings(num_obs, R_obs.n_cols); // TODO: format as integer matrix
-    new_observed_rankings = R_obs.submat(n_o_r_row_start, 0, num_obs - 1, R_obs.n_cols - 1);
-    arma::mat all_observed_rankings = R_obs.submat(0, 0, num_obs - 1, R_obs.n_cols - 1);
+    int row_start = num_obs - num_new_obs;
+    arma::mat new_observed_rankings(num_obs, R_obs.n_cols); // TODO: format as integer matrix (#90)
+    arma::mat all_observed_rankings;
+    new_observed_rankings = R_obs.submat(row_start, 0, num_obs - 1, R_obs.n_cols - 1);
+    all_observed_rankings = R_obs.submat(0, 0, num_obs - 1, R_obs.n_cols - 1);
 
     // propagate particles onto the next time step
     rho_samples.slice(tt + 1) = rho_samples.slice(tt);
@@ -103,24 +106,29 @@ Rcpp::List smc_mallows_new_users_complete(
     /* Re-weight                                              */
     /* ====================================================== */
 
-    // calculate incremental weight for each particle, based on new observed rankings
+    // calculate incremental weight for each particle, based on
+    // new observed rankings
     arma::vec log_inc_wgt(N, arma::fill::zeros);
 
     for (int ii = 0; ii < N; ++ii) {
-      // evaluate the log estimate of the partition function for a particular value of alpha
+      // evaluate the log estimate of the partition function for a particular
+      // value of alpha
 
       /* Initializing variables ------------------------------- */
       const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue;
       double alpha_samples_ii = alpha_samples(ii, tt + 1);
-      arma::rowvec rho_samples_ii = rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
-      double log_z_alpha;
-      double log_likelihood;
+      arma::rowvec rho_samples_ii = \
+        rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
 
       /* Calculating log_z_alpha and log_likelihood ----------- */
-      log_z_alpha = get_partition_function(n_items, alpha_samples_ii, cardinalities, logz_estimate, metric);
-      log_likelihood = get_mallows_loglik(alpha_samples_ii, rho_samples_ii.t(), n_items, new_observed_rankings, metric); // TODO: replace with log_lik_db? Add Issue for future code optimization.
-      // TODO: investigate get_mallows_loglik further. Output in R really matches C++?
-      // cout << log_likelihood << "\n"; //ASK: why is it all over the place?
+      double log_z_alpha, log_likelihood;
+      log_z_alpha = get_partition_function(\
+        n_items, alpha_samples_ii, cardinalities, logz_estimate, metric\
+      );
+      log_likelihood = get_mallows_loglik(\
+        alpha_samples_ii, rho_samples_ii.t(), n_items, new_observed_rankings,\
+        metric\
+      ); // TODO: replace with log_lik_db? (#91)
       log_inc_wgt(ii) = log_likelihood - num_new_obs * log_z_alpha;
     }
 
@@ -132,10 +140,9 @@ Rcpp::List smc_mallows_new_users_complete(
     /* ====================================================== */
     /* Resample                                               */
     /* ====================================================== */
-    // TODO: simplify this section
 
     /* Resample particles using multinomial resampling ------ */
-    Rcpp::NumericVector norm_wgt_rcpp;
+    Rcpp::NumericVector norm_wgt_rcpp; // TODO : replace with arma (#90)
     norm_wgt_rcpp = norm_wgt;
     arma::uvec index, tt_vec;
     index = Rcpp::as<arma::uvec>(Rcpp::sample(N, N, true, norm_wgt_rcpp));
@@ -144,9 +151,6 @@ Rcpp::List smc_mallows_new_users_complete(
 
     /* Replacing tt + 1 slice on rho_samples ---------------- */
     arma::mat rho_samples_slice_11p1 = rho_samples.slice(tt + 1);
-    // IDEA: error is in the creation of index. So much so that
-    // FIXME: OOB error on the line below
-    // IDEA: index cannot include 100, so index must go until N - 1 on line 142
     rho_samples_slice_11p1 = rho_samples_slice_11p1.rows(index);
     rho_samples.slice(tt + 1) = rho_samples_slice_11p1;
 
@@ -158,14 +162,22 @@ Rcpp::List smc_mallows_new_users_complete(
     /* ====================================================== */
     for (int ii = 0; ii < N; ++ii) {
       for (int kk = 0; kk < mcmc_kernel_app; ++kk) {
-        // move each particle containing sample of rho and alpha by using the MCMC kernels
+        // move each particle containing sample of rho and alpha by using
+        // the MCMC kernels
         double as = alpha_samples(ii, tt + 1);
-        arma::rowvec rs = rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
-        rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)) = metropolis_hastings_rho(as, n_items, all_observed_rankings, metric, rs.t(), leap_size);
+        arma::rowvec rs = \
+          rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
+        rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)) =\
+          metropolis_hastings_rho(\
+            as, n_items, all_observed_rankings, metric, rs.t(), leap_size\
+          );
         double alpha_prop_sd = 0.1;
         double lambda = 0.001;
         double alpha_max = 1e6;
-        alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(as, n_items, all_observed_rankings, metric, rs.t(), logz_estimate, alpha_prop_sd, lambda, alpha_max);
+        alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(\
+          as, n_items, all_observed_rankings, metric, rs.t(), logz_estimate,\
+          alpha_prop_sd, lambda, alpha_max\
+        );
       }
     }
   }

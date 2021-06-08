@@ -9,7 +9,8 @@ alpha_vector <- seq(from = 0, to = 20, by = 0.1)
 iter <- 1e4
 degree <- 10
 
-# Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
+# Estimate the logarithm of the partition function of the Mallows rank model
+# using the estimate partition function
 logz_estimate <- estimate_partition_function(
 	method = "importance_sampling", alpha_vector = alpha_vector,
 	n_items = n_items, metric = "footrule", nmc = iter, degree = degree
