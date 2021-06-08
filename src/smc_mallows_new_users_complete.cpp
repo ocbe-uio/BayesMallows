@@ -34,6 +34,8 @@
 //' @importFrom stats rexp
 //' @export
 //'
+//' @example inst/examples/smc_mallows_new_users_complete.R
+//'
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users_complete(
   arma::mat R_obs,

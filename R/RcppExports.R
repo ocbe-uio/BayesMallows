@@ -293,6 +293,8 @@ leap_and_shift_probs <- function(rho, leap_size, n_items) {
 #' @importFrom stats rexp
 #' @export
 #'
+#' @example inst/examples/smc_mallows_new_users_complete.R
+#'
 smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate = NULL, verbose = FALSE) {
     .Call(`_BayesMallows_smc_mallows_new_users_complete`, R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate, verbose)
 }
