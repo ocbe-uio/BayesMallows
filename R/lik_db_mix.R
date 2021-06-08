@@ -55,23 +55,15 @@ lik_db_mix <- function(rho, alpha, weights, metric,
   n_items <- ncol(rankings)
   alpha <- alpha / n_items
 
-  if(log){
-    out <- log_lik_db_mix(
-      rho = rho,
-      alpha =alpha,
-      weights = weights,
-      metric = metric,
-      rankings = rankings,
-      obs_freq = obs_freq)
-  } else {
-    out <- exp(
-      log_lik_db_mix(
-        rho = rho,
-        alpha = alpha,
-        weights = weights,
-        metric = metric,
-        rankings = rankings,
-        obs_freq = obs_freq))
-  }
+  out <- log_lik_db_mix(
+    rho = rho,
+    alpha = alpha,
+    weights = weights,
+    metric = metric,
+    rankings = rankings,
+    obs_freq = obs_freq)
+
+  if(!log) out <- exp(out)
+
   return(out)
 }
