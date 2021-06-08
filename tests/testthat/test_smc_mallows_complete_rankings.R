@@ -43,7 +43,7 @@ alpha_0 = 1.7
 
 # heatplot - there is no burnin!
 mcmc_rho_matrix = matrix(model_fit$rho$value, ncol = n_items, nrow = nmc, byrow=TRUE)
-mcmc_heatmat_rho = heatMat(mcmcOutput = mcmc_rho_matrix, burnin = burnin, t_rank = rho_0)
+mcmc_heatmat_rho = BayesMallows:::heatMat(mcmcOutput = mcmc_rho_matrix, burnin = burnin, t_rank = rho_0)
 
 # ###################################################################
 # # SMC
@@ -53,11 +53,11 @@ num_new_obs = 10
 Time = dim(data)[1]/num_new_obs
 N = 100
 
-test =  smc_mallows_new_users_complete(
+test <- smc_mallows_new_users_complete(
 	R_obs = data, n_items = n_items, metric = metric,
 	leap_size = leap_size, N = N, Time = Time,
 	logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-	num_new_obs = num_new_obs
+	num_new_obs = num_new_obs, verbose = TRUE
 )
 
 test_that("Output of smc_mallows_new_users_complete is OK", {
@@ -95,7 +95,6 @@ test_that("Output of compute_posterior_intervals_rho is OK", {
 	)
 	expect_equivalent(sapply(rho_temp, length), rep(10, 7))
 })
-
 
 # posterior for alpha
 alpha_samples_table = data.frame(
