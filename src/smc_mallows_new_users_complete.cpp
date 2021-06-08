@@ -38,14 +38,14 @@
 //'
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users_complete(
-  arma::mat R_obs,
-  int n_items,
-  std::string metric,
-  int leap_size,
-  int N,
+  arma::mat& R_obs,
+  int& n_items,
+  std::string& metric,
+  int& leap_size,
+  int& N,
   int Time,
-  int mcmc_kernel_app,
-  int num_new_obs,
+  int& mcmc_kernel_app,
+  int& num_new_obs,
   const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
   bool verbose = false
 ) {
