@@ -33,7 +33,7 @@
 //'   prior distribution.
 //' @importFrom stats dexp rlnorm runif
 //' @author Anja Stein
-//' @example /inst/examples/metropolis_hastings_alpha.R
+//' @example /inst/examples/metropolis_hastings_alpha_example.R
 //'
 //' @export
 // [[Rcpp::export]]

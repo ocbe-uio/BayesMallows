@@ -34,7 +34,7 @@
 //' @importFrom stats rexp
 //' @export
 //'
-//' @example inst/examples/smc_mallows_new_users_complete.R
+//' @example inst/examples/smc_mallows_new_users_complete_example.R
 //'
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users_complete(
