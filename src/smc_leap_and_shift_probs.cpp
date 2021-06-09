@@ -50,7 +50,7 @@ Rcpp::List leap_and_shift_probs(arma::vec rho, int leap_size, int n_items) {
 
   // here, two elements are the same so we need to shift element and replace the repeated r with u
   int delta = rho_star(u) - rho(u);
-  Rcpp::IntegerVector rho_prime = Rcpp::rep(0, n_items);
+  Rcpp::IntegerVector rho_prime = Rcpp::rep(0, n_items); // TODO: reclassify as arma:: #90
 
   // shift step
   for (int i = 0; i < n_items; ++i) {
@@ -66,7 +66,7 @@ Rcpp::List leap_and_shift_probs(arma::vec rho, int leap_size, int n_items) {
   }
 
   // Define support set for ranks rho_star[u] can leap to
-  Rcpp::IntegerVector S_star;
+  Rcpp::IntegerVector S_star; // TODO: reclassify as arma:: #90
   int rho_star_minus_leap = rho_star(u) - leap_size;
   int rho_star_plus_leap = rho_star(u) + leap_size;
   int S_star_min = std::max(1, rho_star_minus_leap);
@@ -75,7 +75,7 @@ Rcpp::List leap_and_shift_probs(arma::vec rho, int leap_size, int n_items) {
   S_star = S_star[S_star != rho_star(u)];
 
   // calculate forward and backwards probabilities
-  Rcpp::NumericVector forwards_prob, backwards_prob;
+  Rcpp::NumericVector forwards_prob, backwards_prob; // TODO: reclassify as arma:: #90
   if (std::abs(rho_star(u) - rho(u)) == 1) {
     // p(proposed|current)
     forwards_prob = 1.0 / (n_items * S.length()) + 1.0 / (n_items * S_star.length());
