@@ -1,4 +1,6 @@
 #include "RcppArmadillo.h"
+// TODO: follow https://stackoverflow.com/q/44060134/1169233 to add sample.h here
+// documentation on C++ access functions: https://www.learncpp.com/cpp-tutorial/access-functions-and-encapsulation/
 #include "smc.h"
 #include "partitionfuns.h"
 
@@ -63,8 +65,7 @@ Rcpp::List smc_mallows_new_users_complete(
   /* generate rho samples using uniform prior ------------- */
   arma::cube rho_samples(N, n_items, (n_users + Time + 1), arma::fill::zeros);
   for (int i = 0; i < N; ++i) {
-    // TODO: replace Rcpp vectors with compatible arma equivalents (#90)
-    Rcpp::IntegerVector items = Rcpp::seq_len(n_items);
+    Rcpp::IntegerVector items = Rcpp::seq_len(n_items); // TODO: replace with arma (#90)
     arma::ivec items_sample = Rcpp::sample(items, n_items, false);
 
     for (int j = 0; j < n_items; ++j) {
@@ -143,7 +144,7 @@ Rcpp::List smc_mallows_new_users_complete(
     /* ====================================================== */
 
     /* Resample particles using multinomial resampling ------ */
-    Rcpp::NumericVector norm_wgt_rcpp; // TODO : replace with arma (#90)
+    Rcpp::NumericVector norm_wgt_rcpp; // TODO : replace with arma (#90) and eliminate (redundant with norm_wgt)
     norm_wgt_rcpp = norm_wgt;
     arma::uvec index, tt_vec;
     index = Rcpp::as<arma::uvec>(Rcpp::sample(N, N, true, norm_wgt_rcpp));
