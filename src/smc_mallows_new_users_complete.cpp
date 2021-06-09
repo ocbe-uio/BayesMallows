@@ -1,9 +1,8 @@
 #include "RcppArmadillo.h"
-#include "partitionfuns.h"
 #include "smc.h"
+#include "partitionfuns.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
-
 //' @title SMC-Mallows New Users Complete
 //' @description Function to perform resample-move SMC algorithm where we
 //' receive new users with complete rankings at each time step
@@ -66,7 +65,7 @@ Rcpp::List smc_mallows_new_users_complete(
   for (int i = 0; i < N; ++i) {
     // TODO: replace Rcpp vectors with compatible arma equivalents (#90)
     Rcpp::IntegerVector items = Rcpp::seq_len(n_items);
-    Rcpp::IntegerVector items_sample = Rcpp::sample(items, n_items, false);
+    arma::ivec items_sample = Rcpp::sample(items, n_items, false);
 
     for (int j = 0; j < n_items; ++j) {
       rho_samples(i, j, 0) = items_sample(j);
@@ -95,7 +94,7 @@ Rcpp::List smc_mallows_new_users_complete(
     // create two ranking dataset to use for the reweight and move stages of the
     // algorithm
     int row_start = num_obs - num_new_obs;
-    arma::mat new_observed_rankings(num_obs, R_obs.n_cols); // TODO: format as integer matrix (#90)
+    arma::mat new_observed_rankings(num_obs, R_obs.n_cols);
     arma::mat all_observed_rankings;
     new_observed_rankings = R_obs.submat(row_start, 0, num_obs - 1, R_obs.n_cols - 1);
     all_observed_rankings = R_obs.submat(0, 0, num_obs - 1, R_obs.n_cols - 1);
