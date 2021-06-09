@@ -1,4 +1,4 @@
-context("SMC-Mallows complete rankings")
+context("SMC-Mallows complete rankings: sequence")
 
 #########################
 # Generate Dataset
@@ -116,4 +116,65 @@ test_that("Output of compute_posterior_intervals_alpha is OK", {
 		)
 	)
 	expect_equivalent(sapply(alpha_posterior_intervals, length), rep(1, 6))
+})
+
+context("SMC-Mallows complete rankings: breakdown")
+
+test_that("get_mallows_loglik() in smc_mallows_new_users_complete() works", {
+	# ======================================================== #
+	# Setup                                                    #
+	# ======================================================== #
+
+	# Basic elements ----------------------------------------- #
+	data <- sushi_rankings[1:100, ]
+	n_users <- nrow(data)
+	n_items <- ncol(sushi_rankings)
+	Time <- nrow(data) / num_new_obs
+	num_new_obs <- 10
+	N <- 100
+
+	# rho_samples and alpha_samples -------------------------- #
+	rho_samples <- array(data=0, dim=c(N, n_items, (n_users + Time + 1)))
+	for (ii in seq_len(N)){
+		rho_samples[ii, , 1] <- sample(seq_len(n_items), n_items, replace=FALSE)
+	}
+	alpha_samples <- matrix(nrow=N, ncol=(n_items + Time + 1))
+	alpha_samples[, 1] <- rexp(N, rate=1)
+
+	# logz_estimate ------------------------------------------ #
+	alpha_vector <- seq(from = 0, to = 15, by = 0.1)
+	iter <- 3e3
+	degree <- 10
+	logz_estimate <- estimate_partition_function(
+		method="importance_sampling", alpha_vector=alpha_vector,
+		n_items=n_items, metric=metric, nmc=iter, degree=degree
+	)
+
+	num_obs <- 0
+	out_loglik <- vector(mode="numeric", length=Time)
+	for (tt in seq_len(Time)) {
+		num_obs <- num_obs + num_new_obs
+		new_observed_rankings <- data[(num_obs - num_new_obs + 1):num_obs, ]
+		rho_samples[, , tt + 1] <- rho_samples[, , tt]
+		alpha_samples[, tt + 1] <- alpha_samples[, tt]
+		alpha_samples_ii <- alpha_samples[ii, tt + 1]
+		rho_samples_ii <- rho_samples[ii, , tt + 1]
+		for (ii in seq_len(N)) {
+			log_z_alpha <- BayesMallows:::get_partition_function(
+				n_items, alpha_samples_ii, NULL, logz_estimate, metric
+			)
+			log_likelihood <- get_mallows_loglik(
+				alpha_samples_ii, t(rho_samples_ii), n_items,
+				new_observed_rankings, metric
+			)
+		}
+		out_loglik[tt] <- log_likelihood
+	}
+
+	# ======================================================== #
+	# Test                                                     #
+	# ======================================================== #
+	tolerance <- 0.1
+	expect_gt(max(out_loglik), mean(out_loglik) * (1 + tolerance))
+	expect_lt(min(out_loglik), mean(out_loglik) * (1 - tolerance))
 })
