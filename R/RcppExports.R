@@ -293,7 +293,7 @@ leap_and_shift_probs <- function(rho, leap_size, n_items) {
 #' @importFrom stats rexp
 #' @export
 #'
-#' @example inst/examples/smc_mallows_new_users_complete.R
+#' @example inst/examples/smc_mallows_new_users_complete_example.R
 #'
 smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate = NULL, verbose = FALSE) {
     .Call(`_BayesMallows_smc_mallows_new_users_complete`, R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate, verbose)
@@ -329,7 +329,7 @@ smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N,
 #'   prior distribution.
 #' @importFrom stats dexp rlnorm runif
 #' @author Anja Stein
-#' @example /inst/examples/metropolis_hastings_alpha.R
+#' @example /inst/examples/metropolis_hastings_alpha_example.R
 #'
 #' @export
 metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max) {
