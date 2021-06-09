@@ -57,7 +57,7 @@ test <- smc_mallows_new_users_complete(
 	R_obs = data, n_items = n_items, metric = metric,
 	leap_size = leap_size, N = N, Time = Time,
 	logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-	num_new_obs = num_new_obs, verbose = TRUE
+	num_new_obs = num_new_obs, verbose = FALSE
 )
 
 test_that("Output of smc_mallows_new_users_complete is OK", {
