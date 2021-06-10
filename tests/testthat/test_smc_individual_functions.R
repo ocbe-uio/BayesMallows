@@ -83,7 +83,7 @@ test_that("smc_leap_and_shift_probs() works as expected", {
 
 	# if leap_size = 1, then forwards_prob = backwards_prob
 	test_1 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 1)
-	expect_equal(test_1$rho_prime, c(1, 3, 2, 4, 5, 6))
+	expect_equal(test_1$rho_prime, as.matrix(c(1, 3, 2, 4, 5, 6)))
 	expect_equivalent(test_1$forwards_prob, 0.1666667, tol=1e-6)
 	expect_equivalent(test_1$backwards_prob, 0.1666667, tol=1e-6)
 
@@ -93,7 +93,7 @@ test_that("smc_leap_and_shift_probs() works as expected", {
 	expect_equal(dist_1, 1)
 
 	test_2 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 2)
-	expect_equal(test_2$rho_prime, c(1, 2, 3, 5, 4, 6))
+	expect_equal(test_2$rho_prime, as.matrix(c(1, 2, 3, 5, 4, 6)))
 	expect_equivalent(test_2$forwards_prob, 0.0972, tol=1e-4)
 	expect_equivalent(test_2$backwards_prob, 0.0972, tol=1e-4)
 
@@ -103,7 +103,7 @@ test_that("smc_leap_and_shift_probs() works as expected", {
 	expect_equal(dist_2, 1)
 
 	test_3 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 3)
-	expect_equal(test_3$rho_prime, c(1, 3, 2, 4, 5, 6))
+	expect_equal(test_3$rho_prime, as.matrix(c(1, 3, 2, 4, 5, 6)))
 	expect_equivalent(test_3$forwards_prob, 0.075, tol=1e-3)
 	expect_equivalent(test_3$backwards_prob, 0.075, tol=1e-3)
 

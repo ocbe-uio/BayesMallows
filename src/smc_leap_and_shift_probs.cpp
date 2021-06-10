@@ -1,4 +1,5 @@
 #include "RcppArmadillo.h"
+#include <RcppArmadilloExtensions/sample.h>
 #include <cmath>
 
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -37,11 +38,11 @@ Rcpp::List leap_and_shift_probs(arma::vec rho, int leap_size, int n_items) {
   int rho_plus_leap = rho(u) + leap_size;
   int low_bd = std::max(1, rho_minus_leap);
   int max_bd = std::min(n_items, rho_plus_leap);
-  Rcpp::IntegerVector S = Rcpp::seq(low_bd, max_bd); // TODO reclassify as arma:: (#90)
-  S = S[S != rho(u)];
+  arma::ivec S = Rcpp::seq(low_bd, max_bd);
+  S = S.elem(arma::find(S != rho(u)));
 
   // draw a random number r from S
-  int r = Rcpp::as<int>(Rcpp::sample(S, 1));
+  int r = int(arma::as_scalar(Rcpp::RcppArmadillo::sample(S, 1, false)));
   r = r - 1; // adjusting index for R correspondence
 
   // Create leap step
@@ -50,7 +51,7 @@ Rcpp::List leap_and_shift_probs(arma::vec rho, int leap_size, int n_items) {
 
   // here, two elements are the same so we need to shift element and replace the repeated r with u
   int delta = rho_star(u) - rho(u);
-  Rcpp::IntegerVector rho_prime = Rcpp::rep(0, n_items);
+  arma::ivec rho_prime = Rcpp::rep(0, n_items);
 
   // shift step
   for (int i = 0; i < n_items; ++i) {
@@ -66,26 +67,26 @@ Rcpp::List leap_and_shift_probs(arma::vec rho, int leap_size, int n_items) {
   }
 
   // Define support set for ranks rho_star[u] can leap to
-  Rcpp::IntegerVector S_star;
   int rho_star_minus_leap = rho_star(u) - leap_size;
   int rho_star_plus_leap = rho_star(u) + leap_size;
   int S_star_min = std::max(1, rho_star_minus_leap);
   int S_star_max = std::min(n_items, rho_star_plus_leap);
+  arma::ivec S_star;
   S_star = Rcpp::seq(S_star_min, S_star_max);
-  S_star = S_star[S_star != rho_star(u)];
+  S_star = S_star.elem(arma::find(S_star != rho_star(u)));
 
   // calculate forward and backwards probabilities
-  Rcpp::NumericVector forwards_prob, backwards_prob;
+  arma::vec forwards_prob, backwards_prob;
   if (std::abs(rho_star(u) - rho(u)) == 1) {
     // p(proposed|current)
-    forwards_prob = 1.0 / (n_items * S.length()) + 1.0 / (n_items * S_star.length());
+    forwards_prob = 1.0 / (n_items * S.n_elem) + 1.0 / (n_items * S_star.n_elem);
     // p(current|proposed)
     backwards_prob = forwards_prob;
   } else {
     // p(proposed|current)
-    forwards_prob = 1.0 / (n_items * S.length());
+    forwards_prob = 1.0 / (n_items * S.n_elem);
     // p(current|proposed)
-    backwards_prob = 1.0 / (n_items * S_star.length());
+    backwards_prob = 1.0 / (n_items * S_star.n_elem);
   }
 
   // return(leap_shift_list)

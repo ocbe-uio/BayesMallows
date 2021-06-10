@@ -1,9 +1,10 @@
 #include "RcppArmadillo.h"
-#include "partitionfuns.h"
+// TODO: follow https://stackoverflow.com/q/44060134/1169233 to add sample.h here
+// documentation on C++ access functions: https://www.learncpp.com/cpp-tutorial/access-functions-and-encapsulation/
 #include "smc.h"
+#include "partitionfuns.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
-
 //' @title SMC-Mallows New Users Complete
 //' @description Function to perform resample-move SMC algorithm where we
 //' receive new users with complete rankings at each time step
@@ -64,9 +65,8 @@ Rcpp::List smc_mallows_new_users_complete(
   /* generate rho samples using uniform prior ------------- */
   arma::cube rho_samples(N, n_items, (n_users + Time + 1), arma::fill::zeros);
   for (int i = 0; i < N; ++i) {
-    // TODO: replace Rcpp vectors with compatible arma equivalents (#90)
-    Rcpp::IntegerVector items = Rcpp::seq_len(n_items);
-    Rcpp::IntegerVector items_sample = Rcpp::sample(items, n_items, false);
+    Rcpp::IntegerVector items = Rcpp::seq_len(n_items); // TODO: replace with arma (#90)
+    arma::ivec items_sample = Rcpp::sample(items, n_items, false);
 
     for (int j = 0; j < n_items; ++j) {
       rho_samples(i, j, 0) = items_sample(j);
@@ -95,7 +95,7 @@ Rcpp::List smc_mallows_new_users_complete(
     // create two ranking dataset to use for the reweight and move stages of the
     // algorithm
     int row_start = num_obs - num_new_obs;
-    arma::mat new_observed_rankings(num_obs, R_obs.n_cols); // TODO: format as integer matrix (#90)
+    arma::mat new_observed_rankings(num_obs, R_obs.n_cols);
     arma::mat all_observed_rankings;
     new_observed_rankings = R_obs.submat(row_start, 0, num_obs - 1, R_obs.n_cols - 1);
     all_observed_rankings = R_obs.submat(0, 0, num_obs - 1, R_obs.n_cols - 1);
@@ -144,7 +144,7 @@ Rcpp::List smc_mallows_new_users_complete(
     /* ====================================================== */
 
     /* Resample particles using multinomial resampling ------ */
-    Rcpp::NumericVector norm_wgt_rcpp; // TODO : replace with arma (#90)
+    Rcpp::NumericVector norm_wgt_rcpp; // TODO : replace with arma (#90) and eliminate (redundant with norm_wgt)
     norm_wgt_rcpp = norm_wgt;
     arma::uvec index, tt_vec;
     index = Rcpp::as<arma::uvec>(Rcpp::sample(N, N, true, norm_wgt_rcpp));
