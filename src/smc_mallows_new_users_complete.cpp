@@ -65,9 +65,7 @@ Rcpp::List smc_mallows_new_users_complete(
   /* generate rho samples using uniform prior ------------- */
   arma::cube rho_samples(N, n_items, (n_users + Time + 1), arma::fill::zeros);
   for (int i = 0; i < N; ++i) {
-    Rcpp::IntegerVector items = Rcpp::seq_len(n_items); // TODO: replace with arma (#90)
-    arma::ivec items_sample = Rcpp::sample(items, n_items, false);
-
+    arma::uvec items_sample = arma::randperm(n_items + 1);
     for (int j = 0; j < n_items; ++j) {
       rho_samples(i, j, 0) = items_sample(j);
     }
