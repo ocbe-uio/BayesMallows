@@ -1,6 +1,4 @@
-#include "RcppArmadillo.h"
-// TODO: follow https://stackoverflow.com/q/44060134/1169233 to add sample.h here
-// documentation on C++ access functions: https://www.learncpp.com/cpp-tutorial/access-functions-and-encapsulation/
+issue #include "RcppArmadillo.h"
 #include "smc.h"
 #include "partitionfuns.h"
 
@@ -142,6 +140,8 @@ Rcpp::List smc_mallows_new_users_complete(
     /* ====================================================== */
 
     /* Resample particles using multinomial resampling ------ */
+    // Using norm_wgt_rcpp so that Rcpp::sample compiles. More details on
+    // https://github.com/ocbe-uio/BayesMallows/issues/90#issuecomment-866614296
     Rcpp::NumericVector norm_wgt_rcpp;
     norm_wgt_rcpp = norm_wgt;
     arma::uvec index, tt_vec;
