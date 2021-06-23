@@ -142,7 +142,7 @@ Rcpp::List smc_mallows_new_users_complete(
     /* ====================================================== */
 
     /* Resample particles using multinomial resampling ------ */
-    Rcpp::NumericVector norm_wgt_rcpp; // TODO : replace with arma (#90) and eliminate (redundant with norm_wgt)
+    Rcpp::NumericVector norm_wgt_rcpp;
     norm_wgt_rcpp = norm_wgt;
     arma::uvec index, tt_vec;
     index = Rcpp::as<arma::uvec>(Rcpp::sample(N, N, true, norm_wgt_rcpp));
