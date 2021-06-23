@@ -1,4 +1,4 @@
-issue #include "RcppArmadillo.h"
+#include "RcppArmadillo.h"
 #include "smc.h"
 #include "partitionfuns.h"
 
