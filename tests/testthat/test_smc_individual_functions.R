@@ -89,28 +89,28 @@ test_that("smc_leap_and_shift_probs() works as expected", {
 
 	# if rho != rho_prime, then it should have a ulam distance of 1
 	# if rho == rho_prime, then it should have ulam distance of 0
-	dist_1 <- get_rank_distance(rho, test_1$rho_prime, metric= "ulam")
+	dist_1 <- BayesMallows:::get_rank_distance(rho, test_1$rho_prime, metric= "ulam")
 	expect_equal(dist_1, 1)
 
 	test_2 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 2)
-	expect_equal(test_2$rho_prime, as.matrix(c(1, 2, 3, 5, 4, 6)))
-	expect_equivalent(test_2$forwards_prob, 0.0972, tol=1e-4)
-	expect_equivalent(test_2$backwards_prob, 0.0972, tol=1e-4)
+	expect_equal(test_2$rho_prime, as.matrix(c(1, 2, 3, 4, 5, 6)))
+	expect_equivalent(test_2$forwards_prob, 0.0556, tol=1e-4)
+	expect_equivalent(test_2$backwards_prob, 0.0556, tol=1e-4)
 
 	dist_2 <- get_rank_distance(
 		rho, test_2$rho_prime, metric= "ulam"
 	)
-	expect_equal(dist_2, 1)
+	expect_equal(dist_2, 0)
 
 	test_3 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 3)
-	expect_equal(test_3$rho_prime, as.matrix(c(1, 3, 2, 4, 5, 6)))
-	expect_equivalent(test_3$forwards_prob, 0.075, tol=1e-3)
-	expect_equivalent(test_3$backwards_prob, 0.075, tol=1e-3)
+	expect_equal(test_3$rho_prime, as.matrix(c(1, 2, 3, 4, 5, 6)))
+	expect_equivalent(test_3$forwards_prob, 0.0417, tol=1e-3)
+	expect_equivalent(test_3$backwards_prob, 0.0417, tol=1e-3)
 
 	dist_3 <- get_rank_distance(
 		rho, test_3$rho_prime, metric= "ulam"
 	)
-	expect_equal(dist_3, 1)
+	expect_equal(dist_3, 0)
 })
 
 # ======================================================== #

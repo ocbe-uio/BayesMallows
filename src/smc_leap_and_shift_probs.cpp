@@ -1,5 +1,4 @@
 #include "RcppArmadillo.h"
-#include <RcppArmadilloExtensions/sample.h>
 #include <cmath>
 
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -42,7 +41,7 @@ Rcpp::List leap_and_shift_probs(arma::vec rho, int leap_size, int n_items) {
   S = S.elem(arma::find(S != rho(u)));
 
   // draw a random number r from S
-  int r = int(arma::as_scalar(Rcpp::RcppArmadillo::sample(S, 1, false)));
+  int r = arma::as_scalar(arma::randi(1, arma::distr_param(S.min(), S.max())));
   r = r - 1; // adjusting index for R correspondence
 
   // Create leap step
