@@ -1,20 +1,20 @@
+#' @title Get Sample Probabilities
+#' @description Calculate probability of assigning a set of specific ranks to an specific item
+#' given its rank in the consensus ranking
+#'
+#' @param rho_item_rank An integer value rank of an item in the current consensus ranking
+#' @param alpha Numeric value og the scale parameter
+#' @param remaining_set_rank A sequence of integer values of the set of possible ranks that we can assign the item
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @param n_items Integer is the number of items in the consensus ranking
+#' @return sample_prob_list A numeric sequence of sample probabilities for selecting a specific rank given the current
+#'         rho_item_rank
+#' @export
 get_sample_probabilities = function(rho_item_rank, alpha, remaining_set_ranks, metric, n_items){
 
-  # @description Function to calculate probability of assigning a set of specific ranks to an specific item
-  # given its rank in the consensus ranking
-
-  # INPUT:
-  #   @param rho_item_rank An integer value rank of an item in the current consensus ranking
-  #   @param alpha Numeric value og the scale parameter
-  #   @param remaining_set_rank A sequence of integer values of the set of possible ranks that we can assign the item
-  #   @param metric A character string specifying the distance metric to use in the
-  #   Bayesian Mallows Model. Available options are \code{"footrule"},
-  #   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-  #   \code{"ulam"}.
-  #   @param n_items Integer is the number of items in the consensus ranking
-
-  # OUTPUT: sample_prob_list A numeric sequence of sample probabilities for selecting a specific rank given the current
-  #         rho_item_rank
 
   # define a set of probs list
   num_ranks = length(remaining_set_ranks)
@@ -35,27 +35,26 @@ get_sample_probabilities = function(rho_item_rank, alpha, remaining_set_ranks, m
   return(sample_prob_list)
 }
 
-
+#' @title Calculate Forward Probability
+#' @description Function to calculate probability of assigning a set of specific ranks to an specific item
+#' given its rank in the consensus ranking
+#' @export
+#'
+#' @param item_ordering A vector of integer values to represent the specified queue of which unranked item to assign a rank for the proposed augmented ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param remaining_set A vector of integer values to represent the elements (ranks) missing from original observed ranking
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param alpha Numeric value og the scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return List containing aug_ranking, a ranking sequence vector of the proposed augmented ranking and
+#'         forward_prob a numerical value of the probability of creating the augmented ranking
+#'         using the pseudolikelihood augmentation.
 calculate_forward_probability = function(item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric){
 
-  # @description Function to calculate probability of assigning a set of specific ranks to an specific item
-  # given its rank in the consensus ranking
-
-  # INPUT:
-  #   @param item_ordering A vector of integer values to represent the specified queue of which unranked item to assign a rank for the proposed augmented ranking
-  #   @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
-  #   @param remaining_set A vector of integer values to represent the elements (ranks) missing from original observed ranking
-  #   @param rho Numeric vector specifying the consensus ranking
-  #   @param alpha Numeric value og the scale parameter
-  #   @param n_items Integer is the number of items in a ranking
-  #   @param metric A character string specifying the distance metric to use in the
-  #   Bayesian Mallows Model. Available options are \code{"footrule"},
-  #   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-  #   \code{"ulam"}.
-
-  # OUTPUT: List containing aug_ranking, a ranking sequence vector of the proposed augmented ranking and
-  #         forward_prob a numerical value of the probability of creating the augmented ranking
-  #         using the pseudolikelihood augmentation.
 
   # item ordering is the order of which items are assigned ranks in a specified order
   num_items_unranked = length(item_ordering)
@@ -117,27 +116,27 @@ calculate_forward_probability = function(item_ordering, partial_ranking, remaini
 }
 
 
-# given an old and new item ordering, sample ranking with new ordering and calc the forward and backward prob
+#' @title Calculate Backward Probability
+#' @description Function to calculate probability of assigning a set of specific ranks to an specific item
+#' given its rank in the consensus ranking
+#'
+#' @param item_ordering A vector of integer values to represent the specified queue of which unranked item to assign a rank for the proposed augmented ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
+#' @param remaining_set A vector of integer values to represent the elements (ranks) missing from original observed ranking
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param alpha Numeric value og the scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return backward_auxiliary_ranking_probability A numerical value of creating the previous augmented ranking using the same item ordering used to create the
+#' new auggmented ranking in calculate_forward_probability funtion.
+#' @export
 calculate_backward_probability = function(item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric){
+# given an old and new item ordering, sample ranking with new ordering and calc the forward and backward prob
 
-  # @description Function to calculate probability of assigning a set of specific ranks to an specific item
-  # given its rank in the consensus ranking
-
-  # INPUT:
-  #   @param item_ordering A vector of integer values to represent the specified queue of which unranked item to assign a rank for the proposed augmented ranking
-  #   @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
-  #   @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
-  #   @param remaining_set A vector of integer values to represent the elements (ranks) missing from original observed ranking
-  #   @param rho Numeric vector specifying the consensus ranking
-  #   @param alpha Numeric value og the scale parameter
-  #   @param n_items Integer is the number of items in a ranking
-  #   @param metric A character string specifying the distance metric to use in the
-  #   Bayesian Mallows Model. Available options are \code{"footrule"},
-  #   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-  #   \code{"ulam"}.
-
-  # OUTPUT: backward_auxiliary_ranking_probability A numerical value of creating the previous augmented ranking using the same item ordering used to create the
-  # new auggmented ranking in calculate_forward_probability funtion.
 
   # item ordering is the order of which items are assigned ranks in a specified order
   num_items_unranked = length(item_ordering)
@@ -184,23 +183,23 @@ calculate_backward_probability = function(item_ordering, partial_ranking, curren
 
 
 
+#' @title Metropolis-Hastings Augmented Ranking (pseudolikelihood)
+#' @description Function to perform Metropolis-Hastings for new augmented ranking using the pseudolikelihood augmentation approach
+#'
+#' @param alpha Numeric value og the scale parameter
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param n_items Integer is the number of items in a ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return = proposed augmented ranking or current ranking A ranking sequence vector representing proposed augmented ranking for next
+#'         iteration of MCMC chain
+#' @export
 metropolis_hastings_aug_ranking_pseudo = function(alpha, rho, n_items, partial_ranking, current_ranking, metric){
 
-  # @description Function to perform Metropolis-Hastings for new augmented ranking using the pseudolikelihood augmentation approach
-
-  # INPUT:
-  #   @param alpha Numeric value og the scale parameter
-  #   @param rho Numeric vector specifying the consensus ranking
-  #   @param n_items Integer is the number of items in a ranking
-  #   @partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
-  #   @current_ranking An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
-  #   @param metric A character string specifying the distance metric to use in the
-  #   Bayesian Mallows Model. Available options are \code{"footrule"},
-  #   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-  #   \code{"ulam"}.
-
-  # OUTPUT = proposed augmented ranking or current ranking A ranking sequence vector representing proposed augmented ranking for next
-  #         iteration of MCMC chain
 
   # augment incomplete ranks to initialise
   ranks = c(1:n_items)
@@ -255,24 +254,24 @@ metropolis_hastings_aug_ranking_pseudo = function(alpha, rho, n_items, partial_r
 
 
 
+#' @title Correction Kernel (pseudolikelihood)
+#' @description Function to determine if the augmented ranking is compatible with the new observed partial ranking.
+#' If it is not, the we create a new augmentation using the pseudolikelihood approach and calculate the augmentation probability.
+#'
+#' @param R_obs An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param R_curr An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param alpha Numeric value og the scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return list containing R_obs, the proposed 'corrected' augmented ranking that is compatible with the new observed ranking for a user, and
+#'         forward_auxiliary_ranking_probability, a numerical value for the probability of correcting the ranking to be compatible with R_obs.
+#' @export
 correction_kernel_pseudo = function(R_curr, R_obs, rho, alpha, n_items, metric){
 
-  # Function to determine if the augmented ranking is compatible with the new observed partial ranking.
-  # If it is not, the we create a new augmentation using the pseudolikelihood approach and calculate the augmentation probability.
-
-  # INPUT:
-  #   @R_obs An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
-  #   @R_curr An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
-  #   @param rho Numeric vector specifying the consensus ranking
-  #   @param alpha Numeric value og the scale parameter
-  #   @param n_items Integer is the number of items in a ranking
-  #   @param metric A character string specifying the distance metric to use in the
-  #   Bayesian Mallows Model. Available options are \code{"footrule"},
-  #   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-  #   \code{"ulam"}.
-
-  # OUTPUT: list containing R_obs, the proposed 'corrected' augmented ranking that is compatible with the new observed ranking for a user, and
-  #         forward_auxiliary_ranking_probability, a numerical value for the probability of correcting the ranking to be compatible with R_obs.
 
   # check if new information means 'mistakes' made with augmented rankings
   check = (R_obs == R_curr)
