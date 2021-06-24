@@ -40,8 +40,9 @@ metropolis_hastings_aug_ranking = function(R_curr, R_obs, alpha, rho, n_items, m
     # if this doesn't work, make sure your ranking has NA in the vector, and not "NA"
 
     # evaluate the log-likelihood with current rankings
-    mallows_lik_curr =  get_mallows_loglik(alpha = alpha, rho = rho, n = n_items, rankings = R_curr, metric = metric)
-    mallows_lik_prop = get_mallows_loglik(alpha = alpha, rho = rho, n = n_items, rankings = R_prop, metric = metric)
+	#FIXME: rho and rankings do not have the same length due to NAs. Fix target function
+    mallows_lik_curr =  get_mallows_loglik(alpha = alpha, rho = as.matrix(rho), n = n_items, rankings = as.matrix(R_curr), metric = metric)
+    mallows_lik_prop = get_mallows_loglik(alpha = alpha, rho = as.matrix(rho), n = n_items, rankings = as.matrix(R_prop), metric = metric)
 
     # calculate acceptance probability
     loga = mallows_lik_prop - mallows_lik_curr

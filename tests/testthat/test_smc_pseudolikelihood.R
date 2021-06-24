@@ -49,7 +49,7 @@ test_1_backward_a= calculate_backward_probability(item_ordering = item_ordering,
                                                   current_ranking = current_ranking, remaining_set = remaining_set, rho = rho,
                                                   alpha = alpha, n_items = n_items, metric = metric)
 
-print(backward_prob)
+print(test_1_backward_a)
 # 0.01360987
 
 current_ranking = test_1_forward$aug_ranking
@@ -57,7 +57,7 @@ test_1_backward_b = calculate_backward_probability(item_ordering = item_ordering
                                                    current_ranking = current_ranking, remaining_set = remaining_set, rho = rho,
                                                    alpha = alpha, n_items = n_items, metric = metric)
 
-print(backward_prob)
+print(test_1_backward_b)
 # 0.07205734
 
 
