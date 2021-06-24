@@ -27,8 +27,8 @@ logz_estimate <- estimate_partition_function(method = "importance_sampling",
 ######################################
 # BayesMallows Analysis (MCMC)
 ######################################
-nmc = 10000
-burnin=5000
+nmc = 20
+burnin=5
 model_fit <- compute_mallows(rankings = data, nmc = nmc, metric = metric, leap_size =leap_size,
                              alpha_prop_sd = 0.15, logz_estimate = logz_estimate)
 
