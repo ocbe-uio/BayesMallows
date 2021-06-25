@@ -4,8 +4,6 @@
 # BayesMallows
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/BayesMallows)](https://cran.r-project.org/package=BayesMallows)
-[![Build
-Status](https://travis-ci.org/ocbe-uio/BayesMallows.svg?branch=master)](https://travis-ci.org/ocbe-uio/BayesMallows)
 [![codecov](https://codecov.io/gh/ocbe-uio/BayesMallows/branch/master/graph/badge.svg)](https://codecov.io/gh/ocbe-uio/BayesMallows)
 
 This package provides a general framework for analyzing rank and
@@ -87,13 +85,13 @@ non-transitive pairwise comparisons by Crispino et al. (2019) is also
 implemented. In addition, the partition function of the Mallows model
 can be estimated using the importance sampling algorithm of Vitelli et
 al. (2018) and the asymptotic approximation of Mukherjee (2016). For a
-review of ranking models in general, see Q. Liu et al. (2019). Crispino
+review of ranking models in general, see Q. Liu et al. (2019b). Crispino
 and Antoniano-Villalobos (2019) outlines how informative priors can be
 used within the model.
 
 ### Applications
 
-Among the current applications, Q. Liu et al. (2019) applied the
+Among the current applications, Q. Liu et al. (2019a) applied the
 Bayesian Mallows model for providing personalized recommendations based
 on clicking data, and Barrett and Crispino (2018) used the model of
 Crispino et al. (2019) to analyze listeners’ understanding of music.
@@ -182,7 +180,7 @@ Human Are Sounds?” *The Annals of Applied Statistics* 13 (1): 492–519.
 
 <div id="ref-liu2019b" class="csl-entry">
 
-Liu, Q., A. H. Reiner, A. Frigessi, and I. Scheel. 2019. “Diverse
+Liu, Q., A. H. Reiner, A. Frigessi, and I. Scheel. 2019a. “Diverse
 Personalized Recommendations with Uncertainty from Implicit Preference
 Data with the Bayesian Mallows Model.” *Knowledge-Based Systems* 186
 (December): 104960. <https://doi.org/10.1016/j.knosys.2019.104960>.
@@ -191,7 +189,7 @@ Data with the Bayesian Mallows Model.” *Knowledge-Based Systems* 186
 
 <div id="ref-liu2019" class="csl-entry">
 
-Liu, Q, M Crispino, I Scheel, V Vitelli, and A Frigessi. 2019.
+Liu, Q, M Crispino, I Scheel, V Vitelli, and A Frigessi. 2019b.
 “Model-Based Learning from Preference Data.” *Annual Review of
 Statistics and Its Application* 6 (1).
 <https://doi.org/10.1146/annurev-statistics-031017-100213>.
