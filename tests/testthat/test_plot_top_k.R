@@ -1,7 +1,9 @@
 context("Testing plot_top_k and predict_top_k")
 
 test_that("plot_top_k and predict_top_k fail when they should", {
-  beach_tc <- generate_transitive_closure(beach_preferences)
+  beach_small <- beach_preferences %>%
+    filter(bottom_item %in% 1:5, top_item %in% 1:5)
+  beach_tc <- generate_transitive_closure(beach_small)
   beach_init_rank <- generate_initial_ranking(beach_tc)
   bmm <- compute_mallows(rankings = beach_init_rank, preferences = beach_tc,
                          nmc = 100, save_aug = TRUE)
@@ -37,27 +39,27 @@ test_that("plot_top_k and predict_top_k fail when they should", {
   pred <- predict_top_k(bmm, burnin = 90, k = 3)
   expect_equal(
     pred[c(1, 10, 90, 91, 200), ],
-    structure(list(assessor = c(1, 1, 6, 7, 14), item = c("Item 1",
-                                                          "Item 4", "Item 9", "Item 1", "Item 13"), prob = c(0, 0, 1, 0,
-                                                                                                             0)), row.names = c(NA, -5L), groups = structure(list(assessor = c(1,
-                                                                                                                                                                               6, 7, 14), .rows = structure(list(1:2, 3L, 4L, 5L), ptype = integer(0), class = c("vctrs_list_of",
-                                                                                                                                                                                                                                                                 "vctrs_vctr", "list"))), row.names = c(NA, 4L), class = c("tbl_df",
-                                                                                                                                                                                                                                                                                                                           "tbl", "data.frame"), .drop = TRUE), class = c("grouped_df",
-                                                                                                                                                                                                                                                                                                                                                                          "tbl_df", "tbl", "data.frame"))
-  )
+    structure(list(assessor = c(1, 2, 18, 19, 40), item = c("Item 1",
+                                                            "Item 5", "Item 5", "Item 1", "Item 5"), prob = c(1, 1, 1, 1,
+                                                                                                              1)), row.names = c(NA, -5L), groups = structure(list(assessor = c(1,
+                                                                                                                                                                                2, 18, 19, 40), .rows = structure(list(1L, 2L, 3L, 4L, 5L), ptype = integer(0), class = c("vctrs_list_of",
+                                                                                                                                                                                                                                                                          "vctrs_vctr", "list"))), row.names = c(NA, -5L), class = c("tbl_df",
+                                                                                                                                                                                                                                                                                                                                     "tbl", "data.frame"), .drop = TRUE), class = c("grouped_df",
+                                                                                                                                                                                                                                                                                                                                                                                    "tbl_df", "tbl", "data.frame")
+              ) )
 
 
   pred <- predict_top_k(bmm, burnin = 90, k = 5)
   expect_equal(
     head(pred),
-    structure(list(assessor = c(1, 1, 1, 1, 1, 1), item = c("Item 1",
-                                                            "Item 10", "Item 11", "Item 12", "Item 13", "Item 14"), prob = c(0,
-                                                                                                                             0.4, 1, 0.6, 0, 0)), row.names = c(NA, -6L), groups = structure(list(
-                                                                                                                               assessor = 1, .rows = structure(list(1:6), ptype = integer(0), class = c("vctrs_list_of",
-                                                                                                                                                                                                        "vctrs_vctr", "list"))), row.names = 1L, class = c("tbl_df",
-                                                                                                                                                                                                                                                           "tbl", "data.frame"), .drop = TRUE), class = c("grouped_df",
-                                                                                                                                                                                                                                                                                                          "tbl_df", "tbl", "data.frame"))
-  )
+    structure(list(assessor = c(1, 1, 1, 1, 1, 2), item = c("Item 1",
+                                                            "Item 2", "Item 3", "Item 4", "Item 5", "Item 1"), prob = c(1,
+                                                                                                                        1, 1, 1, 1, 1)), row.names = c(NA, -6L), groups = structure(list(
+                                                                                                                          assessor = c(1, 2), .rows = structure(list(1:5, 6L), ptype = integer(0), class = c("vctrs_list_of",
+                                                                                                                                                                                                             "vctrs_vctr", "list"))), row.names = c(NA, -2L), class = c("tbl_df",
+                                                                                                                                                                                                                                                                        "tbl", "data.frame"), .drop = TRUE), class = c("grouped_df",
+                                                                                                                                                                                                                                                                                                                       "tbl_df", "tbl", "data.frame")))
+
 })
 
 
