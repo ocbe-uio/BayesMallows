@@ -1,39 +1,9 @@
-# running script to assess results
-
-require(BayesMallows)
-require(PerMallows)
-require(dplyr)
-require(tibble)
-require(Rcpp)
-require(ggplot2)
-require(plotrix)
-require(purrr)
-require(crayon)
-require(utf8)
-require(fields)
-require(tidyr)
-require(dplyr)
-require(gridExtra)
-require(nimble)
-
-######################
-## Source Functions
-######################
-
-source("get_mallows_loglik.R")
-source("metropolis_hastings_rho.R")
-source("leap_and_shift_probs.R")
-source("metropolis_hastings_alpha.R")
-source("uniform_functions.R")
-source("pseudolikelihood_functions.R")
-source("smc_mallows_new_users_partial.R")
-source("post_processing_functions.R")
+context('SMC-mallows new users partial rankings')
 
 #########################
 # Generate Dataset
 #########################
 set.seed(994)
-load("sushi_rankings.rda")
 
 # General
 n_items <- dim(sushi_rankings)[2]  # Number of items
@@ -70,10 +40,10 @@ items <- sample(1:n_items, 5, replace=F)
 items = sort(items)
 
 # plot trace - rho
-p <- assess_convergence(bayesmallows_mcmc, parameter = "rho", items = items)  +
-  ggtitle("Trace plot for MCMC algorithm in BayesMallows R package") +
-  theme(plot.title = element_text(hjust = 0.5))
-p
+# p <- assess_convergence(bayesmallows_mcmc, parameter = "rho", items = items)  +
+#   ggtitle("Trace plot for MCMC algorithm in BayesMallows R package") +
+#   theme(plot.title = element_text(hjust = 0.5))
+# p
 
 # heatplot
 bayesmallows_rho_matrix = matrix(bayesmallows_mcmc$rho$value, ncol = n_items, nrow = nmc, byrow=TRUE)
@@ -88,14 +58,14 @@ compute_consensus(model_fit = bayesmallows_mcmc, type = "CP", burnin = bayesmall
 compute_consensus(model_fit = bayesmallows_mcmc, type = "MAP", burnin = bayesmallows_mcmc$burnin)
 
 #plot trace - alpha
-assess_convergence(bayesmallows_mcmc, parameter = "alpha")+
-  ggtitle("Trace plot for MCMC algorithm in BayesMallows R package") +
-  theme(plot.title = element_text(hjust = 0.5))
+# assess_convergence(bayesmallows_mcmc, parameter = "alpha")+
+#   ggtitle("Trace plot for MCMC algorithm in BayesMallows R package") +
+#   theme(plot.title = element_text(hjust = 0.5))
 #ggsave("bayesmallows_alpha_traceplot.png", height = 6, width = 7)
 
-bayesmallows_alpha_posterior_plot = plot(bayesmallows_mcmc, parameter = "alpha", burnin = bayesmallows_mcmc$burnin) +
-  ggtitle("BayesMallows R package") + theme(plot.title = element_text(hjust = 0.5))
-bayesmallows_alpha_posterior_plot
+# bayesmallows_alpha_posterior_plot = plot(bayesmallows_mcmc, parameter = "alpha", burnin = bayesmallows_mcmc$burnin) +
+#   ggtitle("BayesMallows R package") + theme(plot.title = element_text(hjust = 0.5))
+# bayesmallows_alpha_posterior_plot
 #ggsave("bayesmallows_alpha_posterior_plot.png", height = 6, width = 7)
 
 # determine posterior estimates - alpha
@@ -120,9 +90,6 @@ alpha_max = 1e6
 aug_method = "random"
 #aug_method = "pseudolikelihood"
 
-source("uniform_functions.R")
-source("pseudolikelihood_functions.R")
-source("smc_mallows_new_users_partial.R")
 test =  smc_mallows_new_users_partial(R_obs = samples, n_items = n_items, metric = metric,
                                              leap_size = leap_size, N = N, Time = Time,
                                              logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
@@ -132,7 +99,7 @@ test =  smc_mallows_new_users_partial(R_obs = samples, n_items = n_items, metric
 
 # heatplot for rho
 
-plot_rho_heatplot(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, n_items = n_items, rho_0 = rho_0)
+# plot_rho_heatplot(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, n_items = n_items, rho_0 = rho_0)
 
 # posterior confidence intervals for rho
 
@@ -146,7 +113,7 @@ rho_map
 
 
 # posterior for alpha
-plot_alpha_posterior(output = test$alpha_samples[,Time+1], nmc = N, burnin = 0)
+# plot_alpha_posterior(output = test$alpha_samples[,Time+1], nmc = N, burnin = 0)
 
 # posterior confidence intervals
 alpha_posterior_intervals = compute_posterior_intervals_alpha(output = test$alpha_samples[,Time+1], nmc = N, burnin = 0)
@@ -166,7 +133,7 @@ test =  smc_mallows_new_users_partial(R_obs = samples, n_items = n_items, metric
                                       num_new_obs = num_new_obs, aug_method = aug_method, alpha = alpha_0)
 
 # heatplot for rho
-plot_rho_heatplot_partial(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, n_items = n_items, rho_0 = rho_0)
+# plot_rho_heatplot_partial(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, n_items = n_items, rho_0 = rho_0)
 
 # posterior confidence intervals for rho
 compute_posterior_intervals_rho(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0)
