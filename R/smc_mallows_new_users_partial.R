@@ -161,7 +161,7 @@ smc_mallows_new_users_partial <- function(R_obs, n_items, metric, leap_size, N, 
                                                         leap_size = leap_size)
 
       }
-      alpha_samples[ii,tt+1] = metropolis_hastings_alpha_update(alpha = alpha_samples[ii,tt+1], n_items = n_items,
+      alpha_samples[ii,tt+1] = metropolis_hastings_alpha(alpha = alpha_samples[ii,tt+1], n_items = n_items,
                                                          rankings = aug_rankings[(1:num_obs),,ii],
                                                          metric = metric, rho = rho_samples[ii,,tt+1],
                                                          logz_estimate = logz_estimate, alpha_prop_sd = alpha_prop_sd,
