@@ -47,8 +47,8 @@ items = sort(items)
 
 # heatplot
 bayesmallows_rho_matrix = matrix(bayesmallows_mcmc$rho$value, ncol = n_items, nrow = nmc, byrow=TRUE)
-bayesmallows_heatmat_rho = heatMat(mcmcOutput = bayesmallows_rho_matrix, burnin = bayesmallows_mcmc$burnin, t_rank = rho_0)
-bayesmallows_heatplot = heatPlot_fixed(mat = bayesmallows_heatmat_rho,t_rank = rho_0)
+bayesmallows_heatmat_rho = BayesMallows:::heatMat(mcmcOutput = bayesmallows_rho_matrix, burnin = bayesmallows_mcmc$burnin, t_rank = rho_0)
+# bayesmallows_heatplot = BayesMallows:::heatPlot_fixed(mat = bayesmallows_heatmat_rho,t_rank = rho_0)
 
 
 # posterior intervals for rho
@@ -103,12 +103,12 @@ test =  smc_mallows_new_users_partial(R_obs = samples, n_items = n_items, metric
 
 # posterior confidence intervals for rho
 
-compute_posterior_intervals_rho(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0)
+BayesMallows:::compute_posterior_intervals_rho(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0)
 
 # MAP AND CP consensus ranking estimates
-rho_cp = compute_rho_consensus(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, C = 1, type = "CP")
+rho_cp = BayesMallows:::compute_rho_consensus(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, C = 1, type = "CP")
 rho_cp
-rho_map = compute_rho_consensus(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, C = 1, type = "MAP")
+rho_map = BayesMallows:::compute_rho_consensus(output = test$rho_samples[,,Time+1], nmc = N, burnin = 0, C = 1, type = "MAP")
 rho_map
 
 
@@ -116,7 +116,7 @@ rho_map
 # plot_alpha_posterior(output = test$alpha_samples[,Time+1], nmc = N, burnin = 0)
 
 # posterior confidence intervals
-alpha_posterior_intervals = compute_posterior_intervals_alpha(output = test$alpha_samples[,Time+1], nmc = N, burnin = 0)
+alpha_posterior_intervals = BayesMallows:::compute_posterior_intervals_alpha(output = test$alpha_samples[,Time+1], nmc = N, burnin = 0)
 
 
 
@@ -127,7 +127,7 @@ alpha_posterior_intervals = compute_posterior_intervals_alpha(output = test$alph
 
 alpha_0 = 2
 
-test =  smc_mallows_new_users_partial(R_obs = samples, n_items = n_items, metric = metric,
+test =  smc_mallows_new_users_partial_alpha_fixed(R_obs = samples, n_items = n_items, metric = metric,
                                       leap_size = leap_size, N = N, Time = Time,
                                       logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
                                       num_new_obs = num_new_obs, aug_method = aug_method, alpha = alpha_0)

@@ -237,8 +237,8 @@ metropolis_hastings_aug_ranking_pseudo = function(alpha, rho, n_items, partial_r
     #############
     # Calculate the log posterior of the current and proposed rankings.
     # NB the current can usually be stored to save recalculating it, but we're not caring about that yet
-    curr_logpost = get_mallows_loglik(alpha = alpha, rho = as.matrix(rho), n = n_items, rankings = as.matrix(current_ranking), metric = metric)
-    prop_logpost = get_mallows_loglik(alpha = alpha, rho = as.matrix(rho), n = n_items, rankings = as.matrix(proposed_augmented_ranking), metric = metric)
+    curr_logpost = get_mallows_loglik(alpha = alpha, rho = rho, n = n_items, rankings = t(current_ranking), metric = metric)
+    prop_logpost = get_mallows_loglik(alpha = alpha, rho = rho, n = n_items, rankings = t(proposed_augmented_ranking), metric = metric)
 
     log_acceptance_prob = prop_logpost - curr_logpost - log(forward_prob) + log(backward_prob)
 
