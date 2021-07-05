@@ -129,7 +129,7 @@ smc_mallows_new_users_partial <- function(R_obs, n_items, metric, leap_size, N, 
       log_z_alpha = BayesMallows:::get_partition_function(n_items = n_items, alpha =  alpha_samples[ii,tt+1],
                                                           logz_estimate = logz_estimate, metric = metric)
       log_likelihood = get_mallows_loglik(alpha = alpha_samples[ii,tt+1], rho = rho_samples[ii,,tt+1],
-                                          n_items = n_items, rankings = aug_rankings[((num_obs-num_new_obs+1):num_obs),,ii],
+                                          n_items = n_items, rankings = as.matrix(aug_rankings[((num_obs-num_new_obs+1):num_obs),,ii]),
                                           metric = metric)
       log_inc_wgt[ii] = log_likelihood - num_new_obs * log_z_alpha - log(aug_prob[ii])
     }
@@ -312,7 +312,7 @@ smc_mallows_new_users_partial_alpha_fixed <- function(R_obs, n_items, metric, le
       log_z_alpha = BayesMallows:::get_partition_function(n_items = n_items, alpha =  alpha,
                                                           logz_estimate = logz_estimate, metric = metric)
       log_likelihood = get_mallows_loglik(alpha = alpha, rho = rho_samples[ii,,tt+1],
-                                          n_items = n_items, rankings = aug_rankings[((num_obs-num_new_obs+1):num_obs),,ii],
+                                          n_items = n_items, rankings = as.matrix(aug_rankings[((num_obs-num_new_obs+1):num_obs),,ii]),
                                           metric = metric)
       log_inc_wgt[ii] = log_likelihood - num_new_obs*log_z_alpha - log(aug_prob[ii])
     }

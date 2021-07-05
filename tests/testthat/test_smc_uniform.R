@@ -24,12 +24,12 @@ n_items= 6
 
 R_curr = c(1,2,3,6,5,4)
 R_obs = c(1,2,3,NA,NA,NA)
-# test_1 = metropolis_hastings_aug_ranking(R_curr = R_curr, R_obs = R_obs, alpha = alpha, rho = rho, n_items = n_items, metric = metric) # FIXME: triggering error on get_rank_distance (#98)
+test_1 = metropolis_hastings_aug_ranking(R_curr = R_curr, R_obs = R_obs, alpha = alpha, rho = rho, n_items = n_items, metric = metric)
 
 # R_curr == rho so we should get rho
 R_curr = rho
 R_obs = c(1,2,3,NA,NA,NA)
-# test_2 = metropolis_hastings_aug_ranking(R_curr = R_curr, R_obs = R_obs, alpha = alpha, rho = rho, n_items = n_items, metric = metric) # FIXME: triggering error on get_rank_distance (#98)
+test_2 = metropolis_hastings_aug_ranking(R_curr = R_curr, R_obs = R_obs, alpha = alpha, rho = rho, n_items = n_items, metric = metric)
 
 
 
@@ -37,7 +37,7 @@ R_obs = c(1,2,3,NA,NA,NA)
 
 R_curr = c(1,2,3,6,5,4)
 R_obs = c(1,2,3,6,5,NA)
-# test_3 = metropolis_hastings_aug_ranking(R_curr = R_curr, R_obs = R_obs, alpha = alpha, rho = rho, n_items = n_items, metric = metric) # FIXME: triggering error on get_rank_distance (#98)
+test_3 = metropolis_hastings_aug_ranking(R_curr = R_curr, R_obs = R_obs, alpha = alpha, rho = rho, n_items = n_items, metric = metric)
 
 test_that('MH-aug ranking works', {
 	# print(test_1)
