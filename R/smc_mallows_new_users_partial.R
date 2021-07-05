@@ -131,7 +131,7 @@ smc_mallows_new_users_partial <- function(R_obs, n_items, metric, leap_size, N, 
       log_likelihood = get_mallows_loglik(alpha = alpha_samples[ii,tt+1], rho = rho_samples[ii,,tt+1],
                                           n_items = n_items, rankings = aug_rankings[((num_obs-num_new_obs+1):num_obs),,ii],
                                           metric = metric)
-      log_inc_wgt[ii] = log_likelihood - num_new_obs*log_z_alpha - log(aug_prob)
+      log_inc_wgt[ii] = log_likelihood - num_new_obs * log_z_alpha - log(aug_prob[ii])
     }
 
     # normalise weights
@@ -314,7 +314,7 @@ smc_mallows_new_users_partial_alpha_fixed <- function(R_obs, n_items, metric, le
       log_likelihood = get_mallows_loglik(alpha = alpha, rho = rho_samples[ii,,tt+1],
                                           n_items = n_items, rankings = aug_rankings[((num_obs-num_new_obs+1):num_obs),,ii],
                                           metric = metric)
-      log_inc_wgt[ii] = log_likelihood - num_new_obs*log_z_alpha - log(aug_prob)
+      log_inc_wgt[ii] = log_likelihood - num_new_obs*log_z_alpha - log(aug_prob[ii])
     }
 
     # normalise weights
