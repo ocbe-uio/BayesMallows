@@ -14,7 +14,7 @@ metric = "footrule"
 
 # Generate estimate of Z_n(alpha)
 alpha_vector <- seq(from = 0, to = 20, by = 0.1)
-iter = 1e4
+iter <- 1e3
 degree <- 10
 
 # Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
