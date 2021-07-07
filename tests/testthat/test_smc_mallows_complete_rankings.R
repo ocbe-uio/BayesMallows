@@ -13,8 +13,8 @@ leap_size = floor(n_items/5)
 metric = "footrule"
 
 # Generate estimate of Z_n(alpha)
-alpha_vector <- seq(from = 0, to = 15, by = 0.1)
-iter = 1e4
+alpha_vector <- seq(from = 0, to = 15, by = 1)
+iter = 1e2
 degree <- 10
 
 # Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
@@ -142,8 +142,8 @@ test_that("get_mallows_loglik() in smc_mallows_new_users_complete() works", {
 	alpha_samples[, 1] <- rexp(N, rate=1)
 
 	# logz_estimate ------------------------------------------ #
-	alpha_vector <- seq(from = 0, to = 15, by = 0.1)
-	iter <- 3e3
+	alpha_vector <- seq(from = 0, to = 15, by = 1)
+	iter <- 3e2
 	degree <- 10
 	logz_estimate <- estimate_partition_function(
 		method="importance_sampling", alpha_vector=alpha_vector,

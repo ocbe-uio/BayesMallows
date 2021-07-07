@@ -13,8 +13,8 @@ leap_size <- floor(n_items / 5)
 metric <- "footrule"
 
 # Generate estimate of Z_n(alpha)
-alpha_vector <- seq(from = 0, to = 20, by = 0.1)
-iter <- 1e3
+alpha_vector <- seq(from = 0, to = 20, by = 1)
+iter <- 1e2
 degree <- 10
 
 # Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
@@ -55,7 +55,7 @@ test_that('BayesMallows MCMC Results are OK', {
 # SMC Analysis (alpha unknown)
 ###############################
 
-N <- 100
+N <- 55
 mcmc_times <- 5
 num_new_obs <- 5
 Time <- dim(samples)[1] / num_new_obs

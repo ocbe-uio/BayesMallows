@@ -163,7 +163,7 @@ n_items <- 6
 rankings <- sample_mallows(
 	rho0 = rho, alpha0 = alpha, n_samples = 10, burnin = 1000, thinning = 500
 )
-alpha_vector <- seq(from = 0, to = 20, by = 0.1)
+alpha_vector <- seq(from = 0, to = 20, by = 1)
 iter <- 1e4
 degree <- 10
 
