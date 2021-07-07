@@ -236,6 +236,25 @@ get_mallows_loglik <- function(alpha, rho, n_items, rankings, metric) {
     .Call(`_BayesMallows_get_mallows_loglik`, alpha, rho, n_items, rankings, metric)
 }
 
+#' @title Get Sample Probabilities
+#' @description Calculate probability of assigning a set of specific ranks to an specific item
+#' given its rank in the consensus ranking
+#'
+#' @param rho_item_rank An integer value rank of an item in the current consensus ranking
+#' @param alpha Numeric value og the scale parameter
+#' @param remaining_set_rank A sequence of integer values of the set of possible ranks that we can assign the item
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @param n_items Integer is the number of items in the consensus ranking
+#' @return sample_prob_list A numeric sequence of sample probabilities for selecting a specific rank given the current
+#'         rho_item_rank
+#' @export
+get_sample_probabilities <- function(rho_item_rank, alpha, remaining_set_ranks, metric, n_items) {
+    .Call(`_BayesMallows_get_sample_probabilities`, rho_item_rank, alpha, remaining_set_ranks, metric, n_items)
+}
+
 #' @title Leap and Shift Probabilities
 #' @description Determine the new Calculates transition probabilities for proposing a new rho
 #' @param rho A ranking sequence

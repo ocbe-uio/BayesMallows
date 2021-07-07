@@ -17,24 +17,30 @@
 //' @return sample_prob_list A numeric sequence of sample probabilities for selecting a specific rank given the current
 //'         rho_item_rank
 //' @export
-// get_sample_probabilities = function(rho_item_rank, alpha, remaining_set_ranks, metric, n_items){
+// [[Rcpp::export]]
+arma::vec get_sample_probabilities(
+  arma::vec rho_item_rank,
+  double alpha,
+  arma::vec remaining_set_ranks,
+  std::string metric,
+  int n_items
+) {
+  // define a set of probs list
+  int num_ranks = remaining_set_ranks.n_elem;
+  arma::vec sample_prob_list = Rcpp::rep(0.0, num_ranks);
 
+  // cycle through each item and calculate its specific prob
+  for (arma::uword ii = 0; ii < num_ranks; ++ii) {
+    arma::vec item_rank = {remaining_set_ranks(ii)};
+    double rank_dist = get_rank_distance(rho_item_rank, item_rank, metric);
+    double sample_prob = -(alpha / n_items) * rank_dist;
+    sample_prob_list(ii) = sample_prob;
+  }
 
-//   # define a set of probs list
-//   num_ranks = length(remaining_set_ranks)
-//   sample_prob_list = rep(0, num_ranks)
+  // normalise probs
+  double maxw = max(sample_prob_list);
+  arma::vec w = arma::exp(sample_prob_list - maxw);
+  sample_prob_list = w / arma::sum(w);
 
-//   # cycle through each item and calculate its specific prob
-//   for (ii in 1:num_ranks){
-//     item_rank = remaining_set_ranks[ii]
-//     sample_prob = (-(alpha/n_items)*BayesMallows:::get_rank_distance(rho_item_rank, item_rank, metric) )
-//     sample_prob_list[ii] = sample_prob
-//   }
-
-//   # normalise probs
-//   maxw = max(sample_prob_list)
-//   w = exp(sample_prob_list-maxw)
-//   sample_prob_list = w/sum(w)
-
-//   return(sample_prob_list)
-// }
+  return(sample_prob_list);
+}
