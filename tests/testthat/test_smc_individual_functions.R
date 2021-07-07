@@ -1,4 +1,4 @@
-context("Testing SMC functions individually")
+context("SMC individual functions")
 
 rho <- c(1,2,3,4,5,6)
 alpha <- 2

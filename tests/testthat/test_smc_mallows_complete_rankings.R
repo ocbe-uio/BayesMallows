@@ -1,4 +1,4 @@
-context("SMC-Mallows complete rankings: sequence")
+context("SMC complete rankings: sequence")
 
 #########################
 # Generate Dataset
@@ -118,7 +118,7 @@ test_that("Output of compute_posterior_intervals_alpha is OK", {
 	expect_equivalent(sapply(alpha_posterior_intervals, length), rep(1, 6))
 })
 
-context("SMC-Mallows complete rankings: breakdown")
+context("SMC complete rankings: breakdown")
 
 test_that("get_mallows_loglik() in smc_mallows_new_users_complete() works", {
 	# ======================================================== #

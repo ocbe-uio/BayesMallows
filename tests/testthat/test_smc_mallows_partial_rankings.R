@@ -1,4 +1,4 @@
-context("SMC-mallows new users partial rankings")
+context("SMC new users partial rankings")
 
 #########################
 # Generate Dataset
