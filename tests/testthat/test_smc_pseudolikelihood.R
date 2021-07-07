@@ -50,133 +50,68 @@ test_1_backward_b = calculate_backward_probability(item_ordering = item_ordering
                                                    alpha = alpha, n_items = n_items, metric = metric)
 
 test_that('calculations of forward and backward probabilities', {
-    # print(test_1_forward)
-    #$aug_ranking
-    #[1] 1 2 3 5 4 6
-    #$forward_prob
-    #[1] 0.07205734
-
-    # print(test_1_backward_a)
-    # 0.01360987
-
-    # print(test_1_backward_b)
-    # 0.07205734
-
-    # test_1_forward$forward_prob == test_1_backward_b
-    # TRUE
+    expect_equal(test_1_forward$aug_ranking, c(1, 2, 3, 5, 4, 6))
+    expect_equal(test_1_forward$forward_prob, 0.07205734)
+    expect_equal(test_1_backward_a, 0.01360987)
+    expect_equal(test_1_backward_b, 0.07205734)
+    expect_equal(test_1_forward$forward_prob, test_1_backward_b)
 })
-
-
-
-
-
 
 ############################################
 # tests for M-H_aug_ranking_pseudo
 ###########################################
 
-
-
 set.seed(101)
 rho = c(1,2,3,4,5,6)
 alpha = 2
 metric = "footrule"
 n_items= 6
 
-R_curr = c(1,2,3,4,5,6)
-R_obs = c(1,2,3,4,5,6)
-
-test_1 = metropolis_hastings_aug_ranking_pseudo(alpha, rho, n_items, partial_ranking = R_obs, current_ranking = R_curr, metric)
-
-R_curr = c(1,2,3,4,5,6)
-R_obs = c(1,2,3,NA,NA,NA)
-test_2 = metropolis_hastings_aug_ranking_pseudo(alpha, rho, n_items, partial_ranking = R_obs, current_ranking = R_curr, metric)
-
-
-R_curr = c(1,2,6,5,4,3)
-R_obs = c(1,2,NA,NA,NA,NA)
-test_3 =  metropolis_hastings_aug_ranking_pseudo(alpha, rho, n_items, partial_ranking = R_obs, current_ranking = R_curr, metric)
-
 test_that('M-H aug ranking pseudo works', {
-    # print(test_1)
-    #$ranking
-    #[1] 1 2 3 4 5 6
-
-    # all(test_1 == R_curr) == TRUE
-    # TRUE
-
-    # print(test_2)
-    # #$ranking
-    # #[1] 1 2 3 5 4 6
-
-    # all(test_2 == R_curr) == TRUE
-    # #  should be FALSE
-
-    # print(test_3)
-    # #$ranking
-    # #[1] 1 2 5 6 4 3
-
-    # all(test_3 == R_curr) == TRUE
-    # #  should be FALSE
+    R_curr = c(1,2,3,4,5,6)
+    R_obs = c(1,2,3,4,5,6)
+    test_1 = metropolis_hastings_aug_ranking_pseudo(alpha, rho, n_items, partial_ranking = R_obs, current_ranking = R_curr, metric)
+    expect_equal(test_1, c(1, 2, 3, 4, 5, 6))
+    expect_equal(all(test_1 == R_curr), TRUE)
+    R_curr = c(1,2,3,4,5,6)
+    R_obs = c(1,2,3,NA,NA,NA)
+    test_2 = metropolis_hastings_aug_ranking_pseudo(alpha, rho, n_items, partial_ranking = R_obs, current_ranking = R_curr, metric)
+    expect_equal(test_2, c(1, 2, 3, 5, 4, 6))
+    expect_equal(all(test_2 == R_curr), FALSE)
+    R_curr = c(1,2,6,5,4,3)
+    R_obs = c(1,2,NA,NA,NA,NA)
+    test_3 =  metropolis_hastings_aug_ranking_pseudo(alpha, rho, n_items, partial_ranking = R_obs, current_ranking = R_curr, metric)
+    expect_equal(test_3, c(1, 2, 5, 6, 4, 3))
+    expect_equal(all(test_3 == R_curr), FALSE)
 })
-
-
 
 #########################################################
 ### tests relating to the correction_kernel function
 #########################################################
 
-
 set.seed(101)
 rho = c(1,2,3,4,5,6)
 alpha = 2
 metric = "footrule"
 n_items= 6
 
-R_curr = c(1,2,3,4,5,6)
-R_obs = c(1,2,3,NA,NA,NA)
-
-test_1 = correction_kernel_pseudo(R_curr, R_obs, rho, alpha, n_items, metric)
-
-
-R_curr = c(1,2,3,4,5,6)
-R_obs = c(1,2,3,5,NA,NA)
-test_2 = correction_kernel_pseudo(R_curr, R_obs, rho, alpha, n_items, metric)
-
-
-R_curr = c(1,2,3,4,5,6)
-R_obs = c(1,2,3,4,5,6)
-test_3 = correction_kernel_pseudo(R_curr, R_obs, rho, alpha, n_items, metric)
-
 test_that('correction_kernel works', {
-    # print(test_1)
-    # #$ranking
-    # #[1] 1 2 3 4 5 6
-    # #
-    # #$correction_prob
-    # #[1] 1
-
-    # all(test_1$ranking == R_curr) == TRUE
-    # TRUE
-
-    # print(test_2)
-    # #$ranking
-    # #[1] 1 2 3 5 4 6
-    # #
-    # #$correction_prob
-    # #[1] 0.5
-
-
-    # all(test_2$ranking == R_curr) == TRUE
-    # #  should be FALSE
-
-    # print(test_3)
-    # #$ranking
-    # #[1] 1 2 3 4 5 6
-    # #
-    # #$correction_prob
-    # #[1] 1
-
-    # all(test_3$ranking == R_curr) == TRUE
-    # #  should be TRUE
+    R_curr = c(1,2,3,4,5,6)
+    R_obs = c(1,2,3,NA,NA,NA)
+    test_1 = correction_kernel_pseudo(R_curr, R_obs, rho, alpha, n_items, metric)
+    expect_equal(test_1$ranking, c(1, 2, 3, 4, 5, 6))
+    expect_equal(test_1$correction_prob, 1)
+    expect_equal(all(test_1$ranking == R_curr), TRUE)
+    R_curr = c(1,2,3,4,5,6)
+    R_obs = c(1,2,3,5,NA,NA)
+    test_2 = correction_kernel_pseudo(R_curr, R_obs, rho, alpha, n_items, metric)
+    expect_equal(test_2$ranking, c(1, 2, 3, 5, 4, 6))
+    expect_equal(test_2$correction_prob, 0.5)
+    expect_equal(all(test_2$ranking == R_curr), FALSE)
+    R_curr = c(1,2,3,4,5,6)
+    R_obs = c(1,2,3,4,5,6)
+    test_3 = correction_kernel_pseudo(R_curr, R_obs, rho, alpha, n_items, metric)
+    expect_equal(test_3$ranking, c(1, 2, 3, 4, 5, 6))
+    expect_equal(test_3$correction_prob, 1)
+    expect_equal(all(test_3$ranking == R_curr), TRUE)
 })
