@@ -5,7 +5,6 @@ alpha <- 2
 metric <- "footrule"
 n_items <- 6
 
-# TODO: investigate further. Output in R matches C++? (#92)
 test_that("get_mallows_loglik() works as expected", {
 	set.seed(101)
 	loglik <- get_mallows_loglik(
