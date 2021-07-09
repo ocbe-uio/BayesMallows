@@ -21,11 +21,18 @@
 //'         forward_prob a numerical value of the probability of creating the augmented ranking
 //'         using the pseudolikelihood augmentation.
 // [[Rcpp::export]]
-// calculate_forward_probability = function(item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric){
+double calculate_forward_probability(
+  arma::vec item_ordering,
+  arma::vec partial_ranking,
+  arma::vec remaining_set,
+  arma::vec rho,
+  double alpha,
+  int n_items,
+  std::string metric
+){
 
-
-//   # item ordering is the order of which items are assigned ranks in a specified order
-//   num_items_unranked = length(item_ordering)
+  // item ordering is the order of which items are assigned ranks in a specified order
+  // num_items_unranked = length(item_ordering)
 
 //   # prob of creating augmented ranking
 //   forward_auxiliary_ranking_probability = 1
@@ -81,4 +88,4 @@
 
 //   output <- list("aug_ranking" = partial_ranking, "forward_prob" =  forward_auxiliary_ranking_probability)
 //   return(output)
-// }
+}
