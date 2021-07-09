@@ -29,28 +29,24 @@ double calculate_forward_probability(
   double alpha,
   int n_items,
   std::string metric
-){
-
+) {
   // item ordering is the order of which items are assigned ranks in a specified order
-  // num_items_unranked = length(item_ordering)
+  int num_items_unranked = item_ordering.n_elem;
 
-//   # prob of creating augmented ranking
-//   forward_auxiliary_ranking_probability = 1
+  // prob of creating augmented ranking
+  double forward_auxiliary_ranking_probability = 1.0;
 
-//   if(num_items_unranked == 1){
-
-//     # create new agumented ranking by sampling remaining ranks from set uniformly
-//     partial_ranking[is.na(partial_ranking)] <- remaining_set
-
-
-//   }else{
+  if (num_items_unranked == 1) {
+    // create new agumented ranking by sampling remaining ranks from set uniformly
+    partial_ranking.elem(find_nonfinite(partial_ranking)) = remaining_set;
+  } else {
 
 //     auxiliary_ranking = rep(0, num_items_unranked)
 
-//     ########################################################
-//     ## LOOP TO CALCULATE FORWARD AND BACKWARD PROBABILITY
-//     ########################################################
-//     # given the old and new item ordering and the list of missing rank, determine the sample probs for each iteration
+    /* ====================================================== */
+    /* LOOP TO CALCULATE FORWARD AND BACKWARD PROBABILITY     */
+    /* ====================================================== */
+// given the old and new item ordering and the list of missing rank, determine the sample probs for each iteration
 //     for (jj in 1:(num_items_unranked-1)){
 
 //       # items to sample rank
@@ -75,12 +71,12 @@ double calculate_forward_probability(
 //       # remove selected auxiliary rank from the set of remaining possibles ranks to select
 //       remaining_set = remaining_set[ remaining_set != auxiliary_ranking[jj] ]
 
-//     }
+    }
 
-//     # last element in augmented ranking is deterministic - the prob is 1
+// last element in augmented ranking is deterministic - the prob is 1
 //     auxiliary_ranking[num_items_unranked] = remaining_set
 
-//     # fit the augmented ranking within the partial rankings with NAs
+// fit the augmented ranking within the partial rankings with NAs
 //     partial_ranking[item_ordering] <- auxiliary_ranking # ranks for items
 
 //   } #end of if else statement
