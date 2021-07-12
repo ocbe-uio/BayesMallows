@@ -191,6 +191,28 @@ run_mcmc <- function(rankings, obs_freq, nmc, constraints, cardinalities, logz_e
     .Call(`_BayesMallows_run_mcmc`, rankings, obs_freq, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, error_model, Lswap, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, alpha_max, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2, save_ind_clus)
 }
 
+#' @title Calculate Backward Probability
+#' @description Function to calculate probability of assigning a set of specific ranks to an specific item
+#' given its rank in the consensus ranking
+#'
+#' @param item_ordering A vector of integer values to represent the specified queue of which unranked item to assign a rank for the proposed augmented ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
+#' @param remaining_set A vector of integer values to represent the elements (ranks) missing from original observed ranking
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param alpha Numeric value og the scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return backward_auxiliary_ranking_probability A numerical value of creating the previous augmented ranking using the same item ordering used to create the
+#' new auggmented ranking in calculate_forward_probability funtion.
+#' @export
+calculate_backward_probability <- function(item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric) {
+    .Call(`_BayesMallows_calculate_backward_probability`, item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric)
+}
+
 #' @title Calculate Forward Probability
 #' @description Function to calculate probability of assigning a set of
 #'   specific ranks to an specific item
