@@ -192,23 +192,29 @@ run_mcmc <- function(rankings, obs_freq, nmc, constraints, cardinalities, logz_e
 }
 
 #' @title Calculate Forward Probability
-#' @description Function to calculate probability of assigning a set of specific ranks to an specific item
+#' @description Function to calculate probability of assigning a set of
+#'   specific ranks to an specific item
 #' given its rank in the consensus ranking
 #' @export
 #'
-#' @param item_ordering A vector of integer values to represent the specified queue of which unranked item to assign a rank for the proposed augmented ranking
-#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
-#' @param remaining_set A vector of integer values to represent the elements (ranks) missing from original observed ranking
+#' @param item_ordering A vector of integer values to represent the specified
+#'   queue of which unranked item to assign a rank for the proposed augmented
+#'   ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original
+#'   observed incomplete ranking which contains NAs
+#' @param remaining_set A vector of integer values to represent the elements
+#'   (ranks) missing from original observed ranking
 #' @param rho Numeric vector specifying the consensus ranking
 #' @param alpha Numeric value og the scale parameter
 #' @param n_items Integer is the number of items in a ranking
-#' @param metric A character string specifying the distance metric to use in the
-#'   Bayesian Mallows Model. Available options are \code{"footrule"},
-#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-#'   \code{"ulam"}.
-#' @return List containing aug_ranking, a ranking sequence vector of the proposed augmented ranking and
-#'         forward_prob a numerical value of the probability of creating the augmented ranking
-#'         using the pseudolikelihood augmentation.
+#' @param metric A character string specifying the distance metric to use in
+#'   the Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
+#'   and \code{"ulam"}.
+#' @return List containing aug_ranking, a ranking sequence vector of the
+#'   proposed augmented ranking and forward_prob a numerical value of the
+#'   probability of creating the augmented ranking using the pseudolikelihood
+#'   augmentation.
 calculate_forward_probability <- function(item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric) {
     .Call(`_BayesMallows_calculate_forward_probability`, item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric)
 }

@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // get_rank_distance
 double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric);
 RcppExport SEXP _BayesMallows_get_rank_distance(SEXP r1SEXP, SEXP r2SEXP, SEXP metricSEXP) {
@@ -196,12 +201,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // calculate_forward_probability
-double calculate_forward_probability(arma::vec item_ordering, arma::vec partial_ranking, arma::vec remaining_set, arma::vec rho, double alpha, int n_items, std::string metric);
+Rcpp::List calculate_forward_probability(arma::uvec item_ordering, arma::vec partial_ranking, arma::vec remaining_set, arma::vec rho, double alpha, int n_items, std::string metric);
 RcppExport SEXP _BayesMallows_calculate_forward_probability(SEXP item_orderingSEXP, SEXP partial_rankingSEXP, SEXP remaining_setSEXP, SEXP rhoSEXP, SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type item_ordering(item_orderingSEXP);
+    Rcpp::traits::input_parameter< arma::uvec >::type item_ordering(item_orderingSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type partial_ranking(partial_rankingSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type remaining_set(remaining_setSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type rho(rhoSEXP);
