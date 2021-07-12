@@ -37,7 +37,6 @@ double calculate_backward_probability(
   // item ordering is the order of which items are assigned ranks in a specified
   // order
   arma::uword num_items_unranked = item_ordering.n_elem;
-  arma::uword num_ranks = current_ranking.n_elem;
 
   // initialise prob of creating augmented ranking
   double backward_auxiliary_ranking_probability = 1.0;
@@ -45,7 +44,8 @@ double calculate_backward_probability(
   if (num_items_unranked != 1) {
 
   // show the augmented parts of the current ranking
-    arma::vec current_ranking = current_ranking(item_ordering);
+    arma::uvec io_minus_1 = arma::conv_to<arma::uvec>::from(item_ordering - 1);
+    current_ranking = current_ranking.elem(io_minus_1);
 
   /* ====================================================== */
   /* LOOP TO CALCULATE FORWARD AND BACKWARD PROBABILITY     */
@@ -79,5 +79,5 @@ double calculate_backward_probability(
       remaining_set = remaining_set(find(remaining_set != current_ranking(jj)));
     }
   }
-  return(backward_auxiliary_ranking_probability);
+  return backward_auxiliary_ranking_probability;
 }
