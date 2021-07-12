@@ -1,5 +1,4 @@
 #include "RcppArmadillo.h"
-#include "distances.h"
 #include "smc.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
