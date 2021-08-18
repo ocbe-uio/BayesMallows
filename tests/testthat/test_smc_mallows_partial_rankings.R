@@ -40,15 +40,15 @@ bayesmallows_mcmc$burnin <- 1000
 items <- sample(1:n_items, 5, replace = F)
 items <- sort(items)
 
-test_that('BayesMallows MCMC Results are OK', {
-    rho_cp <- compute_consensus(model_fit = bayesmallows_mcmc, type = "CP", burnin = bayesmallows_mcmc$burnin)
-    rho_map <- compute_consensus(model_fit = bayesmallows_mcmc, type = "MAP", burnin = bayesmallows_mcmc$burnin)
-    post_rho <- compute_posterior_intervals(bayesmallows_mcmc, parameter = "rho")
-    post_alpha <- compute_posterior_intervals(bayesmallows_mcmc, parameter = "alpha")
-    expect_equal(dim(post_rho), c(10, 7))
-    expect_equal(dim(rho_cp), c(10, 3))
-    expect_equal(dim(rho_map), c(10, 3))
-    expect_equal(dim(post_alpha), c(1, 6))
+test_that("BayesMallows MCMC Results are OK", {
+  rho_cp <- compute_consensus(model_fit = bayesmallows_mcmc, type = "CP", burnin = bayesmallows_mcmc$burnin)
+  rho_map <- compute_consensus(model_fit = bayesmallows_mcmc, type = "MAP", burnin = bayesmallows_mcmc$burnin)
+  post_rho <- compute_posterior_intervals(bayesmallows_mcmc, parameter = "rho")
+  post_alpha <- compute_posterior_intervals(bayesmallows_mcmc, parameter = "alpha")
+  expect_equal(dim(post_rho), c(10, 7))
+  expect_equal(dim(rho_cp), c(10, 3))
+  expect_equal(dim(rho_map), c(10, 3))
+  expect_equal(dim(post_alpha), c(1, 6))
 })
 
 ###############################
@@ -74,53 +74,65 @@ test <- smc_mallows_new_users_partial(
 )
 
 # check it will produce the wrong metric and aug_method error
-smc_unif_alpha_fixed_pseudo = smc_mallows_new_users_partial_alpha_fixed(alpha = alpha_0, R_obs = samples, n_items = n_items, metric = "cayley",
-                                                                        leap_size = leap_size, N = N, Time = Time,
-                                                                        logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-                                                                        num_new_obs = num_new_obs, aug_method = "pseudolikelihood")
+smc_unif_alpha_fixed_pseudo <- smc_mallows_new_users_partial_alpha_fixed(
+  alpha = alpha_0, R_obs = samples, n_items = n_items, metric = "cayley",
+  leap_size = leap_size, N = N, Time = Time,
+  logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+  num_new_obs = num_new_obs, aug_method = "pseudolikelihood"
+)
 
-smc_pseudo =  smc_mallows_new_users_partial(R_obs = samples, n_items = n_items, metric = "cayley",
-                                            leap_size = leap_size, N = N, Time = Time,
-                                            logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-                                            num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
-                                            lambda = lambda, alpha_max = alpha_max, aug_method = "pseudolikelihood")
+smc_pseudo <- smc_mallows_new_users_partial(
+  R_obs = samples, n_items = n_items, metric = "cayley",
+  leap_size = leap_size, N = N, Time = Time,
+  logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+  num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
+  lambda = lambda, alpha_max = alpha_max, aug_method = "pseudolikelihood"
+)
 
 # check it runs with unif kernel
-smc_unif_alpha_fixed_unif = smc_mallows_new_users_partial_alpha_fixed(alpha = alpha_0, R_obs = samples, n_items = n_items, metric = "footrule",
-                                                                      leap_size = leap_size, N = N, Time = Time,
-                                                                      logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-                                                                      num_new_obs = num_new_obs, aug_method = "random")
+smc_unif_alpha_fixed_unif <- smc_mallows_new_users_partial_alpha_fixed(
+  alpha = alpha_0, R_obs = samples, n_items = n_items, metric = "footrule",
+  leap_size = leap_size, N = N, Time = Time,
+  logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+  num_new_obs = num_new_obs, aug_method = "random"
+)
 
 
-smc_unif =  smc_mallows_new_users_partial(R_obs = samples, n_items = n_items, metric = "footrule",
-                                          leap_size = leap_size, N = N, Time = Time,
-                                          logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-                                          num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
-                                          lambda = lambda, alpha_max = alpha_max, aug_method = "random")
+smc_unif <- smc_mallows_new_users_partial(
+  R_obs = samples, n_items = n_items, metric = "footrule",
+  leap_size = leap_size, N = N, Time = Time,
+  logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+  num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
+  lambda = lambda, alpha_max = alpha_max, aug_method = "random"
+)
 
 # check it runs with pseudo kernel
-smc_unif_alpha_fixed_pseudo = smc_mallows_new_users_partial_alpha_fixed(alpha = alpha_0, R_obs = samples, n_items = n_items, metric = "footrule",
-                                                          leap_size = leap_size, N = N, Time = Time,
-                                                          logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-                                                          num_new_obs = num_new_obs, aug_method = "pseudolikelihood")
+smc_unif_alpha_fixed_pseudo <- smc_mallows_new_users_partial_alpha_fixed(
+  alpha = alpha_0, R_obs = samples, n_items = n_items, metric = "footrule",
+  leap_size = leap_size, N = N, Time = Time,
+  logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+  num_new_obs = num_new_obs, aug_method = "pseudolikelihood"
+)
 
 
-smc_pseudo =  smc_mallows_new_users_partial(R_obs = samples, n_items = n_items, metric = "footrule",
-                                          leap_size = leap_size, N = N, Time = Time,
-                                          logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-                                          num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
-                                          lambda = lambda, alpha_max = alpha_max, aug_method = "pseudolikelihood")
+smc_pseudo <- smc_mallows_new_users_partial(
+  R_obs = samples, n_items = n_items, metric = "footrule",
+  leap_size = leap_size, N = N, Time = Time,
+  logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+  num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
+  lambda = lambda, alpha_max = alpha_max, aug_method = "pseudolikelihood"
+)
 
 
-test_that('SMC analysis (alpha unknown) results are OK', {
-    rho_cp <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "CP")
-    rho_map <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "MAP")
-    post_rho <- compute_posterior_intervals_rho(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0)
-    post_alpha <- compute_posterior_intervals_alpha(output = test$alpha_samples[, Time + 1], nmc = N, burnin = 0)
-    expect_equal(dim(rho_cp), c(10, 3))
-    expect_equal(dim(rho_map), c(12, 3))
-    expect_equal(dim(post_rho), c(10, 7))
-    expect_equal(dim(post_alpha), c(1, 6))
+test_that("SMC analysis (alpha unknown) results are OK", {
+  rho_cp <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "CP")
+  rho_map <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "MAP")
+  post_rho <- compute_posterior_intervals_rho(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0)
+  post_alpha <- compute_posterior_intervals_alpha(output = test$alpha_samples[, Time + 1], nmc = N, burnin = 0)
+  expect_equal(dim(rho_cp), c(10, 3))
+  expect_equal(dim(rho_map), c(12, 3))
+  expect_equal(dim(post_rho), c(10, 7))
+  expect_equal(dim(post_alpha), c(1, 6))
 })
 
 ###############################
@@ -136,11 +148,11 @@ test <- smc_mallows_new_users_partial_alpha_fixed(
   num_new_obs = num_new_obs, aug_method = aug_method, alpha = alpha_0
 )
 
-test_that('SMC analysis (alpha fixed) results are OK', {
-    rho_cp <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "CP")
-    rho_map <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "MAP")
-    post_rho <- compute_posterior_intervals_rho(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0)
-    expect_equal(dim(rho_cp), c(10, 3))
-    expect_equal(dim(rho_map), c(12, 3))
-    expect_equal(dim(post_rho), c(10, 7))
+test_that("SMC analysis (alpha fixed) results are OK", {
+  rho_cp <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "CP")
+  rho_map <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "MAP")
+  post_rho <- compute_posterior_intervals_rho(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0)
+  expect_equal(dim(rho_cp), c(10, 3))
+  expect_equal(dim(rho_map), c(12, 3))
+  expect_equal(dim(post_rho), c(10, 7))
 })
