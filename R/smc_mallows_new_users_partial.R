@@ -1,26 +1,26 @@
 #' @title SMC-Mallows new users partial
-#'  @description Function to perform resample-move SMC algorithm where we receive new users with complete rankings
+#' @description Function to perform resample-move SMC algorithm where we receive new users with complete rankings
 #' at each time step
-#'   @param R_obs Matrix containing the full set of observed rankings of size n_assessors by n_items
-#'   @param n_items Integer is the number of items in a ranking
-#'   @param metric A character string specifying the distance metric to use in the
-#'   Bayesian Mallows Model. Available options are \code{"footrule"},
-#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-#'   \code{"ulam"}.
-#'   @param leap_size leap_size Integer specifying the step size of the leap-and-shift
-#'   proposal distribution
-#'   @param N Integer specifying the number of particles
-#'   @param Time Integer specifying the number of time steps in the SMC algorithm
-#'   @param logz_estimate Estimate of the partition function, computed with
-#'   \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
-#'   @param mcmc_kernel_app Interger value for the number of applications we apply the MCMC move kernel
-#'   @param num_new_obs Integer value for the number of new observations (complete rankings) for each time step
-#'   @param alpha_prop_sd Numeric value of the standard deviation of the prior distribution for alpha
-#'   @param lambda Strictly positive numeric value specifying the rate parameter
-#'   of the truncated exponential prior distribution of alpha.
-#'   @param alpha_max  Maximum value of alpha in the truncated exponential
-#'   prior distribution.
-#'   @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
+#' @param R_obs Matrix containing the full set of observed rankings of size n_assessors by n_items
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in the
+#' Bayesian Mallows Model. Available options are \code{"footrule"},
+#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#' \code{"ulam"}.
+#' @param leap_size leap_size Integer specifying the step size of the leap-and-shift
+#' proposal distribution
+#' @param N Integer specifying the number of particles
+#' @param Time Integer specifying the number of time steps in the SMC algorithm
+#' @param logz_estimate Estimate of the partition function, computed with
+#' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
+#' @param mcmc_kernel_app Interger value for the number of applications we apply the MCMC move kernel
+#' @param num_new_obs Integer value for the number of new observations (complete rankings) for each time step
+#' @param alpha_prop_sd Numeric value of the standard deviation of the prior distribution for alpha
+#' @param lambda Strictly positive numeric value specifying the rate parameter
+#' of the truncated exponential prior distribution of alpha.
+#' @param alpha_max  Maximum value of alpha in the truncated exponential
+#' prior distribution.
+#' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
 #' @return a set of particles each containing a value of rho and alpha
 #' @export
 smc_mallows_new_users_partial <- function(R_obs, n_items, metric, leap_size, N, Time, logz_estimate,
@@ -116,8 +116,7 @@ smc_mallows_new_users_partial <- function(R_obs, n_items, metric, leap_size, N, 
           aug_rankings[jj, , ii] <- proposal$aug_ranking
           aug_prob[ii] <- aug_prob[ii] * proposal$forward_prob
         } else {
-          print("Error: combined choice of metric and aug_method is incompatible")
-          1 <- 0
+          stop("Combined choice of metric and aug_method is incompatible")
         }
       }
     }
@@ -127,7 +126,7 @@ smc_mallows_new_users_partial <- function(R_obs, n_items, metric, leap_size, N, 
     ###########################
     for (ii in 1:N) {
       # evaluate the log estimate of the partition function for a particular value of alpha
-      log_z_alpha <- BayesMallows:::get_partition_function(
+      log_z_alpha <- get_partition_function(
         n_items = n_items, alpha = alpha_samples[ii, tt + 1],
         logz_estimate = logz_estimate, metric = metric
       )
@@ -149,7 +148,7 @@ smc_mallows_new_users_partial <- function(R_obs, n_items, metric, leap_size, N, 
     # Resample
     ##############
     # resample particles using multinomial resampling
-    index <- sample(1:N, prob = norm_wgt, size = N, rep = T)
+    index <- sample(1:N, prob = norm_wgt, size = N, replace = T)
     rho_samples[, , tt + 1] <- rho_samples[index, , tt + 1]
     alpha_samples[, tt + 1] <- alpha_samples[index, tt + 1]
     aug_rankings[(1:num_obs), , ] <- aug_rankings[(1:num_obs), , index]
@@ -167,7 +166,7 @@ smc_mallows_new_users_partial <- function(R_obs, n_items, metric, leap_size, N, 
           leap_size = leap_size
         )
       }
-      alpha_samples[ii, tt + 1] <- metropolis_hastings_alpha_update(
+      alpha_samples[ii, tt + 1] <- metropolis_hastings_alpha(
         alpha = alpha_samples[ii, tt + 1], n_items = n_items,
         rankings = aug_rankings[(1:num_obs), , ii],
         metric = metric, rho = rho_samples[ii, , tt + 1],
@@ -205,22 +204,22 @@ smc_mallows_new_users_partial <- function(R_obs, n_items, metric, leap_size, N, 
 #' @title SMC-mallows new users partial (alpha fixed)
 #' @description Function to perform resample-move SMC algorithm where we receive new users with complete rankings
 #' at each time step
-#'   @param R_obs Matrix containing the full set of observed rankings of size n_assessors by n_items
-#'   @param n_items Integer is the number of items in a ranking
-#'   @param metric A character string specifying the distance metric to use in the
-#'   Bayesian Mallows Model. Available options are \code{"footrule"},
-#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-#'   \code{"ulam"}.
-#'   @param leap_size leap_size Integer specifying the step size of the leap-and-shift
-#'   proposal distribution
-#'   @param N Integer specifying the number of particles
-#'   @param Time Integer specifying the number of time steps in the SMC algorithm
-#'   @param logz_estimate Estimate of the partition function, computed with
-#'   \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
-#'   @param mcmc_kernel_app Interger value for the number of applications we apply the MCMC move kernel
-#'   @param num_new_obs Integer value for the number of new observations (complete rankings) for each time step
-#'   @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
-#'   @param alpha A numeric value of the scale parameter which is known and fixed
+#' @param R_obs Matrix containing the full set of observed rankings of size n_assessors by n_items
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in the
+#' Bayesian Mallows Model. Available options are \code{"footrule"},
+#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#' \code{"ulam"}.
+#' @param leap_size leap_size Integer specifying the step size of the leap-and-shift
+#' proposal distribution
+#' @param N Integer specifying the number of particles
+#' @param Time Integer specifying the number of time steps in the SMC algorithm
+#' @param logz_estimate Estimate of the partition function, computed with
+#' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
+#' @param mcmc_kernel_app Interger value for the number of applications we apply the MCMC move kernel
+#' @param num_new_obs Integer value for the number of new observations (complete rankings) for each time step
+#' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
+#' @param alpha A numeric value of the scale parameter which is known and fixed
 #' @return a set of particles each containing a value of rho and alpha
 #' @export
 smc_mallows_new_users_partial_alpha_fixed <- function(R_obs, n_items, metric, leap_size, N, Time, logz_estimate,
@@ -309,8 +308,7 @@ smc_mallows_new_users_partial_alpha_fixed <- function(R_obs, n_items, metric, le
           aug_rankings[jj, , ii] <- proposal$aug_ranking
           aug_prob[ii] <- aug_prob[ii] * proposal$forward_prob
         } else {
-          print("Error: combined choice of metric and aug_method is incompatible")
-          1 <- 0
+          stop("Combined choice of metric and aug_method is incompatible")
         }
       }
     }
@@ -320,7 +318,7 @@ smc_mallows_new_users_partial_alpha_fixed <- function(R_obs, n_items, metric, le
     ###########################
     for (ii in 1:N) {
       # evaluate the log estimate of the partition function for a particular value of alpha
-      log_z_alpha <- BayesMallows:::get_partition_function(
+      log_z_alpha <- get_partition_function(
         n_items = n_items, alpha = alpha,
         logz_estimate = logz_estimate, metric = metric
       )
@@ -342,7 +340,7 @@ smc_mallows_new_users_partial_alpha_fixed <- function(R_obs, n_items, metric, le
     # Resample
     ##############
     # resample particles using multinomial resampling
-    index <- sample(1:N, prob = norm_wgt, size = N, rep = T)
+    index <- sample(1:N, prob = norm_wgt, size = N, replace = T)
     rho_samples[, , tt + 1] <- rho_samples[index, , tt + 1]
     aug_rankings[(1:num_obs), , ] <- aug_rankings[(1:num_obs), , index]
 

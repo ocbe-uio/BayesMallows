@@ -1,27 +1,3 @@
-require(BayesMallows)
-require(dplyr)
-require(tibble)
-require(Rcpp)
-require(ggplot2)
-require(plotrix)
-require(purrr)
-require(crayon)
-require(utf8)
-require(fields)
-require(tidyr)
-require(dplyr)
-require(gridExtra)
-require(plotrix)
-require(xtable)
-require(sets)
-
-source("leap_and_shift_probs.R")
-source("get_mallows_loglik.R")
-source("metropolis_hastings_rho.R")
-source("metropolis_hastings_alpha.R")
-source("pseudolikelihood_functions.R")
-
-
 smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app,
                                       alpha_prop_sd, lambda, alpha_max, aug_method) {
 
@@ -128,8 +104,10 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time
         aug_rankings[jj, , ii] <- proposal$aug_ranking
         total_correction_prob[ii] <- total_correction_prob[ii] * proposal$forward_prob
       } else {
-        print("Error: combined choice of metric and aug_method is incompatible")
-        abort(message = "The value is TRUE, so the script must end here")
+        stop(
+          "Combined choice of metric and aug_method is incompatible. ",
+          "The value is TRUE, so the script must end here"
+        )
       }
     }
   }
@@ -142,7 +120,7 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time
 
   for (ii in 1:N) {
     # evaluate the log estimate of the partition function for a particular value of alpha
-    log_z_alpha <- BayesMallows:::get_partition_function(
+    log_z_alpha <- get_partition_function(
       n_items = n_items, alpha = alpha_samples[ii, 1],
       logz_estimate = logz_estimate, metric = metric
     )
@@ -179,7 +157,7 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time
         rho = rho_samples[ii, , 1], leap_size = leap_size
       )
 
-      alpha_samples[ii, 1] <- metropolis_hastings_alpha_update(
+      alpha_samples[ii, 1] <- metropolis_hastings_alpha(
         alpha = alpha_samples[ii, 1], n_items = n_items,
         rankings = aug_rankings[, , ii], metric = metric,
         rho = rho_samples[ii, , 1],
@@ -249,8 +227,7 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time
           # these probs are in real scale
           particle_correction_prob[ii] <- particle_correction_prob[ii] * check_correction$correction_prob
         } else {
-          print("Error: combined choice of metric and aug_method is incompatible")
-          1 <- 0
+          stop("Combined choice of metric and aug_method is incompatible")
         }
       }
     }
@@ -299,7 +276,7 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time
           rho = rho_samples[ii, , tt + 1], leap_size = leap_size
         )
 
-        alpha_samples[ii, tt + 1] <- metropolis_hastings_alpha_update(
+        alpha_samples[ii, tt + 1] <- metropolis_hastings_alpha(
           alpha = alpha_samples[ii, tt + 1], n_items = n_items,
           rankings = aug_rankings[, , ii], metric = metric,
           rho = rho_samples[ii, , tt + 1],
@@ -432,8 +409,7 @@ smc_mallows_new_item_rank_alpha_fixed <- function(alpha, n_items, R_obs, metric,
         aug_rankings[jj, , ii] <- proposal$aug_ranking
         total_correction_prob[ii] <- total_correction_prob[ii] * proposal$forward_prob
       } else {
-        print("Error: combined choice of metric and aug_method is incompatible")
-        1 <- 0
+        stop("Combined choice of metric and aug_method is incompatible")
       }
     }
   }
@@ -445,7 +421,7 @@ smc_mallows_new_item_rank_alpha_fixed <- function(alpha, n_items, R_obs, metric,
 
   for (ii in 1:N) {
     # evaluate the log estimate of the partition function for a particular value of alpha
-    log_z_alpha <- BayesMallows:::get_partition_function(
+    log_z_alpha <- get_partition_function(
       n_items = n_items, alpha = alpha,
       logz_estimate = logz_estimate, metric = metric
     )
