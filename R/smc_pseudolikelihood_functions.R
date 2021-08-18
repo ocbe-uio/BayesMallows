@@ -4,7 +4,7 @@
 #'
 #' @param rho_item_rank An integer value rank of an item in the current consensus ranking
 #' @param alpha Numeric value og the scale parameter
-#' @param remaining_set_rank A sequence of integer values of the set of possible ranks that we can assign the item
+#' @param remaining_set_ranks A sequence of integer values of the set of possible ranks that we can assign the item
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
 #'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
@@ -23,7 +23,7 @@ get_sample_probabilities = function(rho_item_rank, alpha, remaining_set_ranks, m
   # cycle through each item and calculate its specific prob
   for (ii in 1:num_ranks){
     item_rank = remaining_set_ranks[ii]
-    sample_prob = (-(alpha/n_items)*BayesMallows:::get_rank_distance(rho_item_rank, item_rank, metric) )
+    sample_prob = (-(alpha/n_items) * get_rank_distance(rho_item_rank, item_rank, metric))
     sample_prob_list[ii] = sample_prob
   }
 
@@ -237,8 +237,8 @@ metropolis_hastings_aug_ranking_pseudo = function(alpha, rho, n_items, partial_r
     #############
     # Calculate the log posterior of the current and proposed rankings.
     # NB the current can usually be stored to save recalculating it, but we're not caring about that yet
-    curr_logpost = get_mallows_loglik(alpha = alpha, rho = rho, n = n_items, rankings = t(current_ranking), metric = metric)
-    prop_logpost = get_mallows_loglik(alpha = alpha, rho = rho, n = n_items, rankings = t(proposed_augmented_ranking), metric = metric)
+    curr_logpost = get_mallows_loglik(alpha = alpha, rho = rho, n_items = n_items, rankings = t(current_ranking), metric = metric)
+    prop_logpost = get_mallows_loglik(alpha = alpha, rho = rho, n_items = n_items, rankings = t(proposed_augmented_ranking), metric = metric)
 
     log_acceptance_prob = prop_logpost - curr_logpost - log(forward_prob) + log(backward_prob)
 
