@@ -15,7 +15,7 @@ metric <- "footrule"
 
 # Generate estimate of Z_n(alpha) ------------------------ #
 alpha_vector <- seq(from = 0, to = 20, by = 0.1)
-iter <- 1e4
+iter <- 1e2
 degree <- 10
 
 # Estimate the logarithm of the partition function of the Mallows rank model
@@ -28,7 +28,7 @@ logz_estimate <- estimate_partition_function(
 )
 
 mcmc_kernel_app <- 5
-N <- 1000
+N <- 20
 alpha_prop_sd <- 0.5
 lambda <- 0.15
 alpha_max <- 1e6
@@ -66,7 +66,7 @@ test_that("Runs with unif kernel", {
 	)
 	expect_is(smc_unif_alpha_fixed_unif, "list")
 	expect_length(smc_unif_alpha_fixed_unif, 1)
-	expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(1e3, 6, 32))
+	expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 6, 32))
 	smc_unif <- suppressMessages(
 		smc_mallows_new_item_rank(
 			n_items = n_items, R_obs = sample_dataset,
@@ -78,8 +78,8 @@ test_that("Runs with unif kernel", {
 	)
 	expect_is(smc_unif, "list")
 	expect_length(smc_unif, 2)
-	expect_equal(dim(smc_unif$rho_samples), c(1e3, 6, 32))
-	expect_equal(dim(smc_unif$alpha_samples), c(1e3, 32))
+	expect_equal(dim(smc_unif$rho_samples), c(N, 6, 32))
+	expect_equal(dim(smc_unif$alpha_samples), c(N, 32))
 })
 
 test_that("Runs with pseudo kernel", {
@@ -94,7 +94,7 @@ test_that("Runs with pseudo kernel", {
 	)
 	expect_is(smc_unif_alpha_fixed_unif, "list")
 	expect_length(smc_unif_alpha_fixed_unif, 1)
-	expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(1e3, 6, 32))
+	expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 6, 32))
 	smc_unif <- suppressMessages(
 		smc_mallows_new_item_rank(
 			n_items = n_items, R_obs = sample_dataset,
@@ -106,6 +106,6 @@ test_that("Runs with pseudo kernel", {
 	)
 	expect_is(smc_unif, "list")
 	expect_length(smc_unif, 2)
-	expect_equal(dim(smc_unif$rho_samples), c(1e3, 6, 32))
-	expect_equal(dim(smc_unif$alpha_samples), c(1e3, 32))
+	expect_equal(dim(smc_unif$rho_samples), c(N, 6, 32))
+	expect_equal(dim(smc_unif$alpha_samples), c(N, 32))
 })
