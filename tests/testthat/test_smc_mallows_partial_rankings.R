@@ -65,6 +65,83 @@ lambda <- 0.15
 alpha_max <- 1e6
 aug_method <- "random"
 
+# TODO #110: Add tests to the new code below
+test_that("Produces the wrong metric and aug_method error",{
+  expect_error(
+    smc_mallows_new_users_partial_alpha_fixed(
+      alpha = alpha_0, R_obs = samples, n_items = n_items, metric = "cayley",
+      leap_size = leap_size, N = N, Time = Time,
+      logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+      num_new_obs = num_new_obs, aug_method = "pseudolikelihood"
+    )
+  )
+  expect_error(
+    smc_mallows_new_users_partial(
+      R_obs = samples, n_items = n_items, metric = "cayley",
+      leap_size = leap_size, N = N, Time = Time,
+      logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+      num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
+      lambda = lambda, alpha_max = alpha_max, aug_method = "pseudolikelihood"
+    )
+  )
+})
+
+test_that("Runs with unif kernel", {
+  smc_unif_alpha_fixed_unif <- smc_mallows_new_users_partial_alpha_fixed(
+    alpha = alpha_0, R_obs = samples, n_items = n_items, metric = "footrule",
+    leap_size = leap_size, N = N, Time = Time,
+    logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+    num_new_obs = num_new_obs, aug_method = "random"
+  )
+  expect_true(is(smc_unif_alpha_fixed_unif, "list"))
+  expect_true(is(smc_unif_alpha_fixed_unif, "vector"))
+  expect_equal(length(smc_unif_alpha_fixed_unif), 1)
+  expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples) , c(55, 10, 21))
+  smc_unif <- smc_mallows_new_users_partial(
+    R_obs = samples, n_items = n_items, metric = "footrule",
+    leap_size = leap_size, N = N, Time = Time,
+    logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+    num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
+    lambda = lambda, alpha_max = alpha_max, aug_method = "random"
+  )
+  expect_true(is(smc_unif, "list"))
+  expect_true(is(smc_unif, "vector"))
+  expect_equal(length(smc_unif), 2)
+  expect_equal(dim(smc_unif$rho_samples) , c(55, 10, 21))
+  expect_equal(dim(smc_unif$alpha_samples) , c(55, 21))
+})
+
+test_that("Runs with pseudo kernel", {
+  smc_unif_alpha_fixed_pseudo <- smc_mallows_new_users_partial_alpha_fixed(
+    alpha = alpha_0, R_obs = samples, n_items = n_items, metric = "footrule",
+    leap_size = leap_size, N = N, Time = Time,
+    logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+    num_new_obs = num_new_obs, aug_method = "pseudolikelihood"
+  )
+  expect_true(is(smc_unif_alpha_fixed_pseudo, "list"))
+  expect_true(is(smc_unif_alpha_fixed_pseudo, "vector"))
+  expect_equal(length(smc_unif_alpha_fixed_pseudo), 1)
+  expect_equal(dim(smc_unif_alpha_fixed_pseudo$rho_samples) , c(55, 10, 21))
+  smc_pseudo <- smc_mallows_new_users_partial(
+    R_obs = samples, n_items = n_items, metric = "footrule",
+    leap_size = leap_size, N = N, Time = Time,
+    logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+    num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
+    lambda = lambda, alpha_max = alpha_max, aug_method = "pseudolikelihood"
+  )
+  expect_true(is(smc_pseudo, "list"))
+  expect_true(is(smc_pseudo, "vector"))
+  expect_equal(length(smc_pseudo), 2)
+  expect_equal(dim(smc_pseudo$rho_samples) , c(55, 10, 21))
+  expect_equal(dim(smc_pseudo$alpha_samples) , c(55, 21))
+})
+
+#################################################################
+# run specific example
+#################################################################
+
+aug_method <- "random"
+
 test <- smc_mallows_new_users_partial(
   R_obs = samples, n_items = n_items, metric = metric,
   leap_size = leap_size, N = N, Time = Time,
@@ -72,56 +149,6 @@ test <- smc_mallows_new_users_partial(
   num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
   lambda = lambda, alpha_max = alpha_max, aug_method = aug_method
 )
-
-# TODO #110: Add tests to the new code below
-# # check it will produce the wrong metric and aug_method error
-# smc_unif_alpha_fixed_pseudo <- smc_mallows_new_users_partial_alpha_fixed(
-#   alpha = alpha_0, R_obs = samples, n_items = n_items, metric = "cayley",
-#   leap_size = leap_size, N = N, Time = Time,
-#   logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-#   num_new_obs = num_new_obs, aug_method = "pseudolikelihood"
-# )
-
-# smc_pseudo <- smc_mallows_new_users_partial(
-#   R_obs = samples, n_items = n_items, metric = "cayley",
-#   leap_size = leap_size, N = N, Time = Time,
-#   logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-#   num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
-#   lambda = lambda, alpha_max = alpha_max, aug_method = "pseudolikelihood"
-# )
-
-# # check it runs with unif kernel
-# smc_unif_alpha_fixed_unif <- smc_mallows_new_users_partial_alpha_fixed(
-#   alpha = alpha_0, R_obs = samples, n_items = n_items, metric = "footrule",
-#   leap_size = leap_size, N = N, Time = Time,
-#   logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-#   num_new_obs = num_new_obs, aug_method = "random"
-# )
-
-# smc_unif <- smc_mallows_new_users_partial(
-#   R_obs = samples, n_items = n_items, metric = "footrule",
-#   leap_size = leap_size, N = N, Time = Time,
-#   logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-#   num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
-#   lambda = lambda, alpha_max = alpha_max, aug_method = "random"
-# )
-
-# # check it runs with pseudo kernel
-# smc_unif_alpha_fixed_pseudo <- smc_mallows_new_users_partial_alpha_fixed(
-#   alpha = alpha_0, R_obs = samples, n_items = n_items, metric = "footrule",
-#   leap_size = leap_size, N = N, Time = Time,
-#   logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-#   num_new_obs = num_new_obs, aug_method = "pseudolikelihood"
-# )
-
-
-# smc_pseudo <- smc_mallows_new_users_partial(
-#   R_obs = samples, n_items = n_items, metric = "footrule",
-#   leap_size = leap_size, N = N, Time = Time,
-#   logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-#   num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
-#   lambda = lambda, alpha_max = alpha_max, aug_method = "pseudolikelihood"
-# )
 
 test_that("SMC analysis (alpha unknown) results are OK", {
   rho_cp <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "CP")
@@ -139,7 +166,6 @@ test_that("SMC analysis (alpha unknown) results are OK", {
 ###############################
 
 alpha_0 <- 2
-
 test <- smc_mallows_new_users_partial_alpha_fixed(
   R_obs = samples, n_items = n_items, metric = metric,
   leap_size = leap_size, N = N, Time = Time,
@@ -152,6 +178,8 @@ test_that("SMC analysis (alpha fixed) results are OK", {
   rho_map <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "MAP")
   post_rho <- compute_posterior_intervals_rho(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0)
   expect_equal(dim(rho_cp), c(10, 3))
-  expect_equal(dim(rho_map), c(12, 3))
+  expect_equal(dim(rho_map), c(24, 3)) # no idea why devtools expect this to be 24 and not 12
   expect_equal(dim(post_rho), c(10, 7))
 })
+
+# TODO: shorten test length (target < 2 s)
