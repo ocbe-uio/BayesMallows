@@ -518,8 +518,7 @@ smc_mallows_new_item_rank_alpha_fixed <- function(alpha, n_items, R_obs, metric,
           # these probs are in real scale
           total_correction_prob[ii] <- total_correction_prob[ii] * check_correction$correction_prob
         } else {
-          print("Error: combined choice of metric and aug_method is incompatible")
-          break()
+          stop("Combined choice of metric and aug_method is incompatible")
         }
       }
     }
