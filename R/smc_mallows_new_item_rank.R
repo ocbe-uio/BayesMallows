@@ -188,7 +188,7 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time
   ## Loop for t=1,...,Time
   #########################
   for (tt in 1:(Time - 1)) {
-    print(paste("iteration", tt, "out of", Time))
+    message("iteration ", tt, " out of ", Time)
 
     ###########################
     ## New Information
@@ -479,7 +479,7 @@ smc_mallows_new_item_rank_alpha_fixed <- function(alpha, n_items, R_obs, metric,
   #########################
 
   for (tt in 1:(Time - 1)) {
-    print(paste("We are now on iteration", tt, "out of", Time))
+    message("We are now on iteration ", tt, " out of ", Time)
 
     ###########################
     ## New Information
