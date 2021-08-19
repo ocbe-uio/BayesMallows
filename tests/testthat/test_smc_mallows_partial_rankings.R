@@ -92,8 +92,7 @@ test_that("Runs with unif kernel", {
     logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
     num_new_obs = num_new_obs, aug_method = "random"
   )
-  expect_true(is(smc_unif_alpha_fixed_unif, "list"))
-  expect_true(is(smc_unif_alpha_fixed_unif, "vector"))
+  expect_is(smc_unif_alpha_fixed_unif, "list")
   expect_equal(length(smc_unif_alpha_fixed_unif), 1)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples) , c(N, 10, 21))
   smc_unif <- smc_mallows_new_users_partial(
@@ -103,8 +102,7 @@ test_that("Runs with unif kernel", {
     num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
     lambda = lambda, alpha_max = alpha_max, aug_method = "random"
   )
-  expect_true(is(smc_unif, "list"))
-  expect_true(is(smc_unif, "vector"))
+  expect_is(smc_unif, "list")
   expect_equal(length(smc_unif), 2)
   expect_equal(dim(smc_unif$rho_samples) , c(N, 10, 21))
   expect_equal(dim(smc_unif$alpha_samples) , c(N, 21))
@@ -118,8 +116,7 @@ test_that("Runs with pseudo kernel", {
     logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
     num_new_obs = num_new_obs, aug_method = "pseudolikelihood"
   )
-  expect_true(is(smc_unif_alpha_fixed_pseudo, "list"))
-  expect_true(is(smc_unif_alpha_fixed_pseudo, "vector"))
+  expect_is(smc_unif_alpha_fixed_pseudo, "list")
   expect_equal(length(smc_unif_alpha_fixed_pseudo), 1)
   expect_equal(dim(smc_unif_alpha_fixed_pseudo$rho_samples) , c(N, 10, 21))
   smc_pseudo <- smc_mallows_new_users_partial(
@@ -129,8 +126,7 @@ test_that("Runs with pseudo kernel", {
     num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
     lambda = lambda, alpha_max = alpha_max, aug_method = "pseudolikelihood"
   )
-  expect_true(is(smc_pseudo, "list"))
-  expect_true(is(smc_pseudo, "vector"))
+  expect_is(smc_pseudo, "list")
   expect_equal(length(smc_pseudo), 2)
   expect_equal(dim(smc_pseudo$rho_samples) , c(N, 10, 21))
   expect_equal(dim(smc_pseudo$alpha_samples) , c(N, 21))
