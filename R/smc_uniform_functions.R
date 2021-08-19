@@ -25,7 +25,7 @@ metropolis_hastings_aug_ranking = function(R_curr, R_obs, alpha, rho, n_items, m
 
   # if the observed and augmented ranking are exactly the same then break
   if(identical(R_obs,R_curr) == TRUE){
-    print("identical")
+    # print("identical") # ASK is this necessary?
     return(R_curr)
 
   }else if(length(remaining_set)==1){
