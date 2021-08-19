@@ -330,10 +330,9 @@ find_cpc_smc <- function(group_df){
     cumprob = numeric()
   )
   n_items <- max(group_df$value)
-
   for(i in seq(from = 1, to = n_items, by = 1)){
     # Filter out the relevant rows
-    tmp_df <- dplyr::filter(group_df, .data$value == i)
+    tmp_df <- dplyr::filter(group_df, value == i)
 
     # Remove items in result
     tmp_df <- dplyr::anti_join(tmp_df, result, by = c("cluster", "item"))
