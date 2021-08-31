@@ -33,14 +33,17 @@ item_ordering = c(3,6,4,5)
 partial_ranking = c(1,2,NA,NA,NA,NA)
 remaining_set = c(3,4,5,6)
 
-test_1_forward = calculate_forward_probability(item_ordering = item_ordering, partial_ranking = partial_ranking,
-                                               remaining_set = remaining_set, rho = rho, alpha = alpha,
-                                               n_items = n_items, metric = metric)
-
+test_1_forward = calculate_forward_probability(
+    item_ordering = item_ordering, partial_ranking = partial_ranking,
+    remaining_set = remaining_set, rho = rho, alpha = alpha,
+    n_items = n_items, metric = metric
+)
 current_ranking = c(1,2,6,5,4,3)
-test_1_backward_a= calculate_backward_probability(item_ordering = item_ordering, partial_ranking = partial_ranking,
-                                                  current_ranking = current_ranking, remaining_set = remaining_set, rho = rho,
-                                                  alpha = alpha, n_items = n_items, metric = metric)
+test_1_backward_a = calculate_backward_probability(
+    item_ordering = item_ordering, partial_ranking = partial_ranking,
+    current_ranking = current_ranking, remaining_set = remaining_set, rho = rho,
+    alpha = alpha, n_items = n_items, metric = metric
+)
 
 current_ranking = test_1_forward$aug_ranking
 test_1_backward_b = calculate_backward_probability(item_ordering = item_ordering, partial_ranking = partial_ranking,
@@ -68,18 +71,21 @@ n_items= 6
 test_that('M-H aug ranking pseudo works', {
     R_curr = c(1,2,3,4,5,6)
     R_obs = c(1,2,3,4,5,6)
-    test_1 = metropolis_hastings_aug_ranking_pseudo(alpha, rho, n_items, partial_ranking = R_obs, current_ranking = R_curr, metric)
-    expect_equal(test_1, c(1, 2, 3, 4, 5, 6))
+    test_1 = metropolis_hastings_aug_ranking_pseudo(
+        alpha, rho, n_items, R_obs, R_curr, metric
+    )
+    expect_equal(test_1, matrix(c(1, 2, 3, 4, 5, 6)))
     expect_equal(all(test_1 == R_curr), TRUE)
-    R_curr = c(1,2,3,4,5,6)
     R_obs = c(1,2,3,NA,NA,NA)
-    test_2 = metropolis_hastings_aug_ranking_pseudo(alpha, rho, n_items, partial_ranking = R_obs, current_ranking = R_curr, metric)
-    expect_equal(test_2, matrix(c(1, 2, 3, 5, 4, 6)))
+    test_2 = metropolis_hastings_aug_ranking_pseudo(
+        alpha, rho, n_items, R_obs, R_curr, metric
+    )
+    expect_equal(test_2, matrix(c(1, 2, 3, 4, 6, 5)))
     expect_equal(all(test_2 == R_curr), FALSE)
     R_curr = c(1,2,6,5,4,3)
     R_obs = c(1,2,NA,NA,NA,NA)
     test_3 =  metropolis_hastings_aug_ranking_pseudo(alpha, rho, n_items, partial_ranking = R_obs, current_ranking = R_curr, metric)
-    expect_equal(test_3, matrix(c(1, 2, 5, 6, 4, 3)))
+    expect_equal(test_3, matrix(c(1, 2, 6, 5, 3, 4)))
     expect_equal(all(test_3 == R_curr), FALSE)
 })
 

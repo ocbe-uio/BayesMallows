@@ -317,6 +317,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// metropolis_hastings_aug_ranking_pseudo
+arma::vec metropolis_hastings_aug_ranking_pseudo(double alpha, arma::vec rho, int n_items, arma::vec partial_ranking, arma::vec current_ranking, std::string metric);
+RcppExport SEXP _BayesMallows_metropolis_hastings_aug_ranking_pseudo(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP metricSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type partial_ranking(partial_rankingSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type current_ranking(current_rankingSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_aug_ranking_pseudo(alpha, rho, n_items, partial_ranking, current_ranking, metric));
+    return rcpp_result_gen;
+END_RCPP
+}
 // metropolis_hastings_rho
 arma::vec metropolis_hastings_rho(double alpha, int n_items, arma::mat rankings, std::string metric, arma::vec rho, int leap_size);
 RcppExport SEXP _BayesMallows_metropolis_hastings_rho(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP rankingsSEXP, SEXP metricSEXP, SEXP rhoSEXP, SEXP leap_sizeSEXP) {
@@ -354,6 +370,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_leap_and_shift_probs", (DL_FUNC) &_BayesMallows_leap_and_shift_probs, 3},
     {"_BayesMallows_smc_mallows_new_users_complete", (DL_FUNC) &_BayesMallows_smc_mallows_new_users_complete, 10},
     {"_BayesMallows_metropolis_hastings_alpha", (DL_FUNC) &_BayesMallows_metropolis_hastings_alpha, 9},
+    {"_BayesMallows_metropolis_hastings_aug_ranking_pseudo", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking_pseudo, 6},
     {"_BayesMallows_metropolis_hastings_rho", (DL_FUNC) &_BayesMallows_metropolis_hastings_rho, 6},
     {NULL, NULL, 0}
 };

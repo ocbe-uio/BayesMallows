@@ -35,4 +35,7 @@ Then, as we increase the time, we observe the next top ranked item from
 one user at a time, then the next top ranked item, and so on until we have
 a complete dataset at \code{sample_dataset[, , Time]}.
 }
+\references{
+https://github.com/anjastein/SMC-Mallows/tree/main/data
+}
 \keyword{datasets}

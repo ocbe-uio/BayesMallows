@@ -13,7 +13,7 @@
 #' @return = proposed augmented ranking or current ranking A ranking sequence vector representing proposed augmented ranking for next
 #'         iteration of MCMC chain
 #' @export
-metropolis_hastings_aug_ranking_pseudo = function(alpha, rho, n_items, partial_ranking, current_ranking, metric){
+metropolis_hastings_aug_ranking_pseudo_R = function(alpha, rho, n_items, partial_ranking, current_ranking, metric){
 
 
   # augment incomplete ranks to initialise

@@ -405,6 +405,25 @@ metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, log
     .Call(`_BayesMallows_metropolis_hastings_alpha`, alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max)
 }
 
+#' @title Metropolis-Hastings Augmented Ranking (pseudolikelihood)
+#' @description Function to perform Metropolis-Hastings for new augmented ranking using the pseudolikelihood augmentation approach
+#'
+#' @param alpha Numeric value og the scale parameter
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param n_items Integer is the number of items in a ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return = proposed augmented ranking or current ranking A ranking sequence vector representing proposed augmented ranking for next
+#'         iteration of MCMC chain
+#' @export
+metropolis_hastings_aug_ranking_pseudo <- function(alpha, rho, n_items, partial_ranking, current_ranking, metric) {
+    .Call(`_BayesMallows_metropolis_hastings_aug_ranking_pseudo`, alpha, rho, n_items, partial_ranking, current_ranking, metric)
+}
+
 #' @title Metropolis-Hastings Rho
 #' @description Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
 #' @inheritParams get_mallows_loglik
