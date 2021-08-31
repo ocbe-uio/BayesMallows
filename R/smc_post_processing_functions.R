@@ -366,9 +366,11 @@ find_cpc_smc <- function(group_df){
   }
 
   #df <- dplyr::filter(model_fit$rho, .data$iteration > burnin)
-  if(burnin!=0){
+  if(burnin != 0){
     df <- dplyr::filter(model_fit, .data$iteration > burnin) #removed model_fit[[parameter]]
-  }else {df <- model_fit}
+  } else {
+    df <- model_fit
+  }
 
   # Store the total number of iterations after burnin
   n_samples <- length(unique(df$iteration))
@@ -383,6 +385,8 @@ find_cpc_smc <- function(group_df){
   # Keep only the maximum per cluster
   df <- dplyr::group_by(df, .data$cluster)
   df <- dplyr::mutate(df, n_max = max(.data$n))
+  #FIXME #98: filter is generating different values (2x number of rows) on
+  # devtools::test(filter="partial_rankings") vs manual run
   df <- dplyr::filter(df, .data$n == .data$n_max)
   df <- dplyr::ungroup(df)
 
