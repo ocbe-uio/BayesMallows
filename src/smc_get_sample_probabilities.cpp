@@ -8,7 +8,7 @@
 //'
 //' @param rho_item_rank An integer value rank of an item in the current consensus ranking
 //' @param alpha Numeric value og the scale parameter
-//' @param remaining_set_rank A sequence of integer values of the set of possible ranks that we can assign the item
+//' @param remaining_set_ranks A sequence of integer values of the set of possible ranks that we can assign the item
 //' @param metric A character string specifying the distance metric to use in the
 //'   Bayesian Mallows Model. Available options are \code{"footrule"},
 //'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
