@@ -330,24 +330,29 @@ find_cpc_smc <- function(group_df){
     cumprob = numeric()
   )
   n_items <- max(group_df$value)
-
   for(i in seq(from = 1, to = n_items, by = 1)){
     # Filter out the relevant rows
-    tmp_df <- dplyr::filter(group_df, .data$value == i)
+    tmp_df <- dplyr::filter(group_df, value == i)
 
     # Remove items in result
     tmp_df <- dplyr::anti_join(tmp_df, result, by = c("cluster", "item"))
 
     # Keep the max only. This filtering must be done after the first filter,
     # since we take the maximum among the filtered values
-    tmp_df <- dplyr::filter(tmp_df, .data$cumprob == max(.data$cumprob))
+    if (nrow(tmp_df) >= 1) {
+      tmp_df <- dplyr::filter(tmp_df, .data$cumprob == max(.data$cumprob))
+    }
 
     # Add the ranking
     tmp_df <- dplyr::mutate(tmp_df, ranking = i)
 
     # Select the columns we want to keep, and put them in result
-    result <- dplyr::bind_rows(result,
-                               dplyr::select(tmp_df, .data$cluster, .data$ranking, .data$item, .data$cumprob))
+    result <- dplyr::bind_rows(
+      result,
+      dplyr::select(
+        tmp_df, .data$cluster, .data$ranking, .data$item, .data$cumprob
+      )
+    )
 
   }
   return(result)
