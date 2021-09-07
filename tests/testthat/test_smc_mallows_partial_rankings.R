@@ -142,6 +142,7 @@ test_that("Runs with pseudo kernel", {
 test_that("Specific example results are OK", {
   N <- 10
   aug_method <- "random"
+  set.seed(5482) # necssary for reproducibility of the random aug_method
 
   test <- smc_mallows_new_users_partial(
     R_obs = samples, n_items = n_items, metric = metric,
@@ -165,7 +166,7 @@ test_that("Specific example results are OK", {
     output = test$alpha_samples[, Time + 1], nmc = N, burnin = 0
   )
   expect_equal(dim(rho_cp), c(10, 3))
-  expect_equal(dim(rho_map), c(12, 3)) #FIXME #98: fails on auto test; passes manual
+  expect_equal(dim(rho_map), c(120, 3))
   expect_equal(dim(post_rho), c(10, 7))
   expect_equal(dim(post_alpha), c(1, 6))
 
