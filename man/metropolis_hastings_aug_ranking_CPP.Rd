@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{metropolis_hastings_aug_ranking_CPP}
 \alias{metropolis_hastings_aug_ranking_CPP}
-\title{Metropolis-Hastings Augmented Ranking (pseudolikelihood)}
+\title{Metropolis-Hastings Augmented Ranking}
 \usage{
 metropolis_hastings_aug_ranking_CPP(
   alpha,
@@ -30,9 +30,8 @@ Bayesian Mallows Model. Available options are \code{"footrule"},
 \code{"ulam"}.}
 }
 \value{
-= proposed augmented ranking or current ranking A ranking sequence vector representing proposed augmented ranking for next
-        iteration of MCMC chain
+R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
 }
 \description{
-Function to perform Metropolis-Hastings for new augmented ranking using the pseudolikelihood augmentation approach
+Function to perform Metropolis-Hastings for new augmented ranking
 }

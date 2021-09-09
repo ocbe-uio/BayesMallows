@@ -2,8 +2,8 @@
 #include "smc.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
-//' @title Metropolis-Hastings Augmented Ranking (pseudolikelihood)
-//' @description Function to perform Metropolis-Hastings for new augmented ranking using the pseudolikelihood augmentation approach
+//' @title Metropolis-Hastings Augmented Ranking
+//' @description Function to perform Metropolis-Hastings for new augmented ranking
 //'
 //' @param alpha Numeric value og the scale parameter
 //' @param rho Numeric vector specifying the consensus ranking
@@ -14,11 +14,9 @@
 //'   Bayesian Mallows Model. Available options are \code{"footrule"},
 //'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 //'   \code{"ulam"}.
-//' @return = proposed augmented ranking or current ranking A ranking sequence vector representing proposed augmented ranking for next
-//'         iteration of MCMC chain
+//' @return R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
 //' @export
 // [[Rcpp::export]]
-
 arma::vec metropolis_hastings_aug_ranking_CPP(
 	double alpha,
 	arma::vec rho,
