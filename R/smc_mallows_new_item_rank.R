@@ -170,8 +170,8 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time
         aug_rankings[jj, , ii] <- metropolis_hastings_aug_ranking(
           alpha = alpha_samples[ii, 1],
           rho = rho_samples[ii, , 1], n_items = n_items,
-          R_obs = R_obs[jj, , 1],
-          R_curr = aug_rankings[jj, , ii], metric = metric
+          partial_ranking = R_obs[jj, , 1],
+          current_ranking = aug_rankings[jj, , ii], metric = metric
         )
       } else if ((aug_method == "pseudolikelihood") & (metric %in% c("footrule", "spearman"))) {
         aug_rankings[jj, , ii] <- metropolis_hastings_aug_ranking_pseudo(
@@ -287,8 +287,8 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time
       for (jj in 1:num_ranks) {
         if (aug_method == "random") {
           aug_rankings[jj, , ii] <- metropolis_hastings_aug_ranking(
-            R_curr = aug_rankings[jj, , ii],
-            R_obs = R_obs[jj, , tt + 1],
+            current_ranking = aug_rankings[jj, , ii],
+            partial_ranking = R_obs[jj, , tt + 1],
             alpha = alpha_samples[ii, tt + 1],
             rho = rho_samples[ii, , tt + 1], n_items = n_items,
             metric = metric
@@ -460,8 +460,8 @@ smc_mallows_new_item_rank_alpha_fixed <- function(alpha, n_items, R_obs, metric,
         aug_rankings[jj, , ii] <- metropolis_hastings_aug_ranking(
           alpha = alpha,
           rho = rho_samples[ii, , 1], n_items = n_items,
-          R_obs = R_obs[jj, , 1],
-          R_curr = aug_rankings[jj, , ii], metric = metric
+          partial_ranking = R_obs[jj, , 1],
+          current_ranking = aug_rankings[jj, , ii], metric = metric
         )
       } else if ((aug_method == "pseudolikelihood") & (metric %in% c("footrule", "spearman"))) {
         aug_rankings[jj, , ii] <- metropolis_hastings_aug_ranking_pseudo(
@@ -568,8 +568,8 @@ smc_mallows_new_item_rank_alpha_fixed <- function(alpha, n_items, R_obs, metric,
           aug_rankings[jj, , ii] <- metropolis_hastings_aug_ranking(
             alpha = alpha,
             rho = rho_samples[ii, , tt + 1], n_items = n_items,
-            R_obs = R_obs[jj, , tt + 1],
-            R_curr = aug_rankings[jj, , ii], metric = metric
+            partial_ranking = R_obs[jj, , tt + 1],
+            current_ranking = aug_rankings[jj, , ii], metric = metric
           )
         } else if ((aug_method == "pseudolikelihood") & (metric %in% c("footrule", "spearman"))) {
           aug_rankings[jj, , ii] <- metropolis_hastings_aug_ranking_pseudo(
