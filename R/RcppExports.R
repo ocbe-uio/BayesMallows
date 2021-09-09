@@ -60,8 +60,8 @@ compute_importance_sampling_estimate <- function(alpha_vector, n_items, metric =
 #'   \code{"ulam"}.
 #' @return R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
 #' @export
-metropolis_hastings_aug_ranking_CPP <- function(alpha, rho, n_items, partial_ranking, current_ranking, metric) {
-    .Call(`_BayesMallows_metropolis_hastings_aug_ranking_CPP`, alpha, rho, n_items, partial_ranking, current_ranking, metric)
+metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking, current_ranking, metric) {
+    .Call(`_BayesMallows_metropolis_hastings_aug_ranking`, alpha, rho, n_items, partial_ranking, current_ranking, metric)
 }
 
 factorial <- function(n) {

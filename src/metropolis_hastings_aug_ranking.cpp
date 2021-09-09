@@ -17,7 +17,7 @@
 //' @return R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
 //' @export
 // [[Rcpp::export]]
-arma::vec metropolis_hastings_aug_ranking_CPP(
+arma::vec metropolis_hastings_aug_ranking(
 	double alpha,
 	arma::vec rho,
 	int n_items,

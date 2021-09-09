@@ -61,9 +61,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// metropolis_hastings_aug_ranking_CPP
-arma::vec metropolis_hastings_aug_ranking_CPP(double alpha, arma::vec rho, int n_items, arma::vec partial_ranking, arma::vec current_ranking, std::string metric);
-RcppExport SEXP _BayesMallows_metropolis_hastings_aug_ranking_CPP(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP metricSEXP) {
+// metropolis_hastings_aug_ranking
+arma::vec metropolis_hastings_aug_ranking(double alpha, arma::vec rho, int n_items, arma::vec partial_ranking, arma::vec current_ranking, std::string metric);
+RcppExport SEXP _BayesMallows_metropolis_hastings_aug_ranking(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -73,7 +73,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type partial_ranking(partial_rankingSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type current_ranking(current_rankingSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
-    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_aug_ranking_CPP(alpha, rho, n_items, partial_ranking, current_ranking, metric));
+    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_aug_ranking(alpha, rho, n_items, partial_ranking, current_ranking, metric));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -366,7 +366,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_rank_dist_sum", (DL_FUNC) &_BayesMallows_rank_dist_sum, 4},
     {"_BayesMallows_rank_dist_vec", (DL_FUNC) &_BayesMallows_rank_dist_vec, 4},
     {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 4},
-    {"_BayesMallows_metropolis_hastings_aug_ranking_CPP", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking_CPP, 6},
+    {"_BayesMallows_metropolis_hastings_aug_ranking", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking, 6},
     {"_BayesMallows_factorial", (DL_FUNC) &_BayesMallows_factorial, 1},
     {"_BayesMallows_binomial_coefficient", (DL_FUNC) &_BayesMallows_binomial_coefficient, 2},
     {"_BayesMallows_sample_int", (DL_FUNC) &_BayesMallows_sample_int, 1},
