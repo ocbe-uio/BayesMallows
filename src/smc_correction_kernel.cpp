@@ -1,73 +1,74 @@
+#include "RcppArmadillo.h"
 
-  //' @description Function to determine if the augmented ranking is compatible with the new observed partial ranking.
-  //'              If it is not, the we create a new augmentation using the random sampling approachand calculate the augmentation probability.
-  //'
-  //' INPUT:
-  //' @param current_ranking A ranking sequence vector of the current augmented ranking (no missing values)
-  //' @param observed_ranking  A ranking sequence vector of the observed partial ranking (no missing values) The original incomplete partial ranking is in the rankings data set.
-  //' @param n_items Integer is the number of items in a ranking
+// [[Rcpp::depends(RcppArmadillo)]]
+//' @title Correction Kernel
+//' @description Function to determine if the augmented ranking is compatible
+//' with the new observed partial ranking. If it is not, the we create a new
+//' augmentation using the random sampling approachand calculate the
+//' augmentation probability.
+//'
+//' @param current_ranking A ranking sequence vector of the current augmented
+//' ranking (no missing values)
+//' @param observed_ranking A ranking sequence vector of the observed partial
+//' ranking (no missing values) The original incomplete partial ranking
+//' is in the rankings data set.
+//' @param n_items Integer is the number of items in a ranking
+//'
+//' @return List containing the proposed 'corrected' augmented ranking
+//' that is compatible with the new observed ranking for a user
+// [[Rcpp::export]]
+Rcpp::List correction_kernel(
+  arma::vec observed_ranking, //R_obs
+  arma::vec current_ranking,  // R_curr
+  int n_items
+) {
+  // check if new information means 'mistakes' made with augmented rankings
+  bool observed_equals_current = arma::approx_equal(\
+    observed_ranking, current_ranking, "absdiff", 0.1\
+  );
+  if (observed_equals_current) {
+    double correction_prob = 1.0;
+    // TODO: merge the return() below with the one in the else chunk
+    return Rcpp::List::create(
+        Rcpp::Named("ranking") = current_ranking,
+        Rcpp::Named("correction_prob") = correction_prob
+    );
+  } else {
+    // resample from smaller pool of possible augmented rankings
+    // select uniform the proposed ranking compatible with the known observed rankings
+    arma::vec ranks;
+    Rcpp::IntegerVector tmp = Rcpp::seq(1, n_items);
+    ranks = Rcpp::as<arma::vec>(tmp); // TODO: unused obj: remove after bugs are fixed
 
-  //' OUTPUT: List containing the proposed 'corrected' augmented ranking that is compatible with the new observed ranking for a user
+    //  find elements missing from original observed ranking
+    Rcpp::NumericVector o_rank_Rcpp, c_rank_Rcpp;
+    o_rank_Rcpp = observed_ranking;
+    c_rank_Rcpp = current_ranking;
+    arma::vec remaining_set = Rcpp::setdiff(c_rank_Rcpp, o_rank_Rcpp);
 
+    // create new agumented ranking by sampling remaining ranks from set uniformly
+    arma::vec proposed_ranking = observed_ranking;
 
-Rcpp::List (int n_items,
-    arma::vec observed_ranking, //R_obs
-    arma::vec current_ranking) {  // R_curr
+    arma::uvec unranked_items = find_nonfinite(proposed_ranking);
+    if (remaining_set.n_elem == 1) {
+      proposed_ranking.elem(unranked_items) = remaining_set;
+    } else {
+      // generate random order for remaining_set
+      remaining_set = std::move(arma::shuffle(remaining_set));
+      proposed_ranking.elem(unranked_items) = remaining_set;
+    }
 
-          //------------------------------------------------------------------------------------------
-          //TO FIX
-          check if new information means 'mistakes' made with augmented rankings
-          check = (observed_ranking == current_ranking);
-          bool condition_1 = any(check == FALSE, na.rm = TRUE) == FALSE;
-          if (condition_1) {
-          //------------------------------------------------------------------------------------------
+    Rcpp::NumericVector remaining_set_Rcpp;
+    remaining_set_Rcpp = remaining_set;
+    Rcpp::NumericVector remaining_set_Rcpp_elem;
+    remaining_set_Rcpp_elem = remaining_set_Rcpp.length();
+    Rcpp::NumericVector remaining_set_fact = Rcpp::factorial(remaining_set_Rcpp_elem);
+    double remaining_set_fact_dbl = Rcpp::as<double>(remaining_set_fact);
+    double correction_prob = 1.0 / remaining_set_fact_dbl;
 
-             double correction_prob = 1.0
-
-                 //return(output)
-                 return Rcpp::List::create(
-                     Rcpp::Named("ranking") = current_ranking,
-                     Rcpp::Named("correction_prob") = correction_prob
-                 );
-
-
-         }
-         else {
-
-             // resample from smaller pool of possible augmented rankings
-             // select uniform the proposed ranking compatible with the known observed rankings
-             //ranks = c(1:n_items)
-
-             //  find elements missing from original observed ranking
-             arma::vec remaining_set = current_ranking.elem(find_nonfinite(observed_ranking));
-             //remaining_set = unique(ranks[!ranks % in % R_obs])
-
-             // create new agumented ranking by sampling remaining ranks from set uniformly
-             arma::vec proposed_ranking = observed_ranking;
-
-             if (remaining_set.n_elem == 1) {
-                 //R_prop[is.na(R_prop)] = remaining_set
-                 arma::uvec unranked_items = find_nonfinite(proposed_ranking);
-                 proposed_ranking.elem(unranked_items) = remaining_set;
-
-             }
-             else {
-                 //R_prop[is.na(R_prop)] <- sample(remaining_set, size = sum(is.na(R_prop)), replace = F)
-                 // generate random order for remaining_set
-                 remaining_set = std::move(arma::shuffle(remaining_set));
-                 proposed_ranking.elem(unranked_items) = remaining_set;
-
-             };
-
-             double correction_prob = 1.0 / factorial(remaining_set.n_elem);
-
-             //return(output)
-             return Rcpp::List::create(
-                 Rcpp::Named("ranking") = proposed_ranking,
-                 Rcpp::Named("correction_prob") = correction_prob
-             );
-
-
-         }
-
- }
+    return Rcpp::List::create(
+        Rcpp::Named("ranking") = proposed_ranking,
+        Rcpp::Named("correction_prob") = correction_prob
+    );
+  }
+}

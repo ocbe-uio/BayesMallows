@@ -259,6 +259,25 @@ calculate_forward_probability <- function(item_ordering, partial_ranking, remain
     .Call(`_BayesMallows_calculate_forward_probability`, item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric)
 }
 
+#' @title Correction Kernel
+#' @description Function to determine if the augmented ranking is compatible
+#' with the new observed partial ranking. If it is not, the we create a new
+#' augmentation using the random sampling approachand calculate the
+#' augmentation probability.
+#'
+#' @param current_ranking A ranking sequence vector of the current augmented
+#' ranking (no missing values)
+#' @param observed_ranking A ranking sequence vector of the observed partial
+#' ranking (no missing values) The original incomplete partial ranking
+#' is in the rankings data set.
+#' @param n_items Integer is the number of items in a ranking
+#'
+#' @return List containing the proposed 'corrected' augmented ranking
+#' that is compatible with the new observed ranking for a user
+correction_kernel_CPP <- function(n_items, observed_ranking, current_ranking) {
+    .Call(`_BayesMallows_correction_kernel_CPP`, n_items, observed_ranking, current_ranking)
+}
+
 #' @title Get Mallows log-likelihood
 #' @description Calculates the Mallows log-likelihood given a set of rankings and a given rank sequence
 #' @param alpha Numeric value of the scale parameter

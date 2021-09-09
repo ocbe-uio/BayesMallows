@@ -29,8 +29,11 @@ correction_kernel <- function(R_curr, R_obs, n_items){
 
     # create new agumented ranking by sampling remaining ranks from set uniformly
     R_prop = R_obs
-    if(length(remaining_set == 1)){R_prop[is.na(R_prop)] = remaining_set}
-    else {R_prop[is.na(R_prop)] <- sample(remaining_set, size=sum(is.na(R_prop)), replace=F)}
+    if(length(remaining_set == 1)){
+      R_prop[is.na(R_prop)] = remaining_set
+    } else {
+      R_prop[is.na(R_prop)] <- sample(remaining_set, size=sum(is.na(R_prop)), replace=F)
+    }
 
     correction_prob = 1/factorial(length(remaining_set))
     output = list("ranking" = R_prop, "correction_prob" = correction_prob )
