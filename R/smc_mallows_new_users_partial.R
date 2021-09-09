@@ -176,8 +176,8 @@ smc_mallows_new_users_partial <- function(R_obs, n_items, metric, leap_size, N, 
       for (jj in 1:num_obs) {
         if (aug_method == "random") {
           aug_rankings[jj, , ii] <- metropolis_hastings_aug_ranking(
-            R_curr = aug_rankings[jj, , ii],
-            R_obs = R_obs[jj, ], alpha = alpha_samples[ii, tt + 1],
+            current_ranking = aug_rankings[jj, , ii],
+            partial_ranking = R_obs[jj, ], alpha = alpha_samples[ii, tt + 1],
             rho = rho_samples[ii, , tt + 1], n_items = n_items,
             metric = metric
           )
@@ -361,8 +361,8 @@ smc_mallows_new_users_partial_alpha_fixed <- function(R_obs, n_items, metric, le
       for (jj in 1:num_obs) {
         if (aug_method == "random") {
           aug_rankings[jj, , ii] <- metropolis_hastings_aug_ranking(
-            R_curr = aug_rankings[jj, , ii],
-            R_obs = R_obs[jj, ], alpha = alpha,
+            current_ranking = aug_rankings[jj, , ii],
+            partial_ranking = R_obs[jj, ], alpha = alpha,
             rho = rho_samples[ii, , tt + 1], n_items = n_items,
             metric = metric
           )

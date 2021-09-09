@@ -332,7 +332,7 @@ find_cpc_smc <- function(group_df){
   n_items <- max(group_df$value)
   for(i in seq(from = 1, to = n_items, by = 1)){
     # Filter out the relevant rows
-    tmp_df <- dplyr::filter(group_df, value == i)
+    tmp_df <- dplyr::filter(group_df, group_df$value == i)
 
     # Remove items in result
     tmp_df <- dplyr::anti_join(tmp_df, result, by = c("cluster", "item"))
@@ -366,9 +366,11 @@ find_cpc_smc <- function(group_df){
   }
 
   #df <- dplyr::filter(model_fit$rho, .data$iteration > burnin)
-  if(burnin!=0){
+  if(burnin != 0){
     df <- dplyr::filter(model_fit, .data$iteration > burnin) #removed model_fit[[parameter]]
-  }else {df <- model_fit}
+  } else {
+    df <- model_fit
+  }
 
   # Store the total number of iterations after burnin
   n_samples <- length(unique(df$iteration))

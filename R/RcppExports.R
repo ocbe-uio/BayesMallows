@@ -46,6 +46,24 @@ compute_importance_sampling_estimate <- function(alpha_vector, n_items, metric =
     .Call(`_BayesMallows_compute_importance_sampling_estimate`, alpha_vector, n_items, metric, nmc)
 }
 
+#' @title Metropolis-Hastings Augmented Ranking
+#' @description Function to perform Metropolis-Hastings for new augmented ranking
+#'
+#' @param alpha Numeric value og the scale parameter
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param n_items Integer is the number of items in a ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
+#' @export
+metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking, current_ranking, metric) {
+    .Call(`_BayesMallows_metropolis_hastings_aug_ranking`, alpha, rho, n_items, partial_ranking, current_ranking, metric)
+}
+
 factorial <- function(n) {
     .Call(`_BayesMallows_factorial`, n)
 }
@@ -191,6 +209,56 @@ run_mcmc <- function(rankings, obs_freq, nmc, constraints, cardinalities, logz_e
     .Call(`_BayesMallows_run_mcmc`, rankings, obs_freq, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, error_model, Lswap, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, alpha_max, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2, save_ind_clus)
 }
 
+#' @title Calculate Backward Probability
+#' @description Function to calculate probability of assigning a set of specific ranks to an specific item
+#' given its rank in the consensus ranking
+#'
+#' @param item_ordering A vector of integer values to represent the specified queue of which unranked item to assign a rank for the proposed augmented ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
+#' @param remaining_set A vector of integer values to represent the elements (ranks) missing from original observed ranking
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param alpha Numeric value og the scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return backward_auxiliary_ranking_probability A numerical value of creating the previous augmented ranking using the same item ordering used to create the
+#' new auggmented ranking in calculate_forward_probability funtion.
+#' @export
+calculate_backward_probability <- function(item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric) {
+    .Call(`_BayesMallows_calculate_backward_probability`, item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric)
+}
+
+#' @title Calculate Forward Probability
+#' @description Function to calculate probability of assigning a set of
+#'   specific ranks to an specific item
+#' given its rank in the consensus ranking
+#' @export
+#'
+#' @param item_ordering A vector of integer values to represent the specified
+#'   queue of which unranked item to assign a rank for the proposed augmented
+#'   ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original
+#'   observed incomplete ranking which contains NAs
+#' @param remaining_set A vector of integer values to represent the elements
+#'   (ranks) missing from original observed ranking
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param alpha Numeric value og the scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in
+#'   the Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
+#'   and \code{"ulam"}.
+#' @return List containing aug_ranking, a ranking sequence vector of the
+#'   proposed augmented ranking and forward_prob a numerical value of the
+#'   probability of creating the augmented ranking using the pseudolikelihood
+#'   augmentation.
+calculate_forward_probability <- function(item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric) {
+    .Call(`_BayesMallows_calculate_forward_probability`, item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric)
+}
+
 #' @title Get Mallows log-likelihood
 #' @description Calculates the Mallows log-likelihood given a set of rankings and a given rank sequence
 #' @param alpha Numeric value of the scale parameter
@@ -234,6 +302,25 @@ run_mcmc <- function(rankings, obs_freq, nmc, constraints, cardinalities, logz_e
 #' )
 get_mallows_loglik <- function(alpha, rho, n_items, rankings, metric) {
     .Call(`_BayesMallows_get_mallows_loglik`, alpha, rho, n_items, rankings, metric)
+}
+
+#' @title Get Sample Probabilities
+#' @description Calculate probability of assigning a set of specific ranks to an specific item
+#' given its rank in the consensus ranking
+#'
+#' @param rho_item_rank An integer value rank of an item in the current consensus ranking
+#' @param alpha Numeric value og the scale parameter
+#' @param remaining_set_ranks A sequence of integer values of the set of possible ranks that we can assign the item
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @param n_items Integer is the number of items in the consensus ranking
+#' @return sample_prob_list A numeric sequence of sample probabilities for selecting a specific rank given the current
+#'         rho_item_rank
+#' @export
+get_sample_probabilities <- function(rho_item_rank, alpha, remaining_set_ranks, metric, n_items) {
+    .Call(`_BayesMallows_get_sample_probabilities`, rho_item_rank, alpha, remaining_set_ranks, metric, n_items)
 }
 
 #' @title Leap and Shift Probabilities
@@ -334,6 +421,25 @@ smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N,
 #' @export
 metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max) {
     .Call(`_BayesMallows_metropolis_hastings_alpha`, alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max)
+}
+
+#' @title Metropolis-Hastings Augmented Ranking (pseudolikelihood)
+#' @description Function to perform Metropolis-Hastings for new augmented ranking using the pseudolikelihood augmentation approach
+#'
+#' @param alpha Numeric value og the scale parameter
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param n_items Integer is the number of items in a ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return = proposed augmented ranking or current ranking A ranking sequence vector representing proposed augmented ranking for next
+#'         iteration of MCMC chain
+#' @export
+metropolis_hastings_aug_ranking_pseudo <- function(alpha, rho, n_items, partial_ranking, current_ranking, metric) {
+    .Call(`_BayesMallows_metropolis_hastings_aug_ranking_pseudo`, alpha, rho, n_items, partial_ranking, current_ranking, metric)
 }
 
 #' @title Metropolis-Hastings Rho

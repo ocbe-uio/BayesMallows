@@ -33,7 +33,10 @@ samples[samples > 5] <- NA
 # Bayesmallows MCMC Results
 #######################################
 nmc <- 2000
-bayesmallows_mcmc <- compute_mallows(samples, nmc = nmc, leap_size = leap_size, metric = metric, alpha_prop_sd = 0.15)
+bayesmallows_mcmc <- compute_mallows(
+  samples, nmc = nmc, leap_size = leap_size, metric = metric,
+  alpha_prop_sd = 0.15
+)
 bayesmallows_mcmc$burnin <- 1000
 
 # choice items to see in trace plot
@@ -139,6 +142,7 @@ test_that("Runs with pseudo kernel", {
 test_that("Specific example results are OK", {
   N <- 10
   aug_method <- "random"
+  set.seed(5482) # necssary for reproducibility of the random aug_method
 
   test <- smc_mallows_new_users_partial(
     R_obs = samples, n_items = n_items, metric = metric,
@@ -147,26 +151,43 @@ test_that("Specific example results are OK", {
     num_new_obs = num_new_obs, alpha_prop_sd = alpha_prop_sd,
     lambda = lambda, alpha_max = alpha_max, aug_method = aug_method
   )
-  rho_cp <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "CP")
-  rho_map <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "MAP")
-  post_rho <- compute_posterior_intervals_rho(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0)
-  post_alpha <- compute_posterior_intervals_alpha(output = test$alpha_samples[, Time + 1], nmc = N, burnin = 0)
+  rho_cp <- compute_rho_consensus(
+    output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1,
+    type = "CP"
+  )
+  rho_map <- compute_rho_consensus(
+    output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1,
+    type = "MAP"
+  )
+  post_rho <- compute_posterior_intervals_rho(
+    output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0
+  )
+  post_alpha <- compute_posterior_intervals_alpha(
+    output = test$alpha_samples[, Time + 1], nmc = N, burnin = 0
+  )
   expect_equal(dim(rho_cp), c(10, 3))
   expect_equal(dim(rho_map), c(12, 3))
   expect_equal(dim(post_rho), c(10, 7))
   expect_equal(dim(post_alpha), c(1, 6))
 
-  alpha_0 <- 2
-  test <- smc_mallows_new_users_partial_alpha_fixed(
+  test_fixed <- smc_mallows_new_users_partial_alpha_fixed(
     R_obs = samples, n_items = n_items, metric = metric,
     leap_size = leap_size, N = N, Time = Time,
     logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
     num_new_obs = num_new_obs, aug_method = aug_method, alpha = alpha_0
   )
-  rho_cp <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "CP")
-  rho_map <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "MAP")
-  post_rho <- compute_posterior_intervals_rho(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0)
-  expect_equal(dim(rho_cp), c(10, 3))
-  expect_equal(dim(rho_map), c(12, 3))
-  expect_equal(dim(post_rho), c(10, 7))
+  rho_cp_fixed <- compute_rho_consensus(
+    output = test_fixed$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1,
+    type = "CP"
+  )
+  rho_map_fixed <- compute_rho_consensus(
+    output = test_fixed$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1,
+    type = "MAP"
+  )
+  post_rho_fixed <- compute_posterior_intervals_rho(
+    output = test_fixed$rho_samples[, , Time + 1], nmc = N, burnin = 0
+  )
+  expect_equal(dim(rho_cp_fixed), c(10, 3))
+  expect_equal(dim(rho_map_fixed), c(12, 3))
+  expect_equal(dim(post_rho_fixed), c(10, 7))
 })

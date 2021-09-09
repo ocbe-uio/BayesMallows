@@ -6,11 +6,6 @@
 
 using namespace Rcpp;
 
-#ifdef RCPP_USE_GLOBAL_ROSTREAM
-Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
-Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
-#endif
-
 // get_rank_distance
 double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric);
 RcppExport SEXP _BayesMallows_get_rank_distance(SEXP r1SEXP, SEXP r2SEXP, SEXP metricSEXP) {
@@ -63,6 +58,22 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< int >::type nmc(nmcSEXP);
     rcpp_result_gen = Rcpp::wrap(compute_importance_sampling_estimate(alpha_vector, n_items, metric, nmc));
+    return rcpp_result_gen;
+END_RCPP
+}
+// metropolis_hastings_aug_ranking
+arma::vec metropolis_hastings_aug_ranking(double alpha, arma::vec rho, int n_items, arma::vec partial_ranking, arma::vec current_ranking, std::string metric);
+RcppExport SEXP _BayesMallows_metropolis_hastings_aug_ranking(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP metricSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type partial_ranking(partial_rankingSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type current_ranking(current_rankingSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_aug_ranking(alpha, rho, n_items, partial_ranking, current_ranking, metric));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -200,6 +211,41 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// calculate_backward_probability
+double calculate_backward_probability(arma::uvec item_ordering, arma::vec partial_ranking, arma::vec current_ranking, arma::vec remaining_set, arma::vec rho, double alpha, int n_items, std::string metric);
+RcppExport SEXP _BayesMallows_calculate_backward_probability(SEXP item_orderingSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP remaining_setSEXP, SEXP rhoSEXP, SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP metricSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uvec >::type item_ordering(item_orderingSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type partial_ranking(partial_rankingSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type current_ranking(current_rankingSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type remaining_set(remaining_setSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(calculate_backward_probability(item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric));
+    return rcpp_result_gen;
+END_RCPP
+}
+// calculate_forward_probability
+Rcpp::List calculate_forward_probability(arma::uvec item_ordering, arma::vec partial_ranking, arma::vec remaining_set, arma::vec rho, double alpha, int n_items, std::string metric);
+RcppExport SEXP _BayesMallows_calculate_forward_probability(SEXP item_orderingSEXP, SEXP partial_rankingSEXP, SEXP remaining_setSEXP, SEXP rhoSEXP, SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP metricSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::uvec >::type item_ordering(item_orderingSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type partial_ranking(partial_rankingSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type remaining_set(remaining_setSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(calculate_forward_probability(item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric));
+    return rcpp_result_gen;
+END_RCPP
+}
 // get_mallows_loglik
 double get_mallows_loglik(double alpha, arma::vec rho, int n_items, arma::mat rankings, std::string metric);
 RcppExport SEXP _BayesMallows_get_mallows_loglik(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP rankingsSEXP, SEXP metricSEXP) {
@@ -212,6 +258,21 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type rankings(rankingsSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     rcpp_result_gen = Rcpp::wrap(get_mallows_loglik(alpha, rho, n_items, rankings, metric));
+    return rcpp_result_gen;
+END_RCPP
+}
+// get_sample_probabilities
+arma::vec get_sample_probabilities(arma::vec rho_item_rank, double alpha, arma::vec remaining_set_ranks, std::string metric, int n_items);
+RcppExport SEXP _BayesMallows_get_sample_probabilities(SEXP rho_item_rankSEXP, SEXP alphaSEXP, SEXP remaining_set_ranksSEXP, SEXP metricSEXP, SEXP n_itemsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type rho_item_rank(rho_item_rankSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type remaining_set_ranks(remaining_set_ranksSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_sample_probabilities(rho_item_rank, alpha, remaining_set_ranks, metric, n_items));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -267,6 +328,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// metropolis_hastings_aug_ranking_pseudo
+arma::vec metropolis_hastings_aug_ranking_pseudo(double alpha, arma::vec rho, int n_items, arma::vec partial_ranking, arma::vec current_ranking, std::string metric);
+RcppExport SEXP _BayesMallows_metropolis_hastings_aug_ranking_pseudo(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP metricSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type partial_ranking(partial_rankingSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type current_ranking(current_rankingSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_aug_ranking_pseudo(alpha, rho, n_items, partial_ranking, current_ranking, metric));
+    return rcpp_result_gen;
+END_RCPP
+}
 // metropolis_hastings_rho
 arma::vec metropolis_hastings_rho(double alpha, int n_items, arma::mat rankings, std::string metric, arma::vec rho, int leap_size);
 RcppExport SEXP _BayesMallows_metropolis_hastings_rho(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP rankingsSEXP, SEXP metricSEXP, SEXP rhoSEXP, SEXP leap_sizeSEXP) {
@@ -289,6 +366,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_rank_dist_sum", (DL_FUNC) &_BayesMallows_rank_dist_sum, 4},
     {"_BayesMallows_rank_dist_vec", (DL_FUNC) &_BayesMallows_rank_dist_vec, 4},
     {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 4},
+    {"_BayesMallows_metropolis_hastings_aug_ranking", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking, 6},
     {"_BayesMallows_factorial", (DL_FUNC) &_BayesMallows_factorial, 1},
     {"_BayesMallows_binomial_coefficient", (DL_FUNC) &_BayesMallows_binomial_coefficient, 2},
     {"_BayesMallows_sample_int", (DL_FUNC) &_BayesMallows_sample_int, 1},
@@ -297,10 +375,14 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 8},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 27},
+    {"_BayesMallows_calculate_backward_probability", (DL_FUNC) &_BayesMallows_calculate_backward_probability, 8},
+    {"_BayesMallows_calculate_forward_probability", (DL_FUNC) &_BayesMallows_calculate_forward_probability, 7},
     {"_BayesMallows_get_mallows_loglik", (DL_FUNC) &_BayesMallows_get_mallows_loglik, 5},
+    {"_BayesMallows_get_sample_probabilities", (DL_FUNC) &_BayesMallows_get_sample_probabilities, 5},
     {"_BayesMallows_leap_and_shift_probs", (DL_FUNC) &_BayesMallows_leap_and_shift_probs, 3},
     {"_BayesMallows_smc_mallows_new_users_complete", (DL_FUNC) &_BayesMallows_smc_mallows_new_users_complete, 10},
     {"_BayesMallows_metropolis_hastings_alpha", (DL_FUNC) &_BayesMallows_metropolis_hastings_alpha, 9},
+    {"_BayesMallows_metropolis_hastings_aug_ranking_pseudo", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking_pseudo, 6},
     {"_BayesMallows_metropolis_hastings_rho", (DL_FUNC) &_BayesMallows_metropolis_hastings_rho, 6},
     {NULL, NULL, 0}
 };
