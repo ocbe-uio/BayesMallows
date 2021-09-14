@@ -251,16 +251,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// correction_kernel_CPP
-Rcpp::List correction_kernel_CPP(int n_items, arma::vec observed_ranking, arma::vec current_ranking);
-RcppExport SEXP _BayesMallows_correction_kernel_CPP(SEXP n_itemsSEXP, SEXP observed_rankingSEXP, SEXP current_rankingSEXP) {
+// correction_kernel
+Rcpp::List correction_kernel(arma::vec observed_ranking, arma::vec current_ranking, int n_items);
+RcppExport SEXP _BayesMallows_correction_kernel(SEXP observed_rankingSEXP, SEXP current_rankingSEXP, SEXP n_itemsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type observed_ranking(observed_rankingSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type current_ranking(current_rankingSEXP);
-    rcpp_result_gen = Rcpp::wrap(correction_kernel_CPP(n_items, observed_ranking, current_ranking));
+    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
+    rcpp_result_gen = Rcpp::wrap(correction_kernel(observed_ranking, current_ranking, n_items));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -395,7 +395,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 27},
     {"_BayesMallows_calculate_backward_probability", (DL_FUNC) &_BayesMallows_calculate_backward_probability, 8},
     {"_BayesMallows_calculate_forward_probability", (DL_FUNC) &_BayesMallows_calculate_forward_probability, 7},
-    {"_BayesMallows_correction_kernel_CPP", (DL_FUNC) &_BayesMallows_correction_kernel_CPP, 3},
+    {"_BayesMallows_correction_kernel", (DL_FUNC) &_BayesMallows_correction_kernel, 3},
     {"_BayesMallows_get_mallows_loglik", (DL_FUNC) &_BayesMallows_get_mallows_loglik, 5},
     {"_BayesMallows_get_sample_probabilities", (DL_FUNC) &_BayesMallows_get_sample_probabilities, 5},
     {"_BayesMallows_leap_and_shift_probs", (DL_FUNC) &_BayesMallows_leap_and_shift_probs, 3},

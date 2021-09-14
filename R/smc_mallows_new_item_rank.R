@@ -209,8 +209,8 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time
       for (jj in 1:num_ranks) {
         if (aug_method == "random") {
           check_correction <- correction_kernel(
-            R_curr = aug_rankings[jj, , ii],
-            R_obs = R_obs[jj, , tt + 1], n_items = n_items
+            current_ranking = aug_rankings[jj, , ii],
+            observed_ranking = R_obs[jj, , tt + 1], n_items = n_items
           )
           aug_rankings[jj, , ii] <- check_correction$ranking
 
@@ -499,8 +499,8 @@ smc_mallows_new_item_rank_alpha_fixed <- function(alpha, n_items, R_obs, metric,
       for (jj in 1:num_ranks) {
         if (aug_method == "random") {
           check_correction <- correction_kernel(
-            R_curr = aug_rankings[jj, , ii],
-            R_obs = R_obs[jj, , tt + 1], n_items = n_items
+            current_ranking = aug_rankings[jj, , ii],
+            observed_ranking = R_obs[jj, , tt + 1], n_items = n_items
           )
 
           aug_rankings[jj, , ii] <- check_correction$ranking

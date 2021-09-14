@@ -274,8 +274,8 @@ calculate_forward_probability <- function(item_ordering, partial_ranking, remain
 #'
 #' @return List containing the proposed 'corrected' augmented ranking
 #' that is compatible with the new observed ranking for a user
-correction_kernel_CPP <- function(n_items, observed_ranking, current_ranking) {
-    .Call(`_BayesMallows_correction_kernel_CPP`, n_items, observed_ranking, current_ranking)
+correction_kernel <- function(observed_ranking, current_ranking, n_items) {
+    .Call(`_BayesMallows_correction_kernel`, observed_ranking, current_ranking, n_items)
 }
 
 #' @title Get Mallows log-likelihood
