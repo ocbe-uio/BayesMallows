@@ -26,19 +26,12 @@ Rcpp::List correction_kernel(
   bool observed_equals_current = arma::approx_equal(\
     observed_ranking, current_ranking, "absdiff", 0.1\
   );
+  double correction_prob = 1.0;
+  arma::vec proposed_ranking;
   if (observed_equals_current) {
-    double correction_prob = 1.0;
-    // TODO: merge the return() below with the one in the else chunk
-    return Rcpp::List::create(
-        Rcpp::Named("ranking") = current_ranking,
-        Rcpp::Named("correction_prob") = correction_prob
-    );
+    proposed_ranking = current_ranking;
   } else {
     // resample from smaller pool of possible augmented rankings
-    // select uniform the proposed ranking compatible with the known observed rankings
-    arma::vec ranks;
-    Rcpp::IntegerVector tmp = Rcpp::seq(1, n_items);
-    ranks = Rcpp::as<arma::vec>(tmp); // TODO: unused obj: remove after bugs are fixed
 
     //  find elements missing from original observed ranking
     Rcpp::NumericVector o_rank_Rcpp, c_rank_Rcpp;
@@ -47,7 +40,7 @@ Rcpp::List correction_kernel(
     arma::vec remaining_set = Rcpp::setdiff(c_rank_Rcpp, o_rank_Rcpp);
 
     // create new agumented ranking by sampling remaining ranks from set uniformly
-    arma::vec proposed_ranking = observed_ranking;
+    proposed_ranking = observed_ranking;
 
     arma::uvec unranked_items = find_nonfinite(proposed_ranking);
     if (remaining_set.n_elem == 1) {
@@ -64,11 +57,10 @@ Rcpp::List correction_kernel(
     remaining_set_Rcpp_elem = remaining_set_Rcpp.length();
     Rcpp::NumericVector remaining_set_fact = Rcpp::factorial(remaining_set_Rcpp_elem);
     double remaining_set_fact_dbl = Rcpp::as<double>(remaining_set_fact);
-    double correction_prob = 1.0 / remaining_set_fact_dbl;
-
-    return Rcpp::List::create(
-        Rcpp::Named("ranking") = proposed_ranking,
-        Rcpp::Named("correction_prob") = correction_prob
-    );
+    correction_prob = 1.0 / remaining_set_fact_dbl;
   }
+  return Rcpp::List::create(
+      Rcpp::Named("ranking") = proposed_ranking,
+      Rcpp::Named("correction_prob") = correction_prob
+  );
 }
