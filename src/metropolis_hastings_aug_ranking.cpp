@@ -1,6 +1,9 @@
 #include "RcppArmadillo.h"
 #include "smc.h"
 
+//TODO: rename file to smc_metropolis_hastings_aug_ranking.cpp
+//TODO: remove metropolis_hastings_aug_ranking_Anja.o
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Metropolis-Hastings Augmented Ranking
 //' @description Function to perform Metropolis-Hastings for new augmented ranking

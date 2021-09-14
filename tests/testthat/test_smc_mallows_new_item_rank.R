@@ -1,19 +1,17 @@
-# ======================================================== #
-# smc new user and new item rank combined                  #
-# ======================================================== #
+context('SMC new user and item rank combined')
 
-# a simpler example to test ------------------------------ #
+# a simpler example to test ====================================================
 set.seed(101)
 Time <- dim(sample_dataset)[3]
 
-# General ------------------------------------------------ #
+# General ======================================================================
 n_items <- dim(sample_dataset)[2] # Number of items
 rho_0 <- seq(from = 1, to = n_items, by = 1) # 'true' consensus ranking
 alpha_0 <- 2 # fixed/ 'true' scale parameter
 leap_size <- floor(n_items / 5)
 metric <- "footrule"
 
-# Generate estimate of Z_n(alpha) ------------------------ #
+# Generate estimate of Z_n(alpha) ==============================================
 alpha_vector <- seq(from = 0, to = 20, by = 0.1)
 iter <- 1e2
 degree <- 10

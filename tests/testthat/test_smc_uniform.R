@@ -3,9 +3,7 @@ context("SMC uniform functions")
 set.seed(101)
 require("BayesMallows")
 
-###############################################
-# tests for M-H_aug_ranking function
-###############################################
+# tests for M-H_aug_ranking function ===========================================
 
 rho = c(1,2,3,4,5,6)
 alpha = 2
@@ -40,9 +38,7 @@ test_that('MH-aug ranking works', {
 	expect_equal(all(test_3 == R_curr), TRUE)
 })
 
-#########################################################
-### tests relating to the correction_kernel function
-#########################################################
+# tests relating to the correction_kernel function =============================
 
 set.seed(101)
 n_items= 6
