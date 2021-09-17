@@ -10,5 +10,7 @@ double metropolis_hastings_alpha(double, int, arma::mat, std::string, arma::vec,
 arma::vec get_sample_probabilities(arma::vec, double, arma::vec, std::string, int);
 Rcpp::List calculate_forward_probability(arma::uvec, arma::vec, arma::vec, arma::vec, double, int, std::string);
 double calculate_backward_probability(arma::uvec, arma::vec, arma::vec, arma::vec, arma::vec, double, int, std::string);
+arma::vec metropolis_hastings_aug_ranking(double, arma::vec, int, arma::vec, arma::vec, std::string);
+arma::vec metropolis_hastings_aug_ranking_pseudo(double, arma::vec, int, arma::vec, arma::vec, std::string);
 
 #endif
