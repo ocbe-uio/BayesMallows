@@ -55,6 +55,15 @@ Rcpp::List calculate_forward_probability(
     /* ====================================================== */
     // given the old and new item ordering and the list of missing rank,
     // determine the sample probs for each iteration
+
+    // Adjust item_ordering depending on whether it uses R or C++ indices
+    arma::uvec io_idx_cpp = arma::find_nonfinite(partial_ranking);
+    arma::uvec io_idx_input = arma::sort(item_ordering);
+    arma::uvec io_idx_diff = io_idx_input - io_idx_cpp;
+    if (any(io_idx_diff)) {
+      item_ordering -= 1;
+    }
+
     for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
 
       // items to sample rank
@@ -62,7 +71,7 @@ Rcpp::List calculate_forward_probability(
 
       // the rank of item in rho
       arma::vec rho_item_rank;
-      rho_item_rank = rho(item_to_sample_rank - 1);
+      rho_item_rank = rho(item_to_sample_rank);
 
       // next we get the sample probabilites for selecting a particular rank for
       // an item based on the current alpha and the rho rank for that item
@@ -93,7 +102,8 @@ Rcpp::List calculate_forward_probability(
     // fit the augmented ranking within the partial rankings with NAs
     arma::vec ar;
     ar = arma::conv_to<arma::vec>::from(auxiliary_ranking);
-    partial_ranking.elem(item_ordering - 1) = ar; // ranks for items
+    arma::uvec pr_nas = arma::find_nonfinite(partial_ranking);
+    partial_ranking.elem(pr_nas) = ar; // ranks for items
   }
   return Rcpp::List::create(
     Rcpp::Named("aug_ranking") = partial_ranking,
