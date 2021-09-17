@@ -432,8 +432,9 @@ smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N,
 #' @param verbose Logical specifying whether to print out the progress of the
 #' SMC-Mallows algorithm. Defaults to \code{FALSE}.
 #' @return a set of particles each containing a value of rho and alpha
-smc_mallows_new_users_partial_Cpp <- function(R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, aug_method, logz_estimate = NULL, verbose = FALSE) {
-    .Call(`_BayesMallows_smc_mallows_new_users_partial_Cpp`, R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, aug_method, logz_estimate, verbose)
+#' @export
+smc_mallows_new_users_partial <- function(R_obs, n_items, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, aug_method, verbose = FALSE) {
+    .Call(`_BayesMallows_smc_mallows_new_users_partial`, R_obs, n_items, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, aug_method, verbose)
 }
 
 #' @title Metropolis-Hastings Alpha

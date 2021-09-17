@@ -30,21 +30,22 @@
 //' @param verbose Logical specifying whether to print out the progress of the
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
 //' @return a set of particles each containing a value of rho and alpha
+//' @export
 // [[Rcpp::export]]
-Rcpp::List smc_mallows_new_users_partial_Cpp(
+Rcpp::List smc_mallows_new_users_partial(
   arma::mat& R_obs,
   unsigned int& n_items,
   std::string& metric,
   int& leap_size,
   unsigned int& N,
   unsigned int Time,
+  const Rcpp::Nullable<arma::vec> logz_estimate,
   int& mcmc_kernel_app,
   unsigned int& num_new_obs,
   double alpha_prop_sd,
   double lambda,
   double alpha_max,
   std::string& aug_method,
-  const Rcpp::Nullable<arma::vec> logz_estimate,
   bool verbose = false
 ) {
   /* ====================================================== */
@@ -76,7 +77,6 @@ Rcpp::List smc_mallows_new_users_partial_Cpp(
 
   for (arma::uword tt = 0; tt < Time; ++tt) {
     if (verbose) REprintf("observe %i out of %i \n", tt + 1, Time);
-
     /* ====================================================== */
     /* New Information                                        */
     /* ====================================================== */
