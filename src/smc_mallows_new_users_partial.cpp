@@ -131,9 +131,9 @@ Rcpp::List smc_mallows_new_users_partial(
           // randomly permute the unranked items to give the order in which they will be allocated
           arma::uvec item_ordering;
           item_ordering = arma::conv_to<arma::uvec>::from(arma::shuffle(unranked_items));
+          arma::rowvec rho_s = rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
           Rcpp::List proposal = calculate_forward_probability(\
-            item_ordering, partial_ranking, missing_ranks,\
-            rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)),\
+            item_ordering, partial_ranking, missing_ranks, rho_s.t(),\
             alpha_samples(ii, tt + 1), n_items, metric\
           );
           arma::vec a_rank = proposal["aug_ranking"];
@@ -210,9 +210,9 @@ Rcpp::List smc_mallows_new_users_partial(
     for (arma::uword ii = 0; ii < N; ++ii) {
       double as = alpha_samples(ii, tt + 1);
       arma::mat all_observed_rankings;
-      all_observed_rankings = aug_rankings(arma::span(1, num_obs), arma::span::all, arma::span(ii));
-      arma::rowvec rs = rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
       all_observed_rankings = aug_rankings(arma::span(0, num_obs - 1), arma::span::all, arma::span(ii));
+      arma::mat rs_slice = rho_samples.slice(tt + 1);
+      arma::rowvec rs = rs_slice.row(ii);
       // move each particle containing sample of rho and alpha by using
       // the MCMC kernels
       rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)) =\
