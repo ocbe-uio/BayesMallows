@@ -34,6 +34,7 @@ double calculate_backward_probability(
   // given an old and new item ordering, sample ranking with new ordering and
   // calc the forward and backward prob
 
+  // show the augmented parts of the current ranking
   // item ordering is the order of which items are assigned ranks in a specified
   // order
   arma::uword num_items_unranked = item_ordering.n_elem;
@@ -41,11 +42,18 @@ double calculate_backward_probability(
   // initialise prob of creating augmented ranking
   double backward_auxiliary_ranking_probability = 1.0;
 
-  if (num_items_unranked != 1) {
+  // Adjust item_ordering depending on whether it uses R or C++ indices
+  arma::uvec io_idx_cpp = arma::find_nonfinite(partial_ranking);
+  arma::uvec io_idx_input = arma::sort(item_ordering);
+  arma::uvec io_idx_diff = io_idx_input - io_idx_cpp;
+  if (arma::any(io_idx_diff)) {
+    item_ordering -= 1;
+  }
 
-  // show the augmented parts of the current ranking
-    arma::uvec io_minus_1 = arma::conv_to<arma::uvec>::from(item_ordering - 1);
-    current_ranking = current_ranking.elem(io_minus_1);
+
+  if (num_items_unranked != 1) {
+    // show the augmented parts of the current ranking
+    current_ranking = current_ranking.elem(item_ordering);
 
   /* ====================================================== */
   /* LOOP TO CALCULATE FORWARD AND BACKWARD PROBABILITY     */
@@ -59,7 +67,7 @@ double calculate_backward_probability(
 
       // the rank of item in rho
       arma::vec rho_item_rank;
-      rho_item_rank = rho(item_to_sample_rank - 1);
+      rho_item_rank = rho(item_to_sample_rank);
 
       // next we get the sample probabilites for selecting a particular rank for
       // an item based on the current alpha and the rho rank for that item
