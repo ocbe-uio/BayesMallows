@@ -190,6 +190,6 @@ test_that("Specific example results are OK", {
     output = test_fixed$rho_samples[, , Time + 1], nmc = N, burnin = 0
   )
   expect_equal(dim(rho_cp_fixed), c(10, 3))
-  expect_equal(dim(rho_map_fixed), c(24, 3))
+  expect_equal(dim(rho_map_fixed), c(12, 3))
   expect_equal(dim(post_rho_fixed), c(10, 7))
 })
