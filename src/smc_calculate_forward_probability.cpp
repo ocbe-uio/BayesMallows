@@ -60,14 +60,14 @@ Rcpp::List calculate_forward_probability(
     arma::uvec io_idx_cpp = arma::find_nonfinite(partial_ranking);
     arma::uvec io_idx_input = arma::sort(item_ordering);
     arma::uvec io_idx_diff = io_idx_input - io_idx_cpp;
-    if (any(io_idx_diff)) {
+    if (arma::any(io_idx_diff)) {
       item_ordering -= 1;
     }
 
     for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
 
       // items to sample rank
-      double item_to_sample_rank = item_ordering(jj);
+      arma::uword item_to_sample_rank = item_ordering(jj);
 
       // the rank of item in rho
       arma::vec rho_item_rank;
