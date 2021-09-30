@@ -1,5 +1,6 @@
 #include "RcppArmadillo.h"
 #include "smc.h"
+#include "misc.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Calculate Backward Probability
@@ -43,13 +44,7 @@ double calculate_backward_probability(
   double backward_auxiliary_ranking_probability = 1.0;
 
   // Adjust item_ordering depending on whether it uses R or C++ indices
-  arma::uvec io_idx_cpp = arma::find_nonfinite(partial_ranking);
-  arma::uvec io_idx_input = arma::sort(item_ordering);
-  arma::uvec io_idx_diff = io_idx_input - io_idx_cpp;
-  if (arma::any(io_idx_diff)) {
-    item_ordering -= 1;
-  }
-
+  item_ordering = maybe_offset_indices(partial_ranking, item_ordering);
 
   if (num_items_unranked != 1) {
     // show the augmented parts of the current ranking

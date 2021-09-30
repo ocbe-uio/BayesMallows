@@ -79,3 +79,14 @@ arma::uvec arma_setdiff(arma::uvec x, arma::uvec y){
   }
   return x;
 }
+
+arma::uvec maybe_offset_indices(arma::vec& x, arma::uvec idx_x) {
+  // Adjust the indices of x (idx_x) depending on whether it seems to be using R
+  // or C++ indices.
+  arma::uvec io_idx_cpp   = arma::find_nonfinite(x);
+  arma::uvec io_idx_input = arma::sort(idx_x);
+  if (arma::any(io_idx_input - io_idx_cpp)) {
+    idx_x -= 1;
+  }
+  return(idx_x);
+}
