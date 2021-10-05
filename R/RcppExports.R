@@ -392,6 +392,15 @@ leap_and_shift_probs <- function(rho, leap_size, n_items) {
 #' apply the MCMC move kernel
 #' @param num_new_obs Integer value for the number of new observations
 #' (complete rankings) for each time step
+#' @param alpha_prop_sd Numeric value specifying the standard deviation of the
+#'   lognormal proposal distribution used for \eqn{\alpha} in the
+#'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
+#' @param lambda Strictly positive numeric value specifying the rate parameter
+#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+#'   to \code{0.1}. When \code{n_cluster > 1}, each mixture component
+#'   \eqn{\alpha_{c}} has the same prior distribution.
+#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
+#'   prior distribution.
 #' @param verbose Logical specifying whether to print out the progress of the
 #' SMC-Mallows algorithm. Defaults to \code{FALSE}.
 #'
@@ -402,8 +411,8 @@ leap_and_shift_probs <- function(rho, leap_size, n_items) {
 #'
 #' @example inst/examples/smc_mallows_new_users_complete_example.R
 #'
-smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate = NULL, verbose = FALSE) {
-    .Call(`_BayesMallows_smc_mallows_new_users_complete`, R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, logz_estimate, verbose)
+smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, logz_estimate = NULL, verbose = FALSE) {
+    .Call(`_BayesMallows_smc_mallows_new_users_complete`, R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, logz_estimate, verbose)
 }
 
 #' @title SMC-Mallows new users partial

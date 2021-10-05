@@ -25,6 +25,15 @@
 //' apply the MCMC move kernel
 //' @param num_new_obs Integer value for the number of new observations
 //' (complete rankings) for each time step
+//' @param alpha_prop_sd Numeric value specifying the standard deviation of the
+//'   lognormal proposal distribution used for \eqn{\alpha} in the
+//'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
+//' @param lambda Strictly positive numeric value specifying the rate parameter
+//'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+//'   to \code{0.1}. When \code{n_cluster > 1}, each mixture component
+//'   \eqn{\alpha_{c}} has the same prior distribution.
+//' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
+//'   prior distribution.
 //' @param verbose Logical specifying whether to print out the progress of the
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
 //'
@@ -45,6 +54,9 @@ Rcpp::List smc_mallows_new_users_complete(
   int Time,
   int& mcmc_kernel_app,
   int& num_new_obs,
+  double alpha_prop_sd,
+  double lambda,
+  double alpha_max,
   const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
   bool verbose = false
 ) {
@@ -171,9 +183,6 @@ Rcpp::List smc_mallows_new_users_complete(
           metropolis_hastings_rho(\
             as, n_items, all_observed_rankings, metric, rs.t(), leap_size\
           );
-        double alpha_prop_sd = 0.1;
-        double lambda = 0.001;
-        double alpha_max = 1e6;
         alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(\
           as, n_items, all_observed_rankings, metric, rs.t(), logz_estimate,\
           alpha_prop_sd, lambda, alpha_max\
