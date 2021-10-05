@@ -13,6 +13,9 @@ smc_mallows_new_users_complete(
   Time,
   mcmc_kernel_app,
   num_new_obs,
+  alpha_prop_sd,
+  lambda,
+  alpha_max,
   logz_estimate = NULL,
   verbose = FALSE
 )
@@ -40,6 +43,18 @@ apply the MCMC move kernel}
 
 \item{num_new_obs}{Integer value for the number of new observations
 (complete rankings) for each time step}
+
+\item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
+lognormal proposal distribution used for \eqn{\alpha} in the
+Metropolis-Hastings algorithm. Defaults to \code{0.1}.}
+
+\item{lambda}{Strictly positive numeric value specifying the rate parameter
+of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+to \code{0.1}. When \code{n_cluster > 1}, each mixture component
+\eqn{\alpha_{c}} has the same prior distribution.}
+
+\item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential
+prior distribution.}
 
 \item{logz_estimate}{Estimate of the partition function, computed with
 \code{\link{estimate_partition_function}} in the BayesMallow R package
@@ -72,6 +87,7 @@ samples <- smc_mallows_new_users_complete(
 	R_obs = data, n_items = n_items, metric = metric,
 	leap_size = floor(n_items / 5), N = 100, Time = nrow(data) / num_new_obs,
 	mcmc_kernel_app = 5, logz_estimate = logz_estimate,
+	alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
 	num_new_obs = num_new_obs, verbose = TRUE
 )
 
