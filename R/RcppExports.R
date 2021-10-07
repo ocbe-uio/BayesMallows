@@ -370,6 +370,36 @@ leap_and_shift_probs <- function(rho, leap_size, n_items) {
     .Call(`_BayesMallows_leap_and_shift_probs`, rho, leap_size, n_items)
 }
 
+#' @title SMC-Mallows new users rank
+#' @description Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user
+#' at each time step. Each correction and augmentation is done by filling in the missing item ranks using pseudlikelihood augmentation.
+#' @param n_items Integer is the number of items in a ranking
+#' @param R_obs 3D matrix of size n_assessors by n_items by Time containing a set of observed rankings of Time time steps
+#' @param metric A character string specifying the distance metric to use in the
+#' Bayesian Mallows Model. Available options are \code{"footrule"},
+#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#' \code{"ulam"}.
+#' @param leap_size leap_size Integer specifying the step size of the leap-and-shift
+#' proposal distribution
+#' @param N Integer specifying the number of particles
+#' @param Time Integer specifying the number of time steps in the SMC algorithm
+#' @param logz_estimate Estimate of the partition function, computed with
+#' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
+#' @param mcmc_kernel_app Interger value for the number of applications we apply the MCMC move kernel
+#' @param alpha_prop_sd Numeric value of the standard deviation of the prior distribution for alpha
+#' @param lambda Strictly positive numeric value specifying the rate parameter
+#' of the truncated exponential prior distribution of alpha.
+#' @param alpha_max  Maximum value of alpha in the truncated exponential
+#' prior distribution.
+#' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
+#' @param verbose Logical specifying whether to print out the progress of the
+#' SMC-Mallows algorithm. Defaults to \code{FALSE}.
+#' @return a 3d matrix containing the samples of rho and alpha from the SMC algorithm
+#' @export
+smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose = FALSE) {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank`, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose)
+}
+
 #' @title SMC-Mallows New Users Complete
 #' @description Function to perform resample-move SMC algorithm where we
 #' receive new users with complete rankings at each time step
