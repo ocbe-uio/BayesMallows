@@ -31,7 +31,7 @@
 //' @return a 3d matrix containing the samples of rho and alpha from the SMC algorithm
 //' @export
 // [[Rcpp::export]]
-Rcpp::List smc_mallows_new_item_rank_Cpp(
+Rcpp::List smc_mallows_new_item_rank(
   unsigned int& n_items,
   arma::cube& R_obs,
   std::string& metric,
