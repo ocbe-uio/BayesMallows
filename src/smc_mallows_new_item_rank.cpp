@@ -67,7 +67,7 @@ Rcpp::List smc_mallows_new_item_rank(
   /* ====================================================== */
   /* Augment Rankings                                       */
   /* ====================================================== */
-  uint num_ranks = R_obs.n_rows;
+  unsigned int num_ranks = R_obs.n_rows;
 
   // each particle has its own set of augmented rankings
   arma::cube aug_rankings(num_ranks, n_items, N, arma::fill::zeros);

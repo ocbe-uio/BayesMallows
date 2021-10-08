@@ -26,7 +26,7 @@ arma::vec get_sample_probabilities(
   int n_items
 ) {
   // define a set of probs list
-  int num_ranks = remaining_set_ranks.n_elem;
+  unsigned int num_ranks = remaining_set_ranks.n_elem;
   arma::vec sample_prob_list = Rcpp::rep(0.0, num_ranks);
 
   // cycle through each item and calculate its specific prob
