@@ -5,39 +5,46 @@
 #' @title SMC Processing
 #' @author Anja Stein
 #' @param output output
-smc_processing <- function(output) {
+# AS: edited this function to include parameter `colnames`. This resolve issues in #118 with post processing functions not printing the names of items in rankings.
+# The `default` is set to NULL so tat we do not cause plotting issues in `plot_heatplot_rho.
+smc_processing<- function(output, colnames = NULL) {
+  
   df <- data.frame(data = output)
-  n_items <- ncol(df)
-
-  # Naming the columns as items
-  cletters <- rep(c("Item"), times = n_items)
-  cindexes <- (c(1:n_items))
-  cnames <- c(paste(cletters, cindexes, sep = " "))
-  colnames(df) <- cnames
-
+  
+  # if colnames are specified, then incorporate them
+  if(is.null(colnames)){
+    n_items <- ncol(df)
+    cletters <- rep(c("Item"), times = n_items)
+    cindexes <- (c(1:n_items))
+    cnames <- c(paste(cletters, cindexes, sep = " "))
+    colnames(df) <- cnames
+  } else {
+    colnames(df) <- colnames
+  }
+  
   new_df <- tidyr::gather(df, key = "item", value = "value")
-  # new_df = df %>% gather("item", "value")
   return(new_df)
 }
 
-#' @title Plot rho trace
-#' @author Anja Stein
-#' @inheritParams smc_processing
-#' @param nmc nmc
-plot_rho_trace <- function(output, nmc) {
-  iteration <- array(1:nmc)
-  df <- data.frame(data = cbind(iteration, output))
-  n_items <- ncol(df)
+# AS: comment out unused functions
+##' @title Plot rho trace
+##' @author Anja Stein
+##' @inheritParams smc_processing
+##' @param nmc nmc
+#plot_rho_trace <- function(output, nmc) {
+#  iteration <- array(1:nmc)
+#  df <- data.frame(data = cbind(iteration, output))
+#  n_items <- ncol(df)
+#
+#  # Naming the columns as items
+#  cletters <- rep(c("Item"), times = n_items)
+#  cindexes <- (c(1:n_items))
+#  cnames <- c("iteration", paste(cletters, cindexes, sep = " "))
+#  colnames(df) <- cnames
 
-  # Naming the columns as items
-  cletters <- rep(c("Item"), times = n_items)
-  cindexes <- (c(1:n_items))
-  cnames <- c("iteration", paste(cletters, cindexes, sep = " "))
-  colnames(df) <- cnames
-
-  new_df <- tidyr::gather(df, key = "item", value = "value", -iteration)
-  return(new_df)
-}
+#  new_df <- tidyr::gather(df, key = "item", value = "value", -iteration)
+#  return(new_df)
+#}
 
 heatMat <- function(mcmcOutput, burnin, t_rank) {
   n <- dim(mcmcOutput)[2]
@@ -52,6 +59,7 @@ heatMat <- function(mcmcOutput, burnin, t_rank) {
   return(f)
 }
 
+# AS: adjusted font size values (`cex.lab` and 'cex`) of axis labels in heatmap function
 heatPlot_fixed <- function(mat, t_rank) {
   n <- length(t_rank)
   if (is.character(names(t_rank))) {
@@ -62,7 +70,7 @@ heatPlot_fixed <- function(mat, t_rank) {
 
   par(mfrow = c(1, 1))
   fields::image.plot(mat,
-    col = fields::tim.colors(64 * 10), axes = F, cex.lab = 1.5, zlim = range(0, 1),
+    col = fields::tim.colors(64 * 10), axes = F, cex.lab = 1.0, zlim = range(0, 1),
     axis.args = list(at = seq(0, 1, 0.1), labels = seq(0, 1, 0.1), cex.axis = 1.2),
     xlab = "True Consensus Ranking", ylab = "Rank"
   ) # , title = "Heat plot of the posterior probabilties for rho")
@@ -78,40 +86,40 @@ heatPlot_fixed <- function(mat, t_rank) {
 
   mtext(
     text = "Posterior probabilties for rho", side = 3, line = 0.3,
-    at = , las = 1, cex = 1.8
+    at = , las = 1, cex = 1.2
   )
 }
 
-
-heatPlot2 <- function(mat, t_rank) {
-  n <- length(t_rank)
-  if (is.character(names(t_rank))) {
-    items <- names(sort(t_rank))
-  } else {
-    items <- paste("0", order(t_rank), sep = "")
-  }
-
-  par(mfrow = c(1, 1))
-  fields::image.plot(mat,
-    col = fields::tim.colors(64 * 10), axes = F, cex.lab = 1.5, zlim = range(0, 1),
-    axis.args = list(at = seq(0, 1, 0.1), labels = seq(0, 1, 0.1), cex.axis = 1.2),
-    xlab = "Items", ylab = "Rank"
-  ) # , title = "Heat plot of the posterior probabilties for R_tilde")
-  # mtext for changing the x, y labels and titles
-  mtext(
-    text = items, side = 1, line = 0.3,
-    at = seq(0, 1, 1 / (n - 1)), las = 2, cex = 0.6
-  )
-  mtext(
-    text = c(1:n), side = 2, line = 0.3,
-    at = seq(0, 1, 1 / (n - 1)), las = 2, cex = 0.6
-  )
-
-  mtext(
-    text = "Posterior probabilties for R_tilde", side = 3, line = 0.3,
-    at = , las = 1, cex = 1.8
-  )
-}
+# AS: commented out unused function
+#heatPlot2 <- function(mat, t_rank) {
+#  n <- length(t_rank)
+#  if (is.character(names(t_rank))) {
+#    items <- names(sort(t_rank))
+#  } else {
+#    items <- paste("0", order(t_rank), sep = "")
+#  }
+#
+#  par(mfrow = c(1, 1))
+#  fields::image.plot(mat,
+#    col = fields::tim.colors(64 * 10), axes = F, cex.lab = 1.5, zlim = range(0, 1),
+#    axis.args = list(at = seq(0, 1, 0.1), labels = seq(0, 1, 0.1), cex.axis = 1.2),
+#    xlab = "Items", ylab = "Rank"
+#  ) # , title = "Heat plot of the posterior probabilties for R_tilde")
+#  # mtext for changing the x, y labels and titles
+#  mtext(
+#    text = items, side = 1, line = 0.3,
+#    at = seq(0, 1, 1 / (n - 1)), las = 2, cex = 0.6
+#  )
+#  mtext(
+#    text = c(1:n), side = 2, line = 0.3,
+#    at = seq(0, 1, 1 / (n - 1)), las = 2, cex = 0.6
+#  )
+#
+#  mtext(
+#    text = "Posterior probabilties for R_tilde", side = 3, line = 0.3,
+#    at = , las = 1, cex = 1.8
+#  )
+#}
 
 
 plot_rho_heatplot <- function(output, nmc, burnin, n_items, rho_0) {
@@ -124,15 +132,16 @@ plot_rho_heatplot <- function(output, nmc, burnin, n_items, rho_0) {
   smc_heatplot_full <- heatPlot_fixed(mat = smc_heatmat_rho, t_rank = rho_0)
 }
 
-plot_rho_heatplot_partial <- function(output, nmc, burnin, n_items, rho_0) {
-  smc_plot <- smc_processing(output = output)
-
-  # heatplot - there is no burnin!
-  smc_rho_matrix <- matrix(smc_plot$value, ncol = n_items, nrow = nmc, byrow = FALSE)
-  smc_heatmat_rho <- heatMat(mcmcOutput = smc_rho_matrix, burnin = burnin, t_rank = rho_0)
-
-  smc_heatplot_full <- heatPlot_fixed(mat = smc_heatmat_rho, t_rank = rho_0)
-}
+# AS: commented out unused function                  
+#plot_rho_heatplot_partial <- function(output, nmc, burnin, n_items, rho_0) {
+#  smc_plot <- smc_processing(output = output)
+#
+#  # heatplot - there is no burnin!
+#  smc_rho_matrix <- matrix(smc_plot$value, ncol = n_items, nrow = nmc, byrow = FALSE)
+#  smc_heatmat_rho <- heatMat(mcmcOutput = smc_rho_matrix, burnin = burnin, t_rank = rho_0)
+#
+#  smc_heatplot_full <- heatPlot_fixed(mat = smc_heatmat_rho, t_rank = rho_0)
+#}
 
 
 # same as compute_posterior_intervals, but removed the bayesmallows object and some other columns
@@ -358,6 +367,7 @@ find_cpc_smc <- function(group_df){
   return(result)
 }
 
+ #AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_consensus_rho              
 .compute_map_consensus_smc <- function(model_fit, burnin = model_fit$burnin){
 # FIXME: # 69 this function already exists on compute_consensus.R. Add S3 method?
 
@@ -374,6 +384,11 @@ find_cpc_smc <- function(group_df){
 
   # Store the total number of iterations after burnin
   n_samples <- length(unique(df$iteration))
+  
+  #-----------------------------------------------------------
+  #AS: remove the column n_clusters, parameter and cluster
+  df <- dplyr::select(df, -.data$n_clusters, -.data$parameter)
+  #------------------------------------------------------------
 
   # Spread to get items along columns
   df <- tidyr::spread(df, key = .data$item, value = .data$value)
@@ -414,8 +429,12 @@ find_cpc_smc <- function(group_df){
 #' @param verbose if \code{TRUE}, prints the final output even if the function is assigned to an object. Defaults to \code{FALSE}.
 #' @author Anja Stein
 #'
-compute_posterior_intervals_rho <- function(output, nmc, burnin, verbose=FALSE) {
-  smc_plot <- smc_processing(output = output)
+# AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
+compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL, verbose=FALSE) {
+  #----------------------------------------------------------------
+  # AS: added extra input parameter
+  smc_plot <- smc_processing1(output = output, colnames = colnames)
+  #----------------------------------------------------------------
   smc_plot$n_clusters <- 1
   smc_plot$cluster <- "Cluster 1"
 
@@ -434,10 +453,16 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, verbose=FALSE) 
 #' @param type type
 #' @author Anja Stein
 #'
-compute_rho_consensus <- function(output, nmc, burnin, C, type, verbose=FALSE) {
+# AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
+compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL, verbose=FALSE) {
+  
   n_items <- dim(output)[2]
-  smc_plot <- smc_processing(output = output)
-
+  
+  #----------------------------------------------------------------
+  # AS: added extra input parameter
+  smc_plot <- smc_processing1(output = output, colnames = colnames)
+  #----------------------------------------------------------------
+ 
   iteration <- array(rep((1:nmc), n_items))
   smc_plot <- data.frame(data = cbind(iteration, smc_plot))
   colnames(smc_plot) <- c("iteration", "item", "value")
@@ -466,11 +491,11 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type, verbose=FALSE) {
 #' @inheritParams compute_posterior_intervals_rho
 #' @author Anja Stein
 #'
-plot_alpha_posterior <- function(output, nmc, burnin, verbose=FALSE) {
+# AS: if you remove the verbose input variable, then the function will be consistent 
+# with the other plot functions(they all print when verbose=FALSE, but this function doesn't.) 
+#`plot_heatplot_rho` doesn't require the variable `verbose`, so I'm not sure if this function does to plot the density of alpha
+plot_alpha_posterior <- function(output, nmc, burnin) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
-  # final_alpha_chain = alpha_mcmc_samples_all[(burnin+1):nmc,]
-  # df_alpha_posterior = gather(final_alpha_chain, value = "value", -iteration)
-
 
   plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes(x = alpha_samples_table$value)) +
     ggplot2::geom_density() +
@@ -479,8 +504,7 @@ plot_alpha_posterior <- function(output, nmc, burnin, verbose=FALSE) {
     ggplot2::ggtitle(label = "Implemented SMC scheme") +
     ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
-  if (verbose) print(plot_posterior_alpha)
-  # return(alpha_samples_table)
+ print(plot_posterior_alpha)
 }
 
 #' @title Compute Posterior Intervals Alpha
