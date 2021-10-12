@@ -32,7 +32,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
   if(is.null(burnin)){
     stop("Please specify the burnin.")
   }
-  if(x$nmc <= burnin) stop("nmc must be <= burnin")
+  if(x$nmc <= burnin) stop("burnin must be <= nmc")
 
   stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment", "theta"))
 
