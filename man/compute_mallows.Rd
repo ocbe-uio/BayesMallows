@@ -59,7 +59,7 @@ the pairwise preferences are assumed to be mutually compatible.}
 \item{obs_freq}{A vector of observation frequencies (weights) to apply do each row in \code{rankings}.
 This can speed up computation if a large number of assessors share the same
 rank pattern. Defaults to \code{NULL}, which means that each row of
-\code{rankings} is multiplied by 1. If provided, \code{obs_freq} must have
+\code{rankings} is multiplied by 1/\code{nrow(rankings)}. If provided, \code{obs_freq} must have
 the same number of elements as there are rows in \code{rankings}, and
 \code{rankings} cannot be \code{NULL}. See \code{\link{obs_freq}} for
 more information and \code{\link{rank_freq_distr}} for a convenience function
