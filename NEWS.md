@@ -1,3 +1,8 @@
+# BayesMallows 1.0.3
+
+* Fixed critical bug which caused results to be wrong with more than one mixture component in compute_mallows() and compute_mallows_mixtures(). Thanks to Anja Stein for discovering the bug.
+
+
 # BayesMallows 1.0.2
 
 * Function generate_initial_ranking() now has two additional options for generating random initial rankings. This can help with convergence problems, by allowing the MCMC algorithm to run from a range of different starting points.
