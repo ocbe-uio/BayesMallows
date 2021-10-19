@@ -1,10 +1,10 @@
 ## Resubmission Note
-This is a resubmission which features an improvement in the generation of initial rankings based on pairwise comparisons.
+This is a resubmission which fixes a critical bug which caused results to be wrong with more than one mixture component in compute_mallows() and compute_mallows_mixtures().
 
 ## Test Environments
-* local Windows install, R 4.1.0
-* windows, win-devel, release, and oldrelease.
-* Linux on Travis CI.
+* local Windows install, R 4.1.1
+* windows, win-devel.
+* R-CMD-check via GitHub Actions on windows-latest, macOS-latest, ubuntu-20.04 (release), and ubuntu-20.04 (devel).
 
 ## R CMD CHECK results
 

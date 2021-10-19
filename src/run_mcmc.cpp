@@ -207,7 +207,8 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
       for(int i = 0; i < n_clusters; ++i){
         alpha(i, alpha_index) = update_alpha(alpha_acceptance, alpha_old(i),
               clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
-              obs_freq, i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate, alpha_max);
+              clustering ? obs_freq(arma::find(current_cluster_assignment == i)) : obs_freq,
+              i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate, alpha_max);
       }
       // Update alpha_old
       alpha_old = alpha.col(alpha_index);
