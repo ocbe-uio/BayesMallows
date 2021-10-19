@@ -8,9 +8,9 @@
 # AS: edited this function to include parameter `colnames`. This resolve issues in #118 with post processing functions not printing the names of items in rankings.
 # The `default` is set to NULL so tat we do not cause plotting issues in `plot_heatplot_rho.
 smc_processing<- function(output, colnames = NULL) {
-  
+
   df <- data.frame(data = output)
-  
+
   # if colnames are specified, then incorporate them
   if(is.null(colnames)){
     n_items <- ncol(df)
@@ -21,7 +21,7 @@ smc_processing<- function(output, colnames = NULL) {
   } else {
     colnames(df) <- colnames
   }
-  
+
   new_df <- tidyr::gather(df, key = "item", value = "value")
   return(new_df)
 }
@@ -132,7 +132,7 @@ plot_rho_heatplot <- function(output, nmc, burnin, n_items, rho_0) {
   smc_heatplot_full <- heatPlot_fixed(mat = smc_heatmat_rho, t_rank = rho_0)
 }
 
-# AS: commented out unused function                  
+# AS: commented out unused function
 #plot_rho_heatplot_partial <- function(output, nmc, burnin, n_items, rho_0) {
 #  smc_plot <- smc_processing(output = output)
 #
@@ -367,7 +367,7 @@ find_cpc_smc <- function(group_df){
   return(result)
 }
 
- #AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_consensus_rho              
+ #AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_consensus_rho
 .compute_map_consensus_smc <- function(model_fit, burnin = model_fit$burnin){
 # FIXME: # 69 this function already exists on compute_consensus.R. Add S3 method?
 
@@ -384,7 +384,7 @@ find_cpc_smc <- function(group_df){
 
   # Store the total number of iterations after burnin
   n_samples <- length(unique(df$iteration))
-  
+
   #-----------------------------------------------------------
   #AS: remove the column n_clusters, parameter and cluster
   df <- dplyr::select(df, -.data$n_clusters, -.data$parameter)
@@ -433,7 +433,7 @@ find_cpc_smc <- function(group_df){
 compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL, verbose=FALSE) {
   #----------------------------------------------------------------
   # AS: added extra input parameter
-  smc_plot <- smc_processing1(output = output, colnames = colnames)
+  smc_plot <- smc_processing(output = output, colnames = colnames)
   #----------------------------------------------------------------
   smc_plot$n_clusters <- 1
   smc_plot$cluster <- "Cluster 1"
@@ -455,14 +455,14 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
 #'
 # AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
 compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL, verbose=FALSE) {
-  
+
   n_items <- dim(output)[2]
-  
+
   #----------------------------------------------------------------
   # AS: added extra input parameter
-  smc_plot <- smc_processing1(output = output, colnames = colnames)
+  smc_plot <- smc_processing(output = output, colnames = colnames)
   #----------------------------------------------------------------
- 
+
   iteration <- array(rep((1:nmc), n_items))
   smc_plot <- data.frame(data = cbind(iteration, smc_plot))
   colnames(smc_plot) <- c("iteration", "item", "value")
@@ -491,8 +491,8 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL,
 #' @inheritParams compute_posterior_intervals_rho
 #' @author Anja Stein
 #'
-# AS: if you remove the verbose input variable, then the function will be consistent 
-# with the other plot functions(they all print when verbose=FALSE, but this function doesn't.) 
+# AS: if you remove the verbose input variable, then the function will be consistent
+# with the other plot functions(they all print when verbose=FALSE, but this function doesn't.)
 #`plot_heatplot_rho` doesn't require the variable `verbose`, so I'm not sure if this function does to plot the density of alpha
 plot_alpha_posterior <- function(output, nmc, burnin) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
