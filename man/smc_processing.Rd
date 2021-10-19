@@ -4,10 +4,12 @@
 \alias{smc_processing}
 \title{SMC Processing}
 \usage{
-smc_processing(output)
+smc_processing(output, colnames = NULL)
 }
 \arguments{
 \item{output}{output}
+
+\item{colnames}{colnames}
 }
 \description{
 SMC Processing

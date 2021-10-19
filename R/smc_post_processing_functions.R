@@ -5,6 +5,7 @@
 #' @title SMC Processing
 #' @author Anja Stein
 #' @param output output
+#' @param colnames colnames
 # AS: edited this function to include parameter `colnames`. This resolve issues in #118 with post processing functions not printing the names of items in rankings.
 # The `default` is set to NULL so tat we do not cause plotting issues in `plot_heatplot_rho.
 smc_processing<- function(output, colnames = NULL) {
@@ -27,10 +28,10 @@ smc_processing<- function(output, colnames = NULL) {
 }
 
 # AS: comment out unused functions
-##' @title Plot rho trace
-##' @author Anja Stein
-##' @inheritParams smc_processing
-##' @param nmc nmc
+# @title Plot rho trace
+# @author Anja Stein
+# @inheritParams smc_processing
+# @param nmc nmc
 #plot_rho_trace <- function(output, nmc) {
 #  iteration <- array(1:nmc)
 #  df <- data.frame(data = cbind(iteration, output))
@@ -424,7 +425,8 @@ find_cpc_smc <- function(group_df){
 
 #' @title Compute Posterior Intervals Rho
 #' @description posterior confidence intervals for rho
-#' @inheritParams plot_rho_trace
+#' @inheritParams smc_processing
+#' @param nmc nmc
 #' @param burnin burn-in
 #' @param verbose if \code{TRUE}, prints the final output even if the function is assigned to an object. Defaults to \code{FALSE}.
 #' @author Anja Stein
