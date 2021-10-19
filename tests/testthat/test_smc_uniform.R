@@ -18,7 +18,7 @@ test_that('MH-aug ranking works', {
 		rho = rho, n_items = n_items, metric = metric
 	)
 	set.seed(584)
-	expect_equal(test_1, as.matrix(c(1, 2, 3, 6, 4, 5)))
+	expect_equal(test_1, as.matrix(c(1, 2, 3, 4, 6, 5)))
 	expect_equal(get_rank_distance(rho, test_1, metric= "ulam"), 1)
 	R_curr = rho
 	R_obs = c(1,2,3,NA,NA,NA)
