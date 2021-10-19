@@ -27,26 +27,6 @@ smc_processing<- function(output, colnames = NULL) {
   return(new_df)
 }
 
-# AS: comment out unused functions
-# @title Plot rho trace
-# @author Anja Stein
-# @inheritParams smc_processing
-# @param nmc nmc
-#plot_rho_trace <- function(output, nmc) {
-#  iteration <- array(1:nmc)
-#  df <- data.frame(data = cbind(iteration, output))
-#  n_items <- ncol(df)
-#
-#  # Naming the columns as items
-#  cletters <- rep(c("Item"), times = n_items)
-#  cindexes <- (c(1:n_items))
-#  cnames <- c("iteration", paste(cletters, cindexes, sep = " "))
-#  colnames(df) <- cnames
-
-#  new_df <- tidyr::gather(df, key = "item", value = "value", -iteration)
-#  return(new_df)
-#}
-
 heatMat <- function(mcmcOutput, burnin, t_rank) {
   n <- dim(mcmcOutput)[2]
   lim1 <- burnin:dim(mcmcOutput)[1]
@@ -74,7 +54,7 @@ heatPlot_fixed <- function(mat, t_rank) {
     col = fields::tim.colors(64 * 10), axes = F, cex.lab = 1.0, zlim = range(0, 1),
     axis.args = list(at = seq(0, 1, 0.1), labels = seq(0, 1, 0.1), cex.axis = 1.2),
     xlab = "True Consensus Ranking", ylab = "Rank"
-  ) # , title = "Heat plot of the posterior probabilties for rho")
+  )
   # mtext for changing the x, y labels and titles
   mtext(
     text = items, side = 1, line = 0.3,
@@ -91,38 +71,6 @@ heatPlot_fixed <- function(mat, t_rank) {
   )
 }
 
-# AS: commented out unused function
-#heatPlot2 <- function(mat, t_rank) {
-#  n <- length(t_rank)
-#  if (is.character(names(t_rank))) {
-#    items <- names(sort(t_rank))
-#  } else {
-#    items <- paste("0", order(t_rank), sep = "")
-#  }
-#
-#  par(mfrow = c(1, 1))
-#  fields::image.plot(mat,
-#    col = fields::tim.colors(64 * 10), axes = F, cex.lab = 1.5, zlim = range(0, 1),
-#    axis.args = list(at = seq(0, 1, 0.1), labels = seq(0, 1, 0.1), cex.axis = 1.2),
-#    xlab = "Items", ylab = "Rank"
-#  ) # , title = "Heat plot of the posterior probabilties for R_tilde")
-#  # mtext for changing the x, y labels and titles
-#  mtext(
-#    text = items, side = 1, line = 0.3,
-#    at = seq(0, 1, 1 / (n - 1)), las = 2, cex = 0.6
-#  )
-#  mtext(
-#    text = c(1:n), side = 2, line = 0.3,
-#    at = seq(0, 1, 1 / (n - 1)), las = 2, cex = 0.6
-#  )
-#
-#  mtext(
-#    text = "Posterior probabilties for R_tilde", side = 3, line = 0.3,
-#    at = , las = 1, cex = 1.8
-#  )
-#}
-
-
 plot_rho_heatplot <- function(output, nmc, burnin, n_items, rho_0) {
   smc_plot <- smc_processing(output = output)
 
@@ -133,24 +81,10 @@ plot_rho_heatplot <- function(output, nmc, burnin, n_items, rho_0) {
   smc_heatplot_full <- heatPlot_fixed(mat = smc_heatmat_rho, t_rank = rho_0)
 }
 
-# AS: commented out unused function
-#plot_rho_heatplot_partial <- function(output, nmc, burnin, n_items, rho_0) {
-#  smc_plot <- smc_processing(output = output)
-#
-#  # heatplot - there is no burnin!
-#  smc_rho_matrix <- matrix(smc_plot$value, ncol = n_items, nrow = nmc, byrow = FALSE)
-#  smc_heatmat_rho <- heatMat(mcmcOutput = smc_rho_matrix, burnin = burnin, t_rank = rho_0)
-#
-#  smc_heatplot_full <- heatPlot_fixed(mat = smc_heatmat_rho, t_rank = rho_0)
-#}
-
-
 # same as compute_posterior_intervals, but removed the bayesmallows object and some other columns
 compute_posterior_intervals_smc <- function(model_fit, burnin = model_fit$burnin,
                                                parameter = "alpha", level = 0.95,
                                                decimals = 3L) {
-  # stopifnot(class(model_fit) == "BayesMallows") # remove object
-
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
@@ -177,7 +111,7 @@ compute_posterior_intervals_smc <- function(model_fit, burnin = model_fit$burnin
 
   df <- dplyr::ungroup(df)
 
-  if (model_fit$n_clusters[1] == 1) df <- dplyr::select(df, -.data$cluster) # commented out
+  if (model_fit$n_clusters[1] == 1) df <- dplyr::select(df, -.data$cluster)
 
   return(df)
 }
@@ -270,8 +204,6 @@ compute_consensus_smc <- function(model_fit, type, burnin) {
 .compute_cp_consensus_smc <- function(model_fit, burnin){
 # FIXME: # 69 this function already exists on compute_consensus.R. Add S3 method?
 
-  #stopifnot(class(model_fit) == "BayesMallows") # commented out
-
   if(is.null(burnin)){
     stop("Please specify the burnin.")
   }
@@ -279,7 +211,6 @@ compute_consensus_smc <- function(model_fit, type, burnin) {
   stopifnot(burnin < model_fit$nmc)
 
   # Filter out the pre-burnin iterations
-  #df <- dplyr::filter(model_fit$rho, .data$iteration > burnin)
 
   if(burnin!=0){
     df <- dplyr::filter(model_fit, .data$iteration > burnin)
@@ -376,9 +307,8 @@ find_cpc_smc <- function(group_df){
     stop("Please specify the burnin.")
   }
 
-  #df <- dplyr::filter(model_fit$rho, .data$iteration > burnin)
   if(burnin != 0){
-    df <- dplyr::filter(model_fit, .data$iteration > burnin) #removed model_fit[[parameter]]
+    df <- dplyr::filter(model_fit, .data$iteration > burnin)
   } else {
     df <- model_fit
   }
