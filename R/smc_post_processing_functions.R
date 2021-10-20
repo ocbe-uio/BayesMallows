@@ -317,8 +317,8 @@ find_cpc_smc <- function(group_df){
   n_samples <- length(unique(df$iteration))
 
   #-----------------------------------------------------------
-  #AS: remove the column n_clusters, parameter and cluster
-  df <- dplyr::select(df, -.data$n_clusters, -.data$parameter)
+  #AS: remove the column n_clusters, parameter
+  df <- within(df, {n_clusters <- NULL; parameter <- NULL})
   #------------------------------------------------------------
 
   # Spread to get items along columns
