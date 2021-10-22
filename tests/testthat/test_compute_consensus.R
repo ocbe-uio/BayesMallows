@@ -1,5 +1,5 @@
 context("Testing compute_consensus")
-
+library(dplyr)
 beach_small <- beach_preferences %>%
   filter(bottom_item %in% 1:3, top_item %in% 1:3)
 
