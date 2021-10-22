@@ -79,6 +79,7 @@ test_that("compute_mallows handles integer preferences", {
     sample_n(20) %>%
     mutate_all(as.integer) %>%
     compute_mallows(preferences = ., nmc = 20)
+  expect_s3_class(m, "BayesMallows")
 })
 
 test_that("compute_mallows handles data with lots of missings",{
