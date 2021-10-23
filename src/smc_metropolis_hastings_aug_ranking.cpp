@@ -50,7 +50,9 @@ arma::vec metropolis_hastings_aug_ranking(
 
 
     // generate random order for remaining_set
-    remaining_set = std::move(arma::shuffle(remaining_set));
+    arma::vec A = arma::shuffle(remaining_set);
+    A.print("A: ");
+    remaining_set = std::move(A);
 
     // Subset by element position and set equal to the now permuted remaining set
     partial_ranking.elem(unranked_items) = remaining_set;
