@@ -37,10 +37,8 @@ arma::vec metropolis_hastings_aug_ranking(
   Rcpp::NumericVector p_rank_Rcpp, c_rank_Rcpp;
   p_rank_Rcpp = partial_ranking;
   c_rank_Rcpp = current_ranking;
-  Rcpp::Rcout << "Partial ranking: " << partial_ranking << std::endl;
-  Rcpp::Rcout << "Current ranking: " << current_ranking << std::endl;
   arma::vec remaining_set = Rcpp::sort_unique(Rcpp::setdiff(c_rank_Rcpp, p_rank_Rcpp));
-  Rcpp::Rcout << "Remaining set: " << remaining_set << std::endl;
+
 
   // if the observed and augmented ranking are exactly the same then break
   bool condition_1 = arma::approx_equal(\
