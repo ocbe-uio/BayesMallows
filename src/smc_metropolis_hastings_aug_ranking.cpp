@@ -37,6 +37,8 @@ arma::vec metropolis_hastings_aug_ranking(
   Rcpp::NumericVector p_rank_Rcpp, c_rank_Rcpp;
   p_rank_Rcpp = partial_ranking;
   c_rank_Rcpp = current_ranking;
+  Rcpp::Rcout << "Partial ranking: " << partial_ranking << std::endl;
+  Rcpp::Rcout << "Current ranking: " << current_ranking << std::endl;
   arma::vec remaining_set = Rcpp::setdiff(c_rank_Rcpp, p_rank_Rcpp);
 
   // if the observed and augmented ranking are exactly the same then break
@@ -48,11 +50,8 @@ arma::vec metropolis_hastings_aug_ranking(
     return(current_ranking);
   } else {
 
-
-    remaining_set.print("remaining set: ");
     // generate random order for remaining_set
     arma::vec A = arma::shuffle(remaining_set);
-    A.print("A: ");
     remaining_set = std::move(A);
 
     // Subset by element position and set equal to the now permuted remaining set

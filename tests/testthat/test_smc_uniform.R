@@ -16,14 +16,13 @@ test_that("MH-aug ranking works", {
   R_curr <- c(1, 2, 3, 6, 5, 4)
   R_obs  <- c(1, 2, 3, NA, NA, NA)
   set.seed(584)
-  test_1 <- metropolis_hastings_aug_ranking_wrapper(
+  test_1 <- metropolis_hastings_aug_ranking(
     current_ranking = R_curr,
 		partial_ranking = R_obs,
 		alpha           = alpha,
     rho             = rho,
 		n_items         = n_items,
-		metric          = metric,
-		seed = 584
+		metric          = metric
   )
   expect_equal(test_1, as.matrix(c(1, 2, 3, 5, 6, 4)))
   expect_equal(get_rank_distance(rho, test_1, metric = "ulam"), 1)
