@@ -49,6 +49,7 @@ arma::vec metropolis_hastings_aug_ranking(
   } else {
 
 
+    remaining_set.print("remaining set: ");
     // generate random order for remaining_set
     arma::vec A = arma::shuffle(remaining_set);
     A.print("A: ");
