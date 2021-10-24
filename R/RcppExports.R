@@ -19,7 +19,6 @@
 #'
 #' @references \insertAllCited{}
 #' @keywords internal
-#' @export
 get_rank_distance <- function(r1, r2, metric) {
     .Call(`_BayesMallows_get_rank_distance`, r1, r2, metric)
 }
