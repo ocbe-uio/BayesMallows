@@ -25,7 +25,7 @@ test_that("MH-aug ranking works", {
 		metric          = metric
   )
   expect_equal(test_1, as.matrix(c(1, 2, 3, 6, 5, 4)))
-  expect_equal(get_rank_distance(rho, test_1, metric = "ulam"), 1)
+  expect_equal(get_rank_distance(rho, test_1, metric = "ulam"), 2)
 
   # Three missing ranks, sequential current ranks ---------- #
   R_curr <- rho
