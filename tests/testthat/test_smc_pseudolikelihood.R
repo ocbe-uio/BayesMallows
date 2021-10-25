@@ -59,7 +59,7 @@ test_that('calculations of forward and backward probabilities', {
     expect_equal(test_1_forward$forward_prob, 0.07205734)
     expect_equal(test_1_backward_a, 0.01360987)
     expect_equal(test_1_backward_b, 0.03699547)
-    expect_false(test_1_forward$forward_prob == test_1_backward_b)
+    expect_true(test_1_forward$forward_prob == test_1_backward_b)
 })
 
 ############################################
