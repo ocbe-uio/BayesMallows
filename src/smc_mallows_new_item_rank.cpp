@@ -51,7 +51,7 @@ Rcpp::List smc_mallows_new_item_rank(
   /* ====================================================== */
 
   // Generate N initial samples of rho using the uniform prior
-  arma::cube rho_samples(N, n_items, Time + 1, arma::fill::zeros);
+  arma::cube rho_samples(N, n_items, Time, arma::fill::zeros);
   for (arma::uword i = 0; i < N; ++i) {
     arma::uvec items_sample = arma::randperm(n_items) + 1;
     for (arma::uword j = 0; j < n_items; ++j) {
@@ -60,7 +60,7 @@ Rcpp::List smc_mallows_new_item_rank(
   }
 
   /* generate alpha samples using exponential prior ------- */
-  arma::mat alpha_samples(N, Time + 1);
+  arma::mat alpha_samples(N, Time);
   arma::vec alpha_samples_0 = Rcpp::rexp(N, 1);
   alpha_samples.col(0) = alpha_samples_0;
 
