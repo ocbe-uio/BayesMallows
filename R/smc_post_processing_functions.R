@@ -374,6 +374,15 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
     model_fit = smc_plot, burnin = burnin,
     parameter = "rho", level = 0.95, decimals = 2
   )
+  
+  #------------------------------------------------------------------------------------------
+  #AS: reorder items to be in numerical order if no colnames are specified
+  if (colnames=NULL){
+    require("gtools")
+    rho_posterior_interval  = rho_posterior_interval [mixedorder(rho_posterior_interval $item),]
+  }
+  #------------------------------------------------------------------------------------------
+  
   if(verbose) print(rho_posterior_interval)
   return(rho_posterior_interval)
 }
