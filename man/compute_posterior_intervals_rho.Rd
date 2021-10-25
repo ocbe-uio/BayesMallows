@@ -4,7 +4,13 @@
 \alias{compute_posterior_intervals_rho}
 \title{Compute Posterior Intervals Rho}
 \usage{
-compute_posterior_intervals_rho(output, nmc, burnin, verbose = FALSE)
+compute_posterior_intervals_rho(
+  output,
+  nmc,
+  burnin,
+  colnames = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{output}{output}
@@ -12,6 +18,8 @@ compute_posterior_intervals_rho(output, nmc, burnin, verbose = FALSE)
 \item{nmc}{nmc}
 
 \item{burnin}{burn-in}
+
+\item{colnames}{colnames}
 
 \item{verbose}{if \code{TRUE}, prints the final output even if the function is assigned to an object. Defaults to \code{FALSE}.}
 }

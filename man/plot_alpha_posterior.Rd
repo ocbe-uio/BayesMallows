@@ -4,7 +4,7 @@
 \alias{plot_alpha_posterior}
 \title{Plot Alpha Posterior}
 \usage{
-plot_alpha_posterior(output, nmc, burnin, verbose = FALSE)
+plot_alpha_posterior(output, nmc, burnin)
 }
 \arguments{
 \item{output}{output}
@@ -12,8 +12,6 @@ plot_alpha_posterior(output, nmc, burnin, verbose = FALSE)
 \item{nmc}{nmc}
 
 \item{burnin}{burn-in}
-
-\item{verbose}{if \code{TRUE}, prints the final output even if the function is assigned to an object. Defaults to \code{FALSE}.}
 }
 \description{
 posterior for alpha
