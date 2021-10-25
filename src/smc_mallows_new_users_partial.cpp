@@ -109,7 +109,7 @@ Rcpp::List smc_mallows_new_users_partial(
         Rcpp::NumericVector ranks_Cpp, partial_ranking_Cpp;
         ranks_Cpp = ranks;
         partial_ranking_Cpp = partial_ranking;
-        Rcpp::NumericVector missing_ranks = Rcpp::setdiff(ranks_Cpp, partial_ranking_Cpp);
+        Rcpp::NumericVector missing_ranks = Rcpp::sort_unique(Rcpp::setdiff(ranks_Cpp, partial_ranking_Cpp));
 
         // fill in missing ranks based on choice of augmentation method
         if (aug_method == "random") {
