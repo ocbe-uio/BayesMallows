@@ -23,7 +23,7 @@ test_that('get_sample_probabilities outputs as expected', {
 ################################################################################
 # test for calculate_forwards_probability and calculate_bacwards_probability
 ################################################################################
-set.seed(101)
+set.seed(104)
 rho = c(1,2,3,4,5,6)
 alpha = 2
 metric = "footrule"
