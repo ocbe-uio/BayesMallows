@@ -43,7 +43,7 @@ alpha_0 = 1.7
 
 # heatplot - there is no burnin!
 mcmc_rho_matrix = matrix(model_fit$rho$value, ncol = n_items, nrow = nmc, byrow=TRUE)
-mcmc_heatmat_rho = BayesMallows:::heatMat(mcmcOutput = mcmc_rho_matrix, burnin = burnin, t_rank = rho_0)
+mcmc_heatmat_rho = BayesMallows:::heatmatrix(output = mcmc_rho_matrix, burnin = burnin, rho = rho_0)
 
 # ###################################################################
 # # SMC
