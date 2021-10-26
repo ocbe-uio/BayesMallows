@@ -76,8 +76,8 @@ test_that("Runs with unif kernel", {
 	)
 	expect_is(smc_unif, "list")
 	expect_length(smc_unif, 2)
-	expect_equal(dim(smc_unif$rho_samples), c(N, 6, 32))
-	expect_equal(dim(smc_unif$alpha_samples), c(N, 32))
+	expect_equal(dim(smc_unif$rho_samples), c(N, 6, 31))
+	expect_equal(dim(smc_unif$alpha_samples), c(N, 31))
 })
 
 test_that("Runs with pseudo kernel", {
@@ -104,6 +104,6 @@ test_that("Runs with pseudo kernel", {
 	)
 	expect_is(smc_unif, "list")
 	expect_length(smc_unif, 2)
-	expect_equal(dim(smc_unif$rho_samples), c(N, 6, 32))
-	expect_equal(dim(smc_unif$alpha_samples), c(N, 32))
+	expect_equal(dim(smc_unif$rho_samples), c(N, 6, 31))
+	expect_equal(dim(smc_unif$alpha_samples), c(N, 31))
 })
