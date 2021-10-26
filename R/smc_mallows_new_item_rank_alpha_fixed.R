@@ -34,7 +34,7 @@ smc_mallows_new_item_rank_alpha_fixed <- function(alpha, n_items, R_obs, metric,
   ## Initialise Phase
   ######################
   # Generate N initial samples of rho using the uniform prior
-  rho_samples <- array(0, c(N, n_items, Time + 1))
+  rho_samples <- array(0, c(N, n_items, Time))
   for (ii in 1:N) {
     rho_samples[ii, , 1] <- sample(1:n_items, n_items, replace = FALSE)
   }
