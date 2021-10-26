@@ -1,3 +1,5 @@
+# BayesMallows (development version)
+
 # BayesMallows 1.0.3
 
 * Fixed critical bug which caused results to be wrong with more than one mixture component in compute_mallows() and compute_mallows_mixtures(). Thanks to Anja Stein for discovering the bug.
