@@ -9,16 +9,13 @@ metric <- "footrule"
 # Estimate the logarithm of the partition function of the Mallows rank model.
 # We create a grid of alpha values from 0 to 10
 alpha_vector <- seq(from = 0, to = 20, by = 0.1)
-iter <- 1e4
+iter <- 1e1
 degree <- 10
 
 # Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
 logz_estimate <- estimate_partition_function(
-  method = "importance_sampling",
-  alpha_vector = alpha_vector,
-  n_items = n_items, metric = metric,
-  nmc = iter, degree = degree
-) # TODO: reduce footprint
+  "importance_sampling", alpha_vector, n_items, metric, iter, degree
+)
 leap_size <- floor(n_items / 5)
 rho_init <- c(1, 8, 6, 3, 9, 2, 5, 7, 4, 10)
 alpha_init <- 5
