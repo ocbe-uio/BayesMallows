@@ -431,8 +431,8 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time
 #' SMC-Mallows algorithm. Defaults to \code{FALSE}.
 #' @return a 3d matrix containing the samples of rho and alpha from the SMC algorithm
 #' @export
-smc_mallows_new_item_rank_alpha_fixed_Cpp <- function(alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose = FALSE) {
-    .Call(`_BayesMallows_smc_mallows_new_item_rank_alpha_fixed_Cpp`, alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose)
+smc_mallows_new_item_rank_alpha_fixed <- function(alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose = FALSE) {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank_alpha_fixed`, alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose)
 }
 
 #' @title SMC-Mallows New Users Complete

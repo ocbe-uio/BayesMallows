@@ -330,9 +330,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// smc_mallows_new_item_rank_alpha_fixed_Cpp
-Rcpp::List smc_mallows_new_item_rank_alpha_fixed_Cpp(double alpha, unsigned int& n_items, arma::cube& R_obs, std::string& metric, int& leap_size, unsigned int& N, unsigned int Time, const Rcpp::Nullable<arma::vec> logz_estimate, int& mcmc_kernel_app, double alpha_prop_sd, double lambda, double alpha_max, std::string& aug_method, bool verbose);
-RcppExport SEXP _BayesMallows_smc_mallows_new_item_rank_alpha_fixed_Cpp(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP R_obsSEXP, SEXP metricSEXP, SEXP leap_sizeSEXP, SEXP NSEXP, SEXP TimeSEXP, SEXP logz_estimateSEXP, SEXP mcmc_kernel_appSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP, SEXP aug_methodSEXP, SEXP verboseSEXP) {
+// smc_mallows_new_item_rank_alpha_fixed
+Rcpp::List smc_mallows_new_item_rank_alpha_fixed(double alpha, unsigned int& n_items, arma::cube& R_obs, std::string& metric, int& leap_size, unsigned int& N, unsigned int Time, const Rcpp::Nullable<arma::vec> logz_estimate, int& mcmc_kernel_app, double alpha_prop_sd, double lambda, double alpha_max, std::string& aug_method, bool verbose);
+RcppExport SEXP _BayesMallows_smc_mallows_new_item_rank_alpha_fixed(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP R_obsSEXP, SEXP metricSEXP, SEXP leap_sizeSEXP, SEXP NSEXP, SEXP TimeSEXP, SEXP logz_estimateSEXP, SEXP mcmc_kernel_appSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP, SEXP aug_methodSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -350,7 +350,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type alpha_max(alpha_maxSEXP);
     Rcpp::traits::input_parameter< std::string& >::type aug_method(aug_methodSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_item_rank_alpha_fixed_Cpp(alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose));
+    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_item_rank_alpha_fixed(alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -511,7 +511,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_sample_probabilities", (DL_FUNC) &_BayesMallows_get_sample_probabilities, 5},
     {"_BayesMallows_leap_and_shift_probs", (DL_FUNC) &_BayesMallows_leap_and_shift_probs, 3},
     {"_BayesMallows_smc_mallows_new_item_rank", (DL_FUNC) &_BayesMallows_smc_mallows_new_item_rank, 13},
-    {"_BayesMallows_smc_mallows_new_item_rank_alpha_fixed_Cpp", (DL_FUNC) &_BayesMallows_smc_mallows_new_item_rank_alpha_fixed_Cpp, 14},
+    {"_BayesMallows_smc_mallows_new_item_rank_alpha_fixed", (DL_FUNC) &_BayesMallows_smc_mallows_new_item_rank_alpha_fixed, 14},
     {"_BayesMallows_smc_mallows_new_users_complete", (DL_FUNC) &_BayesMallows_smc_mallows_new_users_complete, 13},
     {"_BayesMallows_smc_mallows_new_users_partial", (DL_FUNC) &_BayesMallows_smc_mallows_new_users_partial, 14},
     {"_BayesMallows_smc_mallows_new_users_partial_alpha_fixed", (DL_FUNC) &_BayesMallows_smc_mallows_new_users_partial_alpha_fixed, 11},
