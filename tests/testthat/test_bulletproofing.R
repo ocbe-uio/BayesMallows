@@ -25,16 +25,16 @@ alpha_max <- 20
 cluster_rankings <- sushi_rankings[1, ]
 
 test_that("Functions accept rankings and rho as row or column vectors", {
-  mhr1 <- metropolis_hastings_rho(
+  mhr_r_r <- metropolis_hastings_rho(
     alpha_init, n_items,
-    rankings = t(as.matrix(cluster_rankings)),
+    rankings = as.matrix(cluster_rankings),
     metric,
     rho = rho_init,
     leap_size
   )
-  mha1 <- metropolis_hastings_alpha(
+  mha_r_r <- metropolis_hastings_alpha(
     alpha_init, n_items,
-    rankings = t(as.matrix(cluster_rankings)),
+    rankings = as.matrix(cluster_rankings),
     metric,
     rho = rho_init,
     logz_estimate,
@@ -42,6 +42,63 @@ test_that("Functions accept rankings and rho as row or column vectors", {
     lambda,
     alpha_max
   )
-  expect_equal(dim(mhr1), c(10, 1))
-  expect_length(mha1, 1)
+  mhr_rt_r <- metropolis_hastings_rho(
+    alpha_init, n_items,
+    rankings = t(cluster_rankings),
+    metric,
+    rho = rho_init,
+    leap_size
+  )
+  mha_rt_r <- metropolis_hastings_alpha(
+    alpha_init, n_items,
+    rankings = t(cluster_rankings),
+    metric,
+    rho = rho_init,
+    logz_estimate,
+    alpha_prop_sd,
+    lambda,
+    alpha_max
+  )
+  mhr_r_rt <- metropolis_hastings_rho(
+    alpha_init, n_items,
+    rankings = as.matrix(cluster_rankings),
+    metric,
+    rho = t(rho_init),
+    leap_size
+  )
+  mha_r_rt <- metropolis_hastings_alpha(
+    alpha_init, n_items,
+    rankings = as.matrix(cluster_rankings),
+    metric,
+    rho = t(rho_init),
+    logz_estimate,
+    alpha_prop_sd,
+    lambda,
+    alpha_max
+  )
+  mhr_rt_rt <- metropolis_hastings_rho(
+    alpha_init, n_items,
+    rankings = t(cluster_rankings),
+    metric,
+    rho = t(rho_init),
+    leap_size
+  )
+  mha_rt_rt <- metropolis_hastings_alpha(
+    alpha_init, n_items,
+    rankings = t(cluster_rankings),
+    metric,
+    rho = t(rho_init),
+    logz_estimate,
+    alpha_prop_sd,
+    lambda,
+    alpha_max
+  )
+  expect_equal(dim(mhr_r_r), c(10, 1))
+  expect_length(mha_r_r, 1)
+  expect_equal(dim(mhr_rt_r), c(10, 1))
+  expect_length(mha_rt_r, 1)
+  expect_equal(dim(mhr_r_rt), c(10, 1))
+  expect_length(mha_r_rt, 1)
+  expect_equal(dim(mhr_rt_rt), c(10, 1))
+  expect_length(mha_rt_rt, 1)
 })
