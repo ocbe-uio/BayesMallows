@@ -52,14 +52,19 @@ double get_mallows_loglik(
   std::string metric
 ) {
   double sum_distance = 0;
-  arma::uword num_rankings = rankings.n_rows;
+
+  /* Transpose matrices as needed ------------------------- */
+  if (rho.n_rows == rankings.n_cols) {
+    rankings = rankings.t();
+  }
 
   /* calculate the sum of the distances ------------------- */
+  arma::uword num_rankings = rankings.n_cols;
   if (num_rankings == 1) {
-    sum_distance = sum_distance + get_rank_distance(rho, rankings.t(), metric);
+    sum_distance += get_rank_distance(rho, rankings, metric);
   } else {
     for (arma::uword jj = 0; jj < num_rankings; ++jj) {
-      sum_distance = sum_distance + get_rank_distance(rho, rankings.row(jj).t(), metric);
+      sum_distance += get_rank_distance(rho, rankings.col(jj), metric);
     }
   }
   double mallows_loglik = -alpha / n_items * sum_distance;
