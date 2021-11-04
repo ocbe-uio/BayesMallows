@@ -15,11 +15,13 @@ compute_rho_consensus(
 )
 }
 \arguments{
-\item{output}{output}
+\item{output}{input}
 
-\item{nmc}{nmc}
+\item{nmc}{Number of Monte Carlo samples}
 
-\item{burnin}{burn-in}
+\item{burnin}{A numeric value specifying the number of iterations
+to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
 
 \item{C}{C}
 
@@ -27,7 +29,8 @@ compute_rho_consensus(
 
 \item{colnames}{colnames}
 
-\item{verbose}{if \code{TRUE}, prints the final output even if the function is assigned to an object. Defaults to \code{FALSE}.}
+\item{verbose}{if \code{TRUE}, prints the final output even if the function
+is assigned to an object. Defaults to \code{FALSE}.}
 }
 \description{
 MAP AND CP consensus ranking estimates

@@ -7,7 +7,7 @@
 smc_processing(output, colnames = NULL)
 }
 \arguments{
-\item{output}{output}
+\item{output}{input}
 
 \item{colnames}{colnames}
 }

@@ -7,11 +7,13 @@
 plot_alpha_posterior(output, nmc, burnin)
 }
 \arguments{
-\item{output}{output}
+\item{output}{input}
 
-\item{nmc}{nmc}
+\item{nmc}{Number of Monte Carlo samples}
 
-\item{burnin}{burn-in}
+\item{burnin}{A numeric value specifying the number of iterations
+to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
 }
 \description{
 posterior for alpha
