@@ -33,7 +33,7 @@ alpha <- 2
 metric <- "footrule"
 n_items <- 6
 
-item_ordering <- c(3, 6, 4, 5)
+item_ordering <- c(3, 6, 4, 5) # order with which the ranks will be filled
 partial_ranking <- c(1, 2, NA, NA, NA, NA)
 remaining_set <- c(3, 4, 5, 6)
 
@@ -41,7 +41,8 @@ test_1_forward <- calculate_forward_probability(
   item_ordering = item_ordering, partial_ranking = partial_ranking,
   remaining_set = remaining_set, rho = rho, alpha = alpha,
   n_items = n_items, metric = metric
-)
+) # TODO #116: get this to output aug_ranking == c(1, 2, 3, 6, 5, 4).
+# Tried all combinations of item_ordering. No dice.
 
 current_ranking <- c(1, 2, 6, 5, 4, 3)
 
@@ -51,16 +52,21 @@ test_1_backward_a <- calculate_backward_probability(
   alpha = alpha, n_items = n_items, metric = metric
 )
 
-current_ranking <- test_1_forward$aug_ranking
+new_current_ranking <- test_1_forward$aug_ranking # c(1, 2, 3, 4, 6, 5)
+
+# new_current_ranking needs to be one of the following so that test_1_backward_b
+# equals test_1_forward$forward_prob:
+# - c(1, 2, 3, 6, 5, 4)
+# - c(1, 2, 6, 4, 3, 5)
 test_1_backward_b <- calculate_backward_probability(
   item_ordering = item_ordering, partial_ranking = partial_ranking,
-  current_ranking = current_ranking, remaining_set = remaining_set, rho = rho,
+  current_ranking = new_current_ranking, remaining_set = remaining_set, rho = rho,
   alpha = alpha, n_items = n_items, metric = metric
 )
 
 test_that("calculations of forward and backward probabilities", {
   expect_equal(test_1_forward$aug_ranking, matrix(c(1, 2, 3, 6, 5, 4)))
-  expect_equal(test_1_forward$forward_prob, 0.07205734)
+  expect_equal(test_1_forward$forward_prob, 0.03699547)
   expect_equal(test_1_backward_a, 0.01360987)
   expect_equal(test_1_backward_b, test_1_forward$forward_prob)
 })
@@ -96,7 +102,7 @@ test_that("M-H aug ranking pseudo works", {
   test_3 <- metropolis_hastings_aug_ranking_pseudo(
     alpha, rho, n_items, partial_ranking = R_obs, current_ranking = R_curr,
     metric
-)
+  )
   expect_equal(test_3, matrix(c(1, 2, 4, 5, 3, 6)))
   expect_equal(all(test_3 == R_curr), FALSE)
 })
