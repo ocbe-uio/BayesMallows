@@ -72,6 +72,7 @@ double calculate_backward_probability(
 
       // save the probability of selecting the specific item rank in the old
       // augmented ranking
+      Rcpp::Rcout << jj << " bck = " << backward_auxiliary_ranking_probability << std::endl; //TEMP
       arma::uvec sample_prob = find(remaining_set == current_ranking(jj));
       backward_auxiliary_ranking_probability = \
         backward_auxiliary_ranking_probability * \

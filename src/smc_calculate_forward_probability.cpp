@@ -84,6 +84,7 @@ Rcpp::List calculate_forward_probability(
       // save the probability of selecting the specific item rank in the old
       // augmented ranking
       arma::uvec sample_prob = find(remaining_set == auxiliary_ranking(jj));
+      Rcpp::Rcout << jj << " fwd = " << forward_auxiliary_ranking_probability << std::endl; //TEMP
       forward_auxiliary_ranking_probability = \
         forward_auxiliary_ranking_probability * \
         arma::as_scalar(sample_prob_list(sample_prob));
