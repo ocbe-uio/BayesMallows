@@ -4,11 +4,11 @@
 
 #' @title SMC Processing
 #' @author Anja Stein
-#' @param output output
+#' @param output input
 #' @param colnames colnames
 #' @importFrom gtools mixedorder
 # AS: edited this function to include parameter `colnames`. This resolve issues in #118 with post processing functions not printing the names of items in rankings.
-# The `default` is set to NULL so tat we do not cause plotting issues in `plot_heatplot_rho.
+# The `default` is set to NULL so tat we do not cause plotting issues in `plot_rho_heatplot.
 smc_processing<- function(output, colnames = NULL) {
 
   df <- data.frame(data = output)
@@ -80,6 +80,17 @@ create_heatplot <- function(mat, rho) {
   )
 }
 
+#' @title Plot rho heatplot
+#' @param output input
+#' @param nmc Number of Monte Carlo samples
+#' @param burnin A numeric value specifying the number of iterations
+#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}
+#' @param n_items Integer is the number of items in the consensus ranking
+#' @param rho Numeric vector specifying the current consensus ranking
+#' @return A heatplot
+#' @author Anja Stein
+#' @export
 plot_rho_heatplot <- function(output, nmc, burnin, n_items, rho) {
   smc_plot <- smc_processing(output = output)
 
@@ -307,7 +318,7 @@ find_cpc_smc <- function(group_df){
   return(result)
 }
 
- #AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_consensus_rho
+ #AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_rho_consensus
 .compute_map_consensus_smc <- function(model_fit, burnin = model_fit$burnin){
 # FIXME: # 69 this function already exists on compute_consensus.R. Add S3 method?
 
@@ -364,9 +375,13 @@ find_cpc_smc <- function(group_df){
 #' @title Compute Posterior Intervals Rho
 #' @description posterior confidence intervals for rho
 #' @inheritParams smc_processing
-#' @param nmc nmc
-#' @param burnin burn-in
-#' @param verbose if \code{TRUE}, prints the final output even if the function is assigned to an object. Defaults to \code{FALSE}.
+#' @param nmc Number of Monte Carlo samples
+#' @param burnin A numeric value specifying the number of iterations
+#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
+#' @param verbose if \code{TRUE}, prints the final output even if the function
+#' is assigned to an object. Defaults to \code{FALSE}.
+#' @export
 #' @author Anja Stein
 #'
 # AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
@@ -399,6 +414,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
 #' @inheritParams compute_posterior_intervals_rho
 #' @param C C
 #' @param type type
+#' @export
 #' @author Anja Stein
 #'
 # AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
@@ -437,11 +453,13 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL,
 #' @title Plot Alpha Posterior
 #' @description posterior for alpha
 #' @inheritParams compute_posterior_intervals_rho
+#' @export
 #' @author Anja Stein
 #'
 # AS: if you remove the verbose input variable, then the function will be consistent
 # with the other plot functions(they all print when verbose=FALSE, but this function doesn't.)
-#`plot_heatplot_rho` doesn't require the variable `verbose`, so I'm not sure if this function does to plot the density of alpha
+#`plot_rho_heatplot` doesn't require the variable `verbose`,
+# so I'm not sure if this function does to plot the density of alpha
 plot_alpha_posterior <- function(output, nmc, burnin) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
 
@@ -452,12 +470,13 @@ plot_alpha_posterior <- function(output, nmc, burnin) {
     ggplot2::ggtitle(label = "Implemented SMC scheme") +
     ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
- print(plot_posterior_alpha)
+  print(plot_posterior_alpha)
 }
 
 #' @title Compute Posterior Intervals Alpha
 #' @description posterior confidence intervals
 #' @inheritParams compute_posterior_intervals_rho
+#' @export
 #' @author Anja Stein
 #'
 compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE) {
