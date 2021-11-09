@@ -492,3 +492,73 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE
   if (verbose) print(alpha_mixture_posterior_interval)
   return(alpha_mixture_posterior_interval)
 }
+
+
+
+#' @title Plot the posterior for rho for each item
+#' @param output input
+#' @param nmc Number of Monte Carlo samples
+#' @param burnin A numeric value specifying the number of iterations
+#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}
+#' @param C Number of cluster
+#' @param colnames A vector of item names. If NULL, we generate generic names for the items in the ranking.
+#' @param items Either a vector of item names, or a
+#'   vector of indices. If NULL, five items are selected randomly.
+#' @export
+plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = NULL){
+
+  n_items = dim(output)[2]
+
+  if(is.null(items) && n_items > 5){
+    message("Items not provided by user or more than 5 items in a ranking. Picking 5 at random.")
+    items <- sample(1:n_items, 5, replace = F)
+    items = sort(items)
+
+  } else if (is.null(items) && n_items <= 5) {
+    items <- c(1:n_items)
+    items = sort(items)
+  }
+
+  # do smc processing here
+  smc_plot = smc_processing(output = output, colnames = colnames)
+
+  if(!is.character(items)){
+    items <- unique(smc_plot$item)[items]
+  }
+
+  iteration = rep(c(1:nmc), times = n_items)
+  df = cbind(iteration, smc_plot)
+
+  if(C==1){
+    df = cbind(cluster = "Cluster 1", df)
+  }
+
+  df <- dplyr::filter(df, .data$iteration > burnin, .data$item %in% items)
+
+  # Compute the density, rather than the count, since the latter
+  # depends on the number of Monte Carlo samples
+  df <- dplyr::group_by(df, .data$cluster, .data$item, .data$value)
+  df <- dplyr::summarise(df, n = dplyr::n())
+  df <- dplyr::mutate(df, pct = .data$n / sum(.data$n))
+
+  df$item <- factor(df$item, levels = c(items))
+
+  # Taken from misc.R function in BayesMallows
+  scalefun <- function(x) sprintf("%d", as.integer(x))
+
+  # Finally create the plot
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
+    ggplot2::geom_col() +
+    ggplot2::scale_x_continuous(labels = scalefun) +
+    ggplot2::xlab("rank") +
+    ggplot2::ylab("Posterior probability")
+
+  if(C == 1){
+    p <- p + ggplot2::facet_wrap(~ .data$item)
+  } else {
+    p <- p + ggplot2::facet_wrap(~ .data$cluster + .data$item)
+  }
+
+  return(p)
+}
