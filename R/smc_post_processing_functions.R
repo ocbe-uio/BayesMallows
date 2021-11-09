@@ -505,6 +505,7 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE
 #' @param colnames A vector of item names. If NULL, we generate generic names for the items in the ranking.
 #' @param items Either a vector of item names, or a
 #'   vector of indices. If NULL, five items are selected randomly.
+#' @export
 plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = NULL){
 
   n_items = dim(output)[2]
