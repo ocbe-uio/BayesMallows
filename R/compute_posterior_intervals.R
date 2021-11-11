@@ -5,20 +5,6 @@
 #'
 #' @param model_fit An object returned from \code{\link{compute_mallows}}.
 #'
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
-#'
-#' @param parameter Character string defining which parameter to compute
-#' posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
-#' \code{"cluster_probs"}. Default is \code{"alpha"}.
-#'
-#' @param level Decimal number in \eqn{[0,1]} specifying the confidence level.
-#' Defaults to \code{0.95}.
-#'
-#' @param decimals Integer specifying the number of decimals to include
-#' in posterior intervals and the mean and median. Defaults to \code{3}.
-#'
 #' @param ... other arguments passed to methods.
 #'
 #' @details This function computes both the Highest Posterior Density Interval (HPDI),
@@ -38,13 +24,29 @@
 compute_posterior_intervals <- function(model_fit, ...) {
   UseMethod("compute_posterior_intervals")
 }
+
 .compute_posterior_intervals <- function(df, ...) {
   UseMethod(".compute_posterior_intervals")
 }
 
+#' @title Compute posterior intervals
+#' @inheritParams compute_posterior_intervals
+#' @param burnin A numeric value specifying the number of iterations
+#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+#' provided if \code{model_fit$burnin} does not exist.
+#' See \code{\link{assess_convergence}}.
+#' @param parameter Character string defining which parameter to compute
+#' posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
+#' \code{"cluster_probs"}. Default is \code{"alpha"}.
+#' @param level Decimal number in \eqn{[0,1]} specifying the confidence level.
+#' Defaults to \code{0.95}.
+#' @param decimals Integer specifying the number of decimals to include
+#' in posterior intervals and the mean and median. Defaults to \code{3}.
+#' @seealso assess_convergence
+#' @export
 compute_posterior_intervals.BayesMallows <- function(
   model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
-  decimals = 3L
+  decimals = 3L, ...
 ) {
   stopifnot(class(model_fit) == "BayesMallows")
 
@@ -79,9 +81,12 @@ compute_posterior_intervals.BayesMallows <- function(
   return(df)
 }
 
+#' @title Compute posterior intervals
+#' @inheritParams compute_posterior_intervals.BayesMallows
+#' @export
 compute_posterior_intervals.SMCMallows <- function(
   model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
-  decimals = 3L
+  decimals = 3L, ...
 ) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
@@ -119,7 +124,7 @@ compute_posterior_intervals.SMCMallows <- function(
 }
 
 .compute_posterior_intervals.BayesMallows <- function(
-  df, parameter, level, decimals, discrete = FALSE
+  df, parameter, level, decimals, discrete = FALSE, ...
 ){
   dplyr::do(df, {
     format <- paste0("%.", decimals, "f")
@@ -182,7 +187,7 @@ compute_posterior_intervals.SMCMallows <- function(
 # same as compute_posterior_intervals, but removed the bayesmallows object and
 # some other columns
 .compute_posterior_intervals.SMCMallows <- function(
-  df, parameter, level, decimals, discrete = FALSE
+  df, parameter, level, decimals, discrete = FALSE, ...
 ) {
   dplyr::do(df, {
     format <- paste0("%.", decimals, "f")
