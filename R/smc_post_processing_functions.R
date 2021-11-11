@@ -28,57 +28,57 @@ smc_processing<- function(output, colnames = NULL) {
   return(new_df)
 }
 
-heatmatrix <- function(output, burnin, rho){
-  # get dimensions
-  n_items <- dim(output)[2]
-  sample <- (burnin+1):dim(output)[1]
-
-  # get matrix of posterior probabilites by counting how many times an item is assigned specific rank
-  heatmat <- matrix(nrow = n_items, ncol = n_items)
-  colnames(output) <- NULL
-  for (j in 1:n_items) {
-    idx <- which(rho == j)
-    heatmat[j, ] <- sapply(1:n_items, function(x) sum(output[sample, idx] == x))
-  }
-
-  # normalise to get probabilities
-  heatmat <- heatmat / length(sample)
-  return(heatmat)
-}
+#heatmatrix <- function(output, burnin, rho){
+#  # get dimensions
+#  n_items <- dim(output)[2]
+#  sample <- (burnin+1):dim(output)[1]
+#
+#  # get matrix of posterior probabilites by counting how many times an item is assigned specific rank
+#  heatmat <- matrix(nrow = n_items, ncol = n_items)
+#  colnames(output) <- NULL
+#  for (j in 1:n_items) {
+#    idx <- which(rho == j)
+#    heatmat[j, ] <- sapply(1:n_items, function(x) sum(output[sample, idx] == x))
+#  }
+#
+#  # normalise to get probabilities
+#  heatmat <- heatmat / length(sample)
+#  return(heatmat)
+#}
 
 # AS: adjusted font size values (`cex.lab` and 'cex`) of axis labels in heatmap function
-create_heatplot <- function(mat, rho) {
-
-  # sort items
-  n_items <- length(rho)
-  if (is.character(names(rho))) {
-    items <- names(sort(rho))
-  } else {
-    items <- paste("0", order(rho), sep = "")
-  }
-
-  # create the heatplot
-  par(mfrow = c(1, 1))
-  fields::image.plot(mat,
-    col = fields::tim.colors(64 * 10), axes = F, cex.lab = 1.0, zlim = range(0, 1),
-    axis.args = list(at = seq(0, 1, 0.1), labels = seq(0, 1, 0.1), cex.axis = 1.2),
-    xlab = "Consensus Ranking", ylab = "Rank"
-  )
-
-  # Add x and y axis labels and titles
-  mtext(
-    text = items, side = 1, line = 0.3,
-    at = seq(0, 1, 1 / (n_items - 1)), las = 2, cex = 0.6
-  )
-  mtext(
-    text = c(1:n_items), side = 2, line = 0.3,
-    at = seq(0, 1, 1 / (n_items - 1)), las = 2, cex = 0.6
-  )
-  mtext(
-    text = "Posterior probabilties for rho", side = 3, line = 0.3,
-    at = , las = 1, cex = 1.2
-  )
-}
+#create_heatplot <- function(mat, rho) {
+#
+#  # sort items
+#  n_items <- length(rho)
+#  if (is.character(names(rho))) {
+#    items <- names(sort(rho))
+#  } else {
+#    items <- paste("0", order(rho), sep = "")
+#  }
+#
+#  # create the heatplot
+#  par(mfrow = c(1, 1))
+#  fields::image.plot(mat,
+#    col = fields::tim.colors(64 * 10), axes = F, cex.lab = 1.0, zlim = range(0, 1),
+#    axis.args = list(at = seq(0, 1, 0.1), labels = seq(0, 1, 0.1), cex.axis = 1.2),
+#    xlab = "Consensus Ranking", ylab = "Rank"
+#  )
+#
+#  # Add x and y axis labels and titles
+#  mtext(
+#    text = items, side = 1, line = 0.3,
+#    at = seq(0, 1, 1 / (n_items - 1)), las = 2, cex = 0.6
+#  )
+#  mtext(
+#    text = c(1:n_items), side = 2, line = 0.3,
+#    at = seq(0, 1, 1 / (n_items - 1)), las = 2, cex = 0.6
+#  )
+#  mtext(
+#    text = "Posterior probabilties for rho", side = 3, line = 0.3,
+#    at = , las = 1, cex = 1.2
+#  )
+#}
 
 #' @title Plot rho heatplot
 #' @param output input
@@ -91,14 +91,14 @@ create_heatplot <- function(mat, rho) {
 #' @return A heatplot
 #' @author Anja Stein
 #' @export
-plot_rho_heatplot <- function(output, nmc, burnin, n_items, rho) {
-  smc_plot <- smc_processing(output = output)
-
-  # create the heatplot
-  smc_rho_matrix <- matrix(smc_plot$value, ncol = n_items, nrow = nmc, byrow = FALSE)
-  smc_heatmat_rho <- heatmatrix(output = smc_rho_matrix, burnin = burnin, rho = rho)
-  smc_heatplot_full <- create_heatplot(mat = smc_heatmat_rho, rho = rho)
-}
+#plot_rho_heatplot <- function(output, nmc, burnin, n_items, rho) {
+#  smc_plot <- smc_processing(output = output)
+#
+#  # create the heatplot
+#  smc_rho_matrix <- matrix(smc_plot$value, ncol = n_items, nrow = nmc, byrow = FALSE)
+#  smc_heatmat_rho <- heatmatrix(output = smc_rho_matrix, burnin = burnin, rho = rho)
+#  smc_heatplot_full <- create_heatplot(mat = smc_heatmat_rho, rho = rho)
+#}
 
 # same as compute_posterior_intervals, but removed the bayesmallows object and some other columns
 compute_posterior_intervals_smc <- function(model_fit, burnin = model_fit$burnin,
