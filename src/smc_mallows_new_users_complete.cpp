@@ -191,8 +191,10 @@ Rcpp::List smc_mallows_new_users_complete(
     }
   }
   // return the history of the particles and their values
-  return Rcpp::List::create(
+  Rcpp::List particle_history = Rcpp::List::create(
     Rcpp::Named("rho_samples") = rho_samples,
     Rcpp::Named("alpha_samples") = alpha_samples
   );
+  particle_history.attr("class") = "SMCMallows"; // TODO: add List
+  return particle_history;
 }

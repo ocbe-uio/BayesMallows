@@ -9,7 +9,7 @@
 #' @importFrom gtools mixedorder
 # AS: edited this function to include parameter `colnames`. This resolve issues in #118 with post processing functions not printing the names of items in rankings.
 # The `default` is set to NULL so tat we do not cause plotting issues in `plot_rho_heatplot.
-smc_processing<- function(output, colnames = NULL) {
+smc_processing <- function(output, colnames = NULL) {
 
   df <- data.frame(data = output)
 
@@ -25,6 +25,7 @@ smc_processing<- function(output, colnames = NULL) {
   }
 
   new_df <- tidyr::gather(df, key = "item", value = "value")
+  class(new_df) <- c("SMCMallows", "data.frame")
   return(new_df)
 }
 
@@ -121,16 +122,20 @@ compute_posterior_intervals.SMCMallows <- function(model_fit, burnin = model_fit
 
   if (parameter == "alpha" || parameter == "cluster_probs") {
     df <- dplyr::group_by(df, .data$cluster)
+    class(df) <- c("SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
     df <- .compute_posterior_intervals(df, parameter, level, decimals)
   } else if (parameter == "rho") {
     decimals <- 0
     df <- dplyr::group_by(df, .data$cluster, .data$item)
+    class(df) <- c("SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
     df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
   }
 
   df <- dplyr::ungroup(df)
 
-  if (model_fit$n_clusters[1] == 1) df <- dplyr::select(df, -.data$cluster)
+  if (model_fit$n_clusters[1] == 1) {
+    df <- dplyr::select(df, -.data$cluster)
+  }
 
   return(df)
 }
@@ -483,7 +488,7 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
   alpha_samples_table$n_clusters <- 1
   alpha_samples_table$cluster <- "Cluster 1"
-
+  class(alpha_samples_table) <- c("SMCMallows", "data.frame")
 
   alpha_mixture_posterior_interval <- compute_posterior_intervals(alpha_samples_table,
     burnin = burnin,

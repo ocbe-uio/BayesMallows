@@ -58,11 +58,13 @@ compute_posterior_intervals.BayesMallows <- function(model_fit, burnin = model_f
   if(parameter == "alpha" || parameter == "cluster_probs"){
 
     df <- dplyr::group_by(df, .data$cluster)
+    class(df) <- c("BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
     df <- .compute_posterior_intervals(df, parameter, level, decimals)
 
   } else if(parameter == "rho"){
     decimals <- 0
     df <- dplyr::group_by(df, .data$cluster, .data$item)
+    class(df) <- c("BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
     df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
 
   }
