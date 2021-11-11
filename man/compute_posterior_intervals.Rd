@@ -9,6 +9,8 @@ compute_posterior_intervals(model_fit, ...)
 \arguments{
 \item{model_fit}{An object returned from \code{\link{compute_mallows}}.}
 
+\item{...}{other arguments passed to methods.}
+
 \item{burnin}{A numeric value specifying the number of iterations
 to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
 provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
