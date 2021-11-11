@@ -221,7 +221,7 @@ compute_consensus_smc <- function(model_fit, type, burnin) {
 }
 
 .compute_cp_consensus_smc <- function(model_fit, burnin){
-# FIXME: # 69 this function already exists on compute_consensus.R. Add S3 method?
+#TODO #80: this function already exists on compute_consensus.R. Add S3 method.
 
   if(is.null(burnin)){
     stop("Please specify the burnin.")
@@ -281,7 +281,7 @@ compute_consensus_smc <- function(model_fit, type, burnin) {
 
 # Internal function for finding CP consensus.
 find_cpc_smc <- function(group_df){
-# FIXME: # 69 this function already exists on compute_consensus.R. Add S3 method?
+#TODO #80: this function already exists on compute_consensus.R. Add S3 method.
   # Declare the result dataframe before adding rows to it
   result <- dplyr::tibble(
     cluster = character(),
@@ -320,7 +320,7 @@ find_cpc_smc <- function(group_df){
 
  #AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_rho_consensus
 .compute_map_consensus_smc <- function(model_fit, burnin = model_fit$burnin){
-# FIXME: # 69 this function already exists on compute_consensus.R. Add S3 method?
+#TODO #80: this function already exists on compute_consensus.R. Add S3 method.
 
   if(is.null(burnin)){
     stop("Please specify the burnin.")

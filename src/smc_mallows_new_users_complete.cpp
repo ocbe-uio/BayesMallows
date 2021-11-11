@@ -138,7 +138,7 @@ Rcpp::List smc_mallows_new_users_complete(
       log_likelihood = get_mallows_loglik(\
         alpha_samples_ii, rho_samples_ii.t(), n_items, new_observed_rankings,\
         metric\
-      ); // TODO: replace with log_lik_db? (#91)
+      );
       log_inc_wgt(ii) = log_likelihood - num_new_obs * log_z_alpha;
     }
 

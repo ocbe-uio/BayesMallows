@@ -156,7 +156,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
       new_observed_rankings = aug_rankings(arma::span(num_obs - num_new_obs, num_obs - 1), arma::span::all, arma::span(ii));
       double log_likelihood = get_mallows_loglik(\
         alpha, rho_samples_ii.t(), n_items, new_observed_rankings, metric\
-      ); // TODO: replace with log_lik_db? (#91)
+      );
       log_inc_wgt(ii) = log_likelihood - num_new_obs * log_z_alpha - log(aug_prob(ii));
     }
 
