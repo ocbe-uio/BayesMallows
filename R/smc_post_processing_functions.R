@@ -9,7 +9,7 @@
 #' @importFrom gtools mixedorder
 # AS: edited this function to include parameter `colnames`. This resolve issues in #118 with post processing functions not printing the names of items in rankings.
 # The `default` is set to NULL so tat we do not cause plotting issues in `plot_rho_heatplot.
-smc_processing<- function(output, colnames = NULL) {
+smc_processing <- function(output, colnames = NULL) {
 
   df <- data.frame(data = output)
 
@@ -25,6 +25,7 @@ smc_processing<- function(output, colnames = NULL) {
   }
 
   new_df <- tidyr::gather(df, key = "item", value = "value")
+  class(new_df) <- c("SMCMallows", "data.frame")
   return(new_df)
 }
 
@@ -99,102 +100,6 @@ smc_processing<- function(output, colnames = NULL) {
 #  smc_heatmat_rho <- heatmatrix(output = smc_rho_matrix, burnin = burnin, rho = rho)
 #  smc_heatplot_full <- create_heatplot(mat = smc_heatmat_rho, rho = rho)
 #}
-
-# same as compute_posterior_intervals, but removed the bayesmallows object and some other columns
-compute_posterior_intervals_smc <- function(model_fit, burnin = model_fit$burnin,
-                                               parameter = "alpha", level = 0.95,
-                                               decimals = 3L) {
-  if (is.null(burnin)) {
-    stop("Please specify the burnin.")
-  }
-
-  stopifnot(burnin < model_fit$nmc)
-  stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment"))
-  stopifnot(level > 0 && level < 1)
-
-
-  if (burnin != 0) {
-    df <- dplyr::filter(model_fit, .data$iteration > burnin) # removed model_fit[[parameter]]
-  } else {
-    df <- model_fit
-  }
-
-  if (parameter == "alpha" || parameter == "cluster_probs") {
-    df <- dplyr::group_by(df, .data$cluster)
-    df <- .compute_posterior_intervals(df, parameter, level, decimals)
-  } else if (parameter == "rho") {
-    decimals <- 0
-    df <- dplyr::group_by(df, .data$cluster, .data$item)
-    df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
-  }
-
-  df <- dplyr::ungroup(df)
-
-  if (model_fit$n_clusters[1] == 1) df <- dplyr::select(df, -.data$cluster)
-
-  return(df)
-}
-
-
-.compute_posterior_intervals <- function(df, parameter, level, decimals, discrete = FALSE) {
-  dplyr::do(df, {
-    format <- paste0("%.", decimals, "f")
-
-    posterior_mean <- round(base::mean(.data$value), decimals)
-    posterior_median <- round(stats::median(.data$value), decimals)
-
-    if (discrete) {
-      df <- dplyr::group_by(.data, .data$value)
-      df <- dplyr::summarise(df, n = dplyr::n())
-      df <- dplyr::arrange(df, dplyr::desc(.data$n))
-      df <- dplyr::mutate(df,
-        cumprob = cumsum(.data$n) / sum(.data$n),
-        lagcumprob = dplyr::lag(.data$cumprob, default = 0)
-      )
-
-      df <- dplyr::filter(df, .data$lagcumprob <= level)
-
-      values <- sort(dplyr::pull(df, .data$value))
-
-      # Find contiguous regions
-      breaks <- c(0, which(diff(values) != 1), length(values))
-
-      hpdi <- purrr::map(seq(length(breaks) - 1), function(.x, values, breaks) {
-        vals <- values[(breaks[.x] + 1):breaks[.x + 1]]
-        vals <- unique(c(min(vals), max(vals)))
-        paste0("[", paste(vals, collapse = ","), "]")
-      }, values = values, breaks = breaks)
-
-      hpdi <- paste(hpdi, collapse = ",")
-    } else {
-      hpdi <- HDInterval::hdi(.data$value, credMass = level, allowSplit = TRUE)
-
-      hpdi[] <- sprintf(format, hpdi)
-      if (is.matrix(hpdi)) {
-        # Discontinous case
-        hpdi <- paste(apply(hpdi, 1, function(x) paste0("[", x[[1]], ",", x[[2]], "]")))
-      } else {
-        # Continuous case
-        hpdi <- paste0("[", hpdi[[1]], ",", hpdi[[2]], "]")
-      }
-    }
-
-
-    central <- unique(stats::quantile(.data$value, probs = c((1 - level) / 2, level + (1 - level) / 2)))
-    central <- sprintf(format, central)
-    central <- paste0("[", paste(central, collapse = ","), "]")
-
-    dplyr::tibble(
-      parameter = parameter,
-      mean = posterior_mean,
-      median = posterior_median,
-      conf_level = paste(level * 100, "%"),
-      hpdi = hpdi,
-      central_interval = central
-    )
-  })
-}
-
 
 #' Compute Consensus Ranking
 #'
@@ -393,7 +298,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
   smc_plot$n_clusters <- 1
   smc_plot$cluster <- "Cluster 1"
 
-  rho_posterior_interval <- compute_posterior_intervals_smc(
+  rho_posterior_interval <- compute_posterior_intervals(
     model_fit = smc_plot, burnin = burnin,
     parameter = "rho", level = 0.95, decimals = 2
   )
@@ -483,9 +388,9 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
   alpha_samples_table$n_clusters <- 1
   alpha_samples_table$cluster <- "Cluster 1"
+  class(alpha_samples_table) <- c("SMCMallows", "data.frame")
 
-
-  alpha_mixture_posterior_interval <- compute_posterior_intervals_smc(alpha_samples_table,
+  alpha_mixture_posterior_interval <- compute_posterior_intervals(alpha_samples_table,
     burnin = burnin,
     parameter = "alpha", level = 0.95, decimals = 2
   )
