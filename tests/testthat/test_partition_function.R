@@ -132,7 +132,7 @@ test_that("estimate_partition_function runs in parallel", {
                                      nmc = 20, degree = degree)
 
 
-  lapply(1:3, function(x){
+  lapply(1:2, function(x){
     cl <- parallel::makeCluster(x)
     fit <- estimate_partition_function(method = "importance_sampling",
                                        alpha_vector = alpha_vector,
