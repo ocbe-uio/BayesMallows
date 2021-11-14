@@ -7,6 +7,7 @@ test_that("assess_convergence fails when it should", {
   expect_error(assess_convergence(m, parameter = "aaa"))
   expect_error(assess_convergence(m, parameter = "Rtilde"))
   m <- compute_mallows(potato_visual, nmc = 10, save_aug = TRUE)
+  expect_error(assess_convergence(m, parameter = "theta"), regexp = "Theta not available")
   expect_error(assess_convergence(m, parameter = "Rtilde", assessors = 1:100))
   expect_error(assess_convergence(m, parameter = "Rtilde", assessors = c("a", "b")))
   expect_s3_class(assess_convergence(m), "ggplot")
