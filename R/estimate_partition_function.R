@@ -67,12 +67,14 @@ estimate_partition_function <- function(method = "importance_sampling",
       }
       parallel::clusterExport(cl, c("alpha_vector", "n_items", "metric", "seed"),
                               envir = environment())
+
       estimates <- parallel::parLapply(cl, nmc_vec, function(x){
         if(!is.null(seed)) set.seed(seed)
         compute_importance_sampling_estimate(alpha_vector = alpha_vector, n_items = n_items,
                                              metric = metric, nmc = x)
       })
-      log_z <- purrr::map2_dbl(estimates[[1]], estimates[[2]], mean)
+
+      log_z <- rowMeans(do.call(cbind, estimates))
     } else {
       if(!is.null(seed)) set.seed(seed)
       log_z <- as.numeric(
