@@ -42,7 +42,6 @@ Depends: R (>= 2.10)
 Imports: Rcpp (>= 1.0.0),
   ggplot2 (>= 3.1.0),
   Rdpack (>= 1.0),
-  stats,
   igraph (>= 1.2.5),
   dplyr (>= 1.0.1),
   sets (>= 1.0-18),
@@ -52,7 +51,6 @@ Imports: Rcpp (>= 1.0.0),
   rlang (>= 0.3.1),
   PerMallows (>= 1.13),
   HDInterval (>= 0.2.0),
-  PLMIX (>= 2.1.1),
   cowplot (>= 1.0.0)
 LinkingTo: Rcpp, RcppArmadillo
 Suggests:

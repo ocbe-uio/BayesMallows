@@ -20,7 +20,7 @@ rank_freq_distr <- function(rankings){
   }
 
   rankings[is.na(rankings)] <- 0
-  out <- PLMIX::unit_to_freq(data = rankings)
+  out <- unit_to_freq(data = rankings)
   out[out==0] <- NA
 
   return(out)
