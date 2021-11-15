@@ -4,36 +4,19 @@
 \alias{compute_consensus}
 \title{Compute Consensus Ranking}
 \usage{
-compute_consensus(
-  model_fit,
-  type = "CP",
-  burnin = model_fit$burnin,
-  parameter = "rho",
-  assessors = 1L
-)
+compute_consensus(model_fit, ...)
 }
 \arguments{
 \item{model_fit}{An object returned from \code{\link{compute_mallows}}.}
 
-\item{type}{Character string specifying which consensus to compute. Either
-\code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.}
-
-\item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
-
-\item{parameter}{Character string defining the parameter for which to compute the
-consensus. Defaults to \code{"rho"}. Available options are \code{"rho"} and \code{"Rtilde"},
-with the latter giving consensus rankings for augmented ranks.}
-
-\item{assessors}{When \code{parameter = "rho"}, this integer vector is used to
-define the assessors for which to compute the augmented ranking. Defaults to
-\code{1L}, which yields augmented rankings for assessor 1.}
+\item{...}{other arguments passed to methods.}
 }
 \description{
-Compute the consensus ranking using either cumulative probability (CP) or maximum a posteriori (MAP) consensus
+Compute the consensus ranking using either cumulative
+probability (CP) or maximum a posteriori (MAP) consensus
 \insertCite{vitelli2018}{BayesMallows}. For mixture models, the
-consensus is given for each mixture. Consensus of augmented ranks can also be computed
+consensus is given for each mixture. Consensus of augmented ranks
+can also be computed
 for each assessor, by setting \code{parameter = "Rtilde"}.
 }
 \examples{

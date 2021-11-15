@@ -1,37 +1,37 @@
-#' Compute Consensus Ranking
-#'
-#' Compute the consensus ranking using either cumulative probability (CP) or maximum a posteriori (MAP) consensus
+#' @title Compute Consensus Ranking
+#' @description Compute the consensus ranking using either cumulative
+#' probability (CP) or maximum a posteriori (MAP) consensus
 #' \insertCite{vitelli2018}{BayesMallows}. For mixture models, the
-#' consensus is given for each mixture. Consensus of augmented ranks can also be computed
+#' consensus is given for each mixture. Consensus of augmented ranks
+#' can also be computed
 #' for each assessor, by setting \code{parameter = "Rtilde"}.
-#'
 #' @param model_fit An object returned from \code{\link{compute_mallows}}.
-#'
+#' @param ... other arguments passed to methods.
+#' @references \insertAllCited{}
+#' @export
+#' @example /inst/examples/compute_consensus_example.R
+compute_consensus <- function(model_fit, ...) {
+  UseMethod("compute_consensus")
+}
+
+#' @title Compute Consensus Ranking
+#' @inheritParams compute_consensus
 #' @param type Character string specifying which consensus to compute. Either
 #' \code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.
-#'
 #' @param burnin A numeric value specifying the number of iterations
 #' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
 #' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
-#'
 #' @param parameter Character string defining the parameter for which to compute the
 #' consensus. Defaults to \code{"rho"}. Available options are \code{"rho"} and \code{"Rtilde"},
 #' with the latter giving consensus rankings for augmented ranks.
-#'
 #' @param assessors When \code{parameter = "rho"}, this integer vector is used to
 #' define the assessors for which to compute the augmented ranking. Defaults to
 #' \code{1L}, which yields augmented rankings for assessor 1.
-#'
-#' @references \insertAllCited{}
-#'
-#'
 #' @export
-#'
-#' @example /inst/examples/compute_consensus_example.R
-#'
-compute_consensus <- function(model_fit, type = "CP", burnin = model_fit$burnin,
-                              parameter = "rho", assessors = 1L){
-
+compute_consensus.BayesMallows <- function(
+  model_fit, type = "CP", burnin = model_fit$burnin, parameter = "rho",
+  assessors = 1L, ...
+) {
   if(is.null(burnin)){
     stop("Please specify the burnin.")
   }
@@ -40,8 +40,7 @@ compute_consensus <- function(model_fit, type = "CP", burnin = model_fit$burnin,
   stopifnot(class(model_fit) == "BayesMallows")
 
   if(parameter == "Rtilde" && !inherits(model_fit$augmented_data, "data.frame")){
-    stop(paste("For augmented ranks, please refit",
-               "model with option 'save_aug = TRUE'."))
+    stop("For augmented ranks, please refit model with option 'save_aug = TRUE'.")
   }
 
   if(parameter == "rho"){
@@ -95,7 +94,6 @@ compute_consensus <- function(model_fit, type = "CP", burnin = model_fit$burnin,
   }
 
   return(df)
-
 
 }
 
