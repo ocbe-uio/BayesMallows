@@ -1,7 +1,5 @@
 #' @importFrom graphics mtext par
 
-# Analysis
-
 #' @title SMC Processing
 #' @author Anja Stein
 #' @param output input
@@ -9,7 +7,7 @@
 #' @importFrom gtools mixedorder
 # AS: edited this function to include parameter `colnames`. This resolve issues in #118 with post processing functions not printing the names of items in rankings.
 # The `default` is set to NULL so tat we do not cause plotting issues in `plot_rho_heatplot.
-smc_processing<- function(output, colnames = NULL) {
+smc_processing <- function(output, colnames = NULL) {
 
   df <- data.frame(data = output)
 
@@ -25,176 +23,9 @@ smc_processing<- function(output, colnames = NULL) {
   }
 
   new_df <- tidyr::gather(df, key = "item", value = "value")
+  class(new_df) <- c("SMCMallows", "data.frame")
   return(new_df)
 }
-
-heatmatrix <- function(output, burnin, rho){
-  # get dimensions
-  n_items <- dim(output)[2]
-  sample <- (burnin+1):dim(output)[1]
-
-  # get matrix of posterior probabilites by counting how many times an item is assigned specific rank
-  heatmat <- matrix(nrow = n_items, ncol = n_items)
-  colnames(output) <- NULL
-  for (j in 1:n_items) {
-    idx <- which(rho == j)
-    heatmat[j, ] <- sapply(1:n_items, function(x) sum(output[sample, idx] == x))
-  }
-
-  # normalise to get probabilities
-  heatmat <- heatmat / length(sample)
-  return(heatmat)
-}
-
-# AS: adjusted font size values (`cex.lab` and 'cex`) of axis labels in heatmap function
-create_heatplot <- function(mat, rho) {
-
-  # sort items
-  n_items <- length(rho)
-  if (is.character(names(rho))) {
-    items <- names(sort(rho))
-  } else {
-    items <- paste("0", order(rho), sep = "")
-  }
-
-  # create the heatplot
-  par(mfrow = c(1, 1))
-  fields::image.plot(mat,
-    col = fields::tim.colors(64 * 10), axes = F, cex.lab = 1.0, zlim = range(0, 1),
-    axis.args = list(at = seq(0, 1, 0.1), labels = seq(0, 1, 0.1), cex.axis = 1.2),
-    xlab = "Consensus Ranking", ylab = "Rank"
-  )
-
-  # Add x and y axis labels and titles
-  mtext(
-    text = items, side = 1, line = 0.3,
-    at = seq(0, 1, 1 / (n_items - 1)), las = 2, cex = 0.6
-  )
-  mtext(
-    text = c(1:n_items), side = 2, line = 0.3,
-    at = seq(0, 1, 1 / (n_items - 1)), las = 2, cex = 0.6
-  )
-  mtext(
-    text = "Posterior probabilties for rho", side = 3, line = 0.3,
-    at = , las = 1, cex = 1.2
-  )
-}
-
-#' @title Plot rho heatplot
-#' @param output input
-#' @param nmc Number of Monte Carlo samples
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}
-#' @param n_items Integer is the number of items in the consensus ranking
-#' @param rho Numeric vector specifying the current consensus ranking
-#' @return A heatplot
-#' @author Anja Stein
-#' @export
-plot_rho_heatplot <- function(output, nmc, burnin, n_items, rho) {
-  smc_plot <- smc_processing(output = output)
-
-  # create the heatplot
-  smc_rho_matrix <- matrix(smc_plot$value, ncol = n_items, nrow = nmc, byrow = FALSE)
-  smc_heatmat_rho <- heatmatrix(output = smc_rho_matrix, burnin = burnin, rho = rho)
-  smc_heatplot_full <- create_heatplot(mat = smc_heatmat_rho, rho = rho)
-}
-
-# same as compute_posterior_intervals, but removed the bayesmallows object and some other columns
-compute_posterior_intervals_smc <- function(model_fit, burnin = model_fit$burnin,
-                                               parameter = "alpha", level = 0.95,
-                                               decimals = 3L) {
-  if (is.null(burnin)) {
-    stop("Please specify the burnin.")
-  }
-
-  stopifnot(burnin < model_fit$nmc)
-  stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment"))
-  stopifnot(level > 0 && level < 1)
-
-
-  if (burnin != 0) {
-    df <- dplyr::filter(model_fit, .data$iteration > burnin) # removed model_fit[[parameter]]
-  } else {
-    df <- model_fit
-  }
-
-  if (parameter == "alpha" || parameter == "cluster_probs") {
-    df <- dplyr::group_by(df, .data$cluster)
-    df <- .compute_posterior_intervals(df, parameter, level, decimals)
-  } else if (parameter == "rho") {
-    decimals <- 0
-    df <- dplyr::group_by(df, .data$cluster, .data$item)
-    df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
-  }
-
-  df <- dplyr::ungroup(df)
-
-  if (model_fit$n_clusters[1] == 1) df <- dplyr::select(df, -.data$cluster)
-
-  return(df)
-}
-
-
-.compute_posterior_intervals <- function(df, parameter, level, decimals, discrete = FALSE) {
-  dplyr::do(df, {
-    format <- paste0("%.", decimals, "f")
-
-    posterior_mean <- round(base::mean(.data$value), decimals)
-    posterior_median <- round(stats::median(.data$value), decimals)
-
-    if (discrete) {
-      df <- dplyr::group_by(.data, .data$value)
-      df <- dplyr::summarise(df, n = dplyr::n())
-      df <- dplyr::arrange(df, dplyr::desc(.data$n))
-      df <- dplyr::mutate(df,
-        cumprob = cumsum(.data$n) / sum(.data$n),
-        lagcumprob = dplyr::lag(.data$cumprob, default = 0)
-      )
-
-      df <- dplyr::filter(df, .data$lagcumprob <= level)
-
-      values <- sort(dplyr::pull(df, .data$value))
-
-      # Find contiguous regions
-      breaks <- c(0, which(diff(values) != 1), length(values))
-
-      hpdi <- purrr::map(seq(length(breaks) - 1), function(.x, values, breaks) {
-        vals <- values[(breaks[.x] + 1):breaks[.x + 1]]
-        vals <- unique(c(min(vals), max(vals)))
-        paste0("[", paste(vals, collapse = ","), "]")
-      }, values = values, breaks = breaks)
-
-      hpdi <- paste(hpdi, collapse = ",")
-    } else {
-      hpdi <- HDInterval::hdi(.data$value, credMass = level, allowSplit = TRUE)
-
-      hpdi[] <- sprintf(format, hpdi)
-      if (is.matrix(hpdi)) {
-        # Discontinous case
-        hpdi <- paste(apply(hpdi, 1, function(x) paste0("[", x[[1]], ",", x[[2]], "]")))
-      } else {
-        # Continuous case
-        hpdi <- paste0("[", hpdi[[1]], ",", hpdi[[2]], "]")
-      }
-    }
-
-
-    central <- unique(stats::quantile(.data$value, probs = c((1 - level) / 2, level + (1 - level) / 2)))
-    central <- sprintf(format, central)
-    central <- paste0("[", paste(central, collapse = ","), "]")
-
-    dplyr::tibble(
-      parameter = parameter,
-      mean = posterior_mean,
-      median = posterior_median,
-      conf_level = paste(level * 100, "%"),
-      hpdi = hpdi,
-      central_interval = central
-    )
-  })
-}
-
 
 #' Compute Consensus Ranking
 #'
@@ -221,7 +52,7 @@ compute_consensus_smc <- function(model_fit, type, burnin) {
 }
 
 .compute_cp_consensus_smc <- function(model_fit, burnin){
-# FIXME: # 69 this function already exists on compute_consensus.R. Add S3 method?
+#TODO #80: this function already exists on compute_consensus.R. Add S3 method.
 
   if(is.null(burnin)){
     stop("Please specify the burnin.")
@@ -281,7 +112,7 @@ compute_consensus_smc <- function(model_fit, type, burnin) {
 
 # Internal function for finding CP consensus.
 find_cpc_smc <- function(group_df){
-# FIXME: # 69 this function already exists on compute_consensus.R. Add S3 method?
+#TODO #80: this function already exists on compute_consensus.R. Add S3 method.
   # Declare the result dataframe before adding rows to it
   result <- dplyr::tibble(
     cluster = character(),
@@ -320,7 +151,7 @@ find_cpc_smc <- function(group_df){
 
  #AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_rho_consensus
 .compute_map_consensus_smc <- function(model_fit, burnin = model_fit$burnin){
-# FIXME: # 69 this function already exists on compute_consensus.R. Add S3 method?
+#TODO #80: this function already exists on compute_consensus.R. Add S3 method.
 
   if(is.null(burnin)){
     stop("Please specify the burnin.")
@@ -393,7 +224,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
   smc_plot$n_clusters <- 1
   smc_plot$cluster <- "Cluster 1"
 
-  rho_posterior_interval <- compute_posterior_intervals_smc(
+  rho_posterior_interval <- compute_posterior_intervals(
     model_fit = smc_plot, burnin = burnin,
     parameter = "rho", level = 0.95, decimals = 2
   )
@@ -483,12 +314,82 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
   alpha_samples_table$n_clusters <- 1
   alpha_samples_table$cluster <- "Cluster 1"
+  class(alpha_samples_table) <- c("SMCMallows", "data.frame")
 
-
-  alpha_mixture_posterior_interval <- compute_posterior_intervals_smc(alpha_samples_table,
+  alpha_mixture_posterior_interval <- compute_posterior_intervals(alpha_samples_table,
     burnin = burnin,
     parameter = "alpha", level = 0.95, decimals = 2
   )
   if (verbose) print(alpha_mixture_posterior_interval)
   return(alpha_mixture_posterior_interval)
+}
+
+
+
+#' @title Plot the posterior for rho for each item
+#' @param output input
+#' @param nmc Number of Monte Carlo samples
+#' @param burnin A numeric value specifying the number of iterations
+#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
+#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}
+#' @param C Number of cluster
+#' @param colnames A vector of item names. If NULL, we generate generic names for the items in the ranking.
+#' @param items Either a vector of item names, or a
+#'   vector of indices. If NULL, five items are selected randomly.
+#' @export
+plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = NULL){
+
+  n_items = dim(output)[2]
+
+  if(is.null(items) && n_items > 5){
+    message("Items not provided by user or more than 5 items in a ranking. Picking 5 at random.")
+    items <- sample(1:n_items, 5, replace = F)
+    items = sort(items)
+
+  } else if (is.null(items) && n_items <= 5) {
+    items <- c(1:n_items)
+    items = sort(items)
+  }
+
+  # do smc processing here
+  smc_plot = smc_processing(output = output, colnames = colnames)
+
+  if(!is.character(items)){
+    items <- unique(smc_plot$item)[items]
+  }
+
+  iteration = rep(c(1:nmc), times = n_items)
+  df = cbind(iteration, smc_plot)
+
+  if(C==1){
+    df = cbind(cluster = "Cluster 1", df)
+  }
+
+  df <- dplyr::filter(df, .data$iteration > burnin, .data$item %in% items)
+
+  # Compute the density, rather than the count, since the latter
+  # depends on the number of Monte Carlo samples
+  df <- dplyr::group_by(df, .data$cluster, .data$item, .data$value)
+  df <- dplyr::summarise(df, n = dplyr::n())
+  df <- dplyr::mutate(df, pct = .data$n / sum(.data$n))
+
+  df$item <- factor(df$item, levels = c(items))
+
+  # Taken from misc.R function in BayesMallows
+  scalefun <- function(x) sprintf("%d", as.integer(x))
+
+  # Finally create the plot
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
+    ggplot2::geom_col() +
+    ggplot2::scale_x_continuous(labels = scalefun) +
+    ggplot2::xlab("rank") +
+    ggplot2::ylab("Posterior probability")
+
+  if(C == 1){
+    p <- p + ggplot2::facet_wrap(~ .data$item)
+  } else {
+    p <- p + ggplot2::facet_wrap(~ .data$cluster + .data$item)
+  }
+
+  return(p)
 }

@@ -43,7 +43,6 @@ alpha_0 = 1.7
 
 # heatplot - there is no burnin!
 mcmc_rho_matrix = matrix(model_fit$rho$value, ncol = n_items, nrow = nmc, byrow=TRUE)
-mcmc_heatmat_rho = BayesMallows:::heatmatrix(output = mcmc_rho_matrix, burnin = burnin, rho = rho_0)
 
 # ###################################################################
 # # SMC
@@ -62,7 +61,7 @@ test <- smc_mallows_new_users_complete(
 )
 
 test_that("Output of smc_mallows_new_users_complete is OK", {
-	expect_is(test, "list")
+	expect_s3_class(test, "SMCMallows")
 	expect_length(test, 2)
 	expect_named(test, c("rho_samples", "alpha_samples"))
 	expect_equal(dim(test$rho_samples), c(100, 10, 111))

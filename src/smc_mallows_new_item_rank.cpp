@@ -163,7 +163,7 @@ Rcpp::List smc_mallows_new_item_rank(
     double log_likelihood = get_mallows_loglik(\
       alpha_samples(ii, 0), rho_samples.slice(0).row(ii).t(), n_items,\
       aug_rankings.slice(ii), metric\
-    ); // TODO: replace with log_lik_db? (#91)
+    );
     double log_tcp = std::log(total_correction_prob(ii));
     log_inc_wgt(ii) = log_likelihood - num_ranks * log_z_alpha - log_tcp;
   }
