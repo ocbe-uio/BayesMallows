@@ -70,3 +70,39 @@ prepare_partition_function <- function(logz_estimate, metric, n_items){
   stop("Partition function not available. Please compute an estimate using estimate_partition_function().")
 
 }
+
+
+# function taken from PLMIX package:
+# Copyright Cristina Mollica and Luca Tardella
+unit_to_freq <- function (data) {
+  data <- fill_single_entries(data = data)
+  K <- ncol(data)
+  freq <- table(apply(data, 1, paste, collapse = "-"))
+  obs_seq <- matrix(as.numeric(unlist(strsplit(names(freq),
+                                               split = "-"))), nrow = length(freq), ncol = K, byrow = TRUE)
+  rownames(obs_seq) <- NULL
+  out <- cbind(obs_seq, freq = freq, deparse.level = 0)
+  rownames(out) <- NULL
+  return(out)
+}
+
+# function taken from PLMIX package:
+# Copyright Cristina Mollica and Luca Tardella
+fill_single_entries <- function (data) {
+  if (is.vector(data)) {
+    data <- t(data)
+  }
+  K = ncol(data)
+  r_single_miss <- (rowSums(data == 0) == 1)
+  if (any(r_single_miss)) {
+    w_row <- which(r_single_miss)
+    w_col <- apply(data[w_row, , drop = FALSE], 1, function(x) which(x ==
+                                                                       0))
+    w_item <- apply(data[w_row, , drop = FALSE], 1, setdiff,
+                    x = 1:K)
+    data[cbind(w_row, w_col)] <- w_item
+    warning(paste(paste0("Top-", K - 1, ""), "sequencies correspond to full orderings. Single missing entries filled."),
+            call. = FALSE)
+  }
+  return(data)
+}

@@ -35,6 +35,9 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   if(is.null(burnin)){
     stop("Please specify the burnin.")
   }
+  if(is.null(model_fit$cluster_assignment)){
+    stop("Rerun compute_mallows with save_clus=TRUE.")
+  }
   stopifnot(burnin < model_fit$nmc)
 
   df <- dplyr::filter(model_fit$cluster_assignment, .data$iteration > burnin)
