@@ -119,3 +119,29 @@ test_that("partition function data is sane", {
       nrow(),
     0)
 })
+
+test_that("estimate_partition_function runs in parallel", {
+  alpha_vector <- seq(from = 0, to = 10, length.out = 10)
+  n_items <- 5
+  metric <- "spearman"
+  degree <- 2
+
+  fit <- estimate_partition_function(method = "importance_sampling",
+                                     alpha_vector = alpha_vector,
+                                     n_items = n_items, metric = metric,
+                                     nmc = 20, degree = degree)
+
+
+  lapply(1:2, function(x){
+    cl <- parallel::makeCluster(x)
+    fit <- estimate_partition_function(method = "importance_sampling",
+                                       alpha_vector = alpha_vector,
+                                       n_items = n_items, metric = metric,
+                                       nmc = 20, degree = degree, cl = cl)
+    parallel::stopCluster(cl)
+    expect_equal(length(fit), 3)
+  })
+
+
+
+})

@@ -185,7 +185,7 @@ trace_cluster_probs <- function(m){
 
 
 trace_theta <- function(model_fit){
-  if(is.null(model_fit$theta)){
+  if(is.null(model_fit$theta) || length(model_fit$theta) == 0){
     stop("Theta not available. Run compute_mallows with error_model = 'bernoulli'.")
   }
   # Create the diagnostic plot for theta
