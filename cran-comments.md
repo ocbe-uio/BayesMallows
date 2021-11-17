@@ -1,5 +1,5 @@
 ## Resubmission Note
-This is a resubmission which fixes several smaller bugs, increases the number of unit tests, and removes the PLMIX package from Imports.
+This is a resubmission which fixes several smaller bugs, increases the number of unit tests, and removes the PLMIX package from Imports. Two new authors/contributors have also been added in DESCRIPTION.
 
 ## Test Environments
 * local Windows install, R 4.1.2
