@@ -1,27 +1,31 @@
 Package: BayesMallows
 Type: Package
 Title: Bayesian Preference Learning with the Mallows Rank Model
-Version: 1.0.3.9001
-Authors@R: c(person("Oystein", "Sorensen", 
-                    email = "oystein.sorensen.1985@gmail.com", 
+Version: 1.0.4
+Authors@R: Authors@R: c(person("Oystein", "Sorensen",
+                    email = "oystein.sorensen.1985@gmail.com",
                     role = c("aut", "cre"),
                     comment = c(ORCID = "0000-0003-0724-3542")),
             person("Valeria", "Vitelli",
                     role = c("aut"),
-                    email = "valeria.vitelli@medisin.uio.no", 
+                    email = "valeria.vitelli@medisin.uio.no",
                     comment = c(ORCID = "0000-0002-6746-0453")),
-            person("Marta", "Crispino", 
-                    email = "crispino.marta8@gmail.com", 
+            person("Marta", "Crispino",
+                    email = "crispino.marta8@gmail.com",
                     role = c("aut")),
-            person("Qinghua", "Liu", 
-                    email = "qinghual@math.uio.no", 
+            person("Qinghua", "Liu",
+                    email = "qinghual@math.uio.no",
                     role = c("aut")),
             person("Cristina", "Mollica",
-                   email = "cristina.mollica@uniroma1.it",
-                   role = c("aut")),
+                    email = "cristina.mollica@uniroma1.it",
+                    role = c("aut")),
             person("Luca", "Tardella",
-                   role = c("aut"))       
-                    )
+                    role = c("aut")),
+            person("Anja", "Stein",
+                    role = c("aut")),
+            person("Waldir", "Leoncio",
+                    email = "w.l.netto@medisin.uio.no",
+                    role = c("ctr")))
 Maintainer: Oystein Sorensen <oystein.sorensen.1985@gmail.com>
 Description: An implementation of the Bayesian version of the Mallows rank model 
     (Vitelli et al., Journal of Machine Learning Research, 2018 <https://jmlr.org/papers/v18/15-481.html>; 
