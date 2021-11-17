@@ -1,3 +1,15 @@
+# BayesMallows 1.0.3.9001
+
+* Fixed bug which caused plot_top_k to fail when plotting clusters.
+* Improved the default value of rel_widths argument to plot_top_k.
+* Wrote unit tests to check that the bugs don't appear again.
+
+# BayesMallows 1.0.3.9000
+
+* Fixed bug which caused importance sampling to fail when running in parallel.
+* Fixed issue with error message when trying to plot error probability when compute_mallows has not been set up to compute error probability.
+* Increased number of unit tests.
+
 # BayesMallows 1.0.3
 
 * Fixed critical bug which caused results to be wrong with more than one mixture component in compute_mallows() and compute_mallows_mixtures(). Thanks to Anja Stein for discovering the bug.
