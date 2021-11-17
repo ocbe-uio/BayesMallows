@@ -29,8 +29,6 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
 
   validate_top_k(model_fit, burnin)
 
-  #n_samples <- sum(unique(model_fit$rho$iteration) > burnin)
-
   # Extract post burn-in rows with value <= k
   rho <- dplyr::filter(model_fit$rho, .data$iteration > burnin, .data$value <= k)
   n_samples <- length(unique(rho$iteration))
@@ -46,9 +44,15 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
     fill = list(prob = 0))
   rho <- dplyr::ungroup(rho)
 
-  # Sort the items according to probability
-  item_ordering <- rev(compute_consensus(model_fit, type = "CP", burnin = burnin)$item)
-  rho <- dplyr::mutate(rho, item = factor(.data$item, levels = item_ordering))
+  # Sort the items according to probability in Cluster 1
+  item_ordering <- compute_consensus(model_fit, type = "CP", burnin = burnin)
+  if(model_fit$n_clusters > 1){
+    item_ordering <- rev(item_ordering[item_ordering$cluster == "Cluster 1", ]$item)
+  } else {
+    item_ordering <- rev(item_ordering$item)
+  }
+
+  rho <- dplyr::mutate(rho, item = factor(.data$item, levels = unique(item_ordering)))
 
   # Trick to make the plot look nicer
   if(model_fit$n_clusters == 1){
