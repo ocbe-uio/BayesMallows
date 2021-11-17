@@ -163,7 +163,7 @@ estimated partition function when \code{n_clusters > 1}, the partition
 function should be estimated over the whole range of \eqn{\alpha} values
 covered by the prior distribution for \eqn{\alpha} with high probability.
 In the case that a cluster \eqn{\alpha_c} becomes empty during the
-Metropolis-Hastings algorihm, the posterior of \eqn{\alpha_c} equals its
+Metropolis-Hastings algorithm, the posterior of \eqn{\alpha_c} equals its
 prior. For example, if the rate parameter of the exponential prior equals,
 say \eqn{\lambda = 0.001}, there is about 37 \% (or exactly: \code{1 -
 pexp(1000, 0.001)}) prior probability that \eqn{\alpha_c > 1000}. Hence
