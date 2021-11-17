@@ -25,7 +25,7 @@
 #'
 plot_top_k <- function(model_fit, burnin = model_fit$burnin,
                        k = 3,
-                       rel_widths = c(rep(1, model_fit$n_clusters), 10)){
+                       rel_widths = c(model_fit$n_clusters, 10)){
 
   validate_top_k(model_fit, burnin)
 

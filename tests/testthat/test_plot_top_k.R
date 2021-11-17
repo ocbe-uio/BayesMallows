@@ -1,11 +1,12 @@
 context("Testing plot_top_k and predict_top_k")
 library(dplyr)
+beach_small <- beach_preferences %>%
+  filter(bottom_item %in% 1:5, top_item %in% 1:5)
+beach_tc <- generate_transitive_closure(beach_small)
+beach_init_rank <- generate_initial_ranking(beach_tc)
 
 test_that("plot_top_k and predict_top_k fail when they should", {
-  beach_small <- beach_preferences %>%
-    filter(bottom_item %in% 1:5, top_item %in% 1:5)
-  beach_tc <- generate_transitive_closure(beach_small)
-  beach_init_rank <- generate_initial_ranking(beach_tc)
+
   bmm <- compute_mallows(rankings = beach_init_rank, preferences = beach_tc,
                          nmc = 2, save_aug = TRUE)
   # Expecting error because burnin is not set
@@ -88,8 +89,8 @@ test_that("plot_top_k works", {
                          nmc = 10, save_aug = TRUE)
   expect_s3_class(plot_top_k(bmm, k = 4, burnin = 5), "ggplot")
 
-  model_fit <- compute_mallows(rankings = beach_init_rank, preferences = beach_tc,
+  bmm <- compute_mallows(rankings = beach_init_rank, preferences = beach_tc,
                                nmc = 10, save_aug = TRUE, n_clusters = 2)
-  expect_s3_class(plot_top_k(bmm, k = 4, burnin = 5), "ggplot")
+  expect_s3_class(plot_top_k(bmm, k = 4, burnin = 5, rel_widths = c(.5, 1)), "ggplot")
 
 })
