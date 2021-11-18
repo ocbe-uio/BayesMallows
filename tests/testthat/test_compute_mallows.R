@@ -120,7 +120,7 @@ test_that("compute_mallows treats obs_freq properly",{
   # Next, we create a new hypthetical beach_preferences dataframe where each
   # assessor is replicated 1-4 times
   beach_pref_rep <- beach_small %>%
-    mutate(new_assessor = lapply(obs_freq[assessor], ~ 1:.x)) %>%
+    mutate(new_assessor = lapply(obs_freq[assessor], function(x) 1:x)) %>%
     unnest(cols = new_assessor) %>%
     mutate(assessor = paste(assessor, new_assessor, sep = ",")) %>%
     select(-new_assessor)
