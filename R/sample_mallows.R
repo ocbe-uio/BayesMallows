@@ -119,7 +119,7 @@ sample_mallows <- function(rho0, alpha0, n_samples,
     diagnostic <- as.data.frame(samples)
     diagnostic <- dplyr::mutate(diagnostic, iteration = dplyr::row_number())
 
-    diagnostic <- reshape(diagnostic, direction = "long",
+    diagnostic <- stats::reshape(diagnostic, direction = "long",
             varying = setdiff(names(diagnostic), "iteration"),
             v.names = "value",
             timevar = "item",

@@ -173,10 +173,10 @@ find_cpc <- function(group_df){
   # Store the total number of iterations after burnin
   n_samples <- length(unique(df$iteration))
 
-  # Spread to get items along columns
-  df <- reshape(as.data.frame(df), direction = "wide",
-          idvar = c("cluster", "iteration"),
-          timevar = "item")
+  # Reshape to get items along columns
+  df <- stats::reshape(as.data.frame(df), direction = "wide",
+                       idvar = c("cluster", "iteration"),
+                       timevar = "item")
   names(df) <- gsub("^value\\.", "", names(df))
 
   # Group by everything except iteration, and count the unique combinations
@@ -195,7 +195,7 @@ find_cpc <- function(group_df){
 
   # Now collect one set of ranks per cluster
   df$id <- seq_len(nrow(df))
-  df <- reshape(as.data.frame(df), direction = "long",
+  df <- stats::reshape(as.data.frame(df), direction = "long",
           varying = setdiff(names(df), c("cluster", "probability", "id")),
           v.names = "map_ranking",
           timevar = "item",
