@@ -33,7 +33,7 @@ plot_elbow <- function(..., burnin = NULL){
     models <- models[[1]]
   }
 
-  df <- purrr::map_dfr(models, function(x) {
+  df <- do.call(rbind, lapply(models, function(x) {
     stopifnot(class(x) == "BayesMallows")
 
     if(!("burnin" %in% names(x))){
@@ -56,7 +56,7 @@ plot_elbow <- function(..., burnin = NULL){
 
     df <- dplyr::mutate(df, n_clusters = x$n_clusters)
     return(df)
-  })
+  }))
 
   ggplot2::ggplot(df, ggplot2::aes(x = as.factor(.data$n_clusters), y = .data$value)) +
     ggplot2::geom_boxplot() +

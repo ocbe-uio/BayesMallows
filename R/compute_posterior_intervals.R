@@ -90,7 +90,7 @@ compute_posterior_intervals <- function(model_fit, burnin = model_fit$burnin,
       # Find contiguous regions
       breaks <- c(0, which(diff(values) != 1), length(values))
 
-      hpdi <- purrr::map(seq(length(breaks) - 1), function(.x, values, breaks) {
+      hpdi <- lapply(seq(length(breaks) - 1), function(.x, values, breaks) {
         vals <- values[(breaks[.x] + 1):breaks[.x + 1]]
         vals <- unique(c(min(vals), max(vals)))
         paste0("[", paste(vals, collapse = ","), "]")
