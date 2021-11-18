@@ -8,7 +8,7 @@ set.seed(1234)
 obs_freq <- sample(x = seq(from = 100L, to = 500L, by = 1L),
                   size = nrow(potato_visual), replace = TRUE)
 # We also create a set of repeated indices, used to extend the matrix rows
-repeated_indices <- unlist(map2(1:nrow(potato_visual), obs_freq, ~ rep(.x, each = .y)))
+repeated_indices <- unlist(Map(function(x, y) rep(x, each = y), 1:nrow(potato_visual), obs_freq))
 # The potato_repeated matrix consists of all rows repeated corresponding to
 # the number of assessors in the obs_freq vector. This is how a large dataset
 # would look like without using the obs_freq argument
@@ -70,7 +70,7 @@ obs_freq <- sample(x = 1:4, size = length(unique(beach_preferences$assessor)), r
 # Next, we create a new hypthetical beach_preferences dataframe where each
 # assessor is replicated 1-4 times
 beach_pref_rep <- beach_preferences %>%
-  mutate(new_assessor = lapply(obs_freq[assessor], ~ 1:.x)) %>%
+  mutate(new_assessor = lapply(obs_freq[assessor], function(x) 1:x)) %>%
   unnest(cols = new_assessor) %>%
   mutate(assessor = paste(assessor, new_assessor, sep = ",")) %>%
   select(-new_assessor)
