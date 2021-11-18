@@ -194,7 +194,15 @@ find_cpc <- function(group_df){
   df <- dplyr::select(df, -.data$n_max, -.data$n)
 
   # Now collect one set of ranks per cluster
-  df <- tidyr::pivot_longer(df, cols = -c("cluster", "probability"), names_to = "item", values_to = "map_ranking")
+  df$id <- seq_len(nrow(df))
+  df <- reshape(as.data.frame(df), direction = "long",
+          varying = setdiff(names(df), c("cluster", "probability", "id")),
+          v.names = "map_ranking",
+          timevar = "item",
+          idvar = c("cluster", "probability", "id"),
+          times = setdiff(names(df), c("cluster", "probability", "id")))
+  rownames(df) <- NULL
+  df$id <- NULL
 
   # Sort according to cluster and ranking
   df <- dplyr::arrange(df, .data$cluster, .data$map_ranking)
