@@ -36,11 +36,11 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
       m <- model_fit$alpha
       trace_alpha(m, FALSE)
     } else if(inherits(model_fit, "BayesMallowsMixtures")){
-      m <- purrr::map_dfr(model_fit, function(x){
+      m <- do.call(rbind, lapply(model_fit, function(x){
         dplyr::mutate(x$alpha,
                       cluster = as.character(.data$cluster),
                       n_clusters = x$n_clusters)
-      })
+      }))
       trace_alpha(m, TRUE)
       }
 
@@ -48,7 +48,7 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
     if(inherits(model_fit, "BayesMallows")){
       trace_rho(model_fit, items)
     } else if(inherits(model_fit, "BayesMallowsMixtures")){
-      cowplot::plot_grid(plotlist = purrr::map(model_fit, trace_rho, clusters = TRUE, items = items))
+      cowplot::plot_grid(plotlist = lapply(model_fit, trace_rho, clusters = TRUE, items = items))
     }
 
   } else if(parameter == "Rtilde") {
@@ -62,11 +62,11 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
     if(inherits(model_fit, "BayesMallows")){
       m <- model_fit$cluster_probs
     } else if(inherits(model_fit, "BayesMallowsMixtures")){
-      m <- purrr::map_dfr(model_fit, function(x){
+      m <- do.call(rbind, lapply(model_fit, function(x){
         dplyr::mutate(x$cluster_probs,
                       cluster = as.character(.data$cluster),
                       n_clusters = x$n_clusters)
-      })
+      }))
     }
     trace_cluster_probs(m)
 
