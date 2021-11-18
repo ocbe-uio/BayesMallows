@@ -52,16 +52,17 @@ create_ranking <- function(orderings){
     n_items <- ncol(orderings)
 
     # Convert to list, for easier functional programming
-    orderings <- purrr::array_branch(orderings, margin = 1)
+    orderings <- split(orderings, f = seq_len(nrow(orderings)))
 
     # Check that matrix contains permutations
-    check <- purrr::map_lgl(orderings, validate_permutation)
-    if(!all(check)){
+    check <- lapply(orderings, validate_permutation)
+
+    if(!Reduce(`&&`, check)){
       stop(paste("orderings must contain proper permutations. Problem row(s):", which(!check)))
     }
 
     # Convert each ordering to ranking, taking special care of missing values
-    rankings <- purrr::map(orderings, function(x) {
+    rankings <- lapply(orderings, function(x) {
       # Find out which items are missing
       missing_items <- setdiff(1:n_items, x)
       # Possible rankings for each item
