@@ -1,3 +1,11 @@
+# BayesMallows 1.0.4.9000
+
+* Removed purrr dependency from Imports.
+
+# BayesMallows 1.0.4
+
+* Incorporates changes since 1.0.3, and also remove PLMIX from Imports.
+
 # BayesMallows 1.0.3.9001
 
 * Fixed bug which caused plot_top_k to fail when plotting clusters.
