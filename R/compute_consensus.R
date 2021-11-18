@@ -174,7 +174,10 @@ find_cpc <- function(group_df){
   n_samples <- length(unique(df$iteration))
 
   # Spread to get items along columns
-  df <- tidyr::pivot_wider(df, names_from = "item", values_from = "value")
+  df <- reshape(as.data.frame(df), direction = "wide",
+          idvar = c("cluster", "iteration"),
+          timevar = "item")
+  names(df) <- gsub("^value\\.", "", names(df))
 
   # Group by everything except iteration, and count the unique combinations
   df <- dplyr::group_by_at(df, .vars = dplyr::vars(-.data$iteration))
