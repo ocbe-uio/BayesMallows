@@ -1,6 +1,6 @@
 library(dplyr)
 library(tidyr)
-library(purrr)
+
 # The first example uses full rankings in the potato_visual dataset, but we assume
 # that each row in the data corresponds to between 100 and 500 assessors.
 set.seed(1234)

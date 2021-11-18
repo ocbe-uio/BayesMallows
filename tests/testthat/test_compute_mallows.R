@@ -1,6 +1,6 @@
 library(dplyr)
 library(tidyr)
-library(purrr)
+
 context("Testing compute_mallows")
 
 test_that("miscellaneous input validation", {
