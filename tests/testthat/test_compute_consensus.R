@@ -44,20 +44,27 @@ test_that("compute_consensus computes correctly for rho", {
                                               0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
                                               0.0510204081632653, 0.0510204081632653), item = c("Item 1", "Item 3",
                                                                                                 "Item 3", "Item 3", "Item 3", "Item 11", "Item 11", "Item 11",
-                                                                                                "Item 11", "Item 1", "Item 12", "Item 7", "Item 10", "Item 7",
-                                                                                                "Item 1", "Item 12", "Item 7", "Item 12", "Item 7", "Item 15",
-                                                                                                "Item 12", "Item 15", "Item 14", "Item 1", "Item 15", "Item 14",
-                                                                                                "Item 15", "Item 14", "Item 9", "Item 10", "Item 4", "Item 10",
-                                                                                                "Item 13", "Item 4", "Item 10", "Item 4", "Item 14", "Item 6",
-                                                                                                "Item 13", "Item 6", "Item 4", "Item 13", "Item 8", "Item 13",
-                                                                                                "Item 6", "Item 9", "Item 6", "Item 9", "Item 5", "Item 8", "Item 5",
-                                                                                                "Item 8", "Item 2", "Item 5", "Item 9", "Item 5", "Item 8", "Item 2",
-                                                                                                "Item 2", "Item 2"), map_ranking = c(1, 1, 1, 1, 2, 2, 2, 2,
+                                                                                                "Item 1", "Item 7", "Item 11", "Item 12", "Item 1", "Item 7",
+                                                                                                "Item 10", "Item 12", "Item 7", "Item 7", "Item 12", "Item 15",
+                                                                                                "Item 1", "Item 12", "Item 14", "Item 15", "Item 14", "Item 14",
+                                                                                                "Item 15", "Item 15", "Item 4", "Item 9", "Item 10", "Item 10",
+                                                                                                "Item 4", "Item 4", "Item 10", "Item 13", "Item 6", "Item 6",
+                                                                                                "Item 13", "Item 14", "Item 4", "Item 8", "Item 13", "Item 13",
+                                                                                                "Item 6", "Item 6", "Item 9", "Item 9", "Item 5", "Item 5", "Item 8",
+                                                                                                "Item 8", "Item 2", "Item 5", "Item 5", "Item 9", "Item 2", "Item 2",
+                                                                                                "Item 2", "Item 8"), map_ranking = c(1, 1, 1, 1, 2, 2, 2, 2,
                                                                                                                                      3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8,
                                                                                                                                      8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11, 12, 12,
                                                                                                                                      12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15)), row.names = c(NA,
-                                                                                                                                                                                                             -60L), class = c("tbl_df", "tbl", "data.frame"))
-  )
+                                                                                                                                                                                                             -60L), reshapeLong = list(varying = structure(list(map_ranking = c("Item 1",
+                                                                                                                                                                                                                                                                                "Item 2", "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8",
+                                                                                                                                                                                                                                                                                "Item 9", "Item 10", "Item 11", "Item 12", "Item 13", "Item 14",
+                                                                                                                                                                                                                                                                                "Item 15")), v.names = "map_ranking", times = c("Item 1", "Item 2",
+                                                                                                                                                                                                                                                                                                                                "Item 3", "Item 4", "Item 5", "Item 6", "Item 7", "Item 8", "Item 9",
+                                                                                                                                                                                                                                                                                                                                "Item 10", "Item 11", "Item 12", "Item 13", "Item 14", "Item 15"
+                                                                                                                                                                                                                                                                                )), v.names = "map_ranking", idvar = c("cluster", "probability",
+                                                                                                                                                                                                                                                                                                                       "id"), timevar = "item"), class = "data.frame")
+               )
 })
 
 
@@ -111,33 +118,45 @@ test_that("compute_consensus computes augmented ranks correctly", {
   res <- compute_consensus(b2, type = "MAP", burnin = 200, parameter = "Rtilde", assessors = 1L)
   expect_equal(res, structure(list(probability = c(0.62, 0.62, 0.62), item = c("Item 1",
                                                                                "Item 3", "Item 2"), map_ranking = c(1, 2, 3)), row.names = c(NA,
-                                                                                                                                             -3L), class = c("tbl_df", "tbl", "data.frame"))
-  )
+                                                                                                                                             -3L), reshapeLong = list(varying = structure(list(map_ranking = c("Item 1",
+                                                                                                                                                                                                               "Item 2", "Item 3")), v.names = "map_ranking", times = c("Item 1",
+                                                                                                                                                                                                                                                                        "Item 2", "Item 3")), v.names = "map_ranking", idvar = c("cluster",
+                                                                                                                                                                                                                                                                                                                                 "probability", "id"), timevar = "item"), class = "data.frame"))
 
   res <- compute_consensus(b3, type = "MAP", burnin = 200, parameter = "Rtilde", assessors = 1L)
   expect_equal(res,
                structure(list(probability = c(0.61, 0.61, 0.61), item = c("Item 1",
                                                                           "Item 3", "Item 2"), map_ranking = c(1, 2, 3)), row.names = c(NA,
-                                                                                                                                        -3L), class = c("tbl_df", "tbl", "data.frame"))
-  )
+                                                                                                                                        -3L), reshapeLong = list(varying = structure(list(map_ranking = c("Item 1",
+                                                                                                                                                                                                          "Item 2", "Item 3")), v.names = "map_ranking", times = c("Item 1",
+                                                                                                                                                                                                                                                                   "Item 2", "Item 3")), v.names = "map_ranking", idvar = c("cluster",
+                                                                                                                                                                                                                                                                                                                            "probability", "id"), timevar = "item"), class = "data.frame")
+               )
+
 
   res <- compute_consensus(b2, type = "MAP", burnin = 200, parameter = "Rtilde", assessors = c(5L, 3L))
   expect_equal(res, structure(list(assessor = c(3, 3, 3, 5, 5, 5), probability = c(0.533333333333333,
                                                                                    0.533333333333333, 0.533333333333333, 1, 1, 1), item = c("Item 1",
                                                                                                                                             "Item 3", "Item 2", "Item 1", "Item 3", "Item 2"), map_ranking = c(1,
-                                                                                                                                                                                                               2, 3, 1, 2, 3)), row.names = c(NA, -6L), class = c("tbl_df",
-                                                                                                                                                                                                                                                                  "tbl", "data.frame"))
-  )
+                                                                                                                                                                                                               2, 3, 1, 2, 3)), row.names = c(NA, -6L), reshapeLong = list(varying = structure(list(
+                                                                                                                                                                                                                 map_ranking = c("Item 1", "Item 2", "Item 3")), v.names = "map_ranking", times = c("Item 1",
+                                                                                                                                                                                                                                                                                                    "Item 2", "Item 3")), v.names = "map_ranking", idvar = c("cluster",
+                                                                                                                                                                                                                                                                                                                                                             "probability", "id"), timevar = "item"), class = "data.frame")
+               )
 
   res <- compute_consensus(b3, type = "MAP", burnin = 200, parameter = "Rtilde", assessors = c(5L, 3L))
 
-  expect_equal(res,
-               structure(list(assessor = c(3, 3, 3, 5, 5, 5), probability = c(0.53,
-                                                                              0.53, 0.53, 1, 1, 1), item = c("Item 1", "Item 3", "Item 2",
-                                                                                                             "Item 1", "Item 3", "Item 2"), map_ranking = c(1, 2, 3, 1, 2,
-                                                                                                                                                            3)), row.names = c(NA, -6L), class = c("tbl_df", "tbl", "data.frame"
-                                                                                                                                                            ))
-  )
+  expect_equal(
+    res,
+    structure(list(assessor = c(3, 3, 3, 5, 5, 5), probability = c(0.53,
+                                                                   0.53, 0.53, 1, 1, 1), item = c("Item 1", "Item 3", "Item 2",
+                                                                                                  "Item 1", "Item 3", "Item 2"), map_ranking = c(1, 2, 3, 1, 2,
+                                                                                                                                                 3)), row.names = c(NA, -6L), reshapeLong = list(varying = structure(list(
+                                                                                                                                                   map_ranking = c("Item 1", "Item 2", "Item 3")), v.names = "map_ranking", times = c("Item 1",
+                                                                                                                                                                                                                                      "Item 2", "Item 3")), v.names = "map_ranking", idvar = c("cluster",
+                                                                                                                                                                                                                                                                                               "probability", "id"), timevar = "item"), class = "data.frame")
+
+               )
 
 
 

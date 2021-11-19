@@ -54,12 +54,14 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   df <- dplyr::rename(df, cluster = .data$value)
 
   if(expand){
-    df <- tidyr::complete(
-      dplyr::group_by(df, .data$assessor),
-      cluster = unique(df$cluster),
-      fill = list(probability = 0)
-    )
-    df <- dplyr::ungroup(df)
+    df <- do.call(rbind, lapply(split(df, f = df$assessor), function(dd){
+      dd2 <- merge(dd, expand.grid(cluster = unique(df$cluster)), by = "cluster",
+                   all = TRUE)
+      dd2$assessor <- unique(dd$assessor)
+      dd2$probability[is.na(dd2$probability)] <- 0
+      dd2
+    }))
+
   }
 
   # Compute the MAP estimate per assessor
