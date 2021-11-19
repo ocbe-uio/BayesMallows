@@ -94,7 +94,7 @@ test_that("M-H aug ranking pseudo works", {
   test_2 <- metropolis_hastings_aug_ranking_pseudo(
     alpha, rho, n_items, R_obs, R_curr, metric
   )
-  expect_equal(test_2, matrix(c(1, 2, 3, 6, 5, 4)))
+  expect_equal(test_2, matrix(c(1, 2, 3, 5, 6, 4)))
   expect_equal(all(test_2 == R_curr), FALSE)
   R_curr <- c(1, 2, 6, 5, 4, 3)
   R_obs <- c(1, 2, NA, NA, NA, NA)
@@ -103,7 +103,7 @@ test_that("M-H aug ranking pseudo works", {
     alpha, rho, n_items, partial_ranking = R_obs, current_ranking = R_curr,
     metric
   )
-  expect_equal(test_3, matrix(c(1, 2, 4, 5, 3, 6)))
+  expect_equal(test_3, matrix(c(1, 2, 4, 3, 5, 6)))
   expect_equal(all(test_3 == R_curr), FALSE)
 })
 
