@@ -1,7 +1,7 @@
 context("Testing MCMC function on potato data")
 
 library(dplyr)
-library(tidyr)
+
 
 # Testing with footrule
 set.seed(200)
@@ -38,3 +38,4 @@ test_that(
       nrow() == 0
   )
 )
+

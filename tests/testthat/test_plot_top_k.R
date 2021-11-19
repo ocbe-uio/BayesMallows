@@ -42,24 +42,18 @@ test_that("plot_top_k and predict_top_k fail when they should", {
   expect_equal(
     pred[13:16, ],
     structure(list(assessor = c(3, 3, 3, 4), item = c("Item 3", "Item 4",
-                                                      "Item 5", "Item 1"), prob = c(1, 0.3125, 0, 0.5625)), class = c("grouped_df",
-                                                                                                                      "tbl_df", "tbl", "data.frame"), row.names = c(NA, -4L), groups = structure(list(
-                                                                                                                        assessor = c(3, 4), .rows = structure(list(1:3, 4L), ptype = integer(0), class = c("vctrs_list_of",
-                                                                                                                                                                                                           "vctrs_vctr", "list"))), class = c("tbl_df", "tbl", "data.frame"
-                                                                                                                                                                                                           ), row.names = c(NA, -2L), .drop = TRUE))
-  )
+                                                      "Item 5", "Item 1"), prob = c(1, 0.3125, 0, 0.5625)), row.names = c("3.3",
+                                                                                                                          "3.4", "3.5", "4.1"), class = "data.frame")
+    )
 
   pred <- predict_top_k(bmm, burnin = 4, k = 5)
   expect_equal(
     head(pred),
     structure(list(assessor = c(1, 1, 1, 1, 1, 2), item = c("Item 1",
                                                             "Item 2", "Item 3", "Item 4", "Item 5", "Item 1"), prob = c(1,
-                                                                                                                        1, 1, 1, 1, 1)), class = c("grouped_df", "tbl_df", "tbl", "data.frame"
-                                                                                                                        ), row.names = c(NA, -6L), groups = structure(list(assessor = c(1,
-                                                                                                                                                                                        2), .rows = structure(list(1:5, 6L), ptype = integer(0), class = c("vctrs_list_of",
-                                                                                                                                                                                                                                                           "vctrs_vctr", "list"))), class = c("tbl_df", "tbl", "data.frame"
-                                                                                                                                                                                                                                                           ), row.names = c(NA, -2L), .drop = TRUE))
-  )
+                                                                                                                        1, 1, 1, 1, 1)), row.names = c("1.1", "1.2", "1.3", "1.4", "1.5",
+                                                                                                                                                       "2.1"), class = "data.frame")
+    )
 })
 
 

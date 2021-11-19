@@ -12,12 +12,12 @@
   # the cluster probabilites
   system.time(m <- compute_mallows(rankings = sushi_rankings,
                                    n_clusters = 6, nmc = 2000, save_clus = TRUE,
-                                   save_ind_clus = FALSE))
+                                   save_ind_clus = FALSE, verbose = TRUE))
   # With this options, compute_mallows will save cluster_probs2.csv,
   # cluster_probs3.csv, ..., cluster_probs[nmc].csv.
   system.time(m <- compute_mallows(rankings = sushi_rankings, n_clusters = 6,
                                    nmc = 2000, save_clus = TRUE,
-                                   save_ind_clus = TRUE))
+                                   save_ind_clus = TRUE, verbose = TRUE))
 
   # Next, we check convergence of alpha
   assess_convergence(m)
@@ -32,8 +32,9 @@
   paste(sum(do.call(file.size, list(cluster_files))) * 1e-6, "MB")
 
   # Find the iteration each file corresponds to, by extracting its number
-  library(stringr)
-  iteration_number <- as.integer(str_extract(cluster_files, "[:digit:]+"))
+  iteration_number <- as.integer(
+    gsub("(^[a-zA-Z\\_\\.]*)([0-9]+)([a-zA-Z\\_\\.]+$)", "\\2",
+         scluster_files, perl = TRUE))
   # Remove all files before burnin
   file.remove(cluster_files[iteration_number <= burnin])
   # Update the vector of files, after the deletion
@@ -41,21 +42,19 @@
   # Create 3d array, with dimensions (iterations, assessors, clusters)
   prob_array <- array(dim = c(length(cluster_files), m$n_assessors, m$n_clusters))
   # Read each file, adding to the right element of the array
-  library(readr)
   for(i in seq_along(cluster_files)){
     prob_array[i, , ] <- as.matrix(
-      read_delim(cluster_files[[i]], delim = ",",
-                 col_names = FALSE, col_types = paste(rep("d", m$n_clusters),
-                                                      collapse = "")))
+      read.csv(cluster_files[[i]], header = FALSE))
   }
 
   library(dplyr)
-  library(tidyr)
-  # Create an tnteger array of latent allocations, as this is required by label.switching
+  # Create an integer array of latent allocations, as this is required by label.switching
   z <- m$cluster_assignment %>%
     filter(iteration > burnin) %>%
-    mutate(value = as.integer(str_extract(value, "[:digit:]+"))) %>%
-    spread(key = assessor, value = value, sep = "_") %>%
+    mutate(value = as.integer(gsub("Cluster ", "", value))) %>%
+    as.data.frame() %>%
+    stats::reshape(direction = "wide",
+                   idvar = "iteration", timevar = "assessor") %>%
     select(-iteration) %>%
     as.matrix()
 

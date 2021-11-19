@@ -53,8 +53,7 @@ selecting the number of mixture.
   # Plot the posterior distributions of alpha per cluster
   plot(mixture_model)
   # Compute the posterior interval of alpha per cluster
-  compute_posterior_intervals(mixture_model,
-                              parameter = "alpha")
+  compute_posterior_intervals(mixture_model, parameter = "alpha")
   # Plot the posterior distributions of cluster probabilities
   plot(mixture_model, parameter = "cluster_probs")
   # Plot the posterior probability of cluster assignment
@@ -64,15 +63,19 @@ selecting the number of mixture.
   # Compute the cluster-wise CP consensus, and show one column per cluster
   cp <- compute_consensus(mixture_model, type = "CP")
   library(dplyr)
-  library(tidyr)
   cp \%>\%
     select(-cumprob) \%>\%
-    spread(key = cluster, value = item)
+    as.data.frame() \%>\%
+    stats::reshape(direction = "wide", idvar = "ranking",
+                   timevar = "cluster", varying = list(as.character(unique(.$cluster))))
+
   # Compute the MAP consensus, and show one column per cluster
   map <- compute_consensus(mixture_model, type = "MAP")
   map \%>\%
     select(-probability) \%>\%
-    spread(key = cluster, value = item)
+    as.data.frame() \%>\%
+    stats::reshape(direction = "wide", idvar = "map_ranking",
+                   timevar = "cluster", varying = list(as.character(unique(.$cluster))))
 
   # RUNNING IN PARALLEL
   # Computing Mallows models with different number of mixtures in parallel leads to

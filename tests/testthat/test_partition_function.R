@@ -1,9 +1,11 @@
 context("Testing computation of partition functions")
 
+
 # Brute force formula
 check_log_zn <- function(n, alpha, metric){
   # Generate all permutations
-  perm <- gtools::permutations(n, n)
+  perm <- permutations(n)
+
 
   # Compute the partition function
   if(metric == "footrule") {
