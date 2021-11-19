@@ -13,7 +13,6 @@ the observation frequencies.
 }
 \examples{
 library(dplyr)
-library(tidyr)
 
 # The first example uses full rankings in the potato_visual dataset, but we assume
 # that each row in the data corresponds to between 100 and 500 assessors.
@@ -83,11 +82,19 @@ obs_freq <- sample(x = 1:4, size = length(unique(beach_preferences$assessor)), r
 
 # Next, we create a new hypthetical beach_preferences dataframe where each
 # assessor is replicated 1-4 times
-beach_pref_rep <- beach_preferences \%>\%
-  mutate(new_assessor = lapply(obs_freq[assessor], function(x) 1:x)) \%>\%
-  unnest(cols = new_assessor) \%>\%
-  mutate(assessor = paste(assessor, new_assessor, sep = ",")) \%>\%
-  select(-new_assessor)
+beach_pref_rep <- do.call(
+  rbind,
+  lapply(split(beach_preferences, f = beach_preferences$assessor),
+         function(dd){
+           ret <- merge(
+             dd,
+             data.frame(
+               new_assessor = seq_len(obs_freq[unique(dd$assessor)])
+               ), all = TRUE)
+           ret$assessor <- paste(ret$assessor, ret$new_assessor, sep = ",")
+           ret$new_assessor <- NULL
+           ret
+           }))
 
 # We generate transitive closure for these preferences
 beach_tc_rep <- generate_transitive_closure(beach_pref_rep)

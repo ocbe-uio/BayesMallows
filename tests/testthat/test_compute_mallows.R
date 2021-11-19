@@ -1,5 +1,5 @@
 library(dplyr)
-library(tidyr)
+
 
 context("Testing compute_mallows")
 
@@ -119,11 +119,18 @@ test_that("compute_mallows treats obs_freq properly",{
 
   # Next, we create a new hypthetical beach_preferences dataframe where each
   # assessor is replicated 1-4 times
-  beach_pref_rep <- beach_small %>%
-    mutate(new_assessor = lapply(obs_freq[assessor], function(x) 1:x)) %>%
-    unnest(cols = new_assessor) %>%
-    mutate(assessor = paste(assessor, new_assessor, sep = ",")) %>%
-    select(-new_assessor)
+
+  beach_pref_rep <- do.call(rbind, lapply(split(beach_small, f = seq_len(nrow(beach_small))), function(dd){
+    ret <- merge(
+      dd,
+      data.frame(new_assessor = seq_len(obs_freq[dd$assessor])),
+      all = TRUE
+    )
+    ret$assessor <- paste(ret$assessor, ret$new_assessor, sep = ",")
+    ret$new_assessor <- NULL
+    ret
+  }))
+
 
   # We generate transitive closure for these preferences
   beach_tc_rep <- generate_transitive_closure(beach_pref_rep)

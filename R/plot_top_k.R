@@ -38,11 +38,13 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
   rho <- dplyr::summarise(rho, prob = dplyr::n()/n_samples, .groups = "drop")
 
   # Find the complete set of items per cluster
-  rho <- tidyr::complete(
-    dplyr::group_by(rho, .data$cluster),
-    item = model_fit$items,
-    fill = list(prob = 0))
-  rho <- dplyr::ungroup(rho)
+  rho <- do.call(rbind, lapply(split(rho, f = rho$cluster), function(dd){
+    dd2 <- merge(dd, expand.grid(item = unique(rho$item)),
+                 by = "item", all = TRUE)
+    dd2$cluster[is.na(dd2$cluster)] <- unique(dd$cluster)
+    dd2$prob[is.na(dd2$prob)] <- 0
+    dd2
+  }))[, c("cluster", "item", "prob")]
 
   # Sort the items according to probability in Cluster 1
   item_ordering <- compute_consensus(model_fit, type = "CP", burnin = burnin)
