@@ -61,9 +61,9 @@ Rcpp::List calculate_forward_probability(
     item_ordering = maybe_offset_indices(partial_ranking, item_ordering);
 
     for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
-      
+
       Rcpp::Rcout << " iteration " << jj << std::endl; //TEMP
-       
+
       // items to sample rank
       arma::uword item_to_sample_rank = item_ordering(jj);
       Rcpp::Rcout << " item to sample rank is " << item_to_sample_rank << std::endl; //TEMP
@@ -95,7 +95,7 @@ Rcpp::List calculate_forward_probability(
       // augmented ranking
       arma::uvec sample_prob = find(remaining_set == auxiliary_ranking(jj));
       Rcpp::Rcout << " sample prob is " << sample_prob << std::endl; //TEMP
-      
+
       Rcpp::Rcout << jj << " fwd = " << forward_auxiliary_ranking_probability << std::endl; //TEMP
       forward_auxiliary_ranking_probability = \
         forward_auxiliary_ranking_probability * \
@@ -110,10 +110,8 @@ Rcpp::List calculate_forward_probability(
     auxiliary_ranking(num_items_unranked - 1) = arma::as_scalar(remaining_set);
 
     // fit the augmented ranking within the partial rankings with NAs
-    arma::vec ar;
-    ar = arma::conv_to<arma::vec>::from(auxiliary_ranking);
-    arma::uvec pr_nas = arma::find_nonfinite(partial_ranking);
-    partial_ranking.elem(pr_nas) = ar; // ranks for items
+    arma::vec ar = arma::conv_to<arma::vec>::from(auxiliary_ranking);
+    partial_ranking.elem(item_ordering) = ar; // ranks for items
   }
   return Rcpp::List::create(
     Rcpp::Named("aug_ranking") = partial_ranking,
