@@ -1,6 +1,5 @@
 context("Testing computation of partition functions")
 
-source("../permfun.R")
 
 # Brute force formula
 check_log_zn <- function(n, alpha, metric){
