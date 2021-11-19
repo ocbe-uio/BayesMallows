@@ -16,11 +16,11 @@ print.BayesMallowsMixtures <- function(x, ...){
   # issue a warning. This is because print.BayesMallowsMixtures must have the same
   # required arguments as base::print.
 
-  if(!all(purrr::map_lgl(x, ~ inherits(.x, "BayesMallows")))) {
+  if(!Reduce(`&`, lapply(x, function(x) inherits(x, "BayesMallows")))) {
     stop("All elements of a BayesMallowsMixtures object must be of class BayesMallows.")
   }
 
-  n_clusters <- purrr::map_int(x, ~ .x$n_clusters)
+  n_clusters <- vapply(x, function(x) x$n_clusters, integer(1))
 
   cat("Collection of", length(x), "Bayesian Mallows Mixture Models with the following number of mixture components:\n",
       paste0(paste(n_clusters, collapse = ", "), "."))

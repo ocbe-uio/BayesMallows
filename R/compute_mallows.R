@@ -152,7 +152,7 @@
 #'   function should be estimated over the whole range of \eqn{\alpha} values
 #'   covered by the prior distribution for \eqn{\alpha} with high probability.
 #'   In the case that a cluster \eqn{\alpha_c} becomes empty during the
-#'   Metropolis-Hastings algorihm, the posterior of \eqn{\alpha_c} equals its
+#'   Metropolis-Hastings algorithm, the posterior of \eqn{\alpha_c} equals its
 #'   prior. For example, if the rate parameter of the exponential prior equals,
 #'   say \eqn{\lambda = 0.001}, there is about 37 \% (or exactly: \code{1 -
 #'   pexp(1000, 0.001)}) prior probability that \eqn{\alpha_c > 1000}. Hence
@@ -313,8 +313,8 @@ compute_mallows <- function(rankings = NULL,
     n_items <- max(c(preferences$bottom_item, preferences$top_item))
     n_assessors <- length(unique(preferences$assessor))
     if(is.null(rankings)){
-      rankings <- purrr::rerun(n_assessors, sample(x = n_items, size = n_items))
-      rankings <- matrix(unlist(rankings), ncol = n_items, nrow = n_assessors, byrow = TRUE)
+      rankings <- replicate(n_assessors, sample(x = n_items, size = n_items), simplify = "numeric")
+      rankings <- matrix(rankings, ncol = n_items, nrow = n_assessors, byrow = TRUE)
     }
   }
 
@@ -325,15 +325,14 @@ compute_mallows <- function(rankings = NULL,
   if(any(is.na(rankings))){
 
     dn <- dimnames(rankings)
-    rankings <- purrr::map(purrr::array_branch(rankings, margin = 1),
+    rankings <- lapply(split(rankings, f = seq_len(nrow(rankings))),
                            function(x) {
                              if(sum(is.na(x)) == 1) x[is.na(x)] <- setdiff(1:length(x), x)
                              return(x)
                            })
-    rankings <- t(matrix(unlist(rankings), nrow = n_items))
+    rankings <- do.call(rbind, rankings)
     dimnames(rankings) <- dn
   }
-
 
   if(!is.null(rho_init)) {
     if(!validate_permutation(rho_init)) stop("rho_init must be a proper permutation")
