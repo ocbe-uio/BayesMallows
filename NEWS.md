@@ -1,3 +1,9 @@
+# BayesMallows 1.0.4.9000
+
+* Removed a large number of dependencies by converting to base R code. This will 
+make the package easier to install across a range of systems, and less vulnerable
+to changes in other packages.
+
 # BayesMallows 1.0.4
 
 * Incorporates changes since 1.0.3, and also remove PLMIX from Imports.

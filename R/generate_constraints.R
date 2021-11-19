@@ -29,7 +29,8 @@ generate_constraints <- function(preferences, n_items, cl = NULL){
 
   # Turn the preferences dataframe into a list of dataframes,
   # one list element per assessor
-  constraints <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE], preferences$assessor)
+  constraints <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE],
+                       preferences$assessor)
   if(is.null(cl)) {
     lapply(constraints, constraint_fun, n_items)
   } else {
@@ -44,12 +45,12 @@ constraint_fun <- function(x, n_items){
   constrained_items <- unique(c(x[["bottom_item"]], x[["top_item"]]))
 
   # Now we must complete the dataframe with the items that do not appear
-  items_above <- tidyr::complete(dplyr::select(x, .data$bottom_item, .data$top_item),
-                                 bottom_item = seq(from = 1, to = n_items, by = 1),
-                                 fill = list(top_item = NA_integer_))
+  items_above <- merge(dplyr::select(x, .data$bottom_item, .data$top_item),
+                       expand.grid(bottom_item = seq(from = 1, to = n_items, by = 1)),
+                       by = "bottom_item", all = TRUE)
 
   # Split it into a list, with one element per bottom_item
-  items_above <- split(items_above, items_above[["bottom_item"]])
+  items_above <- split(items_above, items_above$bottom_item)
 
   # For each item, find which items are ranked above it
   items_above <- lapply(items_above, function(x) {
@@ -58,12 +59,12 @@ constraint_fun <- function(x, n_items){
   })
 
   # Now we must complete the dataframe with the items that do not appear
-  items_below <- tidyr::complete(dplyr::select(x, .data$bottom_item, .data$top_item),
-                                 top_item = seq(from = 1, to = n_items, by = 1),
-                                 fill = list(bottom_item = NA_integer_))
+  items_below <- merge(dplyr::select(x, .data$bottom_item, .data$top_item),
+                       expand.grid(top_item = seq(from = 1, to = n_items, by = 1)),
+                       by = "top_item", all = TRUE)
 
   # Split it into a list, with one element per bottom_item
-  items_below <- split(items_below, items_below[["top_item"]])
+  items_below <- split(items_below, items_below$top_item)
 
   # For each item, find which items are ranked above it
   items_below <- lapply(items_below, function(x) {

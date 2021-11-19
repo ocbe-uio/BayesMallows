@@ -39,14 +39,14 @@ predict_top_k <- function(model_fit, burnin = model_fit$burnin,
   rankings <- dplyr::group_by(rankings, .data$assessor, .data$item)
   rankings <- dplyr::summarise(rankings, prob = dplyr::n()/n_samples, .groups = "drop")
 
-  rankings <- tidyr::complete(
-    dplyr::group_by(rankings, .data$assessor),
-    item = model_fit$items,
-    fill = list(prob = 0)
-  )
+  do.call(rbind, lapply(split(rankings, f = rankings$assessor), function(dd){
+    dd2 <- merge(dd, expand.grid(item = unique(rankings$item)),
+                 by = "item", all = TRUE)
+    dd2$assessor[is.na(dd2$assessor)] <- unique(dd$assessor)
+    dd2$prob[is.na(dd2$prob)] <- 0
+    dd2
+  }))[, c("assessor", "item", "prob")]
 
-
-  return(rankings)
 }
 
 

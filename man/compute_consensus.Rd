@@ -59,13 +59,13 @@ compute_consensus(model_fit, type = "MAP")
   # Keeping the burnin at 1000, we can compute the consensus ranking per cluster
   model_fit$burnin <- 1000
   cp_consensus_df <- compute_consensus(model_fit, type = "CP")
-  # Using dplyr::select and tidyr::cumprob we can now make a table
-  # which shows the ranking in each cluster:
+  # We can now make a table which shows the ranking in each cluster:
   library(dplyr)
-  library(tidyr)
   cp_consensus_df \%>\%
     select(-cumprob) \%>\%
-    spread(key = cluster, value = item)
+    as.data.frame() \%>\%
+    stats::reshape(direction = "wide", idvar = "ranking",
+                   timevar = "cluster", varying = list(sort(unique(.$cluster))))
 }
 
 \dontrun{
