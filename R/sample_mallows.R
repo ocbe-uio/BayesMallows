@@ -97,13 +97,14 @@ sample_mallows <- function(rho0, alpha0, n_samples,
                       lag.max = max_lag, plot = FALSE, demean = TRUE)
     names(autocorr) <- items_to_plot
 
-
-    autocorr <- purrr::map_dfr(autocorr, function(x) {
-      dplyr::tibble(
+    autocorr <- do.call(rbind, Map(function(x, xnm){
+      data.frame(
+        item = xnm,
         acf = x$acf[, 1, 1],
         lag = x$lag[, 1, 1]
       )
-    }, .id = "item")
+    }, x = autocorr, xnm = names(autocorr)))
+
     autocorr <- dplyr::mutate(autocorr, item = as.factor(as.integer(.data$item)))
 
     ac_plot <- ggplot2::ggplot(autocorr,

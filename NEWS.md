@@ -1,4 +1,22 @@
-# BayesMallows (development version)
+# BayesMallows 1.0.4.9000
+
+* Removed purrr dependency from Imports.
+
+# BayesMallows 1.0.4
+
+* Incorporates changes since 1.0.3, and also remove PLMIX from Imports.
+
+# BayesMallows 1.0.3.9001
+
+* Fixed bug which caused plot_top_k to fail when plotting clusters.
+* Improved the default value of rel_widths argument to plot_top_k.
+* Wrote unit tests to check that the bugs don't appear again.
+
+# BayesMallows 1.0.3.9000
+
+* Fixed bug which caused importance sampling to fail when running in parallel.
+* Fixed issue with error message when trying to plot error probability when compute_mallows has not been set up to compute error probability.
+* Increased number of unit tests.
 
 # BayesMallows 1.0.3
 
@@ -134,7 +152,7 @@
 * Argument `type` to `plot.BayesMallows` and `assess_convergence` has been renamed to `parameter`, to be more consistent.
 
 # BayesMallows 0.1.1.9002
-* Argument `save_augment_data` to `compute_mallows` has been renamed to `save_aug`.
+* Argument `save_augment_data` to `compute_mallows` has been renamed to `save_aug`. 
 * `compute_mallows` fills in implied ranks when an assessor has only one missing rank. This avoids unnecessary augmentation in MCMC.
 * `generate_ranking` and `generate_ordering` now work with missing ranks.
 

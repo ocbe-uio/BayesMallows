@@ -27,7 +27,7 @@ compute_mallows_mixtures <- function(n_clusters, ..., cl = NULL){
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
   if(is.null(cl)){
-    models <- purrr::map(n_clusters, function(x) {
+    models <- lapply(n_clusters, function(x) {
       compute_mallows(..., n_clusters = x)
     })
   } else {

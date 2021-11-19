@@ -52,7 +52,7 @@ constraint_fun <- function(x, n_items){
   items_above <- split(items_above, items_above[["bottom_item"]])
 
   # For each item, find which items are ranked above it
-  items_above <- purrr::map(items_above, function(x) {
+  items_above <- lapply(items_above, function(x) {
     res <- unique(x[["top_item"]])
     res <- res[!is.na(res)]
   })
@@ -66,7 +66,7 @@ constraint_fun <- function(x, n_items){
   items_below <- split(items_below, items_below[["top_item"]])
 
   # For each item, find which items are ranked above it
-  items_below <- purrr::map(items_below, function(x) {
+  items_below <- lapply(items_below, function(x) {
     res <- unique(x[["bottom_item"]])
     res <- res[!is.na(res)]
   })

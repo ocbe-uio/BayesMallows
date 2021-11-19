@@ -1,12 +1,14 @@
 context("Testing plot_top_k and predict_top_k")
+library(dplyr)
+beach_small <- beach_preferences %>%
+  filter(bottom_item %in% 1:5, top_item %in% 1:5)
+beach_tc <- generate_transitive_closure(beach_small)
+beach_init_rank <- generate_initial_ranking(beach_tc)
 
 test_that("plot_top_k and predict_top_k fail when they should", {
-  beach_small <- beach_preferences %>%
-    filter(bottom_item %in% 1:5, top_item %in% 1:5)
-  beach_tc <- generate_transitive_closure(beach_small)
-  beach_init_rank <- generate_initial_ranking(beach_tc)
+
   bmm <- compute_mallows(rankings = beach_init_rank, preferences = beach_tc,
-                         nmc = 100, save_aug = TRUE)
+                         nmc = 2, save_aug = TRUE)
   # Expecting error because burnin is not set
   expect_error(plot_top_k(bmm))
   expect_error(predict_top_k(bmm))
@@ -27,39 +29,37 @@ test_that("plot_top_k and predict_top_k fail when they should", {
   expect_error(predict_top_k(bmm))
 
   bmm <- compute_mallows(rankings = beach_init_rank, preferences = beach_tc,
-                         nmc = 100, save_aug = FALSE)
+                         nmc = 2, save_aug = FALSE)
   # Expecting error because save_aug = FALSE
   expect_error(plot_top_k(bmm, burnin = 50))
   expect_error(predict_top_k(bmm, burnin = 50))
 
   # Test whether predict_top_k returns correct numbers
   bmm <- compute_mallows(rankings = beach_init_rank, preferences = beach_tc,
-                         nmc = 100, save_aug = TRUE, seed = 1L)
+                         nmc = 20, save_aug = TRUE, seed = 1L)
 
-  pred <- predict_top_k(bmm, burnin = 90, k = 3)
+  pred <- predict_top_k(bmm, burnin = 4, k = 3)
   expect_equal(
-    pred[c(1, 10, 90, 91, 200), ],
-    structure(list(assessor = c(1, 2, 18, 19, 40), item = c("Item 1",
-                                                            "Item 5", "Item 5", "Item 1", "Item 5"), prob = c(1, 1, 1, 1,
-                                                                                                              1)), row.names = c(NA, -5L), groups = structure(list(assessor = c(1,
-                                                                                                                                                                                2, 18, 19, 40), .rows = structure(list(1L, 2L, 3L, 4L, 5L), ptype = integer(0), class = c("vctrs_list_of",
-                                                                                                                                                                                                                                                                          "vctrs_vctr", "list"))), row.names = c(NA, -5L), class = c("tbl_df",
-                                                                                                                                                                                                                                                                                                                                     "tbl", "data.frame"), .drop = TRUE), class = c("grouped_df",
-                                                                                                                                                                                                                                                                                                                                                                                    "tbl_df", "tbl", "data.frame")
-              ) )
+    pred[13:16, ],
+    structure(list(assessor = c(3, 3, 3, 4), item = c("Item 3", "Item 4",
+                                                      "Item 5", "Item 1"), prob = c(1, 0.3125, 0, 0.5625)), class = c("grouped_df",
+                                                                                                                      "tbl_df", "tbl", "data.frame"), row.names = c(NA, -4L), groups = structure(list(
+                                                                                                                        assessor = c(3, 4), .rows = structure(list(1:3, 4L), ptype = integer(0), class = c("vctrs_list_of",
+                                                                                                                                                                                                           "vctrs_vctr", "list"))), class = c("tbl_df", "tbl", "data.frame"
+                                                                                                                                                                                                           ), row.names = c(NA, -2L), .drop = TRUE))
+  )
 
-
-  pred <- predict_top_k(bmm, burnin = 90, k = 5)
+  pred <- predict_top_k(bmm, burnin = 4, k = 5)
   expect_equal(
     head(pred),
     structure(list(assessor = c(1, 1, 1, 1, 1, 2), item = c("Item 1",
                                                             "Item 2", "Item 3", "Item 4", "Item 5", "Item 1"), prob = c(1,
-                                                                                                                        1, 1, 1, 1, 1)), row.names = c(NA, -6L), groups = structure(list(
-                                                                                                                          assessor = c(1, 2), .rows = structure(list(1:5, 6L), ptype = integer(0), class = c("vctrs_list_of",
-                                                                                                                                                                                                             "vctrs_vctr", "list"))), row.names = c(NA, -2L), class = c("tbl_df",
-                                                                                                                                                                                                                                                                        "tbl", "data.frame"), .drop = TRUE), class = c("grouped_df",
-                                                                                                                                                                                                                                                                                                                       "tbl_df", "tbl", "data.frame")))
-
+                                                                                                                        1, 1, 1, 1, 1)), class = c("grouped_df", "tbl_df", "tbl", "data.frame"
+                                                                                                                        ), row.names = c(NA, -6L), groups = structure(list(assessor = c(1,
+                                                                                                                                                                                        2), .rows = structure(list(1:5, 6L), ptype = integer(0), class = c("vctrs_list_of",
+                                                                                                                                                                                                                                                           "vctrs_vctr", "list"))), class = c("tbl_df", "tbl", "data.frame"
+                                                                                                                                                                                                                                                           ), row.names = c(NA, -2L), .drop = TRUE))
+  )
 })
 
 
@@ -81,4 +81,16 @@ test_that("predict_top_k works with augmentation thinning", {
   pred3 <- predict_top_k(bmm3, burnin = 200, k = k)
 
   expect_equal(pred1, pred3)
+})
+
+
+test_that("plot_top_k works", {
+  bmm <- compute_mallows(rankings = beach_init_rank, preferences = beach_tc,
+                         nmc = 10, save_aug = TRUE)
+  expect_s3_class(plot_top_k(bmm, k = 4, burnin = 5), "ggplot")
+
+  bmm <- compute_mallows(rankings = beach_init_rank, preferences = beach_tc,
+                               nmc = 10, save_aug = TRUE, n_clusters = 2)
+  expect_s3_class(plot_top_k(bmm, k = 4, burnin = 5, rel_widths = c(.5, 1)), "ggplot")
+
 })

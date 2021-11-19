@@ -32,3 +32,20 @@ test_that(
   }
 )
 
+test_that("sample_mallows diagnostics work", {
+  set.seed(1)
+  expect_message(
+    test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, diagnostic = TRUE,
+                           n_samples = 1000, burnin = 1, thinning = 1),
+    "Items not provided by user. Picking 5 at random."
+  )
+  expect_equal(
+    test[c(200, 300, 400), ],
+    structure(c(1, 1, 1, 2, 3, 2, 3, 2, 4, 6, 4, 3, 5, 5, 5, 4, 6,
+                6, 7, 8, 9, 11, 9, 10, 9, 7, 7, 8, 10, 12, 12, 11, 11, 10, 12,
+                8, 13, 14, 13, 14, 13, 14, 15, 15, 15), .Dim = c(3L, 15L), .Dimnames = list(
+                  NULL, c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                          "11", "12", "13", "14", "15")))
+  )
+
+})
