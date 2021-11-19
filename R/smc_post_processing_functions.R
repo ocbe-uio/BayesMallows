@@ -4,7 +4,6 @@
 #' @author Anja Stein
 #' @param output input
 #' @param colnames colnames
-#' @importFrom gtools mixedorder
 # AS: edited this function to include parameter `colnames`. This resolve issues in #118 with post processing functions not printing the names of items in rankings.
 # The `default` is set to NULL so tat we do not cause plotting issues in `plot_rho_heatplot.
 smc_processing <- function(output, colnames = NULL) {
@@ -232,7 +231,9 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
   #------------------------------------------------------------------------------------------
   #AS: reorder items to be in numerical order if no colnames are specified
   if (is.null(colnames)) {
-    rho_posterior_interval  <- rho_posterior_interval[mixedorder(rho_posterior_interval$item), ]
+    item_numbers <- as.numeric(gsub("\\D", "", rho_posterior_interval$item))
+    mixed_order <- match(sort(item_numbers), item_numbers)
+    rho_posterior_interval <- rho_posterior_interval[mixed_order, ]
   }
   #------------------------------------------------------------------------------------------
 
