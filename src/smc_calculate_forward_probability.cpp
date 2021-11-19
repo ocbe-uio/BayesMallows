@@ -62,41 +62,29 @@ Rcpp::List calculate_forward_probability(
 
     for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
 
-      Rcpp::Rcout << " iteration " << jj << std::endl; //TEMP
-
       // items to sample rank
       arma::uword item_to_sample_rank = item_ordering(jj);
-      Rcpp::Rcout << " item to sample rank is " << item_to_sample_rank << std::endl; //TEMP
 
       // the rank of item in rho
       arma::vec rho_item_rank;
       rho_item_rank = rho(item_to_sample_rank);
-      Rcpp::Rcout << " rho item rank is " << rho_item_rank << std::endl; //TEMP
 
       // next we get the sample probabilites for selecting a particular rank for
       // an item based on the current alpha and the rho rank for that item
-      Rcpp::Rcout << " remaining set is " << remaining_set << std::endl; //TEMP
       arma::vec sample_prob_list = get_sample_probabilities(\
         rho_item_rank, alpha, remaining_set, metric, n_items\
       );
-      Rcpp::Rcout << "sample prob list is " << std::endl; //TEMP
-      Rcpp::Rcout << sample_prob_list << std::endl; //TEMP
 
       // fill in the new augmented ranking going forward
       Rcpp::NumericVector rs, spl;
       rs = remaining_set;
       spl = sample_prob_list;
       auxiliary_ranking(jj) = Rcpp::as<int>(Rcpp::sample(rs, 1, false, spl));
-      Rcpp::Rcout << "auxiliary ranking is: (picks a rank for the item in line of item ordering " << std::endl; //TEMP
-      Rcpp::Rcout << auxiliary_ranking << std::endl; //TEMP
-      Rcpp::Rcout << " so item " << item_ordering(jj) << "is assigned rank " << auxiliary_ranking(jj) << std::endl; //TEMP
 
       // save the probability of selecting the specific item rank in the old
       // augmented ranking
       arma::uvec sample_prob = find(remaining_set == auxiliary_ranking(jj));
-      Rcpp::Rcout << " sample prob is " << sample_prob << std::endl; //TEMP
 
-      Rcpp::Rcout << jj << " fwd = " << forward_auxiliary_ranking_probability << std::endl; //TEMP
       forward_auxiliary_ranking_probability = \
         forward_auxiliary_ranking_probability * \
         arma::as_scalar(sample_prob_list(sample_prob));
@@ -104,7 +92,6 @@ Rcpp::List calculate_forward_probability(
       // remove selected auxiliary rank from the set of remaining possibles
       // ranks to select
       remaining_set = remaining_set(find(remaining_set != auxiliary_ranking(jj)));
-      Rcpp::Rcout << "after allocating a rank, the remaining set of ranks is now " << remaining_set << std::endl; //TEMP
     }
     // last element in augmented ranking is deterministic - the prob is 1
     auxiliary_ranking(num_items_unranked - 1) = arma::as_scalar(remaining_set);

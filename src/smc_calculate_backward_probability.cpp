@@ -49,8 +49,6 @@ double calculate_backward_probability(
   if (num_items_unranked != 1) {
     // show the augmented parts of the current ranking
     current_ranking = current_ranking.elem(item_ordering);
-    Rcpp::Rcout << "the augmented components of the ranking are" << std::endl; //TEMP
-    Rcpp::Rcout << current_ranking << std::endl; //TEMP
 
   /* ====================================================== */
   /* LOOP TO CALCULATE FORWARD AND BACKWARD PROBABILITY     */
@@ -58,32 +56,23 @@ double calculate_backward_probability(
   // given the old and new item ordering and the list of missing rank, determine
   // the sample probs for each iteration
     for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
-    
-      Rcpp::Rcout << " iteration " << jj << std::endl; //TEMP
 
       // items to sample rank
       arma::uword item_to_sample_rank = item_ordering(jj);
-      Rcpp::Rcout << " items to sample rank is " << item_to_sample_rank << std::endl; //TEMP
 
       // the rank of item in rho
       arma::vec rho_item_rank;
       rho_item_rank = rho(item_to_sample_rank);
-      Rcpp::Rcout << " item rank in rho is " << rho_item_rank << std::endl; //TEMP
 
       // next we get the sample probabilites for selecting a particular rank for
       // an item based on the current alpha and the rho rank for that item
       arma::vec sample_prob_list = get_sample_probabilities(\
         rho_item_rank, alpha, remaining_set, metric, n_items\
       );
-      Rcpp::Rcout << " remaining set of item ranks is " << remaining_set << std::endl; //TEMP
-      Rcpp::Rcout << " sample prob list is " << sample_prob_list << std::endl; //TEMP
 
       // save the probability of selecting the specific item rank in the old
       // augmented ranking
-      Rcpp::Rcout << jj << " bck = " << backward_auxiliary_ranking_probability << std::endl; //TEMP
       arma::uvec sample_prob = find(remaining_set == current_ranking(jj));
-      Rcpp::Rcout << " sample_prob is selected in entry  " << sample_prob << std::endl; //TEMP
-      Rcpp::Rcout << " and the current ranking value is " << current_ranking(jj) << std::endl; //TEMP
       backward_auxiliary_ranking_probability = \
         backward_auxiliary_ranking_probability * \
         arma::as_scalar(sample_prob_list(sample_prob));
@@ -91,7 +80,6 @@ double calculate_backward_probability(
       // remove selected auxiliary rank from the set of remaining possibles
       // ranks to select
       remaining_set = remaining_set(find(remaining_set != current_ranking(jj)));
-      Rcpp::Rcout << " after allocating rank, remaining set of ranks is now " << remaining_set << std::endl; //TEMP
     }
   }
   return backward_auxiliary_ranking_probability;
