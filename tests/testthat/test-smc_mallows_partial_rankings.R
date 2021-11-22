@@ -108,7 +108,6 @@ test_that("Produces the wrong metric and aug_method error", {
     )
   )
 })
-
 test_that("Runs with unif kernel", {
   N <- 5
   smc_unif_alpha_fixed_unif <- smc_mallows_new_users_partial_alpha_fixed(
@@ -146,6 +145,14 @@ test_that("Runs with unif kernel", {
   expect_equal(length(smc_unif), 2)
   expect_equal(dim(smc_unif$rho_samples), c(N, 10, 21))
   expect_equal(dim(smc_unif$alpha_samples), c(N, 21))
+
+  expect_s3_class(
+    plot_alpha_posterior(smc_unif$alpha_samples[, Time+ 1], nmc = N, burnin = 2),
+    "ggplot")
+
+  expect_s3_class(
+    plot_rho_posterior(smc_unif$rho_samples[, ,Time+ 1], nmc = N, burnin = 2, C = 1),
+    "ggplot")
 })
 
 test_that("Runs with pseudo kernel", {
