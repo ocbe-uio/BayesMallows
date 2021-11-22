@@ -22,7 +22,8 @@ This vignette describes the extension to the `BayesMallows` R package called `SM
 
 ### Set-up
 
-We begin by loading the following libraries:
+We begin by loading the following packages:
+
 ```{r sushi_rankings_demo1, message=FALSE, warning=FALSE}
 library(BayesMallows)
 library(dplyr)
