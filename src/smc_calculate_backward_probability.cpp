@@ -19,7 +19,7 @@
 //'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 //'   \code{"ulam"}.
 //' @return backward_auxiliary_ranking_probability A numerical value of creating the previous augmented ranking using the same item ordering used to create the
-//' new auggmented ranking in calculate_forward_probability funtion.
+//' new augmented ranking in calculate_forward_probability function.
 //' @export
 // [[Rcpp::export]]
 double calculate_backward_probability(

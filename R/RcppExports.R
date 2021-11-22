@@ -206,7 +206,7 @@ run_mcmc <- function(rankings, obs_freq, nmc, constraints, cardinalities, logz_e
 #'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 #'   \code{"ulam"}.
 #' @return backward_auxiliary_ranking_probability A numerical value of creating the previous augmented ranking using the same item ordering used to create the
-#' new auggmented ranking in calculate_forward_probability funtion.
+#' new augmented ranking in calculate_forward_probability function.
 #' @export
 calculate_backward_probability <- function(item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric) {
     .Call(`_BayesMallows_calculate_backward_probability`, item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric)
@@ -243,7 +243,7 @@ calculate_forward_probability <- function(item_ordering, partial_ranking, remain
 #' @title Correction Kernel
 #' @description Function to determine if the augmented ranking is compatible
 #' with the new observed partial ranking. If it is not, the we create a new
-#' augmentation using the random sampling approachand calculate the
+#' augmentation using the random sampling approach and calculate the
 #' augmentation probability.
 #'
 #' @param current_ranking A ranking sequence vector of the current augmented

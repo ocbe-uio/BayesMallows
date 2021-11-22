@@ -37,7 +37,7 @@ Bayesian Mallows Model. Available options are \code{"footrule"},
 }
 \value{
 backward_auxiliary_ranking_probability A numerical value of creating the previous augmented ranking using the same item ordering used to create the
-new auggmented ranking in calculate_forward_probability funtion.
+new augmented ranking in calculate_forward_probability function.
 }
 \description{
 Function to calculate probability of assigning a set of specific ranks to an specific item
