@@ -84,6 +84,7 @@ Rcpp::List calculate_forward_probability(
       // save the probability of selecting the specific item rank in the old
       // augmented ranking
       arma::uvec sample_prob = find(remaining_set == auxiliary_ranking(jj));
+
       forward_auxiliary_ranking_probability = \
         forward_auxiliary_ranking_probability * \
         arma::as_scalar(sample_prob_list(sample_prob));
@@ -96,10 +97,8 @@ Rcpp::List calculate_forward_probability(
     auxiliary_ranking(num_items_unranked - 1) = arma::as_scalar(remaining_set);
 
     // fit the augmented ranking within the partial rankings with NAs
-    arma::vec ar;
-    ar = arma::conv_to<arma::vec>::from(auxiliary_ranking);
-    arma::uvec pr_nas = arma::find_nonfinite(partial_ranking);
-    partial_ranking.elem(pr_nas) = ar; // ranks for items
+    arma::vec ar = arma::conv_to<arma::vec>::from(auxiliary_ranking);
+    partial_ranking.elem(item_ordering) = ar; // ranks for items
   }
   return Rcpp::List::create(
     Rcpp::Named("aug_ranking") = partial_ranking,

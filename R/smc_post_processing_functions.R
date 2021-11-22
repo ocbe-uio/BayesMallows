@@ -4,7 +4,6 @@
 #' @author Anja Stein
 #' @param output input
 #' @param colnames colnames
-#' @importFrom gtools mixedorder
 # AS: edited this function to include parameter `colnames`. This resolve issues in #118 with post processing functions not printing the names of items in rankings.
 # The `default` is set to NULL so tat we do not cause plotting issues in `plot_rho_heatplot.
 smc_processing <- function(output, colnames = NULL) {
@@ -21,8 +20,17 @@ smc_processing <- function(output, colnames = NULL) {
   } else {
     colnames(df) <- colnames
   }
-
-  new_df <- tidyr::gather(df, key = "item", value = "value")
+  new_df <- stats::reshape(
+    df,
+    direction = "long",
+    varying = names(df),
+    new.row.names = seq_len(prod(dim(df))),
+    v.names = "value",
+    timevar = "item",
+    idvar = NULL,
+    times = names(df)
+  )
+  attr(x = new_df, "reshapeLong") <- NULL # preserves identity to gather output
   class(new_df) <- c("SMCMallows", "data.frame")
   return(new_df)
 }
@@ -172,7 +180,14 @@ find_cpc_smc <- function(group_df){
   #------------------------------------------------------------
 
   # Spread to get items along columns
-  df <- tidyr::spread(df, key = .data$item, value = .data$value)
+  df <- stats::reshape(
+    data = as.data.frame(df),
+    direction = "wide",
+    idvar = c("iteration", "cluster"),
+    timevar = "item",
+    varying = list(unique(df$item))
+  )
+  attr(df, "reshapeWide") <- NULL # maintain identity to spread() output
 
   # Group by everything except iteration, and count the unique combinations
   df <- dplyr::group_by_at(df, .vars = dplyr::vars(-.data$iteration))
@@ -189,8 +204,17 @@ find_cpc_smc <- function(group_df){
   df <- dplyr::select(df, -.data$n_max, -.data$n)
 
   # Now collect one set of ranks per cluster
-  df <- tidyr::gather(df, key = "item", value = "map_ranking",
-                      -.data$cluster, -.data$probability)
+  df <- stats::reshape(
+    as.data.frame(df),
+    direction = "long",
+    varying = setdiff(names(df), c("cluster", "probability")),
+    new.row.names = seq_len(prod(dim(df))),
+    v.names = "map_ranking",
+    timevar = "item",
+    idvar = NULL,
+    times = setdiff(names(df), c("cluster", "probability"))
+  )
+  attr(x = df, "reshapeLong") <- NULL # preserves identity to gather() output
 
   # Sort according to cluster and ranking
   df <- dplyr::arrange(df, .data$cluster, .data$map_ranking)
@@ -232,7 +256,9 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
   #------------------------------------------------------------------------------------------
   #AS: reorder items to be in numerical order if no colnames are specified
   if (is.null(colnames)) {
-    rho_posterior_interval  <- rho_posterior_interval[mixedorder(rho_posterior_interval$item), ]
+    item_numbers <- as.numeric(gsub("\\D", "", rho_posterior_interval$item))
+    mixed_order <- match(sort(item_numbers), item_numbers)
+    rho_posterior_interval <- rho_posterior_interval[mixed_order, ]
   }
   #------------------------------------------------------------------------------------------
 
