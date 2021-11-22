@@ -29,7 +29,8 @@ Authors@R: c(person("Oystein", "Sorensen",
 Maintainer: Oystein Sorensen <oystein.sorensen.1985@gmail.com>
 Description: An implementation of the Bayesian version of the Mallows rank model
     (Vitelli et al., Journal of Machine Learning Research, 2018 <https://jmlr.org/papers/v18/15-481.html>;
-    Crispino et al., Annals of Applied Statistics, 2019 <doi:10.1214/18-AOAS1203>). Both Cayley, footrule,
+    Crispino et al., Annals of Applied Statistics, 2019 <doi:10.1214/18-AOAS1203>). Both Metropolis-Hastings 
+    and sequential Monte Carlo algorithms for estimating the models are available. Both Cayley, footrule,
     Hamming, Kendall, Spearman, and Ulam distances are supported in the models. The rank data to be
     analyzed can be in the form of complete rankings, top-k rankings, partially missing rankings, as well
     as consistent and inconsistent pairwise preferences. Several functions for plotting and studying the
