@@ -130,9 +130,9 @@ logz_estimate <- estimate_partition_function(method = "importance_sampling",
                                              nmc = iter, degree = degree)
 data = sushi_rankings[1:100,]
 leap_size <- floor(n_items/5)
-N = 1000
-Time = 20
-smc_test =  smc_mallows_new_users_complete(R_obs = data, n_items = n_items,
+N <- 1000
+Time <- 20
+smc_test <- smc_mallows_new_users_complete(R_obs = data, n_items = n_items,
                                            metric = metric, leap_size = leap_size,
                                            N = N, Time = Time,
                                            logz_estimate = logz_estimate,
