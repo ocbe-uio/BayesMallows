@@ -320,11 +320,7 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL,
 plot_alpha_posterior <- function(output, nmc, burnin) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
 
-<<<<<<< HEAD
-  plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes(x = alpha_samples_table$value)) +
-=======
   plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes_(x =~ value)) +
->>>>>>> develop
     ggplot2::geom_density() +
     ggplot2::xlab(expression(alpha)) +
     ggplot2::ylab("Posterior density") +
