@@ -124,23 +124,27 @@ alpha_vector <- seq(from = 0, to = 15, by = 0.1)
 iter <- 1e4
 degree <- 10
 # Estimate the logarithm of the partition function of the Mallows rank model
-logz_estimate <- estimate_partition_function(method = "importance_sampling",
-                                             alpha_vector = alpha_vector,
-                                             n_items = n_items, metric = metric,
-                                             nmc = iter, degree = degree)
-data = sushi_rankings[1:100,]
-leap_size <- floor(n_items/5)
+logz_estimate <- estimate_partition_function(
+  method = "importance_sampling",
+  alpha_vector = alpha_vector,
+  n_items = n_items, metric = metric,
+  nmc = iter, degree = degree
+)
+data <- sushi_rankings[1:100, ]
+leap_size <- floor(n_items / 5)
 N <- 1000
 Time <- 20
-smc_test <- smc_mallows_new_users_complete(R_obs = data, n_items = n_items,
-                                           metric = metric, leap_size = leap_size,
-                                           N = N, Time = Time,
-                                           logz_estimate = logz_estimate,
-                                           mcmc_kernel_app = 5,
-                                           num_new_obs = 5,
-                                           alpha_prop_sd = 0.5,
-                                           lambda = 0.15,
-                                           alpha_max = 1e6)
+smc_test <- smc_mallows_new_users_complete(
+  R_obs = data, n_items = n_items,
+  metric = metric, leap_size = leap_size,
+  N = N, Time = Time,
+  logz_estimate = logz_estimate,
+  mcmc_kernel_app = 5,
+  num_new_obs = 5,
+  alpha_prop_sd = 0.5,
+  lambda = 0.15,
+  alpha_max = 1e6
+)
 ```
 
 The example `smc_test` returns a list variable of the particles values for $\boldsymbol{\rho}$ and $\alpha$ at each time step, so we can observe the posterior as it evolves. Specifically the list contains a three dimensional matrix of size `N` by `n_items` by `Time+1`, named `rho_samples`,  and an `N` by `Time+1` matrix called `alpha_samples`. These matrices can be studied using some post-processing functions for visualising and analysing the posterior. It is also possible to make comparative results using the MCMC algorithm and the SMC algorithm. Unlike MCMC we cannot observe the trace plots and we do not need to specify a non-zero value for the burn-in. The indexing in R means that we have to view the `Time+1` slice of the output in order to view the posterior once all 100 rankings have been observed.
@@ -148,36 +152,46 @@ The example `smc_test` returns a list variable of the particles values for $\bol
 Here, we can observe the posterior probabilities of $\boldsymbol{\rho}$ for a selection of items can be observed by calling the function `plot_rho_posterior`.
 
 ```{r smc_complete_analysis_heatplot, message=FALSE, warning=FALSE}
-test_sample_rho <- smc_test$rho_samples[,,Time+1]
-plot_rho_posterior(output = test_sample_rho,
-                   nmc = N, burnin = 0, C=1,
-                   colnames = colnames(sushi_rankings))
+test_sample_rho <- smc_test$rho_samples[, , Time + 1]
+plot_rho_posterior(
+  output = test_sample_rho,
+  nmc = N, burnin = 0, C = 1,
+  colnames = colnames(sushi_rankings)
+)
 ```
 
 The posterior distributions of $\boldsymbol{\rho}$ and $\alpha$ can be studied with some of the the analysis tools provided by the extension. The posterior intervals for the consensus ranking of each sushi item are obtained by calling `compute_posterior_intervals_rho`.
 
 ```{r posterior_intervals_rho, message=FALSE, warning=FALSE}
-test_sample_rho <- smc_test$rho_samples[,,Time+1]
-compute_posterior_intervals_rho(output = test_sample_rho,
-                                nmc = N, burnin = 0,
-                                verbose = FALSE)
+test_sample_rho <- smc_test$rho_samples[, , Time + 1]
+compute_posterior_intervals_rho(
+  output = test_sample_rho,
+  nmc = N, burnin = 0,
+  verbose = FALSE
+)
 ```
 
 We can also rank the sushi items according to their cumulative probability (CP) consensus and their maximum posterior rankings (MAP). These are calculated by calling the function `compute_consensus_rho`. We demonstrate with the CP consensus:
 
 ```{r consensus_ranking_estimates, message=FALSE, warning=FALSE}
-compute_rho_consensus(output = test_sample_rho, nmc = N,
-                      burnin = 0, C = 1, type = "CP",
-                      verbose = FALSE)
+compute_rho_consensus(
+  output = test_sample_rho, nmc = N,
+  burnin = 0, C = 1, type = "CP",
+  verbose = FALSE
+)
 ```
 
 Similarly, we can observe the posterior density and the posterior intervals for the scale parameter using the functions `plot_alpha_posterior` and `compute_posterior_intervals_alpha`.
 ```{r smc_complete_alpha_analysis, message=FALSE, warning=FALSE}
-test_sample_alpha <- smc_test$alpha_samples[,Time+1]
-plot_alpha_posterior(output = test_sample_alpha, nmc = N,
-                     burnin = 0)
-compute_posterior_intervals_alpha(output = test_sample_alpha,
-                                  nmc = N, burnin = 0, verbose = FALSE)
+test_sample_alpha <- smc_test$alpha_samples[, Time + 1]
+plot_alpha_posterior(
+  output = test_sample_alpha, nmc = N,
+  burnin = 0
+)
+compute_posterior_intervals_alpha(
+  output = test_sample_alpha,
+  nmc = N, burnin = 0, verbose = FALSE
+)
 ```
 
 ### Partial Rankings
@@ -201,7 +215,7 @@ We augment the missing item ranks in each $\mathbf{R}$ to create a complete auxi
 For this demonstration we shall assume that we can only observe the top-5 ranked items from each user in the first 100 rows of the `sushi_rankings` dataset.
 
 ```{r smc_partial_set_up}
-data_partial <- sushi_rankings[1:100,]
+data_partial <- sushi_rankings[1:100, ]
 data_partial[data_partial > 5] <- NA
 head(data_partial)
 ```
@@ -213,18 +227,20 @@ We can call the function `smc_mallows_new_user_partial` to run the SMC algorithm
 aug_method <- "pseudolikelihood"
 metric <- "cayley"
 # example of selecting the incorrect combination of metric and aug_method
-smc_partial_test <- smc_mallows_new_users_partial(R_obs = data_partial,
-                                                  n_items = n_items,
-                                                  metric = metric,
-                                                  leap_size = leap_size, N = N,
-                                                  Time = Time,
-                                                  logz_estimate = logz_estimate,
-                                                  mcmc_kernel_app = 5,
-                                                  num_new_obs = 5,
-                                                  alpha_prop_sd = 0.5,
-                                                  lambda = 0.15,
-                                                  alpha_max = 1e6,
-                                                  aug_method = aug_method)
+smc_partial_test <- smc_mallows_new_users_partial(
+  R_obs = data_partial,
+  n_items = n_items,
+  metric = metric,
+  leap_size = leap_size, N = N,
+  Time = Time,
+  logz_estimate = logz_estimate,
+  mcmc_kernel_app = 5,
+  num_new_obs = 5,
+  alpha_prop_sd = 0.5,
+  lambda = 0.15,
+  alpha_max = 1e6,
+  aug_method = aug_method
+)
 #>Error in smc_mallows_new_users_partial(R_obs = data_partial, n_items = n_items,
 #>: Combined choice of metric and aug_method is incompatible
 ```
@@ -236,32 +252,38 @@ set.seed(994)
 
 
 ```{r smc_partial_test}
-#aug_method = "random"
+# aug_method = "random"
 aug_method <- "pseudolikelihood"
 metric <- "footrule"
-smc_partial_test <- smc_mallows_new_users_partial(R_obs = data_partial,
-                                                  n_items = n_items,
-                                                  metric = metric,
-                                                  leap_size = leap_size, N = N,
-                                                  Time = Time,
-                                                  logz_estimate = logz_estimate,
-                                                  mcmc_kernel_app = 5,
-                                                  num_new_obs = 5,
-                                                  alpha_prop_sd = 0.5,
-                                                  lambda = 0.15,
-                                                  alpha_max = 1e6,
-                                                  aug_method = aug_method)
+smc_partial_test <- smc_mallows_new_users_partial(
+  R_obs = data_partial,
+  n_items = n_items,
+  metric = metric,
+  leap_size = leap_size, N = N,
+  Time = Time,
+  logz_estimate = logz_estimate,
+  mcmc_kernel_app = 5,
+  num_new_obs = 5,
+  alpha_prop_sd = 0.5,
+  lambda = 0.15,
+  alpha_max = 1e6,
+  aug_method = aug_method
+)
 ```
 
 The variable `smc_test_partial` contains a list with three dimensional matrix of size `N` by `n_items` by `Time+1`, named `rho_samples`,  and a `N` by `Time+1` matrix called `alpha_samples`. The analysis performed in the previous demonstration can be applied to this scenario. Here, we can observe the posterior porbabilities for a selection of items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ as part of this demonstration, but we can use other post processing functions to analyse the output.
 
 ```{r smc_partial_analysis, message=FALSE, warning=FALSE}
-partial_test_sample_rho <- smc_partial_test$rho_samples[,,Time+1]
-partial_test_sample_alpha <- smc_partial_test$alpha_samples[,Time+1]
-plot_rho_posterior(output = partial_test_sample_rho, nmc = N,
-                   burnin = 0, C= 1, colnames= colnames(sushi_rankings))
-plot_alpha_posterior(output = partial_test_sample_alpha, nmc = N,
-                     burnin = 0)
+partial_test_sample_rho <- smc_partial_test$rho_samples[, , Time + 1]
+partial_test_sample_alpha <- smc_partial_test$alpha_samples[, Time + 1]
+plot_rho_posterior(
+  output = partial_test_sample_rho, nmc = N,
+  burnin = 0, C = 1, colnames = colnames(sushi_rankings)
+)
+plot_alpha_posterior(
+  output = partial_test_sample_alpha, nmc = N,
+  burnin = 0
+)
 ```
 
 
@@ -278,25 +300,24 @@ To illustrate how to perform SMC for updated partial rankings, we will modify a 
 example_dataset <- potato_visual
 n_users <- 12
 n_items <- 20
-test_dataset <- array(0,  c(n_users, n_items, (n_items/2+ 1)) )
-test_dataset[,,(n_items/2 + 1)] <- potato_visual
-tt = 0
-for (ii in (n_items-1):(n_items/2)){
+test_dataset <- array(0, c(n_users, n_items, (n_items / 2 + 1)))
+test_dataset[, , (n_items / 2 + 1)] <- potato_visual
+tt <- 0
+for (ii in (n_items - 1):(n_items / 2)) {
+  tt <- tt + 1
 
-    tt = tt + 1
+  # set n_users line with one more NA
+  example_dataset[example_dataset > ii] <- NA
 
-    # set n_users line with one more NA
-    example_dataset[example_dataset > ii] <- NA
-
-    # set as new time stamp
-    test_dataset[,,((n_items/2+1) - tt)] <- example_dataset
+  # set as new time stamp
+  test_dataset[, , ((n_items / 2 + 1) - tt)] <- example_dataset
 }
 ```
 
 This means that we now have a 3D array containing 10 partial datasets and the one complete dataset. The third dimension of the array represents artifical time. We can view the updated partial rankings scenario as viewing several 2D slices of the observed dataset sequentially. So you can see, for example, that at the 5th time point, we observe the top-14 items from `potato_visual`.
 
 ```{r test_dataset_example, message=FALSE, warning=FALSE}
-test_dataset[,,5]
+test_dataset[, , 5]
 ```
 
 
@@ -308,10 +329,12 @@ set.seed(995)
 
 ```{r new_item_rank_example, message=FALSE, warning=FALSE}
 # Recalculate the estimate of the partition function for 20 items
-logz_estimate <- estimate_partition_function(method = "importance_sampling",
-                                             alpha_vector = alpha_vector,
-                                             n_items = n_items, metric = metric,
-                                             nmc = iter, degree = degree)
+logz_estimate <- estimate_partition_function(
+  method = "importance_sampling",
+  alpha_vector = alpha_vector,
+  n_items = n_items, metric = metric,
+  nmc = iter, degree = degree
+)
 Time <- dim(test_dataset)[3]
 N <- 1000
 aug_method <- "pseudolikelihood"
@@ -327,14 +350,15 @@ smc_test_updated_partial <- smc_mallows_new_item_rank(
   alpha_prop_sd = 0.5,
   lambda = 0.15,
   alpha_max = 1e6,
-  aug_method = aug_method)
+  aug_method = aug_method
+)
 ```
 
 Unlike the two previous demonstrations, the final slice of the output occurs at `Time` instead of `Time+1`. This is because we initialised the algorithm with the first slice of the `test_dataset` rather than initialising with no observed data. We observe the posterior probabilities for items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ by using the same post-processing functions as before.
 
 ```{r smc_updated_partial_analysis, message=FALSE, warning=FALSE}
-updated_partial_test_sample_rho <- smc_test_updated_partial$rho_samples[,,Time]
-updated_partial_test_sample_alpha <- smc_test_updated_partial$alpha_samples[,Time]
+updated_partial_test_sample_rho <- smc_test_updated_partial$rho_samples[, , Time]
+updated_partial_test_sample_alpha <- smc_test_updated_partial$alpha_samples[, Time]
 plot_rho_posterior(output = updated_partial_test_sample_rho, nmc = N, burnin = 0, C = 1)
 plot_alpha_posterior(output = updated_partial_test_sample_alpha, nmc = N, burnin = 0)
 ```
