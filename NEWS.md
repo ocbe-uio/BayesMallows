@@ -1,3 +1,9 @@
+# BayesMallows 1.0.4.9001
+
+* This is a major update, with new functions for estimating the Bayesian Mallows 
+  model using sequential Monte Carlo. The methods are described in the vignette 
+  titled "SMC-Mallows Tutorial".
+
 # BayesMallows 1.0.4.9000
 
 * Removed a large number of dependencies by converting to base R code. This will 
@@ -23,7 +29,6 @@ to changes in other packages.
 # BayesMallows 1.0.3
 
 * Fixed critical bug which caused results to be wrong with more than one mixture component in compute_mallows() and compute_mallows_mixtures(). Thanks to Anja Stein for discovering the bug.
-
 
 # BayesMallows 1.0.2
 

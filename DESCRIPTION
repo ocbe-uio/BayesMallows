@@ -1,7 +1,7 @@
 Package: BayesMallows
 Type: Package
 Title: Bayesian Preference Learning with the Mallows Rank Model
-Version: 1.0.4.9000
+Version: 1.0.4.9001
 Authors@R: c(person("Oystein", "Sorensen",
                     email = "oystein.sorensen.1985@gmail.com",
                     role = c("aut", "cre"),
@@ -27,22 +27,23 @@ Authors@R: c(person("Oystein", "Sorensen",
                     email = "w.l.netto@medisin.uio.no",
                     role = c("ctr")))
 Maintainer: Oystein Sorensen <oystein.sorensen.1985@gmail.com>
-Description: An implementation of the Bayesian version of the Mallows rank model 
-    (Vitelli et al., Journal of Machine Learning Research, 2018 <https://jmlr.org/papers/v18/15-481.html>; 
-    Crispino et al., Annals of Applied Statistics, 2019 <doi:10.1214/18-AOAS1203>). Both Cayley, footrule, 
-    Hamming, Kendall, Spearman, and Ulam distances are supported in the models. The rank data to be 
-    analyzed can be in the form of complete rankings, top-k rankings, partially missing rankings, as well 
-    as consistent and inconsistent pairwise preferences. Several functions for plotting and studying the 
-    posterior distributions of parameters are provided. The package also provides functions for estimating 
-    the partition function (normalizing constant) of the Mallows rank model, both with the importance 
-    sampling algorithm of Vitelli et al. and asymptotic approximation with the IPFP algorithm 
+Description: An implementation of the Bayesian version of the Mallows rank model
+    (Vitelli et al., Journal of Machine Learning Research, 2018 <https://jmlr.org/papers/v18/15-481.html>;
+    Crispino et al., Annals of Applied Statistics, 2019 <doi:10.1214/18-AOAS1203>). Both Metropolis-Hastings 
+    and sequential Monte Carlo algorithms for estimating the models are available. Cayley, footrule,
+    Hamming, Kendall, Spearman, and Ulam distances are supported in the models. The rank data to be
+    analyzed can be in the form of complete rankings, top-k rankings, partially missing rankings, as well
+    as consistent and inconsistent pairwise preferences. Several functions for plotting and studying the
+    posterior distributions of parameters are provided. The package also provides functions for estimating
+    the partition function (normalizing constant) of the Mallows rank model, both with the importance
+    sampling algorithm of Vitelli et al. and asymptotic approximation with the IPFP algorithm
     (Mukherjee, Annals of Statistics, 2016 <doi:10.1214/15-AOS1389>).
 URL: https://github.com/ocbe-uio/BayesMallows
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.2
-Depends: R (>= 2.10)
+Depends: R (>= 3.5.0)
 Imports: Rcpp (>= 1.0.0),
   ggplot2 (>= 3.1.0),
   Rdpack (>= 1.0),
@@ -56,11 +57,12 @@ Imports: Rcpp (>= 1.0.0),
   cowplot (>= 1.0.0)
 LinkingTo: Rcpp, RcppArmadillo
 Suggests:
-    R.rsp,
-    testthat (>= 2.0),
-    label.switching (>= 1.7),
-    rmarkdown,
-    covr,
-    parallel (>= 3.5.1)
-VignetteBuilder: R.rsp
+  R.rsp,
+  knitr,
+  testthat (>= 3.0.0),
+  label.switching (>= 1.7),
+  rmarkdown,
+  covr,
+  parallel (>= 3.5.1)
+VignetteBuilder: R.rsp, knitr
 RdMacros: Rdpack
