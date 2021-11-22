@@ -3,7 +3,7 @@ title: "SMC-Mallows Tutorial"
 author: "Anja Stein"
 date: "2021-10-25"
 output: rmarkdown::html_vignette
-bibliography: vignette_ref.bib
+bibliography: ../inst/REFERENCES.bib
 link-citations: yes
 vignette: >
   %\VignetteIndexEntry{SMC-Mallows Tutorial}
@@ -51,7 +51,7 @@ A list is provided with the most commonly used functions in this extension of th
 
 ## Introduction
 
-We provide a summary on the Bayesian Mallows model and the proposed Sequential Monte Carlo framework which updates the parameter estimates of the posterior each time we receive new observations for a fixed computational cost. More information on the Bayesian Mallows model can found in @vitelli2017probabilistic and @liu2019model, and a vignette on the `BayesMallows` R package can be found in @sorensen2019bayesmallows. A general discussion on SMC can be found in @del2006sequential and @doucet2009tutorial.
+We provide a summary on the Bayesian Mallows model and the proposed Sequential Monte Carlo framework which updates the parameter estimates of the posterior each time we receive new observations for a fixed computational cost. More information on the Bayesian Mallows model can found in @vitelli2018 and @liu2019, and a vignette on the `BayesMallows` R package can be found in @sorensen2020. A general discussion on SMC can be found in @del2006sequential and @doucet2009tutorial.
 
 ### Notation
 
@@ -59,22 +59,22 @@ We have set of $m$ distinct items, labelled $\mathcal{A} = \{A_1, \dots, A_m		\}
 
 ### The Bayesian Mallows Model
 
-The Mallows model (@Mallows1957) is a probability distribution for ranking data. The probability of observing a ranking $\boldsymbol{R}$ is defined as
+The Mallows model (@mallows1957) is a probability distribution for ranking data. The probability of observing a ranking $\boldsymbol{R}$ is defined as
 $$p(\boldsymbol{R}) = p(\boldsymbol{R}|\boldsymbol{\rho},\alpha) =\frac{1}{Z_m(\alpha)} \exp \Big\{ -\frac{\alpha}{m} { d(\boldsymbol{R}, \boldsymbol{\rho})} \Big\},$$
 
-where: $\boldsymbol{\rho} \in \mathcal{P}_m$ is the consensus ranking; $\alpha > 0$ is the scale parameter which represents the variability in rankings within the group of individuals around the consensus ranking; and $Z_m(\alpha)$ is the normalisation constant. The distance function, $d(\cdot,\cdot) : \mathcal{P}_m \times \mathcal{P}_m \rightarrow [0,\infty)$, measures the ''closeness'' of a ranking to the consensus ranking. The Mallows literature discusses the use of a right-invariant distance function, which means that the relabelling of items between two rankings is unaffected (@Diaconis). The distance metrics that the `BayesMallows` R package currently uses are: Footrule, Spearman, Cayley, Kendall and Hamming. This also means that the normalisation constant is independent of the consensus ranking.
+where: $\boldsymbol{\rho} \in \mathcal{P}_m$ is the consensus ranking; $\alpha > 0$ is the scale parameter which represents the variability in rankings within the group of individuals around the consensus ranking; and $Z_m(\alpha)$ is the normalisation constant. The distance function, $d(\cdot,\cdot) : \mathcal{P}_m \times \mathcal{P}_m \rightarrow [0,\infty)$, measures the ''closeness'' of a ranking to the consensus ranking. The Mallows literature discusses the use of a right-invariant distance function, which means that the relabelling of items between two rankings is unaffected (@diaconis1988). The distance metrics that the `BayesMallows` R package currently uses are: Footrule, Spearman, Cayley, Kendall and Hamming. This also means that the normalisation constant is independent of the consensus ranking.
 
 
 
 
-@vitelli2017probabilistic extended the Mallows model to incorporate a Bayesian framework for inference. A Uniform prior is elicited for the consensus ranking $\pi(\boldsymbol{\rho}) = (m!)^{-1} 1_{\mathcal{P}_m} (\boldsymbol{\rho})$ in the space of $\mathcal{P}_m$, and an Exponential prior for $\alpha$, with density $\pi(\alpha|\lambda) = \lambda \exp \{ -\lambda \alpha  \} 1_{[0,\infty)}(\alpha)$.   Given a $M$ observed complete rankings and the prior distributions $\pi(\boldsymbol{\rho})$ and $\pi(\alpha)$, assuming prior independence of these variables, we have the following posterior density, known as the Bayesian Mallows model,
+@vitelli2018 extended the Mallows model to incorporate a Bayesian framework for inference. A Uniform prior is elicited for the consensus ranking $\pi(\boldsymbol{\rho}) = (m!)^{-1} 1_{\mathcal{P}_m} (\boldsymbol{\rho})$ in the space of $\mathcal{P}_m$, and an Exponential prior for $\alpha$, with density $\pi(\alpha|\lambda) = \lambda \exp \{ -\lambda \alpha  \} 1_{[0,\infty)}(\alpha)$.   Given a $M$ observed complete rankings and the prior distributions $\pi(\boldsymbol{\rho})$ and $\pi(\alpha)$, assuming prior independence of these variables, we have the following posterior density, known as the Bayesian Mallows model,
 
 $$ \pi(\boldsymbol\rho, \alpha | \boldsymbol{R}_1, \dots, \boldsymbol{R}_M) \propto	\frac{\pi(\boldsymbol\rho)\pi(\alpha) }{[Z(\alpha)]^M}   \exp \Bigg\{ - \frac{\alpha}{m} \sum_{j=1}^{M} d(\boldsymbol{R}_j, \boldsymbol\rho   )   \Bigg\}.$$
 
 
-Any posterior estimates of interest, such as the marginal posterior for $\boldsymbol{\rho}$, are obtained through the use of Metropolis-Hastings based Markov Chain Monte Carlo (MCMC) algorithm. Full details of the algorithm can be found in @vitelli2017probabilistic. In each iteration of the algorithm, a new consensus ranking $\boldsymbol{\rho}'$ is proposed to update $\boldsymbol{\rho}$ according to a distribution which is centered around the current rank $\boldsymbol{\rho}$. The proposal step for $\boldsymbol{\rho}$ is done using the leap-and-shift proposal algorithm of @vitelli2017probabilistic and  a new value $\alpha'$ is sampled from the log-Normal distribution to update the current value of $\alpha$.
+Any posterior estimates of interest, such as the marginal posterior for $\boldsymbol{\rho}$, are obtained through the use of Metropolis-Hastings based Markov Chain Monte Carlo (MCMC) algorithm. Full details of the algorithm can be found in @vitelli2018. In each iteration of the algorithm, a new consensus ranking $\boldsymbol{\rho}'$ is proposed to update $\boldsymbol{\rho}$ according to a distribution which is centered around the current rank $\boldsymbol{\rho}$. The proposal step for $\boldsymbol{\rho}$ is done using the leap-and-shift proposal algorithm of @vitelli2018 and  a new value $\alpha'$ is sampled from the log-Normal distribution to update the current value of $\alpha$.
 
-Inference on the Bayesian Mallows model can sample the posterior distribution of the unknown consensus ranking and scale parameter using a variety of observed data including: full rankings, incomplete rankings (e.g. top-k rankings and ranks missing at random), and implicit data such as pairwise comparisons. For example, in the case of partial rankings, we can create augmented full ranking $\tilde{R}_1, \dots, \tilde{R}_M$ by using an independent sampler for each assessor containing the set of rankings not already chosen. The MCMC algorithm alternates between sampling a new value of $\boldsymbol{\rho}$ and $\alpha$ given the current $\tilde{R}_1, \dots, \tilde{R}_M$ and sampling $\tilde{R}_1, \dots, \tilde{R}_M$ given the current values of $\boldsymbol{\rho}$ and $\alpha$.  The existing methods are discussed in @vitelli2017probabilistic and are provided in the `BayesMallows` R package (@sorensen2019bayesmallows).
+Inference on the Bayesian Mallows model can sample the posterior distribution of the unknown consensus ranking and scale parameter using a variety of observed data including: full rankings, incomplete rankings (e.g. top-k rankings and ranks missing at random), and implicit data such as pairwise comparisons. For example, in the case of partial rankings, we can create augmented full ranking $\tilde{R}_1, \dots, \tilde{R}_M$ by using an independent sampler for each assessor containing the set of rankings not already chosen. The MCMC algorithm alternates between sampling a new value of $\boldsymbol{\rho}$ and $\alpha$ given the current $\tilde{R}_1, \dots, \tilde{R}_M$ and sampling $\tilde{R}_1, \dots, \tilde{R}_M$ given the current values of $\boldsymbol{\rho}$ and $\alpha$.  The existing methods are discussed in @vitelli2018 and are provided in the `BayesMallows` R package (@sorensen2020).
 
 
 ### Sequential Monte Carlo
@@ -93,7 +93,7 @@ In the final stage, we move the particles using an MCMC kernel within SMC after 
 
 ## SMC-Mallows User Guide
 
-The `SMC-Mallows` extension contains functions which contain algorithms to perform the Resample-Move SMC framework of @berzuini2001resample using a single Mallows model. Each algorithm  begins by drawing $N$ particles using the priors for $\boldsymbol{\rho}$ and $\alpha$ or by using specified initial values. Each particle is also assigned a equal weight so at the start of the SMC algorithm we have $\{\boldsymbol{\theta}^{(i)}_0 = (\boldsymbol{\rho}_0^{(i)}, \alpha_0^{(i)}), w^{(i)} \}_{i=1}^{N}$ as the set of particles. Next, we observe some ranking data, $D_t$, and we calculate the updated weights of the particles with respect to the new observations and their contribution to the current estimated posterior distribution before reweighting and multinomial resampling. Finally, we perturb the particles using the Metropolis-Hastings based MCMC kernel and we use the proposal distributions described in @vitelli2017probabilistic for sampling values of $\boldsymbol{\rho}$ and $\alpha$.
+The `SMC-Mallows` extension contains functions which contain algorithms to perform the Resample-Move SMC framework of @berzuini2001resample using a single Mallows model. Each algorithm  begins by drawing $N$ particles using the priors for $\boldsymbol{\rho}$ and $\alpha$ or by using specified initial values. Each particle is also assigned a equal weight so at the start of the SMC algorithm we have $\{\boldsymbol{\theta}^{(i)}_0 = (\boldsymbol{\rho}_0^{(i)}, \alpha_0^{(i)}), w^{(i)} \}_{i=1}^{N}$ as the set of particles. Next, we observe some ranking data, $D_t$, and we calculate the updated weights of the particles with respect to the new observations and their contribution to the current estimated posterior distribution before reweighting and multinomial resampling. Finally, we perturb the particles using the Metropolis-Hastings based MCMC kernel and we use the proposal distributions described in @vitelli2018 for sampling values of $\boldsymbol{\rho}$ and $\alpha$.
 
 
 ### Complete Rankings
@@ -187,7 +187,7 @@ compute_posterior_intervals_alpha(output = test_sample_alpha,
 ### Partial Rankings
 
 #### Pseudolikelihood Sampler
-In @vitelli2017probabilistic, the augmentation scheme for partially observed rankings is done by using an independent sampler conditioned in the observed component of each ranking. The drawback of this approach is that it does not take into account of the any existing information, such as the current estimates of the consensus ranking and the scale parameter. We have an option to use an alternative augmentation kernel where, for each item, we use a univariate Mallows distribution to select each rank to an item based on the item's rank in the estimated consensus ranking and the scale parameter. This approach is similar to the importance sampling approximation of the normalisation constant of the Bayesian Mallows model, full details can be found in @vitelli2017probabilistic. This particular augmentation method only applies if we are using the footrule and Spearman distance metric.
+In @vitelli2018, the augmentation scheme for partially observed rankings is done by using an independent sampler conditioned in the observed component of each ranking. The drawback of this approach is that it does not take into account of the any existing information, such as the current estimates of the consensus ranking and the scale parameter. We have an option to use an alternative augmentation kernel where, for each item, we use a univariate Mallows distribution to select each rank to an item based on the item's rank in the estimated consensus ranking and the scale parameter. This approach is similar to the importance sampling approximation of the normalisation constant of the Bayesian Mallows model, full details can be found in @vitelli2018. This particular augmentation method only applies if we are using the footrule and Spearman distance metric.
 
 
 #### New Assessors with Partial Rankings
@@ -276,7 +276,7 @@ We can view this scenario as a observing an updated partial ranking from an know
 
 #### Demonstration
 
-To illustrate how to perform SMC for updated partial rankings, we will modify a much smaller dataset called `potato_visual`. This dataset, which is described in @liu2019model and is provided in the `BayesMallows` R package, represents the rankings given by 12 assessors on 20 potatoes based on how heavy each potato appeared to be given their visual appearance.  We create several partial subsets of the complete dataset by removing the lowest ranked item from each assessor from each previous subset, so that we achieve several partial datasets which view the top 10, top 11,... top 19 highest ranked items as well as the complete set of rankings.
+To illustrate how to perform SMC for updated partial rankings, we will modify a much smaller dataset called `potato_visual`. This dataset, which is described in @liu2019 and is provided in the `BayesMallows` R package, represents the rankings given by 12 assessors on 20 potatoes based on how heavy each potato appeared to be given their visual appearance.  We create several partial subsets of the complete dataset by removing the lowest ranked item from each assessor from each previous subset, so that we achieve several partial datasets which view the top 10, top 11,... top 19 highest ranked items as well as the complete set of rankings.
 
 ```{r smc_item_rank_set_up, message=FALSE, warning=FALSE}
 example_dataset <- potato_visual
