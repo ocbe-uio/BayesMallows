@@ -15,7 +15,7 @@ get_sample_probabilities(
 \arguments{
 \item{rho_item_rank}{An integer value rank of an item in the current consensus ranking}
 
-\item{alpha}{Numeric value og the scale parameter}
+\item{alpha}{Numeric value of the scale parameter}
 
 \item{remaining_set_ranks}{A sequence of integer values of the set of possible ranks that we can assign the item}
 

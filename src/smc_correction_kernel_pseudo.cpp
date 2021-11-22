@@ -7,9 +7,9 @@
 //' If it is not, the we create a new augmentation using the pseudolikelihood approach and calculate the augmentation probability.
 //'
 //' @param observed_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
-//' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
+//' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obtained from calculate_forward_probability function
 //' @param rho Numeric vector specifying the consensus ranking
-//' @param alpha Numeric value og the scale parameter
+//' @param alpha Numeric value of the scale parameter
 //' @param n_items Integer is the number of items in a ranking
 //' @param metric A character string specifying the distance metric to use in the
 //'   Bayesian Mallows Model. Available options are \code{"footrule"},

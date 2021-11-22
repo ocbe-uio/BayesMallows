@@ -9,10 +9,10 @@
 //'
 //' @param item_ordering A vector of integer values to represent the specified queue of which unranked item to assign a rank for the proposed augmented ranking
 //' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
-//' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
+//' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obtained from calculate_forward_probability function
 //' @param remaining_set A vector of integer values to represent the elements (ranks) missing from original observed ranking
 //' @param rho Numeric vector specifying the consensus ranking
-//' @param alpha Numeric value og the scale parameter
+//' @param alpha Numeric value of the scale parameter
 //' @param n_items Integer is the number of items in a ranking
 //' @param metric A character string specifying the distance metric to use in the
 //'   Bayesian Mallows Model. Available options are \code{"footrule"},

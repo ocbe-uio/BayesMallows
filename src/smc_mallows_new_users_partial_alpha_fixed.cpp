@@ -19,7 +19,7 @@
 //' @param Time Integer specifying the number of time steps in the SMC algorithm
 //' @param logz_estimate Estimate of the partition function, computed with
 //' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
-//' @param mcmc_kernel_app Interger value for the number of applications we apply the MCMC move kernel
+//' @param mcmc_kernel_app Integer value for the number of applications we apply the MCMC move kernel
 //' @param num_new_obs Integer value for the number of new observations (complete rankings) for each time step
 //' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
 //' @param alpha A numeric value of the scale parameter which is known and fixed

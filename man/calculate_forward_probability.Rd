@@ -27,7 +27,7 @@ observed incomplete ranking which contains NAs}
 
 \item{rho}{Numeric vector specifying the consensus ranking}
 
-\item{alpha}{Numeric value og the scale parameter}
+\item{alpha}{Numeric value of the scale parameter}
 
 \item{n_items}{Integer is the number of items in a ranking}
 

@@ -21,7 +21,7 @@
 //' @param logz_estimate Estimate of the partition function, computed with
 //' \code{\link{estimate_partition_function}} in the BayesMallow R package
 //' {estimate_partition_function}.
-//' @param mcmc_kernel_app Interger value for the number of applications we
+//' @param mcmc_kernel_app Integer value for the number of applications we
 //' apply the MCMC move kernel
 //' @param num_new_obs Integer value for the number of new observations
 //' (complete rankings) for each time step

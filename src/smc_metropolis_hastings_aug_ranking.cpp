@@ -5,11 +5,11 @@
 //' @title Metropolis-Hastings Augmented Ranking
 //' @description Function to perform Metropolis-Hastings for new augmented ranking
 //'
-//' @param alpha Numeric value og the scale parameter
+//' @param alpha Numeric value of the scale parameter
 //' @param rho Numeric vector specifying the consensus ranking
 //' @param n_items Integer is the number of items in a ranking
 //' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
-//' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function
+//' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obtained from calculate_forward_probability function
 //' @param metric A character string specifying the distance metric to use in the
 //'   Bayesian Mallows Model. Available options are \code{"footrule"},
 //'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and

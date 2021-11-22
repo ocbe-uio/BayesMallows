@@ -15,7 +15,7 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This vignette describes the extension to the `BayesMallows` R package called `SMC-Mallows`. This uses Sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. We use an alternative data augmentation method, called the pseudolikelihood approach, when we are using the footrule and Spearman distance functions instead of using an independent sampler. The extension currently uses functions, similiar to the `BayesMallows` R package, to visualise and analyse the posterior distributions.
+This vignette describes the extension to the `BayesMallows` R package called `SMC-Mallows`. This uses Sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. We use an alternative data augmentation method, called the pseudolikelihood approach, when we are using the footrule and Spearman distance functions instead of using an independent sampler. The extension currently uses functions, similar to the `BayesMallows` R package, to visualise and analyse the posterior distributions.
 
 
 ## Overview of Extension
@@ -271,7 +271,7 @@ smc_partial_test <- smc_mallows_new_users_partial(
 )
 ```
 
-The variable `smc_test_partial` contains a list with three dimensional matrix of size `N` by `n_items` by `Time+1`, named `rho_samples`,  and a `N` by `Time+1` matrix called `alpha_samples`. The analysis performed in the previous demonstration can be applied to this scenario. Here, we can observe the posterior porbabilities for a selection of items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ as part of this demonstration, but we can use other post processing functions to analyse the output.
+The variable `smc_test_partial` contains a list with three dimensional matrix of size `N` by `n_items` by `Time+1`, named `rho_samples`,  and a `N` by `Time+1` matrix called `alpha_samples`. The analysis performed in the previous demonstration can be applied to this scenario. Here, we can observe the posterior probabilities for a selection of items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ as part of this demonstration, but we can use other post processing functions to analyse the output.
 
 ```{r smc_partial_analysis, message=FALSE, warning=FALSE}
 partial_test_sample_rho <- smc_partial_test$rho_samples[, , Time + 1]
