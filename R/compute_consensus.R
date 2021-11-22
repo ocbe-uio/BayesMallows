@@ -137,7 +137,7 @@ compute_consensus.BayesMallows <- function(
   df <- dplyr::ungroup(df)
   df <- dplyr::group_by(df, .data$cluster)
   class(df) <- c("BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
-  df <- dplyr::do(df, find_cpc(df))
+  df <- find_cpc(df)
   df <- dplyr::ungroup(df)
 
   # If there is only one cluster, we drop the cluster column
