@@ -58,7 +58,7 @@ LinkingTo: Rcpp, RcppArmadillo
 Suggests:
   R.rsp,
   knitr,
-  testthat (>= 2.0),
+  testthat (>= 3.0.0),
   label.switching (>= 1.7),
   rmarkdown,
   covr,
