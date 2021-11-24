@@ -93,7 +93,6 @@ double ulam_distance(const arma::vec& r1, const arma::vec& r2){
 //'
 //' @references \insertAllCited{}
 //' @keywords internal
-//'
 // [[Rcpp::export]]
 double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
 

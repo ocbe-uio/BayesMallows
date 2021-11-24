@@ -26,7 +26,7 @@ To install the current development version, use
 #install.packages("remotes")
 remotes::install_github("ocbe-uio/BayesMallows")
 
-# Set build_vignettes to TRUE to also get the package vignette
+# Set build_vignettes to TRUE to also get the package vignettes
 remotes::install_github("ocbe-uio/BayesMallows", build_vignettes = TRUE)
 ```
 
@@ -91,6 +91,11 @@ review of ranking models in general, see Q. Liu et al. (2019b). Crispino
 and Antoniano-Villalobos (2019) outlines how informative priors can be
 used within the model.
 
+Updating of the posterior distribution based on new data, using
+sequential Monte Carlo methods, is implemented and described in a
+separate vignette which can be shown with the command
+`vignette("SMC-Mallows")`.
+
 ### Applications
 
 Among the current applications, Q. Liu et al. (2019a) applied the
@@ -101,9 +106,10 @@ Crispino et al. (2019) to analyze listeners’ understanding of music.
 ### Future Extensions
 
 Plans for future extensions of the package include allowing for analysis
-of time-varying ranks as described in Asfaw et al. (2016), (frequentist)
-maximum likelihood estimation, and implementation of a variational Bayes
-algorithm for approximation the posterior distribution.
+of time-varying ranks as described in Asfaw et al. (2016), and
+implementation of a variational Bayes algorithm for approximation the
+posterior distribution. The sequential Monte Carlo algorithms will also
+be extended to cover a larger part of the model framework.
 
 ## Citation
 

@@ -19,7 +19,6 @@
 #'
 #' @references \insertAllCited{}
 #' @keywords internal
-#'
 get_rank_distance <- function(r1, r2, metric) {
     .Call(`_BayesMallows_get_rank_distance`, r1, r2, metric)
 }
@@ -189,5 +188,465 @@ rmallows <- function(rho0, obs_freq, alpha0, n_samples, burnin, thinning, leap_s
 #'
 run_mcmc <- function(rankings, obs_freq, nmc, constraints, cardinalities, logz_estimate, rho_init, metric = "footrule", error_model = "none", Lswap = 1L, n_clusters = 1L, include_wcd = FALSE, leap_size = 1L, alpha_prop_sd = 0.5, alpha_init = 5, alpha_jump = 1L, lambda = 0.1, alpha_max = 1e6, psi = 10L, rho_thinning = 1L, aug_thinning = 1L, clus_thin = 1L, save_aug = FALSE, verbose = FALSE, kappa_1 = 1.0, kappa_2 = 1.0, save_ind_clus = FALSE) {
     .Call(`_BayesMallows_run_mcmc`, rankings, obs_freq, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, error_model, Lswap, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, alpha_max, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2, save_ind_clus)
+}
+
+#' @title Calculate Backward Probability
+#' @description Function to calculate probability of assigning a set of specific ranks to an specific item
+#' given its rank in the consensus ranking
+#'
+#' @param item_ordering A vector of integer values to represent the specified queue of which unranked item to assign a rank for the proposed augmented ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obtained from calculate_forward_probability function
+#' @param remaining_set A vector of integer values to represent the elements (ranks) missing from original observed ranking
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param alpha Numeric value of the scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return backward_auxiliary_ranking_probability A numerical value of creating the previous augmented ranking using the same item ordering used to create the
+#' new augmented ranking in calculate_forward_probability function.
+#' @export
+calculate_backward_probability <- function(item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric) {
+    .Call(`_BayesMallows_calculate_backward_probability`, item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric)
+}
+
+#' @title Calculate Forward Probability
+#' @description Function to calculate probability of assigning a set of
+#'   specific ranks to an specific item
+#' given its rank in the consensus ranking
+#' @export
+#'
+#' @param item_ordering A vector of integer values to represent the specified
+#'   queue of which unranked item to assign a rank for the proposed augmented
+#'   ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original
+#'   observed incomplete ranking which contains NAs
+#' @param remaining_set A vector of integer values to represent the elements
+#'   (ranks) missing from original observed ranking
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param alpha Numeric value of the scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in
+#'   the Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
+#'   and \code{"ulam"}.
+#' @return List containing aug_ranking, a ranking sequence vector of the
+#'   proposed augmented ranking and forward_prob a numerical value of the
+#'   probability of creating the augmented ranking using the pseudolikelihood
+#'   augmentation.
+calculate_forward_probability <- function(item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric) {
+    .Call(`_BayesMallows_calculate_forward_probability`, item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric)
+}
+
+#' @title Correction Kernel
+#' @description Function to determine if the augmented ranking is compatible
+#' with the new observed partial ranking. If it is not, the we create a new
+#' augmentation using the random sampling approach and calculate the
+#' augmentation probability.
+#'
+#' @param current_ranking A ranking sequence vector of the current augmented
+#' ranking (no missing values)
+#' @param observed_ranking A ranking sequence vector of the observed partial
+#' ranking (no missing values) The original incomplete partial ranking
+#' is in the rankings data set.
+#' @param n_items Integer is the number of items in a ranking
+#'
+#' @return List containing the proposed 'corrected' augmented ranking
+#' that is compatible with the new observed ranking for a user
+correction_kernel <- function(observed_ranking, current_ranking, n_items) {
+    .Call(`_BayesMallows_correction_kernel`, observed_ranking, current_ranking, n_items)
+}
+
+#' @title Correction Kernel (pseudolikelihood)
+#' @description Function to determine if the augmented ranking is compatible with the new observed partial ranking.
+#' If it is not, the we create a new augmentation using the pseudolikelihood approach and calculate the augmentation probability.
+#'
+#' @param observed_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obtained from calculate_forward_probability function
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param alpha Numeric value of the scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return list containing R_obs, the proposed 'corrected' augmented ranking that is compatible with the new observed ranking for a user, and
+#'         forward_auxiliary_ranking_probability, a numerical value for the probability of correcting the ranking to be compatible with R_obs.
+correction_kernel_pseudo <- function(current_ranking, observed_ranking, rho, alpha, n_items, metric) {
+    .Call(`_BayesMallows_correction_kernel_pseudo`, current_ranking, observed_ranking, rho, alpha, n_items, metric)
+}
+
+#' @title Get Mallows log-likelihood
+#' @description Calculates the Mallows log-likelihood given a set of rankings and a given rank sequence
+#' @param alpha Numeric value of the scale parameter
+#' @param rho A ranking sequence
+#' @param n_items Integer is the number of items in a ranking
+#' A matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
+#' rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
+#' can be a vector.
+#' @param rankings A matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
+#' rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
+#' can be a vector.
+#' @param metric Character string specifying the distance measure to use.
+#' Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
+#' \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
+#' @return Mallows log-likelihood
+#' @export
+#' @author Anja Stein
+#' @examples
+#' set.seed(101)
+#' rho <- t(c(1, 2, 3, 4, 5, 6))
+#' alpha <- 2
+#' metric <- "footrule"
+#' n_items <- 6
+#' get_mallows_loglik(
+#'   alpha = alpha, rho = rho, n_items = length(rho), rankings = rho,
+#'   metric = metric
+#' )
+#'
+#' # return 0 because you are comparing the consensus ranking with itself
+#' # if you change alpha or metric, then the result shall remain as 0
+#'
+#' rankings <- sample_mallows(
+#'   rho0 = rho, alpha0 = alpha, n_samples = 10, burnin = 1000, thinning = 500
+#' )
+#'
+#' # depending on your seed, you will get a different collection of rankings in R and C++
+#'
+#' get_mallows_loglik(
+#'   alpha = alpha, rho = rho,  n_items = n_items, rankings = rankings ,
+#'   metric = metric
+#' )
+get_mallows_loglik <- function(alpha, rho, n_items, rankings, metric) {
+    .Call(`_BayesMallows_get_mallows_loglik`, alpha, rho, n_items, rankings, metric)
+}
+
+#' @title Get Sample Probabilities
+#' @description Calculate probability of assigning a set of specific ranks to an specific item
+#' given its rank in the consensus ranking
+#'
+#' @param rho_item_rank An integer value rank of an item in the current consensus ranking
+#' @param alpha Numeric value of the scale parameter
+#' @param remaining_set_ranks A sequence of integer values of the set of possible ranks that we can assign the item
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @param n_items Integer is the number of items in the consensus ranking
+#' @return sample_prob_list A numeric sequence of sample probabilities for selecting a specific rank given the current
+#'         rho_item_rank
+#' @export
+get_sample_probabilities <- function(rho_item_rank, alpha, remaining_set_ranks, metric, n_items) {
+    .Call(`_BayesMallows_get_sample_probabilities`, rho_item_rank, alpha, remaining_set_ranks, metric, n_items)
+}
+
+#' @title Leap and Shift Probabilities
+#' @description Determine the new Calculates transition probabilities for proposing a new rho
+#' @param rho A ranking sequence
+#' @param leap_size Integer specifying the step size of the leap-and-shift
+#' proposal distribution.
+#' @param n_items Integer is the number of items in a ranking
+#' @export
+#' @return A list containing:
+#' \itemize{
+#' \item \code{rho_prime} A ranking sequence proposed consensus ranking
+#' \item \code{forwards_prob} Numeric value to account for transition probability from rho to rho_prime
+#' \item \code{backwards_prob} Numeric Value to account for the transition probability from \code{rho_prime} to \code{rho}
+#' }
+#'
+#' @examples
+#' rho <- c(1, 2, 3, 4, 5, 6)
+#' n_items <- 6
+#'
+#' leap_and_shift_probs(rho, 1, n_items)
+#' leap_and_shift_probs(rho, 2, n_items)
+#' leap_and_shift_probs(rho, 3, n_items)
+#' @author Anja Stein
+#'
+leap_and_shift_probs <- function(rho, leap_size, n_items) {
+    .Call(`_BayesMallows_leap_and_shift_probs`, rho, leap_size, n_items)
+}
+
+#' @title SMC-Mallows new users rank
+#' @description Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user
+#' at each time step. Each correction and augmentation is done by filling in the missing item ranks using pseudolikelihood augmentation.
+#' @param n_items Integer is the number of items in a ranking
+#' @param R_obs 3D matrix of size n_assessors by n_items by Time containing a set of observed rankings of Time time steps
+#' @param metric A character string specifying the distance metric to use in the
+#' Bayesian Mallows Model. Available options are \code{"footrule"},
+#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#' \code{"ulam"}.
+#' @param leap_size leap_size Integer specifying the step size of the leap-and-shift
+#' proposal distribution
+#' @param N Integer specifying the number of particles
+#' @param Time Integer specifying the number of time steps in the SMC algorithm
+#' @param logz_estimate Estimate of the partition function, computed with
+#' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
+#' @param mcmc_kernel_app Integer value for the number of applications we apply the MCMC move kernel
+#' @param alpha_prop_sd Numeric value of the standard deviation of the prior distribution for alpha
+#' @param lambda Strictly positive numeric value specifying the rate parameter
+#' of the truncated exponential prior distribution of alpha.
+#' @param alpha_max  Maximum value of alpha in the truncated exponential
+#' prior distribution.
+#' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
+#' @param verbose Logical specifying whether to print out the progress of the
+#' SMC-Mallows algorithm. Defaults to \code{FALSE}.
+#' @return a 3d matrix containing the samples of rho and alpha from the SMC algorithm
+#' @export
+smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose = FALSE) {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank`, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose)
+}
+
+#' @title SMC-Mallows new item rank (alpha fixed)
+#' @description Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user
+#' at each time step. Each correction and augmentation is done by filling in the missing item ranks randomly.
+#' @param alpha A numeric value of the true scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param R_obs 3D matrix of size n_assessors by n_items by Time containing a set of observed rankings of Time time steps
+#' @param metric A character string specifying the distance metric to use in the
+#' Bayesian Mallows Model. Available options are \code{"footrule"},
+#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#' \code{"ulam"}.
+#' @param leap_size leap_size Integer specifying the step size of the leap-and-shift
+#' proposal distribution
+#' @param N Integer specifying the number of particles
+#' @param Time Integer specifying the number of time steps in the SMC algorithm
+#' @param logz_estimate Estimate of the partition function, computed with
+#' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
+#' @param mcmc_kernel_app Integer value for the number of applications we apply the MCMC move kernel
+#' @param alpha_prop_sd Numeric value specifying the standard deviation of the
+#' lognormal proposal distribution used for \eqn{\alpha} in the
+#' Metropolis-Hastings algorithm. Defaults to \code{0.1}.
+#' @param lambda Strictly positive numeric value specifying the rate parameter
+#' of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+#' to \code{0.1}. When \code{n_cluster > 1}, each mixture component
+#' \eqn{\alpha_{c}} has the same prior distribution.
+#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
+#' prior distribution.
+#' @param aug_method A character string specifying the approach for filling in
+#' the missing data, options are "pseudolikelihood" or "random".
+#' @param verbose Logical specifying whether to print out the progress of the
+#' SMC-Mallows algorithm. Defaults to \code{FALSE}.
+#' @return a 3d matrix containing the samples of rho and alpha from the SMC algorithm
+#' @export
+smc_mallows_new_item_rank_alpha_fixed <- function(alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose = FALSE) {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank_alpha_fixed`, alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose)
+}
+
+#' @title SMC-Mallows New Users Complete
+#' @description Function to perform resample-move SMC algorithm where we
+#' receive new users with complete rankings at each time step
+#'
+#' @param R_obs Matrix containing the full set of observed rankings of size
+#' n_assessors by n_items
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use
+#' in the Bayesian Mallows Model. Available options are \code{"footrule"},
+#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#' \code{"ulam"}.
+#' @param leap_size leap_size Integer specifying the step size of the
+#' leap-and-shift proposal distribution
+#' @param N Integer specifying the number of particles
+#' @param Time Integer specifying the number of time steps in the SMC algorithm
+#' @param logz_estimate Estimate of the partition function, computed with
+#' \code{\link{estimate_partition_function}} in the BayesMallow R package
+#' {estimate_partition_function}.
+#' @param mcmc_kernel_app Integer value for the number of applications we
+#' apply the MCMC move kernel
+#' @param num_new_obs Integer value for the number of new observations
+#' (complete rankings) for each time step
+#' @param alpha_prop_sd Numeric value specifying the standard deviation of the
+#'   lognormal proposal distribution used for \eqn{\alpha} in the
+#'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
+#' @param lambda Strictly positive numeric value specifying the rate parameter
+#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+#'   to \code{0.1}. When \code{n_cluster > 1}, each mixture component
+#'   \eqn{\alpha_{c}} has the same prior distribution.
+#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
+#'   prior distribution.
+#' @param verbose Logical specifying whether to print out the progress of the
+#' SMC-Mallows algorithm. Defaults to \code{FALSE}.
+#'
+#' @return a set of particles each containing a value of rho and alpha
+#'
+#' @importFrom stats rexp
+#' @export
+#'
+#' @example inst/examples/smc_mallows_new_users_complete_example.R
+#'
+smc_mallows_new_users_complete <- function(R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, logz_estimate = NULL, verbose = FALSE) {
+    .Call(`_BayesMallows_smc_mallows_new_users_complete`, R_obs, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, logz_estimate, verbose)
+}
+
+#' @title SMC-Mallows new users partial
+#' @description Function to perform resample-move SMC algorithm where we receive new users with complete rankings
+#' at each time step
+#' @param R_obs Matrix containing the full set of observed rankings of size n_assessors by n_items
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in the
+#' Bayesian Mallows Model. Available options are \code{"footrule"},
+#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#' \code{"ulam"}.
+#' @param leap_size leap_size Integer specifying the step size of the leap-and-shift
+#' proposal distribution
+#' @param N Integer specifying the number of particles
+#' @param Time Integer specifying the number of time steps in the SMC algorithm
+#' @param logz_estimate Estimate of the partition function, computed with
+#' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
+#' @param mcmc_kernel_app Integer value for the number of applications we apply the MCMC move kernel
+#' @param num_new_obs Integer value for the number of new observations (complete rankings) for each time step
+#' @param alpha_prop_sd Numeric value of the standard deviation of the prior distribution for alpha
+#' @param lambda Strictly positive numeric value specifying the rate parameter
+#' of the truncated exponential prior distribution of alpha.
+#' @param alpha_max  Maximum value of alpha in the truncated exponential
+#' prior distribution.
+#' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
+#' @param verbose Logical specifying whether to print out the progress of the
+#' SMC-Mallows algorithm. Defaults to \code{FALSE}.
+#' @return a set of particles each containing a value of rho and alpha
+#' @export
+smc_mallows_new_users_partial <- function(R_obs, n_items, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, aug_method, verbose = FALSE) {
+    .Call(`_BayesMallows_smc_mallows_new_users_partial`, R_obs, n_items, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, aug_method, verbose)
+}
+
+#' @title SMC-mallows new users partial (alpha fixed)
+#' @description Function to perform resample-move SMC algorithm where we receive new users with complete rankings
+#' at each time step
+#' @param R_obs Matrix containing the full set of observed rankings of size n_assessors by n_items
+#' @param n_items Integer is the number of items in a ranking
+#' @param metric A character string specifying the distance metric to use in the
+#' Bayesian Mallows Model. Available options are \code{"footrule"},
+#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#' \code{"ulam"}.
+#' @param leap_size leap_size Integer specifying the step size of the leap-and-shift
+#' proposal distribution
+#' @param N Integer specifying the number of particles
+#' @param Time Integer specifying the number of time steps in the SMC algorithm
+#' @param logz_estimate Estimate of the partition function, computed with
+#' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
+#' @param mcmc_kernel_app Integer value for the number of applications we apply the MCMC move kernel
+#' @param num_new_obs Integer value for the number of new observations (complete rankings) for each time step
+#' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
+#' @param alpha A numeric value of the scale parameter which is known and fixed
+#' @return a set of particles each containing a value of rho and alpha
+#' @export
+smc_mallows_new_users_partial_alpha_fixed <- function(R_obs, n_items, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, num_new_obs, aug_method, alpha) {
+    .Call(`_BayesMallows_smc_mallows_new_users_partial_alpha_fixed`, R_obs, n_items, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, num_new_obs, aug_method, alpha)
+}
+
+#' @title Metropolis-Hastings Alpha
+#' @description Function to perform Metropolis-Hastings for new rho under
+#'   the Mallows model with footrule distance metric!
+#' @param alpha Numeric value of the scale parameter
+#' @param n_items Integer is the number of items in a ranking
+#' @param rankings the observed rankings, i.e, preference data
+#' @details \code{rankings} is a matrix of size
+#'   \eqn{N }\eqn{\times}{x}\eqn{ n_items} of rankings in each row.
+#'   Alternatively, if \eqn{N} equals 1, \code{rankings} can be a vector.
+#' @param metric A character string specifying the distance metric to use
+#'   in the Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
+#'   and \code{"ulam"}.
+#' @param rho Numeric vector specifying the current consensus ranking
+#' @param logz_estimate Estimate  grid of log of partition function,
+#'   computed with \code{\link{estimate_partition_function}} in
+#'   the BayesMallow R package {estimate_partition_function}.
+#' @param alpha_prop_sd Numeric value specifying the standard deviation of the
+#'   lognormal proposal distribution used for \eqn{\alpha} in the
+#'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
+#' @return \code{alpha} or \code{alpha_prime}: Numeric value to be used
+#'   as the proposal of a new alpha
+#' @param lambda Strictly positive numeric value specifying the rate parameter
+#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+#'   to \code{0.1}. When \code{n_cluster > 1}, each mixture component
+#'   \eqn{\alpha_{c}} has the same prior distribution.
+#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
+#'   prior distribution.
+#' @importFrom stats dexp rlnorm runif
+#' @author Anja Stein
+#' @example /inst/examples/metropolis_hastings_alpha_example.R
+#'
+#' @export
+metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max) {
+    .Call(`_BayesMallows_metropolis_hastings_alpha`, alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max)
+}
+
+#' @title Metropolis-Hastings Augmented Ranking
+#' @description Function to perform Metropolis-Hastings for new augmented ranking
+#'
+#' @param alpha Numeric value of the scale parameter
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param n_items Integer is the number of items in a ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obtained from calculate_forward_probability function
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
+#' @export
+metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking, current_ranking, metric) {
+    .Call(`_BayesMallows_metropolis_hastings_aug_ranking`, alpha, rho, n_items, partial_ranking, current_ranking, metric)
+}
+
+#' @title Metropolis-Hastings Augmented Ranking (pseudolikelihood)
+#' @description Function to perform Metropolis-Hastings for new augmented ranking using the pseudolikelihood augmentation approach
+#'
+#' @param alpha Numeric value of the scale parameter
+#' @param rho Numeric vector specifying the consensus ranking
+#' @param n_items Integer is the number of items in a ranking
+#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
+#' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obtained from calculate_forward_probability function
+#' @param metric A character string specifying the distance metric to use in the
+#'   Bayesian Mallows Model. Available options are \code{"footrule"},
+#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+#'   \code{"ulam"}.
+#' @return = proposed augmented ranking or current ranking A ranking sequence vector representing proposed augmented ranking for next
+#'         iteration of MCMC chain
+#' @export
+metropolis_hastings_aug_ranking_pseudo <- function(alpha, rho, n_items, partial_ranking, current_ranking, metric) {
+    .Call(`_BayesMallows_metropolis_hastings_aug_ranking_pseudo`, alpha, rho, n_items, partial_ranking, current_ranking, metric)
+}
+
+#' @title Metropolis-Hastings Rho
+#' @description Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
+#' @inheritParams get_mallows_loglik
+#' @param leap_size Integer specifying the step size of the leap-and-shift
+#' proposal distribution.
+#' @export
+#' @author Anja Stein
+#' @examples
+#' rho <- t(c(1,2,3,4,5,6))
+#' alpha <- 2
+#' metric <- "footrule"
+#' n_items <- 6
+#'
+#' metropolis_hastings_rho(
+#' 	alpha = alpha, n_items = n_items, rankings = rho, metric = metric,
+#' 	rho = rho, leap_size = 1
+#' )
+#'
+#' metropolis_hastings_rho(
+#' 	alpha = alpha, n_items = n_items, rankings = rho, metric = metric,
+#' 	rho = rho, leap_size = 2
+#' )
+#'
+#' metropolis_hastings_rho(
+#' 	alpha = alpha, n_items = n_items, rankings = rho, metric = metric,
+#' 	rho = rho, leap_size = 3
+#' )
+#'
+#' rankings <- sample_mallows(
+#'  rho0 = rho, alpha0 = alpha, n_samples = 10, burnin = 1000, thinning = 500
+#' )
+#' metropolis_hastings_rho(
+#' 	alpha = alpha, n_items = n_items, rankings = rankings, metric = metric,
+#' 	rho = rho, leap_size = 1
+#' )
+#'
+metropolis_hastings_rho <- function(alpha, n_items, rankings, metric, rho, leap_size) {
+    .Call(`_BayesMallows_metropolis_hastings_rho`, alpha, n_items, rankings, metric, rho, leap_size)
 }
 

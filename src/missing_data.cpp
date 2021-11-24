@@ -29,7 +29,7 @@ void initialize_missing_ranks(arma::mat& rankings, const arma::umat& missing_ind
         arma::conv_to<arma::uvec>::from(rank_vector(present_inds))
       ));
 
-      for(int j = 0; j < missing_inds.size(); ++j){
+      for(unsigned int j = 0; j < missing_inds.size(); ++j){
         rank_vector(missing_inds(j)) = static_cast<double>(arma::as_scalar(new_ranks(j)));
       }
       rankings.col(i) = rank_vector;
