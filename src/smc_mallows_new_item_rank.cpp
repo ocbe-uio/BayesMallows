@@ -6,7 +6,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title SMC-Mallows new users rank
 //' @description Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user
-//' at each time step. Each correction and augmentation is done by filling in the missing item ranks using pseudlikelihood augmentation.
+//' at each time step. Each correction and augmentation is done by filling in the missing item ranks using pseudolikelihood augmentation.
 //' @param n_items Integer is the number of items in a ranking
 //' @param R_obs 3D matrix of size n_assessors by n_items by Time containing a set of observed rankings of Time time steps
 //' @param metric A character string specifying the distance metric to use in the
@@ -19,7 +19,7 @@
 //' @param Time Integer specifying the number of time steps in the SMC algorithm
 //' @param logz_estimate Estimate of the partition function, computed with
 //' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
-//' @param mcmc_kernel_app Interger value for the number of applications we apply the MCMC move kernel
+//' @param mcmc_kernel_app Integer value for the number of applications we apply the MCMC move kernel
 //' @param alpha_prop_sd Numeric value of the standard deviation of the prior distribution for alpha
 //' @param lambda Strictly positive numeric value specifying the rate parameter
 //' of the truncated exponential prior distribution of alpha.

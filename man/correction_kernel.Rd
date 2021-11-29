@@ -23,6 +23,6 @@ that is compatible with the new observed ranking for a user
 \description{
 Function to determine if the augmented ranking is compatible
 with the new observed partial ranking. If it is not, the we create a new
-augmentation using the random sampling approachand calculate the
+augmentation using the random sampling approach and calculate the
 augmentation probability.
 }

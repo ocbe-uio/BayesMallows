@@ -15,7 +15,7 @@
 #'   \code{parallel::makeCluster}. Defaults to \code{NULL}.
 #'
 #' @param shuffle_unranked Logical specifying whether or not to randomly
-#'   permuted unranked items in the intial ranking. When
+#'   permuted unranked items in the initial ranking. When
 #'   \code{shuffle_unranked=TRUE} and \code{random=FALSE}, all unranked items
 #'   for each assessor are randomly permuted. Otherwise, the first ordering
 #'   returned by \code{igraph::topo_sort()} is returned.

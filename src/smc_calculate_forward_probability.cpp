@@ -17,7 +17,7 @@
 //' @param remaining_set A vector of integer values to represent the elements
 //'   (ranks) missing from original observed ranking
 //' @param rho Numeric vector specifying the consensus ranking
-//' @param alpha Numeric value og the scale parameter
+//' @param alpha Numeric value of the scale parameter
 //' @param n_items Integer is the number of items in a ranking
 //' @param metric A character string specifying the distance metric to use in
 //'   the Bayesian Mallows Model. Available options are \code{"footrule"},

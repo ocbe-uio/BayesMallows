@@ -14,13 +14,13 @@ correction_kernel_pseudo(
 )
 }
 \arguments{
-\item{current_ranking}{An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function}
+\item{current_ranking}{An complete rank sequence vector of  the proposed augmented ranking obtained from calculate_forward_probability function}
 
 \item{observed_ranking}{An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs}
 
 \item{rho}{Numeric vector specifying the consensus ranking}
 
-\item{alpha}{Numeric value og the scale parameter}
+\item{alpha}{Numeric value of the scale parameter}
 
 \item{n_items}{Integer is the number of items in a ranking}
 

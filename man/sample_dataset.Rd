@@ -3,7 +3,7 @@
 \docType{data}
 \name{sample_dataset}
 \alias{sample_dataset}
-\title{A syntetic 3D matrix (\code{n_users}, \code{n_items}, \code{Time}) generated
+\title{A synthetic 3D matrix (\code{n_users}, \code{n_items}, \code{Time}) generated
 using the sample_mallows function. These are test datasets used to run
 the SMC-Mallows framework for the cases where we know all of the users
 in our system and their original ranking information are partial rankings.
@@ -22,7 +22,7 @@ An object of class \code{array} of dimension 10 x 6 x 31.
 sample_dataset
 }
 \description{
-A syntetic 3D matrix (\code{n_users}, \code{n_items}, \code{Time}) generated
+A synthetic 3D matrix (\code{n_users}, \code{n_items}, \code{Time}) generated
 using the sample_mallows function. These are test datasets used to run
 the SMC-Mallows framework for the cases where we know all of the users
 in our system and their original ranking information are partial rankings.

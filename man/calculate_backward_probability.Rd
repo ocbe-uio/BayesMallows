@@ -20,13 +20,13 @@ calculate_backward_probability(
 
 \item{partial_ranking}{An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs}
 
-\item{current_ranking}{An complete rank sequence vector of  the proposed augmented ranking obatined from calculate_forward_probability function}
+\item{current_ranking}{An complete rank sequence vector of  the proposed augmented ranking obtained from calculate_forward_probability function}
 
 \item{remaining_set}{A vector of integer values to represent the elements (ranks) missing from original observed ranking}
 
 \item{rho}{Numeric vector specifying the consensus ranking}
 
-\item{alpha}{Numeric value og the scale parameter}
+\item{alpha}{Numeric value of the scale parameter}
 
 \item{n_items}{Integer is the number of items in a ranking}
 
@@ -37,7 +37,7 @@ Bayesian Mallows Model. Available options are \code{"footrule"},
 }
 \value{
 backward_auxiliary_ranking_probability A numerical value of creating the previous augmented ranking using the same item ordering used to create the
-new auggmented ranking in calculate_forward_probability funtion.
+new augmented ranking in calculate_forward_probability function.
 }
 \description{
 Function to calculate probability of assigning a set of specific ranks to an specific item

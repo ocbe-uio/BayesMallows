@@ -6,7 +6,7 @@
 //' @title Metropolis-Hastings Alpha
 //' @description Function to perform Metropolis-Hastings for new rho under
 //'   the Mallows model with footrule distance metric!
-//' @param alpha Numeric value og the scale parameter
+//' @param alpha Numeric value of the scale parameter
 //' @param n_items Integer is the number of items in a ranking
 //' @param rankings the observed rankings, i.e, preference data
 //' @details \code{rankings} is a matrix of size

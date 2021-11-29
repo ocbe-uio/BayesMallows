@@ -17,7 +17,7 @@ metropolis_hastings_alpha(
 )
 }
 \arguments{
-\item{alpha}{Numeric value og the scale parameter}
+\item{alpha}{Numeric value of the scale parameter}
 
 \item{n_items}{Integer is the number of items in a ranking}
 

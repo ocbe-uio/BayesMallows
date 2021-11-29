@@ -38,7 +38,7 @@ leap-and-shift proposal distribution}
 
 \item{Time}{Integer specifying the number of time steps in the SMC algorithm}
 
-\item{mcmc_kernel_app}{Interger value for the number of applications we
+\item{mcmc_kernel_app}{Integer value for the number of applications we
 apply the MCMC move kernel}
 
 \item{num_new_obs}{Integer value for the number of new observations
