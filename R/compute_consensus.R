@@ -140,6 +140,9 @@ compute_consensus.BayesMallows <- function(
   df <- find_cpc(df)
   df <- dplyr::ungroup(df)
 
+  df <- dplyr::arrange(df, .data$cluster, .data$ranking)
+
+
   # If there is only one cluster, we drop the cluster column
   if(length(unique(df$cluster)) == 1){
     df <- dplyr::select(df, -.data$cluster)
