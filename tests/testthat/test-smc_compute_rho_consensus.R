@@ -1,3 +1,4 @@
+context("Further tests on compute_rho_consensus")
 set.seed(1234)
 
 ####################################
@@ -6,7 +7,7 @@ set.seed(1234)
 n_items <- dim(sushi_rankings)[2]
 metric <- "footrule"
 alpha_vector <- seq(from = 0, to = 15, by = 0.1)
-iter <- 1e4
+iter <- 1e2
 degree <- 10
 
 # Estimate the logarithm of the partition function of the Mallows rank model
@@ -19,7 +20,7 @@ logz_estimate <- estimate_partition_function(
 
 data <- sushi_rankings[1:100, ]
 leap_size <- floor(n_items / 5)
-N <- 1000
+N <- 100
 Time <- 20
 
 model_fit <- smc_mallows_new_users_complete(
@@ -39,19 +40,17 @@ model_fit <- smc_mallows_new_users_complete(
 ##################
 test_sample_rho <- model_fit$rho_samples[, , Time + 1]
 
-test1 = compute_rho_consensus(
+test1 <- compute_rho_consensus(
   output = test_sample_rho, nmc = N,
   burnin = 0, C = 1, type = "CP",
   verbose = FALSE
 )
-test1
 
-test2 = compute_rho_consensus(
+test2 <- compute_rho_consensus(
   output = test_sample_rho, nmc = N,
   burnin = 0, C = 1, type = "MAP",
   verbose = FALSE
 )
-test2
 
 test_that("Output of compute_rho_consensus (CP) is OK", {
   expect_is(test1, "tbl_df")
@@ -63,7 +62,7 @@ test_that("Output of compute_rho_consensus (CP) is OK", {
 })
 
 test_that("Output of compute_rho_consensus (MAP) is OK", {
-  #expect_is(test2, "tbl_df")
+  expect_is(test2, "tbl_df")
   expect_length(test2, 3)
   expect_named(test2, c("probability", "item", "map_ranking"))
   expect_equal(dim(test2), c(n_items, 3))
