@@ -223,6 +223,8 @@ find_cpc_smc <- function(group_df){
     df <- dplyr::select(df, -.data$cluster)
   }
 
+  df <- dplyr::as_tibble(df)  # added to solve issue #163. Remove for # 162.
+
   return(df)
 
 }
