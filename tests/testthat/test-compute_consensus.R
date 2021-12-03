@@ -98,21 +98,37 @@ test_that("compute_consensus computes augmented ranks correctly", {
                                                                   "Item 2"), cumprob = c(0.61, 1, 1)), row.names = c(NA, -3L), class = c("tbl_df",
                                                                                                                                          "tbl", "data.frame"))
   )
-  res <- compute_consensus(b2, type = "CP", burnin = 200, parameter = "Rtilde", assessors = c(3L, 5L))
 
-  expect_equal(res, structure(list(assessor = c("3", "3", "3", "5", "5", "5"), ranking = c(1,
-                                                                                           2, 3, 1, 2, 3), item = c("Item 1", "Item 3", "Item 2", "Item 1",
-                                                                                                                    "Item 3", "Item 2"), cumprob = c(0.696666666666667, 0.836666666666667,
-                                                                                                                                                     1, 1, 1, 1)), row.names = c(NA, -6L), class = c("tbl_df", "tbl",
-                                                                                                                                                                                                     "data.frame"))
+
+  res <- compute_consensus(b2, type = "CP", burnin = 200, parameter = "Rtilde", assessors = c(3L, 5L))
+  expect_equal(
+    res,
+    structure(
+      list(
+        assessor  = c("3", "3", "3", "5", "5", "5"),
+        ranking   = c(1, 2, 3, 1, 2, 3),
+        item      = c("Item 1", "Item 3", "Item 2", "Item 1", "Item 3", "Item 2"),
+        cumprob   = c(0.696666666666667, 0.836666666666667, 1, 1, 1, 1)
+      ),
+      row.names = c(NA, -6L),
+      class     = c("tbl_df", "tbl", "data.frame")
+    )
   )
 
   res <- compute_consensus(b3, type = "CP", burnin = 200, parameter = "Rtilde", assessors = c(3L, 5L))
-  expect_equal(res,
-               structure(list(assessor = c("3", "3", "3", "5", "5", "5"), ranking = c(1,
-                                                                                      2, 3, 1, 2, 3), item = c("Item 1", "Item 3", "Item 2", "Item 1",
-                                                                                                               "Item 3", "Item 2"), cumprob = c(0.69, 0.84, 1, 1, 1, 1)), row.names = c(NA,
-                                                                                                                                                                                        -6L), class = c("tbl_df", "tbl", "data.frame"))
+  expect_equal(
+    res,
+    structure(
+      list(
+        assessor = c("3", "3", "3", "5", "5", "5"),
+        ranking = c(1, 2, 3, 1, 2, 3),
+        item = c("Item 1", "Item 3", "Item 2", "Item 1", "Item 3", "Item 2"),
+        cumprob = c(0.69, 0.84, 1, 1, 1, 1)
+      ),
+      row.names = c(NA, -6L),
+      class = c("tbl_df", "tbl", "data.frame")
+    )
+
   )
 
   res <- compute_consensus(b2, type = "MAP", burnin = 200, parameter = "Rtilde", assessors = 1L)

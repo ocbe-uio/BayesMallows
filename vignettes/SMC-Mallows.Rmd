@@ -314,7 +314,7 @@ for (ii in (n_items - 1):(n_items / 2)) {
 }
 ```
 
-This means that we now have a 3D array containing 10 partial datasets and the one complete dataset. The third dimension of the array represents artifical time. We can view the updated partial rankings scenario as viewing several 2D slices of the observed dataset sequentially. So you can see, for example, that at the 5th time point, we observe the top-14 items from `potato_visual`.
+This means that we now have a 3D array containing 10 partial datasets and the one complete dataset. The third dimension of the array represents artificial time. We can view the updated partial rankings scenario as viewing several 2D slices of the observed dataset sequentially. So you can see, for example, that at the 5th time point, we observe the top-14 items from `potato_visual`.
 
 ```{r test_dataset_example, message=FALSE, warning=FALSE}
 test_dataset[, , 5]

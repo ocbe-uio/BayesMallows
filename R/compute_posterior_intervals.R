@@ -63,13 +63,14 @@ compute_posterior_intervals.BayesMallows <- function(
   if(parameter == "alpha" || parameter == "cluster_probs"){
 
     df <- dplyr::group_by(df, .data$cluster)
-    class(df) <- c("BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
+
+    class(df) <- c("posterior_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
     df <- .compute_posterior_intervals(df, parameter, level, decimals)
 
   } else if(parameter == "rho"){
     decimals <- 0
     df <- dplyr::group_by(df, .data$cluster, .data$item)
-    class(df) <- c("BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
+    class(df) <- c("posterior_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
     df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
 
   }
@@ -105,12 +106,15 @@ compute_posterior_intervals.SMCMallows <- function(
 
   if (parameter == "alpha" || parameter == "cluster_probs") {
     df <- dplyr::group_by(df, .data$cluster)
-    class(df) <- c("SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
+
+    class(df) <- c("posterior_SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
+
     df <- .compute_posterior_intervals(df, parameter, level, decimals)
   } else if (parameter == "rho") {
     decimals <- 0
     df <- dplyr::group_by(df, .data$cluster, .data$item)
-    class(df) <- c("SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
+
+    class(df) <- c("posterior_SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
     df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
   }
 
@@ -123,7 +127,7 @@ compute_posterior_intervals.SMCMallows <- function(
   return(df)
 }
 
-.compute_posterior_intervals.BayesMallows <- function(
+.compute_posterior_intervals.posterior_BayesMallows <- function(
   df, parameter, level, decimals, discrete = FALSE, ...
 ){
   dplyr::do(df, {
@@ -186,7 +190,8 @@ compute_posterior_intervals.SMCMallows <- function(
 
 # same as compute_posterior_intervals, but removed the bayesmallows object and
 # some other columns
-.compute_posterior_intervals.SMCMallows <- function(
+
+.compute_posterior_intervals.posterior_SMCMallows <- function(
   df, parameter, level, decimals, discrete = FALSE, ...
 ) {
   dplyr::do(df, {

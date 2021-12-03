@@ -1,3 +1,7 @@
+# BayesMallows 1.1.0
+
+* Major update, introducing a whole new class of methods using sequential Monte Carlo. Also reducing the number of dependencies.
+
 # BayesMallows 1.0.4.9001
 
 * This is a major update, with new functions for estimating the Bayesian Mallows 
