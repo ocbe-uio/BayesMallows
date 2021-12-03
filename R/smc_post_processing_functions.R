@@ -35,6 +35,7 @@ smc_processing <- function(output, colnames = NULL) {
   return(new_df)
 }
 
+
 #' @title Compute Posterior Intervals Rho
 #' @description posterior confidence intervals for rho
 #' @inheritParams smc_processing
@@ -99,6 +100,7 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL,
   smc_plot$n_clusters <- C
   smc_plot$parameter <- "rho"
   smc_plot$cluster <- "cluster 1"
+
   class(smc_plot) <- c("consensus_SMCMallows", "data.frame")
 
   # rho estimation using cumulative probability

@@ -99,6 +99,7 @@ test_that("compute_consensus computes augmented ranks correctly", {
                                                                                                                                          "tbl", "data.frame"))
   )
 
+
   res <- compute_consensus(b2, type = "CP", burnin = 200, parameter = "Rtilde", assessors = c(3L, 5L))
   expect_equal(
     res,
@@ -127,6 +128,7 @@ test_that("compute_consensus computes augmented ranks correctly", {
       row.names = c(NA, -6L),
       class = c("tbl_df", "tbl", "data.frame")
     )
+
   )
 
   res <- compute_consensus(b2, type = "MAP", burnin = 200, parameter = "Rtilde", assessors = 1L)
