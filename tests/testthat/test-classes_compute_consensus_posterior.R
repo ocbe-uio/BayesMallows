@@ -110,11 +110,17 @@ context("compute_consensus() classes")
 
 fit_bm_consensus_cp <- compute_consensus(fit_bm, type = "CP")
 fit_bm_consensus_map <- compute_consensus(fit_bm, type = "MAP")
-# TODO #80: add tests for SMC (compute_rho_consensus). Read
-# https://github.com/ocbe-uio/BayesMallows/issues/80#issuecomment-984444753 for
-# details
+fit_smc_rho <- fit_smc$rho_samples[, , Time + 1]
+fit_smc_consensus_cp <- compute_rho_consensus(
+	output = fit_smc_rho, nmc = nmc, burnin = 0, C = 1, type = "CP"
+)
+fit_smc_consensus_map <- compute_rho_consensus(
+	output = fit_smc_rho, nmc = nmc, burnin = 0, C = 1, type = "MAP"
+)
 
 test_that("Classes are correctly attributed", {
 	expect_s3_class(fit_bm_consensus_cp, "data.frame")
 	expect_s3_class(fit_bm_consensus_map, "data.frame")
+	expect_s3_class(fit_smc_consensus_cp, "data.frame")
+	expect_s3_class(fit_smc_consensus_map, "data.frame")
 })

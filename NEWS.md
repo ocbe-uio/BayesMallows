@@ -1,3 +1,5 @@
+# BayesMallows (development version)
+
 # BayesMallows 1.0.4.9001
 
 * This is a major update, with new functions for estimating the Bayesian Mallows 
