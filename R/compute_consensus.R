@@ -69,7 +69,7 @@ compute_consensus.BayesMallows <- function(
     # the model object
     stopifnot(model_fit$n_clusters * model_fit$n_items == n_rows)
 
-    class(df) <- c("BayesMallows", "tbl_df", "tbl", "data.frame")
+    class(df) <- c("consensus_BayesMallows", "tbl_df", "tbl", "data.frame")
 
     df <- if(type == "CP"){
       .compute_cp_consensus(df)
@@ -94,7 +94,7 @@ compute_consensus.BayesMallows <- function(
 
     # Treat assessors as clusters
     df <- dplyr::rename(df, cluster = "assessor")
-    class(df) <- c("BayesMallows", "tbl_df", "tbl", "data.frame")
+    class(df) <- c("consensus_BayesMallows", "tbl_df", "tbl", "data.frame")
 
     df <- if(type == "CP"){
       .compute_cp_consensus(df)
@@ -112,7 +112,7 @@ compute_consensus.BayesMallows <- function(
 
 }
 
-.compute_cp_consensus.BayesMallows <- function(df){
+.compute_cp_consensus.consensus_BayesMallows <- function(df){
 
   # Convert items and cluster to character, since factor levels are not needed in this case
   df <- dplyr::mutate_at(df, dplyr::vars(.data$item, .data$cluster),
@@ -136,7 +136,7 @@ compute_consensus.BayesMallows <- function(
   # Find the CP consensus per cluster, using the find_cpc function
   df <- dplyr::ungroup(df)
   df <- dplyr::group_by(df, .data$cluster)
-  class(df) <- c("BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
+  class(df) <- c("consensus_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
   df <- find_cpc(df)
   df <- dplyr::ungroup(df)
 
@@ -153,7 +153,7 @@ compute_consensus.BayesMallows <- function(
 
 
 # Internal function for finding CP consensus.
-find_cpc.BayesMallows <- function(group_df){
+find_cpc.consensus_BayesMallows <- function(group_df){
   # Declare the result dataframe before adding rows to it
   result <- dplyr::tibble(
     cluster = character(),
@@ -185,7 +185,7 @@ find_cpc.BayesMallows <- function(group_df){
   return(result)
 }
 
-.compute_map_consensus.BayesMallows <- function(df){
+.compute_map_consensus.consensus_BayesMallows <- function(df){
 
   # Store the total number of iterations after burnin
   n_samples <- length(unique(df$iteration))
