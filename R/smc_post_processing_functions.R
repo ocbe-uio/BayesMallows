@@ -51,15 +51,15 @@ smc_processing <- function(output, colnames = NULL) {
 #' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
 #' @author Anja Stein
 #'
-compute_consensus_smc <- function(model_fit, type, burnin) {
+compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
   if (type == "CP") {
-    .compute_cp_consensus_smc(model_fit, burnin = burnin)
+    .compute_cp_consensus(model_fit, burnin = burnin)
   } else if (type == "MAP") {
-    .compute_map_consensus_smc(model_fit, burnin = burnin)
+    .compute_map_consensus(model_fit, burnin = burnin)
   }
 }
 
-.compute_cp_consensus_smc <- function(model_fit, burnin){
+.compute_cp_consensus.consensus_SMCMallows <- function(model_fit, burnin){
 #TODO #80: this function already exists on compute_consensus.R. Add S3 method.
 
   if(is.null(burnin)){
@@ -102,10 +102,11 @@ compute_consensus_smc <- function(model_fit, type, burnin) {
   # count in (item, cluster) and the summing cumulatively
   df <- dplyr::mutate(df, cumprob = cumsum(.data$n/sum(.data$n)))
 
-  # Find the CP consensus per cluster, using the find_cpc_smc function
+  # Find the CP consensus per cluster, using the find_cpc function
   df <- dplyr::ungroup(df)
   df <- dplyr::group_by(df, .data$cluster)
-  df <- dplyr::do(df, find_cpc_smc(.data))
+  class(df) <- c("consensus_SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
+  df <- find_cpc(df)
   df <- dplyr::ungroup(df)
 
   # If there is only one cluster, we drop the cluster column
@@ -117,9 +118,8 @@ compute_consensus_smc <- function(model_fit, type, burnin) {
 
 }
 
-
 # Internal function for finding CP consensus.
-find_cpc_smc <- function(group_df){
+find_cpc.consensus_SMCMallows <- function(group_df){
 #TODO #80: this function already exists on compute_consensus.R. Add S3 method.
   # Declare the result dataframe before adding rows to it
   result <- dplyr::tibble(
@@ -158,7 +158,7 @@ find_cpc_smc <- function(group_df){
 }
 
  #AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_rho_consensus
-.compute_map_consensus_smc <- function(model_fit, burnin = model_fit$burnin){
+.compute_map_consensus.consensus_SMCMallows <- function(model_fit, burnin = model_fit$burnin){
 #TODO #80: this function already exists on compute_consensus.R. Add S3 method.
 
   if(is.null(burnin)){
@@ -293,14 +293,15 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL,
   smc_plot$n_clusters <- C
   smc_plot$parameter <- "rho"
   smc_plot$cluster <- "cluster 1"
+  class(smc_plot) <- c("consensus_SMCMallows", "data.frame")
 
   # rho estimation using cumulative probability
   if (type == "CP") {
-    results <- compute_consensus_smc(
+    results <- compute_consensus(
       model_fit = smc_plot, type = "CP", burnin = burnin
     )
   } else {
-    results <- compute_consensus_smc(
+    results <- compute_consensus(
       model_fit = smc_plot, type = "MAP", burnin = burnin
     )
   }
