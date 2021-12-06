@@ -72,22 +72,22 @@ generate_initial_ranking <- function(tc,
                                      random_limit = 8L) {
 
 
-  if(!("BayesMallowsTC" %in% class(tc))) {
+  if (!("BayesMallowsTC" %in% class(tc))) {
     stop("tc must be an object returned from generate_transitive_closure")
   }
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
-  if(n_items > random_limit && random) {
+  if (n_items > random_limit && random) {
     stop(paste("Number of items exceeds the limit for generation of random permutations,\n",
                "modify the random_limit argument to override this.\n"))
   }
 
-  if(n_items < max(tc[, c("bottom_item", "top_item")])) {
+  if (n_items < max(tc[, c("bottom_item", "top_item")])) {
     stop("Too few items specified. Please see documentation Note about labeling of items.\n")
   }
 
   prefs <- split(tc[, c("bottom_item", "top_item"), drop = FALSE], tc$assessor)
-  if(is.null(cl)) {
+  if (is.null(cl)) {
     prefs <- lapply(prefs, function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
                     n_items, shuffle_unranked, random)
   } else {
@@ -101,13 +101,13 @@ generate_initial_ranking <- function(tc,
 
 create_ranks <- function(mat, n_items, shuffle_unranked, random) {
 
-  if(!random) {
+  if (!random) {
     g <- igraph::graph_from_edgelist(mat)
     g <- as.integer(igraph::topo_sort(g))
 
     all_items <- seq(from = 1, to = n_items, by = 1)
 
-    if(!shuffle_unranked) {
+    if (!shuffle_unranked) {
       # Add unranked elements outside of the range at the end
       g_final <- c(g, setdiff(all_items, g))
 
@@ -127,7 +127,7 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     mat <- matrix(r, nrow = 1)
   } else{
     graph <- list()
-    for(i in seq_len(n_items)) {
+    for (i in seq_len(n_items)) {
       graph[[i]] <- unique(mat[mat[, "top_item"] == i, "bottom_item"])
     }
     indegree_init <- rep(0, n_items)

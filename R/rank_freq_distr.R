@@ -15,7 +15,7 @@
 #'
 rank_freq_distr <- function(rankings) {
 
-  if(!is.matrix(rankings)) {
+  if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }
 

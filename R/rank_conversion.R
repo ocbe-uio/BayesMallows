@@ -45,10 +45,10 @@ NULL
 create_ranking <- function(orderings) {
 
   # Check that it is a permutation
-  if(is.vector(orderings)) {
+  if (is.vector(orderings)) {
     stopifnot(validate_permutation(orderings))
     return(order(orderings))
-  } else if(is.matrix(orderings)) {
+  } else if (is.matrix(orderings)) {
     n_items <- ncol(orderings)
 
     # Convert to list, for easier functional programming
@@ -57,7 +57,7 @@ create_ranking <- function(orderings) {
     # Check that matrix contains permutations
     check <- lapply(orderings, validate_permutation)
 
-    if(!Reduce(`&&`, check)) {
+    if (!Reduce(`&&`, check)) {
       stop(paste("orderings must contain proper permutations. Problem row(s):", which(!check)))
     }
 
@@ -74,7 +74,7 @@ create_ranking <- function(orderings) {
       inds[is.na(inds)] <- FALSE
       # Extract the correct items
       candidates[inds]
-    } )
+    })
 
     return(t(matrix(unlist(rankings), ncol = length(rankings))))
   } else {

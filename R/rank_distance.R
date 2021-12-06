@@ -22,13 +22,13 @@
 #' @example /inst/examples/rank_distance_example.R
 rank_distance <- function(rankings, rho, metric, obs_freq = 1) {
 
-  if(!is.matrix(rankings)) {
+  if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }
 
   stopifnot(length(obs_freq) == 1 || length(obs_freq) == nrow(rankings))
 
-  if(length(obs_freq) == 1) {
+  if (length(obs_freq) == 1) {
     obs_freq <- rep(obs_freq, nrow(rankings))
   }
 

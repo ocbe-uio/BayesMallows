@@ -4,7 +4,7 @@ context("Testing function estimate_partition_function")
 test_that(
   "estimate_partition_function fails for wrong asymptotic metrics",
   {
-    for(metric in c("cayley", "hamming", "kendall", "ulam")) {
+    for (metric in c("cayley", "hamming", "kendall", "ulam")) {
       expect_error(
         estimate_partition_function(method = "asymptotic",
                                     alpha_vector = seq(from = 1, to = 2, by = .1),

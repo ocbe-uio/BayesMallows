@@ -16,7 +16,7 @@ print.BayesMallows <- function(x, ...) {
   # issue a warning. This is because print.BayesMallows must have the same
   # required arguments as base::print.
 
-  if(is.null(x$n_items) || is.null(x$n_assessors)) {
+  if (is.null(x$n_items) || is.null(x$n_assessors)) {
     stop("BayesMallows object must have elements n_items and n_assessors.")
   }
   cat("Bayesian Mallows Model with", x$n_items, "items and", x$n_assessors, "assessors.\n")

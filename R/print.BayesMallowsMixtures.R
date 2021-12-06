@@ -16,7 +16,7 @@ print.BayesMallowsMixtures <- function(x, ...) {
   # issue a warning. This is because print.BayesMallowsMixtures must have the same
   # required arguments as base::print.
 
-  if(!Reduce(`&`, lapply(x, function(x) inherits(x, "BayesMallows")))) {
+  if (!Reduce(`&`, lapply(x, function(x) inherits(x, "BayesMallows")))) {
     stop("All elements of a BayesMallowsMixtures object must be of class BayesMallows.")
   }
 

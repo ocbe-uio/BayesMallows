@@ -26,7 +26,7 @@ compute_mallows_mixtures <- function(n_clusters, ..., cl = NULL) {
   stopifnot(is.numeric(n_clusters))
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
-  if(is.null(cl)) {
+  if (is.null(cl)) {
     models <- lapply(n_clusters, function(x) {
       compute_mallows(..., n_clusters = x)
     })

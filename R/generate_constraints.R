@@ -31,7 +31,7 @@ generate_constraints <- function(preferences, n_items, cl = NULL) {
   # one list element per assessor
   constraints <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE],
                        preferences$assessor)
-  if(is.null(cl)) {
+  if (is.null(cl)) {
     lapply(constraints, constraint_fun, n_items)
   } else {
     parallel::parLapply(cl = cl, X = constraints, fun = constraint_fun, n_items)

@@ -31,7 +31,7 @@ test_that(
     n <- 10000L
     probs <- c(0.1, 0.2, 0.7)
     values <- integer(n)
-    for(i in seq(1L, n, 1L)) {
+    for (i in seq(1L, n, 1L)) {
       values[[i]] <- BayesMallows:::sample_int(probs)
     }
     freqs <- table(values) / length(values)
@@ -42,7 +42,7 @@ test_that(
     # TRUE, due to the randomness in sampling
     skip_on_cran()
     diff <- abs(probs - freqs)
-    for(i in 1:3) {
+    for (i in 1:3) {
       expect_lt(diff[[i]], 0.02)
     }
 

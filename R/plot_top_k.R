@@ -48,7 +48,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
 
   # Sort the items according to probability in Cluster 1
   item_ordering <- compute_consensus(model_fit, type = "CP", burnin = burnin)
-  if(model_fit$n_clusters > 1) {
+  if (model_fit$n_clusters > 1) {
     item_ordering <- rev(item_ordering[item_ordering$cluster == "Cluster 1", ]$item)
   } else {
     item_ordering <- rev(item_ordering$item)
@@ -57,7 +57,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
   rho <- dplyr::mutate(rho, item = factor(.data$item, levels = unique(item_ordering)))
 
   # Trick to make the plot look nicer
-  if(model_fit$n_clusters == 1) {
+  if (model_fit$n_clusters == 1) {
     rho <- dplyr::mutate(rho, cluster = "")
   }
 
@@ -82,7 +82,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
     ggplot2::xlab(expression(rho)) +
     ggplot2::theme(legend.position = "none")
 
-  if(model_fit$n_clusters > 1) {
+  if (model_fit$n_clusters > 1) {
     rho_plot <- rho_plot + ggplot2::facet_wrap(~ .data$cluster)
   }
 

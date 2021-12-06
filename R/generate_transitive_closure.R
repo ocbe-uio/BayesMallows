@@ -46,7 +46,7 @@ generate_transitive_closure <- function(df, cl = NULL) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
   prefs <- split(df[, c("bottom_item", "top_item"), drop = FALSE], df$assessor)
 
-  if(is.null(cl)) {
+  if (is.null(cl)) {
     prefs <- mapply(function(x, y) cbind(y, .generate_transitive_closure(cbind(x$bottom_item, x$top_item))),
                     prefs, unique(df$assessor), SIMPLIFY = FALSE)
   } else {
@@ -66,7 +66,7 @@ generate_transitive_closure <- function(df, cl = NULL) {
                                    "bottom_item" = "top_item",
                                    "top_item" = "bottom_item"))
 
-  if(nrow(check) > 0) {
+  if (nrow(check) > 0) {
     print("Inconsistent rankings:")
     print(check)
     stop("Cannot compute transitive closure. Please run compute_mallows with error_model='bernoulli'.")

@@ -3,8 +3,8 @@
 all_topological_sorts <- function(graph, path, discovered, n_items) {
   flag <- FALSE
 
-  for(i in seq_len(n_items)) {
-    if(attr(graph, "indegree")[[i]] == 0 && !discovered[[i]]) {
+  for (i in seq_len(n_items)) {
+    if (attr(graph, "indegree")[[i]] == 0 && !discovered[[i]]) {
       attr(graph, "indegree")[graph[[i]]] <- attr(graph, "indegree")[graph[[i]]] - 1
 
       path <- c(path, i)
@@ -18,5 +18,5 @@ all_topological_sorts <- function(graph, path, discovered, n_items) {
       flag <- TRUE
     }
   }
-  if(length(path) == n_items) print(path)
+  if (length(path) == n_items) print(path)
 }

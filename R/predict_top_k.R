@@ -51,12 +51,12 @@ predict_top_k <- function(model_fit, burnin = model_fit$burnin,
 
 
 validate_top_k <- function(model_fit, burnin) {
-  if(is.null(burnin)) {
+  if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
   stopifnot(burnin < model_fit$nmc)
 
-  if(!exists("augmented_data", model_fit)) {
+  if (!exists("augmented_data", model_fit)) {
     stop("model_fit must have element augmented_data. Please set save_aug = TRUE
          in compute_mallows in order to create a top-k plot.")
   }
