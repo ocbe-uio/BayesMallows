@@ -31,7 +31,7 @@ pair_comp_tc <- tribble(
 class(pair_comp_tc) <- c("BayesMallowsTC", class(pair_comp_tc))
 
 
-test_that("transitive closure generation works",{
+test_that("transitive closure generation works", {
 
   pair_comp_returned <- generate_transitive_closure(pair_comp) %>%
     arrange(assessor, bottom_item, top_item)
@@ -41,10 +41,8 @@ test_that("transitive closure generation works",{
 }
 )
 
-test_that("transitive closure generation discovers inconsistencies",{
+test_that("transitive closure generation discovers inconsistencies", {
   pair_comp_inc <- bind_rows(pair_comp,
                              tibble(assessor = 1, bottom_item = 5L, top_item = 2L))
   expect_error(invisible(capture.output(generate_transitive_closure(pair_comp_inc))))
 })
-
-

@@ -44,18 +44,18 @@ compute_consensus.BayesMallows <- function(
   model_fit, type = "CP", burnin = model_fit$burnin, parameter = "rho",
   assessors = 1L, ...
 ) {
-  if(is.null(burnin)){
+  if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
   stopifnot(burnin < model_fit$nmc)
 
   stopifnot(class(model_fit) == "BayesMallows")
 
-  if(parameter == "Rtilde" && !inherits(model_fit$augmented_data, "data.frame")){
+  if (parameter == "Rtilde" && !inherits(model_fit$augmented_data, "data.frame")) {
     stop("For augmented ranks, please refit model with option 'save_aug = TRUE'.")
   }
 
-  if(parameter == "rho"){
+  if (parameter == "rho") {
     # Filter out the pre-burnin iterations
     df <- dplyr::filter(model_fit$rho, .data$iteration > burnin)
 
@@ -71,14 +71,14 @@ compute_consensus.BayesMallows <- function(
 
     class(df) <- c("consensus_BayesMallows", "tbl_df", "tbl", "data.frame")
 
-    df <- if(type == "CP"){
+    df <- if (type == "CP") {
       .compute_cp_consensus(df)
-    } else if(type == "MAP"){
+    } else if (type == "MAP") {
       .compute_map_consensus(df)
     }
 
 
-  } else if(parameter == "Rtilde"){
+  } else if (parameter == "Rtilde") {
     # Filter out the pre-burnin iterations and get the right assessors
     df <- dplyr::filter(model_fit$augmented_data, .data$iteration > burnin, .data$assessor %in% assessors)
 
@@ -96,13 +96,13 @@ compute_consensus.BayesMallows <- function(
     df <- dplyr::rename(df, cluster = "assessor")
     class(df) <- c("consensus_BayesMallows", "tbl_df", "tbl", "data.frame")
 
-    df <- if(type == "CP"){
+    df <- if (type == "CP") {
       .compute_cp_consensus(df)
-    } else if(type == "MAP"){
+    } else if (type == "MAP") {
       .compute_map_consensus(df)
     }
 
-    if("cluster" %in% names(df)){
+    if ("cluster" %in% names(df)) {
       df <- dplyr::rename(df, assessor = "cluster")
     }
 
@@ -136,7 +136,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
   }
 }
 
-.compute_cp_consensus.consensus_BayesMallows <- function(df){
+.compute_cp_consensus.consensus_BayesMallows <- function(df) {
 
   # Convert items and cluster to character, since factor levels are not needed in this case
   df <- dplyr::mutate_at(df, dplyr::vars(.data$item, .data$cluster),
@@ -155,7 +155,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 
   # Find the cumulative probability, by dividing by the total
   # count in (item, cluster) and the summing cumulatively
-  df <- dplyr::mutate(df, cumprob = cumsum(.data$n/sum(.data$n)))
+  df <- dplyr::mutate(df, cumprob = cumsum(.data$n / sum(.data$n)))
 
   # Find the CP consensus per cluster, using the find_cpc function
   df <- dplyr::ungroup(df)
@@ -168,15 +168,15 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 
 
   # If there is only one cluster, we drop the cluster column
-  if(length(unique(df$cluster)) == 1){
+  if (length(unique(df$cluster)) == 1) {
     df <- dplyr::select(df, -.data$cluster)
   }
 
   return(df)
 }
 
-.compute_cp_consensus.consensus_SMCMallows <- function(model_fit, burnin){
-  if(is.null(burnin)){
+.compute_cp_consensus.consensus_SMCMallows <- function(model_fit, burnin) {
+  if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
 
@@ -184,9 +184,11 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 
   # Filter out the pre-burnin iterations
 
-  if(burnin!=0){
+  if (burnin != 0) {
     df <- dplyr::filter(model_fit, .data$iteration > burnin)
-  }else {df <- model_fit}
+  } else {
+    df <- model_fit
+  }
 
   # Find the problem dimensions
   n_rows <- nrow(dplyr::distinct(df, .data$item, .data$cluster))
@@ -214,7 +216,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 
   # Find the cumulative probability, by dividing by the total
   # count in (item, cluster) and the summing cumulatively
-  df <- dplyr::mutate(df, cumprob = cumsum(.data$n/sum(.data$n)))
+  df <- dplyr::mutate(df, cumprob = cumsum(.data$n / sum(.data$n)))
 
   # Find the CP consensus per cluster, using the find_cpc function
   df <- dplyr::ungroup(df)
@@ -233,7 +235,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 }
 
 # Internal function for finding CP consensus.
-find_cpc.consensus_BayesMallows <- function(group_df){
+find_cpc.consensus_BayesMallows <- function(group_df) {
   # Declare the result dataframe before adding rows to it
   result <- dplyr::tibble(
     cluster = character(),
@@ -243,7 +245,7 @@ find_cpc.consensus_BayesMallows <- function(group_df){
   )
   n_items <- max(group_df$value)
 
-  for(i in seq(from = 1, to = n_items, by = 1)){
+  for (i in seq(from = 1, to = n_items, by = 1)) {
     # Filter out the relevant rows
     tmp_df <- dplyr::filter(group_df, .data$value == i)
 
@@ -266,7 +268,7 @@ find_cpc.consensus_BayesMallows <- function(group_df){
 }
 
 # Internal function for finding CP consensus.
-find_cpc.consensus_SMCMallows <- function(group_df){
+find_cpc.consensus_SMCMallows <- function(group_df) {
   # Declare the result dataframe before adding rows to it
   result <- dplyr::tibble(
     cluster = character(),
@@ -275,7 +277,7 @@ find_cpc.consensus_SMCMallows <- function(group_df){
     cumprob = numeric()
   )
   n_items <- max(group_df$value)
-  for(i in seq(from = 1, to = n_items, by = 1)){
+  for (i in seq(from = 1, to = n_items, by = 1)) {
     # Filter out the relevant rows
     tmp_df <- dplyr::filter(group_df, group_df$value == i)
 
@@ -303,7 +305,7 @@ find_cpc.consensus_SMCMallows <- function(group_df){
   return(result)
 }
 
-.compute_map_consensus.consensus_BayesMallows <- function(df){
+.compute_map_consensus.consensus_BayesMallows <- function(df) {
 
   # Store the total number of iterations after burnin
   n_samples <- length(unique(df$iteration))
@@ -342,7 +344,7 @@ find_cpc.consensus_SMCMallows <- function(group_df){
   # Sort according to cluster and ranking
   df <- dplyr::arrange(df, .data$cluster, .data$map_ranking)
 
-  if(length(unique(df$cluster)) == 1){
+  if (length(unique(df$cluster)) == 1) {
     df <- dplyr::select(df, -.data$cluster)
   }
 
@@ -353,12 +355,12 @@ find_cpc.consensus_SMCMallows <- function(group_df){
 }
 
  #AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_rho_consensus
-.compute_map_consensus.consensus_SMCMallows <- function(model_fit, burnin = model_fit$burnin){
-  if(is.null(burnin)){
+.compute_map_consensus.consensus_SMCMallows <- function(model_fit, burnin = model_fit$burnin) {
+  if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
 
-  if(burnin != 0){
+  if (burnin != 0) {
     df <- dplyr::filter(model_fit, .data$iteration > burnin)
   } else {
     df <- model_fit

@@ -24,19 +24,19 @@
 #'
 #' @example /inst/examples/plot.BayesMallows_example.R
 #'
-plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items = NULL, ...){
+plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items = NULL, ...) {
   # Note, the first argument must be named x, otherwise R CMD CHECK will
   # issue a warning. This is because plot.BayesMallows must have the same
   # required arguments as graphics::plot.
 
-  if(is.null(burnin)){
+  if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
-  if(x$nmc <= burnin) stop("burnin must be <= nmc")
+  if (x$nmc <= burnin) stop("burnin must be <= nmc")
 
   stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment", "theta"))
 
-  if(parameter == "alpha") {
+  if (parameter == "alpha") {
     df <- dplyr::filter(x$alpha, .data$iteration > burnin)
 
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
@@ -44,22 +44,22 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
       ggplot2::xlab(expression(alpha)) +
       ggplot2::ylab("Posterior density")
 
-    if(x$n_clusters > 1){
+    if (x$n_clusters > 1) {
       p <- p + ggplot2::facet_wrap(~ .data$cluster, scales = "free_x")
     }
 
     return(p)
 
-  } else if(parameter == "rho") {
+  } else if (parameter == "rho") {
 
-    if(is.null(items) && x$n_items > 5){
+    if (is.null(items) && x$n_items > 5) {
       message("Items not provided by user. Picking 5 at random.")
       items <- sample.int(x$n_items, 5)
     } else if (is.null(items) && x$n_items > 0) {
       items <- seq.int(from = 1, to = x$n_items)
     }
 
-    if(!is.character(items)){
+    if (!is.character(items)) {
       items <- x$items[items]
     }
 
@@ -78,14 +78,14 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
       ggplot2::xlab("rank") +
       ggplot2::ylab("Posterior probability")
 
-    if(x$n_clusters == 1){
+    if (x$n_clusters == 1) {
       p <- p + ggplot2::facet_wrap(~ .data$item)
     } else {
       p <- p + ggplot2::facet_wrap(~ .data$cluster + .data$item)
     }
 
     return(p)
-  } else if(parameter == "cluster_probs"){
+  } else if (parameter == "cluster_probs") {
     df <- dplyr::filter(x$cluster_probs, .data$iteration > burnin)
 
     ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
@@ -94,9 +94,9 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
       ggplot2::ylab("Posterior density") +
       ggplot2::facet_wrap(~ .data$cluster)
 
-  } else if(parameter == "cluster_assignment"){
+  } else if (parameter == "cluster_assignment") {
 
-    if(is.null(x$cluster_assignment)){
+    if (is.null(x$cluster_assignment)) {
       stop("Please rerun compute_mallows with save_clus = TRUE")
     }
 
@@ -121,9 +121,9 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
       ) +
       ggplot2::xlab(paste0("Assessors (", min(assessor_order), " - ", max(assessor_order), ")"))
 
-  } else if(parameter == "theta") {
+  } else if (parameter == "theta") {
 
-    if(is.null(x$theta)){
+    if (is.null(x$theta)) {
       stop("Please run compute_mallows with error_model = 'bernoulli'.")
     }
 

@@ -58,10 +58,10 @@ test_that("BayesMallows MCMC Results are OK", {
   )
   post_rho   <- compute_posterior_intervals(bm_mcmc, parameter = "rho")
   post_alpha <- compute_posterior_intervals(bm_mcmc, parameter = "alpha")
-  expect_equal(dim(post_rho)  , c(10, 7))
-  expect_equal(dim(rho_cp)    , c(10, 3))
-  expect_equal(dim(rho_map)   , c(10, 3))
-  expect_equal(dim(post_alpha), c(1 , 6))
+  expect_equal(dim(post_rho), c(10, 7))
+  expect_equal(dim(rho_cp), c(10, 3))
+  expect_equal(dim(rho_map), c(10, 3))
+  expect_equal(dim(post_alpha), c(1, 6))
 })
 
 # SMC Analysis (alpha unknown) ===========================
@@ -147,11 +147,11 @@ test_that("Runs with unif kernel", {
   expect_equal(dim(smc_unif$alpha_samples), c(N, 21))
 
   expect_s3_class(
-    plot_alpha_posterior(smc_unif$alpha_samples[, Time+ 1], nmc = N, burnin = 2),
+    plot_alpha_posterior(smc_unif$alpha_samples[, Time + 1], nmc = N, burnin = 2),
     "ggplot")
 
   expect_s3_class(
-    plot_rho_posterior(smc_unif$rho_samples[, ,Time+ 1], nmc = N, burnin = 2, C = 1),
+    plot_rho_posterior(smc_unif$rho_samples[, , Time + 1], nmc = N, burnin = 2, C = 1),
     "ggplot")
 })
 

@@ -23,32 +23,32 @@
 #'
 #' @example /inst/examples/compute_mallows_mixtures_example.R
 #'
-plot_elbow <- function(..., burnin = NULL){
+plot_elbow <- function(..., burnin = NULL) {
 
   # Put the models into a list. These are typically fitted with different number of clusters
   models <- list(...)
 
   # Taking into account the case where the user has entered a list of models
-  if(length(models) == 1 && !(class(models[[1]]) == "BayesMallows")){
+  if (length(models) == 1 && !(class(models[[1]]) == "BayesMallows")) {
     models <- models[[1]]
   }
 
   df <- do.call(rbind, lapply(models, function(x) {
     stopifnot(class(x) == "BayesMallows")
 
-    if(!("burnin" %in% names(x))){
-      if(is.null(burnin)){
+    if (!("burnin" %in% names(x))) {
+      if (is.null(burnin)) {
         stop("burnin not provided")
       } else {
         x$burnin <- burnin
       }
     }
 
-    if(!x$include_wcd) stop("To get an elbow plot, set include_wcd=TRUE in compute_mallows")
+    if (!x$include_wcd) stop("To get an elbow plot, set include_wcd=TRUE in compute_mallows")
 
     df <- dplyr::filter(x$within_cluster_distance, .data$iteration > x$burnin)
 
-    if(nrow(df) <= 0) stop("burnin must be strictly smaller than the number of MCMC samples")
+    if (nrow(df) <= 0) stop("burnin must be strictly smaller than the number of MCMC samples")
 
     # Need to sum the within-cluster distances across clusters, for each iteration
     df <- dplyr::group_by(df, .data$iteration)

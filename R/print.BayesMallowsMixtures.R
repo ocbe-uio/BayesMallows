@@ -11,12 +11,12 @@
 #' @export
 #'
 #'
-print.BayesMallowsMixtures <- function(x, ...){
+print.BayesMallowsMixtures <- function(x, ...) {
   # Note, the first argument must be named x, otherwise R CMD CHECK will
   # issue a warning. This is because print.BayesMallowsMixtures must have the same
   # required arguments as base::print.
 
-  if(!Reduce(`&`, lapply(x, function(x) inherits(x, "BayesMallows")))) {
+  if (!Reduce(`&`, lapply(x, function(x) inherits(x, "BayesMallows")))) {
     stop("All elements of a BayesMallowsMixtures object must be of class BayesMallows.")
   }
 
@@ -25,5 +25,3 @@ print.BayesMallowsMixtures <- function(x, ...){
   cat("Collection of", length(x), "Bayesian Mallows Mixture Models with the following number of mixture components:\n",
       paste0(paste(n_clusters, collapse = ", "), "."))
 }
-
-

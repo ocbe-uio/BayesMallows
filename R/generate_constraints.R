@@ -23,7 +23,7 @@
 #'
 #' @example /inst/examples/generate_constraints_example.R
 #'
-generate_constraints <- function(preferences, n_items, cl = NULL){
+generate_constraints <- function(preferences, n_items, cl = NULL) {
 
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
@@ -31,7 +31,7 @@ generate_constraints <- function(preferences, n_items, cl = NULL){
   # one list element per assessor
   constraints <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE],
                        preferences$assessor)
-  if(is.null(cl)) {
+  if (is.null(cl)) {
     lapply(constraints, constraint_fun, n_items)
   } else {
     parallel::parLapply(cl = cl, X = constraints, fun = constraint_fun, n_items)
@@ -40,7 +40,7 @@ generate_constraints <- function(preferences, n_items, cl = NULL){
 
 
 
-constraint_fun <- function(x, n_items){
+constraint_fun <- function(x, n_items) {
   # Find out which items are constrained
   constrained_items <- unique(c(x[["bottom_item"]], x[["top_item"]]))
 

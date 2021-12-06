@@ -1,7 +1,7 @@
 context("Testing misc functions")
 
 test_that(
-  "validate_permutation is correct",{
+  "validate_permutation is correct", {
     expect_equal(
       BayesMallows:::validate_permutation(c(1, 3, 3)),
       FALSE

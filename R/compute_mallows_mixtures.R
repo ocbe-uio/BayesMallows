@@ -22,18 +22,18 @@
 #'
 #' @example /inst/examples/compute_mallows_mixtures_example.R
 #'
-compute_mallows_mixtures <- function(n_clusters, ..., cl = NULL){
+compute_mallows_mixtures <- function(n_clusters, ..., cl = NULL) {
   stopifnot(is.numeric(n_clusters))
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
-  if(is.null(cl)){
+  if (is.null(cl)) {
     models <- lapply(n_clusters, function(x) {
       compute_mallows(..., n_clusters = x)
     })
   } else {
     args <- list(...)
     parallel::clusterExport(cl = cl, varlist = "args", envir = environment())
-    models <- parallel::parLapply(cl = cl, X = n_clusters, fun = function(x){
+    models <- parallel::parLapply(cl = cl, X = n_clusters, fun = function(x) {
       args$n_clusters <- x
       do.call(compute_mallows, args)
     })
