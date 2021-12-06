@@ -1,0 +1,71 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+#
+# See https://github.com/r-lib/actions/tree/master/examples#readme for
+# additional example workflows available for the R community.
+
+# ======================================================== #
+# Determines when the action is triggered                  #
+# ======================================================== #
+
+on: [push, pull_request]
+name: linter
+
+# ======================================================== #
+# Determine actions to take                                #
+# ======================================================== #
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+        - name: Checking out the repository
+          uses: actions/checkout@v2
+
+        - name: Setting up R
+          uses: r-lib/actions/setup-r@v1
+          with:
+            use-public-rspm: true
+
+        - name: Installing dependencies
+          uses: r-lib/actions/setup-r-dependencies@v1
+          with:
+            extra-packages: lintr
+
+        - name: Picking on the coding style
+          run: |
+            library(lintr)
+            excluded_files <- list(
+              "inst/examples/compute_consensus_example.R",
+              "inst/examples/compute_mallows_example.R",
+              "inst/examples/compute_mallows_mixtures_example.R",
+              "inst/examples/compute_posterior_intervals_example.R",
+              "inst/examples/estimate_partition_function_example.R",
+              "inst/examples/generate_constraints_example.R",
+              "inst/examples/generate_initial_ranking_example.R",
+              "inst/examples/generate_transitive_closure_example.R",
+              "inst/examples/label_switching_example.R",
+              "inst/examples/obs_freq_example.R",
+              "inst/examples/plot_top_k_example.R",
+              "inst/examples/plot.BayesMallows_example.R"
+            )
+            style_rules <- list(
+              absolute_path_linter, assignment_linter, closed_curly_linter,
+              commas_linter, commented_code_linter, cyclocomp_linter,
+              equals_na_linter, function_left_parentheses_linter,
+              infix_spaces_linter, line_length_linter, no_tab_linter,
+              nonportable_path_linter, object_length_linter,
+              open_curly_linter, paren_brace_linter, pipe_continuation_linter,
+              semicolon_terminator_linter, seq_linter, single_quotes_linter,
+              spaces_inside_linter, spaces_left_parentheses_linter,
+              T_and_F_symbol_linter, todo_comment_linter,
+              trailing_blank_lines_linter, trailing_whitespace_linter,
+              undesirable_function_linter, undesirable_operator_linter,
+              unneeded_concatenation_linter
+            )
+            lint_package(linters = style_rules, exclusions = excluded_files)
+          shell: Rscript {0}
