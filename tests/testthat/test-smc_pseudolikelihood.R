@@ -41,7 +41,7 @@ test_1_forward <- calculate_forward_probability(
   item_ordering = item_ordering, partial_ranking = partial_ranking,
   remaining_set = remaining_set, rho = rho, alpha = alpha,
   n_items = n_items, metric = metric
-) # TODO #116: get this to output aug_ranking == c(1, 2, 3, 6, 5, 4).
+)
 # Tried all combinations of item_ordering. No dice.
 
 current_ranking <- c(1, 2, 6, 5, 4, 3)
@@ -52,12 +52,8 @@ test_1_backward_a <- calculate_backward_probability(
   alpha = alpha, n_items = n_items, metric = metric
 )
 
-new_current_ranking <- test_1_forward$aug_ranking # c(1, 2, 3, 4, 6, 5)
+new_current_ranking <- test_1_forward$aug_ranking
 
-# new_current_ranking needs to be one of the following so that test_1_backward_b
-# equals test_1_forward$forward_prob:
-# - c(1, 2, 3, 6, 5, 4)
-# - c(1, 2, 6, 4, 3, 5)
 test_1_backward_b <- calculate_backward_probability(
   item_ordering = item_ordering, partial_ranking = partial_ranking,
   current_ranking = new_current_ranking, remaining_set = remaining_set, rho = rho,

@@ -53,12 +53,6 @@ exp_d_ham <- function(alpha,n_items){
 #/' @return Expected value of the Ulam metric under the Mallows rank model with the Ulam distance.
 
 # The function based on the command from the PerMallows package is slow because it has to generate the distance frequencies.
-
-# exp_d_ulam_old=function(alpha,n_items){
-#   out=PerMallows::expectation.mm(theta=alpha,perm.length=n_items,dist.name="ulam")
-#   return(out)
-# }
-
 exp_d_ulam <- function(alpha,n_items){ # for n_items<=95
   idx <- seq(from = 0, to = n_items - 1, by = 1)
   pfd <- partition_function_data
@@ -84,8 +78,6 @@ exp_d_foot <- function(alpha,n_items){ # for n_items<=50
   norm_const <- exp(get_partition_function(alpha=alpha*n_items,n_items=n_items,
                                         metric="footrule",
                                         cardinalities=card))
-  # print(length(idx))
-  # print(length(card))
   out <- sum(idx*exp(-alpha*idx)*card)/norm_const
   return(out)
 }
@@ -104,8 +96,6 @@ exp_d_spear <- function(alpha,n_items){ # for n_items<=14
   norm_const <- exp(get_partition_function(alpha=alpha*n_items,n_items=n_items,
                                         metric="spearman",
                                         cardinalities=card))
-  # print(length(idx))
-  # print(length(card))
   out <- sum(idx*exp(-alpha*idx)*card)/norm_const
   return(out)
 }
