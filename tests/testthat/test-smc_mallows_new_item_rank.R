@@ -1,4 +1,4 @@
-context('SMC new user and item rank combined')
+context("SMC new user and item rank combined")
 
 # a simpler example to test ====================================================
 set.seed(101)

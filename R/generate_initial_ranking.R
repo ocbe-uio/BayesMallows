@@ -138,8 +138,8 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     discovered <- rep(FALSE, n_items)
     path <- numeric()
 
-    stdout <- vector('character')
-    con <- textConnection('stdout', 'wr', local = TRUE)
+    stdout <- vector("character")
+    con <- textConnection("stdout", "wr", local = TRUE)
     sink(con)
     all_topological_sorts(graph, path, discovered, n_items)
     sink()
