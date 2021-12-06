@@ -55,6 +55,20 @@ test_that("compute_mallows error model works", {
 
 })
 
+test_that("compute_mallows with single missing value works", {
+  dd <- potato_visual
+  dd[1, 1] <- NA
+  dd[2, 3] <- NA
+  m <- compute_mallows(dd, nmc = 4, seed = 123L)
+  expect_equal(
+    m$alpha,
+    structure(list(cluster = structure(c(1L, 1L, 1L, 1L), .Label = "Cluster 1", class = "factor"),
+                   iteration = c(1, 2, 3, 4), value = c(1, 0.986228529947352,
+                                                        0.834184330130122, 0.81366346172066)), class = c("tbl_df",
+                                                                                                         "tbl", "data.frame"), row.names = c(NA, -4L))
+  )
+})
+
 test_that("compute_mallows with missing data works", {
   mat <- potato_visual * ifelse(runif(length(potato_visual)) > 0.8, NA_real_, 1)
   m <- compute_mallows(rankings = mat, nmc = 30)

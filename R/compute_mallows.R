@@ -327,7 +327,7 @@ compute_mallows <- function(rankings = NULL,
     dn <- dimnames(rankings)
     rankings <- lapply(split(rankings, f = seq_len(nrow(rankings))),
                            function(x) {
-                             if (sum(is.na(x)) == 1) x[is.na(x)] <- setdiff(1:length(x), x)
+                             if (sum(is.na(x)) == 1) x[is.na(x)] <- setdiff(seq_along(x), x)
                              return(x)
                            })
     rankings <- do.call(rbind, rankings)
