@@ -61,4 +61,3 @@ test_that("rank_freq_distr works", {
                           "", "", "", "", "", "", "", "freq")))
   )
 })
-

@@ -25,5 +25,3 @@ print.BayesMallowsMixtures <- function(x, ...){
   cat("Collection of", length(x), "Bayesian Mallows Mixture Models with the following number of mixture components:\n",
       paste0(paste(n_clusters, collapse = ", "), "."))
 }
-
-

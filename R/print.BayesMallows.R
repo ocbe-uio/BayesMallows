@@ -22,5 +22,3 @@ print.BayesMallows <- function(x, ...){
   cat("Bayesian Mallows Model with", x$n_items, "items and", x$n_assessors, "assessors.\n")
   cat("Use functions assess_convergence() or plot() to visualize the object.")
 }
-
-
