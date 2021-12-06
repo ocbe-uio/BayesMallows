@@ -13,7 +13,7 @@ smc_processing <- function(output, colnames = NULL) {
   # if colnames are specified, then incorporate them
   if (is.null(colnames)) {
     n_items <- ncol(df)
-    cletters <- rep(c("Item"), times = n_items)
+    cletters <- rep("Item", times = n_items)
     cindexes <- (c(1:n_items))
     cnames <- c(paste(cletters, cindexes, sep = " "))
     colnames(df) <- cnames
