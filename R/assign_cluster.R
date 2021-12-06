@@ -30,12 +30,12 @@
 #'
 #' @export
 #'
-assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, expand = FALSE){
+assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, expand = FALSE) {
 
-  if(is.null(burnin)){
+  if(is.null(burnin)) {
     stop("Please specify the burnin.")
   }
-  if(is.null(model_fit$cluster_assignment)){
+  if(is.null(model_fit$cluster_assignment)) {
     stop("Rerun compute_mallows with save_clus=TRUE.")
   }
   stopifnot(burnin < model_fit$nmc)
@@ -53,8 +53,8 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   df <- dplyr::ungroup(df)
   df <- dplyr::rename(df, cluster = .data$value)
 
-  if(expand){
-    df <- do.call(rbind, lapply(split(df, f = df$assessor), function(dd){
+  if(expand) {
+    df <- do.call(rbind, lapply(split(df, f = df$assessor), function(dd) {
       dd2 <- merge(dd, expand.grid(cluster = unique(df$cluster)), by = "cluster",
                    all = TRUE)
       dd2$assessor <- unique(dd$assessor)
@@ -78,7 +78,7 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   # Join map back onto df
   df <- dplyr::inner_join(df, map, by = "assessor")
 
-  if(!soft){
+  if(!soft) {
     df <- dplyr::filter(df, .data$cluster == .data$map_cluster)
     df <- dplyr::select(df, -.data$cluster)
   }

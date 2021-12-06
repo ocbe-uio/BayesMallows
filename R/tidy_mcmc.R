@@ -1,4 +1,4 @@
-tidy_mcmc <- function(fit){
+tidy_mcmc <- function(fit) {
 
   fit <- tidy_rho(fit)
   fit <- tidy_alpha(fit)
@@ -14,7 +14,7 @@ tidy_mcmc <- function(fit){
 
 
 
-tidy_rho <- function(fit){
+tidy_rho <- function(fit) {
   # Tidy rho
   rho_dims <- dim(fit$rho)
   # Item1, Item2, Item3, ...., Item1, Item2, Item3
@@ -47,7 +47,7 @@ tidy_rho <- function(fit){
   return(fit)
 }
 
-tidy_alpha <- function(fit){
+tidy_alpha <- function(fit) {
   # Tidy alpha
   alpha_dims <- dim(fit$alpha)
   # Cluster1, Cluster2, ..., Cluster1, Cluster2
@@ -76,11 +76,11 @@ tidy_alpha <- function(fit){
   return(fit)
 }
 
-tidy_cluster_assignment <- function(fit){
+tidy_cluster_assignment <- function(fit) {
 
   # Tidy cluster assignment
-  if(fit$save_clus){
-    if(fit$n_clusters > 1){
+  if(fit$save_clus) {
+    if(fit$n_clusters > 1) {
       cluster_dims <- dim(fit$cluster_assignment)
       value <- paste("Cluster", c(fit$cluster_assignment))
     } else {
@@ -114,9 +114,9 @@ tidy_cluster_assignment <- function(fit){
   return(fit)
 }
 
-tidy_cluster_probabilities <- function(fit){
+tidy_cluster_probabilities <- function(fit) {
   # Tidy cluster probabilities
-  if(fit$n_clusters > 1){
+  if(fit$n_clusters > 1) {
     clusprob_dims <- dim(fit$cluster_probs)
     value <- c(fit$cluster_probs)
   } else {
@@ -149,9 +149,9 @@ tidy_cluster_probabilities <- function(fit){
 }
 
 
-tidy_wcd <- function(fit){
+tidy_wcd <- function(fit) {
   # Tidy the within-cluster distances, or delete the empty matrix
-  if(fit$include_wcd){
+  if(fit$include_wcd) {
     wcd_dims <- dim(fit$within_cluster_distance)
     value <- c(fit$within_cluster_distance)
 
@@ -183,9 +183,9 @@ tidy_wcd <- function(fit){
   return(fit)
 }
 
-tidy_augmented_data <- function(fit){
+tidy_augmented_data <- function(fit) {
   # Tidy augmented data, or delete
-  if(fit$save_aug){
+  if(fit$save_aug) {
 
     augdata_dims <- dim(fit$augmented_data)
 
@@ -217,10 +217,10 @@ tidy_augmented_data <- function(fit){
 }
 
 
-tidy_augmentation_acceptance <- function(fit){
+tidy_augmentation_acceptance <- function(fit) {
   # Augmentation acceptance
 
-  if(fit$any_missing || fit$augpair){
+  if(fit$any_missing || fit$augpair) {
     fit$aug_acceptance <- dplyr::tibble(acceptance_rate = c(fit$aug_acceptance))
     fit$aug_acceptance <- dplyr::mutate(fit$aug_acceptance,
                                         assessor = dplyr::row_number())
@@ -235,10 +235,10 @@ tidy_augmentation_acceptance <- function(fit){
 
 
 
-tidy_error_probability <- function(fit){
+tidy_error_probability <- function(fit) {
   theta_length <- length(fit$theta)
 
-  if(theta_length > 0){
+  if(theta_length > 0) {
     fit$theta <- dplyr::tibble(
       iteration = seq(from = 1, to = theta_length, by = 1),
       value = c(fit$theta)

@@ -5,8 +5,8 @@
 #/'
 #/' @return Expected value of the Kendall metric under the Mallows rank model with the Kendall distance.
 
-exp_d_tau <- function(alpha, n_items){
-  if(alpha > 0){
+exp_d_tau <- function(alpha, n_items) {
+  if(alpha > 0) {
     idx <- seq(from = 1, to = n_items, by = 1)
     out <- n_items * exp(-alpha) / (1 - exp(-alpha)) -
       sum((idx * exp(-idx * alpha)) / (1 - exp(-idx * alpha)))
@@ -27,7 +27,7 @@ exp_d_tau <- function(alpha, n_items){
 #/'
 #/' @return Expected value of the Cayley metric under the Mallows rank model with the Cayley distance.
 
-exp_d_cay <- function(alpha, n_items){
+exp_d_cay <- function(alpha, n_items) {
   idx <- seq(from = 1, to = n_items - 1, by = 1)
   out <- sum(idx / (idx + exp(alpha)))
   return(out)
@@ -40,7 +40,7 @@ exp_d_cay <- function(alpha, n_items){
 #/'
 #/' @return Expected value of the Hamming metric under the Mallows rank model with the Hamming distance.
 
-exp_d_ham <- function(alpha, n_items){
+exp_d_ham <- function(alpha, n_items) {
   idx <- seq(from = 0, to = n_items, by = 1)
   out <- n_items - exp(alpha) *
     sum(((exp(alpha) - 1)^idx[-(n_items + 1)]) / base::factorial(idx[-(n_items + 1)])) /
@@ -56,7 +56,7 @@ exp_d_ham <- function(alpha, n_items){
 #/' @return Expected value of the Ulam metric under the Mallows rank model with the Ulam distance.
 
 # The function based on the command from the PerMallows package is slow because it has to generate the distance frequencies.
-exp_d_ulam <- function(alpha, n_items){ # for n_items<=95
+exp_d_ulam <- function(alpha, n_items) { # for n_items<=95
   idx <- seq(from = 0, to = n_items - 1, by = 1)
   pfd <- partition_function_data
   card <- pfd$values[pfd$metric == "ulam"][[n_items]]
@@ -77,7 +77,7 @@ exp_d_ulam <- function(alpha, n_items){ # for n_items<=95
 #/'
 #/' @return Expected value of the Footrule metric under the Mallows rank model with the Footrule distance.
 
-exp_d_foot <- function(alpha, n_items){ # for n_items<=50
+exp_d_foot <- function(alpha, n_items) { # for n_items<=50
   idx <- seq(0, floor(n_items^2 / 2), by = 2)
   pfd <- partition_function_data
   card <- pfd$values[pfd$metric == "footrule"][[n_items]]

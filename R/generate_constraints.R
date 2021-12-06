@@ -23,7 +23,7 @@
 #'
 #' @example /inst/examples/generate_constraints_example.R
 #'
-generate_constraints <- function(preferences, n_items, cl = NULL){
+generate_constraints <- function(preferences, n_items, cl = NULL) {
 
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
@@ -40,7 +40,7 @@ generate_constraints <- function(preferences, n_items, cl = NULL){
 
 
 
-constraint_fun <- function(x, n_items){
+constraint_fun <- function(x, n_items) {
   # Find out which items are constrained
   constrained_items <- unique(c(x[["bottom_item"]], x[["top_item"]]))
 

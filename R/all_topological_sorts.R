@@ -1,10 +1,10 @@
 # Translation to R of C++ and Python code found here
 # https://www.geeksforgeeks.org/all-topological-sorts-of-a-directed-acyclic-graph/
-all_topological_sorts <- function(graph, path, discovered, n_items){
+all_topological_sorts <- function(graph, path, discovered, n_items) {
   flag <- FALSE
 
-  for(i in seq_len(n_items)){
-    if(attr(graph, "indegree")[[i]] == 0 && !discovered[[i]]){
+  for(i in seq_len(n_items)) {
+    if(attr(graph, "indegree")[[i]] == 0 && !discovered[[i]]) {
       attr(graph, "indegree")[graph[[i]]] <- attr(graph, "indegree")[graph[[i]]] - 1
 
       path <- c(path, i)

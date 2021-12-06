@@ -23,7 +23,7 @@
 #' @seealso \code{\link{plot_top_k}}
 #'
 predict_top_k <- function(model_fit, burnin = model_fit$burnin,
-                          k = 3){
+                          k = 3) {
 
   validate_top_k(model_fit, burnin)
   .predict_top_k(model_fit, burnin, k)
@@ -31,7 +31,7 @@ predict_top_k <- function(model_fit, burnin = model_fit$burnin,
 
 
 
-.predict_top_k <- function(model_fit, burnin, k){
+.predict_top_k <- function(model_fit, burnin, k) {
 
   rankings <- dplyr::filter(model_fit$augmented_data, .data$iteration > burnin, .data$value <= k)
   n_samples <- length(unique(rankings$iteration))
@@ -39,7 +39,7 @@ predict_top_k <- function(model_fit, burnin = model_fit$burnin,
   rankings <- dplyr::group_by(rankings, .data$assessor, .data$item)
   rankings <- dplyr::summarise(rankings, prob = dplyr::n() / n_samples, .groups = "drop")
 
-  do.call(rbind, lapply(split(rankings, f = rankings$assessor), function(dd){
+  do.call(rbind, lapply(split(rankings, f = rankings$assessor), function(dd) {
     dd2 <- merge(dd, expand.grid(item = unique(rankings$item)),
                  by = "item", all = TRUE)
     dd2$assessor[is.na(dd2$assessor)] <- unique(dd$assessor)
@@ -50,13 +50,13 @@ predict_top_k <- function(model_fit, burnin = model_fit$burnin,
 }
 
 
-validate_top_k <- function(model_fit, burnin){
-  if(is.null(burnin)){
+validate_top_k <- function(model_fit, burnin) {
+  if(is.null(burnin)) {
     stop("Please specify the burnin.")
   }
   stopifnot(burnin < model_fit$nmc)
 
-  if(!exists("augmented_data", model_fit)){
+  if(!exists("augmented_data", model_fit)) {
     stop("model_fit must have element augmented_data. Please set save_aug = TRUE
          in compute_mallows in order to create a top-k plot.")
   }

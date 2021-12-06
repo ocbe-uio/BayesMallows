@@ -66,7 +66,7 @@ test_that("compute_mallows with missing data works", {
 
 
 test_that("compute_mallows runs with the right distances", {
-  for(metric in c("footrule", "spearman", "cayley", "kendall", "ulam", "hamming")){
+  for(metric in c("footrule", "spearman", "cayley", "kendall", "ulam", "hamming")) {
     expect_s3_class(compute_mallows(potato_visual, metric = metric, nmc = 3), "BayesMallows")
   }
 
@@ -120,7 +120,7 @@ test_that("compute_mallows treats obs_freq properly", {
   # Next, we create a new hypthetical beach_preferences dataframe where each
   # assessor is replicated 1-4 times
 
-  beach_pref_rep <- do.call(rbind, lapply(split(beach_small, f = seq_len(nrow(beach_small))), function(dd){
+  beach_pref_rep <- do.call(rbind, lapply(split(beach_small, f = seq_len(nrow(beach_small))), function(dd) {
     ret <- merge(
       dd,
       data.frame(new_assessor = seq_len(obs_freq[dd$assessor])),

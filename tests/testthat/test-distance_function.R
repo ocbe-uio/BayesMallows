@@ -1,6 +1,6 @@
 context("Testing computation of distance")
 # Brute force formula
-check_dist <- function(n, fun){
+check_dist <- function(n, fun) {
   # Generate all permutations
   perm <- permutations(n)
 
@@ -9,7 +9,7 @@ check_dist <- function(n, fun){
 
 # Loop over some n values
 test_that("footrule distance is correct", {
-  for(n in c(2, 3, 5)){
+  for(n in c(2, 3, 5)) {
     expect_equal(
       check_dist(n, fun = function(r1, r2) {
         get_rank_distance(r1, r2, "footrule")
@@ -20,7 +20,7 @@ test_that("footrule distance is correct", {
 
 # Loop over some n values
 test_that("Spearman distance is correct", {
-  for(n in c(2, 3, 5)){
+  for(n in c(2, 3, 5)) {
     expect_equal(
       check_dist(n, fun = function(r1, r2) {
         get_rank_distance(r1, r2, "spearman")
@@ -31,7 +31,7 @@ test_that("Spearman distance is correct", {
 
 # Loop over some n values
 test_that("Kendall distance is correct", {
-  for(n in c(2, 3, 5)){
+  for(n in c(2, 3, 5)) {
     expect_equal(
       check_dist(n, fun = function(r1, r2) {
         get_rank_distance(r1, r2, "kendall")
@@ -44,7 +44,7 @@ test_that("Kendall distance is correct", {
 
 # Loop over some n values
 test_that("Cayley distance is correct", {
-  for(n in c(2, 3, 5)){
+  for(n in c(2, 3, 5)) {
     expect_equal(
       check_dist(n, fun = function(r1, r2) {
         get_rank_distance(r1, r2, "cayley")
@@ -57,7 +57,7 @@ test_that("Cayley distance is correct", {
 
 # Loop over some n values
 test_that("Hamming distance is correct", {
-  for(n in c(2, 3, 5)){
+  for(n in c(2, 3, 5)) {
     expect_equal(
       check_dist(n, fun = function(r1, r2) {
         get_rank_distance(r1, r2, "hamming")
@@ -70,7 +70,7 @@ test_that("Hamming distance is correct", {
 
 # Loop over some n values
 test_that("Ulam distance is correct", {
-  for(n in c(2, 3, 5)){
+  for(n in c(2, 3, 5)) {
     expect_equal(
       check_dist(n, fun = function(r1, r2) {
         get_rank_distance(r1, r2, "ulam")

@@ -25,7 +25,7 @@
 #'
 plot_top_k <- function(model_fit, burnin = model_fit$burnin,
                        k = 3,
-                       rel_widths = c(model_fit$n_clusters, 10)){
+                       rel_widths = c(model_fit$n_clusters, 10)) {
 
   validate_top_k(model_fit, burnin)
 
@@ -38,7 +38,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
   rho <- dplyr::summarise(rho, prob = dplyr::n() / n_samples, .groups = "drop")
 
   # Find the complete set of items per cluster
-  rho <- do.call(rbind, lapply(split(rho, f = rho$cluster), function(dd){
+  rho <- do.call(rbind, lapply(split(rho, f = rho$cluster), function(dd) {
     dd2 <- merge(dd, expand.grid(item = unique(rho$item)),
                  by = "item", all = TRUE)
     dd2$cluster[is.na(dd2$cluster)] <- unique(dd$cluster)
@@ -48,7 +48,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
 
   # Sort the items according to probability in Cluster 1
   item_ordering <- compute_consensus(model_fit, type = "CP", burnin = burnin)
-  if(model_fit$n_clusters > 1){
+  if(model_fit$n_clusters > 1) {
     item_ordering <- rev(item_ordering[item_ordering$cluster == "Cluster 1", ]$item)
   } else {
     item_ordering <- rev(item_ordering$item)
@@ -57,7 +57,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
   rho <- dplyr::mutate(rho, item = factor(.data$item, levels = unique(item_ordering)))
 
   # Trick to make the plot look nicer
-  if(model_fit$n_clusters == 1){
+  if(model_fit$n_clusters == 1) {
     rho <- dplyr::mutate(rho, cluster = "")
   }
 
@@ -82,7 +82,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
     ggplot2::xlab(expression(rho)) +
     ggplot2::theme(legend.position = "none")
 
-  if(model_fit$n_clusters > 1){
+  if(model_fit$n_clusters > 1) {
     rho_plot <- rho_plot + ggplot2::facet_wrap(~ .data$cluster)
   }
 

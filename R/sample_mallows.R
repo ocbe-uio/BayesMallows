@@ -51,19 +51,19 @@ sample_mallows <- function(rho0, alpha0, n_samples,
                            max_lag = 1000L)
                             {
 
-  if(!(validate_permutation(rho0) && sum(is.na(rho0)) == 0)){
+  if(!(validate_permutation(rho0) && sum(is.na(rho0)) == 0)) {
     stop("rho0 must be a proper ranking with no missing values.")
   }
 
-  if(diagnostic && n_samples == 1){
+  if(diagnostic && n_samples == 1) {
     stop("Must have more than one samples to create diagnostic plots")
-  } else if(n_samples <= 0){
+  } else if(n_samples <= 0) {
     stop("n_samples must be positive.")
   }
 
   n_items <- length(rho0)
 
-  if(diagnostic){
+  if (diagnostic) {
     internal_burnin <- 0
     internal_thinning <- 1
     internal_n_samples <- burnin + n_samples * thinning
@@ -84,8 +84,8 @@ sample_mallows <- function(rho0, alpha0, n_samples,
     obs_freq = rep(1, internal_n_samples)
   ))
 
-  if(diagnostic){
-    if(is.null(items_to_plot) && n_items > 5){
+  if(diagnostic) {
+    if(is.null(items_to_plot) && n_items > 5) {
       message("Items not provided by user. Picking 5 at random.")
       items_to_plot <- sample.int(n_items, 5)
     } else {
@@ -97,7 +97,7 @@ sample_mallows <- function(rho0, alpha0, n_samples,
                       lag.max = max_lag, plot = FALSE, demean = TRUE)
     names(autocorr) <- items_to_plot
 
-    autocorr <- do.call(rbind, Map(function(x, xnm){
+    autocorr <- do.call(rbind, Map(function(x, xnm) {
       data.frame(
         item = xnm,
         acf = x$acf[, 1, 1],

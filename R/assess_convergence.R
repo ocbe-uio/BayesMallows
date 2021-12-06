@@ -26,17 +26,17 @@
 #' @export
 #'
 assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
-                               assessors = NULL){
+                               assessors = NULL) {
 
   stopifnot(inherits(model_fit, "BayesMallows") ||
               inherits(model_fit, "BayesMallowsMixtures"))
 
   if(parameter == "alpha") {
-    if(inherits(model_fit, "BayesMallows")){
+    if(inherits(model_fit, "BayesMallows")) {
       m <- model_fit$alpha
       trace_alpha(m, FALSE)
-    } else if(inherits(model_fit, "BayesMallowsMixtures")){
-      m <- do.call(rbind, lapply(model_fit, function(x){
+    } else if(inherits(model_fit, "BayesMallowsMixtures")) {
+      m <- do.call(rbind, lapply(model_fit, function(x) {
         dplyr::mutate(x$alpha,
                       cluster = as.character(.data$cluster),
                       n_clusters = x$n_clusters)
@@ -44,25 +44,25 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
       trace_alpha(m, TRUE)
       }
 
-  } else if(parameter == "rho"){
-    if(inherits(model_fit, "BayesMallows")){
+  } else if(parameter == "rho") {
+    if(inherits(model_fit, "BayesMallows")) {
       trace_rho(model_fit, items)
-    } else if(inherits(model_fit, "BayesMallowsMixtures")){
+    } else if(inherits(model_fit, "BayesMallowsMixtures")) {
       cowplot::plot_grid(plotlist = lapply(model_fit, trace_rho, clusters = TRUE, items = items))
     }
 
   } else if(parameter == "Rtilde") {
 
-    if(inherits(model_fit, "BayesMallows")){
+    if(inherits(model_fit, "BayesMallows")) {
       trace_rtilde(model_fit, items, assessors)
-    } else if(inherits(model_fit, "BayesMallowsMixtures")){
+    } else if(inherits(model_fit, "BayesMallowsMixtures")) {
       stop("Trace plots of augmented data not supported for BayesMallowsMixtures. Please rerun each component k using the k-th list element.")
     }
-  } else if (parameter == "cluster_probs"){
-    if(inherits(model_fit, "BayesMallows")){
+  } else if (parameter == "cluster_probs") {
+    if(inherits(model_fit, "BayesMallows")) {
       m <- model_fit$cluster_probs
-    } else if(inherits(model_fit, "BayesMallowsMixtures")){
-      m <- do.call(rbind, lapply(model_fit, function(x){
+    } else if(inherits(model_fit, "BayesMallowsMixtures")) {
+      m <- do.call(rbind, lapply(model_fit, function(x) {
         dplyr::mutate(x$cluster_probs,
                       cluster = as.character(.data$cluster),
                       n_clusters = x$n_clusters)
@@ -70,20 +70,20 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
     }
     trace_cluster_probs(m)
 
-  } else if (parameter == "theta"){
+  } else if (parameter == "theta") {
       trace_theta(model_fit)
   } else {
     stop("parameter must be either \"alpha\", \"rho\", \"augmentation\", \"cluster_probs\", or \"theta\".")
   }
 }
 
-trace_alpha <- function(m, clusters){
+trace_alpha <- function(m, clusters) {
   # Create the diagnostic plot for alpha
   p <- ggplot2::ggplot(m, ggplot2::aes(x = .data$iteration, y = .data$value)) +
     ggplot2::xlab("Iteration") +
     ggplot2::ylab(expression(alpha))
 
-  if(!clusters){
+  if(!clusters) {
     p <- p + ggplot2::geom_line()
   } else {
     p <- p +
@@ -97,16 +97,16 @@ trace_alpha <- function(m, clusters){
   return(p)
 }
 
-trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1){
+trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1) {
 
-  if(is.null(items) && model_fit$n_items > 5){
+  if(is.null(items) && model_fit$n_items > 5) {
     message("Items not provided by user. Picking 5 at random.")
     items <- sample.int(model_fit$n_items, 5)
   } else if (is.null(items) && model_fit$n_items > 0) {
     items <- seq.int(from = 1, to = model_fit$n_items)
   }
 
-  if(!is.character(items)){
+  if(!is.character(items)) {
     items <- model_fit$items[items]
   }
 
@@ -118,7 +118,7 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1){
     ggplot2::xlab("Iteration") +
     ggplot2::ylab(expression(rho))
 
-  if(clusters){
+  if(clusters) {
     p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$cluster))
   }
 
@@ -126,21 +126,21 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1){
 }
 
 
-trace_rtilde <- function(model_fit, items, assessors, ...){
+trace_rtilde <- function(model_fit, items, assessors, ...) {
 
 
-  if(!model_fit$save_aug){
+  if(!model_fit$save_aug) {
     stop("Please rerun with compute_mallows with save_aug = TRUE")
   }
 
-  if(is.null(items) && model_fit$n_items > 5){
+  if(is.null(items) && model_fit$n_items > 5) {
     message("Items not provided by user. Picking 5 at random.")
     items <- sample.int(model_fit$n_items, 5)
   } else if (is.null(items) && model_fit$n_items > 0) {
     items <- seq.int(from = 1, to = model_fit$n_items)
   }
 
-  if(is.null(assessors) && model_fit$n_assessors > 5){
+  if(is.null(assessors) && model_fit$n_assessors > 5) {
     message("Assessors not provided by user. Picking 5 at random.")
     assessors <- sample.int(model_fit$n_assessors, 5)
   } else if (is.null(assessors) && model_fit$n_assessors > 0) {
@@ -151,7 +151,7 @@ trace_rtilde <- function(model_fit, items, assessors, ...){
     }
   }
 
-  if(is.factor(model_fit$augmented_data$item) && is.numeric(items)){
+  if(is.factor(model_fit$augmented_data$item) && is.numeric(items)) {
     items <- levels(model_fit$augmented_data$item)[items]
   }
   df <- dplyr::filter(model_fit$augmented_data,
@@ -169,7 +169,7 @@ trace_rtilde <- function(model_fit, items, assessors, ...){
 }
 
 
-trace_cluster_probs <- function(m){
+trace_cluster_probs <- function(m) {
 
   ggplot2::ggplot(m, ggplot2::aes(x = .data$iteration, y = .data$value,
                                color = .data$cluster)) +
@@ -184,8 +184,8 @@ trace_cluster_probs <- function(m){
 }
 
 
-trace_theta <- function(model_fit){
-  if(is.null(model_fit$theta) || length(model_fit$theta) == 0){
+trace_theta <- function(model_fit) {
+  if(is.null(model_fit$theta) || length(model_fit$theta) == 0) {
     stop("Theta not available. Run compute_mallows with error_model = 'bernoulli'.")
   }
   # Create the diagnostic plot for theta

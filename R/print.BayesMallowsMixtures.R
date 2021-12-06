@@ -11,7 +11,7 @@
 #' @export
 #'
 #'
-print.BayesMallowsMixtures <- function(x, ...){
+print.BayesMallowsMixtures <- function(x, ...) {
   # Note, the first argument must be named x, otherwise R CMD CHECK will
   # issue a warning. This is because print.BayesMallowsMixtures must have the same
   # required arguments as base::print.

@@ -237,17 +237,17 @@ compute_mallows <- function(rankings = NULL,
                             constraints = NULL,
                             save_ind_clus = FALSE,
                             seed = NULL
-                            ){
+                            ) {
 
   if(!is.null(seed)) set.seed(seed)
 
   # Check if there are NAs in rankings, if it is provided
-  if(!is.null(rankings)){
-    if(na_action == "fail" && any(is.na(rankings))){
+  if(!is.null(rankings)) {
+    if(na_action == "fail" && any(is.na(rankings))) {
       stop("rankings matrix contains NA values")
     }
 
-    if(na_action == "omit" && any(is.na(rankings))){
+    if(na_action == "omit" && any(is.na(rankings))) {
       keeps <- apply(rankings, 1, function(x) !any(is.na(x)))
       print(paste("Omitting", sum(keeps), "rows from rankings due to NA values"))
       rankings <- rankings[keeps, , drop = FALSE]
@@ -255,20 +255,20 @@ compute_mallows <- function(rankings = NULL,
   }
 
   # Check that at most one of rankings and preferences is set
-  if(is.null(rankings) && is.null(preferences)){
+  if(is.null(rankings) && is.null(preferences)) {
     stop("Either rankings or preferences (or both) must be provided.")
   }
 
-  if(is.null(preferences) && !is.null(error_model)){
+  if(is.null(preferences) && !is.null(error_model)) {
     stop("Error model requires preferences to be set.")
   }
 
   # Check if obs_freq are provided
-  if(!is.null(obs_freq)){
-    if(is.null(rankings)){
+  if(!is.null(obs_freq)) {
+    if(is.null(rankings)) {
       stop("rankings matrix must be provided when obs_freq are provided")
     }
-    if(nrow(rankings) != length(obs_freq)){
+    if(nrow(rankings) != length(obs_freq)) {
       stop("obs_freq must be of same length as the number of rows in rankings")
     }
   }
@@ -286,15 +286,15 @@ compute_mallows <- function(rankings = NULL,
   if(lambda <= 0) stop("exponential rate parameter lambda must be strictly positive")
 
   # Check that all rows of rankings are proper permutations
-  if(!is.null(rankings) && validate_rankings && !all(apply(rankings, 1, validate_permutation))){
+  if(!is.null(rankings) && validate_rankings && !all(apply(rankings, 1, validate_permutation))) {
     stop("invalid permutations provided in rankings matrix")
   }
 
 
   # Deal with pairwise comparisons. Generate rankings compatible with them.
-  if(!is.null(preferences) && is.null(error_model)){
+  if(!is.null(preferences) && is.null(error_model)) {
 
-    if(!inherits(preferences, "BayesMallowsTC")){
+    if(!inherits(preferences, "BayesMallowsTC")) {
       message("Generating transitive closure of preferences.")
       # Make sure the preference columns are double
       preferences <- dplyr::mutate(preferences,
@@ -304,15 +304,15 @@ compute_mallows <- function(rankings = NULL,
 
       preferences <- generate_transitive_closure(preferences)
     }
-    if(is.null(rankings)){
+    if(is.null(rankings)) {
       message("Generating initial ranking.")
       rankings <- generate_initial_ranking(preferences)
     }
-  } else if(!is.null(error_model)){
+  } else if(!is.null(error_model)) {
     stopifnot(error_model == "bernoulli")
     n_items <- max(c(preferences$bottom_item, preferences$top_item))
     n_assessors <- length(unique(preferences$assessor))
-    if(is.null(rankings)){
+    if(is.null(rankings)) {
       rankings <- replicate(n_assessors, sample(x = n_items, size = n_items), simplify = "numeric")
       rankings <- matrix(rankings, ncol = n_items, nrow = n_assessors, byrow = TRUE)
     }
@@ -322,7 +322,7 @@ compute_mallows <- function(rankings = NULL,
   n_items <- ncol(rankings)
 
   # If any row of rankings has only one missing value, replace it with the implied ranking
-  if(any(is.na(rankings))){
+  if(any(is.na(rankings))) {
 
     dn <- dimnames(rankings)
     rankings <- lapply(split(rankings, f = seq_len(nrow(rankings))),
@@ -342,9 +342,9 @@ compute_mallows <- function(rankings = NULL,
   }
 
   # Generate the constraint set
-  if(!is.null(preferences) && is.null(constraints)){
+  if(!is.null(preferences) && is.null(constraints)) {
     constraints <- generate_constraints(preferences, n_items)
-  } else if (is.null(constraints)){
+  } else if (is.null(constraints)) {
     constraints <- list()
   }
 
@@ -352,7 +352,7 @@ compute_mallows <- function(rankings = NULL,
 
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
 
-  if(save_ind_clus){
+  if(save_ind_clus) {
     abort <- readline(
       prompt = paste(nmc, "csv files will be saved in your current working directory.",
                      "Proceed? (yes/no): "))
@@ -387,7 +387,7 @@ compute_mallows <- function(rankings = NULL,
                   save_ind_clus = save_ind_clus
                   )
 
-  if(verbose){
+  if(verbose) {
     print("Metropolis-Hastings algorithm completed. Post-processing data.")
   }
 

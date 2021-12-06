@@ -11,7 +11,7 @@ smc_processing <- function(output, colnames = NULL) {
   df <- data.frame(data = output)
 
   # if colnames are specified, then incorporate them
-  if(is.null(colnames)){
+  if(is.null(colnames)) {
     n_items <- ncol(df)
     cletters <- rep(c("Item"), times = n_items)
     cindexes <- (c(1:n_items))
@@ -172,11 +172,11 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE
 #' @param items Either a vector of item names, or a
 #'   vector of indices. If NULL, five items are selected randomly.
 #' @export
-plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = NULL){
+plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = NULL) {
 
   n_items <- dim(output)[2]
 
-  if(is.null(items) && n_items > 5){
+  if(is.null(items) && n_items > 5) {
     message("Items not provided by user or more than 5 items in a ranking. Picking 5 at random.")
     items <- sample(1:n_items, 5, replace = F)
     items <- sort(items)
@@ -189,14 +189,14 @@ plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = 
   # do smc processing here
   smc_plot <- smc_processing(output = output, colnames = colnames)
 
-  if(!is.character(items)){
+  if(!is.character(items)) {
     items <- unique(smc_plot$item)[items]
   }
 
   iteration <- rep(c(1:nmc), times = n_items)
   df <- cbind(iteration, smc_plot)
 
-  if(C == 1){
+  if(C == 1) {
     df <- cbind(cluster = "Cluster 1", df)
   }
 
@@ -220,7 +220,7 @@ plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = 
     ggplot2::xlab("rank") +
     ggplot2::ylab("Posterior probability")
 
-  if(C == 1){
+  if(C == 1) {
     p <- p + ggplot2::facet_wrap(~ .data$item)
   } else {
     p <- p + ggplot2::facet_wrap(~ .data$cluster + .data$item)

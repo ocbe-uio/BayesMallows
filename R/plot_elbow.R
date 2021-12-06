@@ -23,21 +23,21 @@
 #'
 #' @example /inst/examples/compute_mallows_mixtures_example.R
 #'
-plot_elbow <- function(..., burnin = NULL){
+plot_elbow <- function(..., burnin = NULL) {
 
   # Put the models into a list. These are typically fitted with different number of clusters
   models <- list(...)
 
   # Taking into account the case where the user has entered a list of models
-  if(length(models) == 1 && !(class(models[[1]]) == "BayesMallows")){
+  if(length(models) == 1 && !(class(models[[1]]) == "BayesMallows")) {
     models <- models[[1]]
   }
 
   df <- do.call(rbind, lapply(models, function(x) {
     stopifnot(class(x) == "BayesMallows")
 
-    if(!("burnin" %in% names(x))){
-      if(is.null(burnin)){
+    if(!("burnin" %in% names(x))) {
+      if(is.null(burnin)) {
         stop("burnin not provided")
       } else {
         x$burnin <- burnin
