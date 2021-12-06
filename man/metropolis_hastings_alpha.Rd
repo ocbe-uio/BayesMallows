@@ -60,7 +60,7 @@ Function to perform Metropolis-Hastings for new rho under
   Alternatively, if \eqn{N} equals 1, \code{rankings} can be a vector.
 }
 \examples{
-rho <- c(1,2,3,4,5,6)
+rho <- c(1, 2, 3, 4, 5, 6)
 alpha <- 2
 metric <- "footrule"
 n_items <- 6

@@ -37,7 +37,7 @@ predict_top_k <- function(model_fit, burnin = model_fit$burnin,
   n_samples <- length(unique(rankings$iteration))
   rankings <- dplyr::mutate(rankings, item = as.character(.data$item))
   rankings <- dplyr::group_by(rankings, .data$assessor, .data$item)
-  rankings <- dplyr::summarise(rankings, prob = dplyr::n()/n_samples, .groups = "drop")
+  rankings <- dplyr::summarise(rankings, prob = dplyr::n() / n_samples, .groups = "drop")
 
   do.call(rbind, lapply(split(rankings, f = rankings$assessor), function(dd){
     dd2 <- merge(dd, expand.grid(item = unique(rankings$item)),

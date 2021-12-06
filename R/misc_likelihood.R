@@ -17,7 +17,16 @@ log_lik_db <- function(rho, alpha, metric, rankings, obs_freq){
   n_items <- ncol(rankings)
 
   if(metric %in% c("kendall", "cayley", "hamming")){
-    log_lik <- -(alpha*rank_dist_sum(rankings=t(rankings),rho=rho,metric=metric,obs_freq=obs_freq)+N*get_partition_function(n_items=n_items,alpha=alpha*n_items,metric=metric))
+    log_lik <- -(
+      alpha *
+      rank_dist_sum(
+        rankings = t(rankings), rho = rho, metric = metric, obs_freq = obs_freq
+      ) +
+      N *
+      get_partition_function(
+        n_items = n_items, alpha = alpha * n_items, metric = metric
+      )
+    )
   }
 
   if(metric %in% c( "ulam", "footrule", "spearman")){
@@ -62,7 +71,7 @@ log_lik_db <- function(rho, alpha, metric, rankings, obs_freq){
 #/'
 
 log_lik_db_mix <- function(rho, alpha, weights, metric,
-                           rankings,obs_freq){
+                           rankings, obs_freq){
 
   L <- length(obs_freq)
   n_clusters <- length(weights)
@@ -75,6 +84,6 @@ log_lik_db_mix <- function(rho, alpha, weights, metric,
         obs_freq = obs_freq[l]))
     }
   }
-  log_lik <- sum(log(weights%*%temp))
+  log_lik <- sum(log(weights %*% temp))
   return(log_lik)
 }

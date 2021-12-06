@@ -34,7 +34,7 @@ translation of \code{Rankcluster::distCayley} \insertCite{Grimonprez2016}{BayesM
 \examples{
 
 # Distance between two vectors of rankings:
-rank_distance(1:5,5:1, metric = "kendall")
+rank_distance(1:5, 5:1, metric = "kendall")
 rank_distance(c(2, 4, 3, 6, 1, 7, 5), c(3, 5, 4, 7, 6, 2, 1), metric = "cayley")
 rank_distance(c(4, 2, 3, 1), c(3, 4, 1, 2), metric = "hamming")
 rank_distance(c(1, 3, 5, 7, 9, 8, 6, 4, 2), c(1, 2, 3, 4, 9, 8, 7, 6, 5), "ulam")

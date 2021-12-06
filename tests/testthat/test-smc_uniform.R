@@ -5,7 +5,7 @@ require("BayesMallows")
 
 # tests for M-H_aug_ranking function ===========================================
 
-rho <- c(1,2,3,4,5,6)
+rho <- c(1, 2, 3, 4, 5, 6)
 alpha <- 2
 metric <- "footrule"
 n_items <- 6

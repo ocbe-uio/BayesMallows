@@ -155,7 +155,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 
   # Find the cumulative probability, by dividing by the total
   # count in (item, cluster) and the summing cumulatively
-  df <- dplyr::mutate(df, cumprob = cumsum(.data$n/sum(.data$n)))
+  df <- dplyr::mutate(df, cumprob = cumsum(.data$n / sum(.data$n)))
 
   # Find the CP consensus per cluster, using the find_cpc function
   df <- dplyr::ungroup(df)
@@ -184,9 +184,11 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 
   # Filter out the pre-burnin iterations
 
-  if(burnin!=0){
+  if(burnin != 0){
     df <- dplyr::filter(model_fit, .data$iteration > burnin)
-  }else {df <- model_fit}
+  } else {
+    df <- model_fit
+  }
 
   # Find the problem dimensions
   n_rows <- nrow(dplyr::distinct(df, .data$item, .data$cluster))
@@ -214,7 +216,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 
   # Find the cumulative probability, by dividing by the total
   # count in (item, cluster) and the summing cumulatively
-  df <- dplyr::mutate(df, cumprob = cumsum(.data$n/sum(.data$n)))
+  df <- dplyr::mutate(df, cumprob = cumsum(.data$n / sum(.data$n)))
 
   # Find the CP consensus per cluster, using the find_cpc function
   df <- dplyr::ungroup(df)

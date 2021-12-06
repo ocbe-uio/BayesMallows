@@ -1,6 +1,6 @@
 context("SMC individual functions")
 
-rho <- c(1,2,3,4,5,6)
+rho <- c(1, 2, 3, 4, 5, 6)
 alpha <- 2
 metric <- "footrule"
 n_items <- 6
@@ -21,7 +21,7 @@ test_that("get_mallows_loglik() works as expected", {
 		alpha = alpha, rho = rho,  n_items = n_items, rankings = rankings,
 		metric = metric
 	)
-	expect_equivalent(loglik, -22.6667, tol=1e-4)
+	expect_equivalent(loglik, -22.6667, tol = 1e-4)
 })
 
 test_that("smc_metropolis_hastings_rho() works as expected", {
@@ -40,7 +40,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
 		alpha = alpha, n_items = n_items, rankings = t(rho), metric = metric,
 		rho = rho, leap_size = 1
 	)
-	dist_1 <- BayesMallows:::get_rank_distance(rho, test_1, metric= "ulam")
+	dist_1 <- BayesMallows:::get_rank_distance(rho, test_1, metric = "ulam")
 	expect_equal(test_1, as.matrix(c(1, 2, 3, 5, 4, 6)))
 	# if rho != rho_prime, then it should have a ulam distance of 1
 	# if rho == rho_prime, then it should have ulam distance of 0
@@ -83,31 +83,31 @@ test_that("smc_leap_and_shift_probs() works as expected", {
 	# if leap_size = 1, then forwards_prob = backwards_prob
 	test_1 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 1)
 	expect_equal(test_1$rho_prime, as.matrix(c(1, 3, 2, 4, 5, 6)))
-	expect_equivalent(test_1$forwards_prob, 0.1666667, tol=1e-6)
-	expect_equivalent(test_1$backwards_prob, 0.1666667, tol=1e-6)
+	expect_equivalent(test_1$forwards_prob, 0.1666667, tol = 1e-6)
+	expect_equivalent(test_1$backwards_prob, 0.1666667, tol = 1e-6)
 
 	# if rho != rho_prime, then it should have a ulam distance of 1
 	# if rho == rho_prime, then it should have ulam distance of 0
-	dist_1 <- BayesMallows:::get_rank_distance(rho, test_1$rho_prime, metric= "ulam")
+	dist_1 <- BayesMallows:::get_rank_distance(rho, test_1$rho_prime, metric = "ulam")
 	expect_equal(dist_1, 1)
 
 	test_2 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 2)
 	expect_equal(test_2$rho_prime, as.matrix(c(1, 2, 3, 4, 5, 6)))
-	expect_equivalent(test_2$forwards_prob, 0.0556, tol=1e-4)
-	expect_equivalent(test_2$backwards_prob, 0.0556, tol=1e-4)
+	expect_equivalent(test_2$forwards_prob, 0.0556, tol = 1e-4)
+	expect_equivalent(test_2$backwards_prob, 0.0556, tol = 1e-4)
 
 	dist_2 <- get_rank_distance(
-		rho, test_2$rho_prime, metric= "ulam"
+		rho, test_2$rho_prime, metric = "ulam"
 	)
 	expect_equal(dist_2, 0)
 
 	test_3 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 3)
 	expect_equal(test_3$rho_prime, as.matrix(c(1, 2, 3, 4, 5, 6)))
-	expect_equivalent(test_3$forwards_prob, 0.0417, tol=1e-3)
-	expect_equivalent(test_3$backwards_prob, 0.0417, tol=1e-3)
+	expect_equivalent(test_3$forwards_prob, 0.0417, tol = 1e-3)
+	expect_equivalent(test_3$backwards_prob, 0.0417, tol = 1e-3)
 
 	dist_3 <- get_rank_distance(
-		rho, test_3$rho_prime, metric= "ulam"
+		rho, test_3$rho_prime, metric = "ulam"
 	)
 	expect_equal(dist_3, 0)
 })
@@ -142,7 +142,7 @@ metropolis_hastings_alpha_old <- function(
 	n_users <- length(rankings) / n_items
 
 	loga <- n_users * (logz_alpha - logz_alpha_prime) +
-		dexp(alpha_prime, log=TRUE) - dexp(alpha, log=TRUE) +
+		dexp(alpha_prime, log = TRUE) - dexp(alpha, log = TRUE) +
 		alpha_prime - alpha + mallows_loglik_prop
 
 	# determine whether to accept or reject proposed rho and
@@ -156,7 +156,7 @@ metropolis_hastings_alpha_old <- function(
 }
 
 set.seed(101)
-rho <- c(1,2,3,4,5,6)
+rho <- c(1, 2, 3, 4, 5, 6)
 alpha <- 2
 metric <- "footrule"
 n_items <- 6
@@ -199,10 +199,10 @@ test_4_b <- metropolis_hastings_alpha(
 )
 
 test_that("metropolis_hastings_alpha() works as expected", {
-	expect_equivalent(test_1_a, 1.951095, tol=1e-5)
-	expect_equivalent(test_1_b, 2.450351, tol=1e-5)
-	expect_equivalent(test_2_a, 1.951095, tol=1e-5)
-	expect_equivalent(test_2_b, 2.125639, tol=1e-5)
+	expect_equivalent(test_1_a, 1.951095, tol = 1e-5)
+	expect_equivalent(test_1_b, 2.450351, tol = 1e-5)
+	expect_equivalent(test_2_a, 1.951095, tol = 1e-5)
+	expect_equivalent(test_2_b, 2.125639, tol = 1e-5)
 	expect_equivalent(test_3_b, 2)
-	expect_equivalent(test_4_b, 1.904542, tol=1e-5)
+	expect_equivalent(test_4_b, 1.904542, tol = 1e-5)
 })

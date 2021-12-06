@@ -131,7 +131,7 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL,
 plot_alpha_posterior <- function(output, nmc, burnin) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
 
-  plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes_(x =~ value)) +
+  plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes_(x = ~ value)) +
     ggplot2::geom_density() +
     ggplot2::xlab(expression(alpha)) +
     ggplot2::ylab("Posterior density") +
@@ -196,7 +196,7 @@ plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = 
   iteration <- rep(c(1:nmc), times = n_items)
   df <- cbind(iteration, smc_plot)
 
-  if(C==1){
+  if(C == 1){
     df <- cbind(cluster = "Cluster 1", df)
   }
 

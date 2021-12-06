@@ -42,7 +42,7 @@
 #' @example /inst/examples/sample_mallows_example.R
 #'
 sample_mallows <- function(rho0, alpha0, n_samples,
-                           leap_size = max(1L, floor(n_items/5)),
+                           leap_size = max(1L, floor(n_items / 5)),
                            metric = "footrule",
                            diagnostic = FALSE,
                            burnin = ifelse(diagnostic, 0, 1000),
@@ -93,7 +93,7 @@ sample_mallows <- function(rho0, alpha0, n_samples,
     }
 
     # Compute the autocorrelation in the samples
-    autocorr <- apply(samples[ , items_to_plot, drop = FALSE], 2, stats::acf,
+    autocorr <- apply(samples[, items_to_plot, drop = FALSE], 2, stats::acf,
                       lag.max = max_lag, plot = FALSE, demean = TRUE)
     names(autocorr) <- items_to_plot
 

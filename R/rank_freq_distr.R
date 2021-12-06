@@ -21,7 +21,7 @@ rank_freq_distr <- function(rankings){
 
   rankings[is.na(rankings)] <- 0
   out <- unit_to_freq(data = rankings)
-  out[out==0] <- NA
+  out[out == 0] <- NA
 
   return(out)
 

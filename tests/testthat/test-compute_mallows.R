@@ -5,7 +5,7 @@ context("Testing compute_mallows")
 
 test_that("miscellaneous input validation", {
   namat <- potato_visual
-  namat[c(1,2, 3), c(7, 9)] <- NA_real_
+  namat[c(1, 2, 3), c(7, 9)] <- NA_real_
   expect_error(compute_mallows(rankings = namat, na_action = "fail"))
   expect_output(compute_mallows(rankings = namat, nmc = 2, na_action = "omit"),
                 "Omitting 9 rows from rankings due to NA values")
@@ -20,7 +20,7 @@ test_that("miscellaneous input validation", {
   expect_error(compute_mallows(rankings = potato_visual, nmc = -100))
 })
 
-test_that("rho_init is properly validated",{
+test_that("rho_init is properly validated", {
   m <- potato_visual
   expect_error(compute_mallows(rankings = m, rho_init = 1:(ncol(m) - 1)))
   expect_error(compute_mallows(rankings = m, rho_init = c(potato_true_ranking[-1], 22)))
@@ -31,7 +31,7 @@ test_that("rho_init is properly validated",{
 }
 )
 
-test_that("compute_mallows discovers inconsistent rankings",{
+test_that("compute_mallows discovers inconsistent rankings", {
     expect_error(compute_mallows(
       rankings = matrix(c(1, 2, -3,
                           1, 2, 3), nrow = 2, byrow = TRUE)
@@ -82,7 +82,7 @@ test_that("compute_mallows handles integer preferences", {
   expect_s3_class(m, "BayesMallows")
 })
 
-test_that("compute_mallows handles data with lots of missings",{
+test_that("compute_mallows handles data with lots of missings", {
   R_partial2 <- structure(c(NA, NA, NA, NA, NA, NA, 9, NA, NA, 7, NA, NA, NA,
                             NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
                             NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
@@ -105,7 +105,7 @@ test_that("compute_mallows handles data with lots of missings",{
 }
           )
 
-test_that("compute_mallows treats obs_freq properly",{
+test_that("compute_mallows treats obs_freq properly", {
   m1 <- compute_mallows(rankings = potato_visual,
                         obs_freq = rep(1, nrow(potato_visual)), seed = 2233)
   m2 <- compute_mallows(rankings = potato_visual, seed = 2233)

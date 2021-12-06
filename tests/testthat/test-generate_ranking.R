@@ -16,7 +16,7 @@ pair_comp <- tribble(
 pair_comp_tc <- generate_transitive_closure(pair_comp)
 beach_tc <- generate_transitive_closure(beach_preferences)
 
-test_that("generate_initial_ranking works",{
+test_that("generate_initial_ranking works", {
 
   expect_error(generate_initial_ranking(pair_comp))
   expect_is(generate_initial_ranking(pair_comp_tc), "matrix")
@@ -25,7 +25,7 @@ test_that("generate_initial_ranking works",{
 }
 )
 
-test_that("generate_initial_ranking with shuffle_unranked works",{
+test_that("generate_initial_ranking with shuffle_unranked works", {
 
   small_tc <- beach_tc[beach_tc$assessor %in% 1:6 & beach_tc$bottom_item %in% 1:4 & beach_tc$top_item %in% 1:4, ]
   set.seed(123)
@@ -44,7 +44,7 @@ test_that("generate_initial_ranking with shuffle_unranked works",{
 
 
 
-test_that("generate_initial_ranking with random works",{
+test_that("generate_initial_ranking with random works", {
 
 
   small_tc <- beach_tc[beach_tc$assessor %in% 1:6 & beach_tc$bottom_item %in% 1:4 & beach_tc$top_item %in% 1:4, ]
@@ -65,4 +65,3 @@ test_that("generate_initial_ranking with random works",{
   expect_error(generate_initial_ranking(tc = beach_tc, random = TRUE))
 }
 )
-
