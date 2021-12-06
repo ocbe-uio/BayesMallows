@@ -5,16 +5,16 @@ context("SMC complete rankings: sequence")
 #########################
 set.seed(994)
 
-data = sushi_rankings[1:100,]
+data <- sushi_rankings[1:100,]
 
 # General
 n_items <- dim(sushi_rankings)[2]  # Number of items
-leap_size = floor(n_items/5)
-metric = "footrule"
+leap_size <- floor(n_items/5)
+metric <- "footrule"
 
 # Generate estimate of Z_n(alpha)
 alpha_vector <- seq(from = 0, to = 15, by = 1)
-iter = 1e2
+iter <- 1e2
 degree <- 10
 
 # Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
@@ -27,30 +27,30 @@ logz_estimate <- estimate_partition_function(method = "importance_sampling",
 ######################################
 # BayesMallows Analysis (MCMC)
 ######################################
-nmc = 20
-burnin=5
+nmc <- 20
+burnin <- 5
 model_fit <- compute_mallows(rankings = data, nmc = nmc, metric = metric, leap_size =leap_size,
                              alpha_prop_sd = 0.15, logz_estimate = logz_estimate)
 
-model_fit$burnin = burnin
+model_fit$burnin <- burnin
 
-alpha_samples_table = data.frame(iteration = 1:nmc , value = model_fit$alpha$value)
-alpha_samples_table = alpha_samples_table[(burnin+1):nmc,]
+alpha_samples_table <- data.frame(iteration = 1:nmc , value = model_fit$alpha$value)
+alpha_samples_table <- alpha_samples_table[(burnin+1):nmc,]
 
 # from observing the plots, this looks like the estimated parameters of the Mallows Model
-rho_0 = c(4,5,2,6,8,3,9,1,7,10)
-alpha_0 = 1.7
+rho_0 <- c(4,5,2,6,8,3,9,1,7,10)
+alpha_0 <- 1.7
 
 # heatplot - there is no burnin!
-mcmc_rho_matrix = matrix(model_fit$rho$value, ncol = n_items, nrow = nmc, byrow=TRUE)
+mcmc_rho_matrix <- matrix(model_fit$rho$value, ncol = n_items, nrow = nmc, byrow=TRUE)
 
 # ###################################################################
 # # SMC
 # ###################################################################
-mcmc_times = 5
-num_new_obs = 10
-Time = dim(data)[1]/num_new_obs
-N = 100
+mcmc_times <- 5
+num_new_obs <- 10
+Time <- dim(data)[1]/num_new_obs
+N <- 100
 
 test <- smc_mallows_new_users_complete(
 	R_obs = data, n_items = n_items, metric = metric,
@@ -97,11 +97,11 @@ test_that("Output of compute_posterior_intervals_rho is OK", {
 })
 
 # posterior for alpha
-alpha_samples_table = data.frame(
+alpha_samples_table <- data.frame(
 	iteration = 1:N , value = test$alpha_samples[,Time+1]
 )
 # posterior confidence intervals
-alpha_posterior_intervals = compute_posterior_intervals_alpha(
+alpha_posterior_intervals <- compute_posterior_intervals_alpha(
 	output = test$alpha_samples[,Time+1], nmc = N, burnin = 0
 )
 

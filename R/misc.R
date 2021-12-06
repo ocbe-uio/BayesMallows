@@ -92,7 +92,7 @@ fill_single_entries <- function (data) {
   if (is.vector(data)) {
     data <- t(data)
   }
-  K = ncol(data)
+  K <- ncol(data)
   r_single_miss <- (rowSums(data == 0) == 1)
   if (any(r_single_miss)) {
     w_row <- which(r_single_miss)

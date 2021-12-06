@@ -174,30 +174,30 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE
 #' @export
 plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = NULL){
 
-  n_items = dim(output)[2]
+  n_items <- dim(output)[2]
 
   if(is.null(items) && n_items > 5){
     message("Items not provided by user or more than 5 items in a ranking. Picking 5 at random.")
     items <- sample(1:n_items, 5, replace = F)
-    items = sort(items)
+    items <- sort(items)
 
   } else if (is.null(items) && n_items <= 5) {
     items <- c(1:n_items)
-    items = sort(items)
+    items <- sort(items)
   }
 
   # do smc processing here
-  smc_plot = smc_processing(output = output, colnames = colnames)
+  smc_plot <- smc_processing(output = output, colnames = colnames)
 
   if(!is.character(items)){
     items <- unique(smc_plot$item)[items]
   }
 
-  iteration = rep(c(1:nmc), times = n_items)
-  df = cbind(iteration, smc_plot)
+  iteration <- rep(c(1:nmc), times = n_items)
+  df <- cbind(iteration, smc_plot)
 
   if(C==1){
-    df = cbind(cluster = "Cluster 1", df)
+    df <- cbind(cluster = "Cluster 1", df)
   }
 
   df <- dplyr::filter(df, .data$iteration > burnin, .data$item %in% items)

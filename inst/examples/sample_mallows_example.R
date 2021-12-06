@@ -40,10 +40,9 @@ compute_posterior_intervals(model_fit, burnin = 2000, parameter = "alpha")
 library(PerMallows)
 # Set the scale parameter of the PerMallows package corresponding to
 # alpha0 in BayesMallows
-theta0 = alpha0 / n_items
+theta0 <- alpha0 / n_items
 # Sample with PerMallows::rmm
 sample1 <- rmm(n = 100, sigma0 = rho0, theta = theta0, dist.name = "cayley")
 # Generate the same sample with sample_mallows
 sample2 <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 100,
                           burnin = 1000, thinning = 1000, metric = "cayley")
-
