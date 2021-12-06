@@ -178,7 +178,7 @@ plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = 
 
   if (is.null(items) && n_items > 5) {
     message("Items not provided by user or more than 5 items in a ranking. Picking 5 at random.")
-    items <- sample(1:n_items, 5, replace = F)
+    items <- sample(1:n_items, 5, replace = FALSE)
     items <- sort(items)
 
   } else if (is.null(items) && n_items <= 5) {
