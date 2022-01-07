@@ -201,7 +201,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // calculate_backward_probability
-double calculate_backward_probability(arma::uvec item_ordering, arma::vec partial_ranking, arma::vec current_ranking, arma::vec remaining_set, arma::vec rho, double alpha, int n_items, std::string metric);
+double calculate_backward_probability(arma::uvec item_ordering, arma::vec partial_ranking, arma::vec current_ranking, arma::vec remaining_set, const arma::vec rho, const double alpha, const int n_items, const std::string metric);
 RcppExport SEXP _BayesMallows_calculate_backward_probability(SEXP item_orderingSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP remaining_setSEXP, SEXP rhoSEXP, SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -210,10 +210,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type partial_ranking(partial_rankingSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type current_ranking(current_rankingSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type remaining_set(remaining_setSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type rho(rhoSEXP);
-    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
-    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< const int >::type n_items(n_itemsSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
     rcpp_result_gen = Rcpp::wrap(calculate_backward_probability(item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric));
     return rcpp_result_gen;
 END_RCPP
