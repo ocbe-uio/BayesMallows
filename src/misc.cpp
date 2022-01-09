@@ -87,8 +87,8 @@ arma::uvec maybe_offset_indices(
 ) {
   // Adjust the indices of x (i.e., idx_x) depending on whether it seems to be
   // using R or C++ indices.
-  arma::uvec io_idx_cpp   = arma::find_nonfinite(x);
-  arma::uvec io_idx_input = arma::sort(idx_x);
+  const arma::uvec& io_idx_cpp   = arma::find_nonfinite(x);
+  const arma::uvec& io_idx_input = arma::sort(idx_x);
   std::string message = "C++ indices detected. Unchanged.";
   if (arma::any(io_idx_input - io_idx_cpp)) {
     idx_x -= 1;
