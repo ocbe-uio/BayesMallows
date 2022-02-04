@@ -38,38 +38,38 @@
 //' @export
 // [[Rcpp::export]]
 double metropolis_hastings_alpha(
-  double alpha,
-  int n_items,
-  arma::mat rankings,
-  std::string metric,
-  arma::vec rho,
+  const double alpha,
+  const int n_items,
+  const arma::mat rankings,
+  const std::string metric,
+  const arma::vec rho,
   const Rcpp::Nullable<arma::vec> logz_estimate,
-  double alpha_prop_sd,
-  double lambda,
-  double alpha_max
+  const double alpha_prop_sd,
+  const double lambda,
+  const double alpha_max
 ) {
-  double rand = Rcpp::as<double>(Rcpp::rnorm(1, 0, 1));
-  double alpha_prime_log = rand * alpha_prop_sd + std::log(alpha);
-  double alpha_prime = std::exp(alpha_prime_log);
+  const double rand = Rcpp::as<double>(Rcpp::rnorm(1, 0, 1));
+  const double alpha_prime_log = rand * alpha_prop_sd + std::log(alpha);
+  const double alpha_prime = std::exp(alpha_prime_log);
 
   // Difference between current and proposed alpha
-  double alpha_diff = alpha - alpha_prime;
-  double mallows_loglik_prop = get_mallows_loglik(alpha_prime - alpha, rho, n_items, rankings, metric);
+  const double& alpha_diff = alpha - alpha_prime;
+  const double mallows_loglik_prop = get_mallows_loglik(alpha_prime - alpha, rho, n_items, rankings, metric);
 
   // evaluate the log estimate of the partition function for a particular
   // value of alpha
-  const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue;
-  double logz_alpha = get_partition_function(n_items, alpha, cardinalities, logz_estimate, metric);
-  double logz_alpha_prime = get_partition_function(n_items, alpha_prime, cardinalities, logz_estimate, metric);
+  const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue;
+  const double logz_alpha = get_partition_function(n_items, alpha, cardinalities, logz_estimate, metric);
+  const double logz_alpha_prime = get_partition_function(n_items, alpha_prime, cardinalities, logz_estimate, metric);
 
-  double obs_freq = rankings.n_elem / n_items;
+  const double& obs_freq = rankings.n_elem / n_items;
 
   // Compute the Metropolis-Hastings ratio
-  double loga = mallows_loglik_prop + lambda * alpha_diff + obs_freq * (logz_alpha - logz_alpha_prime) + log(alpha_prime) - log(alpha);
+  const double& loga = mallows_loglik_prop + lambda * alpha_diff + obs_freq * (logz_alpha - logz_alpha_prime) + log(alpha_prime) - log(alpha);
 
   // determine whether to accept or reject proposed rho and return now consensus
   // ranking
-  double p = Rcpp::as<double>(Rcpp::runif(1, 0, 1));
+  const double p = Rcpp::as<double>(Rcpp::runif(1, 0, 1));
   if (log(p) <= loga && alpha_prime < alpha_max) {
     return(alpha_prime);
   } else {

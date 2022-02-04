@@ -27,28 +27,28 @@
 //' @export
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
-  arma::mat& R_obs,
-  unsigned int& n_items,
-  std::string metric,
-  int& leap_size,
-  unsigned int& N,
-  unsigned int Time,
+  const arma::mat& R_obs,
+  const unsigned int& n_items,
+  const std::string metric,
+  const int& leap_size,
+  const unsigned int& N,
+  const unsigned int Time,
   const Rcpp::Nullable<arma::vec> logz_estimate,
-  int& mcmc_kernel_app,
-  unsigned int& num_new_obs,
-  std::string& aug_method,
-  double alpha
+  const int& mcmc_kernel_app,
+  const unsigned int& num_new_obs,
+  const std::string& aug_method,
+  const double alpha
 ) {
 
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
-  int n_users = R_obs.n_rows; // this is total- number of users
+  const int& n_users = R_obs.n_rows; // this is total- number of users
 
   // generate rho samples using uniform prior
   arma::cube rho_samples(N, n_items, Time + 1, arma::fill::zeros);
   for (arma::uword i = 0; i < N; ++i) {
-    arma::uvec items_sample = arma::randperm(n_items) + 1;
+    const arma::uvec items_sample = arma::randperm(n_items) + 1;
     for (arma::uword j = 0; j < n_items; ++j) {
       rho_samples(i, j, 0) = items_sample(j);
     }
@@ -68,7 +68,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     /* New Information                                        */
     /* ====================================================== */
     // keep tally of how many ranking observations we have so far
-    num_obs = num_obs + num_new_obs;
+    num_obs += num_new_obs;
 
     // create two ranking dataset to use for the reweight and move stages of the algorithm
     // Note:
@@ -86,18 +86,18 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     /* Augment partial rankings                               */
     /* ====================================================== */
 
-    arma::ivec ranks    = Rcpp::seq(1, n_items);
-    arma::vec  aug_prob = Rcpp::rep(1.0, N);
+    const arma::ivec ranks = Rcpp::seq(1, n_items);
+    arma::vec aug_prob = Rcpp::rep(1.0, N);
 
     for (arma::uword ii = 0; ii < N; ++ii) {
       for (arma::uword jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
         arma::vec partial_ranking = R_obs.row(jj).t();
 
         // find items missing from original observed ranking
-        arma::uvec unranked_items = find_nonfinite(partial_ranking);
+        const arma::uvec& unranked_items = find_nonfinite(partial_ranking);
 
         // find ranks missing from ranking
-        Rcpp::NumericVector missing_ranks = Rcpp_setdiff_arma(ranks, partial_ranking);
+        const Rcpp::NumericVector& missing_ranks = Rcpp_setdiff_arma(ranks, partial_ranking);
 
         // fill in missing ranks based on choice of augmentation method
         if (aug_method == "random") {
@@ -109,20 +109,20 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
           }
 
           aug_rankings(arma::span(jj), arma::span::all, arma::span(ii)) = partial_ranking;
-          int missing_ranks_length = missing_ranks.length();
-          int missing_ranks_length_fact = factorial(missing_ranks_length); // from misc.h
+          const int& missing_ranks_length = missing_ranks.length();
+          const int& missing_ranks_length_fact = factorial(missing_ranks_length); // from misc.h
           aug_prob(ii) = aug_prob(ii) * (1.0 / missing_ranks_length_fact);
         } else if ((aug_method == "pseudolikelihood") & ((metric == "footrule") | (metric == "spearman"))) {
           // randomly permute the unranked items to give the order in which they will be allocated
           arma::uvec item_ordering;
           item_ordering = arma::conv_to<arma::uvec>::from(arma::shuffle(unranked_items));
-          arma::rowvec rho_s = rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
-          Rcpp::List proposal = calculate_forward_probability(\
+          const arma::rowvec& rho_s = rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
+          const Rcpp::List& proposal = calculate_forward_probability(\
             item_ordering, partial_ranking, missing_ranks, rho_s.t(),\
             alpha, n_items, metric\
           );
-          arma::vec a_rank = proposal["aug_ranking"];
-          double f_prob = proposal["forward_prob"];
+          const arma::vec& a_rank = proposal["aug_ranking"];
+          const double& f_prob = proposal["forward_prob"];
           aug_rankings(arma::span(jj), arma::span::all, arma::span(ii)) = a_rank;
           aug_prob(ii) = aug_prob(ii) * f_prob;
         } else {
@@ -141,11 +141,11 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
 
       /* Initializing variables ------------------------------- */
       const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue;
-      arma::rowvec rho_samples_ii = \
+      const arma::rowvec rho_samples_ii = \
         rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
 
       /* Calculating log_z_alpha and log_likelihood ----------- */
-      double log_z_alpha = get_partition_function(\
+      const double log_z_alpha = get_partition_function(\
         n_items, alpha, cardinalities, logz_estimate, metric\
       );
 
@@ -158,9 +158,9 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     }
 
     /* normalise weights ------------------------------------ */
-    double maxw = arma::max(log_inc_wgt);
-    arma::vec w = arma::exp(log_inc_wgt - maxw);
-    arma::vec norm_wgt = w / arma::sum(w);
+    const double maxw = arma::max(log_inc_wgt);
+    const arma::vec w = arma::exp(log_inc_wgt - maxw);
+    const arma::vec norm_wgt = w / arma::sum(w);
 
     /* ====================================================== */
     /* Resample                                               */
@@ -182,7 +182,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     rho_samples.slice(tt + 1) = rho_samples_slice_11p1;
 
     /* Replacing tt + 1 column on alpha_samples ------------- */
-    arma::cube aug_rankings_indices = aug_rankings.slices(indices);
+    const arma::cube& aug_rankings_indices = aug_rankings.slices(indices);
     aug_rankings.rows(0, num_obs - 1) = aug_rankings_indices(arma::span(0, num_obs - 1), arma::span::all, arma::span::all);
 
     /* ====================================================== */
@@ -191,8 +191,8 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     for (arma::uword ii = 0; ii < N; ++ii) {
       arma::mat all_observed_rankings;
       all_observed_rankings = aug_rankings(arma::span(0, num_obs - 1), arma::span::all, arma::span(ii));
-      arma::mat rs_slice = rho_samples.slice(tt + 1);
-      arma::rowvec rs = rs_slice.row(ii);
+      const arma::mat& rs_slice = rho_samples.slice(tt + 1);
+      const arma::rowvec& rs = rs_slice.row(ii);
       // move each particle containing sample of rho and alpha by using
       // the MCMC kernels
       rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)) =\

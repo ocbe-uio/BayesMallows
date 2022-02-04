@@ -33,25 +33,25 @@
 //' @export
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users_partial(
-  arma::mat& R_obs,
-  unsigned int& n_items,
-  std::string& metric,
-  int& leap_size,
-  unsigned int& N,
-  unsigned int Time,
+  const arma::mat& R_obs,
+  const unsigned int& n_items,
+  const std::string& metric,
+  const int& leap_size,
+  const unsigned int& N,
+  const unsigned int Time,
   const Rcpp::Nullable<arma::vec> logz_estimate,
-  int& mcmc_kernel_app,
-  unsigned int& num_new_obs,
-  double alpha_prop_sd,
-  double lambda,
-  double alpha_max,
-  std::string& aug_method,
-  bool verbose = false
+  const int& mcmc_kernel_app,
+  const unsigned int& num_new_obs,
+  const double alpha_prop_sd,
+  const double lambda,
+  const double alpha_max,
+  const std::string& aug_method,
+  const bool verbose = false
 ) {
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
-  int n_users = R_obs.n_rows; // this is total- number of users
+  const int& n_users = R_obs.n_rows; // this is total- number of users
 
   /* generate rho samples using uniform prior ------------- */
   arma::cube rho_samples(N, n_items, Time + 1, arma::fill::zeros);
@@ -64,7 +64,7 @@ Rcpp::List smc_mallows_new_users_partial(
 
   /* generate alpha samples using exponential prior ------- */
   arma::mat alpha_samples(N, Time + 1);
-  arma::vec alpha_samples_0 = Rcpp::rexp(N, 1);
+  const arma::vec& alpha_samples_0 = Rcpp::rexp(N, 1);
   alpha_samples.col(0) = alpha_samples_0;
 
   // this is to store the augmentations of the observed rankings for each particle
@@ -81,7 +81,7 @@ Rcpp::List smc_mallows_new_users_partial(
     /* New Information                                        */
     /* ====================================================== */
     // keep tally of how many ranking observations we have so far
-    num_obs = num_obs + num_new_obs;
+    num_obs += num_new_obs;
 
     // propagate particles onto the next time step
     rho_samples.slice(tt + 1) = rho_samples.slice(tt);
@@ -95,7 +95,7 @@ Rcpp::List smc_mallows_new_users_partial(
     /* Augment partial rankings                               */
     /* ====================================================== */
 
-    arma::ivec ranks = Rcpp::seq(1, n_items);
+    const arma::ivec ranks = Rcpp::seq(1, n_items);
     arma::vec aug_prob = Rcpp::rep(1.0, N);
 
     for (arma::uword ii = 0; ii < N; ++ii) {
@@ -106,7 +106,7 @@ Rcpp::List smc_mallows_new_users_partial(
         arma::uvec unranked_items = find_nonfinite(partial_ranking);
 
         // find ranks missing from ranking
-        Rcpp::NumericVector missing_ranks = Rcpp::sort_unique(Rcpp_setdiff_arma(ranks, partial_ranking));
+        const Rcpp::NumericVector missing_ranks = Rcpp::sort_unique(Rcpp_setdiff_arma(ranks, partial_ranking));
 
         // fill in missing ranks based on choice of augmentation method
         if (aug_method == "random") {
@@ -119,8 +119,8 @@ Rcpp::List smc_mallows_new_users_partial(
           }
 
           aug_rankings(arma::span(jj), arma::span::all, arma::span(ii)) = partial_ranking;
-          int missing_ranks_length = missing_ranks.length();
-          int missing_ranks_length_fact = factorial(missing_ranks_length); // from misc.h
+          const int& missing_ranks_length = missing_ranks.length();
+          const int& missing_ranks_length_fact = factorial(missing_ranks_length); // from misc.h
           aug_prob(ii) = aug_prob(ii) * (1.0 / missing_ranks_length_fact);
 
         } else if ((aug_method == "pseudolikelihood") & ((metric == "footrule") | (metric == "spearman"))) {
@@ -128,13 +128,13 @@ Rcpp::List smc_mallows_new_users_partial(
           // randomly permute the unranked items to give the order in which they will be allocated
           arma::uvec item_ordering;
           item_ordering = arma::conv_to<arma::uvec>::from(arma::shuffle(unranked_items));
-          arma::rowvec rho_s = rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
-          Rcpp::List proposal = calculate_forward_probability(\
+          const arma::rowvec rho_s = rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
+          const Rcpp::List proposal = calculate_forward_probability(\
             item_ordering, partial_ranking, missing_ranks, rho_s.t(),\
             alpha_samples(ii, tt + 1), n_items, metric\
           );
-          arma::vec a_rank = proposal["aug_ranking"];
-          double f_prob = proposal["forward_prob"];
+          const arma::vec& a_rank = proposal["aug_ranking"];
+          const double& f_prob = proposal["forward_prob"];
           aug_rankings(arma::span(jj), arma::span::all, arma::span(ii)) = a_rank;
           aug_prob(ii) = aug_prob(ii) * f_prob;
         } else {
@@ -152,7 +152,7 @@ Rcpp::List smc_mallows_new_users_partial(
       // value of alpha
 
       /* Initializing variables ------------------------------- */
-      const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue;
+      const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue;
       double alpha_samples_ii = alpha_samples(ii, tt + 1);
       arma::rowvec rho_samples_ii = \
         rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));

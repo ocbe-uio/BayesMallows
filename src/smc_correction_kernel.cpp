@@ -19,12 +19,12 @@
 //' that is compatible with the new observed ranking for a user
 // [[Rcpp::export]]
 Rcpp::List correction_kernel(
-  arma::vec observed_ranking, //R_obs
-  arma::vec current_ranking,  // R_curr
-  int n_items
+  const arma::vec observed_ranking, //R_obs
+  const arma::vec current_ranking,  // R_curr
+  const int n_items
 ) {
   // check if new information means 'mistakes' made with augmented rankings
-  bool observed_equals_current = arma::approx_equal(\
+  const bool observed_equals_current = arma::approx_equal(\
     observed_ranking, current_ranking, "absdiff", 0.1\
   );
   double correction_prob = 1.0;
@@ -40,7 +40,7 @@ Rcpp::List correction_kernel(
     // create new agumented ranking by sampling remaining ranks from set uniformly
     proposed_ranking = observed_ranking;
 
-    arma::uvec unranked_items = find_nonfinite(proposed_ranking);
+    const arma::uvec unranked_items = find_nonfinite(proposed_ranking);
     if (remaining_set.n_elem == 1) {
       proposed_ranking.elem(unranked_items) = remaining_set;
     } else {
@@ -53,8 +53,8 @@ Rcpp::List correction_kernel(
     remaining_set_Rcpp = remaining_set;
     Rcpp::NumericVector remaining_set_Rcpp_elem;
     remaining_set_Rcpp_elem = remaining_set_Rcpp.length();
-    Rcpp::NumericVector remaining_set_fact = Rcpp::factorial(remaining_set_Rcpp_elem);
-    double remaining_set_fact_dbl = Rcpp::as<double>(remaining_set_fact);
+    const Rcpp::NumericVector remaining_set_fact = Rcpp::factorial(remaining_set_Rcpp_elem);
+    const double remaining_set_fact_dbl = Rcpp::as<double>(remaining_set_fact);
     correction_prob = 1.0 / remaining_set_fact_dbl;
   }
   return Rcpp::List::create(
