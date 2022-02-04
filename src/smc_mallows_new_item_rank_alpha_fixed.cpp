@@ -1,5 +1,6 @@
 #include "RcppArmadillo.h"
 #include "smc.h"
+#include "misc.h"
 #include "partitionfuns.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -91,11 +92,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
         // find elements missing from original observed ranking
         arma::vec partial_ranking = R_obs_slice_0_row_jj;
 
-        Rcpp::NumericVector ranks_Cpp, partial_ranking_Cpp;
-        ranks_Cpp = ranks;
-        partial_ranking_Cpp = partial_ranking;
-        Rcpp::NumericVector remaining_set = Rcpp::setdiff(ranks_Cpp, partial_ranking_Cpp);
-
+        Rcpp::NumericVector remaining_set = Rcpp_setdiff_arma(ranks, partial_ranking);
 
         // create new agumented ranking by sampling remaining ranks from set uniformly
         arma::vec rset;
@@ -120,10 +117,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
         arma::uvec unranked_items = arma::find_nonfinite(R_obs_slice_0_row_jj);
 
         // find unallocated ranks from original observed ranking
-        Rcpp::NumericVector rank_Rcpp, R_obs_slice_0_row_jj_Rcpp;
-        R_obs_slice_0_row_jj_Rcpp = R_obs_slice_0_row_jj;
-        rank_Rcpp = ranks;
-        Rcpp::NumericVector remaining_set = Rcpp::setdiff(rank_Rcpp, R_obs_slice_0_row_jj_Rcpp);
+        Rcpp::NumericVector remaining_set = Rcpp_setdiff_arma(ranks, R_obs_slice_0_row_jj);
 
         // randomly permute the unranked items to give the order in which they will be allocated
         arma::uvec item_ordering;

@@ -1,5 +1,6 @@
 #include "RcppArmadillo.h"
 #include "smc.h"
+#include "misc.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Correction Kernel (pseudolikelihood)
@@ -45,10 +46,7 @@ Rcpp::List correction_kernel_pseudo(
         arma::uvec unranked_items = find_nonfinite(observed_ranking);
 
         // find elements missing from original observed ranking
-        Rcpp::NumericVector o_rank_Rcpp, c_rank_Rcpp;
-        o_rank_Rcpp = observed_ranking;
-        c_rank_Rcpp = current_ranking;
-        arma::vec remaining_set = Rcpp::setdiff(c_rank_Rcpp, o_rank_Rcpp);
+        arma::vec remaining_set = arma_setdiff_vec(current_ranking, observed_ranking);
 
         // if we only have one missing rank, then we can
         if (remaining_set.n_elem == 1) {

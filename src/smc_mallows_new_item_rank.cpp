@@ -90,11 +90,7 @@ Rcpp::List smc_mallows_new_item_rank(
       arma::vec R_obs_slice_0_row_jj = R_obs.slice(0).row(jj).t();
       if (aug_method == "random") {
         // find elements missing from original observed ranking
-        arma::vec partial_ranking = R_obs_slice_0_row_jj;
-        Rcpp::NumericVector p_rank_Rcpp, rank_Rcpp;
-        p_rank_Rcpp = partial_ranking;
-        rank_Rcpp = ranks;
-        Rcpp::NumericVector remaining_set = Rcpp::setdiff(rank_Rcpp, p_rank_Rcpp);
+        Rcpp::NumericVector remaining_set = Rcpp_setdiff_arma(ranks, R_obs_slice_0_row_jj);
 
         // create new agumented ranking by sampling remaining ranks from set uniformly
         arma::vec rset;
@@ -104,6 +100,7 @@ Rcpp::List smc_mallows_new_item_rank(
         } else {
           rset = Rcpp::as<arma::vec>(Rcpp::sample(remaining_set, remaining_set.length()));
         }
+        arma::vec partial_ranking = R_obs_slice_0_row_jj;
         partial_ranking.elem(arma::find_nonfinite(partial_ranking)) = rset;
 
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
@@ -117,10 +114,7 @@ Rcpp::List smc_mallows_new_item_rank(
         arma::uvec unranked_items = arma::find_nonfinite(R_obs_slice_0_row_jj);
 
         // find unallocated ranks from original observed ranking
-        Rcpp::NumericVector rank_Rcpp, R_obs_slice_0_row_jj_Rcpp;
-        R_obs_slice_0_row_jj_Rcpp = R_obs_slice_0_row_jj;
-        rank_Rcpp = ranks;
-        Rcpp::NumericVector remaining_set = Rcpp::setdiff(rank_Rcpp, R_obs_slice_0_row_jj_Rcpp);
+        Rcpp::NumericVector remaining_set = Rcpp_setdiff_arma(ranks, R_obs_slice_0_row_jj);
 
         // randomly permute the unranked items to give the order in which they will be allocated
         arma::uvec item_ordering;

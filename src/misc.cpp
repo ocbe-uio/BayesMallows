@@ -80,6 +80,33 @@ arma::uvec arma_setdiff(arma::uvec x, arma::uvec y){
   return x;
 }
 
+// This is practically a signed variation of arma_setdiff. It also uses Rcpp as
+// a crutch, so future changes that work around this and only use arma objects
+// are welcome.
+arma::vec arma_setdiff_vec(arma::vec x, arma::vec y, const bool& sort_unique = false) {
+  Rcpp::NumericVector x_Rcpp, y_Rcpp;
+  arma::vec x_y_diff;
+  x_Rcpp = x;
+  y_Rcpp = y;
+  if (sort_unique) {
+    x_y_diff = Rcpp::sort_unique(Rcpp::setdiff(x_Rcpp, y_Rcpp));
+  } else {
+    x_y_diff = Rcpp::setdiff(x_Rcpp, y_Rcpp);
+  }
+  return x_y_diff;
+}
+
+// This is practically an Rcpp variation of arma_setdiff_arma. Future changes
+// that eliminate the use of this function in favor of arma_setdiff_vec() are
+// welcome.
+Rcpp::NumericVector Rcpp_setdiff_arma(arma::ivec x, arma::vec y) {
+  Rcpp::NumericVector x_Rcpp, y_Rcpp;
+  x_Rcpp = x;
+  y_Rcpp = y;
+  Rcpp::NumericVector x_y_diff = Rcpp::setdiff(x_Rcpp, y_Rcpp);
+  return x_y_diff;
+}
+
 arma::uvec maybe_offset_indices(
   arma::vec& x,
   arma::uvec idx_x,
