@@ -1,5 +1,6 @@
 #include "RcppArmadillo.h"
 #include "smc.h"
+#include "misc.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Metropolis-Hastings Augmented Ranking
@@ -34,10 +35,7 @@ arma::vec metropolis_hastings_aug_ranking(
   arma::uvec unranked_items = find_nonfinite(partial_ranking);
 
   // find unallocated ranks from original observed ranking
-  Rcpp::NumericVector p_rank_Rcpp, c_rank_Rcpp;
-  p_rank_Rcpp = partial_ranking;
-  c_rank_Rcpp = current_ranking;
-  arma::vec remaining_set = Rcpp::sort_unique(Rcpp::setdiff(c_rank_Rcpp, p_rank_Rcpp));
+  arma::vec remaining_set = arma_setdiff_vec(current_ranking, partial_ranking, true);
 
 
   // if the observed and augmented ranking are exactly the same then break
