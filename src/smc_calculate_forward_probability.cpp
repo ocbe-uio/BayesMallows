@@ -76,10 +76,7 @@ Rcpp::List calculate_forward_probability(
       );
 
       // fill in the new augmented ranking going forward
-      Rcpp::NumericVector rs, spl;
-      rs = remaining_set;
-      spl = sample_prob_list;
-      auxiliary_ranking(jj) = Rcpp::as<int>(Rcpp::sample(rs, 1, false, spl));
+      auxiliary_ranking(jj) = sample_one_with_prob(remaining_set, sample_prob_list);
 
       // save the probability of selecting the specific item rank in the old
       // augmented ranking

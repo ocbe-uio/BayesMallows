@@ -107,11 +107,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
 
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
         // fill in missing ranks based on choice of augmentation method
-        Rcpp::NumericVector remaining_set_length_Rcpp, remaining_set_length_Rcpp_fact;
-        remaining_set_length_Rcpp = remaining_set_length;
-        remaining_set_length_Rcpp_fact = Rcpp::factorial(remaining_set_length_Rcpp);
-        const double& remaining_set_length_Rcpp_fact_dbl = Rcpp::as<double>(remaining_set_length_Rcpp_fact);
-        total_correction_prob(ii) = total_correction_prob(ii) * (1 / remaining_set_length_Rcpp_fact_dbl);
+        total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set_length);
       } else if ((aug_method == "pseudolikelihood") & ((metric == "footrule") | (metric == "spearman"))) {
         // find items missing from original observed ranking
         const arma::uvec& unranked_items = arma::find_nonfinite(R_obs_slice_0_row_jj);
@@ -176,14 +172,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   /* Resample                                               */
   /* ====================================================== */
   /* Resample particles using multinomial resampling ------ */
-  // Using norm_wgt_rcpp so that Rcpp::sample compiles. More details on
-  // https://github.com/ocbe-uio/BayesMallows/issues/90#issuecomment-866614296
-  Rcpp::NumericVector norm_wgt_rcpp;
-  norm_wgt_rcpp = norm_wgt;
-  arma::uvec index;
-  index = Rcpp::as<arma::uvec>(Rcpp::sample(N, N, true, norm_wgt_rcpp));
-  index -= 1;
-  // index <- sample(1:N, prob = norm_wgt, size = N, replace = T)
+  arma::uvec index = permutate_with_weights(norm_wgt, N);
   rho_samples.slice(0) = rho_samples.slice(0).rows(index);
   aug_rankings = aug_rankings.slices(index);
 
@@ -291,13 +280,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
     /* Resample                                               */
     /* ====================================================== */
     /* Resample particles using multinomial resampling ------ */
-    // Using norm_wgt_rcpp so that Rcpp::sample compiles. More details on
-    // https://github.com/ocbe-uio/BayesMallows/issues/90#issuecomment-866614296
-    Rcpp::NumericVector norm_wgt_rcpp;
-    norm_wgt_rcpp = norm_wgt;
-    arma::uvec index;
-    index = Rcpp::as<arma::uvec>(Rcpp::sample(N, N, true, norm_wgt_rcpp));
-    index -= 1;
+    arma::uvec index = permutate_with_weights(norm_wgt, N);
     rho_samples.slice(tt + 1) = rho_samples.slice(tt + 1).rows(index);
 
     /* ====================================================== */
