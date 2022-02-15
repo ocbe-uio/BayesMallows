@@ -54,12 +54,7 @@ Rcpp::List correction_kernel_pseudo(
             observed_ranking.elem(unranked_items) = remaining_set;
         } else {
             // create new agumented ranking by using pseudo proposal
-            Rcpp::IntegerVector unranked_items_Rcpp;
-            unranked_items_Rcpp = arma::conv_to<arma::ivec>::from(unranked_items);
-            arma::uvec item_ordering = Rcpp::as<arma::uvec>(\
-                Rcpp::sample(unranked_items_Rcpp, unranked_items_Rcpp.length())\
-            );
-            item_ordering = item_ordering + 1;
+            arma::uvec item_ordering = new_pseudo_proposal(unranked_items);
 
             // item ordering is the order of which items are assigned ranks in a specified order
             const arma::uword& num_items_unranked = item_ordering.n_elem;
@@ -88,10 +83,7 @@ Rcpp::List correction_kernel_pseudo(
                 );
 
                 // fill in the new augmented ranking going forward
-                Rcpp::NumericVector rs, spl;
-                rs = remaining_set;
-                spl = sample_prob_list;
-                auxiliary_ranking(jj) = Rcpp::as<int>(Rcpp::sample(rs, 1, false, spl));
+                auxiliary_ranking(jj) = sample_one_with_prob(remaining_set, sample_prob_list);
 
                 // save the probability of selecting the specific item rank in the old
                 // augmented ranking

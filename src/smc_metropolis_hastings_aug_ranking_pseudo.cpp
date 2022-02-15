@@ -29,17 +29,12 @@ arma::vec metropolis_hastings_aug_ranking_pseudo(
 	const std::string metric
 ) {
   // augment incomplete ranks to initialise
-  arma::vec ranks;
-  const Rcpp::IntegerVector tmp = Rcpp::seq(1, n_items);
-  ranks = Rcpp::as<arma::vec>(tmp);
+  arma::vec ranks = arma_vec_seq(n_items);
 
   // find items missing from original observed ranking
   const arma::uvec unranked_items = find_nonfinite(partial_ranking);
 
   // find unallocated ranks from original observed ranking
-  // Rcpp::NumericVector p_rank_Rcpp, c_rank_Rcpp;
-  // p_rank_Rcpp = partial_ranking;
-  // c_rank_Rcpp = current_ranking;
   const arma::vec remaining_set = arma_setdiff_vec(current_ranking, partial_ranking);
 
   // if the observed and augmented ranking are exactly the same then break
@@ -52,12 +47,7 @@ arma::vec metropolis_hastings_aug_ranking_pseudo(
   } else {
     // randomly permute the unranked items to give the order in which they will
     // be allocated
-    Rcpp::IntegerVector unranked_items_Rcpp;
-    unranked_items_Rcpp = arma::conv_to<arma::ivec>::from(unranked_items);
-    arma::uvec item_ordering = Rcpp::as<arma::uvec>(\
-      Rcpp::sample(unranked_items_Rcpp, unranked_items_Rcpp.length())\
-    );
-    item_ordering += 1;
+    arma::uvec item_ordering = new_pseudo_proposal(unranked_items);
 
     // Calculate probabilities
     const Rcpp::List proposal = calculate_forward_probability(\

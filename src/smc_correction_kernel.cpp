@@ -48,14 +48,7 @@ Rcpp::List correction_kernel(
       remaining_set = std::move(arma::shuffle(remaining_set));
       proposed_ranking.elem(unranked_items) = remaining_set;
     }
-
-    Rcpp::NumericVector remaining_set_Rcpp;
-    remaining_set_Rcpp = remaining_set;
-    Rcpp::NumericVector remaining_set_Rcpp_elem;
-    remaining_set_Rcpp_elem = remaining_set_Rcpp.length();
-    const Rcpp::NumericVector remaining_set_fact = Rcpp::factorial(remaining_set_Rcpp_elem);
-    const double remaining_set_fact_dbl = Rcpp::as<double>(remaining_set_fact);
-    correction_prob = 1.0 / remaining_set_fact_dbl;
+    correction_prob = divide_by_fact(correction_prob, remaining_set.n_elem);
   }
   return Rcpp::List::create(
       Rcpp::Named("ranking") = proposed_ranking,

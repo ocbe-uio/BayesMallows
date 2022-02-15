@@ -109,9 +109,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
           }
 
           aug_rankings(arma::span(jj), arma::span::all, arma::span(ii)) = partial_ranking;
-          const int& missing_ranks_length = missing_ranks.length();
-          const int& missing_ranks_length_fact = factorial(missing_ranks_length); // from misc.h
-          aug_prob(ii) = aug_prob(ii) * (1.0 / missing_ranks_length_fact);
+          aug_prob(ii) = divide_by_fact(aug_prob(ii), missing_ranks.length());
         } else if ((aug_method == "pseudolikelihood") & ((metric == "footrule") | (metric == "spearman"))) {
           // randomly permute the unranked items to give the order in which they will be allocated
           arma::uvec item_ordering;
@@ -167,23 +165,18 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     /* ====================================================== */
 
     /* Resample particles using multinomial resampling ------ */
-    // Using norm_wgt_rcpp so that Rcpp::sample compiles. More details on
-    // https://github.com/ocbe-uio/BayesMallows/issues/90#issuecomment-866614296
-    Rcpp::NumericVector norm_wgt_rcpp;
-    norm_wgt_rcpp = norm_wgt;
-    arma::uvec tt_vec, indices;
-    indices = Rcpp::as<arma::uvec>(Rcpp::sample(N, N, true, norm_wgt_rcpp));
-    indices = indices - 1;
+    arma::uvec index = permutate_with_weights(norm_wgt, N);
+    arma::uvec tt_vec;
     tt_vec = tt;
 
     /* Replacing tt + 1 slice on rho_samples ---------------- */
     arma::mat rho_samples_slice_11p1 = rho_samples.slice(tt + 1);
-    rho_samples_slice_11p1 = rho_samples_slice_11p1.rows(indices);
+    rho_samples_slice_11p1 = rho_samples_slice_11p1.rows(index);
     rho_samples.slice(tt + 1) = rho_samples_slice_11p1;
 
     /* Replacing tt + 1 column on alpha_samples ------------- */
-    const arma::cube& aug_rankings_indices = aug_rankings.slices(indices);
-    aug_rankings.rows(0, num_obs - 1) = aug_rankings_indices(arma::span(0, num_obs - 1), arma::span::all, arma::span::all);
+    const arma::cube& aug_rankings_index = aug_rankings.slices(index);
+    aug_rankings.rows(0, num_obs - 1) = aug_rankings_index(arma::span(0, num_obs - 1), arma::span::all, arma::span::all);
 
     /* ====================================================== */
     /* Move step                                              */

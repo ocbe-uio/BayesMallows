@@ -152,13 +152,8 @@ Rcpp::List smc_mallows_new_users_complete(
     /* ====================================================== */
 
     /* Resample particles using multinomial resampling ------ */
-    // Using norm_wgt_rcpp so that Rcpp::sample compiles. More details on
-    // https://github.com/ocbe-uio/BayesMallows/issues/90#issuecomment-866614296
-    Rcpp::NumericVector norm_wgt_rcpp;
-    norm_wgt_rcpp = norm_wgt;
-    arma::uvec index, tt_vec;
-    index = Rcpp::as<arma::uvec>(Rcpp::sample(N, N, true, norm_wgt_rcpp));
-    index = index - 1;
+    arma::uvec index = permutate_with_weights(norm_wgt, N);
+    arma::uvec tt_vec;
     tt_vec = tt;
 
     /* Replacing tt + 1 slice on rho_samples ---------------- */
