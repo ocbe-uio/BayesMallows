@@ -56,9 +56,9 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
   for (int i = 0; i < n_items; ++i) {
     if (rho(i) == rho(u)) {
       rho_prime(i) = rho_star(u);
-    } else if ((rho(u) < rho(i)) & (rho(i) <= rho_star(u)) & (delta > 0)) {
+    } else if ((rho(u) < rho(i)) && (rho(i) <= rho_star(u)) && (delta > 0)) {
       rho_prime(i) = rho(i) - 1;
-    } else if ((rho(u) > rho(i)) & (rho(i) >= rho_star(u)) & (delta < 0)) {
+    } else if ((rho(u) > rho(i)) && (rho(i) >= rho_star(u)) && (delta < 0)) {
       rho_prime(i) = rho(i) + 1;
     } else {
       rho_prime(i) = rho(i);

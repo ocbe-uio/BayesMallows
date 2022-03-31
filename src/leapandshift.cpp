@@ -55,7 +55,7 @@ void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
   double length1 = std::min(rho(u - 1) - 1, dobL);
   double length2 = std::min(n - rho(u - 1), dobL);
 
-  if((rho(u - 1) > 1) & (rho(u - 1) < n)){
+  if ((rho(u - 1) > 1) && (rho(u - 1) < n)) {
     support = arma::join_cols(arma::linspace(
       std::max(1.0, rho(u - 1) - leap_size), rho(u - 1) - 1, length1),
       arma::linspace(rho(u - 1) + 1, std::min(dobn, rho(u - 1) + leap_size), length2));
@@ -90,6 +90,3 @@ void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
     indices = arma::regspace<arma::uvec>(0, n - 1);
   }
 }
-
-
-
