@@ -1,4 +1,6 @@
-# BayesMallows (development version)
+# BayesMallows 1.1.1
+
+* Fixed C++ errors leading to CRAN issues.
 
 # BayesMallows 1.1.0
 
