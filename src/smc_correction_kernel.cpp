@@ -1,4 +1,5 @@
 #include "RcppArmadillo.h"
+#include "misc.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Correction Kernel
@@ -18,12 +19,12 @@
 //' that is compatible with the new observed ranking for a user
 // [[Rcpp::export]]
 Rcpp::List correction_kernel(
-  arma::vec observed_ranking, //R_obs
-  arma::vec current_ranking,  // R_curr
-  int n_items
+  const arma::vec observed_ranking, //R_obs
+  const arma::vec current_ranking,  // R_curr
+  const int n_items
 ) {
   // check if new information means 'mistakes' made with augmented rankings
-  bool observed_equals_current = arma::approx_equal(\
+  const bool observed_equals_current = arma::approx_equal(\
     observed_ranking, current_ranking, "absdiff", 0.1\
   );
   double correction_prob = 1.0;
@@ -34,15 +35,12 @@ Rcpp::List correction_kernel(
     // resample from smaller pool of possible augmented rankings
 
     //  find elements missing from original observed ranking
-    Rcpp::NumericVector o_rank_Rcpp, c_rank_Rcpp;
-    o_rank_Rcpp = observed_ranking;
-    c_rank_Rcpp = current_ranking;
-    arma::vec remaining_set = Rcpp::setdiff(c_rank_Rcpp, o_rank_Rcpp);
+    arma::vec remaining_set = arma_setdiff_vec(current_ranking, observed_ranking);
 
     // create new agumented ranking by sampling remaining ranks from set uniformly
     proposed_ranking = observed_ranking;
 
-    arma::uvec unranked_items = find_nonfinite(proposed_ranking);
+    const arma::uvec unranked_items = find_nonfinite(proposed_ranking);
     if (remaining_set.n_elem == 1) {
       proposed_ranking.elem(unranked_items) = remaining_set;
     } else {
@@ -50,14 +48,7 @@ Rcpp::List correction_kernel(
       remaining_set = std::move(arma::shuffle(remaining_set));
       proposed_ranking.elem(unranked_items) = remaining_set;
     }
-
-    Rcpp::NumericVector remaining_set_Rcpp;
-    remaining_set_Rcpp = remaining_set;
-    Rcpp::NumericVector remaining_set_Rcpp_elem;
-    remaining_set_Rcpp_elem = remaining_set_Rcpp.length();
-    Rcpp::NumericVector remaining_set_fact = Rcpp::factorial(remaining_set_Rcpp_elem);
-    double remaining_set_fact_dbl = Rcpp::as<double>(remaining_set_fact);
-    correction_prob = 1.0 / remaining_set_fact_dbl;
+    correction_prob = divide_by_fact(correction_prob, remaining_set.n_elem);
   }
   return Rcpp::List::create(
       Rcpp::Named("ranking") = proposed_ranking,

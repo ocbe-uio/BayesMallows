@@ -31,23 +31,23 @@
 #' @example inst/examples/lik_db_mix_example.R
 #'
 lik_db_mix <- function(rho, alpha, weights, metric,
-                       rankings, obs_freq = NULL, log = FALSE){
+                       rankings, obs_freq = NULL, log = FALSE) {
 
-  if(!is.matrix(rankings)){
+  if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }
 
-  if(!is.null(obs_freq)){
-    if(nrow(rankings) != length(obs_freq)){
+  if (!is.null(obs_freq)) {
+    if (nrow(rankings) != length(obs_freq)) {
       stop("obs_freq must be of same length as the number of rows in rankings")
     }
   }
 
-  if(!is.matrix(rho)){
+  if (!is.matrix(rho)) {
     rho <- matrix(rho, nrow = 1)
   }
 
-  if(is.null(obs_freq)){
+  if (is.null(obs_freq)) {
     obs_freq <- rep(1, nrow(rankings))
   }
 
@@ -63,7 +63,7 @@ lik_db_mix <- function(rho, alpha, weights, metric,
     rankings = rankings,
     obs_freq = obs_freq)
 
-  if(!log) out <- exp(out)
+  if (!log) out <- exp(out)
 
   return(out)
 }

@@ -46,25 +46,25 @@
 //'
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users_complete(
-  arma::mat& R_obs,
-  int& n_items,
-  std::string& metric,
-  int& leap_size,
-  int& N,
+  const arma::mat& R_obs,
+  const int& n_items,
+  const std::string& metric,
+  const int& leap_size,
+  const int& N,
   int Time,
-  int& mcmc_kernel_app,
-  int& num_new_obs,
-  double alpha_prop_sd,
-  double lambda,
-  double alpha_max,
+  const int& mcmc_kernel_app,
+  const int& num_new_obs,
+  const double alpha_prop_sd,
+  const double lambda,
+  const double alpha_max,
   const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
-  bool verbose = false
+  const bool verbose = false
 ) {
 
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
-  int n_users = R_obs.n_rows; // total number of users
+  const int n_users = R_obs.n_rows; // total number of users
   if (Time > n_users / num_new_obs) {
     Rcpp::warning(\
       "Time should not exceed n_users / num_new_obs. Recalculating."\
@@ -75,7 +75,7 @@ Rcpp::List smc_mallows_new_users_complete(
   /* generate rho samples using uniform prior ------------- */
   arma::cube rho_samples(N, n_items, (n_users + Time + 1), arma::fill::zeros);
   for (int i = 0; i < N; ++i) {
-    arma::uvec items_sample = arma::randperm(n_items) + 1;
+    const arma::uvec items_sample = arma::randperm(n_items) + 1;
     for (int j = 0; j < n_items; ++j) {
       rho_samples(i, j, 0) = items_sample(j);
     }
@@ -83,7 +83,7 @@ Rcpp::List smc_mallows_new_users_complete(
 
   /* generate alpha samples using exponential prior ------- */
   arma::mat alpha_samples(N, (n_users + Time + 1));
-  arma::vec alpha_samples_0 = Rcpp::rexp(N, 1);
+  const arma::vec alpha_samples_0 = Rcpp::rexp(N, 1);
   alpha_samples.col(0) = alpha_samples_0;
 
   /* ====================================================== */
@@ -95,14 +95,14 @@ Rcpp::List smc_mallows_new_users_complete(
     if (verbose) REprintf("observe %i out of %i \n", tt + 1, Time);
 
     // keep tally of how many ranking observations we have so far
-    num_obs = num_obs + num_new_obs;
+    num_obs += num_new_obs;
 
     /* ====================================================== */
     /* New Information                                        */
     /* ====================================================== */
     // create two ranking dataset to use for the reweight and move stages of the
     // algorithm
-    int row_start = num_obs - num_new_obs;
+    const int row_start = num_obs - num_new_obs;
     arma::mat new_observed_rankings(num_obs, R_obs.n_cols);
     arma::mat all_observed_rankings;
     new_observed_rankings = R_obs.submat(row_start, 0, num_obs - 1, R_obs.n_cols - 1);
@@ -125,9 +125,9 @@ Rcpp::List smc_mallows_new_users_complete(
       // value of alpha
 
       /* Initializing variables ------------------------------- */
-      const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue;
-      double alpha_samples_ii = alpha_samples(ii, tt + 1);
-      arma::rowvec rho_samples_ii = \
+      const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue;
+      const double& alpha_samples_ii = alpha_samples(ii, tt + 1);
+      const arma::rowvec rho_samples_ii = \
         rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
 
       /* Calculating log_z_alpha and log_likelihood ----------- */
@@ -143,26 +143,21 @@ Rcpp::List smc_mallows_new_users_complete(
     }
 
     /* normalise weights ------------------------------------ */
-    double maxw = arma::max(log_inc_wgt);
-    arma::vec w = arma::exp(log_inc_wgt - maxw);
-    arma::vec norm_wgt = w / arma::sum(w);
+    const double& maxw = arma::max(log_inc_wgt);
+    const arma::vec& w = arma::exp(log_inc_wgt - maxw);
+    const arma::vec norm_wgt = w / arma::sum(w);
 
     /* ====================================================== */
     /* Resample                                               */
     /* ====================================================== */
 
     /* Resample particles using multinomial resampling ------ */
-    // Using norm_wgt_rcpp so that Rcpp::sample compiles. More details on
-    // https://github.com/ocbe-uio/BayesMallows/issues/90#issuecomment-866614296
-    Rcpp::NumericVector norm_wgt_rcpp;
-    norm_wgt_rcpp = norm_wgt;
-    arma::uvec index, tt_vec;
-    index = Rcpp::as<arma::uvec>(Rcpp::sample(N, N, true, norm_wgt_rcpp));
-    index = index - 1;
+    arma::uvec index = permutate_with_weights(norm_wgt, N);
+    arma::uvec tt_vec;
     tt_vec = tt;
 
     /* Replacing tt + 1 slice on rho_samples ---------------- */
-    arma::mat rho_samples_slice_11p1 = rho_samples.slice(tt + 1);
+    arma::mat& rho_samples_slice_11p1 = rho_samples.slice(tt + 1);
     rho_samples_slice_11p1 = rho_samples_slice_11p1.rows(index);
     rho_samples.slice(tt + 1) = rho_samples_slice_11p1;
 
@@ -176,8 +171,8 @@ Rcpp::List smc_mallows_new_users_complete(
       for (int kk = 0; kk < mcmc_kernel_app; ++kk) {
         // move each particle containing sample of rho and alpha by using
         // the MCMC kernels
-        double as = alpha_samples(ii, tt + 1);
-        arma::rowvec rs = \
+        const double& as = alpha_samples(ii, tt + 1);
+        const arma::rowvec& rs = \
           rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
         rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)) =\
           metropolis_hastings_rho(\

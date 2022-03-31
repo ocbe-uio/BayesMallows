@@ -50,7 +50,7 @@ compute_posterior_intervals.BayesMallows <- function(
 ) {
   stopifnot(class(model_fit) == "BayesMallows")
 
-  if(is.null(burnin)){
+  if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
 
@@ -60,14 +60,14 @@ compute_posterior_intervals.BayesMallows <- function(
 
   df <- dplyr::filter(model_fit[[parameter]], .data$iteration > burnin)
 
-  if(parameter == "alpha" || parameter == "cluster_probs"){
+  if (parameter == "alpha" || parameter == "cluster_probs") {
 
     df <- dplyr::group_by(df, .data$cluster)
 
     class(df) <- c("posterior_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
     df <- .compute_posterior_intervals(df, parameter, level, decimals)
 
-  } else if(parameter == "rho"){
+  } else if (parameter == "rho") {
     decimals <- 0
     df <- dplyr::group_by(df, .data$cluster, .data$item)
     class(df) <- c("posterior_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
@@ -77,7 +77,7 @@ compute_posterior_intervals.BayesMallows <- function(
 
   df <- dplyr::ungroup(df)
 
-  if(model_fit$n_clusters == 1) df <- dplyr::select(df, -.data$cluster)
+  if (model_fit$n_clusters == 1) df <- dplyr::select(df, -.data$cluster)
 
   return(df)
 }
@@ -129,14 +129,14 @@ compute_posterior_intervals.SMCMallows <- function(
 
 .compute_posterior_intervals.posterior_BayesMallows <- function(
   df, parameter, level, decimals, discrete = FALSE, ...
-){
+) {
   dplyr::do(df, {
     format <- paste0("%.", decimals, "f")
 
     posterior_mean <- round(base::mean(.data$value), decimals)
     posterior_median <- round(stats::median(.data$value), decimals)
 
-    if(discrete) {
+    if (discrete) {
 
       df <- dplyr::group_by(.data, .data$value)
       df <- dplyr::summarise(df, n = dplyr::n())
@@ -163,7 +163,7 @@ compute_posterior_intervals.SMCMallows <- function(
       hpdi <- HDInterval::hdi(.data$value, credMass = level, allowSplit = TRUE)
 
       hpdi[] <- sprintf(format, hpdi)
-      if(is.matrix(hpdi)){
+      if (is.matrix(hpdi)) {
         # Discontinous case
         hpdi <- paste(apply(hpdi, 1, function(x) paste0("[", x[[1]], ",", x[[2]], "]")))
       } else {

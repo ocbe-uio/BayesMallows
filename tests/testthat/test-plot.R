@@ -22,6 +22,6 @@ test_that("plot.BayesMallows works", {
   expect_s3_class(plot(m, burnin = 4, parameter = "cluster_probs"), "ggplot")
   expect_s3_class(plot(m, burnin = 4, parameter = "cluster_assignment"), "ggplot")
 
-  m <- compute_mallows(preferences = beach_preferences[1:100,], nmc = 10, error_model = "bernoulli")
+  m <- compute_mallows(preferences = beach_preferences[1:100, ], nmc = 10, error_model = "bernoulli")
   expect_s3_class(plot(m, burnin = 3, parameter = "theta"), "ggplot")
 })

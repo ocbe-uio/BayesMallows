@@ -41,30 +41,30 @@
 //'
 // [[Rcpp::export]]
 arma::vec metropolis_hastings_rho(
-	double alpha,
-	int n_items,
-	arma::mat rankings,
-	std::string metric,
-	arma::vec rho,
-	int leap_size
+	const double alpha,
+	const int n_items,
+	const arma::mat rankings,
+	const std::string metric,
+	const arma::vec rho,
+	const int leap_size
 ) {
   // create new potential consensus ranking
-  Rcpp::List kernel = leap_and_shift_probs(rho, leap_size, n_items);
+  const Rcpp::List kernel = leap_and_shift_probs(rho, leap_size, n_items);
 
   // output from leap-and-shift is of the following
-  arma::vec rho_prime = Rcpp::as<arma::vec>(kernel["rho_prime"]);
-  double forwards_prob = Rcpp::as<double>(kernel["forwards_prob"]); // rho_prime|rho
-  double backwards_prob = Rcpp::as<double>(kernel["backwards_prob"]); // rho|rho_prime
+  const arma::vec& rho_prime = Rcpp::as<arma::vec>(kernel["rho_prime"]);
+  const double& forwards_prob = Rcpp::as<double>(kernel["forwards_prob"]); // rho_prime|rho
+  const double& backwards_prob = Rcpp::as<double>(kernel["backwards_prob"]); // rho|rho_prime
 
   // evaluate the log-likelihood with current rankings
-  double mallows_loglik_curr = get_mallows_loglik(alpha, rho, n_items, rankings, metric);
-  double mallows_loglik_prop = get_mallows_loglik(alpha, rho_prime, n_items, rankings, metric);
+  const double mallows_loglik_curr = get_mallows_loglik(alpha, rho, n_items, rankings, metric);
+  const double mallows_loglik_prop = get_mallows_loglik(alpha, rho_prime, n_items, rankings, metric);
 
   // calculate acceptance probability
-  double loga = std::log(backwards_prob) - std::log(forwards_prob) + mallows_loglik_prop - mallows_loglik_curr;
+  const double& loga = std::log(backwards_prob) - std::log(forwards_prob) + mallows_loglik_prop - mallows_loglik_curr;
 
   // determine whether to accept or reject proposed rho and return now consensus ranking
-  double p = Rcpp::as<double>(Rcpp::runif(1, 0, 1));
+  const double& p = Rcpp::as<double>(Rcpp::runif(1, 0, 1));
   if (std::log(p) <= loga) {
     return(rho_prime);
   } else {

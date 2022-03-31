@@ -13,15 +13,15 @@
 #'
 #' @example /inst/examples/rank_freq_distr_example.R
 #'
-rank_freq_distr <- function(rankings){
+rank_freq_distr <- function(rankings) {
 
-  if(!is.matrix(rankings)){
+  if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }
 
   rankings[is.na(rankings)] <- 0
   out <- unit_to_freq(data = rankings)
-  out[out==0] <- NA
+  out[out == 0] <- NA
 
   return(out)
 

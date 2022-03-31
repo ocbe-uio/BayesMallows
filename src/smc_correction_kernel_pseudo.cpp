@@ -1,5 +1,6 @@
 #include "RcppArmadillo.h"
 #include "smc.h"
+#include "misc.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Correction Kernel (pseudolikelihood)
@@ -19,18 +20,17 @@
 //'         forward_auxiliary_ranking_probability, a numerical value for the probability of correcting the ranking to be compatible with R_obs.
 // [[Rcpp::export]]
 Rcpp::List correction_kernel_pseudo(
-    arma::vec current_ranking,  //R_curr
+    const arma::vec current_ranking,  //R_curr
     arma::vec observed_ranking, //R_obs
-    arma::vec rho,
-    double alpha,
-    int n_items,
-    std::string metric
+    const arma::vec rho,
+    const double alpha,
+    const int n_items,
+    const std::string metric
 ) {
     bool observed_equals_current = arma::approx_equal(\
         observed_ranking, current_ranking, "absdiff", 0.1\
     );
     double correction_prob = 1.0;
-    arma::vec proposed_ranking;
     if (observed_equals_current) {
         return Rcpp::List::create(
             Rcpp::Named("ranking") = current_ranking,
@@ -42,13 +42,10 @@ Rcpp::List correction_kernel_pseudo(
         // ranks = c(1:n_items)
 
         // find items missing from original observed ranking
-        arma::uvec unranked_items = find_nonfinite(observed_ranking);
+        const arma::uvec& unranked_items = find_nonfinite(observed_ranking);
 
         // find elements missing from original observed ranking
-        Rcpp::NumericVector o_rank_Rcpp, c_rank_Rcpp;
-        o_rank_Rcpp = observed_ranking;
-        c_rank_Rcpp = current_ranking;
-        arma::vec remaining_set = Rcpp::setdiff(c_rank_Rcpp, o_rank_Rcpp);
+        arma::vec remaining_set = arma_setdiff_vec(current_ranking, observed_ranking);
 
         // if we only have one missing rank, then we can
         if (remaining_set.n_elem == 1) {
@@ -57,15 +54,10 @@ Rcpp::List correction_kernel_pseudo(
             observed_ranking.elem(unranked_items) = remaining_set;
         } else {
             // create new agumented ranking by using pseudo proposal
-            Rcpp::IntegerVector unranked_items_Rcpp;
-            unranked_items_Rcpp = arma::conv_to<arma::ivec>::from(unranked_items);
-            arma::uvec item_ordering = Rcpp::as<arma::uvec>(\
-                Rcpp::sample(unranked_items_Rcpp, unranked_items_Rcpp.length())\
-            );
-            item_ordering = item_ordering + 1;
+            arma::uvec item_ordering = new_pseudo_proposal(unranked_items);
 
             // item ordering is the order of which items are assigned ranks in a specified order
-            arma::uword num_items_unranked = item_ordering.n_elem;
+            const arma::uword& num_items_unranked = item_ordering.n_elem;
 
             // creating now augmented ranking whilst simultaneously calculating the backwards prob of making the same
             // augmented ranking with an alternative item ordering
@@ -78,7 +70,7 @@ Rcpp::List correction_kernel_pseudo(
             for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
 
                 // items to sample rank
-                double item_to_sample_rank = item_ordering(jj);
+                const double& item_to_sample_rank = item_ordering(jj);
 
                 // the rank of item in rho
                 arma::vec rho_item_rank;
@@ -86,19 +78,16 @@ Rcpp::List correction_kernel_pseudo(
 
                 // next we get the sample probabilites for selecting a particular rank for
                 // an item based on the current alpha and the rho rank for that item
-                arma::vec sample_prob_list = get_sample_probabilities(\
+                const arma::vec sample_prob_list = get_sample_probabilities(\
                     rho_item_rank, alpha, remaining_set, metric, n_items\
                 );
 
                 // fill in the new augmented ranking going forward
-                Rcpp::NumericVector rs, spl;
-                rs = remaining_set;
-                spl = sample_prob_list;
-                auxiliary_ranking(jj) = Rcpp::as<int>(Rcpp::sample(rs, 1, false, spl));
+                auxiliary_ranking(jj) = sample_one_with_prob(remaining_set, sample_prob_list);
 
                 // save the probability of selecting the specific item rank in the old
                 // augmented ranking
-                arma::uvec sample_prob = find(remaining_set == auxiliary_ranking(jj));
+                const arma::uvec& sample_prob = find(remaining_set == auxiliary_ranking(jj));
                 correction_prob = \
                     correction_prob * \
                     arma::as_scalar(sample_prob_list(sample_prob));

@@ -26,17 +26,17 @@
 //' @author Anja Stein
 //'
 // [[Rcpp::export]]
-Rcpp::List leap_and_shift_probs(arma::vec rho, int leap_size, int n_items) {
+Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const int n_items) {
 
   // draw one u uniformly from {1,...,n} to use as index for rho
   int u = Rcpp::as<int>(Rcpp::sample(n_items, 1));
   u = u - 1; // adjusting index for easier R correspondence
 
   // define set of integers S, the support set for sampling new ranks
-  int rho_minus_leap = rho(u) - leap_size;
-  int rho_plus_leap = rho(u) + leap_size;
-  int low_bd = std::max(1, rho_minus_leap);
-  int max_bd = std::min(n_items, rho_plus_leap);
+  const int rho_minus_leap = rho(u) - leap_size;
+  const int rho_plus_leap = rho(u) + leap_size;
+  const int low_bd = std::max(1, rho_minus_leap);
+  const int max_bd = std::min(n_items, rho_plus_leap);
   arma::ivec S = Rcpp::seq(low_bd, max_bd);
   S = S.elem(arma::find(S != rho(u)));
 
@@ -49,16 +49,16 @@ Rcpp::List leap_and_shift_probs(arma::vec rho, int leap_size, int n_items) {
   rho_star(u) = r + 1; // replace u-th entry with r
 
   // here, two elements are the same so we need to shift element and replace the repeated r with u
-  int delta = rho_star(u) - rho(u);
+  const int& delta = rho_star(u) - rho(u);
   arma::ivec rho_prime = Rcpp::rep(0, n_items);
 
   // shift step
   for (int i = 0; i < n_items; ++i) {
     if (rho(i) == rho(u)) {
       rho_prime(i) = rho_star(u);
-    } else if ((rho(u) < rho(i)) & (rho(i) <= rho_star(u)) & (delta > 0)) {
+    } else if ((rho(u) < rho(i)) && (rho(i) <= rho_star(u)) && (delta > 0)) {
       rho_prime(i) = rho(i) - 1;
-    } else if ((rho(u) > rho(i)) & (rho(i) >= rho_star(u)) & (delta < 0)) {
+    } else if ((rho(u) > rho(i)) && (rho(i) >= rho_star(u)) && (delta < 0)) {
       rho_prime(i) = rho(i) + 1;
     } else {
       rho_prime(i) = rho(i);
@@ -66,10 +66,10 @@ Rcpp::List leap_and_shift_probs(arma::vec rho, int leap_size, int n_items) {
   }
 
   // Define support set for ranks rho_star[u] can leap to
-  int rho_star_minus_leap = rho_star(u) - leap_size;
-  int rho_star_plus_leap = rho_star(u) + leap_size;
-  int S_star_min = std::max(1, rho_star_minus_leap);
-  int S_star_max = std::min(n_items, rho_star_plus_leap);
+  const int rho_star_minus_leap = rho_star(u) - leap_size;
+  const int rho_star_plus_leap = rho_star(u) + leap_size;
+  const int S_star_min = std::max(1, rho_star_minus_leap);
+  const int S_star_max = std::min(n_items, rho_star_plus_leap);
   arma::ivec S_star;
   S_star = Rcpp::seq(S_star_min, S_star_max);
   S_star = S_star.elem(arma::find(S_star != rho_star(u)));

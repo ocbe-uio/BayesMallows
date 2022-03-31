@@ -11,29 +11,38 @@
 #/' @return The log-likelihood value corresponding to one or more observed rankings under the Mallows rank model with distance specified by the \code{metric} argument.
 #/'
 
-log_lik_db <- function(rho, alpha, metric, rankings, obs_freq){
+log_lik_db <- function(rho, alpha, metric, rankings, obs_freq) {
 
   N <- sum(obs_freq)
   n_items <- ncol(rankings)
 
-  if(metric %in% c("kendall", "cayley", "hamming")){
-    log_lik <- -(alpha*rank_dist_sum(rankings=t(rankings),rho=rho,metric=metric,obs_freq=obs_freq)+N*get_partition_function(n_items=n_items,alpha=alpha*n_items,metric=metric))
+  if (metric %in% c("kendall", "cayley", "hamming")) {
+    log_lik <- - (
+      alpha *
+      rank_dist_sum(
+        rankings = t(rankings), rho = rho, metric = metric, obs_freq = obs_freq
+      ) +
+      N *
+      get_partition_function(
+        n_items = n_items, alpha = alpha * n_items, metric = metric
+      )
+    )
   }
 
-  if(metric %in% c( "ulam", "footrule", "spearman")){
+  if (metric %in% c("ulam", "footrule", "spearman")) {
     pfd <- dplyr::filter(partition_function_data,
                          .data$metric == !!metric, .data$n_items == !!n_items,
                          .data$type == "cardinalities")
-    if(nrow(pfd) == 0){
+    if (nrow(pfd) == 0) {
       stop("Given number of items currently not available for the specified metric")
     } else{
       card <- pfd$values[[1]]
     }
 
-    log_lik <- -(
+    log_lik <- - (
       alpha * rank_dist_sum(rankings = t(rankings), rho = rho,
                             metric = metric, obs_freq = obs_freq) +
-        N * get_partition_function( alpha = alpha * n_items,
+        N * get_partition_function(alpha = alpha * n_items,
                                     n_items = n_items, metric = metric,
                                     cardinalities = card)) #TODO #91: write this part in particular as new function?
   }
@@ -62,19 +71,19 @@ log_lik_db <- function(rho, alpha, metric, rankings, obs_freq){
 #/'
 
 log_lik_db_mix <- function(rho, alpha, weights, metric,
-                           rankings,obs_freq){
+                           rankings, obs_freq) {
 
   L <- length(obs_freq)
   n_clusters <- length(weights)
   temp <- matrix(NA, nrow = n_clusters, ncol = L)
-  for(l in seq_len(L)){
-    for(g in seq_len(n_clusters)){
+  for (l in seq_len(L)) {
+    for (g in seq_len(n_clusters)) {
       temp[g, l] <- exp(log_lik_db(
         rho = rho[g, ], alpha = alpha[g], metric = metric,
-        rankings = rankings[ l, , drop = FALSE],
+        rankings = rankings[l, , drop = FALSE],
         obs_freq = obs_freq[l]))
     }
   }
-  log_lik <- sum(log(weights%*%temp))
+  log_lik <- sum(log(weights %*% temp))
   return(log_lik)
 }

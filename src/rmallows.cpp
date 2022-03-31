@@ -71,7 +71,7 @@ arma::mat rmallows(
                    rho_iter, leap_size, true);
 
     // These distances do not work with the computational shortcut
-    if((metric == "cayley") | (metric == "ulam")){
+    if ((metric == "cayley") || (metric == "ulam")) {
       indices = arma::regspace<arma::uvec>(0, n_items - 1);
     }
 
@@ -100,6 +100,3 @@ arma::mat rmallows(
   }
   return rho;
 }
-
-
-

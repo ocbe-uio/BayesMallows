@@ -32,14 +32,14 @@ Rcpp::List calculate_forward_probability(
   arma::uvec item_ordering,
   arma::vec partial_ranking,
   arma::vec remaining_set,
-  arma::vec rho,
-  double alpha,
-  int n_items,
-  std::string metric
+  const arma::vec rho,
+  const double alpha,
+  const int n_items,
+  const std::string metric
 ) {
   // item ordering is the order of which items are assigned ranks in a specified
   // order
-  arma::uword num_items_unranked = item_ordering.n_elem;
+  const arma::uword& num_items_unranked = item_ordering.n_elem;
 
   // prob of creating augmented ranking
   double forward_auxiliary_ranking_probability = 1.0;
@@ -63,7 +63,7 @@ Rcpp::List calculate_forward_probability(
     for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
 
       // items to sample rank
-      arma::uword item_to_sample_rank = item_ordering(jj);
+      const arma::uword item_to_sample_rank = item_ordering(jj);
 
       // the rank of item in rho
       arma::vec rho_item_rank;
@@ -76,14 +76,11 @@ Rcpp::List calculate_forward_probability(
       );
 
       // fill in the new augmented ranking going forward
-      Rcpp::NumericVector rs, spl;
-      rs = remaining_set;
-      spl = sample_prob_list;
-      auxiliary_ranking(jj) = Rcpp::as<int>(Rcpp::sample(rs, 1, false, spl));
+      auxiliary_ranking(jj) = sample_one_with_prob(remaining_set, sample_prob_list);
 
       // save the probability of selecting the specific item rank in the old
       // augmented ranking
-      arma::uvec sample_prob = find(remaining_set == auxiliary_ranking(jj));
+      const arma::uvec sample_prob = find(remaining_set == auxiliary_ranking(jj));
 
       forward_auxiliary_ranking_probability = \
         forward_auxiliary_ranking_probability * \
@@ -97,7 +94,7 @@ Rcpp::List calculate_forward_probability(
     auxiliary_ranking(num_items_unranked - 1) = arma::as_scalar(remaining_set);
 
     // fit the augmented ranking within the partial rankings with NAs
-    arma::vec ar = arma::conv_to<arma::vec>::from(auxiliary_ranking);
+    const arma::vec& ar = arma::conv_to<arma::vec>::from(auxiliary_ranking);
     partial_ranking.elem(item_ordering) = ar; // ranks for items
   }
   return Rcpp::List::create(

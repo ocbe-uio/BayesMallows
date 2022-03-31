@@ -11,9 +11,9 @@ smc_processing <- function(output, colnames = NULL) {
   df <- data.frame(data = output)
 
   # if colnames are specified, then incorporate them
-  if(is.null(colnames)){
+  if (is.null(colnames)) {
     n_items <- ncol(df)
-    cletters <- rep(c("Item"), times = n_items)
+    cletters <- rep("Item", times = n_items)
     cindexes <- (c(1:n_items))
     cnames <- c(paste(cletters, cindexes, sep = " "))
     colnames(df) <- cnames
@@ -27,10 +27,9 @@ smc_processing <- function(output, colnames = NULL) {
     new.row.names = seq_len(prod(dim(df))),
     v.names = "value",
     timevar = "item",
-    idvar = NULL,
     times = names(df)
   )
-  attr(x = new_df, "reshapeLong") <- NULL # preserves identity to gather output
+  new_df <- new_df[, -3] # drop the "id" column
   class(new_df) <- c("SMCMallows", "data.frame")
   return(new_df)
 }
@@ -71,7 +70,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
   }
   #------------------------------------------------------------------------------------------
 
-  if(verbose) print(rho_posterior_interval)
+  if (verbose) print(rho_posterior_interval)
   return(rho_posterior_interval)
 }
 
@@ -131,7 +130,7 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL,
 plot_alpha_posterior <- function(output, nmc, burnin) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
 
-  plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes_(x =~ value)) +
+  plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes_(x = ~ value)) +
     ggplot2::geom_density() +
     ggplot2::xlab(expression(alpha)) +
     ggplot2::ylab("Posterior density") +
@@ -172,32 +171,32 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE
 #' @param items Either a vector of item names, or a
 #'   vector of indices. If NULL, five items are selected randomly.
 #' @export
-plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = NULL){
+plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = NULL) {
 
-  n_items = dim(output)[2]
+  n_items <- dim(output)[2]
 
-  if(is.null(items) && n_items > 5){
+  if (is.null(items) && n_items > 5) {
     message("Items not provided by user or more than 5 items in a ranking. Picking 5 at random.")
-    items <- sample(1:n_items, 5, replace = F)
-    items = sort(items)
+    items <- sample(1:n_items, 5, replace = FALSE)
+    items <- sort(items)
 
   } else if (is.null(items) && n_items <= 5) {
     items <- c(1:n_items)
-    items = sort(items)
+    items <- sort(items)
   }
 
   # do smc processing here
-  smc_plot = smc_processing(output = output, colnames = colnames)
+  smc_plot <- smc_processing(output = output, colnames = colnames)
 
-  if(!is.character(items)){
+  if (!is.character(items)) {
     items <- unique(smc_plot$item)[items]
   }
 
-  iteration = rep(c(1:nmc), times = n_items)
-  df = cbind(iteration, smc_plot)
+  iteration <- rep(c(1:nmc), times = n_items)
+  df <- cbind(iteration, smc_plot)
 
-  if(C==1){
-    df = cbind(cluster = "Cluster 1", df)
+  if (C == 1) {
+    df <- cbind(cluster = "Cluster 1", df)
   }
 
   df <- dplyr::filter(df, .data$iteration > burnin, .data$item %in% items)
@@ -220,7 +219,7 @@ plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = 
     ggplot2::xlab("rank") +
     ggplot2::ylab("Posterior probability")
 
-  if(C == 1){
+  if (C == 1) {
     p <- p + ggplot2::facet_wrap(~ .data$item)
   } else {
     p <- p + ggplot2::facet_wrap(~ .data$cluster + .data$item)

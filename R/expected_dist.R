@@ -10,32 +10,32 @@
 #'
 #' @example /inst/examples/expected_dist_example.R
 
-expected_dist <- function(alpha,n_items,metric){
+expected_dist <- function(alpha, n_items, metric) {
 
-  if(n_items < 1 | floor(n_items) != n_items){
+  if (n_items < 1 | floor(n_items) != n_items) {
     stop("Number of items must be a positive integer")
   }
 
   # Scale alpha to parametrization used
   alpha <- alpha / n_items
 
-  if(alpha < 0){
+  if (alpha < 0) {
     stop("alpha must be a non-negative value")
   }else{
-    if(metric=="kendall"){
-      out <- exp_d_tau(alpha,n_items)
+    if (metric == "kendall") {
+      out <- exp_d_tau(alpha, n_items)
     }
-    if(metric=="cayley"){
-      out <- exp_d_cay(alpha,n_items)
+    if (metric == "cayley") {
+      out <- exp_d_cay(alpha, n_items)
     }
-    if(metric=="hamming"){
-      out <- exp_d_ham(alpha,n_items)
+    if (metric == "hamming") {
+      out <- exp_d_ham(alpha, n_items)
     }
-    if(metric%in%c("ulam","footrule","spearman")){
+    if (metric %in% c("ulam", "footrule", "spearman")) {
       pfd <- dplyr::filter(partition_function_data,
                            .data$metric == !!metric, .data$n_items == !!n_items,
                            .data$type == "cardinalities")
-      if(nrow(pfd) == 0){
+      if (nrow(pfd) == 0) {
         stop("Given number of items currently not available for the specified metric")
       } else{
         card <- pfd$values[[1]]

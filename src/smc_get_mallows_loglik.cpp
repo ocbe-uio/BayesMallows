@@ -45,11 +45,11 @@
 //' )
 // [[Rcpp::export]]
 double get_mallows_loglik(
-  double alpha,
-  arma::vec rho,
-  int n_items,
+  const double alpha,
+  const arma::vec rho,
+  const int n_items,
   arma::mat rankings,
-  std::string metric
+  const std::string metric
 ) {
   double sum_distance = 0;
 
@@ -59,7 +59,7 @@ double get_mallows_loglik(
   }
 
   /* calculate the sum of the distances ------------------- */
-  arma::uword num_rankings = rankings.n_cols;
+  const arma::uword& num_rankings = rankings.n_cols;
   if (num_rankings == 1) {
     sum_distance += get_rank_distance(rho, rankings, metric);
   } else {

@@ -27,10 +27,10 @@ double calculate_backward_probability(
   arma::vec partial_ranking,
   arma::vec current_ranking,
   arma::vec remaining_set,
-  arma::vec rho,
-  double alpha,
-  int n_items,
-  std::string metric
+  const arma::vec rho,
+  const double alpha,
+  const int n_items,
+  const std::string metric
 ) {
   // given an old and new item ordering, sample ranking with new ordering and
   // calc the forward and backward prob
@@ -38,7 +38,7 @@ double calculate_backward_probability(
   // show the augmented parts of the current ranking
   // item ordering is the order of which items are assigned ranks in a specified
   // order
-  arma::uword num_items_unranked = item_ordering.n_elem;
+  const arma::uword& num_items_unranked = item_ordering.n_elem;
 
   // initialise prob of creating augmented ranking
   double backward_auxiliary_ranking_probability = 1.0;
@@ -58,7 +58,7 @@ double calculate_backward_probability(
     for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
 
       // items to sample rank
-      arma::uword item_to_sample_rank = item_ordering(jj);
+      const arma::uword& item_to_sample_rank = item_ordering(jj);
 
       // the rank of item in rho
       arma::vec rho_item_rank;
@@ -66,13 +66,13 @@ double calculate_backward_probability(
 
       // next we get the sample probabilites for selecting a particular rank for
       // an item based on the current alpha and the rho rank for that item
-      arma::vec sample_prob_list = get_sample_probabilities(\
+      const arma::vec& sample_prob_list = get_sample_probabilities(\
         rho_item_rank, alpha, remaining_set, metric, n_items\
       );
 
       // save the probability of selecting the specific item rank in the old
       // augmented ranking
-      arma::uvec sample_prob = find(remaining_set == current_ranking(jj));
+      const arma::uvec& sample_prob = find(remaining_set == current_ranking(jj));
       backward_auxiliary_ranking_probability = \
         backward_auxiliary_ranking_probability * \
         arma::as_scalar(sample_prob_list(sample_prob));

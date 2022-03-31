@@ -5,7 +5,7 @@ context("Testing compute_mallows")
 
 test_that("miscellaneous input validation", {
   namat <- potato_visual
-  namat[c(1,2, 3), c(7, 9)] <- NA_real_
+  namat[c(1, 2, 3), c(7, 9)] <- NA_real_
   expect_error(compute_mallows(rankings = namat, na_action = "fail"))
   expect_output(compute_mallows(rankings = namat, nmc = 2, na_action = "omit"),
                 "Omitting 9 rows from rankings due to NA values")
@@ -20,7 +20,7 @@ test_that("miscellaneous input validation", {
   expect_error(compute_mallows(rankings = potato_visual, nmc = -100))
 })
 
-test_that("rho_init is properly validated",{
+test_that("rho_init is properly validated", {
   m <- potato_visual
   expect_error(compute_mallows(rankings = m, rho_init = 1:(ncol(m) - 1)))
   expect_error(compute_mallows(rankings = m, rho_init = c(potato_true_ranking[-1], 22)))
@@ -31,7 +31,7 @@ test_that("rho_init is properly validated",{
 }
 )
 
-test_that("compute_mallows discovers inconsistent rankings",{
+test_that("compute_mallows discovers inconsistent rankings", {
     expect_error(compute_mallows(
       rankings = matrix(c(1, 2, -3,
                           1, 2, 3), nrow = 2, byrow = TRUE)
@@ -55,6 +55,20 @@ test_that("compute_mallows error model works", {
 
 })
 
+test_that("compute_mallows with single missing value works", {
+  dd <- potato_visual
+  dd[1, 1] <- NA
+  dd[2, 3] <- NA
+  m <- compute_mallows(dd, nmc = 4, seed = 123L)
+  expect_equal(
+    m$alpha,
+    structure(list(cluster = structure(c(1L, 1L, 1L, 1L), .Label = "Cluster 1", class = "factor"),
+                   iteration = c(1, 2, 3, 4), value = c(1, 0.986228529947352,
+                                                        0.834184330130122, 0.81366346172066)), class = c("tbl_df",
+                                                                                                         "tbl", "data.frame"), row.names = c(NA, -4L))
+  )
+})
+
 test_that("compute_mallows with missing data works", {
   mat <- potato_visual * ifelse(runif(length(potato_visual)) > 0.8, NA_real_, 1)
   m <- compute_mallows(rankings = mat, nmc = 30)
@@ -66,7 +80,7 @@ test_that("compute_mallows with missing data works", {
 
 
 test_that("compute_mallows runs with the right distances", {
-  for(metric in c("footrule", "spearman", "cayley", "kendall", "ulam", "hamming")){
+  for (metric in c("footrule", "spearman", "cayley", "kendall", "ulam", "hamming")) {
     expect_s3_class(compute_mallows(potato_visual, metric = metric, nmc = 3), "BayesMallows")
   }
 
@@ -82,7 +96,7 @@ test_that("compute_mallows handles integer preferences", {
   expect_s3_class(m, "BayesMallows")
 })
 
-test_that("compute_mallows handles data with lots of missings",{
+test_that("compute_mallows handles data with lots of missings", {
   R_partial2 <- structure(c(NA, NA, NA, NA, NA, NA, 9, NA, NA, 7, NA, NA, NA,
                             NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
                             NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
@@ -105,7 +119,7 @@ test_that("compute_mallows handles data with lots of missings",{
 }
           )
 
-test_that("compute_mallows treats obs_freq properly",{
+test_that("compute_mallows treats obs_freq properly", {
   m1 <- compute_mallows(rankings = potato_visual,
                         obs_freq = rep(1, nrow(potato_visual)), seed = 2233)
   m2 <- compute_mallows(rankings = potato_visual, seed = 2233)
@@ -120,7 +134,7 @@ test_that("compute_mallows treats obs_freq properly",{
   # Next, we create a new hypthetical beach_preferences dataframe where each
   # assessor is replicated 1-4 times
 
-  beach_pref_rep <- do.call(rbind, lapply(split(beach_small, f = seq_len(nrow(beach_small))), function(dd){
+  beach_pref_rep <- do.call(rbind, lapply(split(beach_small, f = seq_len(nrow(beach_small))), function(dd) {
     ret <- merge(
       dd,
       data.frame(new_assessor = seq_len(obs_freq[dd$assessor])),
