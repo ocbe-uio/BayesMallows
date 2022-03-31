@@ -37,7 +37,7 @@ double kendall_distance(const arma::vec& r1, const arma::vec& r2){
 
   for(int i = 0; i < n; ++i){
     for(int j = 0; j < i; ++j){
-      if(((r1(j) > r1(i)) & (r2(j) < r2(i)) ) || ((r1(j) < r1(i)) & (r2(j) > r2(i)))) {
+      if (((r1(j) > r1(i)) && (r2(j) < r2(i)) ) || ((r1(j) < r1(i)) && (r2(j) > r2(i)))) {
         distance += 1;
       }
     }
@@ -141,6 +141,3 @@ arma::vec rank_dist_vec(const arma::mat& rankings,
   }
   return(result);
 }
-
-
-

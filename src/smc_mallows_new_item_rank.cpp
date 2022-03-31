@@ -105,7 +105,7 @@ Rcpp::List smc_mallows_new_item_rank(
 
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
         total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set_length);
-      } else if ((aug_method == "pseudolikelihood") & ((metric == "footrule") | (metric == "spearman"))) {
+      } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
         // find items missing from original observed ranking
         const arma::uvec& unranked_items = arma::find_nonfinite(R_obs_slice_0_row_jj);
 
@@ -193,7 +193,7 @@ Rcpp::List smc_mallows_new_item_rank(
           alpha_samples(ii, 0), rho_samples.slice(0).row(ii).t(), n_items,\
           R_obs.slice(0).row(jj).t(), aug_rankings.slice(ii).row(jj).t(), metric\
         );
-      } else if ((aug_method == "pseudolikelihood") & ((metric == "footrule") | (metric == "spearman"))) {
+      } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
         mh_aug_result = metropolis_hastings_aug_ranking_pseudo(\
           alpha_samples(ii, 0), rho_samples.slice(0).row(ii).t(), n_items,\
           R_obs.slice(0).row(jj).t(), aug_rankings.slice(ii).row(jj).t(), metric\
@@ -236,7 +236,7 @@ Rcpp::List smc_mallows_new_item_rank(
           const double c_prob = check_correction["correction_prob"];
           aug_rankings.slice(ii).row(jj) = c_rank.t();
           particle_correction_prob(ii) *= c_prob;
-        } else if ((aug_method == "pseudolikelihood") & ((metric == "footrule") | (metric == "spearman"))) {
+        } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
           const Rcpp::List check_correction = correction_kernel_pseudo(\
             aug_rankings.slice(ii).row(jj).t(), R_obs.slice(tt + 1).row(jj).t(),\
             rho_samples.slice(tt + 1).row(ii).t(), alpha_samples(ii, tt + 1),\
@@ -312,7 +312,7 @@ Rcpp::List smc_mallows_new_item_rank(
             n_items, R_obs.slice(tt + 1).row(jj).t(),\
             aug_rankings.slice(ii).row(jj).t(), metric\
           );
-        } else if ((aug_method == "pseudolikelihood") & ((metric == "footrule") | (metric == "spearman"))) {
+        } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
           mh_aug_result = metropolis_hastings_aug_ranking_pseudo(\
             alpha_samples(ii, tt + 1), rho_samples.slice(tt + 1).row(ii).t(),\
             n_items, R_obs.slice(tt + 1).row(jj).t(),\

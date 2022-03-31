@@ -121,7 +121,7 @@ Rcpp::List smc_mallows_new_users_partial(
           aug_rankings(arma::span(jj), arma::span::all, arma::span(ii)) = partial_ranking;
           aug_prob(ii) = divide_by_fact(aug_prob(ii), missing_ranks.length());
 
-        } else if ((aug_method == "pseudolikelihood") & ((metric == "footrule") | (metric == "spearman"))) {
+        } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
 
           // randomly permute the unranked items to give the order in which they will be allocated
           arma::uvec item_ordering;
@@ -219,7 +219,7 @@ Rcpp::List smc_mallows_new_users_partial(
         arma::vec mh_aug_result;
         if (aug_method == "random") {
           mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric);
-        } else if ((aug_method == "pseudolikelihood") & ((metric == "footrule") | (metric == "spearman"))) {
+        } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
           mh_aug_result = metropolis_hastings_aug_ranking_pseudo(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric);
         }
         aug_rankings(arma::span(jj), arma::span::all, arma::span(ii)) = mh_aug_result;
