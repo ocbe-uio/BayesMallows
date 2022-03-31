@@ -51,7 +51,8 @@ jobs:
               "inst/examples/label_switching_example.R",
               "inst/examples/obs_freq_example.R",
               "inst/examples/plot_top_k_example.R",
-              "inst/examples/plot.BayesMallows_example.R"
+              "inst/examples/plot.BayesMallows_example.R",
+              "R/RcppExports.R"
             )
             style_rules <- list(
               absolute_path_linter, assignment_linter, closed_curly_linter,

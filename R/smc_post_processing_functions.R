@@ -27,10 +27,9 @@ smc_processing <- function(output, colnames = NULL) {
     new.row.names = seq_len(prod(dim(df))),
     v.names = "value",
     timevar = "item",
-    idvar = NULL,
     times = names(df)
   )
-  attr(x = new_df, "reshapeLong") <- NULL # preserves identity to gather output
+  new_df <- new_df[, -3] # drop the "id" column
   class(new_df) <- c("SMCMallows", "data.frame")
   return(new_df)
 }
