@@ -29,7 +29,7 @@ smc_processing <- function(output, colnames = NULL) {
     timevar = "item",
     times = names(df)
   )
-  new_df <- new_df[, -3] # drop the "id" column
+  new_df$id <- NULL # drop the "id" column
   class(new_df) <- c("SMCMallows", "data.frame")
   return(new_df)
 }
