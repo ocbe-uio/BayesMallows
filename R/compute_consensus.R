@@ -398,6 +398,7 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
   df <- dplyr::mutate(df, probability = .data$n / n_samples)
   df <- dplyr::select(df, -.data$n_max, -.data$n)
 
+
   # Now collect one set of ranks per cluster
   df <- stats::reshape(
     as.data.frame(df),
@@ -406,9 +407,10 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
     new.row.names = seq_len(prod(dim(df))),
     v.names = "map_ranking",
     timevar = "item",
-    idvar = NULL,
     times = setdiff(names(df), c("cluster", "probability"))
   )
+  df$id <- NULL
+
   attr(x = df, "reshapeLong") <- NULL # preserves identity to gather() output
 
   # Sort according to cluster and ranking
