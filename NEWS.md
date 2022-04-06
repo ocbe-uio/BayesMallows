@@ -1,3 +1,7 @@
+# Devevlopment versions
+
+* Fixed an issue with stats::reshape causing an error on R-oldrel.
+
 # BayesMallows 1.1.1
 
 * Fixed C++ errors leading to CRAN issues.
