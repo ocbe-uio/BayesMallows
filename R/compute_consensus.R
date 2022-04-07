@@ -49,7 +49,7 @@ compute_consensus.BayesMallows <- function(
   }
   stopifnot(burnin < model_fit$nmc)
 
-  stopifnot(class(model_fit) == "BayesMallows")
+  stopifnot(inherits(model_fit, "BayesMallows"))
 
   if (parameter == "Rtilde" && !inherits(model_fit$augmented_data, "data.frame")) {
     stop("For augmented ranks, please refit model with option 'save_aug = TRUE'.")

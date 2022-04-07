@@ -29,12 +29,12 @@ plot_elbow <- function(..., burnin = NULL) {
   models <- list(...)
 
   # Taking into account the case where the user has entered a list of models
-  if (length(models) == 1 && !(class(models[[1]]) == "BayesMallows")) {
+  if (length(models) == 1 && !(inherits(models[[1]], "BayesMallows"))) {
     models <- models[[1]]
   }
 
   df <- do.call(rbind, lapply(models, function(x) {
-    stopifnot(class(x) == "BayesMallows")
+    stopifnot(inherits(x, "BayesMallows"))
 
     if (!("burnin" %in% names(x))) {
       if (is.null(burnin)) {
