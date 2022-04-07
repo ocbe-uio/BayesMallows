@@ -1,4 +1,4 @@
-# Devevlopment versions
+# BayesMallows 1.1.2
 
 * Fixed an issue with stats::reshape causing an error on R-oldrel.
 
