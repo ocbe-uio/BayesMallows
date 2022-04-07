@@ -48,7 +48,7 @@ compute_posterior_intervals.BayesMallows <- function(
   model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
   decimals = 3L, ...
 ) {
-  stopifnot(class(model_fit) == "BayesMallows")
+  stopifnot(inherits(model_fit, "BayesMallows"))
 
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
