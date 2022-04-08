@@ -12,3 +12,4 @@ LICENSE
 ^doc$
 ^Meta$
 ^\.github$
+^CRAN-SUBMISSION$
