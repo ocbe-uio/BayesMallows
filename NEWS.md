@@ -1,6 +1,7 @@
 # BayesMallows 1.1.2
 
 * Fixed an issue with stats::reshape causing an error on R-oldrel.
+* Fixed an issue with checking the class of objects, where we now consistently use inherits().
 
 # BayesMallows 1.1.1
 

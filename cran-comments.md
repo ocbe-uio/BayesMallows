@@ -1,7 +1,7 @@
 ## Resubmission Note
 This is a resubmission. We submitted an update last week which solved C++ issues on CRAN. From the CRAN checks, we now see that these issues have been solved. However, there is still an additional issue on r-oldrel, relating to the stats::reshape() function. We have been able to reproduce this issue using rhub::check_with_roldrel(). This update fixes this issue, which we also have confirmed again with rhub::check_with_roldrel().
 
-We apologize for sending this resubmission so close to the previous, but hope that this is the right thing to do, given that the package currently has errors on r-oldrel, and that we now fix them.
+We apologize for sending this resubmission so close to the previous, but hope that this is the right thing to do, given that the package currently has errors on r-oldrel, and that we now fix them. We have also fixed an issue with checking the class of objects, where we now consistently use inherits().
 
 
 ## Test Environments
