@@ -53,6 +53,9 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
       rho_samples(i, j, 0) = items_sample(j);
     }
   }
+  
+  /* generate vector to store ESS */
+  arma::vec ESS_vec = (Time, arma::fill::zeros);
 
   // this is to store the augmentations of the observed rankings for each particle
   arma::cube aug_rankings(n_users, n_items, N, arma::fill::zeros); // no. users by items by particles
@@ -159,6 +162,8 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     const double maxw = arma::max(log_inc_wgt);
     const arma::vec w = arma::exp(log_inc_wgt - maxw);
     const arma::vec norm_wgt = w / arma::sum(w);
+    
+    ESS_vec(tt) = 1/sum(norm_wgt^2);
 
     /* ====================================================== */
     /* Resample                                               */
@@ -210,5 +215,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     }
   }
   // return the history of the particles and their values
-  return Rcpp::List::create((Rcpp::Named("rho_samples") = rho_samples));
+  return Rcpp::List::create((Rcpp::Named("rho_samples") = rho_samples,
+                             Rcpp:Named("augmented_rankings") = aug_rankings,
+                             Rcpp::Named("ESS") = ESS_vec));
 }
