@@ -66,7 +66,10 @@ Rcpp::List smc_mallows_new_users_partial(
   arma::mat alpha_samples(N, Time + 1);
   const arma::vec& alpha_samples_0 = Rcpp::rexp(N, 1);
   alpha_samples.col(0) = alpha_samples_0;
-
+  
+  /* generate vector to store ESS */
+  arma::vec ESS_vec = (Time, arma::fill::zeros);
+  
   // this is to store the augmentations of the observed rankings for each particle
   arma::cube aug_rankings(n_users, n_items, N, arma::fill::zeros); // no. users by items by particles
 
@@ -174,6 +177,8 @@ Rcpp::List smc_mallows_new_users_partial(
     double maxw = arma::max(log_inc_wgt);
     arma::vec w = arma::exp(log_inc_wgt - maxw);
     arma::vec norm_wgt = w / arma::sum(w);
+    
+    ESS_vec(tt) = 1/sum(norm_wgt^2);
 
     /* ====================================================== */
     /* Resample                                               */
@@ -229,6 +234,8 @@ Rcpp::List smc_mallows_new_users_partial(
   // return the history of the particles and their values
   return Rcpp::List::create(
     Rcpp::Named("rho_samples") = rho_samples,
-    Rcpp::Named("alpha_samples") = alpha_samples
+    Rcpp::Named("alpha_samples") = alpha_samples,
+    Rcpp:Named("augmented_rankings") = aug_rankings,
+    Rcpp::Named("ESS") = ESS_vec
   );
 }
