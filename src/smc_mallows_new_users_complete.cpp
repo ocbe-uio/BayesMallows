@@ -85,6 +85,9 @@ Rcpp::List smc_mallows_new_users_complete(
   arma::mat alpha_samples(N, (n_users + Time + 1));
   const arma::vec alpha_samples_0 = Rcpp::rexp(N, 1);
   alpha_samples.col(0) = alpha_samples_0;
+  
+  /* generate vector to store ESS */
+  arma::vec ESS_vec = (Time, arma::fill::zeros);
 
   /* ====================================================== */
   /* New user situation                                     */
@@ -146,6 +149,10 @@ Rcpp::List smc_mallows_new_users_complete(
     const double& maxw = arma::max(log_inc_wgt);
     const arma::vec& w = arma::exp(log_inc_wgt - maxw);
     const arma::vec norm_wgt = w / arma::sum(w);
+    
+    /* store ESS */
+    ESS_vec(tt) = 1/sum(norm_wgt^2);
+    
 
     /* ====================================================== */
     /* Resample                                               */
@@ -188,7 +195,8 @@ Rcpp::List smc_mallows_new_users_complete(
   // return the history of the particles and their values
   Rcpp::List particle_history = Rcpp::List::create(
     Rcpp::Named("rho_samples") = rho_samples,
-    Rcpp::Named("alpha_samples") = alpha_samples
+    Rcpp::Named("alpha_samples") = alpha_samples,
+    Rcpp::Named("ESS") = ESS_vec
   );
   particle_history.attr("class") = "SMCMallows"; // TODO: add List
   return particle_history;
