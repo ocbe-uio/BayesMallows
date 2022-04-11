@@ -2,6 +2,7 @@
 
 * Fixed an issue with stats::reshape causing an error on R-oldrel.
 * Fixed an issue with checking the class of objects, where we now consistently use inherits().
+* Internal C++ fixes to comply with CRAN checks.
 
 # BayesMallows 1.1.1
 
