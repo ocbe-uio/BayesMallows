@@ -49,7 +49,7 @@ compute_consensus.BayesMallows <- function(
   }
   stopifnot(burnin < model_fit$nmc)
 
-  stopifnot(class(model_fit) == "BayesMallows")
+  stopifnot(inherits(model_fit, "BayesMallows"))
 
   if (parameter == "Rtilde" && !inherits(model_fit$augmented_data, "data.frame")) {
     stop("For augmented ranks, please refit model with option 'save_aug = TRUE'.")
@@ -398,6 +398,7 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
   df <- dplyr::mutate(df, probability = .data$n / n_samples)
   df <- dplyr::select(df, -.data$n_max, -.data$n)
 
+
   # Now collect one set of ranks per cluster
   df <- stats::reshape(
     as.data.frame(df),
@@ -406,9 +407,10 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
     new.row.names = seq_len(prod(dim(df))),
     v.names = "map_ranking",
     timevar = "item",
-    idvar = NULL,
     times = setdiff(names(df), c("cluster", "probability"))
   )
+  df$id <- NULL
+
   attr(x = df, "reshapeLong") <- NULL # preserves identity to gather() output
 
   # Sort according to cluster and ranking

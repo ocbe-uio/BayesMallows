@@ -12,7 +12,7 @@ arma::uvec arma_setdiff(arma::uvec x, arma::uvec y);
 arma::vec arma_setdiff_vec(arma::vec, arma::vec, const bool& = false);
 Rcpp::NumericVector Rcpp_setdiff_arma(arma::ivec, arma::vec);
 arma::uvec maybe_offset_indices(arma::vec&, arma::uvec, const bool& = true);
-arma::uword sample_one_with_prob(arma::vec, arma::vec);
+arma::sword sample_one_with_prob(arma::vec, arma::vec);
 arma::uvec new_pseudo_proposal(arma::uvec);
 double divide_by_fact(double, int);
 arma::uvec permutate_with_weights(arma::vec, int);

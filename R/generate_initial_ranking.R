@@ -72,7 +72,7 @@ generate_initial_ranking <- function(tc,
                                      random_limit = 8L) {
 
 
-  if (!("BayesMallowsTC" %in% class(tc))) {
+  if (!(inherits(tc, "BayesMallowsTC"))) {
     stop("tc must be an object returned from generate_transitive_closure")
   }
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
