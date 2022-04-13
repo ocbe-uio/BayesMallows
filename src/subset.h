@@ -1,14 +1,6 @@
 #ifndef SUBSET_H
 #define SUBSET_H
 
-# include <cmath>
-# include <cstdlib>
-# include <cstring>
-# include <ctime>
-# include <iomanip>
-# include <iostream>
-# include <Rcpp.h>
-
 using namespace std;
 
 

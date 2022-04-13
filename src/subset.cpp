@@ -6,8 +6,6 @@
 # include <cstdlib>
 # include <cstring>
 # include <ctime>
-# include <iomanip>
-# include <iostream>
 # include <Rcpp.h>
 
 using namespace std;

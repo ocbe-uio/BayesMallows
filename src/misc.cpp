@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <RcppArmadillo.h>
 
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -155,7 +154,7 @@ double divide_by_fact(double prob, int set_length) {
   return(prob);
 }
 
-arma::uvec permutate_with_weights(arma::vec weights, int N) {
+arma::uvec permute_with_weights(arma::vec weights, int N) {
   // Using weights_Rcpp so that Rcpp::sample compiles. More details on
   // https://github.com/ocbe-uio/BayesMallows/issues/90#issuecomment-866614296
   Rcpp::NumericVector weights_Rcpp;

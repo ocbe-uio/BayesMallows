@@ -172,7 +172,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   /* Resample                                               */
   /* ====================================================== */
   /* Resample particles using multinomial resampling ------ */
-  arma::uvec index = permutate_with_weights(norm_wgt, N);
+  arma::uvec index = permute_with_weights(norm_wgt, N);
   rho_samples.slice(0) = rho_samples.slice(0).rows(index);
   aug_rankings = aug_rankings.slices(index);
 
@@ -280,7 +280,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
     /* Resample                                               */
     /* ====================================================== */
     /* Resample particles using multinomial resampling ------ */
-    arma::uvec index = permutate_with_weights(norm_wgt, N);
+    arma::uvec index = permute_with_weights(norm_wgt, N);
     rho_samples.slice(tt + 1) = rho_samples.slice(tt + 1).rows(index);
 
     /* ====================================================== */
