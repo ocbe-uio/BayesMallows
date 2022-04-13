@@ -3,7 +3,6 @@
 #include "partitionfuns.h"
 #include "distances.h"
 #include "misc.h"
-#include <string>
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
