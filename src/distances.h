@@ -2,7 +2,6 @@
 #define DISTANCES_H
 
 #include "RcppArmadillo.h"
-#include "subset.h"
 
 
 double get_rank_distance(arma::vec, arma::vec, std::string);
