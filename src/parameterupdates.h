@@ -2,9 +2,6 @@
 #define PARAMETERUPDATES_H
 
 #include "RcppArmadillo.h"
-#include "leapandshift.h"
-#include "distances.h"
-#include "partitionfuns.h"
 
 
 double update_alpha(arma::vec& alpha_acceptance,

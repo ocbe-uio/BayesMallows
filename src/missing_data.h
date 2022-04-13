@@ -1,7 +1,6 @@
 #ifndef MISSING_H
 #define MISSING_H
 
-#include <RcppArmadillo.h>
 
 void initialize_missing_ranks(arma::mat& rankings, const arma::umat& missing_indicator,
                               const arma::uvec& assessor_missing);

@@ -1,7 +1,7 @@
 #ifndef MISC_H
 #define MISC_H
 
-#include <RcppArmadillo.h>
+#include <RcppArmadillo.h> // need because of functions that return arma and Rcpp objects
 
 long int factorial(int);
 int binomial_coefficient(int, int);

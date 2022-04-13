@@ -1,4 +1,5 @@
 #include <cmath>
+#include "misc.h"
 #include "RcppArmadillo.h"
 #include "mixtures.h"
 #include "distances.h"

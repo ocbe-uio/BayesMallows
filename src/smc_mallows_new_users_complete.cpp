@@ -1,6 +1,7 @@
 #include "RcppArmadillo.h"
 #include "smc.h"
 #include "partitionfuns.h"
+#include "misc.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title SMC-Mallows New Users Complete
