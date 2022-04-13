@@ -167,7 +167,7 @@ Rcpp::List smc_mallows_new_item_rank(
   /* Resample                                               */
   /* ====================================================== */
   /* Resample particles using multinomial resampling ------ */
-  arma::uvec index = permutate_with_weights(norm_wgt, N);
+  arma::uvec index = permute_with_weights(norm_wgt, N);
   rho_samples.slice(0) = rho_samples.slice(0).rows(index);
   const arma::vec& asc = alpha_samples.col(0);
   alpha_samples.col(0) = asc.elem(index);
@@ -285,7 +285,7 @@ Rcpp::List smc_mallows_new_item_rank(
     /* Resample                                               */
     /* ====================================================== */
     /* Resample particles using multinomial resampling ------ */
-    arma::uvec index = permutate_with_weights(norm_wgt, N);
+    arma::uvec index = permute_with_weights(norm_wgt, N);
     rho_samples.slice(tt + 1) = rho_samples.slice(tt + 1).rows(index);
     const arma::vec& asc = alpha_samples.col(tt + 1);
     alpha_samples.col(tt + 1) = asc.elem(index);

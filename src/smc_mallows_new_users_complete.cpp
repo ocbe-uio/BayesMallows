@@ -153,7 +153,7 @@ Rcpp::List smc_mallows_new_users_complete(
     /* ====================================================== */
 
     /* Resample particles using multinomial resampling ------ */
-    arma::uvec index = permutate_with_weights(norm_wgt, N);
+    arma::uvec index = permute_with_weights(norm_wgt, N);
     arma::uvec tt_vec;
     tt_vec = tt;
 
