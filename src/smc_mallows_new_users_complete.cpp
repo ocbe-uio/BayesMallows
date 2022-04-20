@@ -87,7 +87,7 @@ Rcpp::List smc_mallows_new_users_complete(
   alpha_samples.col(0) = alpha_samples_0;
   
   /* generate vector to store ESS */
-  arma::rowvec ESS_vec(Time, arma::fill::zeros);
+  arma::vec ESS_vec(Time, arma::fill::zeros);
 
   /* ====================================================== */
   /* New user situation                                     */
@@ -151,7 +151,7 @@ Rcpp::List smc_mallows_new_users_complete(
     const arma::vec norm_wgt = w / arma::sum(w);
     
     /* store ESS */
-    ESS_vec(tt) = 1.0/sum(norm_wgt^2.0);
+    ESS_vec(tt) = 1.0/sum(norm_wgt ^ 2.0);
     
 
     /* ====================================================== */
