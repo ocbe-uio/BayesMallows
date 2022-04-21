@@ -85,7 +85,7 @@ Rcpp::List smc_mallows_new_users_complete(
   arma::mat alpha_samples(N, (n_users + Time + 1));
   const arma::vec alpha_samples_0 = Rcpp::rexp(N, 1);
   alpha_samples.col(0) = alpha_samples_0;
-  
+
   /* generate vector to store ESS */
   arma::rowvec ESS_vec(Time);
 
@@ -149,10 +149,11 @@ Rcpp::List smc_mallows_new_users_complete(
     const double& maxw = arma::max(log_inc_wgt);
     const arma::vec& w = arma::exp(log_inc_wgt - maxw);
     const arma::vec norm_wgt = w / arma::sum(w);
-    
+
     /* store ESS */
-    ESS_vec(tt) = 1.0 / sum(norm_wgt ^ 2.0);
-    
+    arma::vec norm_wgt_squared = norm_wgt * norm_wgt.t();
+    ESS_vec(tt) = 1.0 / arma::sum(norm_wgt_squared);
+
 
     /* ====================================================== */
     /* Resample                                               */
