@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
@@ -126,12 +127,12 @@ arma::uvec maybe_offset_indices(
   return(idx_x);
 }
 
-arma::sword sample_one_with_prob(arma::vec set, arma::vec probs) {
+sword sample_one_with_prob(arma::vec set, arma::vec probs) {
   // Used in SMC to fill in the new augmented ranking going forward.
   Rcpp::NumericVector set_Rcpp, probs_Rcpp;
   set_Rcpp = set;
   probs_Rcpp = probs;
-  arma::sword chosen_one = Rcpp::as<int>(Rcpp::sample(set_Rcpp, 1, false, probs_Rcpp));
+  sword chosen_one = Rcpp::as<int>(Rcpp::sample(set_Rcpp, 1, false, probs_Rcpp));
   return(chosen_one);
 }
 

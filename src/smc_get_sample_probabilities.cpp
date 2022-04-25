@@ -1,6 +1,8 @@
 #include "RcppArmadillo.h"
 #include "distances.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Get Sample Probabilities
 //' @description Calculate probability of assigning a set of specific ranks to an specific item
@@ -30,7 +32,7 @@ arma::vec get_sample_probabilities(
   arma::vec sample_prob_list = Rcpp::rep(0.0, num_ranks);
 
   // cycle through each item and calculate its specific prob
-  for (arma::uword ii = 0; ii < num_ranks; ++ii) {
+  for (uword ii = 0; ii < num_ranks; ++ii) {
     const arma::vec item_rank = {remaining_set_ranks(ii)};
     const double rank_dist = get_rank_distance(rho_item_rank, item_rank, metric);
     const double sample_prob = -(alpha / n_items) * rank_dist;

@@ -2,6 +2,8 @@
 #include "smc.h"
 #include "misc.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Calculate Backward Probability
 //' @description Function to calculate probability of assigning a set of specific ranks to an specific item
@@ -38,7 +40,7 @@ double calculate_backward_probability(
   // show the augmented parts of the current ranking
   // item ordering is the order of which items are assigned ranks in a specified
   // order
-  const arma::uword& num_items_unranked = item_ordering.n_elem;
+  const uword& num_items_unranked = item_ordering.n_elem;
 
   // initialise prob of creating augmented ranking
   double backward_auxiliary_ranking_probability = 1.0;
@@ -55,10 +57,10 @@ double calculate_backward_probability(
   /* ====================================================== */
   // given the old and new item ordering and the list of missing rank, determine
   // the sample probs for each iteration
-    for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
+    for (uword jj = 0; jj < num_items_unranked - 1; ++jj) {
 
       // items to sample rank
-      const arma::uword& item_to_sample_rank = item_ordering(jj);
+      const uword& item_to_sample_rank = item_ordering(jj);
 
       // the rank of item in rho
       arma::vec rho_item_rank;

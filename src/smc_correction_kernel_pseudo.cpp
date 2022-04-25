@@ -2,6 +2,8 @@
 #include "smc.h"
 #include "misc.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Correction Kernel (pseudolikelihood)
 //' @description Function to determine if the augmented ranking is compatible with the new observed partial ranking.
@@ -57,7 +59,7 @@ Rcpp::List correction_kernel_pseudo(
             arma::uvec item_ordering = new_pseudo_proposal(unranked_items);
 
             // item ordering is the order of which items are assigned ranks in a specified order
-            const arma::uword& num_items_unranked = item_ordering.n_elem;
+            const uword& num_items_unranked = item_ordering.n_elem;
 
             // creating now augmented ranking whilst simultaneously calculating the backwards prob of making the same
             // augmented ranking with an alternative item ordering
@@ -67,7 +69,7 @@ Rcpp::List correction_kernel_pseudo(
             //## Create new augmented ranking
             //########################################################
             // given the item ordering and the list of missing rank, determine the sample probs for each iteration
-            for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
+            for (uword jj = 0; jj < num_items_unranked - 1; ++jj) {
 
                 // items to sample rank
                 const double& item_to_sample_rank = item_ordering(jj);

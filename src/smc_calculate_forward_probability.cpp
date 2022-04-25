@@ -2,6 +2,8 @@
 #include "smc.h"
 #include "misc.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Calculate Forward Probability
 //' @description Function to calculate probability of assigning a set of
@@ -39,7 +41,7 @@ Rcpp::List calculate_forward_probability(
 ) {
   // item ordering is the order of which items are assigned ranks in a specified
   // order
-  const arma::uword& num_items_unranked = item_ordering.n_elem;
+  const uword& num_items_unranked = item_ordering.n_elem;
 
   // prob of creating augmented ranking
   double forward_auxiliary_ranking_probability = 1.0;
@@ -60,10 +62,10 @@ Rcpp::List calculate_forward_probability(
     // Adjust item_ordering depending on whether it uses R or C++ indices
     item_ordering = maybe_offset_indices(partial_ranking, item_ordering);
 
-    for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
+    for (uword jj = 0; jj < num_items_unranked - 1; ++jj) {
 
       // items to sample rank
-      const arma::uword item_to_sample_rank = item_ordering(jj);
+      const uword item_to_sample_rank = item_ordering(jj);
 
       // the rank of item in rho
       arma::vec rho_item_rank;

@@ -3,6 +3,8 @@
 #include "partitionfuns.h"
 #include "misc.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title SMC-Mallows New Users Complete
 //' @description Function to perform resample-move SMC algorithm where we
@@ -95,7 +97,7 @@ Rcpp::List smc_mallows_new_users_complete(
   /* ====================================================== */
   int num_obs = 0;
 
-  for (arma::uword tt = 0; tt < Time; ++tt) {
+  for (uword tt = 0; tt < Time; ++tt) {
     if (verbose) REprintf("observe %i out of %i \n", tt + 1, Time);
 
     // keep tally of how many ranking observations we have so far
