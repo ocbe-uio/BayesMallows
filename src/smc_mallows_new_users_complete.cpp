@@ -150,8 +150,8 @@ Rcpp::List smc_mallows_new_users_complete(
     const arma::vec& w = arma::exp(log_inc_wgt - maxw);
     const arma::vec norm_wgt = w / arma::sum(w);
 
-    /* store ESS */
-    ESS_vec(tt) = 1.0 / arma::sum(norm_wgt % norm_wgt);
+    /* store ESS = sum(w)^2/sum(w^2) */
+    ESS_vec(tt) = (arma::sum(norm_wgt) * arma::sum(norm_wgt)) / arma::sum(norm_wgt % norm_wgt);
 
 
     /* ====================================================== */
