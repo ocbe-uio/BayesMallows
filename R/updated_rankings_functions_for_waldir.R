@@ -96,10 +96,7 @@ smc_mallows_new_item_rank_updated = function(n_items, R_obs, metric, leap_size, 
                                                                      n_items = n_items,
                                                                      metric = metric)
         }else{
-
-          print("Error: combined choice of metric and aug_method is incompatible")
-          abort(message = "The value is TRUE, so the script must end here")
-
+          stop("Combined choice of metric and aug_method is incompatible. The value is TRUE, so the script must end here.")
         }
         #print(check_correction)
         aug_rankings[jj,,ii] = check_correction$ranking
@@ -293,8 +290,7 @@ smc_mallows_new_item_rank_updated_alpha_fixed = function(alpha, n_items, R_obs, 
                                                                      metric = metric)
         }else{
 
-          print("Error: combined choice of metric and aug_method is incompatible")
-          abort(message = "The value is TRUE, so the script must end here")
+          stop("Combined choice of metric and aug_method is incompatible. The value is TRUE, so the script must end here.")
 
         }
         #print(check_correction)
