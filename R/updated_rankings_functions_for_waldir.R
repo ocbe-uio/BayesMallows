@@ -85,11 +85,11 @@ smc_mallows_new_item_rank_updated = function(n_items, R_obs, metric, leap_size, 
       # make the correction
       for (jj in 1:num_ranks){
         if(aug_method == "random"){
-          check_correction  = BayesMallows:::correction_kernel(current_ranking = aug_rankings[jj,,ii],
+          check_correction  = correction_kernel(current_ranking = aug_rankings[jj,,ii],
                                                                observed_ranking = R_obs[jj,,tt+1],
                                                                n_items = n_items)
         }else if( (aug_method == "pseudolikelihood") & (metric %in% c("footrule", "spearman")) ){
-          check_correction = BayesMallows:::correction_kernel_pseudo(current_ranking = aug_rankings[jj,,ii],
+          check_correction = correction_kernel_pseudo(current_ranking = aug_rankings[jj,,ii],
                                                                      observed_ranking = R_obs[jj,,tt+1],
                                                                      rho = rho_samples[ii,,tt+1] ,
                                                                      alpha =  alpha_samples[ii,tt+1],
@@ -115,12 +115,12 @@ smc_mallows_new_item_rank_updated = function(n_items, R_obs, metric, leap_size, 
     log_inc_wgt = rep(0, N)
 
     for (ii in 1:N){
-      log_inc_wgt[ii] = BayesMallows::get_mallows_loglik(alpha = alpha_samples[ii,tt+1],
+      log_inc_wgt[ii] = get_mallows_loglik(alpha = alpha_samples[ii,tt+1],
                                                          rho = rho_samples[ii,,tt+1],
                                                          n_items =n_items,
                                                          rankings = aug_rankings[,,ii],
                                                          metric = metric) -
-                        BayesMallows::get_mallows_loglik(alpha = alpha_samples[ii,tt+1],
+                        get_mallows_loglik(alpha = alpha_samples[ii,tt+1],
                                                          rho = rho_samples[ii,,tt+1],
                                                          n_items =n_items,
                                                          rankings = prev_aug_rankings[,,ii],
@@ -150,7 +150,7 @@ smc_mallows_new_item_rank_updated = function(n_items, R_obs, metric, leap_size, 
     for (ii in 1:N){
 
       for (kk in 1: mcmc_kernel_app) {
-        rho_samples[ii,,tt+1] = BayesMallows::metropolis_hastings_rho(alpha = alpha_samples[ii,tt+1],
+        rho_samples[ii,,tt+1] = metropolis_hastings_rho(alpha = alpha_samples[ii,tt+1],
                                                                       n_items = n_items,
                                                                       rankings = aug_rankings[,,ii],
                                                                       metric = metric,
@@ -158,7 +158,7 @@ smc_mallows_new_item_rank_updated = function(n_items, R_obs, metric, leap_size, 
                                                                       leap_size = leap_size)
 
         # move once since alpha dist is easier to explore than rho dist
-        alpha_samples[ii,tt+1] = BayesMallows::metropolis_hastings_alpha(alpha = alpha_samples[ii,tt+1],
+        alpha_samples[ii,tt+1] = metropolis_hastings_alpha(alpha = alpha_samples[ii,tt+1],
                                                                          n_items = n_items,
                                                                          rankings = aug_rankings[,,ii],
                                                                          metric = metric,
@@ -171,14 +171,14 @@ smc_mallows_new_item_rank_updated = function(n_items, R_obs, metric, leap_size, 
 
       for (jj in 1:num_ranks){
         if(aug_method == "random"){
-          aug_rankings[jj,,ii] = BayesMallows::metropolis_hastings_aug_ranking(current_ranking = aug_rankings[jj,,ii],
+          aug_rankings[jj,,ii] = metropolis_hastings_aug_ranking(current_ranking = aug_rankings[jj,,ii],
                                                                                partial_ranking = R_obs[jj,,tt+1],
                                                                                alpha = alpha_samples[ii,tt+1],
                                                                                rho = rho_samples[ii,,tt+1],
                                                                                n_items = n_items,
                                                                                metric = metric)
         }else if( (aug_method == "pseudolikelihood") & (metric %in% c("footrule", "spearman")) ){
-          aug_rankings[jj,,ii] = BayesMallows:::metropolis_hastings_aug_ranking_pseudo(current_ranking = aug_rankings[jj,,ii],
+          aug_rankings[jj,,ii] = metropolis_hastings_aug_ranking_pseudo(current_ranking = aug_rankings[jj,,ii],
                                                                                        partial_ranking = R_obs[jj,,tt+1],
                                                                                        alpha = alpha_samples[ii,tt+1],
                                                                                        rho = rho_samples[ii,,tt+1],
@@ -281,11 +281,11 @@ smc_mallows_new_item_rank_updated_alpha_fixed = function(alpha, n_items, R_obs, 
       # make the correction
       for (jj in 1:num_ranks){
         if(aug_method == "random"){
-          check_correction  = BayesMallows:::correction_kernel(current_ranking = aug_rankings[jj,,ii],
+          check_correction  = correction_kernel(current_ranking = aug_rankings[jj,,ii],
                                                                observed_ranking = R_obs[jj,,tt+1],
                                                                n_items = n_items)
         }else if( (aug_method == "pseudolikelihood") & (metric %in% c("footrule", "spearman")) ){
-          check_correction = BayesMallows:::correction_kernel_pseudo(current_ranking = aug_rankings[jj,,ii],
+          check_correction = correction_kernel_pseudo(current_ranking = aug_rankings[jj,,ii],
                                                                      observed_ranking = R_obs[jj,,tt+1],
                                                                      rho = rho_samples[ii,,tt+1] ,
                                                                      alpha =  alpha,
@@ -311,9 +311,9 @@ smc_mallows_new_item_rank_updated_alpha_fixed = function(alpha, n_items, R_obs, 
     log_inc_wgt = rep(0, N)
 
     for (ii in 1:N){
-      log_inc_wgt[ii] = BayesMallows::get_mallows_loglik(alpha = alpha, rho = rho_samples[ii,,tt+1],
+      log_inc_wgt[ii] = get_mallows_loglik(alpha = alpha, rho = rho_samples[ii,,tt+1],
                                                          n_items =n_items, rankings = aug_rankings[,,ii], metric = metric) -
-        BayesMallows::get_mallows_loglik(alpha = alpha, rho = rho_samples[ii,,tt+1],
+        get_mallows_loglik(alpha = alpha, rho = rho_samples[ii,,tt+1],
                                          n_items =n_items, rankings = prev_aug_rankings[,,ii], metric = metric) -
         log(particle_correction_prob[ii])
     }
@@ -339,7 +339,7 @@ smc_mallows_new_item_rank_updated_alpha_fixed = function(alpha, n_items, R_obs, 
     for (ii in 1:N){
 
       for (kk in 1: mcmc_kernel_app) {
-        rho_samples[ii,,tt+1] = BayesMallows::metropolis_hastings_rho(alpha = alpha, n_items = n_items,
+        rho_samples[ii,,tt+1] = metropolis_hastings_rho(alpha = alpha, n_items = n_items,
                                                                       rankings = aug_rankings[,,ii], metric = metric,
                                                                       rho = rho_samples[ii,,tt+1], leap_size = leap_size)
 
@@ -347,14 +347,14 @@ smc_mallows_new_item_rank_updated_alpha_fixed = function(alpha, n_items, R_obs, 
 
       for (jj in 1:num_ranks){
         if(aug_method == "random"){
-          aug_rankings[jj,,ii] = BayesMallows::metropolis_hastings_aug_ranking(current_ranking = aug_rankings[jj,,ii],
+          aug_rankings[jj,,ii] = metropolis_hastings_aug_ranking(current_ranking = aug_rankings[jj,,ii],
                                                                                partial_ranking = R_obs[jj,,tt+1],
                                                                                alpha = alpha,
                                                                                rho = rho_samples[ii,,tt+1],
                                                                                n_items = n_items,
                                                                                metric = metric)
         }else if( (aug_method == "pseudolikelihood") & (metric %in% c("footrule", "spearman")) ){
-          aug_rankings[jj,,ii] = BayesMallows:::metropolis_hastings_aug_ranking_pseudo(current_ranking = aug_rankings[jj,,ii],
+          aug_rankings[jj,,ii] = metropolis_hastings_aug_ranking_pseudo(current_ranking = aug_rankings[jj,,ii],
                                                                                        partial_ranking = R_obs[jj,,tt+1],
                                                                                        alpha = alpha,
                                                                                        rho = rho_samples[ii,,tt+1],
