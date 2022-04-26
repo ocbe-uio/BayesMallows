@@ -192,9 +192,9 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
     for(int i = 0; i < n_iterations; ++i){
       // Note: We can use 1-norm because the exponential never gets negative
       // Normalize rows
-      A = arma::normalise(A, 1, 1);
+      A = normalise(A, 1, 1);
       // Normalize columns
-      A = arma::normalise(A, 1, 0);
+      A = normalise(A, 1, 0);
 
       double diff = arma::abs((A - A_old)/A_old).max();
       if(diff < tol) break;

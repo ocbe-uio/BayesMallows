@@ -46,7 +46,7 @@ uvec update_cluster_labels(
       max(assignment_prob.row(i)));
 
     // Normalize with 1-norm
-    probs = arma::normalise(probs, 1);
+    probs = normalise(probs, 1);
 
     assignment_prob.row(i) = probs;
     new_cluster_assignment(i) = sample_int(assignment_prob.row(i));
@@ -72,7 +72,7 @@ vec update_cluster_probs(
   }
   // Finally, normalize cluster_probs with 1-norm.
   // result now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
-  return arma::normalise(cluster_probs, 1);
+  return normalise(cluster_probs, 1);
 
 }
 
