@@ -155,7 +155,7 @@ trace_rtilde <- function(model_fit, items, assessors, ...) {
     items <- levels(model_fit$augmented_data$item)[items]
   }
 
-  model_fit$augmented_data[model_fit$augmented_data$assessor %in% assessors &
+  df <- model_fit$augmented_data[model_fit$augmented_data$assessor %in% assessors &
                              model_fit$augmented_data$item %in% items, ,
                            drop = FALSE]
 

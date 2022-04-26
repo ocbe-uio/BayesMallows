@@ -40,7 +40,7 @@ prepare_partition_function <- function(logz_estimate, metric, n_items) {
   }
 
   # Second, do we have a sequence?
-  partition_function_data[partition_function_data$n_items == n_items &
+  relevant_params <- partition_function_data[partition_function_data$n_items == n_items &
                             partition_function_data$metric == metric &
                             partition_function_data$type == "cardinalities", , drop = FALSE]
 

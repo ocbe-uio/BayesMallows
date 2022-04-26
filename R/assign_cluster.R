@@ -40,7 +40,7 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   }
   stopifnot(burnin < model_fit$nmc)
 
-  df <- dplyr::filter(model_fit$cluster_assignment, .data$iteration > burnin)
+  df <- model_fit$cluster_assignment[model_fit$cluster_assignment$iteration > burnin, , drop = FALSE]
 
   # Compute the probability of each iteration
   df <- dplyr::group_by(df, .data$assessor)
@@ -67,7 +67,7 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   # Compute the MAP estimate per assessor
   map <- dplyr::group_by(df, .data$assessor)
   map <- dplyr::mutate(map, max_prob = max(.data$probability))
-  map <- dplyr::filter(map, .data$probability == .data$max_prob)
+  map <- map[map$probability == map$max_prob, , drop = FALSE]
 
   # Deal with the possible case of ties
   map <- dplyr::filter(map, dplyr::row_number() == 1)
@@ -79,7 +79,7 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   df <- dplyr::inner_join(df, map, by = "assessor")
 
   if (!soft) {
-    df <- dplyr::filter(df, .data$cluster == .data$map_cluster)
+    df <- df[df$cluster == df$map_cluster, , drop = FALSE]
     df <- dplyr::select(df, -.data$cluster)
   }
 
