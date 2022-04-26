@@ -36,7 +36,7 @@ double update_alpha(vec& alpha_acceptance,
   //int n_assessors = rankings.n_cols;
   int n_items = rho_old.n_elem;
 
-  double alpha_proposal = std::exp(arma::randn<double>() * alpha_prop_sd +
+  double alpha_proposal = std::exp(randn<double>() * alpha_prop_sd +
                               std::log(alpha_old));
 
   double rank_dist = rank_dist_sum(rankings, rho_old, metric, obs_freq);
@@ -55,7 +55,7 @@ double update_alpha(vec& alpha_acceptance,
     ) + std::log(alpha_proposal) - std::log(alpha_old);
 
   // Draw a uniform random number
-  double u = std::log(arma::randu<double>());
+  double u = std::log(randu<double>());
 
   if(ratio > u && alpha_proposal < alpha_max){
     ++alpha_acceptance(cluster_index);
@@ -92,7 +92,7 @@ void update_rho(cube& rho, vec& rho_acceptance, mat& rho_old,
     std::log(prob_backward) - std::log(prob_forward);
 
   // Draw a uniform random number
-  double u = std::log(arma::randu<double>());
+  double u = std::log(randu<double>());
 
   if(ratio > u){
     rho_old.col(cluster_index) = rho_proposal;

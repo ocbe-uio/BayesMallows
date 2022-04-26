@@ -58,7 +58,7 @@ Rcpp::List smc_mallows_new_users_partial(
   /* generate rho samples using uniform prior ------------- */
   cube rho_samples(N, n_items, Time + 1, arma::fill::zeros);
   for (uword i = 0; i < N; ++i) {
-    uvec items_sample = arma::randperm(n_items) + 1;
+    uvec items_sample = randperm(n_items) + 1;
     for (uword j = 0; j < n_items; ++j) {
       rho_samples(i, j, 0) = items_sample(j);
     }

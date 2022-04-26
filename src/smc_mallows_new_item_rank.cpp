@@ -55,7 +55,7 @@ Rcpp::List smc_mallows_new_item_rank(
   // Generate N initial samples of rho using the uniform prior
   cube rho_samples(N, n_items, Time, arma::fill::zeros);
   for (uword i = 0; i < N; ++i) {
-    const uvec items_sample = arma::randperm(n_items) + 1;
+    const uvec items_sample = randperm(n_items) + 1;
     for (uword j = 0; j < n_items; ++j) {
       rho_samples(i, j, 0) = items_sample(j);
     }

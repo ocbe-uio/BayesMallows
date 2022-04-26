@@ -78,7 +78,7 @@ vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor
   uvec constrained_items = Rcpp::as<uvec>(assessor_constraints[0]);
 
   // Sample an integer between 1 and n_items
-  int item = arma::randi<int>(arma::distr_param(1, n_items));
+  int item = randi<int>(arma::distr_param(1, n_items));
 
   // Left and right limits of the interval we draw ranks from
   // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
@@ -87,7 +87,7 @@ vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor
 
   // Now complete the leap step by sampling a new proposal uniformly between
   // left_limit + 1 and right_limit - 1
-  int proposed_rank = arma::randi<int>(arma::distr_param(left_limit + 1, right_limit - 1));
+  int proposed_rank = randi<int>(arma::distr_param(left_limit + 1, right_limit - 1));
 
   // Assign the proposal to the (item-1)th item
   vec proposal = ranking;
@@ -108,7 +108,7 @@ vec propose_swap(const vec& ranking, const Rcpp::List& assessor_constraints,
   int n_items = ranking.n_elem;
 
   // Draw a random number, representing an item
-  int u = arma::as_scalar(arma::randi(1, arma::distr_param(1, n_items - Lswap)));
+  int u = arma::as_scalar(randi(1, arma::distr_param(1, n_items - Lswap)));
 
   int ind1 = arma::as_scalar(arma::find(ranking == u));
   int ind2 = arma::as_scalar(arma::find(ranking == (u + Lswap)));
@@ -176,7 +176,7 @@ void augment_pairwise(
 
     // Finally, decide whether to accept the proposal or not
     // Draw a uniform random number
-    double u = std::log(arma::randu<double>());
+    double u = std::log(randu<double>());
 
     // Find which cluster the assessor belongs to
     int cluster = current_cluster_assignment(i);
