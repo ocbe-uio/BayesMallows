@@ -3,6 +3,8 @@
 #include "smc.h"
 #include "partitionfuns.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title SMC-mallows new users partial (alpha fixed)
 //' @description Function to perform resample-move SMC algorithm where we receive new users with complete rankings
@@ -47,9 +49,9 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
 
   // generate rho samples using uniform prior
   arma::cube rho_samples(N, n_items, Time + 1, arma::fill::zeros);
-  for (arma::uword i = 0; i < N; ++i) {
+  for (uword i = 0; i < N; ++i) {
     const arma::uvec items_sample = arma::randperm(n_items) + 1;
-    for (arma::uword j = 0; j < n_items; ++j) {
+    for (uword j = 0; j < n_items; ++j) {
       rho_samples(i, j, 0) = items_sample(j);
     }
   }
@@ -62,7 +64,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
   /* ====================================================== */
   unsigned int num_obs = 0;
 
-  for (arma::uword tt = 0; tt < Time; ++tt) {
+  for (uword tt = 0; tt < Time; ++tt) {
 
     /* ====================================================== */
     /* New Information                                        */
@@ -89,8 +91,8 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     const arma::ivec ranks = Rcpp::seq(1, n_items);
     arma::vec aug_prob = Rcpp::rep(1.0, N);
 
-    for (arma::uword ii = 0; ii < N; ++ii) {
-      for (arma::uword jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
+    for (uword ii = 0; ii < N; ++ii) {
+      for (uword jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
         arma::vec partial_ranking = R_obs.row(jj).t();
 
         // find items missing from original observed ranking
@@ -133,7 +135,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     /* Re-weight                                              */
     /* ====================================================== */
 
-    for (arma::uword ii = 0; ii < N; ++ii) {
+    for (uword ii = 0; ii < N; ++ii) {
       // evaluate the log estimate of the partition function for a particular
       // value of alpha
 
@@ -181,7 +183,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     /* ====================================================== */
     /* Move step                                              */
     /* ====================================================== */
-    for (arma::uword ii = 0; ii < N; ++ii) {
+    for (uword ii = 0; ii < N; ++ii) {
       arma::mat all_observed_rankings;
       all_observed_rankings = aug_rankings(arma::span(0, num_obs - 1), arma::span::all, arma::span(ii));
       const arma::mat& rs_slice = rho_samples.slice(tt + 1);
@@ -192,7 +194,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
         metropolis_hastings_rho(\
           alpha, n_items, all_observed_rankings, metric, rs.t(), leap_size\
         );
-      for (arma::uword jj = 0; jj < num_obs; ++jj) {
+      for (uword jj = 0; jj < num_obs; ++jj) {
         arma::rowvec ar;
         ar = aug_rankings(arma::span(jj), arma::span::all, arma::span(ii));
         arma::vec mh_aug_result;

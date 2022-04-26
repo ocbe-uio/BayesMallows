@@ -3,6 +3,8 @@
 #include "smc.h"
 #include "partitionfuns.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title SMC-Mallows new users partial
 //' @description Function to perform resample-move SMC algorithm where we receive new users with complete rankings
@@ -55,9 +57,9 @@ Rcpp::List smc_mallows_new_users_partial(
 
   /* generate rho samples using uniform prior ------------- */
   arma::cube rho_samples(N, n_items, Time + 1, arma::fill::zeros);
-  for (arma::uword i = 0; i < N; ++i) {
+  for (uword i = 0; i < N; ++i) {
     arma::uvec items_sample = arma::randperm(n_items) + 1;
-    for (arma::uword j = 0; j < n_items; ++j) {
+    for (uword j = 0; j < n_items; ++j) {
       rho_samples(i, j, 0) = items_sample(j);
     }
   }
@@ -75,7 +77,7 @@ Rcpp::List smc_mallows_new_users_partial(
   /* ====================================================== */
   unsigned int num_obs = 0;
 
-  for (arma::uword tt = 0; tt < Time; ++tt) {
+  for (uword tt = 0; tt < Time; ++tt) {
     if (verbose) REprintf("observe %i out of %i \n", tt + 1, Time);
     /* ====================================================== */
     /* New Information                                        */
@@ -98,8 +100,8 @@ Rcpp::List smc_mallows_new_users_partial(
     const arma::ivec ranks = Rcpp::seq(1, n_items);
     arma::vec aug_prob = Rcpp::rep(1.0, N);
 
-    for (arma::uword ii = 0; ii < N; ++ii) {
-      for (arma::uword jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
+    for (uword ii = 0; ii < N; ++ii) {
+      for (uword jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
         arma::vec partial_ranking = R_obs.row(jj).t();
 
         // find items missing from original observed ranking
@@ -145,7 +147,7 @@ Rcpp::List smc_mallows_new_users_partial(
     /* Re-weight                                              */
     /* ====================================================== */
 
-    for (arma::uword ii = 0; ii < N; ++ii) {
+    for (uword ii = 0; ii < N; ++ii) {
       // evaluate the log estimate of the partition function for a particular
       // value of alpha
 
@@ -197,7 +199,7 @@ Rcpp::List smc_mallows_new_users_partial(
     /* ====================================================== */
     /* Move step                                              */
     /* ====================================================== */
-    for (arma::uword ii = 0; ii < N; ++ii) {
+    for (uword ii = 0; ii < N; ++ii) {
       double as = alpha_samples(ii, tt + 1);
       arma::mat all_observed_rankings;
       all_observed_rankings = aug_rankings(arma::span(0, num_obs - 1), arma::span::all, arma::span(ii));
@@ -213,7 +215,7 @@ Rcpp::List smc_mallows_new_users_partial(
         as, n_items, all_observed_rankings, metric, rs.t(), logz_estimate,\
         alpha_prop_sd, lambda, alpha_max\
       );
-      for (arma::uword jj = 0; jj < num_obs; ++jj) {
+      for (uword jj = 0; jj < num_obs; ++jj) {
         arma::rowvec ar;
         ar = aug_rankings(arma::span(jj), arma::span::all, arma::span(ii));
         arma::vec mh_aug_result;
