@@ -167,7 +167,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
 
   /* normalise weights ------------------------------------ */
   double maxw = arma::max(log_inc_wgt);
-  vec w = arma::exp(log_inc_wgt - maxw);
+  vec w = exp(log_inc_wgt - maxw);
   vec norm_wgt = w / arma::sum(w);
 
   /* ====================================================== */
@@ -275,7 +275,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
 
     /* normalise weights ------------------------------------ */
     double maxw = arma::max(log_inc_wgt);
-    vec w = arma::exp(log_inc_wgt - maxw);
+    vec w = exp(log_inc_wgt - maxw);
     vec norm_wgt = w / arma::sum(w);
 
     /* ====================================================== */

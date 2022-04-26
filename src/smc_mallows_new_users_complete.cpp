@@ -150,7 +150,7 @@ Rcpp::List smc_mallows_new_users_complete(
 
     /* normalise weights ------------------------------------ */
     const double& maxw = arma::max(log_inc_wgt);
-    const vec& w = arma::exp(log_inc_wgt - maxw);
+    const vec& w = exp(log_inc_wgt - maxw);
     const vec norm_wgt = w / arma::sum(w);
 
     /* store ESS = sum(w)^2/sum(w^2) */

@@ -42,7 +42,7 @@ uvec update_cluster_labels(
 
   for(int i = 0; i < n_assessors; ++i){
     // Exponentiate to get unnormalized prob relative to max
-    rowvec probs = arma::exp(assignment_prob.row(i) -
+    rowvec probs = exp(assignment_prob.row(i) -
       arma::max(assignment_prob.row(i)));
 
     // Normalize with 1-norm
