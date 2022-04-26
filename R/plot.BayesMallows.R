@@ -37,7 +37,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
   stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment", "theta"))
 
   if (parameter == "alpha") {
-    df <- dplyr::filter(x$alpha, .data$iteration > burnin)
+    df <- x$alpha[x$alpha$iteration > burnin, , drop = FALSE]
 
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
@@ -63,7 +63,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
       items <- x$items[items]
     }
 
-    df <- dplyr::filter(x$rho, .data$iteration > burnin, .data$item %in% items)
+    df <- x$rho[x$rho$iteration > burnin & x$rho$item %in% items, , drop = FALSE]
 
     # Compute the density, rather than the count, since the latter
     # depends on the number of Monte Carlo samples
@@ -86,7 +86,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 
     return(p)
   } else if (parameter == "cluster_probs") {
-    df <- dplyr::filter(x$cluster_probs, .data$iteration > burnin)
+    df <- x$cluster_probs[x$cluster_probs$iteration > burnin, , drop = FALSE]
 
     ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
@@ -127,7 +127,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
       stop("Please run compute_mallows with error_model = 'bernoulli'.")
     }
 
-    df <- dplyr::filter(x$theta, .data$iteration > burnin)
+    df <- x$theta[x$theta$iteration > burnin, , drop = FALSE]
 
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
