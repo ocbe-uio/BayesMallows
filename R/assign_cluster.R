@@ -49,8 +49,8 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
 
   # Compute the probability of each cluster, per assessor
   df <- dplyr::group_by(df, .data$assessor, .data$value)
-  df <- dplyr::summarise(df, probability = sum(.data$probability))
-  df <- dplyr::ungroup(df)
+  df <- dplyr::summarise(df, probability = sum(.data$probability),
+                         .groups = "drop")
   df <- dplyr::rename(df, cluster = .data$value)
 
   if (expand) {
