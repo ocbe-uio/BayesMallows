@@ -123,7 +123,7 @@ Rcpp::List smc_mallows_new_item_rank(
         );
         const vec& a_rank = proposal["aug_ranking"];
         const double& f_prob = proposal["forward_prob"];
-        aug_rankings(arma::span(jj), arma::span::all, arma::span(ii)) = a_rank;
+        aug_rankings(span(jj), span::all, span(ii)) = a_rank;
         total_correction_prob(ii) *= f_prob;
       } else {
         Rcpp::stop(\

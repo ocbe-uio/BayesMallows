@@ -134,7 +134,7 @@ Rcpp::List smc_mallows_new_users_complete(
       const Rcpp::Nullable<vec>& cardinalities = R_NilValue;
       const double& alpha_samples_ii = alpha_samples(ii, tt + 1);
       const rowvec rho_samples_ii = \
-        rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
+        rho_samples(span(ii), span::all, span(tt + 1));
 
       /* Calculating log_z_alpha and log_likelihood ----------- */
       double log_z_alpha, log_likelihood;
@@ -183,8 +183,8 @@ Rcpp::List smc_mallows_new_users_complete(
         // the MCMC kernels
         const double& as = alpha_samples(ii, tt + 1);
         const rowvec& rs = \
-          rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
-        rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)) =\
+          rho_samples(span(ii), span::all, span(tt + 1));
+        rho_samples(span(ii), span::all, span(tt + 1)) =\
           metropolis_hastings_rho(\
             as, n_items, all_observed_rankings, metric, rs.t(), leap_size\
           );

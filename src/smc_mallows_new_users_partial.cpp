@@ -120,7 +120,7 @@ Rcpp::List smc_mallows_new_users_partial(
             partial_ranking.elem(arma::find_nonfinite(partial_ranking)) = Rcpp::as<vec>(Rcpp::sample(missing_ranks, missing_ranks.length()));
           }
 
-          aug_rankings(arma::span(jj), arma::span::all, arma::span(ii)) = partial_ranking;
+          aug_rankings(span(jj), span::all, span(ii)) = partial_ranking;
           aug_prob(ii) = divide_by_fact(aug_prob(ii), missing_ranks.length());
 
         } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
@@ -128,14 +128,14 @@ Rcpp::List smc_mallows_new_users_partial(
           // randomly permute the unranked items to give the order in which they will be allocated
           uvec item_ordering;
           item_ordering = arma::conv_to<uvec>::from(arma::shuffle(unranked_items));
-          const rowvec rho_s = rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
+          const rowvec rho_s = rho_samples(span(ii), span::all, span(tt + 1));
           const Rcpp::List proposal = calculate_forward_probability(\
             item_ordering, partial_ranking, missing_ranks, rho_s.t(),\
             alpha_samples(ii, tt + 1), n_items, metric\
           );
           const vec& a_rank = proposal["aug_ranking"];
           const double& f_prob = proposal["forward_prob"];
-          aug_rankings(arma::span(jj), arma::span::all, arma::span(ii)) = a_rank;
+          aug_rankings(span(jj), span::all, span(ii)) = a_rank;
           aug_prob(ii) = aug_prob(ii) * f_prob;
         } else {
           Rcpp::stop("Combined choice of metric and aug_method is incompatible");
@@ -155,7 +155,7 @@ Rcpp::List smc_mallows_new_users_partial(
       const Rcpp::Nullable<vec>& cardinalities = R_NilValue;
       double alpha_samples_ii = alpha_samples(ii, tt + 1);
       rowvec rho_samples_ii = \
-        rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
+        rho_samples(span(ii), span::all, span(tt + 1));
 
       /* Calculating log_z_alpha and log_likelihood ----------- */
       double log_z_alpha, log_likelihood;
@@ -164,7 +164,7 @@ Rcpp::List smc_mallows_new_users_partial(
       );
 
       mat new_observed_rankings;
-      new_observed_rankings = aug_rankings(arma::span(num_obs - num_new_obs, num_obs - 1), arma::span::all, arma::span(ii));
+      new_observed_rankings = aug_rankings(span(num_obs - num_new_obs, num_obs - 1), span::all, span(ii));
       log_likelihood = get_mallows_loglik(\
         alpha_samples_ii, rho_samples_ii.t(), n_items, new_observed_rankings,\
         metric\
@@ -194,7 +194,7 @@ Rcpp::List smc_mallows_new_users_partial(
     /* Replacing tt + 1 column on alpha_samples ------------- */
     alpha_samples.col(tt + 1) =  alpha_samples.submat(index, tt_vec + 1);
     cube aug_rankings_index = aug_rankings.slices(index);
-    aug_rankings.rows(0, num_obs - 1) = aug_rankings_index(arma::span(0, num_obs - 1), arma::span::all, arma::span::all);
+    aug_rankings.rows(0, num_obs - 1) = aug_rankings_index(span(0, num_obs - 1), span::all, span::all);
 
     /* ====================================================== */
     /* Move step                                              */
@@ -202,12 +202,12 @@ Rcpp::List smc_mallows_new_users_partial(
     for (uword ii = 0; ii < N; ++ii) {
       double as = alpha_samples(ii, tt + 1);
       mat all_observed_rankings;
-      all_observed_rankings = aug_rankings(arma::span(0, num_obs - 1), arma::span::all, arma::span(ii));
+      all_observed_rankings = aug_rankings(span(0, num_obs - 1), span::all, span(ii));
       mat rs_slice = rho_samples.slice(tt + 1);
       rowvec rs = rs_slice.row(ii);
       // move each particle containing sample of rho and alpha by using
       // the MCMC kernels
-      rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)) =\
+      rho_samples(span(ii), span::all, span(tt + 1)) =\
         metropolis_hastings_rho(\
           as, n_items, all_observed_rankings, metric, rs.t(), leap_size\
         );
@@ -217,14 +217,14 @@ Rcpp::List smc_mallows_new_users_partial(
       );
       for (uword jj = 0; jj < num_obs; ++jj) {
         rowvec ar;
-        ar = aug_rankings(arma::span(jj), arma::span::all, arma::span(ii));
+        ar = aug_rankings(span(jj), span::all, span(ii));
         vec mh_aug_result;
         if (aug_method == "random") {
           mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric);
         } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
           mh_aug_result = metropolis_hastings_aug_ranking_pseudo(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric);
         }
-        aug_rankings(arma::span(jj), arma::span::all, arma::span(ii)) = mh_aug_result;
+        aug_rankings(span(jj), span::all, span(ii)) = mh_aug_result;
       }
     }
   }
