@@ -2,20 +2,19 @@
 #define MISC_H
 
 #include <RcppArmadillo.h> // need because of functions that return arma and Rcpp objects
-using namespace arma;
 
 long int factorial(int);
 int binomial_coefficient(int, int);
-uvec std_setdiff(uvec&, uvec&);
-int sample_int(const rowvec& probs);
+arma::uvec std_setdiff(arma::uvec&, arma::uvec&);
+int sample_int(const arma::rowvec& probs);
 double rtruncbeta(int shape1, int shape2, double trunc = 1);
-uvec arma_setdiff(uvec x, uvec y);
-vec arma_setdiff_vec(vec, vec, const bool& = false);
-Rcpp::NumericVector Rcpp_setdiff_arma(ivec, vec);
-uvec maybe_offset_indices(vec&, uvec, const bool& = true);
-sword sample_one_with_prob(vec, vec);
-uvec new_pseudo_proposal(uvec);
+arma::uvec arma_setdiff(arma::uvec x, arma::uvec y);
+arma::vec arma_setdiff_vec(arma::vec, arma::vec, const bool& = false);
+Rcpp::NumericVector Rcpp_setdiff_arma(arma::ivec, arma::vec);
+arma::uvec maybe_offset_indices(arma::vec&, arma::uvec, const bool& = true);
+arma::sword sample_one_with_prob(arma::vec, arma::vec);
+arma::uvec new_pseudo_proposal(arma::uvec);
 double divide_by_fact(double, int);
-uvec permute_with_weights(vec, int);
-vec arma_vec_seq(int);
+arma::uvec permute_with_weights(arma::vec, int);
+arma::vec arma_vec_seq(int);
 #endif
