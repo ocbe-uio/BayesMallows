@@ -33,7 +33,9 @@ predict_top_k <- function(model_fit, burnin = model_fit$burnin,
 
 .predict_top_k <- function(model_fit, burnin, k) {
 
-  rankings <- dplyr::filter(model_fit$augmented_data, .data$iteration > burnin, .data$value <= k)
+  rankings <- model_fit$augmented_data[model_fit$augmented_data$iteration > burnin &
+                                         model_fit$augmented_data$value <= k, , drop = FALSE]
+
   n_samples <- length(unique(rankings$iteration))
   rankings <- dplyr::mutate(rankings, item = as.character(.data$item))
   rankings <- dplyr::group_by(rankings, .data$assessor, .data$item)
