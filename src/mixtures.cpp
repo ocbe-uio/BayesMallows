@@ -53,7 +53,7 @@ uvec update_cluster_labels(
   }
 
   if(save_ind_clus){
-    assignment_prob.save(std::string("cluster_probs") + std::to_string(t + 1) + std::string(".csv"), arma::csv_ascii);
+    assignment_prob.save(std::string("cluster_probs") + std::to_string(t + 1) + std::string(".csv"), csv_ascii);
   }
   return(new_cluster_assignment);
 }
