@@ -116,7 +116,7 @@ Rcpp::List smc_mallows_new_item_rank(
 
         // randomly permute the unranked items to give the order in which they will be allocated
         uvec item_ordering;
-        item_ordering = arma::conv_to<uvec>::from(arma::shuffle(unranked_items));
+        item_ordering = conv_to<uvec>::from(arma::shuffle(unranked_items));
         const Rcpp::List proposal = calculate_forward_probability(\
           item_ordering, R_obs_slice_0_row_jj, remaining_set, rho_samples.slice(0).row(ii).t(),\
           alpha_samples(ii, 0), n_items, metric\

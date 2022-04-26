@@ -127,7 +127,7 @@ Rcpp::List smc_mallows_new_users_partial(
 
           // randomly permute the unranked items to give the order in which they will be allocated
           uvec item_ordering;
-          item_ordering = arma::conv_to<uvec>::from(arma::shuffle(unranked_items));
+          item_ordering = conv_to<uvec>::from(arma::shuffle(unranked_items));
           const rowvec rho_s = rho_samples(span(ii), span::all, span(tt + 1));
           const Rcpp::List proposal = calculate_forward_probability(\
             item_ordering, partial_ranking, missing_ranks, rho_s.t(),\

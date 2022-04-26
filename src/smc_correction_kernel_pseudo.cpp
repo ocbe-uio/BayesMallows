@@ -103,7 +103,7 @@ Rcpp::List correction_kernel_pseudo(
 
             // fit the augmented ranking within the partial rankings with NAs
             vec ar;
-            ar = arma::conv_to<vec>::from(auxiliary_ranking);
+            ar = conv_to<vec>::from(auxiliary_ranking);
             observed_ranking.elem(item_ordering - 1) = ar; // ranks for items
         }
         return Rcpp::List::create(

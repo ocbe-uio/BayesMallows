@@ -96,7 +96,7 @@ Rcpp::List calculate_forward_probability(
     auxiliary_ranking(num_items_unranked - 1) = arma::as_scalar(remaining_set);
 
     // fit the augmented ranking within the partial rankings with NAs
-    const vec& ar = arma::conv_to<vec>::from(auxiliary_ranking);
+    const vec& ar = conv_to<vec>::from(auxiliary_ranking);
     partial_ranking.elem(item_ordering) = ar; // ranks for items
   }
   return Rcpp::List::create(

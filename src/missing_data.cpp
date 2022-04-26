@@ -28,7 +28,7 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
       // Find the available ranks and permute them
       uvec new_ranks = arma::shuffle(arma_setdiff(
         arma::linspace<uvec>(1, rank_vector.size()),
-        arma::conv_to<uvec>::from(rank_vector(present_inds))
+        conv_to<uvec>::from(rank_vector(present_inds))
       ));
 
       for(unsigned int j = 0; j < missing_inds.size(); ++j){

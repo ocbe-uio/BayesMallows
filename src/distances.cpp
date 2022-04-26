@@ -56,8 +56,8 @@ double ulam_distance(const vec& r1, const vec& r2){
 
   int N = r1.n_elem;
 
-  ivec a = arma::conv_to<ivec>::from(r1);
-  ivec b = arma::conv_to<ivec>::from(r2);
+  ivec a = conv_to<ivec>::from(r1);
+  ivec b = conv_to<ivec>::from(r2);
 
   int *p1 = (int*) calloc(N, sizeof (int));
   int *p2 = (int*) calloc(N, sizeof (int));
