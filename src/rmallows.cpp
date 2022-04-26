@@ -2,6 +2,8 @@
 #include "leapandshift.h"
 #include "distances.h"
 
+using namespace arma;
+
 // via the depends attribute we tell Rcpp to create hooks for
 // RcppArmadillo so that the build process will know what to do
 //
@@ -46,14 +48,14 @@ arma::mat rmallows(
   int n_items = rho0.n_elem;
 
   // Declare the matrix to hold the sampled ranks
-  arma::mat rho(n_items, n_samples);
+  mat rho(n_items, n_samples);
 
   // Other variables used
   int rho_index = 0;
 
   // Vector to hold the iteration value of rho
   // Initializing it to the modal ranking
-  arma::vec rho_iter = rho0;
+  vec rho_iter = rho0;
 
   int t = 1;
   // This is the Metropolis-Hastings loop
@@ -62,8 +64,8 @@ arma::mat rmallows(
     // Check if the user has tried to stop the running
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
 
-    arma::vec rho_proposal;
-    arma::uvec indices;
+    vec rho_proposal;
+    uvec indices;
     double prob_backward, prob_forward;
 
     // Sample a proposal
@@ -72,7 +74,7 @@ arma::mat rmallows(
 
     // These distances do not work with the computational shortcut
     if ((metric == "cayley") || (metric == "ulam")) {
-      indices = arma::regspace<arma::uvec>(0, n_items - 1);
+      indices = arma::regspace<uvec>(0, n_items - 1);
     }
 
     // Compute the distances to current and proposed ranks
