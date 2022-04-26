@@ -127,7 +127,7 @@ sample_mallows <- function(rho0, alpha0, n_samples,
             idvar = "iteration",
             ids = diagnostic$iteration)
 
-    diagnostic <- dplyr::filter(diagnostic, .data$item %in% items_to_plot)
+    diagnostic <- diagnostic[diagnostic$item %in% items_to_plot, , drop = FALSE]
     diagnostic <- dplyr::mutate(diagnostic, item = as.factor(as.integer(.data$item)))
 
     rho_plot <- ggplot2::ggplot(diagnostic,
