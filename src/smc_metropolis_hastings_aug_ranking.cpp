@@ -2,6 +2,8 @@
 #include "smc.h"
 #include "misc.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Metropolis-Hastings Augmented Ranking
 //' @description Function to perform Metropolis-Hastings for new augmented ranking
@@ -27,13 +29,13 @@ arma::vec metropolis_hastings_aug_ranking(
 	const std::string metric
 ) {
   // augment incomplete ranks to initialise
-  arma::vec ranks = arma_vec_seq(n_items);
+  vec ranks = arma_vec_seq(n_items);
 
   // find items missing from original observed ranking
-  const arma::uvec unranked_items = find_nonfinite(partial_ranking);
+  const uvec unranked_items = find_nonfinite(partial_ranking);
 
   // find unallocated ranks from original observed ranking
-  arma::vec remaining_set = arma_setdiff_vec(current_ranking, partial_ranking, true);
+  vec remaining_set = arma_setdiff_vec(current_ranking, partial_ranking, true);
 
 
   // if the observed and augmented ranking are exactly the same then break
@@ -46,14 +48,14 @@ arma::vec metropolis_hastings_aug_ranking(
   } else {
 
     // generate random order for remaining_set
-    const arma::vec A = arma::shuffle(remaining_set);
+    const vec A = arma::shuffle(remaining_set);
     remaining_set = std::move(A);
 
     // Subset by element position and set equal to the now permuted remaining set
     partial_ranking.elem(unranked_items) = remaining_set;
 
     // set the augmented partial ranking as the proposed augmented ranking
-    const arma::vec& proposed_ranking = partial_ranking;
+    const vec& proposed_ranking = partial_ranking;
 
 
      /* MH TIME ------------------------------------------------------------- */

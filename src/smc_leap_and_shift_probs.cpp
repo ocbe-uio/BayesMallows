@@ -1,6 +1,8 @@
 #include "RcppArmadillo.h"
 #include <cmath>
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Leap and Shift Probabilities
 //' @description Determine the new Calculates transition probabilities for proposing a new rho
@@ -37,7 +39,7 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
   const int rho_plus_leap = rho(u) + leap_size;
   const int low_bd = std::max(1, rho_minus_leap);
   const int max_bd = std::min(n_items, rho_plus_leap);
-  arma::ivec S = Rcpp::seq(low_bd, max_bd);
+  ivec S = Rcpp::seq(low_bd, max_bd);
   S = S.elem(arma::find(S != rho(u)));
 
   // draw a random number r from S
@@ -45,12 +47,12 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
   r = r - 1; // adjusting index for R correspondence
 
   // Create leap step
-  arma::vec rho_star = rho;
+  vec rho_star = rho;
   rho_star(u) = r + 1; // replace u-th entry with r
 
   // here, two elements are the same so we need to shift element and replace the repeated r with u
   const int& delta = rho_star(u) - rho(u);
-  arma::ivec rho_prime = Rcpp::rep(0, n_items);
+  ivec rho_prime = Rcpp::rep(0, n_items);
 
   // shift step
   for (int i = 0; i < n_items; ++i) {
@@ -70,12 +72,12 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
   const int rho_star_plus_leap = rho_star(u) + leap_size;
   const int S_star_min = std::max(1, rho_star_minus_leap);
   const int S_star_max = std::min(n_items, rho_star_plus_leap);
-  arma::ivec S_star;
+  ivec S_star;
   S_star = Rcpp::seq(S_star_min, S_star_max);
   S_star = S_star.elem(arma::find(S_star != rho_star(u)));
 
   // calculate forward and backwards probabilities
-  arma::vec forwards_prob, backwards_prob;
+  vec forwards_prob, backwards_prob;
   if (std::abs(rho_star(u) - rho(u)) == 1) {
     // p(proposed|current)
     forwards_prob = 1.0 / (n_items * S.n_elem) + 1.0 / (n_items * S_star.n_elem);
