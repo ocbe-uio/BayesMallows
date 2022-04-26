@@ -3,16 +3,18 @@
 #include "distances.h"
 #include "misc.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 
-arma::vec propose_augmentation(const arma::vec& ranks, const arma::uvec& indicator){
-  arma::vec proposal = ranks;
+vec propose_augmentation(const vec& ranks, const uvec& indicator){
+  vec proposal = ranks;
   proposal(arma::find(indicator == 1)) = arma::shuffle(ranks(arma::find(indicator == 1)));
   return(proposal);
 }
 
-void initialize_missing_ranks(arma::mat& rankings, const arma::umat& missing_indicator,
-                              const arma::uvec& assessor_missing) {
+void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
+                              const uvec& assessor_missing) {
 
   int n_assessors = rankings.n_cols;
 
@@ -20,13 +22,13 @@ void initialize_missing_ranks(arma::mat& rankings, const arma::umat& missing_ind
     if(assessor_missing(i) == 0) {
       continue;
     } else {
-      arma::vec rank_vector = rankings.col(i);
-      arma::uvec present_inds = arma::find(missing_indicator.col(i) == 0);
-      arma::uvec missing_inds = arma::find(missing_indicator.col(i) == 1);
+      vec rank_vector = rankings.col(i);
+      uvec present_inds = arma::find(missing_indicator.col(i) == 0);
+      uvec missing_inds = arma::find(missing_indicator.col(i) == 1);
       // Find the available ranks and permute them
-      arma::uvec new_ranks = arma::shuffle(arma_setdiff(
-        arma::linspace<arma::uvec>(1, rank_vector.size()),
-        arma::conv_to<arma::uvec>::from(rank_vector(present_inds))
+      uvec new_ranks = arma::shuffle(arma_setdiff(
+        arma::linspace<uvec>(1, rank_vector.size()),
+        arma::conv_to<uvec>::from(rank_vector(present_inds))
       ));
 
       for(unsigned int j = 0; j < missing_inds.size(); ++j){
@@ -37,11 +39,11 @@ void initialize_missing_ranks(arma::mat& rankings, const arma::umat& missing_ind
   }
 }
 
-void update_missing_ranks(arma::mat& rankings, const arma::uvec& current_cluster_assignment,
-                          arma::vec& aug_acceptance,
-                          const arma::umat& missing_indicator,
-                          const arma::uvec& assessor_missing,
-                          const arma::vec& alpha, const arma::mat& rho,
+void update_missing_ranks(mat& rankings, const uvec& current_cluster_assignment,
+                          vec& aug_acceptance,
+                          const umat& missing_indicator,
+                          const uvec& assessor_missing,
+                          const vec& alpha, const mat& rho,
                           const std::string& metric){
 
   int n_items = rankings.n_rows;
@@ -54,7 +56,7 @@ void update_missing_ranks(arma::mat& rankings, const arma::uvec& current_cluster
     }
 
     // Sample an augmentation proposal
-    arma::vec proposal = propose_augmentation(rankings.col(i), missing_indicator.col(i));
+    vec proposal = propose_augmentation(rankings.col(i), missing_indicator.col(i));
 
     // Draw a uniform random number
     double u = std::log(arma::randu<double>());
