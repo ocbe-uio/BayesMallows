@@ -53,7 +53,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       double log_q = 0;
 
       // n_items random uniform numbers
-      vec u = arma::log(randu(n_items));
+      vec u = log(randu(n_items));
 
       // Loop over possible values given to item j in random order
       vec myind = arma::shuffle(arma::regspace(0, n_items - 1));
@@ -74,7 +74,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
         // Probability of sample. Note that this is a vector quantity.
         log_prob = - alpha / n_items * arma::pow(arma::abs(r1 - r2), (metric == "footrule") ? 1. : 2.);
         log_prob = log_prob - std::log(arma::accu(exp(log_prob)));
-        vec log_cpd = arma::log(arma::cumsum(exp(log_prob)));
+        vec log_cpd = log(arma::cumsum(exp(log_prob)));
 
         // Draw a random sample
         int item_index = arma::as_scalar(arma::find(log_cpd > u(jj), 1));
