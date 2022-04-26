@@ -58,14 +58,14 @@ void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
     // Again subtracting 1 because of zero-first indexing
     // Find all the rankings of the items that are preferred to *item*
     vec rankings_above = current_ranking.elem(items_above - 1);
-    left_limit = arma::max(rankings_above);
+    left_limit = max(rankings_above);
   }
 
   // If there are any items below, we must find the possible rankings
   if(items_below.n_elem > 0){
     // Find all the rankings of the items that are disfavored to *item*
     vec rankings_below = current_ranking.elem(items_below - 1);
-    right_limit = arma::min(rankings_below);
+    right_limit = min(rankings_below);
   }
 
 }

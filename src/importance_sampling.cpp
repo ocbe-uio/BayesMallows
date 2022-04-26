@@ -91,7 +91,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
     }
     // Average over the Monte Carlo samples
     // Using this trick: https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/
-    double maxval = arma::max(partfun);
+    double maxval = max(partfun);
     logZ(t) = maxval + std::log(accu(exp(partfun - maxval))) - std::log(static_cast<double>(nmc));
   }
   return logZ;
