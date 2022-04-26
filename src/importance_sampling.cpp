@@ -73,7 +73,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
         vec r2 = rho(jj) * ones(k_max);
         // Probability of sample. Note that this is a vector quantity.
         log_prob = - alpha / n_items * arma::pow(arma::abs(r1 - r2), (metric == "footrule") ? 1. : 2.);
-        log_prob = log_prob - std::log(arma::accu(exp(log_prob)));
+        log_prob = log_prob - std::log(accu(exp(log_prob)));
         vec log_cpd = log(arma::cumsum(exp(log_prob)));
 
         // Draw a random sample
@@ -92,7 +92,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
     // Average over the Monte Carlo samples
     // Using this trick: https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/
     double maxval = arma::max(partfun);
-    logZ(t) = maxval + std::log(arma::accu(exp(partfun - maxval))) - std::log(static_cast<double>(nmc));
+    logZ(t) = maxval + std::log(accu(exp(partfun - maxval))) - std::log(static_cast<double>(nmc));
   }
   return logZ;
 }

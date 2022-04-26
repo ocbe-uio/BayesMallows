@@ -162,9 +162,9 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
   // Initialize a square matrix where each row/column sums to one
   mat A = ones<mat>(K, K) * 1.0 / K;
 
-  // arma::accu sums all elements of the tensor
+  // accu sums all elements of the tensor
   // the % operator computes the element-wise product
-  double Z0lim = -2 * std::log(static_cast<double>(K)) - arma::accu(A % log(A));
+  double Z0lim = -2 * std::log(static_cast<double>(K)) - accu(A % log(A));
 
   // Helper matrix
   mat B(K, K);
@@ -202,7 +202,7 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
       A_old = A;
     }
 
-    double Zlim = alpha * arma::accu(B % A) - 2 * std::log(K) - arma::accu(A % log(A));
+    double Zlim = alpha * accu(B % A) - 2 * std::log(K) - accu(A % log(A));
     double Z0 = arma::sum(log(arma::regspace(1, n_items)));
 
     result(i) = (Zlim - Z0lim)/K * n_items + Z0;
