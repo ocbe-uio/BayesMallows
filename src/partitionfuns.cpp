@@ -160,7 +160,7 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
                                         int K, int n_iterations = 1000, double tol = 1e-9){
   // IPFP procedure
   // Initialize a square matrix where each row/column sums to one
-  mat A = arma::ones<mat>(K, K) * 1.0 / K;
+  mat A = ones<mat>(K, K) * 1.0 / K;
 
   // arma::accu sums all elements of the tensor
   // the % operator computes the element-wise product

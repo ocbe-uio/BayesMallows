@@ -143,12 +143,12 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
 
 
   // Declare indicator vectors to hold acceptance or not
-  vec alpha_acceptance = arma::ones(n_clusters);
-  vec rho_acceptance = arma::ones(n_clusters);
+  vec alpha_acceptance = ones(n_clusters);
+  vec rho_acceptance = ones(n_clusters);
 
   vec aug_acceptance;
   if(any_missing | augpair){
-    aug_acceptance = arma::ones<vec>(n_assessors);
+    aug_acceptance = ones<vec>(n_assessors);
   } else {
     aug_acceptance.reset();
   }

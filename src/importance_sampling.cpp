@@ -68,9 +68,9 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
         int k_max = inds.n_elem;
 
         // Reference vector
-        vec r1 = inds + arma::ones(k_max);
+        vec r1 = inds + ones(k_max);
         // Sampled vector
-        vec r2 = rho(jj) * arma::ones(k_max);
+        vec r2 = rho(jj) * ones(k_max);
         // Probability of sample. Note that this is a vector quantity.
         log_prob = - alpha / n_items * arma::pow(arma::abs(r1 - r2), (metric == "footrule") ? 1. : 2.);
         log_prob = log_prob - std::log(arma::accu(arma::exp(log_prob)));
