@@ -59,13 +59,13 @@ double compute_is_fit(double alpha, vec fit){
 
 double logz_cardinalities(const double& alpha, const int& n_items, const vec& cardinalities, const std::string& metric){
   if(metric == "footrule"){
-    vec distances = arma::regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
+    vec distances = regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
     return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
   } else if (metric == "spearman"){
-    vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
+    vec distances = regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
     return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
   } else if (metric == "ulam"){
-    vec distances = arma::regspace(0, 1, n_items - 1);
+    vec distances = regspace(0, 1, n_items - 1);
     return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
   } else {
     Rcpp::stop("Cardinalities not implemented for the provided metric.");
@@ -86,15 +86,15 @@ double logz_cardinalities(const double& alpha, const int& n_items, const vec& ca
 double log_expected_dist(const double& alpha, const int& n_items,
                          const arma::vec& cardinalities, const std::string& metric){
   if(metric == "footrule"){
-    vec distances = arma::regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
+    vec distances = regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
     return std::log(sum(distances % cardinalities % exp(-alpha * distances / n_items)))
       -std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
   } else if (metric == "spearman"){
-    vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
+    vec distances = regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
     return std::log(sum(distances % cardinalities % exp(-alpha * distances / n_items)))
       -std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
   } else if (metric == "ulam"){
-    vec distances = arma::regspace(0, 1, n_items - 1);
+    vec distances = regspace(0, 1, n_items - 1);
     return std::log(sum(distances % cardinalities % exp(-alpha * distances / n_items)))
       -std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
   } else {
@@ -203,7 +203,7 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
     }
 
     double Zlim = alpha * accu(B % A) - 2 * std::log(K) - accu(A % log(A));
-    double Z0 = sum(log(arma::regspace(1, n_items)));
+    double Z0 = sum(log(regspace(1, n_items)));
 
     result(i) = (Zlim - Z0lim)/K * n_items + Z0;
   }

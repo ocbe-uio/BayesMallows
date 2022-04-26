@@ -28,7 +28,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
   int n_alphas = alpha_vector.n_elem;
 
   // The reference ranking
-  vec rho = arma::regspace<vec>(1, n_items);
+  vec rho = regspace<vec>(1, n_items);
 
   // Vector which holds the result for all alphas
   vec logZ = zeros(n_alphas);
@@ -43,7 +43,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
     // Loop over the Monte Carlo samples
     for(int i = 0; i < nmc; ++i){
       // Support set of the proposal distribution
-      vec support = arma::regspace<vec>(1, n_items);
+      vec support = regspace<vec>(1, n_items);
 
       // Vector which holds the proposed ranks
       vec ranks = zeros(n_items);
@@ -56,7 +56,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       vec u = log(randu(n_items));
 
       // Loop over possible values given to item j in random order
-      vec myind = arma::shuffle(arma::regspace(0, n_items - 1));
+      vec myind = arma::shuffle(regspace(0, n_items - 1));
 
       for(int j = 0; j < n_items; ++j){
         int jj = myind(j);

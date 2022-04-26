@@ -82,7 +82,7 @@ vec update_wcd(const uvec& current_cluster_assignment,
   int n_clusters = dist_mat.n_cols;
   vec wcd(n_clusters);
 
-  uvec inds = arma::regspace<uvec>(0, n_clusters - 1);
+  uvec inds = regspace<uvec>(0, n_clusters - 1);
   for(int i = 0; i < n_clusters; ++i){
     mat dist_vec = dist_mat.submat(find(current_cluster_assignment == i), inds.subvec(i, i));
     wcd(i) = sum(conv_to<vec>::from(dist_vec));

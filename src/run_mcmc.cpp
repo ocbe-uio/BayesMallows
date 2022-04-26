@@ -171,7 +171,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
   vec alpha_old = alpha.col(0);
 
-  uvec element_indices = arma::regspace<uvec>(0, rankings.n_rows - 1);
+  uvec element_indices = regspace<uvec>(0, rankings.n_rows - 1);
 
   // This is the Metropolis-Hastings loop
 

@@ -74,7 +74,7 @@ arma::mat rmallows(
 
     // These distances do not work with the computational shortcut
     if ((metric == "cayley") || (metric == "ulam")) {
-      indices = arma::regspace<uvec>(0, n_items - 1);
+      indices = regspace<uvec>(0, n_items - 1);
     }
 
     // Compute the distances to current and proposed ranks
