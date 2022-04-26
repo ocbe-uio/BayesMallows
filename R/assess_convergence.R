@@ -110,7 +110,7 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1) {
     items <- model_fit$items[items]
   }
 
-  df <- dplyr::filter(model_fit$rho, .data$item %in% items)
+  df <- model_fit$rho[model_fit$rho$item %in% items, , drop = FALSE]
 
   p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
     ggplot2::geom_line() +
@@ -154,9 +154,11 @@ trace_rtilde <- function(model_fit, items, assessors, ...) {
   if (is.factor(model_fit$augmented_data$item) && is.numeric(items)) {
     items <- levels(model_fit$augmented_data$item)[items]
   }
-  df <- dplyr::filter(model_fit$augmented_data,
-                      .data$assessor %in% assessors,
-                      .data$item %in% items)
+
+  model_fit$augmented_data[model_fit$augmented_data$assessor %in% assessors &
+                             model_fit$augmented_data$item %in% items, ,
+                           drop = FALSE]
+
   df <- dplyr::mutate(df, assessor = as.factor(.data$assessor))
   levels(df$assessor) <- paste("Assessor", levels(df$assessor))
 
