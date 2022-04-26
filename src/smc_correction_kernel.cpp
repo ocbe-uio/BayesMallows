@@ -24,7 +24,7 @@ Rcpp::List correction_kernel(
   const int n_items
 ) {
   // check if new information means 'mistakes' made with augmented rankings
-  const bool observed_equals_current = arma::approx_equal(\
+  const bool observed_equals_current = approx_equal(\
     observed_ranking, current_ranking, "absdiff", 0.1\
   );
   double correction_prob = 1.0;

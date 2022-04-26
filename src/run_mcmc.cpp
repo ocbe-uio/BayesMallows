@@ -92,14 +92,14 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   int n_assessors = rankings.n_cols;
 
   bool augpair = (constraints.length() > 0);
-  bool any_missing = !arma::is_finite(rankings);
+  bool any_missing = !is_finite(rankings);
 
   umat missing_indicator;
   uvec assessor_missing;
 
   if(any_missing){
     // Converting to umat will convert NA to 0, but might cause clang-UBSAN error, so converting explicitly.
-    rankings.replace(arma::datum::nan, 0);
+    rankings.replace(datum::nan, 0);
     missing_indicator = conv_to<umat>::from(rankings);
     missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
     assessor_missing = conv_to<uvec>::from(sum(missing_indicator, 0));

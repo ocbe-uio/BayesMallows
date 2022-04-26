@@ -40,7 +40,7 @@ arma::vec metropolis_hastings_aug_ranking_pseudo(
   const vec remaining_set = arma_setdiff_vec(current_ranking, partial_ranking);
 
   // if the observed and augmented ranking are exactly the same then break
-  const bool condition_1 = arma::approx_equal(\
+  const bool condition_1 = approx_equal(\
     partial_ranking, current_ranking, "absdiff", 0.1\
   );
   const bool condition_2 = remaining_set.n_elem == 1;

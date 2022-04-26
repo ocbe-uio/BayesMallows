@@ -29,7 +29,7 @@ Rcpp::List correction_kernel_pseudo(
     const int n_items,
     const std::string metric
 ) {
-    bool observed_equals_current = arma::approx_equal(\
+    bool observed_equals_current = approx_equal(\
         observed_ranking, current_ranking, "absdiff", 0.1\
     );
     double correction_prob = 1.0;

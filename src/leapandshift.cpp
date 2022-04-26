@@ -57,7 +57,7 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   double length2 = std::min(n - rho(u - 1), dobL);
 
   if ((rho(u - 1) > 1) && (rho(u - 1) < n)) {
-    support = arma::join_cols(linspace(
+    support = join_cols(linspace(
       std::max(1.0, rho(u - 1) - leap_size), rho(u - 1) - 1, length1),
       linspace(rho(u - 1) + 1, std::min(dobn, rho(u - 1) + leap_size), length2));
   } else if(rho(u - 1) == 1){

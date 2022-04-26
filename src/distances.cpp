@@ -26,7 +26,7 @@ double cayley_distance(const vec& r1, const vec& r2){
 }
 
 double footrule_distance(const vec& r1, const vec& r2){
-  return arma::norm(r1 - r2, 1);
+  return norm(r1 - r2, 1);
 }
 
 double hamming_distance(const vec& r1, const vec& r2){
@@ -49,7 +49,7 @@ double kendall_distance(const vec& r1, const vec& r2){
 }
 
 double spearman_distance(const vec& r1, const vec& r2){
-  return std::pow(arma::norm(r1 - r2, 2), 2.0);
+  return std::pow(norm(r1 - r2, 2), 2.0);
 }
 
 double ulam_distance(const vec& r1, const vec& r2){
