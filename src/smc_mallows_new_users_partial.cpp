@@ -56,7 +56,7 @@ Rcpp::List smc_mallows_new_users_partial(
   const int& n_users = R_obs.n_rows; // this is total- number of users
 
   /* generate rho samples using uniform prior ------------- */
-  cube rho_samples(N, n_items, Time + 1, arma::fill::zeros);
+  cube rho_samples(N, n_items, Time + 1, fill::zeros);
   for (uword i = 0; i < N; ++i) {
     uvec items_sample = randperm(n_items) + 1;
     for (uword j = 0; j < n_items; ++j) {
@@ -70,7 +70,7 @@ Rcpp::List smc_mallows_new_users_partial(
   alpha_samples.col(0) = alpha_samples_0;
 
   // this is to store the augmentations of the observed rankings for each particle
-  cube aug_rankings(n_users, n_items, N, arma::fill::zeros); // no. users by items by particles
+  cube aug_rankings(n_users, n_items, N, fill::zeros); // no. users by items by particles
 
   /* ====================================================== */
   /* New user situation                                     */
@@ -91,7 +91,7 @@ Rcpp::List smc_mallows_new_users_partial(
 
     // calculate incremental weight and augmentation prob for each particle,
     // based on new observed rankings
-    vec log_inc_wgt(N, arma::fill::zeros);
+    vec log_inc_wgt(N, fill::zeros);
 
     /* ====================================================== */
     /* Augment partial rankings                               */

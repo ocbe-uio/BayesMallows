@@ -76,7 +76,7 @@ Rcpp::List smc_mallows_new_users_complete(
   }
 
   /* generate rho samples using uniform prior ------------- */
-  cube rho_samples(N, n_items, (n_users + Time + 1), arma::fill::zeros);
+  cube rho_samples(N, n_items, (n_users + Time + 1), fill::zeros);
   for (int i = 0; i < N; ++i) {
     const uvec items_sample = randperm(n_items) + 1;
     for (int j = 0; j < n_items; ++j) {
@@ -124,7 +124,7 @@ Rcpp::List smc_mallows_new_users_complete(
 
     // calculate incremental weight for each particle, based on
     // new observed rankings
-    vec log_inc_wgt(N, arma::fill::zeros);
+    vec log_inc_wgt(N, fill::zeros);
 
     for (int ii = 0; ii < N; ++ii) {
       // evaluate the log estimate of the partition function for a particular
