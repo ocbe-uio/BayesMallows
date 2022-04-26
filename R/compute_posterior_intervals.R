@@ -58,7 +58,7 @@ compute_posterior_intervals.BayesMallows <- function(
   stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment"))
   stopifnot(level > 0 && level < 1)
 
-  df <- dplyr::filter(model_fit[[parameter]], .data$iteration > burnin)
+  df <- model_fit[[parameter]][model_fit[[parameter]]$iteration > burnin, , drop = FALSE]
 
   if (parameter == "alpha" || parameter == "cluster_probs") {
 
@@ -99,7 +99,7 @@ compute_posterior_intervals.SMCMallows <- function(
 
 
   if (burnin != 0) {
-    df <- dplyr::filter(model_fit, .data$iteration > burnin) # removed model_fit[[parameter]]
+    df <- model_fit[model_fit$iteration > burnin, , drop = FALSE]
   } else {
     df <- model_fit
   }
@@ -144,7 +144,7 @@ compute_posterior_intervals.SMCMallows <- function(
       df <- dplyr::mutate(df, cumprob = cumsum(.data$n) / sum(.data$n),
                           lagcumprob = dplyr::lag(.data$cumprob, default = 0))
 
-      df <- dplyr::filter(df, .data$lagcumprob <= level)
+      df <- df[df$lagcumprob <= level, , drop = FALSE]
 
       values <- sort(dplyr::pull(df, .data$value))
 
@@ -209,7 +209,7 @@ compute_posterior_intervals.SMCMallows <- function(
         lagcumprob = dplyr::lag(.data$cumprob, default = 0)
       )
 
-      df <- dplyr::filter(df, .data$lagcumprob <= level)
+      df <- df[df$lagcumprob <= level, , drop = FALSE]
 
       values <- sort(dplyr::pull(df, .data$value))
 
