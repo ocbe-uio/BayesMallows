@@ -77,8 +77,8 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
         vec log_cpd = log(arma::cumsum(exp(log_prob)));
 
         // Draw a random sample
-        int item_index = arma::as_scalar(find(log_cpd > u(jj), 1));
-        ranks(jj) = arma::as_scalar(inds(item_index)) + 1;
+        int item_index = as_scalar(find(log_cpd > u(jj), 1));
+        ranks(jj) = as_scalar(inds(item_index)) + 1;
 
         log_q += log_prob(item_index);
 

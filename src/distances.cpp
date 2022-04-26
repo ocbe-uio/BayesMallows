@@ -65,8 +65,8 @@ double ulam_distance(const vec& r1, const vec& r2){
   int distance;
 
   for(int i = 0; i < N; ++i){
-    p1[i] = static_cast<int>(arma::as_scalar(a(i)) - 1);
-    p2[i] = static_cast<int>(arma::as_scalar(b(i)) - 1);
+    p1[i] = static_cast<int>(as_scalar(a(i)) - 1);
+    p2[i] = static_cast<int>(as_scalar(b(i)) - 1);
   }
 
   distance = perm0_distance ( N, p1, p2 );

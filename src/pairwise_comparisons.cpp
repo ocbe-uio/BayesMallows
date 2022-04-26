@@ -28,12 +28,12 @@ void update_shape_bernoulli(
       uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[j]);
 
       for(unsigned int k = 0; k < items_above.size(); ++k){
-        int g = (arma::as_scalar(rankings.col(i).row(j)) < arma::as_scalar(rankings.col(i).row(items_above(k) - 1)));
+        int g = (as_scalar(rankings.col(i).row(j)) < as_scalar(rankings.col(i).row(items_above(k) - 1)));
         sum_1 += g;
         sum_2 += 1 - g;
       }
       for(unsigned int k = 0; k < items_below.size(); ++k){
-        int g = (arma::as_scalar(rankings.col(i).row(j)) > arma::as_scalar(rankings.col(i).row(items_below(k) - 1)));
+        int g = (as_scalar(rankings.col(i).row(j)) > as_scalar(rankings.col(i).row(items_below(k) - 1)));
         sum_1 += g;
         sum_2 += 1 - g;
       }
@@ -108,10 +108,10 @@ vec propose_swap(const vec& ranking, const Rcpp::List& assessor_constraints,
   int n_items = ranking.n_elem;
 
   // Draw a random number, representing an item
-  int u = arma::as_scalar(randi(1, arma::distr_param(1, n_items - Lswap)));
+  int u = as_scalar(randi(1, arma::distr_param(1, n_items - Lswap)));
 
-  int ind1 = arma::as_scalar(find(ranking == u));
-  int ind2 = arma::as_scalar(find(ranking == (u + Lswap)));
+  int ind1 = as_scalar(find(ranking == u));
+  int ind2 = as_scalar(find(ranking == (u + Lswap)));
 
   vec proposal = ranking;
   proposal(ind1) = ranking(ind2);

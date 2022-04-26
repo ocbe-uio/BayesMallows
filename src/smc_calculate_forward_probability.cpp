@@ -86,14 +86,14 @@ Rcpp::List calculate_forward_probability(
 
       forward_auxiliary_ranking_probability = \
         forward_auxiliary_ranking_probability * \
-        arma::as_scalar(sample_prob_list(sample_prob));
+        as_scalar(sample_prob_list(sample_prob));
 
       // remove selected auxiliary rank from the set of remaining possibles
       // ranks to select
       remaining_set = remaining_set(find(remaining_set != auxiliary_ranking(jj)));
     }
     // last element in augmented ranking is deterministic - the prob is 1
-    auxiliary_ranking(num_items_unranked - 1) = arma::as_scalar(remaining_set);
+    auxiliary_ranking(num_items_unranked - 1) = as_scalar(remaining_set);
 
     // fit the augmented ranking within the partial rankings with NAs
     const vec& ar = conv_to<vec>::from(auxiliary_ranking);

@@ -77,7 +77,7 @@ double calculate_backward_probability(
       const uvec& sample_prob = find(remaining_set == current_ranking(jj));
       backward_auxiliary_ranking_probability = \
         backward_auxiliary_ranking_probability * \
-        arma::as_scalar(sample_prob_list(sample_prob));
+        as_scalar(sample_prob_list(sample_prob));
 
       // remove selected auxiliary rank from the set of remaining possibles
       // ranks to select

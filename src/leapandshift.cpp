@@ -13,13 +13,13 @@ void shift_step(vec& rho_proposal, const vec& rho,
 
   if(delta_r > 0){
     for(int k = 1; k <= delta_r; ++k){
-      index = arma::as_scalar(find(rho == rho(u-1) + k));
+      index = as_scalar(find(rho == rho(u-1) + k));
       rho_proposal(index) -= 1;
       indices[k] = index;
     }
   } else if(delta_r < 0) {
     for(int k = (-1); k >= delta_r; --k){
-      index = arma::as_scalar(find(rho == rho(u-1) + k));
+      index = as_scalar(find(rho == rho(u-1) + k));
       rho_proposal(index) += 1;
       indices[-(k)] = index;
     }
@@ -46,7 +46,7 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
 
   // Leap 1
   // 1, sample u randomly between 1 and n
-  u = arma::as_scalar(randi(1, arma::distr_param(1, n)));
+  u = as_scalar(randi(1, arma::distr_param(1, n)));
 
   // 2, compute the set S for sampling the new rank
   double dobL = static_cast<double>(leap_size);
@@ -67,7 +67,7 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   }
 
   // 3. assign a random element of the support set, this completes the leap step
-  index = arma::as_scalar(randi(1, arma::distr_param(0, support.n_elem-1)));
+  index = as_scalar(randi(1, arma::distr_param(0, support.n_elem-1)));
   // Picked element index-1 from the support set
   rho_proposal(u-1) = support(index);
 

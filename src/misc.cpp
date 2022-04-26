@@ -48,7 +48,7 @@ int sample_int(const arma::rowvec& probs){
 
   uvec matches = find(arma::cumsum(probs) > u, 1, "first");
 
-  return arma::as_scalar(matches);
+  return as_scalar(matches);
 }
 
 // Truncated beta distribution
