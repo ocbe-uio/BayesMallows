@@ -43,7 +43,7 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
   S = S.elem(find(S != rho(u)));
 
   // draw a random number r from S
-  int r = as_scalar(randi(1, arma::distr_param(S.min(), S.max())));
+  int r = as_scalar(randi(1, distr_param(S.min(), S.max())));
   r = r - 1; // adjusting index for R correspondence
 
   // Create leap step

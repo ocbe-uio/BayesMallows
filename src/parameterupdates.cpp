@@ -11,9 +11,9 @@ using namespace arma;
 // Initialize latent ranks as provided by rho_init, or randomly:
 mat initialize_rho(Rcpp::Nullable<mat> rho_init, int n_items, int n_clusters){
   if(rho_init.isNotNull()){
-    return arma::repmat(Rcpp::as<mat>(rho_init), 1, n_clusters);
+    return repmat(Rcpp::as<mat>(rho_init), 1, n_clusters);
   } else {
-    return shuffle(arma::repmat(regspace<mat>(1, 1, n_items), 1, n_clusters));
+    return shuffle(repmat(regspace<mat>(1, 1, n_items), 1, n_clusters));
   }
 }
 

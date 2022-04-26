@@ -46,7 +46,7 @@ int sample_int(const arma::rowvec& probs){
   // Draw a uniform random number
   double u = randu();
 
-  uvec matches = find(arma::cumsum(probs) > u, 1, "first");
+  uvec matches = find(cumsum(probs) > u, 1, "first");
 
   return as_scalar(matches);
 }

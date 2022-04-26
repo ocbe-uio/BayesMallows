@@ -132,7 +132,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   cluster_probs.col(0).fill(1.0 / n_clusters);
   vec current_cluster_probs = cluster_probs.col(0);
   umat cluster_assignment(n_assessors, n_cluster_assignments);
-  cluster_assignment.col(0) = randi<uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
+  cluster_assignment.col(0) = randi<uvec>(n_assessors, distr_param(0, n_clusters - 1));
   uvec current_cluster_assignment = cluster_assignment.col(0);
 
   // Matrix with precomputed distances d(R_j, \rho_j), used to avoid looping during cluster assignment

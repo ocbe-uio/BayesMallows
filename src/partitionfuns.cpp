@@ -196,7 +196,7 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
       // Normalize columns
       A = normalise(A, 1, 0);
 
-      double diff = arma::abs((A - A_old)/A_old).max();
+      double diff = abs((A - A_old)/A_old).max();
       if(diff < tol) break;
 
       A_old = A;
