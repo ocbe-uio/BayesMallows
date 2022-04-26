@@ -43,15 +43,17 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   df <- model_fit$cluster_assignment[model_fit$cluster_assignment$iteration > burnin, , drop = FALSE]
 
   # Compute the probability of each iteration
+  split1 <- split(x = df, f = df$assessor)
   df <- do.call(rbind, lapply(
-    split(x = df, f = df$assessor),
-    function(x){
+    seq_along(split1), function(i){
+      x <- split1[[i]]
       x$probability <- 1 / nrow(x)
-      do.call(rbind, lapply(split(x, f = x$value), function(y){
+      split2 <- split(x, f = x$value)
+      do.call(rbind, lapply(seq_along(split2), function(j){
         data.frame(
-          assessor = unique(y$assessor),
-          cluster = unique(y$value),
-          probability = sum(y$probability)
+          assessor = names(split1)[[i]],
+          cluster = names(split2)[[j]],
+          probability = sum(split2[[j]]$probability)
         )
       }))
     }))

@@ -43,13 +43,13 @@ test_that("assign_cluster works", {
 
   asc <- assign_cluster(m, burnin = 9, expand = TRUE)
   expect_equal(
-    round(asc$probability, 4),
+    round(asc$probability[order(as.integer(asc$assessor))], 4),
     c(0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0,
       0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0)
     )
 
   expect_equal(
-    asc$cluster,
+    asc$cluster[order(as.integer(asc$assessor))],
     c("Cluster 1", "Cluster 2", "Cluster 3", "Cluster 1", "Cluster 2",
       "Cluster 3", "Cluster 1", "Cluster 2", "Cluster 3", "Cluster 1",
       "Cluster 2", "Cluster 3", "Cluster 1", "Cluster 2", "Cluster 3",
@@ -61,7 +61,7 @@ test_that("assign_cluster works", {
   )
 
   expect_equal(
-    asc$map_cluster,
+    asc$map_cluster[order(as.integer(asc$assessor))],
     c("Cluster 2", "Cluster 2", "Cluster 2", "Cluster 1", "Cluster 1",
       "Cluster 1", "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2",
       "Cluster 2", "Cluster 2", "Cluster 3", "Cluster 3", "Cluster 3",
