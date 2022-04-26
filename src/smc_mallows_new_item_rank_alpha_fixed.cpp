@@ -104,7 +104,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
         } else {
           rset = Rcpp::as<vec>(Rcpp::sample(remaining_set, remaining_set.length()));
         }
-        partial_ranking.elem(arma::find_nonfinite(partial_ranking)) = rset;
+        partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
 
 
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
@@ -112,7 +112,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
         total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set_length);
       } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
         // find items missing from original observed ranking
-        const uvec& unranked_items = arma::find_nonfinite(R_obs_slice_0_row_jj);
+        const uvec& unranked_items = find_nonfinite(R_obs_slice_0_row_jj);
 
         // find unallocated ranks from original observed ranking
         const Rcpp::NumericVector& remaining_set = Rcpp_setdiff_arma(ranks, R_obs_slice_0_row_jj);

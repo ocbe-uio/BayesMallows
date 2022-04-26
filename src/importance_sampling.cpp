@@ -61,7 +61,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       for(int j = 0; j < n_items; ++j){
         int jj = myind(j);
         // Find the elements that have not been taken yet
-        uvec inds = arma::find(support != 0);
+        uvec inds = find(support != 0);
         vec log_prob(inds.size());
 
         // Number of elements
@@ -77,7 +77,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
         vec log_cpd = log(arma::cumsum(exp(log_prob)));
 
         // Draw a random sample
-        int item_index = arma::as_scalar(arma::find(log_cpd > u(jj), 1));
+        int item_index = arma::as_scalar(find(log_cpd > u(jj), 1));
         ranks(jj) = arma::as_scalar(inds(item_index)) + 1;
 
         log_q += log_prob(item_index);

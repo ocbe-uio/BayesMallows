@@ -13,13 +13,13 @@ void shift_step(vec& rho_proposal, const vec& rho,
 
   if(delta_r > 0){
     for(int k = 1; k <= delta_r; ++k){
-      index = arma::as_scalar(arma::find(rho == rho(u-1) + k));
+      index = arma::as_scalar(find(rho == rho(u-1) + k));
       rho_proposal(index) -= 1;
       indices[k] = index;
     }
   } else if(delta_r < 0) {
     for(int k = (-1); k >= delta_r; --k){
-      index = arma::as_scalar(arma::find(rho == rho(u-1) + k));
+      index = arma::as_scalar(find(rho == rho(u-1) + k));
       rho_proposal(index) += 1;
       indices[-(k)] = index;
     }

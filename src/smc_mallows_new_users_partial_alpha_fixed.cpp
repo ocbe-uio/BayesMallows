@@ -105,9 +105,9 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
         if (aug_method == "random") {
         // create new agumented ranking by sampling remaining ranks from set uniformly
           if (missing_ranks.length() == 1) {
-            partial_ranking.elem(arma::find_nonfinite(partial_ranking)) = Rcpp::as<vec>(missing_ranks);
+            partial_ranking.elem(find_nonfinite(partial_ranking)) = Rcpp::as<vec>(missing_ranks);
           } else {
-            partial_ranking.elem(arma::find_nonfinite(partial_ranking)) = Rcpp::as<vec>(Rcpp::sample(missing_ranks, missing_ranks.length()));
+            partial_ranking.elem(find_nonfinite(partial_ranking)) = Rcpp::as<vec>(Rcpp::sample(missing_ranks, missing_ranks.length()));
           }
 
           aug_rankings(span(jj), span::all, span(ii)) = partial_ranking;

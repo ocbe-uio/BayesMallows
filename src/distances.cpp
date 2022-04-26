@@ -18,7 +18,7 @@ double cayley_distance(const vec& r1, const vec& r2){
       distance += 1;
       tmp1 = tmp2(i);
       tmp2(i) = r2(i);
-      uvec inds = arma::find(tmp2 == r2(i));
+      uvec inds = find(tmp2 == r2(i));
       tmp2.elem(inds).fill(tmp1);
     }
   }

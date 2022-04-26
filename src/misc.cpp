@@ -46,7 +46,7 @@ int sample_int(const arma::rowvec& probs){
   // Draw a uniform random number
   double u = randu();
 
-  uvec matches = arma::find(arma::cumsum(probs) > u, 1, "first");
+  uvec matches = find(arma::cumsum(probs) > u, 1, "first");
 
   return arma::as_scalar(matches);
 }
@@ -72,7 +72,7 @@ uvec arma_setdiff(uvec x, uvec y){
   y = arma::unique(y);
 
   for (size_t j = 0; j < y.n_elem; j++) {
-    uvec q1 = arma::find(x == y[j]);
+    uvec q1 = find(x == y[j]);
     if (!q1.empty()) {
       x.shed_row(q1(0));
     }
@@ -114,7 +114,7 @@ uvec maybe_offset_indices(
 ) {
   // Adjust the indices of x (i.e., idx_x) depending on whether it seems to be
   // using R or C++ indices.
-  const uvec& io_idx_cpp   = arma::find_nonfinite(x);
+  const uvec& io_idx_cpp   = find_nonfinite(x);
   const uvec& io_idx_input = arma::sort(idx_x);
   std::string message = "C++ indices detected. Unchanged.";
   if (arma::any(io_idx_input - io_idx_cpp)) {

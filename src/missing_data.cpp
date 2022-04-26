@@ -9,7 +9,7 @@ using namespace arma;
 
 vec propose_augmentation(const vec& ranks, const uvec& indicator){
   vec proposal = ranks;
-  proposal(arma::find(indicator == 1)) = arma::shuffle(ranks(arma::find(indicator == 1)));
+  proposal(find(indicator == 1)) = arma::shuffle(ranks(find(indicator == 1)));
   return(proposal);
 }
 
@@ -23,8 +23,8 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
       continue;
     } else {
       vec rank_vector = rankings.col(i);
-      uvec present_inds = arma::find(missing_indicator.col(i) == 0);
-      uvec missing_inds = arma::find(missing_indicator.col(i) == 1);
+      uvec present_inds = find(missing_indicator.col(i) == 0);
+      uvec missing_inds = find(missing_indicator.col(i) == 1);
       // Find the available ranks and permute them
       uvec new_ranks = arma::shuffle(arma_setdiff(
         arma::linspace<uvec>(1, rank_vector.size()),

@@ -200,7 +200,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
     for(int i = 0; i < n_clusters; ++i){
       update_rho(rho, rho_acceptance, rho_old, rho_index, i,
                  rho_thinning, alpha_old(i), leap_size,
-                 clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
+                 clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
                  metric, n_items, t, element_indices, obs_freq);
 
     }
@@ -209,8 +209,8 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
       ++alpha_index;
       for(int i = 0; i < n_clusters; ++i){
         alpha(i, alpha_index) = update_alpha(alpha_acceptance, alpha_old(i),
-              clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
-              clustering ? obs_freq(arma::find(current_cluster_assignment == i)) : obs_freq,
+              clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
+              clustering ? obs_freq(find(current_cluster_assignment == i)) : obs_freq,
               i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate, alpha_max);
       }
       // Update alpha_old
