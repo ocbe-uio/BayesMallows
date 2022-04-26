@@ -49,7 +49,7 @@ double update_alpha(vec& alpha_acceptance,
   double ratio =
     alpha_diff / n_items * rank_dist +
     lambda * alpha_diff +
-    arma::sum(obs_freq) * (
+    sum(obs_freq) * (
         get_partition_function(n_items, alpha_old, cardinalities, logz_estimate, metric) -
           get_partition_function(n_items, alpha_proposal, cardinalities, logz_estimate, metric)
     ) + std::log(alpha_proposal) - std::log(alpha_old);

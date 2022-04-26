@@ -30,7 +30,7 @@ double footrule_distance(const vec& r1, const vec& r2){
 }
 
 double hamming_distance(const vec& r1, const vec& r2){
-  return arma::sum(r1 != r2);
+  return sum(r1 != r2);
 }
 
 double kendall_distance(const vec& r1, const vec& r2){
@@ -124,7 +124,7 @@ double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
 // [[Rcpp::export]]
 double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho,
                      const std::string& metric, const arma::vec& obs_freq){
-  return arma::sum(rank_dist_vec(rankings, rho, metric, obs_freq));
+  return sum(rank_dist_vec(rankings, rho, metric, obs_freq));
 }
 
 

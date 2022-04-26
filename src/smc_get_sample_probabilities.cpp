@@ -42,7 +42,7 @@ arma::vec get_sample_probabilities(
   // normalise probs
   const double maxw = max(sample_prob_list);
   const vec w = exp(sample_prob_list - maxw);
-  sample_prob_list = w / arma::sum(w);
+  sample_prob_list = w / sum(w);
 
   return(sample_prob_list);
 }

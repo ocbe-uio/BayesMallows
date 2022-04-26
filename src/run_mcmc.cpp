@@ -102,7 +102,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
     rankings.replace(arma::datum::nan, 0);
     missing_indicator = conv_to<umat>::from(rankings);
     missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
-    assessor_missing = conv_to<uvec>::from(arma::sum(missing_indicator, 0));
+    assessor_missing = conv_to<uvec>::from(sum(missing_indicator, 0));
     initialize_missing_ranks(rankings, missing_indicator, assessor_missing);
   } else {
     missing_indicator.reset();

@@ -68,7 +68,7 @@ vec update_cluster_probs(
 
   for(int i = 0; i < n_clusters; ++i){
     // Find the parameter for this cluster and provide it to the gamma distribution
-    cluster_probs(i) = R::rgamma(arma::sum(current_cluster_assignment == i) + psi, 1.0);
+    cluster_probs(i) = R::rgamma(sum(current_cluster_assignment == i) + psi, 1.0);
   }
   // Finally, normalize cluster_probs with 1-norm.
   // result now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
@@ -85,7 +85,7 @@ vec update_wcd(const uvec& current_cluster_assignment,
   uvec inds = arma::regspace<uvec>(0, n_clusters - 1);
   for(int i = 0; i < n_clusters; ++i){
     mat dist_vec = dist_mat.submat(arma::find(current_cluster_assignment == i), inds.subvec(i, i));
-    wcd(i) = arma::sum(conv_to<vec>::from(dist_vec));
+    wcd(i) = sum(conv_to<vec>::from(dist_vec));
   }
 
   return(wcd);
