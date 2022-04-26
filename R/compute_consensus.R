@@ -57,7 +57,7 @@ compute_consensus.BayesMallows <- function(
 
   if (parameter == "rho") {
     # Filter out the pre-burnin iterations
-    df <- dplyr::filter(model_fit$rho, .data$iteration > burnin)
+    df <- model_fit$rho[model_fit$rho$iteration > burnin, , drop = FALSE]
 
     # Find the problem dimensions
     n_rows <- nrow(dplyr::distinct(df, .data$item, .data$cluster))
@@ -80,7 +80,8 @@ compute_consensus.BayesMallows <- function(
 
   } else if (parameter == "Rtilde") {
     # Filter out the pre-burnin iterations and get the right assessors
-    df <- dplyr::filter(model_fit$augmented_data, .data$iteration > burnin, .data$assessor %in% assessors)
+    df <- model_fit$augmented_data[model_fit$augmented_data$iteration > burnin &
+                                     model_fit$augmented_data$assessor %in% assessors, , drop = FALSE]
 
     # Find the problem dimensions
     n_rows <- nrow(dplyr::distinct(df, .data$assessor, .data$item))
@@ -185,7 +186,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
   # Filter out the pre-burnin iterations
 
   if (burnin != 0) {
-    df <- dplyr::filter(model_fit, .data$iteration > burnin)
+    df <- model_fit[model_fit$iteration > burnin, , drop = FALSE]
   } else {
     df <- model_fit
   }
@@ -247,7 +248,7 @@ find_cpc.consensus_BayesMallows <- function(group_df) {
 
   for (i in seq(from = 1, to = n_items, by = 1)) {
     # Filter out the relevant rows
-    tmp_df <- dplyr::filter(group_df, .data$value == i)
+    tmp_df <- group_df[group_df$value == i, , drop = FALSE]
 
     # Remove items in result
     tmp_df <- dplyr::anti_join(tmp_df, result, by = c("cluster", "item"))
@@ -279,7 +280,7 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
   n_items <- max(group_df$value)
   for (i in seq(from = 1, to = n_items, by = 1)) {
     # Filter out the relevant rows
-    tmp_df <- dplyr::filter(group_df, group_df$value == i)
+    tmp_df <- group_df[group_df$value == i, , drop = FALSE]
 
     # Remove items in result
     tmp_df <- dplyr::anti_join(tmp_df, result, by = c("cluster", "item"))
@@ -287,7 +288,7 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
     # Keep the max only. This filtering must be done after the first filter,
     # since we take the maximum among the filtered values
     if (nrow(tmp_df) >= 1) {
-      tmp_df <- dplyr::filter(tmp_df, .data$cumprob == max(.data$cumprob))
+      tmp_df <- tmp_df[tmp_df$cumprob == max(tmp_df$cumprob), , drop = FALSE]
     }
 
     # Add the ranking
@@ -323,7 +324,7 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
   # Keep only the maximum per cluster
   df <- dplyr::group_by(df, .data$cluster)
   df <- dplyr::mutate(df, n_max = max(.data$n))
-  df <- dplyr::filter(df, .data$n == .data$n_max)
+  df <- df[df$n == df$n_max, , drop = FALSE]
   df <- dplyr::ungroup(df)
 
   # Compute the probability
@@ -361,7 +362,7 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
   }
 
   if (burnin != 0) {
-    df <- dplyr::filter(model_fit, .data$iteration > burnin)
+    df <- model_fit[model_fit$iteration > burnin, , drop = FALSE]
   } else {
     df <- model_fit
   }
@@ -391,7 +392,7 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
   # Keep only the maximum per cluster
   df <- dplyr::group_by(df, .data$cluster)
   df <- dplyr::mutate(df, n_max = max(.data$n))
-  df <- dplyr::filter(df, .data$n == .data$n_max)
+  df <- df[df$n == df$n_max, , drop = FALSE]
   df <- dplyr::ungroup(df)
 
   # Compute the probability
