@@ -30,7 +30,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
   validate_top_k(model_fit, burnin)
 
   # Extract post burn-in rows with value <= k
-  rho <- dplyr::filter(model_fit$rho, .data$iteration > burnin, .data$value <= k)
+  rho <- model_fit$rho[model_fit$rho$iteration > burnin & model_fit$rho$value <= k, , drop = FALSE]
   n_samples <- length(unique(rho$iteration))
   # Factors are not needed in this case
   rho <- dplyr::mutate(rho, item = as.character(.data$item))
