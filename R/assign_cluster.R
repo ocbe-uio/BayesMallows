@@ -43,31 +43,16 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   df <- model_fit$cluster_assignment[model_fit$cluster_assignment$iteration > burnin, , drop = FALSE]
 
   # Compute the probability of each iteration
-  split1 <- split(x = df, f = df$assessor)
-  df <- do.call(rbind, lapply(
-    seq_along(split1), function(i){
-      x <- split1[[i]]
-      x$probability <- 1 / nrow(x)
-      split2 <- split(x, f = x$value)
-      do.call(rbind, lapply(seq_along(split2), function(j){
-        data.frame(
-          assessor = names(split1)[[i]],
-          cluster = names(split2)[[j]],
-          probability = sum(split2[[j]]$probability)
-        )
-      }))
-    }))
+  df <- as.data.frame(table(df[, c("assessor", "value")]),
+                      responseName = "count", stringsAsFactors = FALSE)
 
-  if (expand) {
-    df <- do.call(rbind, lapply(split(df, f = df$assessor), function(dd) {
-      dd2 <- merge(dd, expand.grid(cluster = unique(df$cluster)), by = "cluster",
-                   all = TRUE)
-      dd2$assessor <- unique(dd$assessor)
-      dd2$probability[is.na(dd2$probability)] <- 0
-      dd2
-    }))
-
-  }
+  df <- do.call(rbind, lapply(split(df, f = df$assessor), function(x) {
+    x$probability <- x$count / sum(x$count)
+    x$cluster <- x$value
+    x$value <- x$count <- NULL
+    x
+  }))
+ if(!expand) df <- df[df$probability > 0, , drop = FALSE]
 
   # Compute the MAP estimate per assessor
   map <- dplyr::group_by(df, .data$assessor)
