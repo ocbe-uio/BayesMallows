@@ -35,8 +35,11 @@ test_that(
 test_that("sample_mallows diagnostics work", {
   set.seed(1)
   expect_message(
-    test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, diagnostic = TRUE,
-                           n_samples = 1000, burnin = 1, thinning = 1),
+    {
+      pdf(NULL)
+      test <- sample_mallows(rho0 = rho0, alpha0 = alpha0, diagnostic = TRUE,
+                             n_samples = 1000, burnin = 1, thinning = 1)
+    },
     "Items not provided by user. Picking 5 at random."
   )
   expect_equal(
