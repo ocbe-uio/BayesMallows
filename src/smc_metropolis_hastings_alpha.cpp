@@ -2,6 +2,8 @@
 #include "smc.h"
 #include "partitionfuns.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Metropolis-Hastings Alpha
 //' @description Function to perform Metropolis-Hastings for new rho under
@@ -58,7 +60,7 @@ double metropolis_hastings_alpha(
 
   // evaluate the log estimate of the partition function for a particular
   // value of alpha
-  const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue;
+  const Rcpp::Nullable<vec>& cardinalities = R_NilValue;
   const double logz_alpha = get_partition_function(n_items, alpha, cardinalities, logz_estimate, metric);
   const double logz_alpha_prime = get_partition_function(n_items, alpha_prime, cardinalities, logz_estimate, metric);
 

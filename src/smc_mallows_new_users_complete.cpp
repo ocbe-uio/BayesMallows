@@ -76,21 +76,21 @@ Rcpp::List smc_mallows_new_users_complete(
   }
 
   /* generate rho samples using uniform prior ------------- */
-  arma::cube rho_samples(N, n_items, (n_users + Time + 1), arma::fill::zeros);
+  cube rho_samples(N, n_items, (n_users + Time + 1), fill::zeros);
   for (int i = 0; i < N; ++i) {
-    const arma::uvec items_sample = arma::randperm(n_items) + 1;
+    const uvec items_sample = randperm(n_items) + 1;
     for (int j = 0; j < n_items; ++j) {
       rho_samples(i, j, 0) = items_sample(j);
     }
   }
 
   /* generate alpha samples using exponential prior ------- */
-  arma::mat alpha_samples(N, (n_users + Time + 1));
-  const arma::vec alpha_samples_0 = Rcpp::rexp(N, 1);
+  mat alpha_samples(N, (n_users + Time + 1));
+  const vec alpha_samples_0 = Rcpp::rexp(N, 1);
   alpha_samples.col(0) = alpha_samples_0;
 
   /* generate vector to store ESS */
-  arma::rowvec ESS_vec(Time);
+  rowvec ESS_vec(Time);
 
   /* ====================================================== */
   /* New user situation                                     */
@@ -109,8 +109,8 @@ Rcpp::List smc_mallows_new_users_complete(
     // create two ranking dataset to use for the reweight and move stages of the
     // algorithm
     const int row_start = num_obs - num_new_obs;
-    arma::mat new_observed_rankings(num_obs, R_obs.n_cols);
-    arma::mat all_observed_rankings;
+    mat new_observed_rankings(num_obs, R_obs.n_cols);
+    mat all_observed_rankings;
     new_observed_rankings = R_obs.submat(row_start, 0, num_obs - 1, R_obs.n_cols - 1);
     all_observed_rankings = R_obs.submat(0, 0, num_obs - 1, R_obs.n_cols - 1);
 
@@ -124,17 +124,17 @@ Rcpp::List smc_mallows_new_users_complete(
 
     // calculate incremental weight for each particle, based on
     // new observed rankings
-    arma::vec log_inc_wgt(N, arma::fill::zeros);
+    vec log_inc_wgt(N, fill::zeros);
 
     for (int ii = 0; ii < N; ++ii) {
       // evaluate the log estimate of the partition function for a particular
       // value of alpha
 
       /* Initializing variables ------------------------------- */
-      const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue;
+      const Rcpp::Nullable<vec>& cardinalities = R_NilValue;
       const double& alpha_samples_ii = alpha_samples(ii, tt + 1);
-      const arma::rowvec rho_samples_ii = \
-        rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
+      const rowvec rho_samples_ii = \
+        rho_samples(span(ii), span::all, span(tt + 1));
 
       /* Calculating log_z_alpha and log_likelihood ----------- */
       double log_z_alpha, log_likelihood;
@@ -149,12 +149,12 @@ Rcpp::List smc_mallows_new_users_complete(
     }
 
     /* normalise weights ------------------------------------ */
-    const double& maxw = arma::max(log_inc_wgt);
-    const arma::vec& w = arma::exp(log_inc_wgt - maxw);
-    const arma::vec norm_wgt = w / arma::sum(w);
+    const double& maxw = max(log_inc_wgt);
+    const vec& w = exp(log_inc_wgt - maxw);
+    const vec norm_wgt = w / sum(w);
 
     /* store ESS = sum(w)^2/sum(w^2) */
-    ESS_vec(tt) = (arma::sum(norm_wgt) * arma::sum(norm_wgt)) / arma::sum(norm_wgt % norm_wgt);
+    ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
 
     /* ====================================================== */
@@ -162,12 +162,12 @@ Rcpp::List smc_mallows_new_users_complete(
     /* ====================================================== */
 
     /* Resample particles using multinomial resampling ------ */
-    arma::uvec index = permute_with_weights(norm_wgt, N);
-    arma::uvec tt_vec;
+    uvec index = permute_with_weights(norm_wgt, N);
+    uvec tt_vec;
     tt_vec = tt;
 
     /* Replacing tt + 1 slice on rho_samples ---------------- */
-    arma::mat& rho_samples_slice_11p1 = rho_samples.slice(tt + 1);
+    mat& rho_samples_slice_11p1 = rho_samples.slice(tt + 1);
     rho_samples_slice_11p1 = rho_samples_slice_11p1.rows(index);
     rho_samples.slice(tt + 1) = rho_samples_slice_11p1;
 
@@ -182,9 +182,9 @@ Rcpp::List smc_mallows_new_users_complete(
         // move each particle containing sample of rho and alpha by using
         // the MCMC kernels
         const double& as = alpha_samples(ii, tt + 1);
-        const arma::rowvec& rs = \
-          rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
-        rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)) =\
+        const rowvec& rs = \
+          rho_samples(span(ii), span::all, span(tt + 1));
+        rho_samples(span(ii), span::all, span(tt + 1)) =\
           metropolis_hastings_rho(\
             as, n_items, all_observed_rankings, metric, rs.t(), leap_size\
           );
