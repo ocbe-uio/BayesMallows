@@ -63,18 +63,18 @@ double calculate_backward_probability(
       const uword& item_to_sample_rank = item_ordering(jj);
 
       // the rank of item in rho
-      arma::vec rho_item_rank;
+      vec rho_item_rank;
       rho_item_rank = rho(item_to_sample_rank);
 
       // next we get the sample probabilites for selecting a particular rank for
       // an item based on the current alpha and the rho rank for that item
-      const arma::vec& sample_prob_list = get_sample_probabilities(\
+      const vec& sample_prob_list = get_sample_probabilities(\
         rho_item_rank, alpha, remaining_set, metric, n_items\
       );
 
       // save the probability of selecting the specific item rank in the old
       // augmented ranking
-      const arma::uvec& sample_prob = find(remaining_set == current_ranking(jj));
+      const uvec& sample_prob = find(remaining_set == current_ranking(jj));
       backward_auxiliary_ranking_probability = \
         backward_auxiliary_ranking_probability * \
         arma::as_scalar(sample_prob_list(sample_prob));

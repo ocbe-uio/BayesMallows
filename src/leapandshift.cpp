@@ -1,12 +1,13 @@
 #include "RcppArmadillo.h"
+using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-void shift_step(arma::vec& rho_proposal, const arma::vec& rho,
-                const int& u, double& delta_r, arma::uvec& indices){
+void shift_step(vec& rho_proposal, const vec& rho,
+                const int& u, double& delta_r, uvec& indices){
   // Shift step:
   delta_r = rho_proposal(u - 1) - rho(u - 1);
-  indices = arma::zeros<arma::uvec>(std::abs(delta_r) + 1);
+  indices = arma::zeros<uvec>(std::abs(delta_r) + 1);
   indices[0] = u-1;
   int index;
 
@@ -26,15 +27,15 @@ void shift_step(arma::vec& rho_proposal, const arma::vec& rho,
 }
 
 
-void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
+void leap_and_shift(vec& rho_proposal, uvec& indices,
                     double& prob_backward, double& prob_forward,
-                    const arma::vec& rho, int leap_size, bool reduce_indices){
+                    const vec& rho, int leap_size, bool reduce_indices){
 
   // Set proposal equal to current
   rho_proposal = rho;
 
   // Help vectors
-  arma::vec support;
+  vec support;
 
   // Number of items
   int n = rho.n_elem;
@@ -87,6 +88,6 @@ void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
   shift_step(rho_proposal, rho, u, delta_r, indices);
 
   if(!reduce_indices){
-    indices = arma::regspace<arma::uvec>(0, n - 1);
+    indices = arma::regspace<uvec>(0, n - 1);
   }
 }

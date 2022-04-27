@@ -4,29 +4,30 @@
 #include "partitionfuns.h"
 #include <cmath>
 
+using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // Initialize latent ranks as provided by rho_init, or randomly:
-arma::mat initialize_rho(Rcpp::Nullable<arma::mat> rho_init, int n_items, int n_clusters){
+mat initialize_rho(Rcpp::Nullable<mat> rho_init, int n_items, int n_clusters){
   if(rho_init.isNotNull()){
-    return arma::repmat(Rcpp::as<arma::mat>(rho_init), 1, n_clusters);
+    return arma::repmat(Rcpp::as<mat>(rho_init), 1, n_clusters);
   } else {
-    return arma::shuffle(arma::repmat(arma::regspace<arma::mat>(1, 1, n_items), 1, n_clusters));
+    return arma::shuffle(arma::repmat(arma::regspace<mat>(1, 1, n_items), 1, n_clusters));
   }
 }
 
-double update_alpha(arma::vec& alpha_acceptance,
+double update_alpha(vec& alpha_acceptance,
                   const double& alpha_old,
-                  const arma::mat& rankings,
-                  const arma::vec& obs_freq,
+                  const mat& rankings,
+                  const vec& obs_freq,
                   const int& cluster_index,
-                  const arma::vec& rho_old,
+                  const vec& rho_old,
                   const double& alpha_prop_sd,
                   const std::string& metric,
                   const double& lambda,
-                  const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-                  const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue,
+                  const Rcpp::Nullable<vec> cardinalities = R_NilValue,
+                  const Rcpp::Nullable<vec> logz_estimate = R_NilValue,
                   double alpha_max = 1e6) {
 
 
@@ -65,17 +66,17 @@ double update_alpha(arma::vec& alpha_acceptance,
 }
 
 
-void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
+void update_rho(cube& rho, vec& rho_acceptance, mat& rho_old,
                 int& rho_index, const int& cluster_index, const int& rho_thinning,
-                const double& alpha_old, const int& leap_size, const arma::mat& rankings,
+                const double& alpha_old, const int& leap_size, const mat& rankings,
                 const std::string& metric, const int& n_items, const int& t,
-                const arma::uvec& element_indices, const arma::vec& obs_freq) {
+                const uvec& element_indices, const vec& obs_freq) {
 
-  arma::vec rho_cluster = rho_old.col(cluster_index);
+  vec rho_cluster = rho_old.col(cluster_index);
 
   // Sample a rank proposal
-  arma::vec rho_proposal;
-  arma::uvec indices;
+  vec rho_proposal;
+  uvec indices;
   double prob_backward, prob_forward;
 
   leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
