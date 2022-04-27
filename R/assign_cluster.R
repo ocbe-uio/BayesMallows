@@ -55,15 +55,13 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
  if(!expand) df <- df[df$probability > 0, , drop = FALSE]
 
   # Compute the MAP estimate per assessor
-  map <- dplyr::group_by(df, .data$assessor)
-  map <- dplyr::mutate(map, max_prob = max(.data$probability))
-  map <- map[map$probability == map$max_prob, , drop = FALSE]
-
-  # Deal with the possible case of ties
-  map <- dplyr::filter(map, dplyr::row_number() == 1)
-  map <- dplyr::ungroup(map)
-  map <- dplyr::select(map, -.data$probability, -.data$max_prob)
-  map <- dplyr::rename(map, map_cluster = .data$cluster)
+  map <- do.call(rbind, lapply(split(df, f = df$assessor), function(x){
+    x <- x[x$probability == max(x$probability), , drop = FALSE]
+    x <- x[1, , drop = FALSE] # in case of ties
+    x$map_cluster <- x$cluster
+    x$cluster <- x$probability <- NULL
+    x
+  }))
 
   # Join map back onto df
   df <- dplyr::inner_join(df, map, by = "assessor")
