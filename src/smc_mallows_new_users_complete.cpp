@@ -76,9 +76,10 @@ Rcpp::List smc_mallows_new_users_complete(
   }
 
   /* generate rho samples using uniform prior ------------- */
-  cube rho_samples(N, n_items, (n_users + Time + 1), arma::fill::zeros);
+
+  cube rho_samples(N, n_items, (n_users + Time + 1), fill::zeros);
   for (int i = 0; i < N; ++i) {
-    const uvec items_sample = arma::randperm(n_items) + 1;
+    const uvec items_sample = randperm(n_items) + 1;
     for (int j = 0; j < n_items; ++j) {
       rho_samples(i, j, 0) = items_sample(j);
     }
@@ -124,7 +125,8 @@ Rcpp::List smc_mallows_new_users_complete(
 
     // calculate incremental weight for each particle, based on
     // new observed rankings
-    vec log_inc_wgt(N, arma::fill::zeros);
+
+    vec log_inc_wgt(N, fill::zeros);
 
     for (int ii = 0; ii < N; ++ii) {
       // evaluate the log estimate of the partition function for a particular
@@ -134,7 +136,8 @@ Rcpp::List smc_mallows_new_users_complete(
       const Rcpp::Nullable<vec>& cardinalities = R_NilValue;
       const double& alpha_samples_ii = alpha_samples(ii, tt + 1);
       const rowvec rho_samples_ii = \
-        rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
+
+        rho_samples(span(ii), span::all, span(tt + 1));
 
       /* Calculating log_z_alpha and log_likelihood ----------- */
       double log_z_alpha, log_likelihood;
@@ -183,8 +186,9 @@ Rcpp::List smc_mallows_new_users_complete(
         // the MCMC kernels
         const double& as = alpha_samples(ii, tt + 1);
         const rowvec& rs = \
-          rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1));
-        rho_samples(arma::span(ii), arma::span::all, arma::span(tt + 1)) =\
+
+          rho_samples(span(ii), span::all, span(tt + 1));
+        rho_samples(span(ii), span::all, span(tt + 1)) =\
           metropolis_hastings_rho(\
             as, n_items, all_observed_rankings, metric, rs.t(), leap_size\
           );

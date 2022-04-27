@@ -59,7 +59,7 @@ void update_missing_ranks(mat& rankings, const uvec& current_cluster_assignment,
     vec proposal = propose_augmentation(rankings.col(i), missing_indicator.col(i));
 
     // Draw a uniform random number
-    double u = std::log(arma::randu<double>());
+    double u = std::log(randu<double>());
 
     // Find which cluster the assessor belongs to
     int cluster = current_cluster_assignment(i);

@@ -112,7 +112,8 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   // Declare the cube to hold the latent ranks
   cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
   rho.slice(0) = initialize_rho(rho_init, n_items, n_clusters);
-  mat rho_old = rho(arma::span::all, arma::span::all, arma::span(0));
+
+  mat rho_old = rho(span::all, span::all, span(0));
 
   // Declare the vector to hold the scaling parameter alpha
   mat alpha(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
@@ -132,7 +133,8 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   cluster_probs.col(0).fill(1.0 / n_clusters);
   vec current_cluster_probs = cluster_probs.col(0);
   umat cluster_assignment(n_assessors, n_cluster_assignments);
-  cluster_assignment.col(0) = arma::randi<uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
+
+  cluster_assignment.col(0) = randi<uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
   uvec current_cluster_assignment = cluster_assignment.col(0);
 
   // Matrix with precomputed distances d(R_j, \rho_j), used to avoid looping during cluster assignment
@@ -143,12 +145,12 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
 
 
   // Declare indicator vectors to hold acceptance or not
-  vec alpha_acceptance = arma::ones(n_clusters);
-  vec rho_acceptance = arma::ones(n_clusters);
+  vec alpha_acceptance = ones(n_clusters);
+  vec rho_acceptance = ones(n_clusters);
 
   vec aug_acceptance;
   if(any_missing | augpair){
-    aug_acceptance = arma::ones<vec>(n_assessors);
+    aug_acceptance = ones<vec>(n_assessors);
   } else {
     aug_acceptance.reset();
   }
@@ -156,9 +158,10 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   // Declare vector with Bernoulli parameter for the case of intransitive preferences
   vec theta, shape_1, shape_2;
   if(error_model == "bernoulli"){
-    theta = arma::zeros<vec>(nmc);
-    shape_1 = arma::zeros<vec>(nmc);
-    shape_2 = arma::zeros<vec>(nmc);
+
+    theta = zeros<vec>(nmc);
+    shape_1 = zeros<vec>(nmc);
+    shape_2 = zeros<vec>(nmc);
     shape_1(0) = kappa_1;
     shape_2(0) = kappa_2;
   } else {

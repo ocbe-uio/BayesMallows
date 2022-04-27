@@ -44,7 +44,7 @@ int sample_int(const arma::rowvec& probs){
   }
 
   // Draw a uniform random number
-  double u = arma::randu();
+  double u = randu();
 
   uvec matches = arma::find(arma::cumsum(probs) > u, 1, "first");
 

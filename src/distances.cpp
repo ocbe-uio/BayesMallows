@@ -136,7 +136,9 @@ arma::vec rank_dist_vec(const arma::mat& rankings,
                         const arma::vec& obs_freq){
 
   int n = rankings.n_cols;
-  vec result = arma::zeros(n);
+
+  vec result = zeros(n);
+
 
   for(int i = 0; i < n; ++i){
     result(i) = get_rank_distance(rankings.col(i), rho, metric) * obs_freq(i);

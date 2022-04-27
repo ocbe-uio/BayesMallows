@@ -31,7 +31,8 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
   vec rho = arma::regspace<vec>(1, n_items);
 
   // Vector which holds the result for all alphas
-  vec logZ = arma::zeros(n_alphas);
+
+  vec logZ = zeros(n_alphas);
 
   // Loop over the values of alpha
   for(int t = 0; t < n_alphas; ++t){
@@ -46,14 +47,15 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       vec support = arma::regspace<vec>(1, n_items);
 
       // Vector which holds the proposed ranks
-      vec ranks = arma::zeros(n_items);
-      vec ranks2 = arma::zeros(n_items);
+
+      vec ranks = zeros(n_items);
+      vec ranks2 = zeros(n_items);
 
       // Probability of the ranks we get
       double log_q = 0;
 
       // n_items random uniform numbers
-      vec u = arma::log(arma::randu(n_items));
+      vec u = arma::log(randu(n_items));
 
       // Loop over possible values given to item j in random order
       vec myind = arma::shuffle(arma::regspace(0, n_items - 1));
@@ -68,9 +70,10 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
         int k_max = inds.n_elem;
 
         // Reference vector
-        vec r1 = inds + arma::ones(k_max);
+
+        vec r1 = inds + ones(k_max);
         // Sampled vector
-        vec r2 = rho(jj) * arma::ones(k_max);
+        vec r2 = rho(jj) * ones(k_max);
         // Probability of sample. Note that this is a vector quantity.
         log_prob = - alpha / n_items * arma::pow(arma::abs(r1 - r2), (metric == "footrule") ? 1. : 2.);
         log_prob = log_prob - std::log(arma::accu(arma::exp(log_prob)));

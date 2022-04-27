@@ -86,7 +86,7 @@ arma::mat rmallows(
       std::log(prob_backward) - std::log(prob_forward);
 
     // Draw a uniform random number
-    double u = std::log(arma::randu<double>());
+    double u = std::log(randu<double>());
 
     if(ratio > u){
       rho_iter = rho_proposal;
