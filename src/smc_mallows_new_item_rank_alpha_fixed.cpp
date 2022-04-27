@@ -67,7 +67,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   }
   
    /* generate vector to store ESS */
-  arma::vec ESS_vec = (Time, arma::fill::zeros);
+  rowvec ESS_vec(Time);;
 
   /* ====================================================== */
   /* Augment Rankings                                       */
@@ -171,7 +171,9 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   arma::vec w = arma::exp(log_inc_wgt - maxw);
   arma::vec norm_wgt = w / arma::sum(w);
   
-  ESS_vec(tt) = 1/sum(norm_wgt^2);
+  /* store ESS = sum(w)^2/sum(w^2) */
+    ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
+
 
   /* ====================================================== */
   /* Resample                                               */
