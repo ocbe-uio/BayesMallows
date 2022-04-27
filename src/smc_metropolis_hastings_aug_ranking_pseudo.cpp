@@ -2,8 +2,6 @@
 #include "smc.h"
 #include "misc.h"
 
-using namespace arma;
-
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Metropolis-Hastings Augmented Ranking (pseudolikelihood)
 //' @description Function to perform Metropolis-Hastings for new augmented ranking using the pseudolikelihood augmentation approach
@@ -31,16 +29,16 @@ arma::vec metropolis_hastings_aug_ranking_pseudo(
 	const std::string metric
 ) {
   // augment incomplete ranks to initialise
-  vec ranks = arma_vec_seq(n_items);
+  arma::vec ranks = arma_vec_seq(n_items);
 
   // find items missing from original observed ranking
-  const uvec unranked_items = find_nonfinite(partial_ranking);
+  const arma::uvec unranked_items = find_nonfinite(partial_ranking);
 
   // find unallocated ranks from original observed ranking
-  const vec remaining_set = arma_setdiff_vec(current_ranking, partial_ranking);
+  const arma::vec remaining_set = arma_setdiff_vec(current_ranking, partial_ranking);
 
   // if the observed and augmented ranking are exactly the same then break
-  const bool condition_1 = approx_equal(\
+  const bool condition_1 = arma::approx_equal(\
     partial_ranking, current_ranking, "absdiff", 0.1\
   );
   const bool condition_2 = remaining_set.n_elem == 1;
@@ -49,14 +47,14 @@ arma::vec metropolis_hastings_aug_ranking_pseudo(
   } else {
     // randomly permute the unranked items to give the order in which they will
     // be allocated
-    uvec item_ordering = new_pseudo_proposal(unranked_items);
+    arma::uvec item_ordering = new_pseudo_proposal(unranked_items);
 
     // Calculate probabilities
     const Rcpp::List proposal = calculate_forward_probability(\
       item_ordering, partial_ranking, remaining_set, rho, alpha, n_items,\
       metric\
     );
-    const vec& proposed_augmented_ranking = proposal["aug_ranking"];
+    const arma::vec& proposed_augmented_ranking = proposal["aug_ranking"];
     const double& forward_prob = proposal["forward_prob"];
 
     const double backward_prob = calculate_backward_probability(\

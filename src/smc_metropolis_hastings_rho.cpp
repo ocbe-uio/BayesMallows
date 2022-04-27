@@ -2,8 +2,6 @@
 #include "smc.h"
 #include <cmath>
 
-using namespace arma;
-
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Metropolis-Hastings Rho
 //' @description Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
@@ -54,7 +52,7 @@ arma::vec metropolis_hastings_rho(
   const Rcpp::List kernel = leap_and_shift_probs(rho, leap_size, n_items);
 
   // output from leap-and-shift is of the following
-  const vec& rho_prime = Rcpp::as<vec>(kernel["rho_prime"]);
+  const arma::vec& rho_prime = Rcpp::as<arma::vec>(kernel["rho_prime"]);
   const double& forwards_prob = Rcpp::as<double>(kernel["forwards_prob"]); // rho_prime|rho
   const double& backwards_prob = Rcpp::as<double>(kernel["backwards_prob"]); // rho|rho_prime
 
