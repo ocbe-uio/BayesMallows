@@ -7,6 +7,7 @@ void shift_step(vec& rho_proposal, const vec& rho,
                 const int& u, double& delta_r, uvec& indices){
   // Shift step:
   delta_r = rho_proposal(u - 1) - rho(u - 1);
+
   indices = zeros<uvec>(std::abs(delta_r) + 1);
   indices[0] = u-1;
   int index;

@@ -60,6 +60,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   /* ====================================================== */
 
   // Generate N initial samples of rho using the uniform prior
+
   cube rho_samples(N, n_items, Time, fill::zeros);
   for (uword i = 0; i < N; ++i) {
     const uvec items_sample = randperm(n_items) + 1;
@@ -74,8 +75,10 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   const unsigned int num_ranks = R_obs.n_rows;
 
   // each particle has its own set of augmented rankings
+
   cube aug_rankings(num_ranks, n_items, N, fill::zeros);
   cube prev_aug_rankings(num_ranks, n_items, N, fill::zeros);
+
 
   // augment incomplete ranks to initialise
   const ivec& ranks = Rcpp::seq(1, n_items);
@@ -144,6 +147,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   /* ====================================================== */
 
   // incremental weight for each particle, based on new observed rankings
+
   vec log_inc_wgt(N, fill::zeros);
 
   for (uword ii = 0; ii < N; ++ii) {
@@ -255,6 +259,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
     /* ====================================================== */
 
     // incremental weight for each particle, based on new observed rankings
+
     vec log_inc_wgt(N, fill::zeros);
     for (uword ii = 0; ii < N; ++ii) {
       // evaluate the log estimate of the partition function for a particular

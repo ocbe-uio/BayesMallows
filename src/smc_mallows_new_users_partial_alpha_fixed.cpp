@@ -48,6 +48,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
   const int& n_users = R_obs.n_rows; // this is total- number of users
 
   // generate rho samples using uniform prior
+
   cube rho_samples(N, n_items, Time + 1, fill::zeros);
   for (uword i = 0; i < N; ++i) {
     const uvec items_sample = randperm(n_items) + 1;
@@ -57,6 +58,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
   }
 
   // this is to store the augmentations of the observed rankings for each particle
+
   cube aug_rankings(n_users, n_items, N, fill::zeros); // no. users by items by particles
 
   /* ====================================================== */
@@ -82,6 +84,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
 
     // calculate incremental weight and augmentation prob for each particle,
     // based on new observed rankings
+
     vec log_inc_wgt(N, fill::zeros);
 
     /* ====================================================== */
@@ -116,6 +119,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
           // randomly permute the unranked items to give the order in which they will be allocated
           uvec item_ordering;
           item_ordering = arma::conv_to<uvec>::from(arma::shuffle(unranked_items));
+
           const rowvec& rho_s = rho_samples(span(ii), span::all, span(tt + 1));
           const Rcpp::List& proposal = calculate_forward_probability(\
             item_ordering, partial_ranking, missing_ranks, rho_s.t(),\
@@ -142,6 +146,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
       /* Initializing variables ------------------------------- */
       const Rcpp::Nullable<vec> cardinalities = R_NilValue;
       const rowvec rho_samples_ii = \
+
         rho_samples(span(ii), span::all, span(tt + 1));
 
       /* Calculating log_z_alpha and log_likelihood ----------- */
@@ -150,6 +155,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
       );
 
       mat new_observed_rankings;
+
       new_observed_rankings = aug_rankings(span(num_obs - num_new_obs, num_obs - 1), span::all, span(ii));
       double log_likelihood = get_mallows_loglik(\
         alpha, rho_samples_ii.t(), n_items, new_observed_rankings, metric\
@@ -178,6 +184,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
 
     /* Replacing tt + 1 column on alpha_samples ------------- */
     const cube& aug_rankings_index = aug_rankings.slices(index);
+
     aug_rankings.rows(0, num_obs - 1) = aug_rankings_index(span(0, num_obs - 1), span::all, span::all);
 
     /* ====================================================== */
@@ -185,6 +192,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     /* ====================================================== */
     for (uword ii = 0; ii < N; ++ii) {
       mat all_observed_rankings;
+
       all_observed_rankings = aug_rankings(span(0, num_obs - 1), span::all, span(ii));
       const mat& rs_slice = rho_samples.slice(tt + 1);
       const rowvec& rs = rs_slice.row(ii);
@@ -196,6 +204,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
         );
       for (uword jj = 0; jj < num_obs; ++jj) {
         rowvec ar;
+
         ar = aug_rankings(span(jj), span::all, span(ii));
         vec mh_aug_result;
         if (aug_method == "random") {

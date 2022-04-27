@@ -31,6 +31,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
   vec rho = arma::regspace<vec>(1, n_items);
 
   // Vector which holds the result for all alphas
+
   vec logZ = zeros(n_alphas);
 
   // Loop over the values of alpha
@@ -46,6 +47,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       vec support = arma::regspace<vec>(1, n_items);
 
       // Vector which holds the proposed ranks
+
       vec ranks = zeros(n_items);
       vec ranks2 = zeros(n_items);
 
@@ -68,6 +70,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
         int k_max = inds.n_elem;
 
         // Reference vector
+
         vec r1 = inds + ones(k_max);
         // Sampled vector
         vec r2 = rho(jj) * ones(k_max);

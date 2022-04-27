@@ -112,6 +112,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   // Declare the cube to hold the latent ranks
   cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
   rho.slice(0) = initialize_rho(rho_init, n_items, n_clusters);
+
   mat rho_old = rho(span::all, span::all, span(0));
 
   // Declare the vector to hold the scaling parameter alpha
@@ -132,6 +133,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   cluster_probs.col(0).fill(1.0 / n_clusters);
   vec current_cluster_probs = cluster_probs.col(0);
   umat cluster_assignment(n_assessors, n_cluster_assignments);
+
   cluster_assignment.col(0) = randi<uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
   uvec current_cluster_assignment = cluster_assignment.col(0);
 
@@ -156,6 +158,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   // Declare vector with Bernoulli parameter for the case of intransitive preferences
   vec theta, shape_1, shape_2;
   if(error_model == "bernoulli"){
+
     theta = zeros<vec>(nmc);
     shape_1 = zeros<vec>(nmc);
     shape_2 = zeros<vec>(nmc);
