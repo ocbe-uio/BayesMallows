@@ -53,17 +53,17 @@ Rcpp::List smc_mallows_new_item_rank(
   /* ====================================================== */
 
   // Generate N initial samples of rho using the uniform prior
-  cube rho_samples(N, n_items, Time, fill::zeros);
+  arma::cube rho_samples(N, n_items, Time, arma::fill::zeros);
   for (uword i = 0; i < N; ++i) {
-    const uvec items_sample = randperm(n_items) + 1;
+    const arma::uvec items_sample = arma::randperm(n_items) + 1;
     for (uword j = 0; j < n_items; ++j) {
       rho_samples(i, j, 0) = items_sample(j);
     }
   }
 
   /* generate alpha samples using exponential prior ------- */
-  mat alpha_samples(N, Time);
-  const vec alpha_samples_0 = Rcpp::rexp(N, 1);
+  arma::mat alpha_samples(N, Time);
+  const arma::vec alpha_samples_0 = Rcpp::rexp(N, 1);
   alpha_samples.col(0) = alpha_samples_0;
 
   /* ====================================================== */
@@ -72,14 +72,14 @@ Rcpp::List smc_mallows_new_item_rank(
   const unsigned int& num_ranks = R_obs.n_rows;
 
   // each particle has its own set of augmented rankings
-  cube aug_rankings(num_ranks, n_items, N, fill::zeros);
-  cube prev_aug_rankings(num_ranks, n_items, N, fill::zeros);
+  arma::cube aug_rankings(num_ranks, n_items, N, arma::fill::zeros);
+  arma::cube prev_aug_rankings(num_ranks, n_items, N, arma::fill::zeros);
 
   // augment incomplete ranks to initialise
-  const ivec ranks = Rcpp::seq(1, n_items);
+  const arma::ivec ranks = Rcpp::seq(1, n_items);
 
   // total correction prob
-  vec total_correction_prob = Rcpp::rep(1.0, N);
+  arma::vec total_correction_prob = Rcpp::rep(1.0, N);
 
   // iterate through each observed ranking and create new "corrected" augmented rankings
   for (uword ii = 0; ii < N; ++ii) {
@@ -89,41 +89,41 @@ Rcpp::List smc_mallows_new_item_rank(
     // make the correction
     for (uword jj = 0; jj < num_ranks; ++jj) {
       // fill in missing ranks based on choice of augmentation method
-      vec R_obs_slice_0_row_jj = R_obs.slice(0).row(jj).t();
+      arma::vec R_obs_slice_0_row_jj = R_obs.slice(0).row(jj).t();
       if (aug_method == "random") {
         // find elements missing from original observed ranking
         const Rcpp::NumericVector remaining_set = Rcpp_setdiff_arma(ranks, R_obs_slice_0_row_jj);
 
         // create new agumented ranking by sampling remaining ranks from set uniformly
-        vec rset;
+        arma::vec rset;
         const int& remaining_set_length = remaining_set.length();
         if (remaining_set_length == 1) {
-          rset = Rcpp::as<vec>(remaining_set);
+          rset = Rcpp::as<arma::vec>(remaining_set);
         } else {
-          rset = Rcpp::as<vec>(Rcpp::sample(remaining_set, remaining_set.length()));
+          rset = Rcpp::as<arma::vec>(Rcpp::sample(remaining_set, remaining_set.length()));
         }
-        vec partial_ranking = R_obs_slice_0_row_jj;
-        partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
+        arma::vec partial_ranking = R_obs_slice_0_row_jj;
+        partial_ranking.elem(arma::find_nonfinite(partial_ranking)) = rset;
 
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
         total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set_length);
       } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
         // find items missing from original observed ranking
-        const uvec& unranked_items = find_nonfinite(R_obs_slice_0_row_jj);
+        const arma::uvec& unranked_items = arma::find_nonfinite(R_obs_slice_0_row_jj);
 
         // find unallocated ranks from original observed ranking
         const Rcpp::NumericVector& remaining_set = Rcpp_setdiff_arma(ranks, R_obs_slice_0_row_jj);
 
         // randomly permute the unranked items to give the order in which they will be allocated
-        uvec item_ordering;
-        item_ordering = conv_to<uvec>::from(shuffle(unranked_items));
+        arma::uvec item_ordering;
+        item_ordering = arma::conv_to<arma::uvec>::from(arma::shuffle(unranked_items));
         const Rcpp::List proposal = calculate_forward_probability(\
           item_ordering, R_obs_slice_0_row_jj, remaining_set, rho_samples.slice(0).row(ii).t(),\
           alpha_samples(ii, 0), n_items, metric\
         );
-        const vec& a_rank = proposal["aug_ranking"];
+        const arma::vec& a_rank = proposal["aug_ranking"];
         const double& f_prob = proposal["forward_prob"];
-        aug_rankings(span(jj), span::all, span(ii)) = a_rank;
+        aug_rankings(arma::span(jj), arma::span::all, arma::span(ii)) = a_rank;
         total_correction_prob(ii) *= f_prob;
       } else {
         Rcpp::stop(\
@@ -139,14 +139,14 @@ Rcpp::List smc_mallows_new_item_rank(
   /* ====================================================== */
 
   // incremental weight for each particle, based on new observed rankings
-  vec log_inc_wgt(N, fill::zeros);
+  arma::vec log_inc_wgt(N, arma::fill::zeros);
 
   for (uword ii = 0; ii < N; ++ii) {
     // evaluate the log estimate of the partition function for a particular
     // value of alpha
 
     /* Initializing variables ------------------------------- */
-    const Rcpp::Nullable<vec>& cardinalities = R_NilValue;
+    const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue;
 
     /* Calculating log_z_alpha and log_likelihood ----------- */
     const double& log_z_alpha = get_partition_function(\
@@ -161,17 +161,17 @@ Rcpp::List smc_mallows_new_item_rank(
   }
 
     /* normalise weights ------------------------------------ */
-    const double& maxw = max(log_inc_wgt);
-    const vec& w = exp(log_inc_wgt - maxw);
-    const vec& norm_wgt = w / sum(w);
+    const double& maxw = arma::max(log_inc_wgt);
+    const arma::vec& w = arma::exp(log_inc_wgt - maxw);
+    const arma::vec& norm_wgt = w / arma::sum(w);
 
   /* ====================================================== */
   /* Resample                                               */
   /* ====================================================== */
   /* Resample particles using multinomial resampling ------ */
-  uvec index = permute_with_weights(norm_wgt, N);
+  arma::uvec index = permute_with_weights(norm_wgt, N);
   rho_samples.slice(0) = rho_samples.slice(0).rows(index);
-  const vec& asc = alpha_samples.col(0);
+  const arma::vec& asc = alpha_samples.col(0);
   alpha_samples.col(0) = asc.elem(index);
   aug_rankings = aug_rankings.slices(index);
 
@@ -189,7 +189,7 @@ Rcpp::List smc_mallows_new_item_rank(
         alpha_prop_sd, lambda, alpha_max\
     );
     for (uword jj = 0; jj < num_ranks; ++jj) {
-      vec mh_aug_result;
+      arma::vec mh_aug_result;
       if (aug_method == "random") {
         mh_aug_result = metropolis_hastings_aug_ranking(\
           alpha_samples(ii, 0), rho_samples.slice(0).row(ii).t(), n_items,\
@@ -218,7 +218,7 @@ Rcpp::List smc_mallows_new_item_rank(
     alpha_samples.col(tt + 1) = alpha_samples.col(tt);
 
     // total correction prob
-    vec particle_correction_prob = Rcpp::rep(1.0, N);
+    arma::vec particle_correction_prob = Rcpp::rep(1.0, N);
 
     // iterate through each observed ranking and create new "corrected"
     // augmented rankings
@@ -234,7 +234,7 @@ Rcpp::List smc_mallows_new_item_rank(
             R_obs.slice(tt + 1).row(jj).t(), aug_rankings.slice(ii).row(jj).t(),\
             n_items
           );
-          const vec c_rank = check_correction["ranking"];
+          const arma::vec c_rank = check_correction["ranking"];
           const double c_prob = check_correction["correction_prob"];
           aug_rankings.slice(ii).row(jj) = c_rank.t();
           particle_correction_prob(ii) *= c_prob;
@@ -244,7 +244,7 @@ Rcpp::List smc_mallows_new_item_rank(
             rho_samples.slice(tt + 1).row(ii).t(), alpha_samples(ii, tt + 1),\
             n_items, metric
           );
-          const vec c_rank = check_correction["ranking"];
+          const arma::vec c_rank = check_correction["ranking"];
           const double c_prob = check_correction["correction_prob"];
           aug_rankings.slice(ii).row(jj) = c_rank.t();
           // # these probs are in real scale
@@ -260,7 +260,7 @@ Rcpp::List smc_mallows_new_item_rank(
     /* ====================================================== */
 
     // incremental weight for each particle, based on new observed rankings
-    vec log_inc_wgt(N, fill::zeros);
+    arma::vec log_inc_wgt(N, arma::fill::zeros);
     for (uword ii = 0; ii < N; ++ii) {
       // evaluate the log estimate of the partition function for a particular
       // value of alpha
@@ -279,17 +279,17 @@ Rcpp::List smc_mallows_new_item_rank(
     }
 
     /* normalise weights ------------------------------------ */
-    double maxw = max(log_inc_wgt);
-    vec w = exp(log_inc_wgt - maxw);
-    vec norm_wgt = w / sum(w);
+    double maxw = arma::max(log_inc_wgt);
+    arma::vec w = arma::exp(log_inc_wgt - maxw);
+    arma::vec norm_wgt = w / arma::sum(w);
 
     /* ====================================================== */
     /* Resample                                               */
     /* ====================================================== */
     /* Resample particles using multinomial resampling ------ */
-    uvec index = permute_with_weights(norm_wgt, N);
+    arma::uvec index = permute_with_weights(norm_wgt, N);
     rho_samples.slice(tt + 1) = rho_samples.slice(tt + 1).rows(index);
-    const vec& asc = alpha_samples.col(tt + 1);
+    const arma::vec& asc = alpha_samples.col(tt + 1);
     alpha_samples.col(tt + 1) = asc.elem(index);
     aug_rankings = aug_rankings.slices(index);
 
@@ -307,7 +307,7 @@ Rcpp::List smc_mallows_new_item_rank(
           alpha_prop_sd, lambda, alpha_max\
       );
       for (uword jj = 0; jj < num_ranks; ++jj) {
-        vec mh_aug_result;
+        arma::vec mh_aug_result;
         if (aug_method == "random") {
           mh_aug_result = metropolis_hastings_aug_ranking(\
             alpha_samples(ii, tt + 1), rho_samples.slice(tt + 1).row(ii).t(),\

@@ -1,8 +1,6 @@
 #include "RcppArmadillo.h"
 #include <cmath>
 
-using namespace arma;
-
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Leap and Shift Probabilities
 //' @description Determine the new Calculates transition probabilities for proposing a new rho
@@ -39,20 +37,20 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
   const int rho_plus_leap = rho(u) + leap_size;
   const int low_bd = std::max(1, rho_minus_leap);
   const int max_bd = std::min(n_items, rho_plus_leap);
-  ivec S = Rcpp::seq(low_bd, max_bd);
-  S = S.elem(find(S != rho(u)));
+  arma::ivec S = Rcpp::seq(low_bd, max_bd);
+  S = S.elem(arma::find(S != rho(u)));
 
   // draw a random number r from S
-  int r = as_scalar(randi(1, distr_param(S.min(), S.max())));
+  int r = arma::as_scalar(arma::randi(1, arma::distr_param(S.min(), S.max())));
   r = r - 1; // adjusting index for R correspondence
 
   // Create leap step
-  vec rho_star = rho;
+  arma::vec rho_star = rho;
   rho_star(u) = r + 1; // replace u-th entry with r
 
   // here, two elements are the same so we need to shift element and replace the repeated r with u
   const int& delta = rho_star(u) - rho(u);
-  ivec rho_prime = Rcpp::rep(0, n_items);
+  arma::ivec rho_prime = Rcpp::rep(0, n_items);
 
   // shift step
   for (int i = 0; i < n_items; ++i) {
@@ -72,12 +70,12 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
   const int rho_star_plus_leap = rho_star(u) + leap_size;
   const int S_star_min = std::max(1, rho_star_minus_leap);
   const int S_star_max = std::min(n_items, rho_star_plus_leap);
-  ivec S_star;
+  arma::ivec S_star;
   S_star = Rcpp::seq(S_star_min, S_star_max);
-  S_star = S_star.elem(find(S_star != rho_star(u)));
+  S_star = S_star.elem(arma::find(S_star != rho_star(u)));
 
   // calculate forward and backwards probabilities
-  vec forwards_prob, backwards_prob;
+  arma::vec forwards_prob, backwards_prob;
   if (std::abs(rho_star(u) - rho(u)) == 1) {
     // p(proposed|current)
     forwards_prob = 1.0 / (n_items * S.n_elem) + 1.0 / (n_items * S_star.n_elem);

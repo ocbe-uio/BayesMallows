@@ -2,15 +2,13 @@
 #include "subset.h"
 #include "distances.h"
 
-using namespace arma;
-
 // [[Rcpp::depends(RcppArmadillo)]]
 
-double cayley_distance(const vec& r1, const vec& r2){
+double cayley_distance(const arma::vec& r1, const arma::vec& r2){
   double distance = 0;
   int n = r1.n_elem;
   double tmp1;
-  vec tmp2 = r1;
+  arma::vec tmp2 = r1;
 
   // This is a C++ translation of Rankcluster::distCayley
   for(int i = 0; i < n; ++i){
@@ -18,22 +16,22 @@ double cayley_distance(const vec& r1, const vec& r2){
       distance += 1;
       tmp1 = tmp2(i);
       tmp2(i) = r2(i);
-      uvec inds = find(tmp2 == r2(i));
+      arma::uvec inds = arma::find(tmp2 == r2(i));
       tmp2.elem(inds).fill(tmp1);
     }
   }
   return distance;
 }
 
-double footrule_distance(const vec& r1, const vec& r2){
-  return norm(r1 - r2, 1);
+double footrule_distance(const arma::vec& r1, const arma::vec& r2){
+  return arma::norm(r1 - r2, 1);
 }
 
-double hamming_distance(const vec& r1, const vec& r2){
-  return sum(r1 != r2);
+double hamming_distance(const arma::vec& r1, const arma::vec& r2){
+  return arma::sum(r1 != r2);
 }
 
-double kendall_distance(const vec& r1, const vec& r2){
+double kendall_distance(const arma::vec& r1, const arma::vec& r2){
   double distance = 0;
   int n = r1.n_elem;
 
@@ -48,16 +46,16 @@ double kendall_distance(const vec& r1, const vec& r2){
   return distance;
 }
 
-double spearman_distance(const vec& r1, const vec& r2){
-  return std::pow(norm(r1 - r2, 2), 2.0);
+double spearman_distance(const arma::vec& r1, const arma::vec& r2){
+  return std::pow(arma::norm(r1 - r2, 2), 2.0);
 }
 
-double ulam_distance(const vec& r1, const vec& r2){
+double ulam_distance(const arma::vec& r1, const arma::vec& r2){
 
   int N = r1.n_elem;
 
-  ivec a = conv_to<ivec>::from(r1);
-  ivec b = conv_to<ivec>::from(r2);
+  arma::ivec a = arma::conv_to<arma::ivec>::from(r1);
+  arma::ivec b = arma::conv_to<arma::ivec>::from(r2);
 
   int *p1 = (int*) calloc(N, sizeof (int));
   int *p2 = (int*) calloc(N, sizeof (int));
@@ -65,8 +63,8 @@ double ulam_distance(const vec& r1, const vec& r2){
   int distance;
 
   for(int i = 0; i < N; ++i){
-    p1[i] = static_cast<int>(as_scalar(a(i)) - 1);
-    p2[i] = static_cast<int>(as_scalar(b(i)) - 1);
+    p1[i] = static_cast<int>(arma::as_scalar(a(i)) - 1);
+    p2[i] = static_cast<int>(arma::as_scalar(b(i)) - 1);
   }
 
   distance = perm0_distance ( N, p1, p2 );
@@ -124,7 +122,7 @@ double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
 // [[Rcpp::export]]
 double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho,
                      const std::string& metric, const arma::vec& obs_freq){
-  return sum(rank_dist_vec(rankings, rho, metric, obs_freq));
+  return arma::sum(rank_dist_vec(rankings, rho, metric, obs_freq));
 }
 
 
@@ -136,7 +134,7 @@ arma::vec rank_dist_vec(const arma::mat& rankings,
                         const arma::vec& obs_freq){
 
   int n = rankings.n_cols;
-  vec result = zeros(n);
+  arma::vec result = arma::zeros(n);
 
   for(int i = 0; i < n; ++i){
     result(i) = get_rank_distance(rankings.col(i), rho, metric) * obs_freq(i);
