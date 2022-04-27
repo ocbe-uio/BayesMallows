@@ -55,7 +55,8 @@ plot_elbow <- function(..., burnin = NULL) {
     df <- dplyr::group_by(df, .data$iteration)
     df <- dplyr::summarise(df, value = sum(.data$value))
 
-    df <- dplyr::mutate(df, n_clusters = x$n_clusters)
+    df$n_clusters <- x$n_clusters
+
     return(df)
   }))
 
