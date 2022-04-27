@@ -28,10 +28,9 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
   int n_alphas = alpha_vector.n_elem;
 
   // The reference ranking
-  vec rho = arma::regspace<vec>(1, n_items);
+  vec rho = regspace<vec>(1, n_items);
 
   // Vector which holds the result for all alphas
-
   vec logZ = zeros(n_alphas);
 
   // Loop over the values of alpha
@@ -44,10 +43,9 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
     // Loop over the Monte Carlo samples
     for(int i = 0; i < nmc; ++i){
       // Support set of the proposal distribution
-      vec support = arma::regspace<vec>(1, n_items);
+      vec support = regspace<vec>(1, n_items);
 
       // Vector which holds the proposed ranks
-
       vec ranks = zeros(n_items);
       vec ranks2 = zeros(n_items);
 
@@ -55,33 +53,32 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       double log_q = 0;
 
       // n_items random uniform numbers
-      vec u = arma::log(randu(n_items));
+      vec u = log(randu(n_items));
 
       // Loop over possible values given to item j in random order
-      vec myind = arma::shuffle(arma::regspace(0, n_items - 1));
+      vec myind = shuffle(regspace(0, n_items - 1));
 
       for(int j = 0; j < n_items; ++j){
         int jj = myind(j);
         // Find the elements that have not been taken yet
-        uvec inds = arma::find(support != 0);
+        uvec inds = find(support != 0);
         vec log_prob(inds.size());
 
         // Number of elements
         int k_max = inds.n_elem;
 
         // Reference vector
-
         vec r1 = inds + ones(k_max);
         // Sampled vector
         vec r2 = rho(jj) * ones(k_max);
         // Probability of sample. Note that this is a vector quantity.
-        log_prob = - alpha / n_items * arma::pow(arma::abs(r1 - r2), (metric == "footrule") ? 1. : 2.);
-        log_prob = log_prob - std::log(arma::accu(arma::exp(log_prob)));
-        vec log_cpd = arma::log(arma::cumsum(arma::exp(log_prob)));
+        log_prob = - alpha / n_items * pow(abs(r1 - r2), (metric == "footrule") ? 1. : 2.);
+        log_prob = log_prob - std::log(accu(exp(log_prob)));
+        vec log_cpd = log(cumsum(exp(log_prob)));
 
         // Draw a random sample
-        int item_index = arma::as_scalar(arma::find(log_cpd > u(jj), 1));
-        ranks(jj) = arma::as_scalar(inds(item_index)) + 1;
+        int item_index = as_scalar(find(log_cpd > u(jj), 1));
+        ranks(jj) = as_scalar(inds(item_index)) + 1;
 
         log_q += log_prob(item_index);
 
@@ -94,8 +91,8 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
     }
     // Average over the Monte Carlo samples
     // Using this trick: https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/
-    double maxval = arma::max(partfun);
-    logZ(t) = maxval + std::log(arma::accu(arma::exp(partfun - maxval))) - std::log(static_cast<double>(nmc));
+    double maxval = max(partfun);
+    logZ(t) = maxval + std::log(accu(exp(partfun - maxval))) - std::log(static_cast<double>(nmc));
   }
   return logZ;
 }

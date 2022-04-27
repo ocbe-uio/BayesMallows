@@ -59,14 +59,14 @@ double compute_is_fit(double alpha, vec fit){
 
 double logz_cardinalities(const double& alpha, const int& n_items, const vec& cardinalities, const std::string& metric){
   if(metric == "footrule"){
-    vec distances = arma::regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
-    return std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
+    vec distances = regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
+    return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
   } else if (metric == "spearman"){
-    vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
-    return std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
+    vec distances = regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
+    return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
   } else if (metric == "ulam"){
-    vec distances = arma::regspace(0, 1, n_items - 1);
-    return std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
+    vec distances = regspace(0, 1, n_items - 1);
+    return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
   } else {
     Rcpp::stop("Cardinalities not implemented for the provided metric.");
   }
@@ -86,17 +86,17 @@ double logz_cardinalities(const double& alpha, const int& n_items, const vec& ca
 double log_expected_dist(const double& alpha, const int& n_items,
                          const arma::vec& cardinalities, const std::string& metric){
   if(metric == "footrule"){
-    vec distances = arma::regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
-    return std::log(arma::sum(distances % cardinalities % arma::exp(-alpha * distances / n_items)))
-      -std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
+    vec distances = regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
+    return std::log(sum(distances % cardinalities % exp(-alpha * distances / n_items)))
+      -std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
   } else if (metric == "spearman"){
-    vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
-    return std::log(arma::sum(distances % cardinalities % arma::exp(-alpha * distances / n_items)))
-      -std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
+    vec distances = regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
+    return std::log(sum(distances % cardinalities % exp(-alpha * distances / n_items)))
+      -std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
   } else if (metric == "ulam"){
-    vec distances = arma::regspace(0, 1, n_items - 1);
-    return std::log(arma::sum(distances % cardinalities % arma::exp(-alpha * distances / n_items)))
-      -std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
+    vec distances = regspace(0, 1, n_items - 1);
+    return std::log(sum(distances % cardinalities % exp(-alpha * distances / n_items)))
+      -std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
   } else {
     Rcpp::stop("Cardinalities not implemented for the provided metric.");
   }
@@ -160,12 +160,11 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
                                         int K, int n_iterations = 1000, double tol = 1e-9){
   // IPFP procedure
   // Initialize a square matrix where each row/column sums to one
-
   mat A = ones<mat>(K, K) * 1.0 / K;
 
-  // arma::accu sums all elements of the tensor
+  // accu sums all elements of the tensor
   // the % operator computes the element-wise product
-  double Z0lim = -2 * std::log(static_cast<double>(K)) - arma::accu(A % arma::log(A));
+  double Z0lim = -2 * std::log(static_cast<double>(K)) - accu(A % log(A));
 
   // Helper matrix
   mat B(K, K);
@@ -188,23 +187,23 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
   for(int i = 0; i < n_alpha; ++i){
     double alpha = alpha_vector(i);
 
-    A = arma::exp(alpha * B);
+    A = exp(alpha * B);
     mat A_old = A;
     for(int i = 0; i < n_iterations; ++i){
       // Note: We can use 1-norm because the exponential never gets negative
       // Normalize rows
-      A = arma::normalise(A, 1, 1);
+      A = normalise(A, 1, 1);
       // Normalize columns
-      A = arma::normalise(A, 1, 0);
+      A = normalise(A, 1, 0);
 
-      double diff = arma::abs((A - A_old)/A_old).max();
+      double diff = abs((A - A_old)/A_old).max();
       if(diff < tol) break;
 
       A_old = A;
     }
 
-    double Zlim = alpha * arma::accu(B % A) - 2 * std::log(K) - arma::accu(A % arma::log(A));
-    double Z0 = arma::sum(arma::log(arma::regspace(1, n_items)));
+    double Zlim = alpha * accu(B % A) - 2 * std::log(K) - accu(A % log(A));
+    double Z0 = sum(log(regspace(1, n_items)));
 
     result(i) = (Zlim - Z0lim)/K * n_items + Z0;
   }

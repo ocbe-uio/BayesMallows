@@ -42,18 +42,18 @@ uvec update_cluster_labels(
 
   for(int i = 0; i < n_assessors; ++i){
     // Exponentiate to get unnormalized prob relative to max
-    rowvec probs = arma::exp(assignment_prob.row(i) -
-      arma::max(assignment_prob.row(i)));
+    rowvec probs = exp(assignment_prob.row(i) -
+      max(assignment_prob.row(i)));
 
     // Normalize with 1-norm
-    probs = arma::normalise(probs, 1);
+    probs = normalise(probs, 1);
 
     assignment_prob.row(i) = probs;
     new_cluster_assignment(i) = sample_int(assignment_prob.row(i));
   }
 
   if(save_ind_clus){
-    assignment_prob.save(std::string("cluster_probs") + std::to_string(t + 1) + std::string(".csv"), arma::csv_ascii);
+    assignment_prob.save(std::string("cluster_probs") + std::to_string(t + 1) + std::string(".csv"), csv_ascii);
   }
   return(new_cluster_assignment);
 }
@@ -68,11 +68,11 @@ vec update_cluster_probs(
 
   for(int i = 0; i < n_clusters; ++i){
     // Find the parameter for this cluster and provide it to the gamma distribution
-    cluster_probs(i) = R::rgamma(arma::sum(current_cluster_assignment == i) + psi, 1.0);
+    cluster_probs(i) = R::rgamma(sum(current_cluster_assignment == i) + psi, 1.0);
   }
   // Finally, normalize cluster_probs with 1-norm.
   // result now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
-  return arma::normalise(cluster_probs, 1);
+  return normalise(cluster_probs, 1);
 
 }
 
@@ -82,10 +82,10 @@ vec update_wcd(const uvec& current_cluster_assignment,
   int n_clusters = dist_mat.n_cols;
   vec wcd(n_clusters);
 
-  uvec inds = arma::regspace<uvec>(0, n_clusters - 1);
+  uvec inds = regspace<uvec>(0, n_clusters - 1);
   for(int i = 0; i < n_clusters; ++i){
-    mat dist_vec = dist_mat.submat(arma::find(current_cluster_assignment == i), inds.subvec(i, i));
-    wcd(i) = arma::sum(arma::conv_to<vec>::from(dist_vec));
+    mat dist_vec = dist_mat.submat(find(current_cluster_assignment == i), inds.subvec(i, i));
+    wcd(i) = sum(conv_to<vec>::from(dist_vec));
   }
 
   return(wcd);

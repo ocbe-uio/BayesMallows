@@ -28,12 +28,12 @@ void update_shape_bernoulli(
       uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[j]);
 
       for(unsigned int k = 0; k < items_above.size(); ++k){
-        int g = (arma::as_scalar(rankings.col(i).row(j)) < arma::as_scalar(rankings.col(i).row(items_above(k) - 1)));
+        int g = (as_scalar(rankings.col(i).row(j)) < as_scalar(rankings.col(i).row(items_above(k) - 1)));
         sum_1 += g;
         sum_2 += 1 - g;
       }
       for(unsigned int k = 0; k < items_below.size(); ++k){
-        int g = (arma::as_scalar(rankings.col(i).row(j)) > arma::as_scalar(rankings.col(i).row(items_below(k) - 1)));
+        int g = (as_scalar(rankings.col(i).row(j)) > as_scalar(rankings.col(i).row(items_below(k) - 1)));
         sum_1 += g;
         sum_2 += 1 - g;
       }
@@ -58,14 +58,14 @@ void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
     // Again subtracting 1 because of zero-first indexing
     // Find all the rankings of the items that are preferred to *item*
     vec rankings_above = current_ranking.elem(items_above - 1);
-    left_limit = arma::max(rankings_above);
+    left_limit = max(rankings_above);
   }
 
   // If there are any items below, we must find the possible rankings
   if(items_below.n_elem > 0){
     // Find all the rankings of the items that are disfavored to *item*
     vec rankings_below = current_ranking.elem(items_below - 1);
-    right_limit = arma::min(rankings_below);
+    right_limit = min(rankings_below);
   }
 
 }
@@ -78,7 +78,7 @@ vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor
   uvec constrained_items = Rcpp::as<uvec>(assessor_constraints[0]);
 
   // Sample an integer between 1 and n_items
-  int item = randi<int>(arma::distr_param(1, n_items));
+  int item = randi<int>(distr_param(1, n_items));
 
   // Left and right limits of the interval we draw ranks from
   // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
@@ -87,7 +87,7 @@ vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor
 
   // Now complete the leap step by sampling a new proposal uniformly between
   // left_limit + 1 and right_limit - 1
-  int proposed_rank = randi<int>(arma::distr_param(left_limit + 1, right_limit - 1));
+  int proposed_rank = randi<int>(distr_param(left_limit + 1, right_limit - 1));
 
   // Assign the proposal to the (item-1)th item
   vec proposal = ranking;
@@ -108,10 +108,10 @@ vec propose_swap(const vec& ranking, const Rcpp::List& assessor_constraints,
   int n_items = ranking.n_elem;
 
   // Draw a random number, representing an item
-  int u = arma::as_scalar(randi(1, arma::distr_param(1, n_items - Lswap)));
+  int u = as_scalar(randi(1, distr_param(1, n_items - Lswap)));
 
-  int ind1 = arma::as_scalar(arma::find(ranking == u));
-  int ind2 = arma::as_scalar(arma::find(ranking == (u + Lswap)));
+  int ind1 = as_scalar(find(ranking == u));
+  int ind2 = as_scalar(find(ranking == (u + Lswap)));
 
   vec proposal = ranking;
   proposal(ind1) = ranking(ind2);

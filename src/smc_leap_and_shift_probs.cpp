@@ -40,10 +40,10 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
   const int low_bd = std::max(1, rho_minus_leap);
   const int max_bd = std::min(n_items, rho_plus_leap);
   ivec S = Rcpp::seq(low_bd, max_bd);
-  S = S.elem(arma::find(S != rho(u)));
+  S = S.elem(find(S != rho(u)));
 
   // draw a random number r from S
-  int r = arma::as_scalar(randi(1, arma::distr_param(S.min(), S.max())));
+  int r = as_scalar(randi(1, distr_param(S.min(), S.max())));
   r = r - 1; // adjusting index for R correspondence
 
   // Create leap step
@@ -74,7 +74,7 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
   const int S_star_max = std::min(n_items, rho_star_plus_leap);
   ivec S_star;
   S_star = Rcpp::seq(S_star_min, S_star_max);
-  S_star = S_star.elem(arma::find(S_star != rho_star(u)));
+  S_star = S_star.elem(find(S_star != rho_star(u)));
 
   // calculate forward and backwards probabilities
   vec forwards_prob, backwards_prob;

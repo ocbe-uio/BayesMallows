@@ -11,9 +11,9 @@ using namespace arma;
 // Initialize latent ranks as provided by rho_init, or randomly:
 mat initialize_rho(Rcpp::Nullable<mat> rho_init, int n_items, int n_clusters){
   if(rho_init.isNotNull()){
-    return arma::repmat(Rcpp::as<mat>(rho_init), 1, n_clusters);
+    return repmat(Rcpp::as<mat>(rho_init), 1, n_clusters);
   } else {
-    return arma::shuffle(arma::repmat(arma::regspace<mat>(1, 1, n_items), 1, n_clusters));
+    return shuffle(repmat(regspace<mat>(1, 1, n_items), 1, n_clusters));
   }
 }
 
@@ -49,7 +49,7 @@ double update_alpha(vec& alpha_acceptance,
   double ratio =
     alpha_diff / n_items * rank_dist +
     lambda * alpha_diff +
-    arma::sum(obs_freq) * (
+    sum(obs_freq) * (
         get_partition_function(n_items, alpha_old, cardinalities, logz_estimate, metric) -
           get_partition_function(n_items, alpha_proposal, cardinalities, logz_estimate, metric)
     ) + std::log(alpha_proposal) - std::log(alpha_old);

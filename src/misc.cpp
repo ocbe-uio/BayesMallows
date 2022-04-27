@@ -46,9 +46,9 @@ int sample_int(const arma::rowvec& probs){
   // Draw a uniform random number
   double u = randu();
 
-  uvec matches = arma::find(arma::cumsum(probs) > u, 1, "first");
+  uvec matches = find(cumsum(probs) > u, 1, "first");
 
-  return arma::as_scalar(matches);
+  return as_scalar(matches);
 }
 
 // Truncated beta distribution
@@ -56,8 +56,8 @@ double rtruncbeta(int shape1, int shape2, double trunc = 1) {
   int i = 0;
   double x;
   while(i < 1000){
-    x = arma::chi2rnd(2 * shape1);
-    x = x / (x + arma::chi2rnd(2 * shape2));
+    x = chi2rnd(2 * shape1);
+    x = x / (x + chi2rnd(2 * shape2));
 
     if(x < trunc) break;
     ++i;
@@ -68,11 +68,11 @@ double rtruncbeta(int shape1, int shape2, double trunc = 1) {
 // From https://stackoverflow.com/questions/29724083
 uvec arma_setdiff(uvec x, uvec y){
 
-  x = arma::unique(x);
-  y = arma::unique(y);
+  x = unique(x);
+  y = unique(y);
 
   for (size_t j = 0; j < y.n_elem; j++) {
-    uvec q1 = arma::find(x == y[j]);
+    uvec q1 = find(x == y[j]);
     if (!q1.empty()) {
       x.shed_row(q1(0));
     }
@@ -114,10 +114,10 @@ uvec maybe_offset_indices(
 ) {
   // Adjust the indices of x (i.e., idx_x) depending on whether it seems to be
   // using R or C++ indices.
-  const uvec& io_idx_cpp   = arma::find_nonfinite(x);
-  const uvec& io_idx_input = arma::sort(idx_x);
+  const uvec& io_idx_cpp   = find_nonfinite(x);
+  const uvec& io_idx_input = sort(idx_x);
   std::string message = "C++ indices detected. Unchanged.";
-  if (arma::any(io_idx_input - io_idx_cpp)) {
+  if (any(io_idx_input - io_idx_cpp)) {
     idx_x -= 1;
     message = "R indices detected. Shifted.";
   }

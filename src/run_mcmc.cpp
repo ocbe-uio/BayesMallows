@@ -92,17 +92,17 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   int n_assessors = rankings.n_cols;
 
   bool augpair = (constraints.length() > 0);
-  bool any_missing = !arma::is_finite(rankings);
+  bool any_missing = !is_finite(rankings);
 
   umat missing_indicator;
   uvec assessor_missing;
 
   if(any_missing){
     // Converting to umat will convert NA to 0, but might cause clang-UBSAN error, so converting explicitly.
-    rankings.replace(arma::datum::nan, 0);
-    missing_indicator = arma::conv_to<umat>::from(rankings);
+    rankings.replace(datum::nan, 0);
+    missing_indicator = conv_to<umat>::from(rankings);
     missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
-    assessor_missing = arma::conv_to<uvec>::from(arma::sum(missing_indicator, 0));
+    assessor_missing = conv_to<uvec>::from(sum(missing_indicator, 0));
     initialize_missing_ranks(rankings, missing_indicator, assessor_missing);
   } else {
     missing_indicator.reset();
@@ -112,7 +112,6 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   // Declare the cube to hold the latent ranks
   cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
   rho.slice(0) = initialize_rho(rho_init, n_items, n_clusters);
-
   mat rho_old = rho(span::all, span::all, span(0));
 
   // Declare the vector to hold the scaling parameter alpha
@@ -133,8 +132,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   cluster_probs.col(0).fill(1.0 / n_clusters);
   vec current_cluster_probs = cluster_probs.col(0);
   umat cluster_assignment(n_assessors, n_cluster_assignments);
-
-  cluster_assignment.col(0) = randi<uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
+  cluster_assignment.col(0) = randi<uvec>(n_assessors, distr_param(0, n_clusters - 1));
   uvec current_cluster_assignment = cluster_assignment.col(0);
 
   // Matrix with precomputed distances d(R_j, \rho_j), used to avoid looping during cluster assignment
@@ -158,7 +156,6 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   // Declare vector with Bernoulli parameter for the case of intransitive preferences
   vec theta, shape_1, shape_2;
   if(error_model == "bernoulli"){
-
     theta = zeros<vec>(nmc);
     shape_1 = zeros<vec>(nmc);
     shape_2 = zeros<vec>(nmc);
@@ -174,7 +171,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
   vec alpha_old = alpha.col(0);
 
-  uvec element_indices = arma::regspace<uvec>(0, rankings.n_rows - 1);
+  uvec element_indices = regspace<uvec>(0, rankings.n_rows - 1);
 
   // This is the Metropolis-Hastings loop
 
@@ -203,7 +200,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
     for(int i = 0; i < n_clusters; ++i){
       update_rho(rho, rho_acceptance, rho_old, rho_index, i,
                  rho_thinning, alpha_old(i), leap_size,
-                 clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
+                 clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
                  metric, n_items, t, element_indices, obs_freq);
 
     }
@@ -212,8 +209,8 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
       ++alpha_index;
       for(int i = 0; i < n_clusters; ++i){
         alpha(i, alpha_index) = update_alpha(alpha_acceptance, alpha_old(i),
-              clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
-              clustering ? obs_freq(arma::find(current_cluster_assignment == i)) : obs_freq,
+              clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
+              clustering ? obs_freq(find(current_cluster_assignment == i)) : obs_freq,
               i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate, alpha_max);
       }
       // Update alpha_old

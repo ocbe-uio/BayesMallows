@@ -60,7 +60,6 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   /* ====================================================== */
 
   // Generate N initial samples of rho using the uniform prior
-
   cube rho_samples(N, n_items, Time, fill::zeros);
   for (uword i = 0; i < N; ++i) {
     const uvec items_sample = randperm(n_items) + 1;
@@ -75,10 +74,8 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   const unsigned int num_ranks = R_obs.n_rows;
 
   // each particle has its own set of augmented rankings
-
   cube aug_rankings(num_ranks, n_items, N, fill::zeros);
   cube prev_aug_rankings(num_ranks, n_items, N, fill::zeros);
-
 
   // augment incomplete ranks to initialise
   const ivec& ranks = Rcpp::seq(1, n_items);
@@ -107,7 +104,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
         } else {
           rset = Rcpp::as<vec>(Rcpp::sample(remaining_set, remaining_set.length()));
         }
-        partial_ranking.elem(arma::find_nonfinite(partial_ranking)) = rset;
+        partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
 
 
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
@@ -115,14 +112,14 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
         total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set_length);
       } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
         // find items missing from original observed ranking
-        const uvec& unranked_items = arma::find_nonfinite(R_obs_slice_0_row_jj);
+        const uvec& unranked_items = find_nonfinite(R_obs_slice_0_row_jj);
 
         // find unallocated ranks from original observed ranking
         const Rcpp::NumericVector& remaining_set = Rcpp_setdiff_arma(ranks, R_obs_slice_0_row_jj);
 
         // randomly permute the unranked items to give the order in which they will be allocated
         uvec item_ordering;
-        item_ordering = arma::conv_to<uvec>::from(arma::shuffle(unranked_items));
+        item_ordering = conv_to<uvec>::from(shuffle(unranked_items));
         const Rcpp::List proposal = calculate_forward_probability(\
           item_ordering, R_obs_slice_0_row_jj, remaining_set, rho_samples.slice(0).row(ii).t(),\
           alpha, n_items, metric\
@@ -147,7 +144,6 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   /* ====================================================== */
 
   // incremental weight for each particle, based on new observed rankings
-
   vec log_inc_wgt(N, fill::zeros);
 
   for (uword ii = 0; ii < N; ++ii) {
@@ -170,9 +166,9 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   }
 
   /* normalise weights ------------------------------------ */
-  double maxw = arma::max(log_inc_wgt);
-  vec w = arma::exp(log_inc_wgt - maxw);
-  vec norm_wgt = w / arma::sum(w);
+  double maxw = max(log_inc_wgt);
+  vec w = exp(log_inc_wgt - maxw);
+  vec norm_wgt = w / sum(w);
 
   /* ====================================================== */
   /* Resample                                               */
@@ -259,7 +255,6 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
     /* ====================================================== */
 
     // incremental weight for each particle, based on new observed rankings
-
     vec log_inc_wgt(N, fill::zeros);
     for (uword ii = 0; ii < N; ++ii) {
       // evaluate the log estimate of the partition function for a particular
@@ -279,9 +274,9 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
     }
 
     /* normalise weights ------------------------------------ */
-    double maxw = arma::max(log_inc_wgt);
-    vec w = arma::exp(log_inc_wgt - maxw);
-    vec norm_wgt = w / arma::sum(w);
+    double maxw = max(log_inc_wgt);
+    vec w = exp(log_inc_wgt - maxw);
+    vec norm_wgt = w / sum(w);
 
     /* ====================================================== */
     /* Resample                                               */
