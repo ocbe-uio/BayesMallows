@@ -64,11 +64,11 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   }))
 
   # Join map back onto df
-  df <- dplyr::inner_join(df, map, by = "assessor")
+  df <- merge(df, map, by = "assessor")
 
   if (!soft) {
     df <- df[df$cluster == df$map_cluster, , drop = FALSE]
-    df <- dplyr::select(df, -.data$cluster)
+    df$cluster <- NULL
   }
 
   return(df)
