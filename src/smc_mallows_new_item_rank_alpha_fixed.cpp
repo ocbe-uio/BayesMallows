@@ -323,7 +323,9 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   /* ====================================================== */
   /* Post Processing                                        */
   /* ====================================================== */
-  return Rcpp::List::create((Rcpp::Named("rho_samples") = rho_samples,
-                             Rcpp:Named("augmented_rankings") = aug_rankings,
-                             Rcpp::Named("ESS") = ESS_vec));
+  return Rcpp::List::create(
+    Rcpp::Named("rho_samples") = rho_samples,
+    Rcpp::Named("augmented_rankings") = aug_rankings,
+    Rcpp::Named("ESS") = ESS_vec
+  );
 }
