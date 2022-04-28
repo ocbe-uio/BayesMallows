@@ -71,6 +71,9 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
    /* generate vector to store ESS */
   rowvec ESS_vec(Time);;
 
+   /* generate vector to store ESS */
+  rowvec ESS_vec(Time);;
+
   /* ====================================================== */
   /* Augment Rankings                                       */
   /* ====================================================== */
