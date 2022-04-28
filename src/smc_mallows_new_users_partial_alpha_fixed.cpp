@@ -55,7 +55,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
       rho_samples(i, j, 0) = items_sample(j);
     }
   }
-  
+
   /* generate vector to store ESS */
   rowvec ESS_vec(Time);
 
@@ -164,7 +164,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     const double maxw = max(log_inc_wgt);
     const vec w = exp(log_inc_wgt - maxw);
     const vec norm_wgt = w / sum(w);
-    
+
     ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
     /* ====================================================== */
@@ -217,7 +217,9 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     }
   }
   // return the history of the particles and their values
-  return Rcpp::List::create((Rcpp::Named("rho_samples") = rho_samples,
-                             Rcpp::Named("augmented_rankings") = aug_rankings,
-                             Rcpp::Named("ESS") = ESS_vec));
+  return Rcpp::List::create(
+    Rcpp::Named("rho_samples") = rho_samples,
+    Rcpp::Named("augmented_rankings") = aug_rankings,
+    Rcpp::Named("ESS") = ESS_vec
+  );
 }
