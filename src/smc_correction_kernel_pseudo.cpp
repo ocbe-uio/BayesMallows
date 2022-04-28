@@ -2,6 +2,8 @@
 #include "smc.h"
 #include "misc.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Correction Kernel (pseudolikelihood)
 //' @description Function to determine if the augmented ranking is compatible with the new observed partial ranking.
@@ -27,7 +29,7 @@ Rcpp::List correction_kernel_pseudo(
     const int n_items,
     const std::string metric
 ) {
-    bool observed_equals_current = arma::approx_equal(\
+    bool observed_equals_current = approx_equal(\
         observed_ranking, current_ranking, "absdiff", 0.1\
     );
     double correction_prob = 1.0;
@@ -42,10 +44,10 @@ Rcpp::List correction_kernel_pseudo(
         // ranks = c(1:n_items)
 
         // find items missing from original observed ranking
-        const arma::uvec& unranked_items = find_nonfinite(observed_ranking);
+        const uvec& unranked_items = find_nonfinite(observed_ranking);
 
         // find elements missing from original observed ranking
-        arma::vec remaining_set = arma_setdiff_vec(current_ranking, observed_ranking);
+        vec remaining_set = arma_setdiff_vec(current_ranking, observed_ranking);
 
         // if we only have one missing rank, then we can
         if (remaining_set.n_elem == 1) {
@@ -54,31 +56,31 @@ Rcpp::List correction_kernel_pseudo(
             observed_ranking.elem(unranked_items) = remaining_set;
         } else {
             // create new agumented ranking by using pseudo proposal
-            arma::uvec item_ordering = new_pseudo_proposal(unranked_items);
+            uvec item_ordering = new_pseudo_proposal(unranked_items);
 
             // item ordering is the order of which items are assigned ranks in a specified order
-            const arma::uword& num_items_unranked = item_ordering.n_elem;
+            const uword& num_items_unranked = item_ordering.n_elem;
 
             // creating now augmented ranking whilst simultaneously calculating the backwards prob of making the same
             // augmented ranking with an alternative item ordering
-            arma::ivec auxiliary_ranking = Rcpp::rep(0, num_items_unranked);
+            ivec auxiliary_ranking = Rcpp::rep(0, num_items_unranked);
 
             //########################################################
             //## Create new augmented ranking
             //########################################################
             // given the item ordering and the list of missing rank, determine the sample probs for each iteration
-            for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
+            for (uword jj = 0; jj < num_items_unranked - 1; ++jj) {
 
                 // items to sample rank
                 const double& item_to_sample_rank = item_ordering(jj);
 
                 // the rank of item in rho
-                arma::vec rho_item_rank;
+                vec rho_item_rank;
                 rho_item_rank = rho(item_to_sample_rank - 1);
 
                 // next we get the sample probabilites for selecting a particular rank for
                 // an item based on the current alpha and the rho rank for that item
-                const arma::vec sample_prob_list = get_sample_probabilities(\
+                const vec sample_prob_list = get_sample_probabilities(\
                     rho_item_rank, alpha, remaining_set, metric, n_items\
                 );
 
@@ -87,21 +89,21 @@ Rcpp::List correction_kernel_pseudo(
 
                 // save the probability of selecting the specific item rank in the old
                 // augmented ranking
-                const arma::uvec& sample_prob = find(remaining_set == auxiliary_ranking(jj));
+                const uvec& sample_prob = find(remaining_set == auxiliary_ranking(jj));
                 correction_prob = \
                     correction_prob * \
-                    arma::as_scalar(sample_prob_list(sample_prob));
+                    as_scalar(sample_prob_list(sample_prob));
 
                 // remove selected auxiliary rank from the set of remaining possibles
                 // ranks to select
                 remaining_set = remaining_set(find(remaining_set != auxiliary_ranking(jj)));
             }
             // last element in augmented ranking is deterministic - the prob is 1
-            auxiliary_ranking(num_items_unranked - 1) = arma::as_scalar(remaining_set);
+            auxiliary_ranking(num_items_unranked - 1) = as_scalar(remaining_set);
 
             // fit the augmented ranking within the partial rankings with NAs
-            arma::vec ar;
-            ar = arma::conv_to<arma::vec>::from(auxiliary_ranking);
+            vec ar;
+            ar = conv_to<vec>::from(auxiliary_ranking);
             observed_ranking.elem(item_ordering - 1) = ar; // ranks for items
         }
         return Rcpp::List::create(

@@ -2,6 +2,8 @@
 #include "smc.h"
 #include "misc.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Calculate Forward Probability
 //' @description Function to calculate probability of assigning a set of
@@ -39,7 +41,7 @@ Rcpp::List calculate_forward_probability(
 ) {
   // item ordering is the order of which items are assigned ranks in a specified
   // order
-  const arma::uword& num_items_unranked = item_ordering.n_elem;
+  const uword& num_items_unranked = item_ordering.n_elem;
 
   // prob of creating augmented ranking
   double forward_auxiliary_ranking_probability = 1.0;
@@ -49,7 +51,7 @@ Rcpp::List calculate_forward_probability(
     // uniformly
     partial_ranking.elem(find_nonfinite(partial_ranking)) = remaining_set;
   } else {
-    arma::ivec auxiliary_ranking = Rcpp::rep(0, num_items_unranked);
+    ivec auxiliary_ranking = Rcpp::rep(0, num_items_unranked);
 
     /* ====================================================== */
     /* LOOP TO CALCULATE FORWARD AND BACKWARD PROBABILITY     */
@@ -60,18 +62,18 @@ Rcpp::List calculate_forward_probability(
     // Adjust item_ordering depending on whether it uses R or C++ indices
     item_ordering = maybe_offset_indices(partial_ranking, item_ordering);
 
-    for (arma::uword jj = 0; jj < num_items_unranked - 1; ++jj) {
+    for (uword jj = 0; jj < num_items_unranked - 1; ++jj) {
 
       // items to sample rank
-      const arma::uword item_to_sample_rank = item_ordering(jj);
+      const uword item_to_sample_rank = item_ordering(jj);
 
       // the rank of item in rho
-      arma::vec rho_item_rank;
+      vec rho_item_rank;
       rho_item_rank = rho(item_to_sample_rank);
 
       // next we get the sample probabilites for selecting a particular rank for
       // an item based on the current alpha and the rho rank for that item
-      arma::vec sample_prob_list = get_sample_probabilities(\
+      vec sample_prob_list = get_sample_probabilities(\
         rho_item_rank, alpha, remaining_set, metric, n_items\
       );
 
@@ -80,21 +82,21 @@ Rcpp::List calculate_forward_probability(
 
       // save the probability of selecting the specific item rank in the old
       // augmented ranking
-      const arma::uvec sample_prob = find(remaining_set == auxiliary_ranking(jj));
+      const uvec sample_prob = find(remaining_set == auxiliary_ranking(jj));
 
       forward_auxiliary_ranking_probability = \
         forward_auxiliary_ranking_probability * \
-        arma::as_scalar(sample_prob_list(sample_prob));
+        as_scalar(sample_prob_list(sample_prob));
 
       // remove selected auxiliary rank from the set of remaining possibles
       // ranks to select
       remaining_set = remaining_set(find(remaining_set != auxiliary_ranking(jj)));
     }
     // last element in augmented ranking is deterministic - the prob is 1
-    auxiliary_ranking(num_items_unranked - 1) = arma::as_scalar(remaining_set);
+    auxiliary_ranking(num_items_unranked - 1) = as_scalar(remaining_set);
 
     // fit the augmented ranking within the partial rankings with NAs
-    const arma::vec& ar = arma::conv_to<arma::vec>::from(auxiliary_ranking);
+    const vec& ar = conv_to<vec>::from(auxiliary_ranking);
     partial_ranking.elem(item_ordering) = ar; // ranks for items
   }
   return Rcpp::List::create(
