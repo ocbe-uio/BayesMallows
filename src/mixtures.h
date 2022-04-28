@@ -2,7 +2,6 @@
 #define MIXTURES_H
 
 #include "RcppArmadillo.h"
-#include "partitionfuns.h"
 
 void update_dist_mat(arma::mat& dist_mat, const arma::mat& rankings,
                      const arma::mat& rho_old, const std::string& metric,

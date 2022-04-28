@@ -1,10 +1,6 @@
 #ifndef PAIRWISE_H
 #define PAIRWISE_H
 
-#include <RcppArmadillo.h>
-#include "leapandshift.h"
-#include "distances.h"
-
 void update_shape_bernoulli(
     double& shape_1,
     double& shape_2,
