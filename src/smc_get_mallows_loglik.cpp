@@ -1,6 +1,8 @@
 #include "RcppArmadillo.h"
 #include "distances.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Get Mallows log-likelihood
 //' @description Calculates the Mallows log-likelihood given a set of rankings and a given rank sequence
@@ -59,11 +61,11 @@ double get_mallows_loglik(
   }
 
   /* calculate the sum of the distances ------------------- */
-  const arma::uword& num_rankings = rankings.n_cols;
+  const uword& num_rankings = rankings.n_cols;
   if (num_rankings == 1) {
     sum_distance += get_rank_distance(rho, rankings, metric);
   } else {
-    for (arma::uword jj = 0; jj < num_rankings; ++jj) {
+    for (uword jj = 0; jj < num_rankings; ++jj) {
       sum_distance += get_rank_distance(rho, rankings.col(jj), metric);
     }
   }
