@@ -169,7 +169,9 @@ Rcpp::List smc_mallows_new_item_rank(
     const double& maxw = max(log_inc_wgt);
     const vec& w = exp(log_inc_wgt - maxw);
     const vec& norm_wgt = w / sum(w);
-    ESS_vec(tt) = 1/sum(norm_wgt^2); // FIXME: don't use tt; use right side from line 291?
+    
+    /* store ESS result in first entry of the vector ESS_vec */
+    ESS_vec(0) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
   /* ====================================================== */
   /* Resample                                               */
@@ -289,7 +291,7 @@ Rcpp::List smc_mallows_new_item_rank(
     vec w = exp(log_inc_wgt - maxw);
     vec norm_wgt = w / sum(w);
     /* store ESS = sum(w)^2/sum(w^2) */
-    ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
+    ESS_vec(tt + 1) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
     /* ====================================================== */
     /* Resample                                               */
