@@ -175,7 +175,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   vec norm_wgt = w / sum(w);
 
   /* store ESS = sum(w)^2/sum(w^2) */
-  ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
+  ESS_vec(0) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
 
   /* ====================================================== */
@@ -285,6 +285,8 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
     double maxw = max(log_inc_wgt);
     vec w = exp(log_inc_wgt - maxw);
     vec norm_wgt = w / sum(w);
+    /* store ESS = sum(w)^2/sum(w^2) */
+    ESS_vec(tt + 1) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
     /* ====================================================== */
     /* Resample                                               */
