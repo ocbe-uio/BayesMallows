@@ -65,10 +65,10 @@ Rcpp::List smc_mallows_new_item_rank(
   mat alpha_samples(N, Time);
   const vec alpha_samples_0 = Rcpp::rexp(N, 1);
   alpha_samples.col(0) = alpha_samples_0;
-  
+
   /* generate vector to store ESS */
   rowvec ESS_vec(Time);
-  
+
 
   /* ====================================================== */
   /* Augment Rankings                                       */
@@ -167,8 +167,8 @@ Rcpp::List smc_mallows_new_item_rank(
     /* normalise weights ------------------------------------ */
     const double& maxw = max(log_inc_wgt);
     const vec& w = exp(log_inc_wgt - maxw);
-    const vec& norm_wgt = w / sum(w);  
-    ESS_vec(tt) = 1/sum(norm_wgt^2);
+    const vec& norm_wgt = w / sum(w);
+    ESS_vec(tt) = 1/sum(norm_wgt^2); // FIXME: don't use tt; use right side from line 291?
 
   /* ====================================================== */
   /* Resample                                               */
@@ -286,7 +286,7 @@ Rcpp::List smc_mallows_new_item_rank(
     /* normalise weights ------------------------------------ */
     double maxw = max(log_inc_wgt);
     vec w = exp(log_inc_wgt - maxw);
-    vec norm_wgt = w / sum(w);    
+    vec norm_wgt = w / sum(w);
     /* store ESS = sum(w)^2/sum(w^2) */
     ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
@@ -339,7 +339,7 @@ Rcpp::List smc_mallows_new_item_rank(
   return Rcpp::List::create(
     Rcpp::Named("rho_samples") = rho_samples,
     Rcpp::Named("alpha_samples") = alpha_samples,
-    Rcpp:Named("augmented_rankings") = aug_rankings,
+    Rcpp::Named("augmented_rankings") = aug_rankings,
     Rcpp::Named("ESS") = ESS_vec
   );
 }
