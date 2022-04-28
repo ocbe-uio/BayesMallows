@@ -25,7 +25,8 @@ using namespace arma;
 //' @param num_new_obs Integer value for the number of new observations (complete rankings) for each time step
 //' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
 //' @param alpha A numeric value of the scale parameter which is known and fixed
-//' @return a set of particles each containing a value of rho and alpha
+//' @return a set of particles each containing the values of rho and the effective sample size (ESS) at each iteration of the SMC 
+//' algorithm as well as the set of augmented rankings at the final iteration.
 //' @export
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
