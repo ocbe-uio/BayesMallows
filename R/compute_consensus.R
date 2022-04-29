@@ -228,7 +228,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 
   # If there is only one cluster, we drop the cluster column
   if (model_fit$n_clusters[1] == 1) {
-    df <- dplyr::select(df, -.data$cluster)
+    df$cluster <- NULL
   }
 
   return(df)
@@ -328,8 +328,9 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
   df <- dplyr::ungroup(df)
 
   # Compute the probability
-  df <- dplyr::mutate(df, probability = .data$n / n_samples)
-  df <- dplyr::select(df, -.data$n_max, -.data$n)
+  df$probability <- df$n / n_samples
+  df$n_max <- NULL
+  df$n <- NULL
 
   # Now collect one set of ranks per cluster
   df$id <- seq_len(nrow(df))
