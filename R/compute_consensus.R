@@ -140,8 +140,8 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 .compute_cp_consensus.consensus_BayesMallows <- function(df) {
 
   # Convert items and cluster to character, since factor levels are not needed in this case
-  df <- dplyr::mutate_at(df, dplyr::vars(.data$item, .data$cluster),
-                         as.character)
+  df$item <- as.character(df$item)
+  df$cluster <- as.character(df$cluster)
 
   # Group by item, cluster, and value
   df <- dplyr::group_by(df, .data$item, .data$cluster, .data$value)
