@@ -138,37 +138,31 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 }
 
 .compute_cp_consensus.consensus_BayesMallows <- function(df) {
-
-
-  # Group by item, cluster, and value
+  # Count per item, cluster, and value
   df <- aggregate(
     df[, "iteration", drop = FALSE],
     by = list(item = as.character(df$item),
               cluster = as.character(df$cluster), value = df$value),
     FUN = length)
-  names(df)[names(df) == "iteration"] <- "n"
 
   # Arrange according to value, per item and cluster
-  df <- dplyr::group_by(df, .data$item, .data$cluster)
-  df <- dplyr::arrange(df, .data$value, .by_group = TRUE)
-
-  # Find the cumulative probability, by dividing by the total
-  # count in (item, cluster) and the summing cumulatively
-  df <- dplyr::mutate(df, cumprob = cumsum(.data$n / sum(.data$n)))
+  df <- do.call(rbind, lapply(split(df, f = ~ item + cluster), function(x){
+    x <- x[order(x$value), ]
+    x$cumprob <- cumsum(x$iteration) / sum(x$iteration)
+    x
+  }))
 
   # Find the CP consensus per cluster, using the find_cpc function
-  df <- dplyr::ungroup(df)
   df <- dplyr::group_by(df, .data$cluster)
   class(df) <- c("consensus_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
   df <- find_cpc(df)
   df <- dplyr::ungroup(df)
 
-  df <- dplyr::arrange(df, .data$cluster, .data$ranking)
-
+  df <- df[order(df$cluster, df$ranking), ]
 
   # If there is only one cluster, we drop the cluster column
   if (length(unique(df$cluster)) == 1) {
-    df <- dplyr::select(df, -.data$cluster)
+    df$cluster <- NULL
   }
 
   return(df)
