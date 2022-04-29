@@ -30,7 +30,7 @@ using namespace arma;
 //' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
 //' @param verbose Logical specifying whether to print out the progress of the
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
-//' @return a set of particles each containing the values of rho and alpha and the effective sample size (ESS) at each iteration of the SMC 
+//' @return a set of particles each containing the values of rho and alpha and the effective sample size (ESS) at each iteration of the SMC
 //' algorithm as well as the set of augmented rankings at the final iteration.
 //' @export
 // [[Rcpp::export]]
