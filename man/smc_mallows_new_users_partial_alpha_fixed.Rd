@@ -47,7 +47,8 @@ proposal distribution}
 \item{alpha}{A numeric value of the scale parameter which is known and fixed}
 }
 \value{
-a set of particles each containing a value of rho and alpha
+a set of particles each containing the values of rho and the effective sample size (ESS) at each iteration of the SMC 
+algorithm as well as the set of augmented rankings at the final iteration.
 }
 \description{
 Function to perform resample-move SMC algorithm where we receive new users with complete rankings
