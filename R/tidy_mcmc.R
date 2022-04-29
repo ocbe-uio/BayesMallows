@@ -221,7 +221,7 @@ tidy_augmentation_acceptance <- function(fit) {
   # Augmentation acceptance
 
   if (fit$any_missing || fit$augpair) {
-    fit$aug_acceptance <- dplyr::tibble(acceptance_rate = c(fit$aug_acceptance))
+    fit$aug_acceptance <- data.frame(acceptance_rate = c(fit$aug_acceptance))
     fit$aug_acceptance$assessor <- seq_len(nrow(fit$aug_acceptance))
     fit$aug_acceptance <- fit$aug_acceptance[, c("assessor", "acceptance_rate")]
   } else {
@@ -236,7 +236,7 @@ tidy_error_probability <- function(fit) {
   theta_length <- length(fit$theta)
 
   if (theta_length > 0) {
-    fit$theta <- dplyr::tibble(
+    fit$theta <- data.frame(
       iteration = seq(from = 1, to = theta_length, by = 1),
       value = c(fit$theta)
     )
