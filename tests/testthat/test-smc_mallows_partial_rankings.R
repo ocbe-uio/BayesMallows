@@ -142,7 +142,7 @@ test_that("Runs with unif kernel", {
     aug_method      = "random"
   )
   expect_is(smc_unif, "list")
-  expect_equal(length(smc_unif), 2)
+  expect_equal(length(smc_unif), 4)
   expect_equal(dim(smc_unif$rho_samples), c(N, 10, 21))
   expect_equal(dim(smc_unif$alpha_samples), c(N, 21))
 
@@ -189,7 +189,7 @@ test_that("Runs with pseudo kernel", {
     aug_method      = "pseudolikelihood"
   )
   expect_is(smc_pseudo, "list")
-  expect_equal(length(smc_pseudo), 2)
+  expect_equal(length(smc_pseudo), 4)
   expect_equal(dim(smc_pseudo$rho_samples), c(N, 10, 21))
   expect_equal(dim(smc_pseudo$alpha_samples), c(N, 21))
 })
