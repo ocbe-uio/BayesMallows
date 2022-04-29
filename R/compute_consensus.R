@@ -139,18 +139,16 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 
 .compute_cp_consensus.consensus_BayesMallows <- function(df) {
 
-  # Convert items and cluster to character, since factor levels are not needed in this case
-  df$item <- as.character(df$item)
-  df$cluster <- as.character(df$cluster)
 
   # Group by item, cluster, and value
-  df <- dplyr::group_by(df, .data$item, .data$cluster, .data$value)
-
-  # Find the count of each unique combination (value, item, cluster)
-  df <- dplyr::count(df)
+  df <- aggregate(
+    df[, "iteration", drop = FALSE],
+    by = list(item = as.character(df$item),
+              cluster = as.character(df$cluster), value = df$value),
+    FUN = length)
+  names(df)[names(df) == "iteration"] <- "n"
 
   # Arrange according to value, per item and cluster
-  df <- dplyr::ungroup(df)
   df <- dplyr::group_by(df, .data$item, .data$cluster)
   df <- dplyr::arrange(df, .data$value, .by_group = TRUE)
 
