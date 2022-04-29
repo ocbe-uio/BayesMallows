@@ -39,20 +39,20 @@ test_that("plot_top_k and predict_top_k fail when they should", {
                          nmc = 20, save_aug = TRUE, seed = 1L)
 
   pred <- predict_top_k(bmm, burnin = 4, k = 3)
+
   expect_equal(
-    pred[13:16, ],
-    structure(list(assessor = c(3, 3, 3, 4), item = c("Item 3", "Item 4",
-                                                      "Item 5", "Item 1"), prob = c(1, 0.3125, 0, 0.5625)), row.names = c("3.3",
-                                                                                                                          "3.4", "3.5", "4.1"), class = "data.frame")
+    pred[order(pred$assessor, pred$item), ][13:16, ],
+    structure(list(assessor = c(3, 3, 3, 4), item = c("Item 3", "Item 4", "Item 5", "Item 1"),
+                   prob = c(1, 0.3125, 0, 0.5625)),
+              row.names = c(119L, 177L, 235L, 4L), class = "data.frame")
     )
 
   pred <- predict_top_k(bmm, burnin = 4, k = 5)
   expect_equal(
     head(pred),
-    structure(list(assessor = c(1, 1, 1, 1, 1, 2), item = c("Item 1",
-                                                            "Item 2", "Item 3", "Item 4", "Item 5", "Item 1"), prob = c(1,
-                                                                                                                        1, 1, 1, 1, 1)), row.names = c("1.1", "1.2", "1.3", "1.4", "1.5",
-                                                                                                                                                       "2.1"), class = "data.frame")
+    structure(list(assessor = c(1, 1, 1, 1, 1, 2),
+                   item = c("Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1"),
+                   prob = c(1,1, 1, 1, 1, 1)), row.names = c(1L, 59L, 117L, 175L, 233L, 2L), class = "data.frame")
     )
 })
 
