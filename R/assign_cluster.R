@@ -43,16 +43,17 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   df <- model_fit$cluster_assignment[model_fit$cluster_assignment$iteration > burnin, , drop = FALSE]
 
   # Compute the probability of each iteration
-  df <- as.data.frame(table(df[, c("assessor", "value")]),
-                      responseName = "count", stringsAsFactors = FALSE)
+  df <- aggregate(
+    list(count = df$iteration),
+    list(assessor = df$assessor, cluster = df$value),
+    FUN = length, drop = !expand)
+  df$count[is.na(df$count)] <- 0
 
   df <- do.call(rbind, lapply(split(df, f = df$assessor), function(x) {
     x$probability <- x$count / sum(x$count)
-    x$cluster <- x$value
-    x$value <- x$count <- NULL
+    x$count <- NULL
     x
   }))
- if(!expand) df <- df[df$probability > 0, , drop = FALSE]
 
   # Compute the MAP estimate per assessor
   map <- do.call(rbind, lapply(split(df, f = df$assessor), function(x){
