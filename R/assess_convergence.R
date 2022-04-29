@@ -91,7 +91,7 @@ trace_alpha <- function(m, clusters) {
       ggplot2::theme(legend.position = "none") +
       ggplot2::facet_wrap(ggplot2::vars(.data$n_clusters),
                           labeller = ggplot2::as_labeller(function(n_clusters) {
-                            paste(n_clusters, dplyr::if_else(n_clusters == 1, "cluster", "clusters"))
+                            paste(n_clusters, ifelse(n_clusters == 1, "cluster", "clusters"))
                           }), scales = "free_y")
   }
   return(p)
@@ -159,7 +159,7 @@ trace_rtilde <- function(model_fit, items, assessors, ...) {
                              model_fit$augmented_data$item %in% items, ,
                            drop = FALSE]
 
-  df <- dplyr::mutate(df, assessor = as.factor(.data$assessor))
+  df$assessor <- as.factor(df$assessor)
   levels(df$assessor) <- paste("Assessor", levels(df$assessor))
 
   ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
@@ -181,7 +181,7 @@ trace_cluster_probs <- function(m) {
     ggplot2::ylab(expression(tau[c])) +
     ggplot2::facet_wrap(ggplot2::vars(.data$n_clusters),
                         labeller = ggplot2::as_labeller(function(n_clusters) {
-                          paste(n_clusters, dplyr::if_else(n_clusters == 1, "cluster", "clusters"))
+                          paste(n_clusters, ifelse(n_clusters == 1, "cluster", "clusters"))
                         }), scales = "free_y")
 }
 
