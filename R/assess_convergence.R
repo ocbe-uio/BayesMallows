@@ -63,9 +63,9 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
       m <- model_fit$cluster_probs
     } else if (inherits(model_fit, "BayesMallowsMixtures")) {
       m <- do.call(rbind, lapply(model_fit, function(x) {
-        dplyr::mutate(x$cluster_probs,
-                      cluster = as.character(.data$cluster),
-                      n_clusters = x$n_clusters)
+        x$cluster_probs$cluster <- as.character(x$cluster_probs$cluster)
+        x$cluster_probs$n_clusters <- x$n_clusters
+        x$cluster_probs
       }))
     }
     trace_cluster_probs(m)
