@@ -34,8 +34,11 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
   n_samples <- length(unique(rho$iteration))
   # Factors are not needed in this case
   rho$item <- as.character(rho$item)
-  rho <- dplyr::group_by(rho, .data$item, .data$cluster)
-  rho <- dplyr::summarise(rho, prob = dplyr::n() / n_samples, .groups = "drop")
+  rho <- aggregate(
+    list(prob = rho$iteration),
+    list(item = rho$item, cluster = rho$cluster),
+    FUN = function(x) length(x) / n_samples
+  )
 
   # Find the complete set of items per cluster
   rho <- do.call(rbind, lapply(split(rho, f = rho$cluster), function(dd) {
