@@ -77,7 +77,7 @@ compute_posterior_intervals.BayesMallows <- function(
 
   df <- dplyr::ungroup(df)
 
-  if (model_fit$n_clusters == 1) df <- dplyr::select(df, -.data$cluster)
+  if (model_fit$n_clusters == 1) df$cluster <- NULL
 
   return(df)
 }
