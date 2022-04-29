@@ -397,8 +397,8 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
   df <- dplyr::ungroup(df)
 
   # Compute the probability
-  df <- dplyr::mutate(df, probability = .data$n / n_samples)
-  df <- dplyr::select(df, -.data$n_max, -.data$n)
+  df$probability <- df$n / n_samples
+  df$n_max <- df$n <- NULL
 
 
   # Now collect one set of ranks per cluster
@@ -419,7 +419,7 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
   df <- dplyr::arrange(df, .data$cluster, .data$map_ranking)
 
   if (model_fit$n_clusters[1] == 1) {
-    df <- dplyr::select(df, -.data$cluster)
+    df$cluster <- NULL
   }
 
   df <- dplyr::as_tibble(df)  # added to solve issue #163. Remove for # 162.
