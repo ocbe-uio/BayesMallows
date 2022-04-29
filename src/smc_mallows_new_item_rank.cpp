@@ -67,10 +67,6 @@ Rcpp::List smc_mallows_new_item_rank(
   const vec alpha_samples_0 = Rcpp::rexp(N, 1);
   alpha_samples.col(0) = alpha_samples_0;
 
-  /* generate vector to store ESS */
-  rowvec ESS_vec(Time);
-
-
   /* ====================================================== */
   /* Augment Rankings                                       */
   /* ====================================================== */
@@ -165,13 +161,15 @@ Rcpp::List smc_mallows_new_item_rank(
     log_inc_wgt(ii) = log_likelihood - num_ranks * log_z_alpha - log_tcp;
   }
 
-    /* normalise weights ------------------------------------ */
-    const double& maxw = max(log_inc_wgt);
-    const vec& w = exp(log_inc_wgt - maxw);
-    const vec& norm_wgt = w / sum(w);
-    
-    /* store ESS result in first entry of the vector ESS_vec */
-    ESS_vec(0) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
+  /* normalise weights ------------------------------------ */
+  const double& maxw = max(log_inc_wgt);
+  const vec& w = exp(log_inc_wgt - maxw);
+  const vec& norm_wgt = w / sum(w);
+
+  /* store ESS result in first entry of the vector ESS_vec */
+  /* generate vector to store ESS */
+  double ess_init = sum(norm_wgt) * sum(norm_wgt) / sum(norm_wgt % norm_wgt);
+  rowvec ESS_vec(Time, fill::value(ess_init));
 
   /* ====================================================== */
   /* Resample                                               */
