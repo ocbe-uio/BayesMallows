@@ -60,7 +60,7 @@ compute_consensus.BayesMallows <- function(
     df <- model_fit$rho[model_fit$rho$iteration > burnin, , drop = FALSE]
 
     # Find the problem dimensions
-    n_rows <- nrow(dplyr::distinct(df, .data$item, .data$cluster))
+    n_rows <- length(unique(paste(df$item, df$cluster)))
 
     # Check that there are rows.
     stopifnot(n_rows > 0)
@@ -84,7 +84,7 @@ compute_consensus.BayesMallows <- function(
                                      model_fit$augmented_data$assessor %in% assessors, , drop = FALSE]
 
     # Find the problem dimensions
-    n_rows <- nrow(dplyr::distinct(df, .data$assessor, .data$item))
+    n_rows <- length(unique(paste(df$assessor, df$item)))
 
     # Check that there are rows.
     stopifnot(n_rows > 0)
@@ -94,7 +94,7 @@ compute_consensus.BayesMallows <- function(
     stopifnot(length(assessors) * model_fit$n_items == n_rows)
 
     # Treat assessors as clusters
-    df <- dplyr::rename(df, cluster = "assessor")
+    names(df)[names(df) == "assessor"] <- "cluster"
     class(df) <- c("consensus_BayesMallows", "tbl_df", "tbl", "data.frame")
 
     df <- if (type == "CP") {
@@ -104,7 +104,7 @@ compute_consensus.BayesMallows <- function(
     }
 
     if ("cluster" %in% names(df)) {
-      df <- dplyr::rename(df, assessor = "cluster")
+      names(df)[names(df) == "cluster"] <- "assessor"
     }
 
   }
