@@ -140,7 +140,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 .compute_cp_consensus.consensus_BayesMallows <- function(df) {
   # Count per item, cluster, and value
   df <- aggregate(
-    df[, "iteration", drop = FALSE],
+    list(n = df$iteration),
     by = list(item = as.character(df$item),
               cluster = as.character(df$cluster), value = df$value),
     FUN = length)
@@ -148,7 +148,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
   # Arrange according to value, per item and cluster
   df <- do.call(rbind, lapply(split(df, f = ~ item + cluster), function(x){
     x <- x[order(x$value), ]
-    x$cumprob <- cumsum(x$iteration) / sum(x$iteration)
+    x$cumprob <- cumsum(x$n) / sum(x$n)
     x
   }))
 

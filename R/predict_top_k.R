@@ -39,10 +39,9 @@ predict_top_k <- function(model_fit, burnin = model_fit$burnin,
   n_samples <- length(unique(rankings$iteration))
   rankings$item <- as.character(rankings$item)
   rankings <- aggregate(
-    rankings[, "iteration"],
+    list(prob = rankings$iteration),
     by = list(assessor = rankings$assessor, item = rankings$item),
     FUN = function(x) length(x) / n_samples, drop = FALSE)
-  names(rankings)[names(rankings) == "x"] <- "prob"
   rankings$prob[is.na(rankings$prob)] <- 0
 
   rankings[order(rankings$assessor, rankings$item), ]
