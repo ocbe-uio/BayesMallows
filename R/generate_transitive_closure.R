@@ -61,10 +61,8 @@ generate_transitive_closure <- function(df, cl = NULL) {
   colnames(prefs) <- colnames(df)
 
   # Check if there are any inconsistencies
-  check <- dplyr::semi_join(prefs, prefs,
-                            by = c("assessor" = "assessor",
-                                   "bottom_item" = "top_item",
-                                   "top_item" = "bottom_item"))
+  check <- merge(prefs, prefs, by.x = c("assessor", "bottom_item", "top_item"),
+        by.y = c("assessor", "top_item", "bottom_item"))
 
   if (nrow(check) > 0) {
     print("Inconsistent rankings:")
