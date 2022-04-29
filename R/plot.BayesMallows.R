@@ -67,9 +67,11 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 
     # Compute the density, rather than the count, since the latter
     # depends on the number of Monte Carlo samples
-    df <- dplyr::group_by(df, .data$cluster, .data$item, .data$value)
-    df <- dplyr::summarise(df, n = dplyr::n())
-    df <- dplyr::mutate(df, pct = .data$n / sum(.data$n))
+    df <- aggregate(
+      list(n = df$iteration),
+      list(cluster = df$cluster, item = df$item,value = df$value),
+      FUN = length)
+    df$pct <- df$n / sum(df$n)
 
     # Finally create the plot
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
@@ -102,13 +104,13 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 
     # First get one cluster per assessor, and sort these
     df <- assign_cluster(x, burnin = burnin, soft = FALSE, expand = FALSE)
-    df <- dplyr::arrange(df, .data$map_cluster)
-    assessor_order <- dplyr::pull(df, .data$assessor)
+    df <- df[order(df$map_cluster), ]
+    assessor_order <- df$assessor
 
     # Next, rerun with soft=TRUE to get the probability of all clusters
     df <- assign_cluster(x, burnin = burnin, soft = TRUE, expand = TRUE)
     # Then order the assessors according to assessor_order
-    df <- dplyr::mutate(df, assessor = factor(.data$assessor, levels = assessor_order))
+    df$assessor <- factor(df$assessor, levels = assessor_order)
 
     # Now make a plot
     ggplot2::ggplot(df, ggplot2::aes(.data$assessor, .data$cluster)) +
