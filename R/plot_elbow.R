@@ -54,7 +54,6 @@ plot_elbow <- function(..., burnin = NULL) {
     df <- aggregate(x = df[, "value"], by = list(iteration = df$iteration), FUN = sum)
 
     df$n_clusters <- x$n_clusters
-
     return(df)
   }))
 
