@@ -124,7 +124,7 @@ test_that("Runs with unif kernel", {
     aug_method      = "random"
   )
   expect_is(smc_unif_alpha_fixed_unif, "list")
-  expect_equal(length(smc_unif_alpha_fixed_unif), 1)
+  expect_equal(length(smc_unif_alpha_fixed_unif), 3)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 10, 21))
   smc_unif <- smc_mallows_new_users_partial(
     R_obs           = samples,
@@ -171,7 +171,7 @@ test_that("Runs with pseudo kernel", {
     aug_method      = "pseudolikelihood"
   )
   expect_is(smc_unif_alpha_fixed_pseudo, "list")
-  expect_equal(length(smc_unif_alpha_fixed_pseudo), 1)
+  expect_equal(length(smc_unif_alpha_fixed_pseudo), 3)
   expect_equal(dim(smc_unif_alpha_fixed_pseudo$rho_samples), c(N, 10, 21))
   smc_pseudo <- smc_mallows_new_users_partial(
     R_obs           = samples,

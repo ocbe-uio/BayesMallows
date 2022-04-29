@@ -25,7 +25,8 @@ using namespace arma;
 //' @param num_new_obs Integer value for the number of new observations (complete rankings) for each time step
 //' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
 //' @param alpha A numeric value of the scale parameter which is known and fixed
-//' @return a set of particles each containing a value of rho and alpha
+//' @return a set of particles each containing the values of rho and the effective sample size (ESS) at each iteration of the SMC 
+//' algorithm as well as the set of augmented rankings at the final iteration.
 //' @export
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
@@ -55,6 +56,9 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
       rho_samples(i, j, 0) = items_sample(j);
     }
   }
+
+  /* generate vector to store ESS */
+  rowvec ESS_vec(Time);
 
   // this is to store the augmentations of the observed rankings for each particle
   cube aug_rankings(n_users, n_items, N, fill::zeros); // no. users by items by particles
@@ -162,6 +166,8 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     const vec w = exp(log_inc_wgt - maxw);
     const vec norm_wgt = w / sum(w);
 
+    ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
+
     /* ====================================================== */
     /* Resample                                               */
     /* ====================================================== */
@@ -212,5 +218,9 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     }
   }
   // return the history of the particles and their values
-  return Rcpp::List::create((Rcpp::Named("rho_samples") = rho_samples));
+  return Rcpp::List::create(
+    Rcpp::Named("rho_samples") = rho_samples,
+    Rcpp::Named("augmented_rankings") = aug_rankings,
+    Rcpp::Named("ESS") = ESS_vec
+  );
 }
