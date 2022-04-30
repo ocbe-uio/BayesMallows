@@ -25,9 +25,6 @@ compute_posterior_intervals <- function(model_fit, ...) {
   UseMethod("compute_posterior_intervals")
 }
 
-.compute_posterior_intervals <- function(df, ...) {
-  UseMethod(".compute_posterior_intervals")
-}
 
 #' @title Compute posterior intervals
 #' @inheritParams compute_posterior_intervals
@@ -63,14 +60,11 @@ compute_posterior_intervals.BayesMallows <- function(
   if (parameter == "alpha" || parameter == "cluster_probs") {
 
     df <- dplyr::group_by(df, .data$cluster)
-
-    class(df) <- c("posterior_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
     df <- .compute_posterior_intervals(df, parameter, level, decimals)
 
   } else if (parameter == "rho") {
     decimals <- 0
     df <- dplyr::group_by(df, .data$cluster, .data$item)
-    class(df) <- c("posterior_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
     df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
 
   }
@@ -106,15 +100,10 @@ compute_posterior_intervals.SMCMallows <- function(
 
   if (parameter == "alpha" || parameter == "cluster_probs") {
     df <- dplyr::group_by(df, .data$cluster)
-
-    class(df) <- c("posterior_SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
-
     df <- .compute_posterior_intervals(df, parameter, level, decimals)
   } else if (parameter == "rho") {
     decimals <- 0
     df <- dplyr::group_by(df, .data$cluster, .data$item)
-
-    class(df) <- c("posterior_SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
     df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
   }
 
@@ -125,7 +114,7 @@ compute_posterior_intervals.SMCMallows <- function(
   return(df)
 }
 
-.compute_posterior_intervals.posterior_BayesMallows <- function(
+.compute_posterior_intervals <- function(
   df, parameter, level, decimals, discrete = FALSE, ...
 ) {
   dplyr::do(df, {
@@ -168,50 +157,6 @@ compute_posterior_intervals.SMCMallows <- function(
   })
 }
 
-# same as compute_posterior_intervals, but removed the bayesmallows object and
-# some other columns
-
-.compute_posterior_intervals.posterior_SMCMallows <- function(
-  df, parameter, level, decimals, discrete = FALSE, ...
-) {
-  dplyr::do(df, {
-    format <- paste0("%.", decimals, "f")
-
-    posterior_mean <- round(base::mean(.data$value), decimals)
-    posterior_median <- round(stats::median(.data$value), decimals)
-
-    if (discrete) {
-
-      hpdi <- compute_discrete_hpdi(.data, level)
-
-    } else {
-      hpdi <- HDInterval::hdi(.data$value, credMass = level, allowSplit = TRUE)
-
-      hpdi[] <- sprintf(format, hpdi)
-      if (is.matrix(hpdi)) {
-        # Discontinous case
-        hpdi <- paste(apply(hpdi, 1, function(x) paste0("[", x[[1]], ",", x[[2]], "]")))
-      } else {
-        # Continuous case
-        hpdi <- paste0("[", hpdi[[1]], ",", hpdi[[2]], "]")
-      }
-    }
-
-
-    central <- unique(stats::quantile(.data$value, probs = c((1 - level) / 2, level + (1 - level) / 2)))
-    central <- sprintf(format, central)
-    central <- paste0("[", paste(central, collapse = ","), "]")
-
-    dplyr::tibble(
-      parameter = parameter,
-      mean = posterior_mean,
-      median = posterior_median,
-      conf_level = paste(level * 100, "%"),
-      hpdi = hpdi,
-      central_interval = central
-    )
-  })
-}
 
 compute_discrete_hpdi <- function(df, level){
   df <- dplyr::group_by(df, .data$value)
