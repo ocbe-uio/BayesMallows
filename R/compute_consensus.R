@@ -140,19 +140,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 
 .compute_cp_consensus.consensus_BayesMallows <- function(df) {
   # Count per item, cluster, and value
-  df <- aggregate(
-    list(n = df$iteration),
-    by = list(item = as.character(df$item),
-              cluster = as.character(df$cluster), value = df$value),
-    FUN = length)
-
-  # Arrange according to value, per item and cluster
-  df <- do.call(rbind, lapply(split(df, f = ~ item + cluster), function(x){
-    x <- x[order(x$value), ]
-    x$cumprob <- cumsum(x$n) / sum(x$n)
-    x
-  }))
-
+  df <- aggregate_cp_consensus(df)
   # Find the CP consensus per cluster, using the find_cpc function
   class(df) <- c("consensus_BayesMallows", "data.frame")
   df <- find_cpc(df)
@@ -192,25 +180,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
   # the model object
   stopifnot(model_fit$n_clusters * model_fit$n_items == n_rows)
 
-  # Convert items and clustr to character, since factor levels are not needed in this case
-  df$item <- as.character(df$item)
-  df$cluster <- as.character(df$cluster)
-
-  # Group by item, cluster, and value
-  df <- aggregate(
-    list(n = df$iteration),
-    list(item = df$item, cluster = df$cluster, value = df$value),
-    FUN = length)
-
-  df <- dplyr::group_by(df, .data$item, .data$cluster)
-  df <- dplyr::arrange(df, .data$value, .by_group = TRUE)
-
-  # Find the cumulative probability, by dividing by the total
-  # count in (item, cluster) and the summing cumulatively
-  df <- dplyr::mutate(df, cumprob = cumsum(.data$n / sum(.data$n)))
-
-  # Find the CP consensus per cluster, using the find_cpc function
-  df <- dplyr::ungroup(df)
+  df <- aggregate_cp_consensus(df)
   df <- dplyr::group_by(df, .data$cluster)
   class(df) <- c("consensus_SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
   df <- find_cpc(df)
@@ -421,4 +391,23 @@ find_cpc.consensus_SMCMallows <- function(group_df) {
 
   return(df)
 
+}
+
+aggregate_cp_consensus <- function(df){
+  # Convert items and clustr to character, since factor levels are not needed in this case
+  df$item <- as.character(df$item)
+  df$cluster <- as.character(df$cluster)
+
+  df <- aggregate(
+    list(n = df$iteration),
+    by = list(item = as.character(df$item),
+              cluster = as.character(df$cluster), value = df$value),
+    FUN = length)
+
+  # Arrange according to value, per item and cluster
+  do.call(rbind, lapply(split(df, f = ~ item + cluster), function(x){
+    x <- x[order(x$value), ]
+    x$cumprob <- cumsum(x$n) / sum(x$n)
+    x
+  }))
 }
