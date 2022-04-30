@@ -254,7 +254,7 @@ find_cpc <- function(group_df, group_var = "cluster") {
   df <- df[order(df$cluster, df$map_ranking), , drop = FALSE]
 
   if (length(unique(df$cluster)) == 1) {
-    df <- dplyr::select(df, -.data$cluster)
+    df$cluster <- NULL
   }
 
   return(df)
@@ -308,20 +308,18 @@ find_cpc <- function(group_df, group_var = "cluster") {
   attr(x = df, "reshapeLong") <- NULL # preserves identity to gather() output
 
   # Sort according to cluster and ranking
-  df <- dplyr::arrange(df, .data$cluster, .data$map_ranking)
+  df <- df[order(df$cluster, df$map_ranking), , drop = FALSE]
 
   if (model_fit$n_clusters[1] == 1) {
     df$cluster <- NULL
   }
-
-  df <- dplyr::as_tibble(df)  # added to solve issue #163. Remove for # 162.
 
   return(df)
 
 }
 
 aggregate_cp_consensus <- function(df){
-  # Convert items and clustr to character, since factor levels are not needed in this case
+  # Convert items and cluster to character, since factor levels are not needed in this case
   df$item <- as.character(df$item)
   df$cluster <- as.character(df$cluster)
 
