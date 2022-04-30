@@ -241,10 +241,10 @@ find_cpc <- function(group_df, group_var = "cluster") {
   df <- aggregate(list(n = df$iteration), df[, setdiff(names(df), "iteration")],
                   FUN = length)
   # Keep only the maximum per cluster
-  df <- dplyr::group_by(df, .data$cluster)
-  df <- dplyr::mutate(df, n_max = max(.data$n))
-  df <- df[df$n == df$n_max, , drop = FALSE]
-  df <- dplyr::ungroup(df)
+  df <- do.call(rbind, lapply(split(df, f = df$cluster), function(x){
+    x$n_max <- max(x$n)
+    x[x$n == x$n_max, , drop = FALSE]
+  }))
 
   # Compute the probability
   df$probability <- df$n / n_samples
