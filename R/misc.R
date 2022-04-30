@@ -1,7 +1,7 @@
 #' @importFrom Rdpack reprompt
 #' @importFrom Rcpp sourceCpp
-#' @importFrom starts aggregate
-#' @importFrom util head
+#' @importFrom stats aggregate
+#' @importFrom utils head
 #' @useDynLib BayesMallows, .registration = TRUE
 NULL
 
