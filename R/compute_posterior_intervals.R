@@ -159,15 +159,14 @@ compute_posterior_intervals.SMCMallows <- function(
 
 
 compute_discrete_hpdi <- function(df, level){
-  df <- dplyr::group_by(df, .data$value)
-  df <- dplyr::summarise(df, n = dplyr::n())
-  df <- dplyr::arrange(df, dplyr::desc(.data$n))
-  df <- dplyr::mutate(df, cumprob = cumsum(.data$n) / sum(.data$n),
-                      lagcumprob = dplyr::lag(.data$cumprob, default = 0))
+  df <- aggregate(list(n = df$iteration),
+                  list(value = df$value), FUN = length)
+  df <- df[order(df$n, decreasing = TRUE), , drop = FALSE]
+  df$cumprob <- cumsum(df$n) / sum(df$n)
+  df$lagcumprob <- c(0, head(df$cumprob, -1))
+  df <- df[df$lagcumprob <= level, , drop = FALSE]
 
-  df <- dplyr::filter(df, .data$lagcumprob <= level)
-
-  values <- sort(dplyr::pull(df, .data$value))
+  values <- sort(df$value)
 
   # Find contiguous regions
   breaks <- c(0, which(diff(values) != 1), length(values))
