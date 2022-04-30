@@ -22,9 +22,6 @@ compute_consensus <- function(model_fit, ...) {
   UseMethod(".compute_map_consensus")
 }
 
-find_cpc <- function(df, ...) {
-  UseMethod("find_cpc")
-}
 
 #' @title Compute Consensus Ranking
 #' @inheritParams compute_consensus
@@ -142,7 +139,6 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
   # Count per item, cluster, and value
   df <- aggregate_cp_consensus(df)
   # Find the CP consensus per cluster, using the find_cpc function
-  class(df) <- c("consensus_BayesMallows", "data.frame")
   df <- find_cpc(df)
 
   df <- df[order(df$cluster, df$ranking), ]
@@ -181,10 +177,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
   stopifnot(model_fit$n_clusters * model_fit$n_items == n_rows)
 
   df <- aggregate_cp_consensus(df)
-  df <- dplyr::group_by(df, .data$cluster)
-  class(df) <- c("consensus_SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
   df <- find_cpc(df)
-  df <- dplyr::ungroup(df)
 
   # If there is only one cluster, we drop the cluster column
   if (model_fit$n_clusters[1] == 1) {
@@ -196,7 +189,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 }
 
 # Internal function for finding CP consensus.
-find_cpc.consensus_BayesMallows <- function(group_df, group_var = "cluster") {
+find_cpc <- function(group_df, group_var = "cluster") {
   # Declare the result dataframe before adding rows to it
   result <- data.frame(
     cluster = character(),
@@ -228,44 +221,6 @@ find_cpc.consensus_BayesMallows <- function(group_df, group_var = "cluster") {
     result <- rbind(
       result,
       tmp_df[, c("cluster", "ranking", "item", "cumprob"), drop = FALSE])
-
-  }
-  return(result)
-}
-
-# Internal function for finding CP consensus.
-find_cpc.consensus_SMCMallows <- function(group_df) {
-  # Declare the result dataframe before adding rows to it
-  result <- dplyr::tibble(
-    cluster = character(),
-    ranking = numeric(),
-    item = character(),
-    cumprob = numeric()
-  )
-  n_items <- max(group_df$value)
-  for (i in seq(from = 1, to = n_items, by = 1)) {
-    # Filter out the relevant rows
-    tmp_df <- group_df[group_df$value == i, , drop = FALSE]
-
-    # Remove items in result
-    tmp_df <- dplyr::anti_join(tmp_df, result, by = c("cluster", "item"))
-
-    # Keep the max only. This filtering must be done after the first filter,
-    # since we take the maximum among the filtered values
-    if (nrow(tmp_df) >= 1) {
-      tmp_df <- tmp_df[tmp_df$cumprob == max(tmp_df$cumprob), , drop = FALSE]
-    }
-
-    # Add the ranking
-    tmp_df <- dplyr::mutate(tmp_df, ranking = i)
-
-    # Select the columns we want to keep, and put them in result
-    result <- dplyr::bind_rows(
-      result,
-      dplyr::select(
-        tmp_df, .data$cluster, .data$ranking, .data$item, .data$cumprob
-      )
-    )
 
   }
   return(result)
