@@ -238,9 +238,8 @@ find_cpc <- function(group_df, group_var = "cluster") {
   names(df) <- gsub("^value\\.", "", names(df))
 
   # Group by everything except iteration, and count the unique combinations
-  df <- dplyr::group_by_at(df, .vars = dplyr::vars(-.data$iteration))
-  df <- dplyr::count(df)
-  df <- dplyr::ungroup(df)
+  df <- aggregate(list(n = df$iteration), df[, setdiff(names(df), "iteration")],
+                  FUN = length)
   # Keep only the maximum per cluster
   df <- dplyr::group_by(df, .data$cluster)
   df <- dplyr::mutate(df, n_max = max(.data$n))
