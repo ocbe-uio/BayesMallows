@@ -183,7 +183,7 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
   }
 
   # Find the problem dimensions
-  n_rows <- nrow(dplyr::distinct(df, .data$item, .data$cluster))
+  n_rows <- length(unique(interaction(df$item, df$cluster)))
 
   # Check that there are rows.
   stopifnot(n_rows > 0)
