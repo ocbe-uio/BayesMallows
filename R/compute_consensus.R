@@ -193,16 +193,15 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
   stopifnot(model_fit$n_clusters * model_fit$n_items == n_rows)
 
   # Convert items and clustr to character, since factor levels are not needed in this case
-  df <- dplyr::mutate_at(df, dplyr::vars(.data$item, .data$cluster), as.character)
+  df$item <- as.character(df$item)
+  df$cluster <- as.character(df$cluster)
 
   # Group by item, cluster, and value
-  df <- dplyr::group_by(df, .data$item, .data$cluster, .data$value)
+  df <- aggregate(
+    list(n = df$iteration),
+    list(item = df$item, cluster = df$cluster, value = df$value),
+    FUN = length)
 
-  # Find the count of each unique combination (value, item, cluster)
-  df <- dplyr::count(df)
-
-  # Arrange according to value, per item and cluster
-  df <- dplyr::ungroup(df)
   df <- dplyr::group_by(df, .data$item, .data$cluster)
   df <- dplyr::arrange(df, .data$value, .by_group = TRUE)
 
