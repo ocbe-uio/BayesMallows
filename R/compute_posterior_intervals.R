@@ -58,21 +58,19 @@ compute_posterior_intervals.BayesMallows <- function(
   df <- model_fit[[parameter]][model_fit[[parameter]]$iteration > burnin, , drop = FALSE]
 
   if (parameter == "alpha" || parameter == "cluster_probs") {
-
-    df <- dplyr::group_by(df, .data$cluster)
-    df <- .compute_posterior_intervals(df, parameter, level, decimals)
+    df <- .compute_posterior_intervals(split(df, f = df$cluster), parameter, level, decimals)
 
   } else if (parameter == "rho") {
     decimals <- 0
-    df <- dplyr::group_by(df, .data$cluster, .data$item)
-    df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
+    df <- .compute_posterior_intervals(
+      split(df, f = interaction(df$cluster, df$item)),
+      parameter, level, decimals, discrete = TRUE)
 
   }
 
-  df <- dplyr::ungroup(df)
-
   if (model_fit$n_clusters == 1) df$cluster <- NULL
 
+  row.names(df) <- NULL
   return(df)
 }
 
@@ -99,15 +97,13 @@ compute_posterior_intervals.SMCMallows <- function(
   }
 
   if (parameter == "alpha" || parameter == "cluster_probs") {
-    df <- dplyr::group_by(df, .data$cluster)
-    df <- .compute_posterior_intervals(df, parameter, level, decimals)
+    df <- .compute_posterior_intervals(split(df, f = df$cluster), parameter, level, decimals)
   } else if (parameter == "rho") {
     decimals <- 0
-    df <- dplyr::group_by(df, .data$cluster, .data$item)
-    df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
+    df <- .compute_posterior_intervals(split(df, f = interaction(df$cluster, df$item)),
+                                       parameter, level, decimals, discrete = TRUE)
   }
 
-  df <- dplyr::ungroup(df)
 
   if (model_fit$n_clusters[1] == 1) df$cluster <- NULL
 
@@ -117,19 +113,20 @@ compute_posterior_intervals.SMCMallows <- function(
 .compute_posterior_intervals <- function(
   df, parameter, level, decimals, discrete = FALSE, ...
 ) {
-  dplyr::do(df, {
+
+  do.call(rbind, lapply(df, function(x){
     format <- paste0("%.", decimals, "f")
 
-    posterior_mean <- round(base::mean(.data$value), decimals)
-    posterior_median <- round(stats::median(.data$value), decimals)
+    posterior_mean <- round(base::mean(x$value), decimals)
+    posterior_median <- round(stats::median(x$value), decimals)
 
     if (discrete) {
 
-      hpdi <- compute_discrete_hpdi(.data, level)
+      hpdi <- compute_discrete_hpdi(x, level)
 
 
     } else {
-      hpdi <- HDInterval::hdi(.data$value, credMass = level, allowSplit = TRUE)
+      hpdi <- HDInterval::hdi(x$value, credMass = level, allowSplit = TRUE)
 
       hpdi[] <- sprintf(format, hpdi)
       if (is.matrix(hpdi)) {
@@ -141,12 +138,11 @@ compute_posterior_intervals.SMCMallows <- function(
       }
     }
 
-
-    central <- unique(stats::quantile(.data$value, probs = c((1 - level) / 2, level + (1 - level) / 2)))
+    central <- unique(stats::quantile(x$value, probs = c((1 - level) / 2, level + (1 - level) / 2)))
     central <- sprintf(format, central)
     central <- paste0("[", paste(central, collapse = ","), "]")
 
-    dplyr::tibble(
+    ret <- data.frame(
       parameter = parameter,
       mean = posterior_mean,
       median = posterior_median,
@@ -154,11 +150,19 @@ compute_posterior_intervals.SMCMallows <- function(
       hpdi = hpdi,
       central_interval = central
     )
-  })
+
+    targets <- setdiff(names(x), c("iteration", "value", "n_clusters"))
+    for(nm in targets){
+      eval(parse(text = paste0("ret$", nm, " <- unique(x$", nm, ")")))
+    }
+    ret[, c(targets, setdiff(names(ret), targets)), drop = FALSE]
+  }))
+
 }
 
 
 compute_discrete_hpdi <- function(df, level){
+  if(!"iteration" %in% names(df)) df$iteration <- seq_len(nrow(df))
   df <- aggregate(list(n = df$iteration),
                   list(value = df$value), FUN = length)
   df <- df[order(df$n, decreasing = TRUE), , drop = FALSE]

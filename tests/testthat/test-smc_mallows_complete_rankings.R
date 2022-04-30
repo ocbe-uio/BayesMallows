@@ -85,7 +85,7 @@ rho_cp <- compute_rho_consensus(
 rho_map <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "MAP")
 
 test_that("Output of compute_posterior_intervals_rho is OK", {
-  expect_is(rho_temp, "tbl_df")
+  expect_is(rho_temp, "data.frame")
   expect_length(rho_temp, 7)
   expect_named(
     rho_temp,
@@ -107,7 +107,7 @@ alpha_posterior_intervals <- compute_posterior_intervals_alpha(
 )
 
 test_that("Output of compute_posterior_intervals_alpha is OK", {
-  expect_is(alpha_posterior_intervals, "tbl_df")
+  expect_is(alpha_posterior_intervals, "data.frame")
   expect_length(alpha_posterior_intervals, 6)
   expect_named(
     alpha_posterior_intervals,
@@ -179,3 +179,4 @@ test_that("get_mallows_loglik() in smc_mallows_new_users_complete() works", {
   expect_gt(max(out_loglik), mean(out_loglik) * (1 + tolerance))
   expect_lt(min(out_loglik), mean(out_loglik) * (1 - tolerance))
 })
+

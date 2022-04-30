@@ -159,7 +159,6 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
   stopifnot(burnin < model_fit$nmc)
 
   # Filter out the pre-burnin iterations
-
   if (burnin != 0) {
     df <- model_fit[model_fit$iteration > burnin, , drop = FALSE]
   } else {
@@ -208,19 +207,21 @@ find_cpc <- function(group_df, group_var = "cluster") {
     tmp_df <- tmp_df[!interaction(tmp_df[c("cluster", "item")]) %in%
                        interaction(result[c("cluster", "item")]), ]
 
-    # Keep the max only. This filtering must be done after the first filter,
-    # since we take the maximum among the filtered values
-    tmp_df <- do.call(rbind,
-                      lapply(split(tmp_df, f = tmp_df[group_var]), function(x) {
-                        x[x$cumprob == max(x$cumprob), ]} ))
+    if(nrow(tmp_df) >= 1){
+      # Keep the max only. This filtering must be done after the first filter,
+      # since we take the maximum among the filtered values
+      tmp_df <- do.call(rbind,
+                        lapply(split(tmp_df, f = tmp_df[group_var]), function(x) {
+                          x[x$cumprob == max(x$cumprob), ]} ))
+      # Add the ranking
+      tmp_df$ranking <- i
 
-    # Add the ranking
-    tmp_df$ranking <- i
+      # Select the columns we want to keep, and put them in result
+      result <- rbind(
+        result,
+        tmp_df[, c("cluster", "ranking", "item", "cumprob"), drop = FALSE])
+    }
 
-    # Select the columns we want to keep, and put them in result
-    result <- rbind(
-      result,
-      tmp_df[, c("cluster", "ranking", "item", "cumprob"), drop = FALSE])
 
   }
   return(result)
