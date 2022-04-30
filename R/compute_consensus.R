@@ -228,33 +228,38 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
 }
 
 # Internal function for finding CP consensus.
-find_cpc.consensus_BayesMallows <- function(group_df) {
+find_cpc.consensus_BayesMallows <- function(group_df, group_var = "cluster") {
   # Declare the result dataframe before adding rows to it
-  result <- dplyr::tibble(
+  result <- data.frame(
     cluster = character(),
     ranking = numeric(),
     item = character(),
     cumprob = numeric()
   )
   n_items <- max(group_df$value)
+  group_df$cumprob[is.na(group_df$cumprob)] <- 0
 
   for (i in seq(from = 1, to = n_items, by = 1)) {
     # Filter out the relevant rows
     tmp_df <- group_df[group_df$value == i, , drop = FALSE]
 
     # Remove items in result
-    tmp_df <- dplyr::anti_join(tmp_df, result, by = c("cluster", "item"))
+    tmp_df <- tmp_df[!interaction(tmp_df[c("cluster", "item")]) %in%
+                       interaction(result[c("cluster", "item")]), ]
 
     # Keep the max only. This filtering must be done after the first filter,
     # since we take the maximum among the filtered values
-    tmp_df <- dplyr::filter(tmp_df, .data$cumprob == max(dplyr::coalesce(.data$cumprob, 0)))
+    tmp_df <- do.call(rbind,
+                      lapply(split(tmp_df, f = tmp_df[group_var]), function(x) {
+                        x[x$cumprob == max(x$cumprob), ]} ))
 
     # Add the ranking
-    tmp_df <- dplyr::mutate(tmp_df, ranking = i)
+    tmp_df$ranking <- i
 
     # Select the columns we want to keep, and put them in result
-    result <- dplyr::bind_rows(result,
-                               dplyr::select(tmp_df, .data$cluster, .data$ranking, .data$item, .data$cumprob))
+    result <- rbind(
+      result,
+      tmp_df[, c("cluster", "ranking", "item", "cumprob"), drop = FALSE])
 
   }
   return(result)
