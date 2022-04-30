@@ -237,19 +237,7 @@ find_cpc <- function(group_df, group_var = "cluster") {
                        timevar = "item")
   names(df) <- gsub("^value\\.", "", names(df))
 
-  # Group by everything except iteration, and count the unique combinations
-  df <- aggregate(list(n = df$iteration), df[, setdiff(names(df), "iteration")],
-                  FUN = length)
-  # Keep only the maximum per cluster
-  df <- do.call(rbind, lapply(split(df, f = df$cluster), function(x){
-    x$n_max <- max(x$n)
-    x[x$n == x$n_max, , drop = FALSE]
-  }))
-
-  # Compute the probability
-  df$probability <- df$n / n_samples
-  df$n_max <- NULL
-  df$n <- NULL
+  df <- aggregate_map_consensus(df, n_samples)
 
   # Now collect one set of ranks per cluster
   df$id <- seq_len(nrow(df))
@@ -263,13 +251,11 @@ find_cpc <- function(group_df, group_var = "cluster") {
   df$id <- NULL
 
   # Sort according to cluster and ranking
-  df <- dplyr::arrange(df, .data$cluster, .data$map_ranking)
+  df <- df[order(df$cluster, df$map_ranking), , drop = FALSE]
 
   if (length(unique(df$cluster)) == 1) {
     df <- dplyr::select(df, -.data$cluster)
   }
-
-
 
   return(df)
 
@@ -305,20 +291,7 @@ find_cpc <- function(group_df, group_var = "cluster") {
   )
   attr(df, "reshapeWide") <- NULL # maintain identity to spread() output
 
-  # Group by everything except iteration, and count the unique combinations
-  df <- dplyr::group_by_at(df, .vars = dplyr::vars(-.data$iteration))
-  df <- dplyr::count(df)
-  df <- dplyr::ungroup(df)
-  # Keep only the maximum per cluster
-  df <- dplyr::group_by(df, .data$cluster)
-  df <- dplyr::mutate(df, n_max = max(.data$n))
-  df <- df[df$n == df$n_max, , drop = FALSE]
-  df <- dplyr::ungroup(df)
-
-  # Compute the probability
-  df$probability <- df$n / n_samples
-  df$n_max <- df$n <- NULL
-
+  df <- aggregate_map_consensus(df, n_samples)
 
   # Now collect one set of ranks per cluster
   df <- stats::reshape(
@@ -364,4 +337,20 @@ aggregate_cp_consensus <- function(df){
     x$cumprob <- cumsum(x$n) / sum(x$n)
     x
   }))
+}
+
+aggregate_map_consensus <- function(df, n_samples){
+  # Group by everything except iteration, and count the unique combinations
+  df <- aggregate(list(n = df$iteration), df[, setdiff(names(df), "iteration")],
+                  FUN = length)
+  # Keep only the maximum per cluster
+  df <- do.call(rbind, lapply(split(df, f = df$cluster), function(x){
+    x$n_max <- max(x$n)
+    x[x$n == x$n_max, , drop = FALSE]
+  }))
+
+  # Compute the probability
+  df$probability <- df$n / n_samples
+  df$n_max <- df$n <- NULL
+  df
 }
