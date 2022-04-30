@@ -69,7 +69,7 @@ compute_consensus.BayesMallows <- function(
     # the model object
     stopifnot(model_fit$n_clusters * model_fit$n_items == n_rows)
 
-    class(df) <- c("consensus_BayesMallows", "tbl_df", "tbl", "data.frame")
+    class(df) <- c("consensus_BayesMallows", "data.frame")
 
     df <- if (type == "CP") {
       .compute_cp_consensus(df)
@@ -109,7 +109,8 @@ compute_consensus.BayesMallows <- function(
 
   }
 
-  return(df)
+  row.names(df) <- NULL
+  as.data.frame(df)
 
 }
 
@@ -153,10 +154,8 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
   }))
 
   # Find the CP consensus per cluster, using the find_cpc function
-  df <- dplyr::group_by(df, .data$cluster)
-  class(df) <- c("consensus_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
+  class(df) <- c("consensus_BayesMallows", "data.frame")
   df <- find_cpc(df)
-  df <- dplyr::ungroup(df)
 
   df <- df[order(df$cluster, df$ranking), ]
 
