@@ -138,26 +138,9 @@ compute_posterior_intervals.SMCMallows <- function(
 
     if (discrete) {
 
-      df <- dplyr::group_by(.data, .data$value)
-      df <- dplyr::summarise(df, n = dplyr::n())
-      df <- dplyr::arrange(df, dplyr::desc(.data$n))
-      df <- dplyr::mutate(df, cumprob = cumsum(.data$n) / sum(.data$n),
-                          lagcumprob = dplyr::lag(.data$cumprob, default = 0))
+      hpdi <- compute_discrete_hpdi(.data, level)
 
-      df <- dplyr::filter(df, .data$lagcumprob <= level)
 
-      values <- sort(dplyr::pull(df, .data$value))
-
-      # Find contiguous regions
-      breaks <- c(0, which(diff(values) != 1), length(values))
-
-      hpdi <- lapply(seq(length(breaks) - 1), function(.x, values, breaks) {
-        vals <- values[(breaks[.x] + 1):breaks[.x + 1]]
-        vals <- unique(c(min(vals), max(vals)))
-        paste0("[", paste(vals, collapse = ","), "]")
-        }, values = values, breaks = breaks)
-
-      hpdi <- paste(hpdi, collapse = ",")
 
     } else {
       hpdi <- HDInterval::hdi(.data$value, credMass = level, allowSplit = TRUE)
@@ -201,32 +184,7 @@ compute_posterior_intervals.SMCMallows <- function(
     posterior_median <- round(stats::median(.data$value), decimals)
 
     if (discrete) {
-      df <- dplyr::group_by(.data, .data$value)
-      df <- dplyr::summarise(df, n = dplyr::n())
-      df <- dplyr::arrange(df, dplyr::desc(.data$n))
-      df <- dplyr::mutate(df,
-        cumprob = cumsum(.data$n) / sum(.data$n),
-        lagcumprob = dplyr::lag(.data$cumprob, default = 0)
-      )
-
-      df <- dplyr::filter(df, .data$lagcumprob <= level)
-
-      values <- sort(dplyr::pull(df, .data$value))
-
-      # Find contiguous regions
-      breaks <- c(0, which(diff(values) != 1), length(values))
-
-      hpdi <- lapply(
-        X = seq(length(breaks) - 1),
-        FUN = function(.x, values, breaks) {
-          vals <- values[(breaks[.x] + 1):breaks[.x + 1]]
-          vals <- unique(c(min(vals), max(vals)))
-          paste0("[", paste(vals, collapse = ","), "]")
-        },
-        values = values,
-        breaks = breaks
-      )
-      hpdi <- paste(hpdi, collapse = ",")
+      hpdi <- compute_discrete_hpdi(.data, level)
     } else {
       hpdi <- HDInterval::hdi(.data$value, credMass = level, allowSplit = TRUE)
 
@@ -254,4 +212,27 @@ compute_posterior_intervals.SMCMallows <- function(
       central_interval = central
     )
   })
+}
+
+compute_discrete_hpdi <- function(df, level){
+  df <- dplyr::group_by(df, .data$value)
+  df <- dplyr::summarise(df, n = dplyr::n())
+  df <- dplyr::arrange(df, dplyr::desc(.data$n))
+  df <- dplyr::mutate(df, cumprob = cumsum(.data$n) / sum(.data$n),
+                      lagcumprob = dplyr::lag(.data$cumprob, default = 0))
+
+  df <- dplyr::filter(df, .data$lagcumprob <= level)
+
+  values <- sort(dplyr::pull(df, .data$value))
+
+  # Find contiguous regions
+  breaks <- c(0, which(diff(values) != 1), length(values))
+
+  hpdi <- lapply(seq(length(breaks) - 1), function(.x, values, breaks) {
+    vals <- values[(breaks[.x] + 1):breaks[.x + 1]]
+    vals <- unique(c(min(vals), max(vals)))
+    paste0("[", paste(vals, collapse = ","), "]")
+  }, values = values, breaks = breaks)
+
+  paste(hpdi, collapse = ",")
 }
