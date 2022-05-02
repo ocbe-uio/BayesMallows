@@ -218,10 +218,27 @@ test_that("Specific example results are OK", {
     alpha_max       = alpha_max,
     aug_method      = aug_method
   )
+
+  expect_error(
+    compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = NULL, C = 1,
+                          type = "CP"),
+    "Please specify the burnin."
+    )
+
+  expect_error(
+    compute_rho_consensus(
+      output = test$rho_samples[, , Time + 1], nmc = N, burnin = NULL, C = 1,
+      type = "MAP"
+    ),
+    "Please specify the burnin."
+  )
+
+
   rho_cp <- compute_rho_consensus(
     output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1,
     type = "CP"
   )
+
   set.seed(545)
   rho_map <- compute_rho_consensus(
     output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1,
@@ -237,6 +254,24 @@ test_that("Specific example results are OK", {
   expect_equal(dim(rho_map), c(30, 3))
   expect_equal(dim(post_rho), c(10, 7))
   expect_equal(dim(post_alpha), c(1, 6))
+
+  # Test with nonzero burnin
+  rho_cp <- compute_rho_consensus(
+    output = test$rho_samples[, , Time + 1], nmc = N, burnin = 2, C = 1,
+    type = "CP"
+  )
+  expect_equal(rho_cp$cumprob,
+               c(1, 0.75, 0.5, 0.5, 0.125, 0.125, 0.375, 0.625, 0.5, 0.5))
+
+  rho_map <- compute_rho_consensus(
+    output = test$rho_samples[, , Time + 1], nmc = N, burnin = 2, C = 1,
+    type = "MAP"
+  )
+  expect_equal(
+    rho_map$probability,
+    c(0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
+      0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25)
+  )
 
   test_fixed <- smc_mallows_new_users_partial_alpha_fixed(
     R_obs           = samples,
@@ -266,4 +301,5 @@ test_that("Specific example results are OK", {
   expect_equal(dim(rho_cp_fixed), c(10, 3))
   expect_equal(dim(rho_map_fixed), c(10, 3))
   expect_equal(dim(post_rho_fixed), c(10, 7))
+
 })
