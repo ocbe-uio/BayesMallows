@@ -41,10 +41,8 @@ compute_posterior_intervals <- function(model_fit, ...) {
 #' in posterior intervals and the mean and median. Defaults to \code{3}.
 #' @seealso assess_convergence
 #' @export
-compute_posterior_intervals.BayesMallows <- function(
-  model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
-  decimals = 3L, ...
-) {
+compute_posterior_intervals.BayesMallows <- function(model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
+                                                     decimals = 3L, ...) {
   stopifnot(inherits(model_fit, "BayesMallows"))
 
   if (is.null(burnin)) {
@@ -59,13 +57,13 @@ compute_posterior_intervals.BayesMallows <- function(
 
   if (parameter == "alpha" || parameter == "cluster_probs") {
     df <- .compute_posterior_intervals(split(df, f = df$cluster), parameter, level, decimals)
-
   } else if (parameter == "rho") {
     decimals <- 0
     df <- .compute_posterior_intervals(
       split(df, f = interaction(df$cluster, df$item)),
-      parameter, level, decimals, discrete = TRUE)
-
+      parameter, level, decimals,
+      discrete = TRUE
+    )
   }
 
   if (model_fit$n_clusters == 1) df$cluster <- NULL
@@ -77,10 +75,8 @@ compute_posterior_intervals.BayesMallows <- function(
 #' @title Compute posterior intervals
 #' @inheritParams compute_posterior_intervals.BayesMallows
 #' @export
-compute_posterior_intervals.SMCMallows <- function(
-  model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
-  decimals = 3L, ...
-) {
+compute_posterior_intervals.SMCMallows <- function(model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
+                                                   decimals = 3L, ...) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
@@ -101,7 +97,9 @@ compute_posterior_intervals.SMCMallows <- function(
   } else if (parameter == "rho") {
     decimals <- 0
     df <- .compute_posterior_intervals(split(df, f = interaction(df$cluster, df$item)),
-                                       parameter, level, decimals, discrete = TRUE)
+      parameter, level, decimals,
+      discrete = TRUE
+    )
   }
 
 
@@ -110,21 +108,15 @@ compute_posterior_intervals.SMCMallows <- function(
   return(df)
 }
 
-.compute_posterior_intervals <- function(
-  df, parameter, level, decimals, discrete = FALSE, ...
-) {
-
-  do.call(rbind, lapply(df, function(x){
+.compute_posterior_intervals <- function(df, parameter, level, decimals, discrete = FALSE, ...) {
+  do.call(rbind, lapply(df, function(x) {
     format <- paste0("%.", decimals, "f")
 
     posterior_mean <- round(base::mean(x$value), decimals)
     posterior_median <- round(stats::median(x$value), decimals)
 
     if (discrete) {
-
       hpdi <- compute_discrete_hpdi(x, level)
-
-
     } else {
       hpdi <- HDInterval::hdi(x$value, credMass = level, allowSplit = TRUE)
 
@@ -152,19 +144,20 @@ compute_posterior_intervals.SMCMallows <- function(
     )
 
     targets <- setdiff(names(x), c("iteration", "value", "n_clusters"))
-    for(nm in targets){
+    for (nm in targets) {
       eval(parse(text = paste0("ret$", nm, " <- unique(x$", nm, ")")))
     }
     ret[, c(targets, setdiff(names(ret), targets)), drop = FALSE]
   }))
-
 }
 
 
-compute_discrete_hpdi <- function(df, level){
-  if(!"iteration" %in% names(df)) df$iteration <- seq_len(nrow(df))
+compute_discrete_hpdi <- function(df, level) {
+  if (!"iteration" %in% names(df)) df$iteration <- seq_len(nrow(df))
   df <- aggregate(list(n = df$iteration),
-                  list(value = df$value), FUN = length)
+    list(value = df$value),
+    FUN = length
+  )
   df <- df[order(df$n, decreasing = TRUE), , drop = FALSE]
   df$cumprob <- cumsum(df$n) / sum(df$n)
   df$lagcumprob <- c(0, head(df$cumprob, -1))
