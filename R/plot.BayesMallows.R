@@ -49,9 +49,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
     }
 
     return(p)
-
   } else if (parameter == "rho") {
-
     if (is.null(items) && x$n_items > 5) {
       message("Items not provided by user. Picking 5 at random.")
       items <- sample.int(x$n_items, 5)
@@ -69,8 +67,9 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
     # depends on the number of Monte Carlo samples
     df <- aggregate(
       list(n = df$iteration),
-      list(cluster = df$cluster, item = df$item,value = df$value),
-      FUN = length)
+      list(cluster = df$cluster, item = df$item, value = df$value),
+      FUN = length
+    )
     df$pct <- df$n / sum(df$n)
 
     # Finally create the plot
@@ -95,9 +94,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
       ggplot2::xlab(expression(tau[c])) +
       ggplot2::ylab("Posterior density") +
       ggplot2::facet_wrap(~ .data$cluster)
-
   } else if (parameter == "cluster_assignment") {
-
     if (is.null(x$cluster_assignment)) {
       stop("Please rerun compute_mallows with save_clus = TRUE")
     }
@@ -122,9 +119,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
         axis.text.x = ggplot2::element_blank()
       ) +
       ggplot2::xlab(paste0("Assessors (", min(assessor_order), " - ", max(assessor_order), ")"))
-
   } else if (parameter == "theta") {
-
     if (is.null(x$theta)) {
       stop("Please run compute_mallows with error_model = 'bernoulli'.")
     }
@@ -138,6 +133,5 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 
 
     return(p)
-
   }
 }
