@@ -37,10 +37,8 @@ compute_consensus <- function(model_fit, ...) {
 #' define the assessors for which to compute the augmented ranking. Defaults to
 #' \code{1L}, which yields augmented rankings for assessor 1.
 #' @export
-compute_consensus.BayesMallows <- function(
-  model_fit, type = "CP", burnin = model_fit$burnin, parameter = "rho",
-  assessors = 1L, ...
-) {
+compute_consensus.BayesMallows <- function(model_fit, type = "CP", burnin = model_fit$burnin, parameter = "rho",
+                                           assessors = 1L, ...) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
@@ -73,12 +71,10 @@ compute_consensus.BayesMallows <- function(
     } else if (type == "MAP") {
       .compute_map_consensus(df)
     }
-
-
   } else if (parameter == "Rtilde") {
     # Filter out the pre-burnin iterations and get the right assessors
     df <- model_fit$augmented_data[model_fit$augmented_data$iteration > burnin &
-                                     model_fit$augmented_data$assessor %in% assessors, , drop = FALSE]
+      model_fit$augmented_data$assessor %in% assessors, , drop = FALSE]
 
     # Find the problem dimensions
     n_rows <- length(unique(paste(df$assessor, df$item)))
@@ -103,12 +99,10 @@ compute_consensus.BayesMallows <- function(
     if ("cluster" %in% names(df)) {
       names(df)[names(df) == "cluster"] <- "assessor"
     }
-
   }
 
   row.names(df) <- NULL
   as.data.frame(df)
-
 }
 
 #' Compute Consensus Ranking
@@ -184,7 +178,6 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
   }
 
   return(df)
-
 }
 
 # Internal function for finding CP consensus.
@@ -205,24 +198,26 @@ find_cpc <- function(group_df, group_var = "cluster") {
 
     # Remove items in result
     tmp_df <- tmp_df[!interaction(tmp_df[c("cluster", "item")]) %in%
-                       interaction(result[c("cluster", "item")]), ]
+      interaction(result[c("cluster", "item")]), ]
 
-    if(nrow(tmp_df) >= 1){
+    if (nrow(tmp_df) >= 1) {
       # Keep the max only. This filtering must be done after the first filter,
       # since we take the maximum among the filtered values
-      tmp_df <- do.call(rbind,
-                        lapply(split(tmp_df, f = tmp_df[group_var]), function(x) {
-                          x[x$cumprob == max(x$cumprob), ]} ))
+      tmp_df <- do.call(
+        rbind,
+        lapply(split(tmp_df, f = tmp_df[group_var]), function(x) {
+          x[x$cumprob == max(x$cumprob), ]
+        })
+      )
       # Add the ranking
       tmp_df$ranking <- i
 
       # Select the columns we want to keep, and put them in result
       result <- rbind(
         result,
-        tmp_df[, c("cluster", "ranking", "item", "cumprob"), drop = FALSE])
+        tmp_df[, c("cluster", "ranking", "item", "cumprob"), drop = FALSE]
+      )
     }
-
-
   }
   return(result)
 }
@@ -233,21 +228,25 @@ find_cpc <- function(group_df, group_var = "cluster") {
   n_samples <- length(unique(df$iteration))
 
   # Reshape to get items along columns
-  df <- stats::reshape(as.data.frame(df), direction = "wide",
-                       idvar = c("cluster", "iteration"),
-                       timevar = "item")
+  df <- stats::reshape(as.data.frame(df),
+    direction = "wide",
+    idvar = c("cluster", "iteration"),
+    timevar = "item"
+  )
   names(df) <- gsub("^value\\.", "", names(df))
 
   df <- aggregate_map_consensus(df, n_samples)
 
   # Now collect one set of ranks per cluster
   df$id <- seq_len(nrow(df))
-  df <- stats::reshape(as.data.frame(df), direction = "long",
-          varying = setdiff(names(df), c("cluster", "probability", "id")),
-          v.names = "map_ranking",
-          timevar = "item",
-          idvar = c("cluster", "probability", "id"),
-          times = setdiff(names(df), c("cluster", "probability", "id")))
+  df <- stats::reshape(as.data.frame(df),
+    direction = "long",
+    varying = setdiff(names(df), c("cluster", "probability", "id")),
+    v.names = "map_ranking",
+    timevar = "item",
+    idvar = c("cluster", "probability", "id"),
+    times = setdiff(names(df), c("cluster", "probability", "id"))
+  )
   rownames(df) <- NULL
   df$id <- NULL
 
@@ -259,10 +258,9 @@ find_cpc <- function(group_df, group_var = "cluster") {
   }
 
   return(df)
-
 }
 
- #AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_rho_consensus
+# AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_rho_consensus
 .compute_map_consensus.consensus_SMCMallows <- function(model_fit, burnin = model_fit$burnin) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
@@ -278,8 +276,11 @@ find_cpc <- function(group_df, group_var = "cluster") {
   n_samples <- length(unique(df$iteration))
 
   #-----------------------------------------------------------
-  #AS: remove the column n_clusters, parameter
-  df <- within(df, {n_clusters <- NULL; parameter <- NULL})
+  # AS: remove the column n_clusters, parameter
+  df <- within(df, {
+    n_clusters <- NULL
+    parameter <- NULL
+  })
   #------------------------------------------------------------
 
   # Spread to get items along columns
@@ -316,34 +317,37 @@ find_cpc <- function(group_df, group_var = "cluster") {
   }
 
   return(df)
-
 }
 
-aggregate_cp_consensus <- function(df){
+aggregate_cp_consensus <- function(df) {
   # Convert items and cluster to character, since factor levels are not needed in this case
   df$item <- as.character(df$item)
   df$cluster <- as.character(df$cluster)
 
   df <- aggregate(
     list(n = df$iteration),
-    by = list(item = as.character(df$item),
-              cluster = as.character(df$cluster), value = df$value),
-    FUN = length)
+    by = list(
+      item = as.character(df$item),
+      cluster = as.character(df$cluster), value = df$value
+    ),
+    FUN = length
+  )
 
   # Arrange according to value, per item and cluster
-  do.call(rbind, lapply(split(df, f = ~ item + cluster), function(x){
+  do.call(rbind, lapply(split(df, f = ~ item + cluster), function(x) {
     x <- x[order(x$value), ]
     x$cumprob <- cumsum(x$n) / sum(x$n)
     x
   }))
 }
 
-aggregate_map_consensus <- function(df, n_samples){
+aggregate_map_consensus <- function(df, n_samples) {
   # Group by everything except iteration, and count the unique combinations
   df <- aggregate(list(n = df$iteration), df[, setdiff(names(df), "iteration")],
-                  FUN = length)
+    FUN = length
+  )
   # Keep only the maximum per cluster
-  df <- do.call(rbind, lapply(split(df, f = df$cluster), function(x){
+  df <- do.call(rbind, lapply(split(df, f = df$cluster), function(x) {
     x$n_max <- max(x$n)
     x[x$n == x$n_max, , drop = FALSE]
   }))
