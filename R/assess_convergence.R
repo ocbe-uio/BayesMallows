@@ -90,9 +90,7 @@ trace_alpha <- function(m, clusters) {
       ggplot2::geom_line(ggplot2::aes(color = .data$cluster)) +
       ggplot2::theme(legend.position = "none") +
       ggplot2::facet_wrap(ggplot2::vars(.data$n_clusters),
-                          labeller = ggplot2::as_labeller(function(n_clusters) {
-                            paste(n_clusters, ifelse(n_clusters == 1, "cluster", "clusters"))
-                          }), scales = "free_y")
+                          labeller = ggplot2::as_labeller(cluster_labeler_function), scales = "free_y")
   }
   return(p)
 }
@@ -180,9 +178,7 @@ trace_cluster_probs <- function(m) {
     ggplot2::xlab("Iteration") +
     ggplot2::ylab(expression(tau[c])) +
     ggplot2::facet_wrap(ggplot2::vars(.data$n_clusters),
-                        labeller = ggplot2::as_labeller(function(n_clusters) {
-                          paste(n_clusters, ifelse(n_clusters == 1, "cluster", "clusters"))
-                        }), scales = "free_y")
+                        labeller = ggplot2::as_labeller(cluster_labeler_function), scales = "free_y")
 }
 
 
@@ -197,4 +193,8 @@ trace_theta <- function(model_fit) {
     ggplot2::geom_line()
 
   return(p)
+}
+
+cluster_labeler_function <- function(n_clusters) {
+  paste(n_clusters, ifelse(n_clusters == 1, "cluster", "clusters"))
 }
