@@ -31,7 +31,6 @@
 #' @export
 #'
 assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, expand = FALSE) {
-
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
@@ -46,7 +45,8 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   df <- aggregate(
     list(count = df$iteration),
     list(assessor = df$assessor, cluster = df$value),
-    FUN = length, drop = !expand)
+    FUN = length, drop = !expand
+  )
   df$count[is.na(df$count)] <- 0
 
   df <- do.call(rbind, lapply(split(df, f = df$assessor), function(x) {
@@ -56,7 +56,7 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   }))
 
   # Compute the MAP estimate per assessor
-  map <- do.call(rbind, lapply(split(df, f = df$assessor), function(x){
+  map <- do.call(rbind, lapply(split(df, f = df$assessor), function(x) {
     x <- x[x$probability == max(x$probability), , drop = FALSE]
     x <- x[1, , drop = FALSE] # in case of ties
     x$map_cluster <- x$cluster
