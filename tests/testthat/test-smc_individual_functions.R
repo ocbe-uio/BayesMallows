@@ -8,7 +8,7 @@ n_items <- 6
 test_that("get_mallows_loglik() works as expected", {
   set.seed(101)
   loglik <- get_mallows_loglik(
-    alpha = alpha, rho = t(rho),  n_items = length(rho), rankings = t(rho),
+    alpha = alpha, rho = t(rho), n_items = length(rho), rankings = t(rho),
     metric = metric
   )
   expect_equal(loglik, 0)
@@ -18,7 +18,7 @@ test_that("get_mallows_loglik() works as expected", {
     burnin = 1000, thinning = 500
   )
   loglik <- get_mallows_loglik(
-    alpha = alpha, rho = rho,  n_items = n_items, rankings = rankings,
+    alpha = alpha, rho = rho, n_items = n_items, rankings = rankings,
     metric = metric
   )
   expect_equivalent(loglik, -22.6667, tol = 1e-4)
@@ -97,7 +97,8 @@ test_that("smc_leap_and_shift_probs() works as expected", {
   expect_equivalent(test_2$backwards_prob, 0.0556, tol = 1e-4)
 
   dist_2 <- get_rank_distance(
-    rho, test_2$rho_prime, metric = "ulam"
+    rho, test_2$rho_prime,
+    metric = "ulam"
   )
   expect_equal(dist_2, 0)
 
@@ -107,7 +108,8 @@ test_that("smc_leap_and_shift_probs() works as expected", {
   expect_equivalent(test_3$backwards_prob, 0.0417, tol = 1e-3)
 
   dist_3 <- get_rank_distance(
-    rho, test_3$rho_prime, metric = "ulam"
+    rho, test_3$rho_prime,
+    metric = "ulam"
   )
   expect_equal(dist_3, 0)
 })
@@ -116,9 +118,7 @@ test_that("smc_leap_and_shift_probs() works as expected", {
 # unit test for metropolis_hastings_alpha.R                #
 # ======================================================== #
 
-metropolis_hastings_alpha_old <- function(
-  alpha, n_items, rankings, metric, rho, logz_estimate
-) {
+metropolis_hastings_alpha_old <- function(alpha, n_items, rankings, metric, rho, logz_estimate) {
   exp_alpha_prime <- rlnorm(1, mean = alpha, sd = 0.15) # 1
   alpha_prime <- log(exp_alpha_prime)
 
@@ -176,7 +176,8 @@ logz_estimate <- estimate_partition_function(
 set.seed(101)
 test_1_a <- metropolis_hastings_alpha_old(alpha, n_items, rankings, metric, rho, logz_estimate)
 test_1_b <- metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd = 0.5,
+  alpha, n_items, rankings, metric, rho, logz_estimate,
+  alpha_prop_sd = 0.5,
   lambda = 0.1, alpha_max = 20
 )
 set.seed(101)

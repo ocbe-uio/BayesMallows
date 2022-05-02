@@ -1,6 +1,6 @@
 context("SMC uniform functions")
 
-  set.seed(101)
+set.seed(101)
 require("BayesMallows")
 
 # tests for M-H_aug_ranking function ===========================================
@@ -14,7 +14,7 @@ test_that("MH-aug ranking works", {
 
   # Three missing ranks ------------------------------------ #
   R_curr <- c(1, 2, 3, 6, 5, 4)
-  R_obs  <- c(1, 2, 3, NA, NA, NA)
+  R_obs <- c(1, 2, 3, NA, NA, NA)
   set.seed(584)
   test_1 <- metropolis_hastings_aug_ranking(
     current_ranking = R_curr,

@@ -73,7 +73,8 @@ fit_smc_rho$n_clusters <- 1
 fit_smc_rho$cluster <- "Cluster 1"
 fit_smc_rho <- split(fit_smc_rho, f = fit_smc_rho$cluster)
 fit_smc_post_internal_rho <- .compute_posterior_intervals(
-  fit_smc_alpha, "rho", .95, 3L, discrete = TRUE
+  fit_smc_alpha, "rho", .95, 3L,
+  discrete = TRUE
 )
 
 # Testing classes ==============================================================

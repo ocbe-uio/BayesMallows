@@ -8,7 +8,7 @@ set.seed(994)
 data <- sushi_rankings[1:100, ]
 
 # General
-n_items <- dim(sushi_rankings)[2]  # Number of items
+n_items <- dim(sushi_rankings)[2] # Number of items
 leap_size <- floor(n_items / 5)
 metric <- "footrule"
 
@@ -18,10 +18,12 @@ iter <- 1e2
 degree <- 10
 
 # Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
-logz_estimate <- estimate_partition_function(method = "importance_sampling",
-                                             alpha_vector = alpha_vector,
-                                             n_items = n_items, metric = metric,
-                                             nmc = iter, degree = degree)
+logz_estimate <- estimate_partition_function(
+  method = "importance_sampling",
+  alpha_vector = alpha_vector,
+  n_items = n_items, metric = metric,
+  nmc = iter, degree = degree
+)
 
 
 ######################################
@@ -29,8 +31,10 @@ logz_estimate <- estimate_partition_function(method = "importance_sampling",
 ######################################
 nmc <- 20
 burnin <- 5
-model_fit <- compute_mallows(rankings = data, nmc = nmc, metric = metric, leap_size = leap_size,
-                             alpha_prop_sd = 0.15, logz_estimate = logz_estimate)
+model_fit <- compute_mallows(
+  rankings = data, nmc = nmc, metric = metric, leap_size = leap_size,
+  alpha_prop_sd = 0.15, logz_estimate = logz_estimate
+)
 
 model_fit$burnin <- burnin
 
@@ -179,4 +183,3 @@ test_that("get_mallows_loglik() in smc_mallows_new_users_complete() works", {
   expect_gt(max(out_loglik), mean(out_loglik) * (1 + tolerance))
   expect_lt(min(out_loglik), mean(out_loglik) * (1 - tolerance))
 })
-

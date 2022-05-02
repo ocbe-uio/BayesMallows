@@ -3,16 +3,16 @@ context("SMC new users partial rankings")
 # Generate Dataset =======================================
 
 # General ------------------------------------------------
-n_items   <- dim(sushi_rankings)[2] # Number of items
-rho_0     <- seq(from = 1, to = n_items, by = 1) # 'true' consensus ranking
-alpha_0   <- 2 # fixed/ 'true' scale parameter
+n_items <- dim(sushi_rankings)[2] # Number of items
+rho_0 <- seq(from = 1, to = n_items, by = 1) # 'true' consensus ranking
+alpha_0 <- 2 # fixed/ 'true' scale parameter
 leap_size <- floor(n_items / 5)
-metric    <- "footrule"
+metric <- "footrule"
 
 # Generate estimate of Z_n(alpha) ------------------------
 alpha_vector <- seq(from = 0, to = 20, by = 1)
-iter         <- 1e2
-degree       <- 10
+iter <- 1e2
+degree <- 10
 
 # Estimate the logarithm of the partition function of the Mallows rank model
 # using the estimate partition function
@@ -27,7 +27,7 @@ logz_estimate <- estimate_partition_function(
 )
 
 # Make this information partially observed over time -----
-samples              <- sushi_rankings[1: 100, ]
+samples <- sushi_rankings[1:100, ]
 samples[samples > 5] <- NA
 
 # Bayesmallows MCMC Results ==============================
@@ -56,7 +56,7 @@ test_that("BayesMallows MCMC Results are OK", {
     type      = "MAP",
     burnin    = bm_mcmc$burnin
   )
-  post_rho   <- compute_posterior_intervals(bm_mcmc, parameter = "rho")
+  post_rho <- compute_posterior_intervals(bm_mcmc, parameter = "rho")
   post_alpha <- compute_posterior_intervals(bm_mcmc, parameter = "alpha")
   expect_equal(dim(post_rho), c(10, 7))
   expect_equal(dim(rho_cp), c(10, 3))
@@ -66,12 +66,12 @@ test_that("BayesMallows MCMC Results are OK", {
 
 # SMC Analysis (alpha unknown) ===========================
 
-mcmc_times    <- 5
-num_new_obs   <- 5
-Time          <- dim(samples)[1] / num_new_obs
+mcmc_times <- 5
+num_new_obs <- 5
+Time <- dim(samples)[1] / num_new_obs
 alpha_prop_sd <- 0.5
-lambda        <- 0.15
-alpha_max     <- 1e0
+lambda <- 0.15
+alpha_max <- 1e0
 
 test_that("Produces the wrong metric and aug_method error", {
   N <- 5
@@ -148,11 +148,13 @@ test_that("Runs with unif kernel", {
 
   expect_s3_class(
     plot_alpha_posterior(smc_unif$alpha_samples[, Time + 1], nmc = N, burnin = 2),
-    "ggplot")
+    "ggplot"
+  )
 
   expect_s3_class(
     plot_rho_posterior(smc_unif$rho_samples[, , Time + 1], nmc = N, burnin = 2, C = 1),
-    "ggplot")
+    "ggplot"
+  )
 })
 
 test_that("Runs with pseudo kernel", {

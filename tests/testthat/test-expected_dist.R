@@ -9,14 +9,24 @@ test_that("expected dist works", {
 
 
 test_that("expected dist fails when it should", {
-  expect_error(expected_dist(10, 15, "spearman"),
-               "Given number of items currently not available for the specified metric")
-  expect_error(expected_dist(10, 150, "footrule"),
-               "Given number of items currently not available for the specified metric")
-  expect_error(expected_dist(10, 150, "ulam"),
-               "Given number of items currently not available for the specified metric")
-  expect_error(expected_dist(10, -2, "spearman"),
-               "Number of items must be a positive integer")
-  expect_error(expected_dist(-2, 15, "ulam"),
-               "alpha must be a non-negative value")
+  expect_error(
+    expected_dist(10, 15, "spearman"),
+    "Given number of items currently not available for the specified metric"
+  )
+  expect_error(
+    expected_dist(10, 150, "footrule"),
+    "Given number of items currently not available for the specified metric"
+  )
+  expect_error(
+    expected_dist(10, 150, "ulam"),
+    "Given number of items currently not available for the specified metric"
+  )
+  expect_error(
+    expected_dist(10, -2, "spearman"),
+    "Number of items must be a positive integer"
+  )
+  expect_error(
+    expected_dist(-2, 15, "ulam"),
+    "alpha must be a non-negative value"
+  )
 })
