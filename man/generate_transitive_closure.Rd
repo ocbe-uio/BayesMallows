@@ -75,8 +75,9 @@ pair_comp <- data.frame(
   # the preferences would not be consistent. This is not yet supported by compute_mallows,
   # so it causes an error message. It will be supported in a future release of the package.
   # First, we add the inconsistent row to pair_comp
-  pair_comp <- bind_rows(pair_comp,
-                         tibble(assessor = 1, bottom_item = 1, top_item = 3))
+  pair_comp <- rbind(
+    pair_comp,
+    data.frame(assessor = 1, bottom_item = 1, top_item = 3))
 
   # This causes an error message and prints out the problematic rankings:
   (pair_comp_tc <- generate_transitive_closure(pair_comp))
