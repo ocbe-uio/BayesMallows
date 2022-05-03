@@ -22,6 +22,8 @@
 #'
 #' @seealso \code{\link{plot_top_k}}
 #'
+#' @example /inst/examples/plot_top_k_example.R
+#'
 predict_top_k <- local({
   notMessagedYet <- TRUE
   function(model_fit, burnin = model_fit$burnin, k = 3) {
