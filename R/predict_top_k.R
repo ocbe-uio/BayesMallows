@@ -22,12 +22,19 @@
 #'
 #' @seealso \code{\link{plot_top_k}}
 #'
-predict_top_k <- function(model_fit, burnin = model_fit$burnin,
-                          k = 3) {
-
-  validate_top_k(model_fit, burnin)
-  .predict_top_k(model_fit, burnin, k)
-}
+predict_top_k <- local({
+  notMessagedYet <- TRUE
+  function(model_fit, burnin = model_fit$burnin, k = 3) {
+    if(notMessagedYet){
+      message(paste("Change notice: predict_top_k() now returns a data.frame, and not a tibble.",
+                    "To get a tibble run tibble::as_tibble() on the returned object.",
+                    "This message is given once per session."))
+      notMessagedYet <<- FALSE
+    }
+    validate_top_k(model_fit, burnin)
+    .predict_top_k(model_fit, burnin, k)
+  }
+})
 
 
 
