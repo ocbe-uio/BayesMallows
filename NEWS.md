@@ -2,6 +2,7 @@
 
 # Development versions
 
+* Fixes a bug which caused assess_convergence() to fail with 'parameter = "cluster_probs"'.
 * The code base no longer depends on dplyr, which means that dplyr has been moved from Imports to Suggests.
 
 # BayesMallows 1.1.2
