@@ -38,9 +38,9 @@ check_log_zn <- function(n, alpha, metric) {
 
 # Loop over some n and alpha values
 test_that("footrule partition function is correct", {
-  footrule_sequence <- dplyr::filter(
+  footrule_sequence <- subset(
     BayesMallows:::partition_function_data,
-    metric == "footrule", type == "cardinalities"
+    metric == "footrule" & type == "cardinalities"
   )$values
 
   for (n in c(1, 2, 3, 5)) {
@@ -57,9 +57,9 @@ test_that("footrule partition function is correct", {
 })
 
 test_that("Spearman partition function is correct", {
-  spearman_sequence <- dplyr::filter(
+  spearman_sequence <- subset(
     BayesMallows:::partition_function_data,
-    metric == "spearman", type == "cardinalities"
+    metric == "spearman" & type == "cardinalities"
   )$values
 
   for (n in c(1, 2, 3)) {
@@ -111,9 +111,9 @@ test_that("Hamming partition function is correct", {
 })
 
 test_that("Ulam partition function is correct", {
-  ulam_sequence <- dplyr::filter(
+  ulam_sequence <- subset(
     BayesMallows:::partition_function_data,
-    metric == "ulam", type == "cardinalities"
+    metric == "ulam" & type == "cardinalities"
   )$values
   for (n in c(1, 2, 3)) {
     for (alpha in c(0.001, 0.1, 1)) {
