@@ -139,15 +139,9 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     discovered <- rep(FALSE, n_items)
     path <- numeric()
 
-    stdout <- vector("character")
-    con <- textConnection("stdout", "wr", local = TRUE)
-    sink(con)
-    all_topological_sorts(graph, path, discovered, n_items)
-    sink()
-    close(con)
-
-    res <- gsub("\\[1\\] ", "", stdout)
-    res <- res[sample(length(stdout), 1)]
+    res <- capture.output(all_topological_sorts(graph, path, discovered, n_items))
+    res <- gsub("\\[1\\] ", "", res)
+    res <- res[sample(length(res), 1)]
 
     mat <- matrix(as.numeric(strsplit(res, split = "[^0-9]+")[[1]]), nrow = 1)
   }
