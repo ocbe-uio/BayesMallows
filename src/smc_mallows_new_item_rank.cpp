@@ -169,7 +169,8 @@ Rcpp::List smc_mallows_new_item_rank(
   /* store ESS result in first entry of the vector ESS_vec */
   /* generate vector to store ESS */
   double ess_init = sum(norm_wgt) * sum(norm_wgt) / sum(norm_wgt % norm_wgt);
-  rowvec ESS_vec(Time, fill::value(ess_init));
+  rowvec ESS_vec(Time, fill::zeros);
+  ESS_vec(0) = ess_init;
 
   /* ====================================================== */
   /* Resample                                               */
