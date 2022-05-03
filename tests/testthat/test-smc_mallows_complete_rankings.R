@@ -8,7 +8,7 @@ set.seed(994)
 data <- sushi_rankings[1:100, ]
 
 # General
-n_items <- dim(sushi_rankings)[2]  # Number of items
+n_items <- dim(sushi_rankings)[2] # Number of items
 leap_size <- floor(n_items / 5)
 metric <- "footrule"
 
@@ -18,10 +18,12 @@ iter <- 1e2
 degree <- 10
 
 # Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
-logz_estimate <- estimate_partition_function(method = "importance_sampling",
-                                             alpha_vector = alpha_vector,
-                                             n_items = n_items, metric = metric,
-                                             nmc = iter, degree = degree)
+logz_estimate <- estimate_partition_function(
+  method = "importance_sampling",
+  alpha_vector = alpha_vector,
+  n_items = n_items, metric = metric,
+  nmc = iter, degree = degree
+)
 
 
 ######################################
@@ -29,8 +31,10 @@ logz_estimate <- estimate_partition_function(method = "importance_sampling",
 ######################################
 nmc <- 20
 burnin <- 5
-model_fit <- compute_mallows(rankings = data, nmc = nmc, metric = metric, leap_size = leap_size,
-                             alpha_prop_sd = 0.15, logz_estimate = logz_estimate)
+model_fit <- compute_mallows(
+  rankings = data, nmc = nmc, metric = metric, leap_size = leap_size,
+  alpha_prop_sd = 0.15, logz_estimate = logz_estimate
+)
 
 model_fit$burnin <- burnin
 
@@ -85,7 +89,7 @@ rho_cp <- compute_rho_consensus(
 rho_map <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "MAP")
 
 test_that("Output of compute_posterior_intervals_rho is OK", {
-  expect_is(rho_temp, "tbl_df")
+  expect_is(rho_temp, "data.frame")
   expect_length(rho_temp, 7)
   expect_named(
     rho_temp,
@@ -107,7 +111,7 @@ alpha_posterior_intervals <- compute_posterior_intervals_alpha(
 )
 
 test_that("Output of compute_posterior_intervals_alpha is OK", {
-  expect_is(alpha_posterior_intervals, "tbl_df")
+  expect_is(alpha_posterior_intervals, "data.frame")
   expect_length(alpha_posterior_intervals, 6)
   expect_named(
     alpha_posterior_intervals,

@@ -37,7 +37,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
   stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment", "theta"))
 
   if (parameter == "alpha") {
-    df <- dplyr::filter(x$alpha, .data$iteration > burnin)
+    df <- x$alpha[x$alpha$iteration > burnin, , drop = FALSE]
 
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
@@ -49,9 +49,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
     }
 
     return(p)
-
   } else if (parameter == "rho") {
-
     if (is.null(items) && x$n_items > 5) {
       message("Items not provided by user. Picking 5 at random.")
       items <- sample.int(x$n_items, 5)
@@ -63,13 +61,16 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
       items <- x$items[items]
     }
 
-    df <- dplyr::filter(x$rho, .data$iteration > burnin, .data$item %in% items)
+    df <- x$rho[x$rho$iteration > burnin & x$rho$item %in% items, , drop = FALSE]
 
     # Compute the density, rather than the count, since the latter
     # depends on the number of Monte Carlo samples
-    df <- dplyr::group_by(df, .data$cluster, .data$item, .data$value)
-    df <- dplyr::summarise(df, n = dplyr::n())
-    df <- dplyr::mutate(df, pct = .data$n / sum(.data$n))
+    df <- aggregate(
+      list(n = df$iteration),
+      list(cluster = df$cluster, item = df$item, value = df$value),
+      FUN = length
+    )
+    df$pct <- df$n / sum(df$n)
 
     # Finally create the plot
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
@@ -86,29 +87,27 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 
     return(p)
   } else if (parameter == "cluster_probs") {
-    df <- dplyr::filter(x$cluster_probs, .data$iteration > burnin)
+    df <- x$cluster_probs[x$cluster_probs$iteration > burnin, , drop = FALSE]
 
     ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
       ggplot2::xlab(expression(tau[c])) +
       ggplot2::ylab("Posterior density") +
       ggplot2::facet_wrap(~ .data$cluster)
-
   } else if (parameter == "cluster_assignment") {
-
     if (is.null(x$cluster_assignment)) {
       stop("Please rerun compute_mallows with save_clus = TRUE")
     }
 
     # First get one cluster per assessor, and sort these
     df <- assign_cluster(x, burnin = burnin, soft = FALSE, expand = FALSE)
-    df <- dplyr::arrange(df, .data$map_cluster)
-    assessor_order <- dplyr::pull(df, .data$assessor)
+    df <- df[order(df$map_cluster), ]
+    assessor_order <- df$assessor
 
     # Next, rerun with soft=TRUE to get the probability of all clusters
     df <- assign_cluster(x, burnin = burnin, soft = TRUE, expand = TRUE)
     # Then order the assessors according to assessor_order
-    df <- dplyr::mutate(df, assessor = factor(.data$assessor, levels = assessor_order))
+    df$assessor <- factor(df$assessor, levels = assessor_order)
 
     # Now make a plot
     ggplot2::ggplot(df, ggplot2::aes(.data$assessor, .data$cluster)) +
@@ -120,14 +119,12 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
         axis.text.x = ggplot2::element_blank()
       ) +
       ggplot2::xlab(paste0("Assessors (", min(assessor_order), " - ", max(assessor_order), ")"))
-
   } else if (parameter == "theta") {
-
     if (is.null(x$theta)) {
       stop("Please run compute_mallows with error_model = 'bernoulli'.")
     }
 
-    df <- dplyr::filter(x$theta, .data$iteration > burnin)
+    df <- x$theta[x$theta$iteration > burnin, , drop = FALSE]
 
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
@@ -136,6 +133,5 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 
 
     return(p)
-
   }
 }

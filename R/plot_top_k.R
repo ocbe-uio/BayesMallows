@@ -30,12 +30,15 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
   validate_top_k(model_fit, burnin)
 
   # Extract post burn-in rows with value <= k
-  rho <- dplyr::filter(model_fit$rho, .data$iteration > burnin, .data$value <= k)
+  rho <- model_fit$rho[model_fit$rho$iteration > burnin & model_fit$rho$value <= k, , drop = FALSE]
   n_samples <- length(unique(rho$iteration))
   # Factors are not needed in this case
-  rho <- dplyr::mutate(rho, item = as.character(.data$item))
-  rho <- dplyr::group_by(rho, .data$item, .data$cluster)
-  rho <- dplyr::summarise(rho, prob = dplyr::n() / n_samples, .groups = "drop")
+  rho$item <- as.character(rho$item)
+  rho <- aggregate(
+    list(prob = rho$iteration),
+    list(item = rho$item, cluster = rho$cluster),
+    FUN = function(x) length(x) / n_samples
+  )
 
   # Find the complete set of items per cluster
   rho <- do.call(rbind, lapply(split(rho, f = rho$cluster), function(dd) {
@@ -54,17 +57,17 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
     item_ordering <- rev(item_ordering$item)
   }
 
-  rho <- dplyr::mutate(rho, item = factor(.data$item, levels = unique(item_ordering)))
+  rho$item <- factor(rho$item, levels = unique(item_ordering))
 
   # Trick to make the plot look nicer
   if (model_fit$n_clusters == 1) {
-    rho <- dplyr::mutate(rho, cluster = "")
+    rho$cluster <- ""
   }
 
   rankings <- .predict_top_k(model_fit, burnin = burnin, k = k)
 
   # Sorting the items according to their probability in rho
-  rankings <- dplyr::mutate(rankings, item = factor(.data$item, levels = item_ordering))
+  rankings$item <- factor(rankings$item, levels = item_ordering)
 
   assessor_plot <- ggplot2::ggplot(rankings, ggplot2::aes(.data$assessor, .data$item)) +
     ggplot2::geom_tile(ggplot2::aes(fill = .data$prob), colour = "white") +

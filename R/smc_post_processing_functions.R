@@ -199,13 +199,14 @@ plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = 
     df <- cbind(cluster = "Cluster 1", df)
   }
 
-  df <- dplyr::filter(df, .data$iteration > burnin, .data$item %in% items)
+  df <- df[df$iteration > burnin & df$item %in% items, , drop = FALSE]
 
   # Compute the density, rather than the count, since the latter
   # depends on the number of Monte Carlo samples
-  df <- dplyr::group_by(df, .data$cluster, .data$item, .data$value)
-  df <- dplyr::summarise(df, n = dplyr::n())
-  df <- dplyr::mutate(df, pct = .data$n / sum(.data$n))
+  df <- aggregate(list(n = df$iteration),
+                  list(cluster = df$cluster, item = df$item, value = df$value),
+                  FUN = length)
+  df$pct <- df$n / sum(df$n)
 
   df$item <- factor(df$item, levels = c(items))
 

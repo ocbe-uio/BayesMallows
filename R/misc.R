@@ -1,5 +1,7 @@
 #' @importFrom Rdpack reprompt
 #' @importFrom Rcpp sourceCpp
+#' @importFrom stats aggregate
+#' @importFrom utils head
 #' @useDynLib BayesMallows, .registration = TRUE
 NULL
 
@@ -40,15 +42,18 @@ prepare_partition_function <- function(logz_estimate, metric, n_items) {
   }
 
   # Second, do we have a sequence?
-  relevant_params <- dplyr::filter(partition_function_data, .data$n_items == !!n_items,
-                                   .data$metric == !!metric, .data$type == "cardinalities")
+  relevant_params <- partition_function_data[partition_function_data$n_items == n_items &
+                            partition_function_data$metric == metric &
+                            partition_function_data$type == "cardinalities", , drop = FALSE]
+
   if (nrow(relevant_params) == 1) {
     return(list(cardinalities = unlist(relevant_params$values), logz_estimate = NULL))
   }
 
   # Third, do we have an importance sampling estimate?
-  relevant_params <- dplyr::filter(partition_function_data, .data$n_items == !!n_items,
-                                   .data$metric == !!metric, .data$type == "importance_sampling")
+  relevant_params <- partition_function_data[partition_function_data$n_items == n_items &
+                            partition_function_data$metric == metric &
+                            partition_function_data$type == "importance_sampling", , drop = FALSE]
 
   if (nrow(relevant_params) == 1) {
     return(list(cardinalities = NULL, logz_estimate = unlist(relevant_params$values)))

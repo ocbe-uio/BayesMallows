@@ -105,7 +105,7 @@ sample_mallows <- function(rho0, alpha0, n_samples,
       )
     }, x = autocorr, xnm = names(autocorr)))
 
-    autocorr <- dplyr::mutate(autocorr, item = as.factor(as.integer(.data$item)))
+    autocorr$item <- as.factor(as.integer(autocorr$item))
 
     ac_plot <- ggplot2::ggplot(autocorr,
                                ggplot2::aes(x = .data$lag, y = .data$acf, color = .data$item)) +
@@ -117,7 +117,7 @@ sample_mallows <- function(rho0, alpha0, n_samples,
 
     colnames(samples) <- seq(from = 1, to = n_items, by = 1)
     diagnostic <- as.data.frame(samples)
-    diagnostic <- dplyr::mutate(diagnostic, iteration = dplyr::row_number())
+    diagnostic$iteration <- seq_len(nrow(diagnostic))
 
     diagnostic <- stats::reshape(diagnostic, direction = "long",
             varying = setdiff(names(diagnostic), "iteration"),
@@ -127,8 +127,8 @@ sample_mallows <- function(rho0, alpha0, n_samples,
             idvar = "iteration",
             ids = diagnostic$iteration)
 
-    diagnostic <- dplyr::filter(diagnostic, .data$item %in% items_to_plot)
-    diagnostic <- dplyr::mutate(diagnostic, item = as.factor(as.integer(.data$item)))
+    diagnostic <- diagnostic[diagnostic$item %in% items_to_plot, , drop = FALSE]
+    diagnostic$item <- as.factor(as.integer(diagnostic$item))
 
     rho_plot <- ggplot2::ggplot(diagnostic,
                          ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +

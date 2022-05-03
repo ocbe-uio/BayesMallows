@@ -37,9 +37,9 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
       trace_alpha(m, FALSE)
     } else if (inherits(model_fit, "BayesMallowsMixtures")) {
       m <- do.call(rbind, lapply(model_fit, function(x) {
-        dplyr::mutate(x$alpha,
-                      cluster = as.character(.data$cluster),
-                      n_clusters = x$n_clusters)
+        x$alpha$cluster <- as.character(x$alpha$cluster)
+        x$alpha$n_clusters <- x$n_clusters
+        x$alpha
       }))
       trace_alpha(m, TRUE)
       }
@@ -63,9 +63,9 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
       m <- model_fit$cluster_probs
     } else if (inherits(model_fit, "BayesMallowsMixtures")) {
       m <- do.call(rbind, lapply(model_fit, function(x) {
-        dplyr::mutate(x$cluster_probs,
-                      cluster = as.character(.data$cluster),
-                      n_clusters = x$n_clusters)
+        x$cluster_probs$cluster <- as.character(x$cluster_probs$cluster)
+        x$cluster_probs$n_clusters <- x$n_clusters
+        x$cluster_probs
       }))
     }
     trace_cluster_probs(m)
@@ -90,9 +90,7 @@ trace_alpha <- function(m, clusters) {
       ggplot2::geom_line(ggplot2::aes(color = .data$cluster)) +
       ggplot2::theme(legend.position = "none") +
       ggplot2::facet_wrap(ggplot2::vars(.data$n_clusters),
-                          labeller = ggplot2::as_labeller(function(n_clusters) {
-                            paste(n_clusters, dplyr::if_else(n_clusters == 1, "cluster", "clusters"))
-                          }), scales = "free_y")
+                          labeller = ggplot2::as_labeller(cluster_labeler_function), scales = "free_y")
   }
   return(p)
 }
@@ -110,7 +108,7 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1) {
     items <- model_fit$items[items]
   }
 
-  df <- dplyr::filter(model_fit$rho, .data$item %in% items)
+  df <- model_fit$rho[model_fit$rho$item %in% items, , drop = FALSE]
 
   p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
     ggplot2::geom_line() +
@@ -154,10 +152,12 @@ trace_rtilde <- function(model_fit, items, assessors, ...) {
   if (is.factor(model_fit$augmented_data$item) && is.numeric(items)) {
     items <- levels(model_fit$augmented_data$item)[items]
   }
-  df <- dplyr::filter(model_fit$augmented_data,
-                      .data$assessor %in% assessors,
-                      .data$item %in% items)
-  df <- dplyr::mutate(df, assessor = as.factor(.data$assessor))
+
+  df <- model_fit$augmented_data[model_fit$augmented_data$assessor %in% assessors &
+                             model_fit$augmented_data$item %in% items, ,
+                           drop = FALSE]
+
+  df$assessor <- as.factor(df$assessor)
   levels(df$assessor) <- paste("Assessor", levels(df$assessor))
 
   ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
@@ -178,9 +178,7 @@ trace_cluster_probs <- function(m) {
     ggplot2::xlab("Iteration") +
     ggplot2::ylab(expression(tau[c])) +
     ggplot2::facet_wrap(ggplot2::vars(.data$n_clusters),
-                        labeller = ggplot2::as_labeller(function(n_clusters) {
-                          paste(n_clusters, dplyr::if_else(n_clusters == 1, "cluster", "clusters"))
-                        }), scales = "free_y")
+                        labeller = ggplot2::as_labeller(cluster_labeler_function), scales = "free_y")
 }
 
 
@@ -195,4 +193,8 @@ trace_theta <- function(model_fit) {
     ggplot2::geom_line()
 
   return(p)
+}
+
+cluster_labeler_function <- function(n_clusters) {
+  paste(n_clusters, ifelse(n_clusters == 1, "cluster", "clusters"))
 }

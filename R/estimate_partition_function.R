@@ -84,14 +84,14 @@ estimate_partition_function <- function(method = "importance_sampling",
     }
 
     # Compute the estimate at each discrete alpha value
-    estimate <- dplyr::tibble(
+    estimate <- data.frame(
       alpha = alpha_vector,
       log_z = log_z
     )
   } else if (method == "asymptotic") {
     stopifnot(metric %in% c("footrule", "spearman"))
 
-    estimate <- dplyr::tibble(
+    estimate <- data.frame(
       alpha = alpha_vector,
       log_z = as.numeric(
         asymptotic_partition_function(

@@ -2,6 +2,8 @@
 
 # Development versions
 
+* The code base no longer depends on dplyr, which means that dplyr has been moved from Imports to Suggests.
+
 # BayesMallows 1.1.2
 
 * Fixed an issue with stats::reshape causing an error on R-oldrel.

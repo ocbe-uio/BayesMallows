@@ -31,7 +31,6 @@
 #' @export
 #'
 assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, expand = FALSE) {
-
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
@@ -40,47 +39,37 @@ assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, ex
   }
   stopifnot(burnin < model_fit$nmc)
 
-  df <- dplyr::filter(model_fit$cluster_assignment, .data$iteration > burnin)
+  df <- model_fit$cluster_assignment[model_fit$cluster_assignment$iteration > burnin, , drop = FALSE]
 
   # Compute the probability of each iteration
-  df <- dplyr::group_by(df, .data$assessor)
-  df <- dplyr::mutate(df, probability = 1 / dplyr::n())
-  df <- dplyr::ungroup(df)
+  df <- aggregate(
+    list(count = df$iteration),
+    list(assessor = df$assessor, cluster = df$value),
+    FUN = length, drop = !expand
+  )
+  df$count[is.na(df$count)] <- 0
 
-  # Compute the probability of each cluster, per assessor
-  df <- dplyr::group_by(df, .data$assessor, .data$value)
-  df <- dplyr::summarise(df, probability = sum(.data$probability))
-  df <- dplyr::ungroup(df)
-  df <- dplyr::rename(df, cluster = .data$value)
-
-  if (expand) {
-    df <- do.call(rbind, lapply(split(df, f = df$assessor), function(dd) {
-      dd2 <- merge(dd, expand.grid(cluster = unique(df$cluster)), by = "cluster",
-                   all = TRUE)
-      dd2$assessor <- unique(dd$assessor)
-      dd2$probability[is.na(dd2$probability)] <- 0
-      dd2
-    }))
-
-  }
+  df <- do.call(rbind, lapply(split(df, f = df$assessor), function(x) {
+    x$probability <- x$count / sum(x$count)
+    x$count <- NULL
+    x
+  }))
 
   # Compute the MAP estimate per assessor
-  map <- dplyr::group_by(df, .data$assessor)
-  map <- dplyr::mutate(map, max_prob = max(.data$probability))
-  map <- dplyr::filter(map, .data$probability == .data$max_prob)
-
-  # Deal with the possible case of ties
-  map <- dplyr::filter(map, dplyr::row_number() == 1)
-  map <- dplyr::ungroup(map)
-  map <- dplyr::select(map, -.data$probability, -.data$max_prob)
-  map <- dplyr::rename(map, map_cluster = .data$cluster)
+  map <- do.call(rbind, lapply(split(df, f = df$assessor), function(x) {
+    x <- x[x$probability == max(x$probability), , drop = FALSE]
+    x <- x[1, , drop = FALSE] # in case of ties
+    x$map_cluster <- x$cluster
+    x$cluster <- x$probability <- NULL
+    x
+  }))
 
   # Join map back onto df
-  df <- dplyr::inner_join(df, map, by = "assessor")
+  df <- merge(df, map, by = "assessor")
 
   if (!soft) {
-    df <- dplyr::filter(df, .data$cluster == .data$map_cluster)
-    df <- dplyr::select(df, -.data$cluster)
+    df <- df[df$cluster == df$map_cluster, , drop = FALSE]
+    df$cluster <- NULL
   }
 
   return(df)
