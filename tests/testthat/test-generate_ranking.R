@@ -1,17 +1,13 @@
 context("Testing generation of initial ranking")
 
-library(dplyr)
 
 # Create some test data
-pair_comp <- tribble(
-  ~assessor, ~bottom_item, ~top_item,
-  1, 1, 2,
-  1, 2, 5,
-  1, 4, 5,
-  2, 1, 2,
-  2, 2, 3,
-  2, 3, 4
+pair_comp <- data.frame(
+  assessor = c(rep(1, 3), rep(2, 3)),
+  bottom_item = c(1, 2, 4, 1, 2, 3),
+  top_item = c(2, 5, 5, 2, 3, 4)
 )
+
 
 pair_comp_tc <- generate_transitive_closure(pair_comp)
 beach_tc <- generate_transitive_closure(beach_preferences)
