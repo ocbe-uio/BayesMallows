@@ -27,7 +27,7 @@ test_that("compute_consensus computes correctly for rho", {
     0.214285714285714, 0.5, 0.785714285714286, 0.683673469387755,
     0.540816326530612, 0.683673469387755, 0.683673469387755, 0.73469387755102,
     0.704081632653061, 1
-  )), row.names = c(NA, -15L), class = c("data.frame")))
+  )), row.names = c(NA, -15L), class = "data.frame"))
 
   expect_equal(
     map,
@@ -107,13 +107,13 @@ test_that("compute_consensus computes augmented ranks correctly", {
   expect_equal(res, structure(list(ranking = c(1, 2, 3), item = c(
     "Item 1", "Item 3",
     "Item 2"
-  ), cumprob = c(0.62, 1, 1)), row.names = c(NA, -3L), class = c("data.frame")))
+  ), cumprob = c(0.62, 1, 1)), row.names = c(NA, -3L), class = "data.frame"))
 
   res <- compute_consensus(b3, type = "CP", burnin = 200, parameter = "Rtilde", assessors = 1L)
   expect_equal(res, structure(list(ranking = c(1, 2, 3), item = c(
     "Item 1", "Item 3",
     "Item 2"
-  ), cumprob = c(0.61, 1, 1)), row.names = c(NA, -3L), class = c("data.frame")))
+  ), cumprob = c(0.61, 1, 1)), row.names = c(NA, -3L), class = "data.frame"))
 
 
   res <- compute_consensus(b2, type = "CP", burnin = 200, parameter = "Rtilde", assessors = c(3L, 5L))
@@ -127,7 +127,7 @@ test_that("compute_consensus computes augmented ranks correctly", {
         cumprob   = c(0.696666666666667, 0.836666666666667, 1, 1, 1, 1)
       ),
       row.names = c(NA, -6L),
-      class = c("data.frame")
+      class = "data.frame"
     )
   )
 
@@ -142,7 +142,7 @@ test_that("compute_consensus computes augmented ranks correctly", {
         cumprob = c(0.69, 0.84, 1, 1, 1, 1)
       ),
       row.names = c(NA, -6L),
-      class = c("data.frame")
+      class = "data.frame"
     )
   )
 

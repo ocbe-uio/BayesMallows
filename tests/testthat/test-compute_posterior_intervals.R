@@ -13,7 +13,7 @@ test_that("compute posterior intervals works", {
     ), row.names = c(
       NA,
       -1L
-    ), class = c("data.frame"))
+    ), class = "data.frame")
   )
 
   expect_equal(
@@ -24,7 +24,7 @@ test_that("compute posterior intervals works", {
     ), row.names = c(
       NA,
       -1L
-    ), class = c("data.frame"))
+    ), class = "data.frame")
   )
 
   expect_equal(
@@ -61,7 +61,7 @@ test_that("compute posterior intervals works", {
         "[2]", "[17]", "[12,12]", "[19]", "[13,13]", "[1]", "[9]",
         "[16]", "[4]", "[6]"
       )
-    ), row.names = c(NA, -20L), class = c("data.frame"))
+    ), row.names = c(NA, -20L), class = "data.frame")
   )
 
   set.seed(22)
@@ -77,6 +77,6 @@ test_that("compute posterior intervals works", {
     ), hpdi = c("[0.520,0.620]", "[0.751,0.884]"), central_interval = c(
       "[0.522,0.617]",
       "[0.754,0.880]"
-    )), class = c("data.frame"), row.names = c(NA, -2L))
+    )), class = "data.frame", row.names = c(NA, -2L))
   )
 })
