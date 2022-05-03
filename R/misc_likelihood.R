@@ -50,7 +50,7 @@ log_lik_db <- function(rho, alpha, metric, rankings, obs_freq) {
           alpha = alpha * n_items,
           n_items = n_items, metric = metric,
           cardinalities = card
-        )) # TODO #91: write this part in particular as new function?
+        ))
   }
 
   return(log_lik)
