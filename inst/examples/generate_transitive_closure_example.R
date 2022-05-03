@@ -2,13 +2,10 @@
 # prefers item 1 to item 2, and item 1 to item 5, while assessor 2 prefers
 # item 3 to item 5. We then have the following dataframe of pairwise
 # comparisons:
-library(dplyr)
-pair_comp <- tribble(
-  ~assessor, ~bottom_item, ~top_item,
-  1, 2, 1,
-  1, 5, 1,
-  2, 5, 3
-)
+pair_comp <- data.frame(
+  assessor = c(1, 1, 2),
+  bottom_item = c(2, 5, 5),
+  top_item = c(1, 1, 3))
 # We then generate the transitive closure of these preferences:
 (pair_comp_tc <- generate_transitive_closure(pair_comp))
 # In this case, no additional relations we implied by the ones
@@ -17,14 +14,11 @@ pair_comp <- tribble(
 
 # Now assume that assessor 1 also preferred item 5 to item 3, and
 # that assessor 2 preferred item 4 to item 3.
-pair_comp <- tribble(
-  ~assessor, ~bottom_item, ~top_item,
-  1, 2, 1,
-  1, 5, 1,
-  1, 3, 5,
-  2, 5, 3,
-  2, 3, 4
-)
+pair_comp <- data.frame(
+  assessor = c(1, 1, 1, 2, 2),
+  bottom_item = c(2, 5, 3, 5, 3),
+  top_item = c(1, 1, 5, 3, 4))
+
 # We generate the transitive closure again:
 (pair_comp_tc <- generate_transitive_closure(pair_comp))
 # We now have one implied relation for each assessor.
