@@ -61,6 +61,4 @@ plot_elbow <- function(..., burnin = NULL) {
     ggplot2::geom_boxplot() +
     ggplot2::xlab("Number of clusters") +
     ggplot2::ylab("Within-cluster sum of distances")
-
-
 }

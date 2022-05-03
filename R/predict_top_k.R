@@ -31,7 +31,8 @@ predict_top_k <- local({
       message(
         "Change notice: predict_top_k() now returns a data.frame, and not a tibble.\n",
         "To get a tibble run tibble::as_tibble() on the returned object.\n",
-        "This message is given once per session.\n")
+        "This message is given once per session.\n"
+      )
       notMessagedYet <<- FALSE
     }
     validate_top_k(model_fit, burnin)
@@ -42,20 +43,19 @@ predict_top_k <- local({
 
 
 .predict_top_k <- function(model_fit, burnin, k) {
-
   rankings <- model_fit$augmented_data[model_fit$augmented_data$iteration > burnin &
-                                         model_fit$augmented_data$value <= k, , drop = FALSE]
+    model_fit$augmented_data$value <= k, , drop = FALSE]
 
   n_samples <- length(unique(rankings$iteration))
   rankings$item <- as.character(rankings$item)
   rankings <- aggregate(
     list(prob = rankings$iteration),
     by = list(assessor = rankings$assessor, item = rankings$item),
-    FUN = function(x) length(x) / n_samples, drop = FALSE)
+    FUN = function(x) length(x) / n_samples, drop = FALSE
+  )
   rankings$prob[is.na(rankings$prob)] <- 0
 
   rankings[order(rankings$assessor, rankings$item), ]
-
 }
 
 
@@ -69,4 +69,4 @@ validate_top_k <- function(model_fit, burnin) {
     stop("model_fit must have element augmented_data. Please set save_aug = TRUE
          in compute_mallows in order to create a top-k plot.")
   }
-  }
+}

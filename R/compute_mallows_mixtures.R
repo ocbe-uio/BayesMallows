@@ -37,7 +37,6 @@ compute_mallows_mixtures <- function(n_clusters, ..., cl = NULL) {
       args$n_clusters <- x
       do.call(compute_mallows, args)
     })
-
   }
 
   class(models) <- "BayesMallowsMixtures"

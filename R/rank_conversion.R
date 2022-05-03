@@ -85,6 +85,5 @@ create_ranking <- function(orderings) {
 #' @describeIn rank_conversion Convert from ranking to ordering.
 #' @export
 create_ordering <- function(rankings) {
-
   create_ranking(rankings)
 }

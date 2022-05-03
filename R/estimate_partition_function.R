@@ -53,7 +53,6 @@ estimate_partition_function <- function(method = "importance_sampling",
                                         alpha_vector, n_items, metric,
                                         nmc, degree, n_iterations, K, cl = NULL,
                                         seed = NULL) {
-
   stopifnot(degree < length(alpha_vector))
 
   if (method == "importance_sampling") {
@@ -66,12 +65,15 @@ estimate_partition_function <- function(method = "importance_sampling",
         if (i > length(cl)) break
       }
       parallel::clusterExport(cl, c("alpha_vector", "n_items", "metric", "seed"),
-                              envir = environment())
+        envir = environment()
+      )
 
       estimates <- parallel::parLapply(cl, nmc_vec, function(x) {
         if (!is.null(seed)) set.seed(seed)
-        compute_importance_sampling_estimate(alpha_vector = alpha_vector, n_items = n_items,
-                                             metric = metric, nmc = x)
+        compute_importance_sampling_estimate(
+          alpha_vector = alpha_vector, n_items = n_items,
+          metric = metric, nmc = x
+        )
       })
 
       log_z <- rowMeans(do.call(cbind, estimates))
@@ -80,7 +82,9 @@ estimate_partition_function <- function(method = "importance_sampling",
       log_z <- as.numeric(
         compute_importance_sampling_estimate(
           alpha_vector = alpha_vector, n_items = n_items,
-          metric = metric, nmc = nmc))
+          metric = metric, nmc = nmc
+        )
+      )
     }
 
     # Compute the estimate at each discrete alpha value
@@ -96,14 +100,18 @@ estimate_partition_function <- function(method = "importance_sampling",
       log_z = as.numeric(
         asymptotic_partition_function(
           alpha_vector = alpha_vector, n_items = n_items,
-          metric = metric, K = K, n_iterations = n_iterations))
+          metric = metric, K = K, n_iterations = n_iterations
+        )
+      )
     )
   }
 
   # Fit a regression model
-  form <- stats::as.formula(paste("log_z ~ ",
-                           paste("I( alpha^", seq(from = 1, to = degree, by = 1), ")",
-                                 collapse = "+")))
+  form <- stats::as.formula(paste(
+    "log_z ~ ",
+    paste("I( alpha^", seq(from = 1, to = degree, by = 1), ")",
+      collapse = "+"
+    )
+  ))
   stats::lm(form, data = estimate)$coefficients
-
 }

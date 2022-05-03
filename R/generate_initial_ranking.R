@@ -70,16 +70,16 @@ generate_initial_ranking <- function(tc,
                                      n_items = max(tc[, c("bottom_item", "top_item")]),
                                      cl = NULL, shuffle_unranked = FALSE, random = FALSE,
                                      random_limit = 8L) {
-
-
   if (!(inherits(tc, "BayesMallowsTC"))) {
     stop("tc must be an object returned from generate_transitive_closure")
   }
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
   if (n_items > random_limit && random) {
-    stop(paste("Number of items exceeds the limit for generation of random permutations,\n",
-               "modify the random_limit argument to override this.\n"))
+    stop(paste(
+      "Number of items exceeds the limit for generation of random permutations,\n",
+      "modify the random_limit argument to override this.\n"
+    ))
   }
 
   if (n_items < max(tc[, c("bottom_item", "top_item")])) {
@@ -88,19 +88,22 @@ generate_initial_ranking <- function(tc,
 
   prefs <- split(tc[, c("bottom_item", "top_item"), drop = FALSE], tc$assessor)
   if (is.null(cl)) {
-    prefs <- lapply(prefs, function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
-                    n_items, shuffle_unranked, random)
+    prefs <- lapply(
+      prefs, function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
+      n_items, shuffle_unranked, random
+    )
   } else {
-    prefs <- parallel::parLapply(cl = cl, X = prefs,
-                                 fun = function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
-                                 n_items, shuffle_unranked, random)
+    prefs <- parallel::parLapply(
+      cl = cl, X = prefs,
+      fun = function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
+      n_items, shuffle_unranked, random
+    )
   }
 
   do.call(rbind, prefs)
 }
 
 create_ranks <- function(mat, n_items, shuffle_unranked, random) {
-
   if (!random) {
     g <- igraph::graph_from_edgelist(mat)
     g <- as.integer(igraph::topo_sort(g))
@@ -110,7 +113,6 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     if (!shuffle_unranked) {
       # Add unranked elements outside of the range at the end
       g_final <- c(g, setdiff(all_items, g))
-
     } else {
       ranked_items <- unique(c(mat))
       unranked_items <- setdiff(all_items, ranked_items)
@@ -119,13 +121,12 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
       g_final <- rep(NA, n_items)
       g_final[idx_ranked] <- g[g %in% ranked_items]
       g_final[is.na(g_final)] <- unranked_items[sample(length(unranked_items))]
-
     }
 
     # Convert from ordering to ranking
     r <- create_ranking(rev(g_final))
     mat <- matrix(r, nrow = 1)
-  } else{
+  } else {
     graph <- list()
     for (i in seq_len(n_items)) {
       graph[[i]] <- unique(mat[mat[, "top_item"] == i, "bottom_item"])

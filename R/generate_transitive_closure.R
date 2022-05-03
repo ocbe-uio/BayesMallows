@@ -42,17 +42,20 @@
 #' @example /inst/examples/generate_transitive_closure_example.R
 #'
 generate_transitive_closure <- function(df, cl = NULL) {
-
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
   prefs <- split(df[, c("bottom_item", "top_item"), drop = FALSE], df$assessor)
 
   if (is.null(cl)) {
     prefs <- mapply(function(x, y) cbind(y, .generate_transitive_closure(cbind(x$bottom_item, x$top_item))),
-                    prefs, unique(df$assessor), SIMPLIFY = FALSE)
+      prefs, unique(df$assessor),
+      SIMPLIFY = FALSE
+    )
   } else {
-    prefs <- parallel::clusterMap(cl = cl,
-                                  fun = function(x, y) cbind(y, .generate_transitive_closure(cbind(x$bottom_item, x$top_item))),
-                                  prefs, unique(df$assessor))
+    prefs <- parallel::clusterMap(
+      cl = cl,
+      fun = function(x, y) cbind(y, .generate_transitive_closure(cbind(x$bottom_item, x$top_item))),
+      prefs, unique(df$assessor)
+    )
   }
 
 
@@ -61,8 +64,10 @@ generate_transitive_closure <- function(df, cl = NULL) {
   colnames(prefs) <- colnames(df)
 
   # Check if there are any inconsistencies
-  check <- merge(prefs, prefs, by.x = c("assessor", "bottom_item", "top_item"),
-        by.y = c("assessor", "top_item", "bottom_item"))
+  check <- merge(prefs, prefs,
+    by.x = c("assessor", "bottom_item", "top_item"),
+    by.y = c("assessor", "top_item", "bottom_item")
+  )
 
   if (nrow(check) > 0) {
     print("Inconsistent rankings:")
@@ -96,9 +101,8 @@ generate_transitive_closure <- function(df, cl = NULL) {
   result <- data.frame(
     bottom_item = as.numeric(rownames(incidence)[new_mat[, 1, drop = FALSE]]),
     top_item = as.numeric(colnames(incidence)[new_mat[, 2, drop = FALSE]])
-    )
+  )
 
 
   return(result)
-
 }

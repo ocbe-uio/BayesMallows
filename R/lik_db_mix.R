@@ -32,7 +32,6 @@
 #'
 lik_db_mix <- function(rho, alpha, weights, metric,
                        rankings, obs_freq = NULL, log = FALSE) {
-
   if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }
@@ -61,7 +60,8 @@ lik_db_mix <- function(rho, alpha, weights, metric,
     weights = weights,
     metric = metric,
     rankings = rankings,
-    obs_freq = obs_freq)
+    obs_freq = obs_freq
+  )
 
   if (!log) out <- exp(out)
 
