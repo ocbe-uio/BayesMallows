@@ -56,7 +56,6 @@ Imports: Rcpp (>= 1.0.0),
   cowplot (>= 1.0.0)
 LinkingTo: Rcpp, RcppArmadillo
 Suggests:
-  dplyr (>= 1.0.1),
   R.rsp,
   knitr,
   testthat (>= 3.0.0),
