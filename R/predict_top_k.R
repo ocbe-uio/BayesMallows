@@ -22,30 +22,37 @@
 #'
 #' @seealso \code{\link{plot_top_k}}
 #'
-predict_top_k <- function(model_fit, burnin = model_fit$burnin,
-                          k = 3) {
-
-  validate_top_k(model_fit, burnin)
-  .predict_top_k(model_fit, burnin, k)
-}
+predict_top_k <- local({
+  notMessagedYet <- TRUE
+  function(model_fit, burnin = model_fit$burnin, k = 3) {
+    if (notMessagedYet) {
+      message(
+        "Change notice: predict_top_k() now returns a data.frame, and not a tibble.\n",
+        "To get a tibble run tibble::as_tibble() on the returned object.\n",
+        "This message is given once per session.\n")
+      notMessagedYet <<- FALSE
+    }
+    validate_top_k(model_fit, burnin)
+    .predict_top_k(model_fit, burnin, k)
+  }
+})
 
 
 
 .predict_top_k <- function(model_fit, burnin, k) {
 
-  rankings <- dplyr::filter(model_fit$augmented_data, .data$iteration > burnin, .data$value <= k)
-  n_samples <- length(unique(rankings$iteration))
-  rankings <- dplyr::mutate(rankings, item = as.character(.data$item))
-  rankings <- dplyr::group_by(rankings, .data$assessor, .data$item)
-  rankings <- dplyr::summarise(rankings, prob = dplyr::n() / n_samples, .groups = "drop")
+  rankings <- model_fit$augmented_data[model_fit$augmented_data$iteration > burnin &
+                                         model_fit$augmented_data$value <= k, , drop = FALSE]
 
-  do.call(rbind, lapply(split(rankings, f = rankings$assessor), function(dd) {
-    dd2 <- merge(dd, expand.grid(item = unique(rankings$item)),
-                 by = "item", all = TRUE)
-    dd2$assessor[is.na(dd2$assessor)] <- unique(dd$assessor)
-    dd2$prob[is.na(dd2$prob)] <- 0
-    dd2
-  }))[, c("assessor", "item", "prob")]
+  n_samples <- length(unique(rankings$iteration))
+  rankings$item <- as.character(rankings$item)
+  rankings <- aggregate(
+    list(prob = rankings$iteration),
+    by = list(assessor = rankings$assessor, item = rankings$item),
+    FUN = function(x) length(x) / n_samples, drop = FALSE)
+  rankings$prob[is.na(rankings$prob)] <- 0
+
+  rankings[order(rankings$assessor, rankings$item), ]
 
 }
 

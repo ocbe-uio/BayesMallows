@@ -45,7 +45,7 @@ constraint_fun <- function(x, n_items) {
   constrained_items <- unique(c(x[["bottom_item"]], x[["top_item"]]))
 
   # Now we must complete the dataframe with the items that do not appear
-  items_above <- merge(dplyr::select(x, .data$bottom_item, .data$top_item),
+  items_above <- merge(x[, c("bottom_item", "top_item"), drop = FALSE],
                        expand.grid(bottom_item = seq(from = 1, to = n_items, by = 1)),
                        by = "bottom_item", all = TRUE)
 
@@ -59,7 +59,7 @@ constraint_fun <- function(x, n_items) {
   })
 
   # Now we must complete the dataframe with the items that do not appear
-  items_below <- merge(dplyr::select(x, .data$bottom_item, .data$top_item),
+  items_below <- merge(x[, c("bottom_item", "top_item"), drop = FALSE],
                        expand.grid(top_item = seq(from = 1, to = n_items, by = 1)),
                        by = "top_item", all = TRUE)
 

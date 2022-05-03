@@ -25,9 +25,6 @@ compute_posterior_intervals <- function(model_fit, ...) {
   UseMethod("compute_posterior_intervals")
 }
 
-.compute_posterior_intervals <- function(df, ...) {
-  UseMethod(".compute_posterior_intervals")
-}
 
 #' @title Compute posterior intervals
 #' @inheritParams compute_posterior_intervals
@@ -44,10 +41,8 @@ compute_posterior_intervals <- function(model_fit, ...) {
 #' in posterior intervals and the mean and median. Defaults to \code{3}.
 #' @seealso assess_convergence
 #' @export
-compute_posterior_intervals.BayesMallows <- function(
-  model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
-  decimals = 3L, ...
-) {
+compute_posterior_intervals.BayesMallows <- function(model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
+                                                     decimals = 3L, ...) {
   stopifnot(inherits(model_fit, "BayesMallows"))
 
   if (is.null(burnin)) {
@@ -58,37 +53,30 @@ compute_posterior_intervals.BayesMallows <- function(
   stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment"))
   stopifnot(level > 0 && level < 1)
 
-  df <- dplyr::filter(model_fit[[parameter]], .data$iteration > burnin)
+  df <- model_fit[[parameter]][model_fit[[parameter]]$iteration > burnin, , drop = FALSE]
 
   if (parameter == "alpha" || parameter == "cluster_probs") {
-
-    df <- dplyr::group_by(df, .data$cluster)
-
-    class(df) <- c("posterior_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
-    df <- .compute_posterior_intervals(df, parameter, level, decimals)
-
+    df <- .compute_posterior_intervals(split(df, f = df$cluster), parameter, level, decimals)
   } else if (parameter == "rho") {
     decimals <- 0
-    df <- dplyr::group_by(df, .data$cluster, .data$item)
-    class(df) <- c("posterior_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
-    df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
-
+    df <- .compute_posterior_intervals(
+      split(df, f = interaction(df$cluster, df$item)),
+      parameter, level, decimals,
+      discrete = TRUE
+    )
   }
 
-  df <- dplyr::ungroup(df)
+  if (model_fit$n_clusters == 1) df$cluster <- NULL
 
-  if (model_fit$n_clusters == 1) df <- dplyr::select(df, -.data$cluster)
-
+  row.names(df) <- NULL
   return(df)
 }
 
 #' @title Compute posterior intervals
 #' @inheritParams compute_posterior_intervals.BayesMallows
 #' @export
-compute_posterior_intervals.SMCMallows <- function(
-  model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
-  decimals = 3L, ...
-) {
+compute_posterior_intervals.SMCMallows <- function(model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
+                                                   decimals = 3L, ...) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
@@ -99,68 +87,38 @@ compute_posterior_intervals.SMCMallows <- function(
 
 
   if (burnin != 0) {
-    df <- dplyr::filter(model_fit, .data$iteration > burnin) # removed model_fit[[parameter]]
+    df <- model_fit[model_fit$iteration > burnin, , drop = FALSE]
   } else {
     df <- model_fit
   }
 
   if (parameter == "alpha" || parameter == "cluster_probs") {
-    df <- dplyr::group_by(df, .data$cluster)
-
-    class(df) <- c("posterior_SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
-
-    df <- .compute_posterior_intervals(df, parameter, level, decimals)
+    df <- .compute_posterior_intervals(split(df, f = df$cluster), parameter, level, decimals)
   } else if (parameter == "rho") {
     decimals <- 0
-    df <- dplyr::group_by(df, .data$cluster, .data$item)
-
-    class(df) <- c("posterior_SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame")
-    df <- .compute_posterior_intervals(df, parameter, level, decimals, discrete = TRUE)
+    df <- .compute_posterior_intervals(split(df, f = interaction(df$cluster, df$item)),
+      parameter, level, decimals,
+      discrete = TRUE
+    )
   }
 
-  df <- dplyr::ungroup(df)
 
-  if (model_fit$n_clusters[1] == 1) {
-    df <- dplyr::select(df, -.data$cluster)
-  }
+  if (model_fit$n_clusters[1] == 1) df$cluster <- NULL
 
   return(df)
 }
 
-.compute_posterior_intervals.posterior_BayesMallows <- function(
-  df, parameter, level, decimals, discrete = FALSE, ...
-) {
-  dplyr::do(df, {
+.compute_posterior_intervals <- function(df, parameter, level, decimals, discrete = FALSE, ...) {
+  do.call(rbind, lapply(df, function(x) {
     format <- paste0("%.", decimals, "f")
 
-    posterior_mean <- round(base::mean(.data$value), decimals)
-    posterior_median <- round(stats::median(.data$value), decimals)
+    posterior_mean <- round(base::mean(x$value), decimals)
+    posterior_median <- round(stats::median(x$value), decimals)
 
     if (discrete) {
-
-      df <- dplyr::group_by(.data, .data$value)
-      df <- dplyr::summarise(df, n = dplyr::n())
-      df <- dplyr::arrange(df, dplyr::desc(.data$n))
-      df <- dplyr::mutate(df, cumprob = cumsum(.data$n) / sum(.data$n),
-                          lagcumprob = dplyr::lag(.data$cumprob, default = 0))
-
-      df <- dplyr::filter(df, .data$lagcumprob <= level)
-
-      values <- sort(dplyr::pull(df, .data$value))
-
-      # Find contiguous regions
-      breaks <- c(0, which(diff(values) != 1), length(values))
-
-      hpdi <- lapply(seq(length(breaks) - 1), function(.x, values, breaks) {
-        vals <- values[(breaks[.x] + 1):breaks[.x + 1]]
-        vals <- unique(c(min(vals), max(vals)))
-        paste0("[", paste(vals, collapse = ","), "]")
-        }, values = values, breaks = breaks)
-
-      hpdi <- paste(hpdi, collapse = ",")
-
+      hpdi <- compute_discrete_hpdi(x, level)
     } else {
-      hpdi <- HDInterval::hdi(.data$value, credMass = level, allowSplit = TRUE)
+      hpdi <- HDInterval::hdi(x$value, credMass = level, allowSplit = TRUE)
 
       hpdi[] <- sprintf(format, hpdi)
       if (is.matrix(hpdi)) {
@@ -172,12 +130,11 @@ compute_posterior_intervals.SMCMallows <- function(
       }
     }
 
-
-    central <- unique(stats::quantile(.data$value, probs = c((1 - level) / 2, level + (1 - level) / 2)))
+    central <- unique(stats::quantile(x$value, probs = c((1 - level) / 2, level + (1 - level) / 2)))
     central <- sprintf(format, central)
     central <- paste0("[", paste(central, collapse = ","), "]")
 
-    dplyr::tibble(
+    ret <- data.frame(
       parameter = parameter,
       mean = posterior_mean,
       median = posterior_median,
@@ -185,73 +142,37 @@ compute_posterior_intervals.SMCMallows <- function(
       hpdi = hpdi,
       central_interval = central
     )
-  })
+
+    targets <- setdiff(names(x), c("iteration", "value", "n_clusters"))
+    for (nm in targets) {
+      eval(parse(text = paste0("ret$", nm, " <- unique(x$", nm, ")")))
+    }
+    ret[, c(targets, setdiff(names(ret), targets)), drop = FALSE]
+  }))
 }
 
-# same as compute_posterior_intervals, but removed the bayesmallows object and
-# some other columns
 
-.compute_posterior_intervals.posterior_SMCMallows <- function(
-  df, parameter, level, decimals, discrete = FALSE, ...
-) {
-  dplyr::do(df, {
-    format <- paste0("%.", decimals, "f")
+compute_discrete_hpdi <- function(df, level) {
+  if (!"iteration" %in% names(df)) df$iteration <- seq_len(nrow(df))
+  df <- aggregate(list(n = df$iteration),
+    list(value = df$value),
+    FUN = length
+  )
+  df <- df[order(df$n, decreasing = TRUE), , drop = FALSE]
+  df$cumprob <- cumsum(df$n) / sum(df$n)
+  df$lagcumprob <- c(0, head(df$cumprob, -1))
+  df <- df[df$lagcumprob <= level, , drop = FALSE]
 
-    posterior_mean <- round(base::mean(.data$value), decimals)
-    posterior_median <- round(stats::median(.data$value), decimals)
+  values <- sort(df$value)
 
-    if (discrete) {
-      df <- dplyr::group_by(.data, .data$value)
-      df <- dplyr::summarise(df, n = dplyr::n())
-      df <- dplyr::arrange(df, dplyr::desc(.data$n))
-      df <- dplyr::mutate(df,
-        cumprob = cumsum(.data$n) / sum(.data$n),
-        lagcumprob = dplyr::lag(.data$cumprob, default = 0)
-      )
+  # Find contiguous regions
+  breaks <- c(0, which(diff(values) != 1), length(values))
 
-      df <- dplyr::filter(df, .data$lagcumprob <= level)
+  hpdi <- lapply(seq(length(breaks) - 1), function(.x, values, breaks) {
+    vals <- values[(breaks[.x] + 1):breaks[.x + 1]]
+    vals <- unique(c(min(vals), max(vals)))
+    paste0("[", paste(vals, collapse = ","), "]")
+  }, values = values, breaks = breaks)
 
-      values <- sort(dplyr::pull(df, .data$value))
-
-      # Find contiguous regions
-      breaks <- c(0, which(diff(values) != 1), length(values))
-
-      hpdi <- lapply(
-        X = seq(length(breaks) - 1),
-        FUN = function(.x, values, breaks) {
-          vals <- values[(breaks[.x] + 1):breaks[.x + 1]]
-          vals <- unique(c(min(vals), max(vals)))
-          paste0("[", paste(vals, collapse = ","), "]")
-        },
-        values = values,
-        breaks = breaks
-      )
-      hpdi <- paste(hpdi, collapse = ",")
-    } else {
-      hpdi <- HDInterval::hdi(.data$value, credMass = level, allowSplit = TRUE)
-
-      hpdi[] <- sprintf(format, hpdi)
-      if (is.matrix(hpdi)) {
-        # Discontinous case
-        hpdi <- paste(apply(hpdi, 1, function(x) paste0("[", x[[1]], ",", x[[2]], "]")))
-      } else {
-        # Continuous case
-        hpdi <- paste0("[", hpdi[[1]], ",", hpdi[[2]], "]")
-      }
-    }
-
-
-    central <- unique(stats::quantile(.data$value, probs = c((1 - level) / 2, level + (1 - level) / 2)))
-    central <- sprintf(format, central)
-    central <- paste0("[", paste(central, collapse = ","), "]")
-
-    dplyr::tibble(
-      parameter = parameter,
-      mean = posterior_mean,
-      median = posterior_median,
-      conf_level = paste(level * 100, "%"),
-      hpdi = hpdi,
-      central_interval = central
-    )
-  })
+  paste(hpdi, collapse = ",")
 }

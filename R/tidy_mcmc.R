@@ -36,8 +36,8 @@ tidy_rho <- function(fit) {
   iteration <- rep(seq(from = 1, to = rho_dims[[3]] * fit$rho_thinning, by = fit$rho_thinning),
                    each = rho_dims[[1]] * rho_dims[[2]])
 
-  # Store the final rho as a tibble
-  fit$rho <- dplyr::tibble(
+  # Store the final rho as a dataframe
+  fit$rho <- data.frame(
     item = item,
     cluster = cluster,
     iteration = iteration,
@@ -67,7 +67,7 @@ tidy_alpha <- function(fit) {
     each = alpha_dims[[1]]
   )
 
-  fit$alpha <- dplyr::tibble(
+  fit$alpha <- data.frame(
     cluster = cluster,
     iteration = iteration,
     value = value
@@ -101,7 +101,7 @@ tidy_cluster_assignment <- function(fit) {
       each = cluster_dims[[1]]
     )
 
-    fit$cluster_assignment <- dplyr::tibble(
+    fit$cluster_assignment <- data.frame(
       assessor = assessor,
       iteration = iteration,
       value = value
@@ -140,7 +140,7 @@ tidy_cluster_probabilities <- function(fit) {
     each = clusprob_dims[[1]]
   )
 
-  fit$cluster_probs <- dplyr::tibble(
+  fit$cluster_probs <- data.frame(
     cluster = cluster,
     iteration = iteration,
     value = value
@@ -170,7 +170,7 @@ tidy_wcd <- function(fit) {
       each = wcd_dims[[1]]
     )
 
-    fit$within_cluster_distance <- dplyr::tibble(
+    fit$within_cluster_distance <- data.frame(
       cluster = cluster,
       iteration = iteration,
       value = value
@@ -203,7 +203,7 @@ tidy_augmented_data <- function(fit) {
     iteration <- rep(seq(from = 1, to = augdata_dims[[3]] * fit$aug_thinning, by = fit$aug_thinning),
                      each = augdata_dims[[1]] * augdata_dims[[2]])
 
-    fit$augmented_data <- dplyr::tibble(
+    fit$augmented_data <- data.frame(
       iteration = iteration,
       assessor = assessor,
       item = item,
@@ -221,12 +221,9 @@ tidy_augmentation_acceptance <- function(fit) {
   # Augmentation acceptance
 
   if (fit$any_missing || fit$augpair) {
-    fit$aug_acceptance <- dplyr::tibble(acceptance_rate = c(fit$aug_acceptance))
-    fit$aug_acceptance <- dplyr::mutate(fit$aug_acceptance,
-                                        assessor = dplyr::row_number())
-    fit$aug_acceptance <- dplyr::select(fit$aug_acceptance,
-                                        .data$assessor, .data$acceptance_rate)
-
+    fit$aug_acceptance <- data.frame(acceptance_rate = c(fit$aug_acceptance))
+    fit$aug_acceptance$assessor <- seq_len(nrow(fit$aug_acceptance))
+    fit$aug_acceptance <- fit$aug_acceptance[, c("assessor", "acceptance_rate")]
   } else {
     fit$aug_acceptance <- NULL
   }
@@ -239,7 +236,7 @@ tidy_error_probability <- function(fit) {
   theta_length <- length(fit$theta)
 
   if (theta_length > 0) {
-    fit$theta <- dplyr::tibble(
+    fit$theta <- data.frame(
       iteration = seq(from = 1, to = theta_length, by = 1),
       value = c(fit$theta)
     )

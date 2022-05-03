@@ -30,9 +30,12 @@ log_lik_db <- function(rho, alpha, metric, rankings, obs_freq) {
   }
 
   if (metric %in% c("ulam", "footrule", "spearman")) {
-    pfd <- dplyr::filter(partition_function_data,
-                         .data$metric == !!metric, .data$n_items == !!n_items,
-                         .data$type == "cardinalities")
+    pfd <- partition_function_data[
+      partition_function_data$metric == metric &
+        partition_function_data$n_items == n_items &
+        partition_function_data$type == "cardinalities",
+      , drop = FALSE
+    ]
     if (nrow(pfd) == 0) {
       stop("Given number of items currently not available for the specified metric")
     } else{

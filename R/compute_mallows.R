@@ -297,11 +297,8 @@ compute_mallows <- function(rankings = NULL,
     if (!inherits(preferences, "BayesMallowsTC")) {
       message("Generating transitive closure of preferences.")
       # Make sure the preference columns are double
-      preferences <- dplyr::mutate(preferences,
-                                   bottom_item = as.numeric(.data$bottom_item),
-                                   top_item = as.numeric(.data$top_item)
-      )
-
+      preferences$bottom_item <- as.numeric(preferences$bottom_item)
+      preferences$top_item <- as.numeric(preferences$top_item)
       preferences <- generate_transitive_closure(preferences)
     }
     if (is.null(rankings)) {
@@ -369,7 +366,7 @@ compute_mallows <- function(rankings = NULL,
                   logz_estimate = logz_list$logz_estimate,
                   rho_init = rho_init,
                   metric = metric,
-                  error_model = dplyr::if_else(is.null(error_model), "none", error_model),
+                  error_model = ifelse(is.null(error_model), "none", error_model),
                   Lswap = swap_leap,
                   n_clusters = n_clusters,
                   include_wcd = include_wcd,
