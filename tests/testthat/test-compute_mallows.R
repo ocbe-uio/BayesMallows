@@ -1,6 +1,3 @@
-library(dplyr)
-
-
 context("Testing compute_mallows")
 
 test_that("miscellaneous input validation", {
@@ -95,12 +92,14 @@ test_that("compute_mallows runs with the right distances", {
 
 test_that("compute_mallows handles integer preferences", {
   set.seed(123)
-  m <- beach_preferences %>%
-    filter(top_item %in% c(1, 2, 3) | bottom_item %in% c(1, 2, 3)) %>%
-    sample_n(20) %>%
-    mutate_all(as.integer) %>%
-    compute_mallows(preferences = ., nmc = 20)
-  expect_s3_class(m, "BayesMallows")
+  m <- subset(beach_preferences,
+              top_item %in% c(1, 2, 3) | bottom_item %in% c(1, 2, 3))
+  m[sample(nrow(m), 20), , ]
+  for(col in names(m)){
+    eval(parse(text = paste("m$", col, "<- as.integer(m$", col, ")")))
+  }
+
+  expect_s3_class(compute_mallows(preferences = m, nmc = 20), "BayesMallows")
 })
 
 test_that("compute_mallows handles data with lots of missings", {
@@ -137,8 +136,7 @@ test_that("compute_mallows treats obs_freq properly", {
   # Test with repeated beach preferences
   obs_freq <- c(2, 1, 4)
 
-  beach_small <- beach_preferences %>%
-    filter(assessor %in% c(1, 2, 3))
+  beach_small <- subset(beach_preferences, assessor %in% c(1, 2, 3))
 
   # Next, we create a new hypthetical beach_preferences dataframe where each
   # assessor is replicated 1-4 times
