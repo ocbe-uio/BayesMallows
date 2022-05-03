@@ -7,6 +7,7 @@
 [![R-CMD-check](https://github.com/ocbe-uio/BayesMallows/workflows/R-CMD-check/badge.svg)](https://github.com/ocbe-uio/BayesMallows/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/ocbe-uio/BayesMallows/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ocbe-uio/BayesMallows?branch=master)
+[![CodeFactor](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/badge/develop)](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/overview/develop)
 
 This package provides a general framework for analyzing rank and
 preference data based on the Bayesian Mallows model first described in
