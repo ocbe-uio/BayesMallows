@@ -1,6 +1,5 @@
 context("Testing computation of partition functions")
 
-
 # Brute force formula
 check_log_zn <- function(n, alpha, metric) {
   # Generate all permutations
@@ -131,12 +130,13 @@ test_that("Ulam partition function is correct", {
 
 
 test_that("partition function data is sane", {
+  pfd <- aggregate(
+    list(n = seq_len(nrow(BayesMallows:::partition_function_data))),
+    BayesMallows:::partition_function_data[, c("n_items", "metric", "type")],
+    FUN = length)
+
   expect_equal(
-    BayesMallows:::partition_function_data %>%
-      group_by(n_items, metric, type) %>%
-      count() %>%
-      filter(n > 1) %>%
-      nrow(),
+    nrow(subset(pfd, n > 1)),
     0
   )
 })
