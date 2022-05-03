@@ -25,7 +25,7 @@
 predict_top_k <- local({
   notMessagedYet <- TRUE
   function(model_fit, burnin = model_fit$burnin, k = 3) {
-    if(notMessagedYet){
+    if (notMessagedYet) {
       message(
         "Change notice: predict_top_k() now returns a data.frame, and not a tibble.\n",
         "To get a tibble run tibble::as_tibble() on the returned object.\n",
