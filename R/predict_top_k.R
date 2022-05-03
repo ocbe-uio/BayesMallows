@@ -26,10 +26,10 @@ predict_top_k <- local({
   notMessagedYet <- TRUE
   function(model_fit, burnin = model_fit$burnin, k = 3) {
     if(notMessagedYet){
-      message(writeLines(c(
-        "Change notice: predict_top_k() now returns a data.frame, and not a tibble.",
-        "To get a tibble run tibble::as_tibble() on the returned object.",
-        "This message is given once per session.")))
+      message(
+        "Change notice: predict_top_k() now returns a data.frame, and not a tibble.\n",
+        "To get a tibble run tibble::as_tibble() on the returned object.\n",
+        "This message is given once per session.\n")
       notMessagedYet <<- FALSE
     }
     validate_top_k(model_fit, burnin)
