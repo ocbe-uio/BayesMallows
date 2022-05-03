@@ -21,12 +21,10 @@ compute_consensus(model_fit, type = "MAP")
   model_fit$burnin <- 1000
   cp_consensus_df <- compute_consensus(model_fit, type = "CP")
   # We can now make a table which shows the ranking in each cluster:
-  library(dplyr)
-  cp_consensus_df %>%
-    select(-cumprob) %>%
-    as.data.frame() %>%
-    stats::reshape(direction = "wide", idvar = "ranking",
-                   timevar = "cluster", varying = list(sort(unique(.$cluster))))
+  cp_consensus_df$cumprob <- NULL
+  stats::reshape(cp_consensus_df, direction = "wide", idvar = "ranking",
+                 timevar = "cluster",
+                 varying = list(sort(unique(cp_consensus_df$cluster))))
 }
 
 \dontrun{
