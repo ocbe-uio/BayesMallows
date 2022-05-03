@@ -71,7 +71,8 @@ test_that("assess_convergence works with mixtures", {
   m <- compute_mallows(potato_visual, nmc = 10, n_clusters = 2, save_clus = TRUE)
   plt <- assess_convergence(m, parameter = "cluster_probs")
   expect_s3_class(plt, "ggplot")
+  pdf(NULL)
   print(plt)
-
+  dev.off()
 })
 
