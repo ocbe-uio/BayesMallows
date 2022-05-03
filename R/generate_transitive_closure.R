@@ -45,17 +45,11 @@ generate_transitive_closure <- function(df, cl = NULL) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
   prefs <- split(df[, c("bottom_item", "top_item"), drop = FALSE], df$assessor)
 
+  fun <- function(x, y) cbind(y, .generate_transitive_closure(cbind(x$bottom_item, x$top_item)))
   if (is.null(cl)) {
-    prefs <- mapply(function(x, y) cbind(y, .generate_transitive_closure(cbind(x$bottom_item, x$top_item))),
-      prefs, unique(df$assessor),
-      SIMPLIFY = FALSE
-    )
+    prefs <- Map(fun, prefs, unique(df$assessor))
   } else {
-    prefs <- parallel::clusterMap(
-      cl = cl,
-      fun = function(x, y) cbind(y, .generate_transitive_closure(cbind(x$bottom_item, x$top_item))),
-      prefs, unique(df$assessor)
-    )
+    prefs <- parallel::clusterMap(cl = cl, fun = fun, prefs, unique(df$assessor))
   }
 
 
