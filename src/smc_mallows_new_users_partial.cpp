@@ -31,7 +31,8 @@ using namespace arma;
 //' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
 //' @param verbose Logical specifying whether to print out the progress of the
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
-//' @return a set of particles each containing a value of rho and alpha
+//' @return a set of particles each containing the values of rho and alpha and the effective sample size (ESS) at each iteration of the SMC 
+//' algorithm as well as the set of augmented rankings at the final iteration.
 //' @export
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users_partial(
@@ -68,6 +69,9 @@ Rcpp::List smc_mallows_new_users_partial(
   mat alpha_samples(N, Time + 1);
   const vec& alpha_samples_0 = Rcpp::rexp(N, 1);
   alpha_samples.col(0) = alpha_samples_0;
+
+  /* generate vector to store ESS */
+  rowvec ESS_vec(Time);
 
   // this is to store the augmentations of the observed rankings for each particle
   cube aug_rankings(n_users, n_items, N, fill::zeros); // no. users by items by particles
@@ -177,6 +181,8 @@ Rcpp::List smc_mallows_new_users_partial(
     vec w = exp(log_inc_wgt - maxw);
     vec norm_wgt = w / sum(w);
 
+    ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
+
     /* ====================================================== */
     /* Resample                                               */
     /* ====================================================== */
@@ -231,6 +237,8 @@ Rcpp::List smc_mallows_new_users_partial(
   // return the history of the particles and their values
   return Rcpp::List::create(
     Rcpp::Named("rho_samples") = rho_samples,
-    Rcpp::Named("alpha_samples") = alpha_samples
+    Rcpp::Named("alpha_samples") = alpha_samples,
+    Rcpp::Named("augmented_rankings") = aug_rankings,
+    Rcpp::Named("ESS") = ESS_vec
   );
 }
