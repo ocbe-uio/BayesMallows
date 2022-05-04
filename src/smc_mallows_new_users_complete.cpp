@@ -76,7 +76,7 @@ Rcpp::List smc_mallows_new_users_complete(
   }
 
   /* generate rho samples using uniform prior ------------- */
-  cube rho_samples(N, n_items, (n_users + Time + 1), fill::zeros);
+  cube rho_samples(N, n_items, (Time + 1), fill::zeros);
   for (int i = 0; i < N; ++i) {
     const uvec items_sample = randperm(n_items) + 1;
     for (int j = 0; j < n_items; ++j) {
@@ -85,7 +85,7 @@ Rcpp::List smc_mallows_new_users_complete(
   }
 
   /* generate alpha samples using exponential prior ------- */
-  mat alpha_samples(N, (n_users + Time + 1));
+  mat alpha_samples(N, (Time + 1));
   const vec alpha_samples_0 = Rcpp::rexp(N, 1);
   alpha_samples.col(0) = alpha_samples_0;
 
