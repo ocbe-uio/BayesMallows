@@ -56,7 +56,8 @@ prior distribution.}
 SMC-Mallows algorithm. Defaults to \code{FALSE}.}
 }
 \value{
-a 3d matrix containing the samples of rho and alpha from the SMC algorithm
+a set of particles each containing the values of rho and alpha and the effective sample size (ESS) at each iteration of the SMC
+algorithm as well as the set of augmented rankings at the final iteration.
 }
 \description{
 Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user
