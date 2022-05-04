@@ -37,7 +37,7 @@ log_lik_db <- function(rho, alpha, metric, rankings, obs_freq) {
     } else {
       card <- pfd$values[[1]]
     }
-  } else if(metric %in% c("kendall", "cayley", "hamming")){
+  } else if (metric %in% c("kendall", "cayley", "hamming")) {
     card <- NULL
   }
 
