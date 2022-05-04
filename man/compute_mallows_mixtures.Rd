@@ -61,20 +61,15 @@ mixtures to use in the final model.
   plot(mixture_model, parameter = "rho", items = "tuna roll")
   # Compute the cluster-wise CP consensus, and show one column per cluster
   cp <- compute_consensus(mixture_model, type = "CP")
-  library(dplyr)
-  cp \%>\%
-    select(-cumprob) \%>\%
-    as.data.frame() \%>\%
-    stats::reshape(direction = "wide", idvar = "ranking",
-                   timevar = "cluster", varying = list(as.character(unique(.$cluster))))
+  cp$cumprob <- NULL
+  stats::reshape(cp, direction = "wide", idvar = "ranking",
+                 timevar = "cluster", varying = list(as.character(unique(cp$cluster))))
 
   # Compute the MAP consensus, and show one column per cluster
   map <- compute_consensus(mixture_model, type = "MAP")
-  map \%>\%
-    select(-probability) \%>\%
-    as.data.frame() \%>\%
-    stats::reshape(direction = "wide", idvar = "map_ranking",
-                   timevar = "cluster", varying = list(as.character(unique(.$cluster))))
+  map$probability <- NULL
+  stats::reshape(map, direction = "wide", idvar = "map_ranking",
+                 timevar = "cluster", varying = list(as.character(unique(map$cluster))))
 
   # RUNNING IN PARALLEL
   # Computing Mallows models with different number of mixtures in parallel leads to

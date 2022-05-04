@@ -22,6 +22,8 @@ print.BayesMallowsMixtures <- function(x, ...) {
 
   n_clusters <- vapply(x, function(x) x$n_clusters, integer(1))
 
-  cat("Collection of", length(x), "Bayesian Mallows Mixture Models with the following number of mixture components:\n",
-      paste0(paste(n_clusters, collapse = ", "), "."))
+  cat(
+    "Collection of", length(x), "Bayesian Mallows Mixture Models with the following number of mixture components:\n",
+    paste0(paste(n_clusters, collapse = ", "), ".")
+  )
 }

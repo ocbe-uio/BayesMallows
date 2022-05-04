@@ -236,9 +236,7 @@ compute_mallows <- function(rankings = NULL,
                             na_action = "augment",
                             constraints = NULL,
                             save_ind_clus = FALSE,
-                            seed = NULL
-                            ) {
-
+                            seed = NULL) {
   if (!is.null(seed)) set.seed(seed)
 
   # Check if there are NAs in rankings, if it is provided
@@ -293,7 +291,6 @@ compute_mallows <- function(rankings = NULL,
 
   # Deal with pairwise comparisons. Generate rankings compatible with them.
   if (!is.null(preferences) && is.null(error_model)) {
-
     if (!inherits(preferences, "BayesMallowsTC")) {
       message("Generating transitive closure of preferences.")
       # Make sure the preference columns are double
@@ -320,13 +317,14 @@ compute_mallows <- function(rankings = NULL,
 
   # If any row of rankings has only one missing value, replace it with the implied ranking
   if (any(is.na(rankings))) {
-
     dn <- dimnames(rankings)
-    rankings <- lapply(split(rankings, f = seq_len(nrow(rankings))),
-                           function(x) {
-                             if (sum(is.na(x)) == 1) x[is.na(x)] <- setdiff(seq_along(x), x)
-                             return(x)
-                           })
+    rankings <- lapply(
+      split(rankings, f = seq_len(nrow(rankings))),
+      function(x) {
+        if (sum(is.na(x)) == 1) x[is.na(x)] <- setdiff(seq_along(x), x)
+        return(x)
+      }
+    )
     rankings <- do.call(rbind, rankings)
     dimnames(rankings) <- dn
   }
@@ -351,38 +349,42 @@ compute_mallows <- function(rankings = NULL,
 
   if (save_ind_clus) {
     abort <- readline(
-      prompt = paste(nmc, "csv files will be saved in your current working directory.",
-                     "Proceed? (yes/no): "))
+      prompt = paste(
+        nmc, "csv files will be saved in your current working directory.",
+        "Proceed? (yes/no): "
+      )
+    )
     if (tolower(abort) %in% c("n", "no")) stop()
   }
 
   # Transpose rankings to get samples along columns, since we typically want
   # to extract one sample at a time. armadillo is column major, just like rankings
-  fit <- run_mcmc(rankings = t(rankings),
-                  obs_freq = obs_freq,
-                  nmc = nmc,
-                  constraints = constraints,
-                  cardinalities = logz_list$cardinalities,
-                  logz_estimate = logz_list$logz_estimate,
-                  rho_init = rho_init,
-                  metric = metric,
-                  error_model = ifelse(is.null(error_model), "none", error_model),
-                  Lswap = swap_leap,
-                  n_clusters = n_clusters,
-                  include_wcd = include_wcd,
-                  lambda = lambda,
-                  alpha_max = alpha_max,
-                  leap_size = leap_size,
-                  alpha_prop_sd = alpha_prop_sd,
-                  alpha_init = alpha_init,
-                  alpha_jump = alpha_jump,
-                  rho_thinning = rho_thinning,
-                  aug_thinning = aug_thinning,
-                  clus_thin = clus_thin,
-                  save_aug = save_aug,
-                  verbose = verbose,
-                  save_ind_clus = save_ind_clus
-                  )
+  fit <- run_mcmc(
+    rankings = t(rankings),
+    obs_freq = obs_freq,
+    nmc = nmc,
+    constraints = constraints,
+    cardinalities = logz_list$cardinalities,
+    logz_estimate = logz_list$logz_estimate,
+    rho_init = rho_init,
+    metric = metric,
+    error_model = ifelse(is.null(error_model), "none", error_model),
+    Lswap = swap_leap,
+    n_clusters = n_clusters,
+    include_wcd = include_wcd,
+    lambda = lambda,
+    alpha_max = alpha_max,
+    leap_size = leap_size,
+    alpha_prop_sd = alpha_prop_sd,
+    alpha_init = alpha_init,
+    alpha_jump = alpha_jump,
+    rho_thinning = rho_thinning,
+    aug_thinning = aug_thinning,
+    clus_thin = clus_thin,
+    save_aug = save_aug,
+    verbose = verbose,
+    save_ind_clus = save_ind_clus
+  )
 
   if (verbose) {
     print("Metropolis-Hastings algorithm completed. Post-processing data.")
@@ -416,5 +418,4 @@ compute_mallows <- function(rankings = NULL,
   class(fit) <- "BayesMallows"
 
   return(fit)
-
 }

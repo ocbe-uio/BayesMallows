@@ -1,5 +1,4 @@
 tidy_mcmc <- function(fit) {
-
   fit <- tidy_rho(fit)
   fit <- tidy_alpha(fit)
   fit <- tidy_cluster_assignment(fit)
@@ -31,10 +30,12 @@ tidy_rho <- function(fit) {
     times = rho_dims[[3]]
   )
   cluster <- factor(paste("Cluster", cluster),
-                    levels = paste("Cluster", sort(unique(cluster))))
+    levels = paste("Cluster", sort(unique(cluster)))
+  )
 
   iteration <- rep(seq(from = 1, to = rho_dims[[3]] * fit$rho_thinning, by = fit$rho_thinning),
-                   each = rho_dims[[1]] * rho_dims[[2]])
+    each = rho_dims[[1]] * rho_dims[[2]]
+  )
 
   # Store the final rho as a dataframe
   fit$rho <- data.frame(
@@ -60,7 +61,8 @@ tidy_alpha <- function(fit) {
   )
 
   cluster <- factor(paste("Cluster", cluster),
-                    levels = paste("Cluster", sort(unique(cluster))))
+    levels = paste("Cluster", sort(unique(cluster)))
+  )
 
   iteration <- rep(
     seq(from = 1, to = alpha_dims[[2]] * fit$alpha_jump, by = fit$alpha_jump),
@@ -133,7 +135,8 @@ tidy_cluster_probabilities <- function(fit) {
   )
 
   cluster <- factor(paste("Cluster", cluster),
-                    levels = paste("Cluster", sort(unique(cluster))))
+    levels = paste("Cluster", sort(unique(cluster)))
+  )
 
   iteration <- rep(
     seq(from = 1, to = clusprob_dims[[2]], by = 1),
@@ -163,7 +166,8 @@ tidy_wcd <- function(fit) {
       times = wcd_dims[[2]]
     )
     cluster <- factor(paste("Cluster", cluster),
-                      levels = paste("Cluster", sort(unique(cluster))))
+      levels = paste("Cluster", sort(unique(cluster)))
+    )
 
     iteration <- rep(
       seq(from = 1, to = wcd_dims[[2]], by = 1),
@@ -175,8 +179,6 @@ tidy_wcd <- function(fit) {
       iteration = iteration,
       value = value
     )
-
-
   } else {
     fit$within_cluster_distance <- NULL
   }
@@ -186,7 +188,6 @@ tidy_wcd <- function(fit) {
 tidy_augmented_data <- function(fit) {
   # Tidy augmented data, or delete
   if (fit$save_aug) {
-
     augdata_dims <- dim(fit$augmented_data)
 
     # Item1, Item2, ..., Item1, Item2, ..., Item1, Item2, ..., Item1, Item2
@@ -197,11 +198,14 @@ tidy_augmented_data <- function(fit) {
     item <- rep(fit$items, times = augdata_dims[[2]] * augdata_dims[[3]])
     item <- factor(item, levels = fit$items)
 
-    assessor <- rep(seq(from = 1, to = augdata_dims[[2]], by = 1), each = augdata_dims[[1]],
-                    times = augdata_dims[[3]])
+    assessor <- rep(seq(from = 1, to = augdata_dims[[2]], by = 1),
+      each = augdata_dims[[1]],
+      times = augdata_dims[[3]]
+    )
 
     iteration <- rep(seq(from = 1, to = augdata_dims[[3]] * fit$aug_thinning, by = fit$aug_thinning),
-                     each = augdata_dims[[1]] * augdata_dims[[2]])
+      each = augdata_dims[[1]] * augdata_dims[[2]]
+    )
 
     fit$augmented_data <- data.frame(
       iteration = iteration,

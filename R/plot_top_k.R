@@ -26,7 +26,6 @@
 plot_top_k <- function(model_fit, burnin = model_fit$burnin,
                        k = 3,
                        rel_widths = c(model_fit$n_clusters, 10)) {
-
   validate_top_k(model_fit, burnin)
 
   # Extract post burn-in rows with value <= k
@@ -43,7 +42,8 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
   # Find the complete set of items per cluster
   rho <- do.call(rbind, lapply(split(rho, f = rho$cluster), function(dd) {
     dd2 <- merge(dd, expand.grid(item = unique(rho$item)),
-                 by = "item", all = TRUE)
+      by = "item", all = TRUE
+    )
     dd2$cluster[is.na(dd2$cluster)] <- unique(dd$cluster)
     dd2$prob[is.na(dd2$prob)] <- 0
     dd2
@@ -77,7 +77,7 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin,
       axis.title.y = ggplot2::element_blank(),
       axis.text.y = ggplot2::element_blank(),
       axis.ticks.y = ggplot2::element_blank()
-      )
+    )
 
   rho_plot <- ggplot2::ggplot(rho, ggplot2::aes(.data$cluster, .data$item)) +
     ggplot2::geom_tile(ggplot2::aes(fill = .data$prob), colour = "white") +

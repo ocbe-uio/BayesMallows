@@ -21,7 +21,6 @@
 #'
 #' @example /inst/examples/rank_distance_example.R
 rank_distance <- function(rankings, rho, metric, obs_freq = 1) {
-
   if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }
@@ -33,8 +32,9 @@ rank_distance <- function(rankings, rho, metric, obs_freq = 1) {
   }
 
   rankings <- t(rankings)
-  out <- c(rank_dist_vec(rankings = rankings, rho = rho,
-                       metric = metric, obs_freq = obs_freq))
+  out <- c(rank_dist_vec(
+    rankings = rankings, rho = rho,
+    metric = metric, obs_freq = obs_freq
+  ))
   return(out)
-
 }

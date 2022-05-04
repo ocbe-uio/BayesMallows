@@ -48,9 +48,7 @@ sample_mallows <- function(rho0, alpha0, n_samples,
                            burnin = ifelse(diagnostic, 0, 1000),
                            thinning = ifelse(diagnostic, 1, 1000),
                            items_to_plot = NULL,
-                           max_lag = 1000L)
-                            {
-
+                           max_lag = 1000L) {
   if (!(validate_permutation(rho0) && sum(is.na(rho0)) == 0)) {
     stop("rho0 must be a proper ranking with no missing values.")
   }
@@ -94,7 +92,8 @@ sample_mallows <- function(rho0, alpha0, n_samples,
 
     # Compute the autocorrelation in the samples
     autocorr <- apply(samples[, items_to_plot, drop = FALSE], 2, stats::acf,
-                      lag.max = max_lag, plot = FALSE, demean = TRUE)
+      lag.max = max_lag, plot = FALSE, demean = TRUE
+    )
     names(autocorr) <- items_to_plot
 
     autocorr <- do.call(rbind, Map(function(x, xnm) {
@@ -107,8 +106,10 @@ sample_mallows <- function(rho0, alpha0, n_samples,
 
     autocorr$item <- as.factor(as.integer(autocorr$item))
 
-    ac_plot <- ggplot2::ggplot(autocorr,
-                               ggplot2::aes(x = .data$lag, y = .data$acf, color = .data$item)) +
+    ac_plot <- ggplot2::ggplot(
+      autocorr,
+      ggplot2::aes(x = .data$lag, y = .data$acf, color = .data$item)
+    ) +
       ggplot2::geom_line() +
       ggplot2::theme(legend.title = ggplot2::element_blank()) +
       ggplot2::xlab("Lag") +
@@ -119,19 +120,23 @@ sample_mallows <- function(rho0, alpha0, n_samples,
     diagnostic <- as.data.frame(samples)
     diagnostic$iteration <- seq_len(nrow(diagnostic))
 
-    diagnostic <- stats::reshape(diagnostic, direction = "long",
-            varying = setdiff(names(diagnostic), "iteration"),
-            v.names = "value",
-            timevar = "item",
-            times = setdiff(names(diagnostic), "iteration"),
-            idvar = "iteration",
-            ids = diagnostic$iteration)
+    diagnostic <- stats::reshape(diagnostic,
+      direction = "long",
+      varying = setdiff(names(diagnostic), "iteration"),
+      v.names = "value",
+      timevar = "item",
+      times = setdiff(names(diagnostic), "iteration"),
+      idvar = "iteration",
+      ids = diagnostic$iteration
+    )
 
     diagnostic <- diagnostic[diagnostic$item %in% items_to_plot, , drop = FALSE]
     diagnostic$item <- as.factor(as.integer(diagnostic$item))
 
-    rho_plot <- ggplot2::ggplot(diagnostic,
-                         ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
+    rho_plot <- ggplot2::ggplot(
+      diagnostic,
+      ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)
+    ) +
       ggplot2::geom_line() +
       ggplot2::theme(legend.title = ggplot2::element_blank()) +
       ggplot2::xlab("Iteration") +
@@ -143,5 +148,4 @@ sample_mallows <- function(rho0, alpha0, n_samples,
     samples <- samples[seq(from = burnin + 1, by = thinning, length.out = n_samples), ]
   }
   return(samples)
-
 }

@@ -21,7 +21,7 @@ validate_permutation <- function(vec) {
     return(TRUE)
   } else {
     return(all(vec[!is.na(vec)] <= length(vec)) &&
-             all(vec[!is.na(vec)] >= 1) && !any(duplicated(vec[!is.na(vec)])))
+      all(vec[!is.na(vec)] >= 1) && !any(duplicated(vec[!is.na(vec)])))
   }
 }
 
@@ -43,8 +43,8 @@ prepare_partition_function <- function(logz_estimate, metric, n_items) {
 
   # Second, do we have a sequence?
   relevant_params <- partition_function_data[partition_function_data$n_items == n_items &
-                            partition_function_data$metric == metric &
-                            partition_function_data$type == "cardinalities", , drop = FALSE]
+    partition_function_data$metric == metric &
+    partition_function_data$type == "cardinalities", , drop = FALSE]
 
   if (nrow(relevant_params) == 1) {
     return(list(cardinalities = unlist(relevant_params$values), logz_estimate = NULL))
@@ -52,8 +52,8 @@ prepare_partition_function <- function(logz_estimate, metric, n_items) {
 
   # Third, do we have an importance sampling estimate?
   relevant_params <- partition_function_data[partition_function_data$n_items == n_items &
-                            partition_function_data$metric == metric &
-                            partition_function_data$type == "importance_sampling", , drop = FALSE]
+    partition_function_data$metric == metric &
+    partition_function_data$type == "importance_sampling", , drop = FALSE]
 
   if (nrow(relevant_params) == 1) {
     return(list(cardinalities = NULL, logz_estimate = unlist(relevant_params$values)))
@@ -62,8 +62,10 @@ prepare_partition_function <- function(logz_estimate, metric, n_items) {
   # Fourth, is it the Ulam distance?
   if (metric == "ulam") {
     return(list(
-      cardinalities = unlist(lapply(0:(n_items - 1),
-                                    function(x) PerMallows::count.perms(perm.length = n_items, dist.value = x, dist.name = "ulam")))
+      cardinalities = unlist(lapply(
+        0:(n_items - 1),
+        function(x) PerMallows::count.perms(perm.length = n_items, dist.value = x, dist.name = "ulam")
+      ))
     ))
   }
 
@@ -73,7 +75,6 @@ prepare_partition_function <- function(logz_estimate, metric, n_items) {
   }
 
   stop("Partition function not available. Please compute an estimate using estimate_partition_function().")
-
 }
 
 
@@ -84,7 +85,8 @@ unit_to_freq <- function(data) {
   K <- ncol(data)
   freq <- table(apply(data, 1, paste, collapse = "-"))
   obs_seq <- matrix(as.numeric(unlist(strsplit(names(freq),
-                                               split = "-"))), nrow = length(freq), ncol = K, byrow = TRUE)
+    split = "-"
+  ))), nrow = length(freq), ncol = K, byrow = TRUE)
   rownames(obs_seq) <- NULL
   out <- cbind(obs_seq, freq = freq, deparse.level = 0)
   rownames(out) <- NULL
@@ -101,13 +103,17 @@ fill_single_entries <- function(data) {
   r_single_miss <- (rowSums(data == 0) == 1)
   if (any(r_single_miss)) {
     w_row <- which(r_single_miss)
-    w_col <- apply(data[w_row, , drop = FALSE], 1, function(x) which(x ==
-                                                                       0))
+    w_col <- apply(data[w_row, , drop = FALSE], 1, function(x) {
+      which(x ==
+        0)
+    })
     w_item <- apply(data[w_row, , drop = FALSE], 1, setdiff,
-                    x = 1:K)
+      x = 1:K
+    )
     data[cbind(w_row, w_col)] <- w_item
     warning(paste(paste0("Top-", K - 1, ""), "sequencies correspond to full orderings. Single missing entries filled."),
-            call. = FALSE)
+      call. = FALSE
+    )
   }
   return(data)
 }
@@ -122,7 +128,7 @@ permutations <- function(n) {
     p <- nrow(sp)
     A <- matrix(nrow = n * p, ncol = n)
     for (i in 1:n) {
-      A[(i - 1) * p +  1:p, ] <- cbind(i, sp + (sp >= i))
+      A[(i - 1) * p + 1:p, ] <- cbind(i, sp + (sp >= i))
     }
     return(A)
   }

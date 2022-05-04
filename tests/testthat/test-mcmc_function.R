@@ -1,12 +1,10 @@
 context("Testing MCMC function on potato data")
 
-library(dplyr)
-
-
 # Testing with footrule
 set.seed(200)
 model_fit <- compute_mallows(potato_weighing, metric = "footrule", nmc = 1000)
-mean_alpha <- pull(summarise(slice(model_fit$alpha, 501:1000), mean(value)))
+mean_alpha <- mean(model_fit$alpha$value[501:1000])
+
 
 test_that(
   "alpha is in a decent range for footrule",
@@ -27,14 +25,13 @@ test_that(
   )
 )
 
+
 test_that(
   "rho is a rank vector",
-  expect_true(
-    model_fit$rho %>%
-      sample_n(1000) %>%
-      group_by_all() %>%
-      count() %>%
-      filter(n > 1) %>%
-      nrow() == 0
-  )
+  expect_true({
+    obj <- aggregate(list(n = seq_len(nrow(model_fit$rho))),
+      by = model_fit$rho, FUN = length
+    )
+    nrow(obj[obj$n > 1, ]) == 0
+  })
 )

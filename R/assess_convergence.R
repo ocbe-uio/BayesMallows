@@ -27,9 +27,8 @@
 #'
 assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
                                assessors = NULL) {
-
   stopifnot(inherits(model_fit, "BayesMallows") ||
-              inherits(model_fit, "BayesMallowsMixtures"))
+    inherits(model_fit, "BayesMallowsMixtures"))
 
   if (parameter == "alpha") {
     if (inherits(model_fit, "BayesMallows")) {
@@ -42,17 +41,14 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
         x$alpha
       }))
       trace_alpha(m, TRUE)
-      }
-
+    }
   } else if (parameter == "rho") {
     if (inherits(model_fit, "BayesMallows")) {
       trace_rho(model_fit, items)
     } else if (inherits(model_fit, "BayesMallowsMixtures")) {
       cowplot::plot_grid(plotlist = lapply(model_fit, trace_rho, clusters = TRUE, items = items))
     }
-
   } else if (parameter == "Rtilde") {
-
     if (inherits(model_fit, "BayesMallows")) {
       trace_rtilde(model_fit, items, assessors)
     } else if (inherits(model_fit, "BayesMallowsMixtures")) {
@@ -70,9 +66,8 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
       }))
     }
     trace_cluster_probs(m)
-
   } else if (parameter == "theta") {
-      trace_theta(model_fit)
+    trace_theta(model_fit)
   } else {
     stop("parameter must be either \"alpha\", \"rho\", \"augmentation\", \"cluster_probs\", or \"theta\".")
   }
@@ -91,13 +86,13 @@ trace_alpha <- function(m, clusters) {
       ggplot2::geom_line(ggplot2::aes(color = .data$cluster)) +
       ggplot2::theme(legend.position = "none") +
       ggplot2::facet_wrap(ggplot2::vars(.data$n_clusters),
-                          labeller = ggplot2::as_labeller(cluster_labeler_function), scales = "free_y")
+        labeller = ggplot2::as_labeller(cluster_labeler_function), scales = "free_y"
+      )
   }
   return(p)
 }
 
 trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1) {
-
   if (is.null(items) && model_fit$n_items > 5) {
     message("Items not provided by user. Picking 5 at random.")
     items <- sample.int(model_fit$n_items, 5)
@@ -126,8 +121,6 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1) {
 
 
 trace_rtilde <- function(model_fit, items, assessors, ...) {
-
-
   if (!model_fit$save_aug) {
     stop("Please rerun with compute_mallows with save_aug = TRUE")
   }
@@ -155,8 +148,9 @@ trace_rtilde <- function(model_fit, items, assessors, ...) {
   }
 
   df <- model_fit$augmented_data[model_fit$augmented_data$assessor %in% assessors &
-                             model_fit$augmented_data$item %in% items, ,
-                           drop = FALSE]
+    model_fit$augmented_data$item %in% items, ,
+  drop = FALSE
+  ]
 
   df$assessor <- as.factor(df$assessor)
   levels(df$assessor) <- paste("Assessor", levels(df$assessor))
@@ -171,15 +165,17 @@ trace_rtilde <- function(model_fit, items, assessors, ...) {
 
 
 trace_cluster_probs <- function(m) {
-
-  ggplot2::ggplot(m, ggplot2::aes(x = .data$iteration, y = .data$value,
-                               color = .data$cluster)) +
+  ggplot2::ggplot(m, ggplot2::aes(
+    x = .data$iteration, y = .data$value,
+    color = .data$cluster
+  )) +
     ggplot2::geom_line() +
     ggplot2::theme(legend.position = "none") +
     ggplot2::xlab("Iteration") +
     ggplot2::ylab(expression(tau[c])) +
     ggplot2::facet_wrap(ggplot2::vars(.data$n_clusters),
-                        labeller = ggplot2::as_labeller(cluster_labeler_function), scales = "free_y")
+      labeller = ggplot2::as_labeller(cluster_labeler_function), scales = "free_y"
+    )
 }
 
 

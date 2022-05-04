@@ -1,7 +1,7 @@
 context("Testing plot_top_k and predict_top_k")
-library(dplyr)
-beach_small <- beach_preferences %>%
-  filter(bottom_item %in% 1:5, top_item %in% 1:5)
+
+beach_small <- subset(beach_preferences,
+                      bottom_item %in% 1:5 & top_item %in% 1:5)
 beach_tc <- generate_transitive_closure(beach_small)
 beach_init_rank <- generate_initial_ranking(beach_tc)
 
