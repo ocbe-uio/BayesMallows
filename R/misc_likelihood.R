@@ -58,24 +58,30 @@ log_lik_db <- function(rho, alpha, metric, rankings, obs_freq) {
 
 
 
-# /' Log-likelihood evaluation for a Mallows mixture model
-# /'
-# /' @description Compute the log-likelihood value of the Mallows mixture model parameters for a ranking dataset.
-# /' @param rho A matrix of size \code{n_clusters x n_items} whose rows are permutations of the first n_items integers corresponding to the modal rankings of the Mallows mixture components.
-# /' @param alpha A vector of \code{n_clusters} non-negative scalars specifying the scale (precision) parameters of the Mallows mixture components.
-# /' @param weights A vector of \code{n_clusters} non-negative scalars specifying the mixture weights.
-# /' @param metric Character string specifying the distance measure to use.
-# /' @param rankings A matrix with observed rankings in each row.
-# /' @param obs_freq A vector of observation frequencies (weights) to apply to each row in \code{rankings}.
-# /'   This can speed up computation if a large number of assessors share the same
-# /'   rank pattern. If \code{NULL}, it means that each row of
-# /'   \code{rankings} is multiplied by 1. If provided, \code{obs_freq} must have
-# /'   the same number of elements as there are rows in \code{rankings}, and
-# /'   \code{rankings} cannot be \code{NULL}.
-# /'
-# /' @return The log-likelihood value corresponding to one or more observed rankings under the Mallows mixture model with distance specified by the \code{metric} argument.
-# /'
-
+#' Log-likelihood evaluation for a Mallows mixture model
+#'
+#' @description Compute the log-likelihood value of the Mallows mixture model
+#'   parameters for a ranking dataset.
+#' @param rho A matrix of size \code{n_clusters x n_items} whose rows are
+#'   permutations of the first n_items integers corresponding to the modal
+#'   rankings of the Mallows mixture components.
+#' @param alpha A vector of \code{n_clusters} non-negative scalars specifying
+#'   the scale (precision) parameters of the Mallows mixture components.
+#' @param weights A vector of \code{n_clusters} non-negative scalars specifying
+#'   the mixture weights.
+#' @param metric Character string specifying the distance measure to use.
+#' @param rankings A matrix with observed rankings in each row.
+#' @param obs_freq A vector of observation frequencies (weights) to apply to
+#'   each row in \code{rankings}. This can speed up computation if a large
+#'   number of assessors share the same rank pattern. If \code{NULL}, it means
+#'   that each row of \code{rankings} is multiplied by 1. If provided,
+#'   \code{obs_freq} must have the same number of elements as there are rows in
+#'   \code{rankings}, and \code{rankings} cannot be \code{NULL}.
+#'
+#' @return The log-likelihood value corresponding to one or more observed
+#'   rankings under the Mallows mixture model with distance specified by the
+#'   \code{metric} argument.
+#' @keywords internal
 log_lik_db_mix <- function(rho, alpha, weights, metric,
                            rankings, obs_freq) {
   L <- length(obs_freq)
