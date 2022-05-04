@@ -9,6 +9,41 @@ test_that("lik_db_mix works", {
   )
 
   # Compute the likelihood and log-likelihood values under the true model...
+  # Two mixture components
+  expect_equal(
+    lapply(
+      c("ulam", "footrule", "spearman", "kendall", "cayley", "hamming"),
+      function(m){
+        lik_db_mix(
+          rho = rbind(1:n_items, 1:n_items),
+          alpha = c(2 * n_items, 2 * n_items),
+          weights = c(0.5, 0.5),
+          metric = m,
+          rankings = mydata,
+          log = TRUE
+        )
+      }),
+    list(-241.809448010519, -231.458744596071, -283.167543856933,
+         -170.030563541214, -223.987863416978, -224.300341956488))
+
+  # A single component
+  # Gives exactly the same values as the previous, due to the weights
+  expect_equal(
+    lapply(
+      c("ulam", "footrule", "spearman", "kendall", "cayley", "hamming"),
+      function(m){
+        lik_db_mix(
+          rho = 1:n_items,
+          alpha = 2 * n_items,
+          weights = 1,
+          metric = m,
+          rankings = mydata,
+          log = TRUE
+        )
+      }),
+    list(-241.809448010519, -231.458744596071, -283.167543856933,
+         -170.030563541214, -223.987863416978, -224.300341956488))
+
   expect_equal(
     sprintf("%.3e", lik_db_mix(
       rho = rbind(1:n_items, 1:n_items),
@@ -59,6 +94,18 @@ test_that("lik_db_mix works", {
       metric = "kendall",
       rankings = mydata,
       obs_freq = c(1, 2)
-    )
+    ),
+    "obs_freq must be of same length as the number of rows in rankings"
+  )
+
+  expect_error(
+    lik_db_mix(
+      rho = 1:100,
+      alpha = 1,
+      weights = 1,
+      metric = "spearman",
+      rankings = do.call(rbind, replicate(3, list(1:100), simplify = "list"))
+    ),
+    "Given number of items currently not available for the specified metric"
   )
 })
