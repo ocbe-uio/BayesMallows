@@ -28,7 +28,8 @@ Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
 Mallows log-likelihood
 }
 \description{
-Calculates the Mallows log-likelihood given a set of rankings and a given rank sequence
+Calculates the Mallows log-likelihood given a set of rankings
+and a given rank sequence
 }
 \examples{
 set.seed(101)
