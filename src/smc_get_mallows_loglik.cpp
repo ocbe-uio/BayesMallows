@@ -54,22 +54,15 @@ double get_mallows_loglik(
   arma::mat rankings,
   const std::string metric
 ) {
-  double sum_distance = 0;
 
   /* Transpose matrices as needed ------------------------- */
   if (rho.n_rows == rankings.n_cols) {
     rankings = rankings.t();
   }
 
-  /* calculate the sum of the distances ------------------- */
-  const uword& num_rankings = rankings.n_cols;
-  if (num_rankings == 1) {
-    sum_distance += get_rank_distance(rho, rankings, metric);
-  } else {
-    for (uword jj = 0; jj < num_rankings; ++jj) {
-      sum_distance += get_rank_distance(rho, rankings.col(jj), metric);
-    }
-  }
+  vec obs_freq = ones(rankings.n_cols);
+  double sum_distance = rank_dist_sum(rankings, rho, metric, obs_freq);
+
   double mallows_loglik = -alpha / n_items * sum_distance;
   return(mallows_loglik);
 }
