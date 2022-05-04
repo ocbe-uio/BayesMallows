@@ -54,7 +54,6 @@ double get_mallows_loglik(
   arma::mat rankings,
   const std::string metric
 ) {
-
   /* Transpose matrices as needed ------------------------- */
   if (rho.n_rows == rankings.n_cols) {
     rankings = rankings.t();
@@ -62,7 +61,6 @@ double get_mallows_loglik(
 
   vec obs_freq = ones(rankings.n_cols);
   double sum_distance = rank_dist_sum(rankings, rho, metric, obs_freq);
-
   double mallows_loglik = -alpha / n_items * sum_distance;
   return(mallows_loglik);
 }
