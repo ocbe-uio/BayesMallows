@@ -5,7 +5,8 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Get Mallows log-likelihood
-//' @description Calculates the Mallows log-likelihood given a set of rankings and a given rank sequence
+//' @description Calculates the Mallows log-likelihood given a set of rankings
+//' and a given rank sequence
 //' @param alpha Numeric value of the scale parameter
 //' @param rho A ranking sequence
 //' @param n_items Integer is the number of items in a ranking
