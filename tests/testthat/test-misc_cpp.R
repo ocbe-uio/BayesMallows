@@ -1,12 +1,5 @@
 context("Testing misc C++ functions")
 
-test_that(
-  "C++ factorial function is correct",
-  expect_equal(
-    lapply(1:10, factorial),
-    lapply(1:10, factorial)
-  )
-)
 
 test_that(
   "C++ binomial coefficient is correct",

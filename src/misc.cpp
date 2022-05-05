@@ -1,15 +1,9 @@
 #include <RcppArmadillo.h>
+#include <boost/math/special_functions/factorials.hpp>
+
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
-
-// Function to compute the factorial
-// taken from http://www.cplusplus.com/forum/unices/33379/
-// [[Rcpp::export]]
-long int factorial(int n)
-{
-  return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n;
-}
 
 // [[Rcpp::export]]
 int binomial_coefficient(int n, int k){
@@ -32,7 +26,6 @@ int binomial_coefficient(int n, int k){
 
   return res;
 }
-
 
 // Function to sample an integer given a set of probabilities
 // [[Rcpp::export]]
@@ -148,10 +141,7 @@ uvec new_pseudo_proposal(uvec items) {
 }
 
 double divide_by_fact(double prob, int set_length) {
-  Rcpp::NumericVector set_length_Rcpp, set_length_Rcpp_fact;
-  set_length_Rcpp = set_length;
-  set_length_Rcpp_fact = Rcpp::factorial(set_length_Rcpp);
-  prob /= Rcpp::as<double>(set_length_Rcpp_fact);
+  prob /= boost::math::factorial<double>(set_length);
   return(prob);
 }
 

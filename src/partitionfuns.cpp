@@ -1,6 +1,7 @@
 #include "RcppArmadillo.h"
+#include <boost/math/special_functions/factorials.hpp>
 #include "misc.h"
-#include <cmath>
+#include <math.h>
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -18,8 +19,9 @@ double hamming_logz(const int& n_items, const double& alpha){
   double res = 0;
 
   for(int i = 0; i < (n_items + 1); ++i){
-    res += factorial(n_items) * std::exp(-alpha) *
-      std::pow((std::exp(static_cast<double>(alpha / n_items)) - 1), static_cast<double>(i)) / factorial(i);
+    res += boost::math::factorial<double>(n_items) * std::exp(-alpha) *
+      std::pow((std::exp(static_cast<double>(alpha / n_items)) - 1), static_cast<double>(i)) /
+      boost::math::factorial<double>(i);
   }
 
   return std::log(res);
