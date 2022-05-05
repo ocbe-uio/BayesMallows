@@ -50,6 +50,7 @@ lik_db_mix <- function(rho, alpha, weights, metric,
 
   n_clusters <- length(weights)
   n_items <- ncol(rankings)
+  N <- sum(obs_freq)
 
   if (metric %in% c("ulam", "footrule", "spearman")) {
     pfd <- partition_function_data[

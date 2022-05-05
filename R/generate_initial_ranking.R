@@ -139,7 +139,7 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     discovered <- rep(FALSE, n_items)
     path <- numeric()
 
-    res <- capture.output(all_topological_sorts(graph, path, discovered, n_items))
+    res <- utils::capture.output(all_topological_sorts(graph, path, discovered, n_items))
     res <- gsub("\\[1\\] ", "", res)
     res <- res[sample(length(res), 1)]
 
