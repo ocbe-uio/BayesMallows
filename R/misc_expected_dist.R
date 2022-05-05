@@ -43,8 +43,8 @@ exp_d_cay <- function(alpha, n_items) {
 exp_d_ham <- function(alpha, n_items) {
   idx <- seq(from = 0, to = n_items, by = 1)
   out <- n_items - exp(alpha) *
-    sum(((exp(alpha) - 1)^idx[-(n_items + 1)]) / base::factorial(idx[-(n_items + 1)])) /
-    sum(((exp(alpha) - 1)^idx) / base::factorial(idx))
+    sum(((exp(alpha) - 1)^idx[-(n_items + 1)]) / factorial(idx[-(n_items + 1)])) /
+    sum(((exp(alpha) - 1)^idx) / factorial(idx))
   return(out)
 }
 
