@@ -40,7 +40,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
     alpha = alpha, n_items = n_items, rankings = t(rho), metric = metric,
     rho = rho, leap_size = 1
   )
-  dist_1 <- BayesMallows:::get_rank_distance(rho, test_1, metric = "ulam")
+  dist_1 <- get_rank_distance(rho, test_1, metric = "ulam")
   expect_equal(test_1, as.matrix(c(1, 2, 3, 5, 4, 6)))
   # if rho != rho_prime, then it should have a ulam distance of 1
   # if rho == rho_prime, then it should have ulam distance of 0
@@ -50,7 +50,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
     alpha = alpha, n_items = n_items, rankings = t(rho), metric = metric,
     rho = rho, leap_size = 2
   )
-  dist_2 <- BayesMallows:::get_rank_distance(rho, test_2, metric = "ulam")
+  dist_2 <- get_rank_distance(rho, test_2, metric = "ulam")
   expect_equal(test_2, as.matrix(c(1, 2, 3, 4, 5, 6)))
   expect_equal(dist_2, 0)
 
@@ -58,7 +58,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
     alpha = alpha, n_items = n_items, rankings = t(rho), metric = metric,
     rho = rho, leap_size = 3
   )
-  dist_3 <- BayesMallows:::get_rank_distance(rho, test_3, metric = "ulam")
+  dist_3 <- get_rank_distance(rho, test_3, metric = "ulam")
   expect_equal(test_3, as.matrix(c(1, 2, 3, 4, 5, 6)))
   expect_equal(dist_3, 0)
 
@@ -67,7 +67,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
     alpha = alpha, n_items = n_items, rankings = rankings, metric = metric,
     rho = rho, leap_size = 1
   )
-  dist_4 <- BayesMallows:::get_rank_distance(rho, test_4, metric = "ulam")
+  dist_4 <- get_rank_distance(rho, test_4, metric = "ulam")
   expect_equal(test_4, as.matrix(c(1, 2, 3, 4, 5, 6)))
   expect_equal(dist_4, 0)
 })
@@ -88,7 +88,7 @@ test_that("smc_leap_and_shift_probs() works as expected", {
 
   # if rho != rho_prime, then it should have a ulam distance of 1
   # if rho == rho_prime, then it should have ulam distance of 0
-  dist_1 <- BayesMallows:::get_rank_distance(rho, test_1$rho_prime, metric = "ulam")
+  dist_1 <- get_rank_distance(rho, test_1$rho_prime, metric = "ulam")
   expect_equal(dist_1, 1)
 
   test_2 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 2)
