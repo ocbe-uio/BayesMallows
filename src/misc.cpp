@@ -1,5 +1,4 @@
 #include <RcppArmadillo.h>
-#include <boost/math/special_functions/factorials.hpp>
 
 using namespace arma;
 
