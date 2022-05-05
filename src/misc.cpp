@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include <math.h>
 
 using namespace arma;
 
