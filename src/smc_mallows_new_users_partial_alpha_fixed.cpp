@@ -155,7 +155,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
 
       mat new_observed_rankings;
       new_observed_rankings = aug_rankings(span(num_obs - num_new_obs, num_obs - 1), span::all, span(ii));
-      double log_likelihood = get_mallows_loglik(\
+      double log_likelihood = get_exponent_sum(\
         alpha, rho_samples_ii.t(), n_items, new_observed_rankings, metric\
       );
       log_inc_wgt(ii) = log_likelihood - num_new_obs * log_z_alpha - log(aug_prob(ii));

@@ -5,9 +5,9 @@ alpha <- 2
 metric <- "footrule"
 n_items <- 6
 
-test_that("get_mallows_loglik() works as expected", {
+test_that("get_exponent_sum() works as expected", {
   set.seed(101)
-  loglik <- get_mallows_loglik(
+  loglik <- get_exponent_sum(
     alpha = alpha, rho = t(rho), n_items = length(rho), rankings = t(rho),
     metric = metric
   )
@@ -17,7 +17,7 @@ test_that("get_mallows_loglik() works as expected", {
     rho0 = rho, alpha0 = alpha, n_samples = 10,
     burnin = 1000, thinning = 500
   )
-  loglik <- get_mallows_loglik(
+  loglik <- get_exponent_sum(
     alpha = alpha, rho = rho, n_items = n_items, rankings = rankings,
     metric = metric
   )
@@ -35,7 +35,7 @@ test_that("smc_metropolis_hastings_rho() works as expected", {
   )
 
   # you can confirm the print statements inside the metropolis_hastings_rho
-  # match get_mallows_loglik and leap_and_shift_probs
+  # match get_exponent_sum and leap_and_shift_probs
   test_1 <- metropolis_hastings_rho(
     alpha = alpha, n_items = n_items, rankings = t(rho), metric = metric,
     rho = rho, leap_size = 1
@@ -123,7 +123,7 @@ metropolis_hastings_alpha_old <- function(alpha, n_items, rankings, metric, rho,
   alpha_prime <- log(exp_alpha_prime)
 
   # evaluate the log-likelihood with current rankings
-  mallows_loglik_prop <- get_mallows_loglik(
+  mallows_loglik_prop <- get_exponent_sum(
     alpha = (alpha_prime - alpha), rho = rho, n = n_items,
     rankings = rankings, metric = metric
   )

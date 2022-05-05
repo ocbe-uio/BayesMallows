@@ -4,9 +4,9 @@
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
-//' @title Get Mallows log-likelihood
-//' @description Calculates the Mallows log-likelihood given a set of rankings
-//' and a given rank sequence
+//' @title Get exponent in Mallows log-likelihood
+//' @description Calculates the exponent Mallows log-likelihood given a set of rankings
+//' and a given rank sequence.
 //' @param alpha Numeric value of the scale parameter
 //' @param rho A ranking sequence
 //' @param n_items Integer is the number of items in a ranking
@@ -19,16 +19,19 @@ using namespace arma;
 //' @param metric Character string specifying the distance measure to use.
 //' Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
 //' \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
-//' @return Mallows log-likelihood
+//' @return Exponent in the Mallows log likelihood. Note that it does not include
+//' the partition function, and since the partition function depends on \code{alpha},
+//' this is not a likelihood per se.
 //' @export
 //' @author Anja Stein
+//' @keywords internal
 //' @examples
 //' set.seed(101)
 //' rho <- t(c(1, 2, 3, 4, 5, 6))
 //' alpha <- 2
 //' metric <- "footrule"
 //' n_items <- 6
-//' get_mallows_loglik(
+//' get_exponent_sum(
 //'   alpha = alpha, rho = rho, n_items = length(rho), rankings = rho,
 //'   metric = metric
 //' )
@@ -42,12 +45,12 @@ using namespace arma;
 //'
 //' # depending on your seed, you will get a different collection of rankings in R and C++
 //'
-//' get_mallows_loglik(
+//' get_exponent_sum(
 //'   alpha = alpha, rho = rho,  n_items = n_items, rankings = rankings ,
 //'   metric = metric
 //' )
 // [[Rcpp::export]]
-double get_mallows_loglik(
+double get_exponent_sum(
   const double alpha,
   const arma::vec rho,
   const int n_items,

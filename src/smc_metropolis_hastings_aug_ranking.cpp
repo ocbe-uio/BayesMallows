@@ -61,10 +61,10 @@ arma::vec metropolis_hastings_aug_ranking(
      /* MH TIME ------------------------------------------------------------- */
     // Calculate the log posterior of the current and proposed rankings.
     // NB the current can usually be stored to save recalculating it, but we're not caring about that yet
-    const double curr_logpost = get_mallows_loglik(\
+    const double curr_logpost = get_exponent_sum(\
       alpha, rho, n_items, current_ranking.t(), metric\
     );
-    const double prop_logpost = get_mallows_loglik(\
+    const double prop_logpost = get_exponent_sum(\
       alpha, rho, n_items, proposed_ranking.t(), metric\
     );
 

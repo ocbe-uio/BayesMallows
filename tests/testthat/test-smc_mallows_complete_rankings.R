@@ -125,7 +125,7 @@ test_that("Output of compute_posterior_intervals_alpha is OK", {
 
 context("SMC complete rankings: breakdown")
 
-test_that("get_mallows_loglik() in smc_mallows_new_users_complete() works", {
+test_that("get_exponent_sum() in smc_mallows_new_users_complete() works", {
   # ======================================================== #
   # Setup                                                    #
   # ======================================================== #
@@ -168,7 +168,7 @@ test_that("get_mallows_loglik() in smc_mallows_new_users_complete() works", {
       log_z_alpha <- BayesMallows:::get_partition_function(
         n_items, alpha_samples_ii, NULL, logz_estimate, metric
       )
-      log_likelihood <- get_mallows_loglik(
+      log_likelihood <- get_exponent_sum(
         alpha_samples_ii, t(rho_samples_ii), n_items,
         new_observed_rankings, metric
       )

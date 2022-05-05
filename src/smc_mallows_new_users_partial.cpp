@@ -169,7 +169,7 @@ Rcpp::List smc_mallows_new_users_partial(
 
       mat new_observed_rankings;
       new_observed_rankings = aug_rankings(span(num_obs - num_new_obs, num_obs - 1), span::all, span(ii));
-      log_likelihood = get_mallows_loglik(\
+      log_likelihood = get_exponent_sum(\
         alpha_samples_ii, rho_samples_ii.t(), n_items, new_observed_rankings,\
         metric\
       );
