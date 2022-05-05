@@ -2,6 +2,9 @@
 
 # Development versions
 
+* Fixes a bug which caused assess_convergence() to fail with 'parameter = "cluster_probs"'.
+* BayesMallows no longer depends on 'dplyr'.
+
 # BayesMallows 1.1.2
 
 * Fixed an issue with stats::reshape causing an error on R-oldrel.

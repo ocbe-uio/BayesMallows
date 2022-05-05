@@ -53,9 +53,7 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
   # beach 2 consistently has a higher rank value (lower preference) for
   # assessor 2. We can see why by looking at the implied orderings in
   # beach_tc
-  library(dplyr)
-  beach_tc %>%
-    filter(assessor %in% c(1, 2),
+  subset(beach_tc, assessor %in% c(1, 2) &
            bottom_item %in% c(2, 4) & top_item %in% c(2, 4))
   # Assessor 1 has no implied ordering between beach 2 and beach 4,
   # while assessor 2 has the implied ordering that beach 4 is preferred

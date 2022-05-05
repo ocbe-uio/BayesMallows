@@ -27,7 +27,6 @@ test_that(
 test_that(
   "C++ sample_int is correct",
   {
-
     n <- 10000L
     probs <- c(0.1, 0.2, 0.7)
     values <- integer(n)
@@ -45,7 +44,5 @@ test_that(
     for (i in 1:3) {
       expect_lt(diff[[i]], 0.02)
     }
-
-
   }
 )

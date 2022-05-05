@@ -99,20 +99,25 @@ asymptotic approximation described in \insertCite{mukherjee2016}{BayesMallows}.
                                       K = K, degree = degree)
 
   # We write a little function for storing the estimates in a dataframe
-  library(dplyr)
   powers <- seq(from = 0, to = degree, by = 1)
 
-  compute_fit <- function(fit){
-    tibble(alpha = alpha_vector) \%>\%
-      rowwise() \%>\%
-      mutate(logz_estimate = sum(alpha^powers * fit))
+  compute_fit <- function(fit, type){
+    do.call(rbind, lapply(alpha_vector, function(alpha){
+      data.frame(
+        type = type,
+        alpha = alpha,
+        logz_estimate = sum(alpha^powers * fit)
+      )
+    }))
   }
 
-  estimates <- bind_rows(
-    "Importance Sampling 1e3" = compute_fit(fit1),
-    "Importance Sampling 1e4" = compute_fit(fit2),
-    "Asymptotic" = compute_fit(fit3),
-    .id = "type")
+
+
+  estimates <- rbind(
+    compute_fit(fit1, type = "Importance Sampling 1e3"),
+    compute_fit(fit2, type = "Importance Sampling 1e4"),
+    compute_fit(fit3, type = "Asymptotic")
+    )
 
   # We can now plot the two estimates side-by-side
   library(ggplot2)

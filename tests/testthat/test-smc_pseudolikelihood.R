@@ -96,7 +96,8 @@ test_that("M-H aug ranking pseudo works", {
   R_obs <- c(1, 2, NA, NA, NA, NA)
   set.seed(8286)
   test_3 <- metropolis_hastings_aug_ranking_pseudo(
-    alpha, rho, n_items, partial_ranking = R_obs, current_ranking = R_curr,
+    alpha, rho, n_items,
+    partial_ranking = R_obs, current_ranking = R_curr,
     metric
   )
   expect_equal(test_3, matrix(c(1, 2, 4, 3, 5, 6)))

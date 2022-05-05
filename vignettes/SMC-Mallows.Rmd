@@ -26,8 +26,6 @@ We begin by loading the following packages:
 
 ```{r sushi_rankings_demo1, message=FALSE, warning=FALSE}
 library(BayesMallows)
-library(dplyr)
-library(ggplot2)
 ```
 
 

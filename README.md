@@ -3,10 +3,11 @@
 
 # BayesMallows
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/BayesMallows)](https://cran.r-project.org/package=BayesMallows)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BayesMallows)](https://cran.r-project.org/package=BayesMallows)
 [![R-CMD-check](https://github.com/ocbe-uio/BayesMallows/workflows/R-CMD-check/badge.svg)](https://github.com/ocbe-uio/BayesMallows/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/ocbe-uio/BayesMallows/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ocbe-uio/BayesMallows?branch=master)
+[![CodeFactor](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/badge/develop)](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/overview/develop)
 
 This package provides a general framework for analyzing rank and
 preference data based on the Bayesian Mallows model first described in
@@ -87,7 +88,7 @@ non-transitive pairwise comparisons by Crispino et al. (2019) is also
 implemented. In addition, the partition function of the Mallows model
 can be estimated using the importance sampling algorithm of Vitelli et
 al. (2018) and the asymptotic approximation of Mukherjee (2016). For a
-review of ranking models in general, see Q. Liu et al. (2019b). Crispino
+review of ranking models in general, see Q. Liu et al. (2019a). Crispino
 and Antoniano-Villalobos (2019) outlines how informative priors can be
 used within the model.
 
@@ -98,7 +99,7 @@ separate vignette which can be shown with the command
 
 ### Applications
 
-Among the current applications, Q. Liu et al. (2019a) applied the
+Among the current applications, Q. Liu et al. (2019b) applied the
 Bayesian Mallows model for providing personalized recommendations based
 on clicking data, and Barrett and Crispino (2018) used the model of
 Crispino et al. (2019) to analyze listeners’ understanding of music.
@@ -119,11 +120,12 @@ et al. (2020), in addition to the relevant methodological papers.
 ``` r
 citation("BayesMallows")
 #> 
-#> Sørensen Ø, Crispino M, Liu Q, Vitelli V (2020). "BayesMallows: An R
-#> Package for the Bayesian Mallows Model." _The R Journal_, *12*(1),
-#> 324-342. doi: 10.32614/RJ-2020-026 (URL:
-#> https://doi.org/10.32614/RJ-2020-026), <URL:
-#> https://doi.org/10.32614/RJ-2020-026>.
+#> To cite package 'BayesMallows' in publications use:
+#> 
+#>   Sørensen Ø, Crispino M, Liu Q, Vitelli V (2020). "BayesMallows: An R
+#>   Package for the Bayesian Mallows Model." _The R Journal_, *12*(1),
+#>   324-342. doi:10.32614/RJ-2020-026
+#>   <https://doi.org/10.32614/RJ-2020-026>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
@@ -135,7 +137,6 @@ citation("BayesMallows")
 #>     number = {1},
 #>     pages = {324--342},
 #>     volume = {12},
-#>     url = {https://doi.org/10.32614/RJ-2020-026},
 #>     year = {2020},
 #>   }
 ```
@@ -186,21 +187,21 @@ Human Are Sounds?” *The Annals of Applied Statistics* 13 (1): 492–519.
 
 </div>
 
-<div id="ref-liu2019b" class="csl-entry">
-
-Liu, Q., A. H. Reiner, A. Frigessi, and I. Scheel. 2019a. “Diverse
-Personalized Recommendations with Uncertainty from Implicit Preference
-Data with the Bayesian Mallows Model.” *Knowledge-Based Systems* 186
-(December): 104960. <https://doi.org/10.1016/j.knosys.2019.104960>.
-
-</div>
-
 <div id="ref-liu2019" class="csl-entry">
 
-Liu, Q, M Crispino, I Scheel, V Vitelli, and A Frigessi. 2019b.
+Liu, Q, M Crispino, I Scheel, V Vitelli, and A Frigessi. 2019a.
 “Model-Based Learning from Preference Data.” *Annual Review of
 Statistics and Its Application* 6 (1).
 <https://doi.org/10.1146/annurev-statistics-031017-100213>.
+
+</div>
+
+<div id="ref-liu2019b" class="csl-entry">
+
+Liu, Q., A. H. Reiner, A. Frigessi, and I. Scheel. 2019b. “Diverse
+Personalized Recommendations with Uncertainty from Implicit Preference
+Data with the Bayesian Mallows Model.” *Knowledge-Based Systems* 186
+(December): 104960. <https://doi.org/10.1016/j.knosys.2019.104960>.
 
 </div>
 

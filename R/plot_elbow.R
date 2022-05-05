@@ -46,15 +46,14 @@ plot_elbow <- function(..., burnin = NULL) {
 
     if (!x$include_wcd) stop("To get an elbow plot, set include_wcd=TRUE in compute_mallows")
 
-    df <- dplyr::filter(x$within_cluster_distance, .data$iteration > x$burnin)
+    df <- x$within_cluster_distance[x$within_cluster_distance$iteration > x$burnin, , drop = FALSE]
 
     if (nrow(df) <= 0) stop("burnin must be strictly smaller than the number of MCMC samples")
 
     # Need to sum the within-cluster distances across clusters, for each iteration
-    df <- dplyr::group_by(df, .data$iteration)
-    df <- dplyr::summarise(df, value = sum(.data$value))
+    df <- aggregate(x = list(value = df$value), by = list(iteration = df$iteration), FUN = sum)
 
-    df <- dplyr::mutate(df, n_clusters = x$n_clusters)
+    df$n_clusters <- x$n_clusters
     return(df)
   }))
 
@@ -62,6 +61,4 @@ plot_elbow <- function(..., burnin = NULL) {
     ggplot2::geom_boxplot() +
     ggplot2::xlab("Number of clusters") +
     ggplot2::ylab("Within-cluster sum of distances")
-
-
 }

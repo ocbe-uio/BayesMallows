@@ -1,5 +1,5 @@
 ---
-output: 
+output:
   github_document:
     fig_width: 6
     fig_height: 4
@@ -19,14 +19,15 @@ knitr::opts_chunk$set(
 # BayesMallows
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BayesMallows)](https://cran.r-project.org/package=BayesMallows)
- [![R-CMD-check](https://github.com/ocbe-uio/BayesMallows/workflows/R-CMD-check/badge.svg)](https://github.com/ocbe-uio/BayesMallows/actions)
+[![R-CMD-check](https://github.com/ocbe-uio/BayesMallows/workflows/R-CMD-check/badge.svg)](https://github.com/ocbe-uio/BayesMallows/actions)
 [![Codecov test coverage](https://codecov.io/gh/ocbe-uio/BayesMallows/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ocbe-uio/BayesMallows?branch=master)
+[![CodeFactor](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/badge/develop)](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/overview/develop)
 
 This package provides a general framework for analyzing rank and preference data based on the Bayesian Mallows model first described in [Vitelli et al.(2018)](https://jmlr.org/papers/v18/15-481.html).
 
 ## Installation
 
-To install the current release, use 
+To install the current release, use
 
 ```{r,eval=FALSE}
 install.packages("BayesMallows")

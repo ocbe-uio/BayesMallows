@@ -30,7 +30,8 @@ using namespace arma;
 //' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
 //' @param verbose Logical specifying whether to print out the progress of the
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
-//' @return a 3d matrix containing the samples of rho and alpha from the SMC algorithm
+//' @return a set of particles each containing the values of rho and alpha and the effective sample size (ESS) at each iteration of the SMC
+//' algorithm as well as the set of augmented rankings at the final iteration.
 //' @export
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_item_rank(
@@ -160,10 +161,16 @@ Rcpp::List smc_mallows_new_item_rank(
     log_inc_wgt(ii) = log_likelihood - num_ranks * log_z_alpha - log_tcp;
   }
 
-    /* normalise weights ------------------------------------ */
-    const double& maxw = max(log_inc_wgt);
-    const vec& w = exp(log_inc_wgt - maxw);
-    const vec& norm_wgt = w / sum(w);
+  /* normalise weights ------------------------------------ */
+  const double& maxw = max(log_inc_wgt);
+  const vec& w = exp(log_inc_wgt - maxw);
+  const vec& norm_wgt = w / sum(w);
+
+  /* store ESS result in first entry of the vector ESS_vec */
+  /* generate vector to store ESS */
+  double ess_init = sum(norm_wgt) * sum(norm_wgt) / sum(norm_wgt % norm_wgt);
+  rowvec ESS_vec(Time, fill::zeros);
+  ESS_vec(0) = ess_init;
 
   /* ====================================================== */
   /* Resample                                               */
@@ -282,6 +289,8 @@ Rcpp::List smc_mallows_new_item_rank(
     double maxw = max(log_inc_wgt);
     vec w = exp(log_inc_wgt - maxw);
     vec norm_wgt = w / sum(w);
+    /* store ESS = sum(w)^2/sum(w^2) */
+    ESS_vec(tt + 1) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
     /* ====================================================== */
     /* Resample                                               */
@@ -331,6 +340,8 @@ Rcpp::List smc_mallows_new_item_rank(
   /* ====================================================== */
   return Rcpp::List::create(
     Rcpp::Named("rho_samples") = rho_samples,
-    Rcpp::Named("alpha_samples") = alpha_samples
+    Rcpp::Named("alpha_samples") = alpha_samples,
+    Rcpp::Named("augmented_rankings") = aug_rankings,
+    Rcpp::Named("ESS") = ESS_vec
   );
 }
