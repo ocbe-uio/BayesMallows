@@ -50,20 +50,64 @@ lik_db_mix <- function(rho, alpha, weights, metric,
     obs_freq <- rep(1, nrow(rankings))
   }
 
-  # Fix to get log likelihood on the right scale
+  n_clusters <- length(weights)
   n_items <- ncol(rankings)
-  alpha <- alpha / n_items
 
-  out <- log_lik_db_mix(
-    rho = rho,
-    alpha = alpha,
-    weights = weights,
-    metric = metric,
-    rankings = rankings,
-    obs_freq = obs_freq
+  if (metric %in% c("ulam", "footrule", "spearman")) {
+    pfd <- partition_function_data[
+      partition_function_data$metric == metric &
+        partition_function_data$n_items == n_items &
+        partition_function_data$type == "cardinalities", ,
+      drop = FALSE
+    ]
+    if (nrow(pfd) == 0) {
+      stop("Given number of items currently not available for the specified metric")
+    } else {
+      card <- pfd$values[[1]]
+    }
+  } else if (metric %in% c("kendall", "cayley", "hamming")) {
+    card <- NULL
+  }
+
+  n_clusters <- length(weights)
+  n_items <- ncol(rankings)
+
+  if (metric %in% c("ulam", "footrule", "spearman")) {
+    pfd <- partition_function_data[
+      partition_function_data$metric == metric &
+        partition_function_data$n_items == n_items &
+        partition_function_data$type == "cardinalities", ,
+      drop = FALSE
+    ]
+    if (nrow(pfd) == 0) {
+      stop("Given number of items currently not available for the specified metric")
+    } else {
+      card <- pfd$values[[1]]
+    }
+  } else if (metric %in% c("kendall", "cayley", "hamming")) {
+    card <- NULL
+  }
+
+  loglik <- vapply(
+    X = seq_len(n_clusters),
+    FUN = function(g) {
+      -(alpha[g] / n_items * rank_dist_sum(
+        rankings = t(rankings),
+        rho = rho[g, ],
+        metric = metric, obs_freq = obs_freq
+      ) +
+        N * get_partition_function(
+          alpha = alpha[g],
+          n_items = n_items, metric = metric,
+          cardinalities = card
+        )) * weights[[g]]
+    },
+    FUN.VALUE = numeric(1)
   )
 
-  if (!log) out <- exp(out)
-
-  return(out)
+  if (!log) {
+    exp(sum(loglik))
+  } else {
+    sum(loglik)
+  }
 }
