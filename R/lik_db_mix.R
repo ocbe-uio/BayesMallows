@@ -40,33 +40,12 @@ lik_db_mix <- function(rho, alpha, weights, metric,
     if (nrow(rankings) != length(obs_freq)) {
       stop("obs_freq must be of same length as the number of rows in rankings")
     }
+  } else {
+    obs_freq <- rep(1, nrow(rankings))
   }
 
   if (!is.matrix(rho)) {
     rho <- matrix(rho, nrow = 1)
-  }
-
-  if (is.null(obs_freq)) {
-    obs_freq <- rep(1, nrow(rankings))
-  }
-
-  n_clusters <- length(weights)
-  n_items <- ncol(rankings)
-
-  if (metric %in% c("ulam", "footrule", "spearman")) {
-    pfd <- partition_function_data[
-      partition_function_data$metric == metric &
-        partition_function_data$n_items == n_items &
-        partition_function_data$type == "cardinalities", ,
-      drop = FALSE
-    ]
-    if (nrow(pfd) == 0) {
-      stop("Given number of items currently not available for the specified metric")
-    } else {
-      card <- pfd$values[[1]]
-    }
-  } else if (metric %in% c("kendall", "cayley", "hamming")) {
-    card <- NULL
   }
 
   n_clusters <- length(weights)
