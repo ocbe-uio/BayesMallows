@@ -36,21 +36,6 @@ double rtruncbeta(int shape1, int shape2, double trunc = 1) {
   return x;
 }
 
-// From https://stackoverflow.com/questions/29724083
-uvec arma_setdiff(uvec x, uvec y){
-
-  x = unique(x);
-  y = unique(y);
-
-  for (size_t j = 0; j < y.n_elem; j++) {
-    uvec q1 = find(x == y[j]);
-    if (!q1.empty()) {
-      x.shed_row(q1(0));
-    }
-  }
-  return x;
-}
-
 // This is practically a signed variation of arma_setdiff. It also uses Rcpp as
 // a crutch, so future changes that work around this and only use arma objects
 // are welcome.
