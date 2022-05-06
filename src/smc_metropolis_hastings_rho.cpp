@@ -7,7 +7,7 @@ using namespace arma;
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Metropolis-Hastings Rho
 //' @description Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
-//' @inheritParams get_mallows_loglik
+//' @inheritParams get_exponent_sum
 //' @param leap_size Integer specifying the step size of the leap-and-shift
 //' proposal distribution.
 //' @export
@@ -59,8 +59,8 @@ arma::vec metropolis_hastings_rho(
   const double& backwards_prob = Rcpp::as<double>(kernel["backwards_prob"]); // rho|rho_prime
 
   // evaluate the log-likelihood with current rankings
-  const double mallows_loglik_curr = get_mallows_loglik(alpha, rho, n_items, rankings, metric);
-  const double mallows_loglik_prop = get_mallows_loglik(alpha, rho_prime, n_items, rankings, metric);
+  const double mallows_loglik_curr = get_exponent_sum(alpha, rho, n_items, rankings, metric);
+  const double mallows_loglik_prop = get_exponent_sum(alpha, rho_prime, n_items, rankings, metric);
 
   // calculate acceptance probability
   const double& loga = std::log(backwards_prob) - std::log(forwards_prob) + mallows_loglik_prop - mallows_loglik_curr;

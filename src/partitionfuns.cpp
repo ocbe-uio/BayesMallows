@@ -18,8 +18,8 @@ double hamming_logz(const int& n_items, const double& alpha){
   double res = 0;
 
   for(int i = 0; i < (n_items + 1); ++i){
-    res += factorial(n_items) * std::exp(-alpha) *
-      std::pow((std::exp(static_cast<double>(alpha / n_items)) - 1), static_cast<double>(i)) / factorial(i);
+    res += tgamma(n_items + 1) * std::exp(-alpha) *
+      std::pow((std::exp(static_cast<double>(alpha / n_items)) - 1), static_cast<double>(i)) / tgamma(i + 1);
   }
 
   return std::log(res);

@@ -1,12 +1,5 @@
 context("Testing misc C++ functions")
 
-test_that(
-  "C++ factorial function is correct",
-  expect_equal(
-    lapply(1:10, BayesMallows:::factorial),
-    lapply(1:10, factorial)
-  )
-)
 
 test_that(
   "C++ binomial coefficient is correct",
@@ -18,7 +11,7 @@ test_that(
       c(10, 3)
     )
     expect_equal(
-      lapply(X = vals, function(X) BayesMallows:::binomial_coefficient(X[[1]], X[[2]])),
+      lapply(X = vals, function(X) binomial_coefficient(X[[1]], X[[2]])),
       lapply(X = vals, function(X) choose(X[[1]], X[[2]]))
     )
   }
@@ -31,7 +24,7 @@ test_that(
     probs <- c(0.1, 0.2, 0.7)
     values <- integer(n)
     for (i in seq(1L, n, 1L)) {
-      values[[i]] <- BayesMallows:::sample_int(probs)
+      values[[i]] <- sample_int(probs)
     }
     freqs <- table(values) / length(values)
 

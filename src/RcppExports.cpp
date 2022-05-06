@@ -66,17 +66,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// factorial
-long int factorial(int n);
-RcppExport SEXP _BayesMallows_factorial(SEXP nSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(factorial(n));
-    return rcpp_result_gen;
-END_RCPP
-}
 // binomial_coefficient
 int binomial_coefficient(int n, int k);
 RcppExport SEXP _BayesMallows_binomial_coefficient(SEXP nSEXP, SEXP kSEXP) {
@@ -264,9 +253,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// get_mallows_loglik
-double get_mallows_loglik(const double alpha, const arma::vec rho, const int n_items, arma::mat rankings, const std::string metric);
-RcppExport SEXP _BayesMallows_get_mallows_loglik(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP rankingsSEXP, SEXP metricSEXP) {
+// get_exponent_sum
+double get_exponent_sum(const double alpha, const arma::vec rho, const int n_items, arma::mat rankings, const std::string metric);
+RcppExport SEXP _BayesMallows_get_exponent_sum(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP rankingsSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -275,7 +264,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int >::type n_items(n_itemsSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type rankings(rankingsSEXP);
     Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_mallows_loglik(alpha, rho, n_items, rankings, metric));
+    rcpp_result_gen = Rcpp::wrap(get_exponent_sum(alpha, rho, n_items, rankings, metric));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -495,7 +484,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_rank_dist_sum", (DL_FUNC) &_BayesMallows_rank_dist_sum, 4},
     {"_BayesMallows_rank_dist_vec", (DL_FUNC) &_BayesMallows_rank_dist_vec, 4},
     {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 4},
-    {"_BayesMallows_factorial", (DL_FUNC) &_BayesMallows_factorial, 1},
     {"_BayesMallows_binomial_coefficient", (DL_FUNC) &_BayesMallows_binomial_coefficient, 2},
     {"_BayesMallows_sample_int", (DL_FUNC) &_BayesMallows_sample_int, 1},
     {"_BayesMallows_log_expected_dist", (DL_FUNC) &_BayesMallows_log_expected_dist, 4},
@@ -507,7 +495,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_calculate_forward_probability", (DL_FUNC) &_BayesMallows_calculate_forward_probability, 7},
     {"_BayesMallows_correction_kernel", (DL_FUNC) &_BayesMallows_correction_kernel, 3},
     {"_BayesMallows_correction_kernel_pseudo", (DL_FUNC) &_BayesMallows_correction_kernel_pseudo, 6},
-    {"_BayesMallows_get_mallows_loglik", (DL_FUNC) &_BayesMallows_get_mallows_loglik, 5},
+    {"_BayesMallows_get_exponent_sum", (DL_FUNC) &_BayesMallows_get_exponent_sum, 5},
     {"_BayesMallows_get_sample_probabilities", (DL_FUNC) &_BayesMallows_get_sample_probabilities, 5},
     {"_BayesMallows_leap_and_shift_probs", (DL_FUNC) &_BayesMallows_leap_and_shift_probs, 3},
     {"_BayesMallows_smc_mallows_new_item_rank", (DL_FUNC) &_BayesMallows_smc_mallows_new_item_rank, 13},

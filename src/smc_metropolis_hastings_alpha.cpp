@@ -56,7 +56,7 @@ double metropolis_hastings_alpha(
 
   // Difference between current and proposed alpha
   const double& alpha_diff = alpha - alpha_prime;
-  const double mallows_loglik_prop = get_mallows_loglik(alpha_prime - alpha, rho, n_items, rankings, metric);
+  const double mallows_loglik_prop = get_exponent_sum(alpha_prime - alpha, rho, n_items, rankings, metric);
 
   // evaluate the log estimate of the partition function for a particular
   // value of alpha

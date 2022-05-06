@@ -157,7 +157,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
     double log_z_alpha = get_partition_function(\
       n_items, alpha, cardinalities, logz_estimate, metric\
     );
-    double log_likelihood = get_mallows_loglik(\
+    double log_likelihood = get_exponent_sum(\
       alpha, rho_samples.slice(0).row(ii).t(), n_items,\
       aug_rankings.slice(ii), metric\
     );
@@ -261,11 +261,11 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
       // value of alpha
 
       /* Calculating log_z_alpha and log_likelihood ----------- */
-      double loglik_1 = get_mallows_loglik(\
+      double loglik_1 = get_exponent_sum(\
         alpha, rho_samples.slice(tt + 1).row(ii).t(), n_items,\
         aug_rankings.slice(ii), metric\
       );
-      double loglik_2 = get_mallows_loglik(\
+      double loglik_2 = get_exponent_sum(\
         alpha, rho_samples.slice(tt + 1).row(ii).t(), n_items,\
         prev_aug_rankings.slice(ii), metric\
       );

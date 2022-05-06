@@ -141,7 +141,7 @@ Rcpp::List smc_mallows_new_users_complete(
       log_z_alpha = get_partition_function(\
         n_items, alpha_samples_ii, cardinalities, logz_estimate, metric\
       );
-      log_likelihood = get_mallows_loglik(\
+      log_likelihood = get_exponent_sum(\
         alpha_samples_ii, rho_samples_ii.t(), n_items, new_observed_rankings,\
         metric\
       );

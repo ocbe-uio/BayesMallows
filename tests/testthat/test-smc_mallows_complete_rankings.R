@@ -98,7 +98,7 @@ test_that("Output of compute_posterior_intervals_rho is OK", {
       "central_interval"
     )
   )
-  expect_equivalent(sapply(rho_temp, length), rep(10, 7))
+  expect_equivalent(vapply(rho_temp, length, numeric(1)), rep(10, 7))
 })
 
 # posterior for alpha
@@ -120,12 +120,12 @@ test_that("Output of compute_posterior_intervals_alpha is OK", {
       "central_interval"
     )
   )
-  expect_equivalent(sapply(alpha_posterior_intervals, length), rep(1, 6))
+  expect_equivalent(vapply(alpha_posterior_intervals, length, numeric(1)), rep(1, 6))
 })
 
 context("SMC complete rankings: breakdown")
 
-test_that("get_mallows_loglik() in smc_mallows_new_users_complete() works", {
+test_that("get_exponent_sum() in smc_mallows_new_users_complete() works", {
   # ======================================================== #
   # Setup                                                    #
   # ======================================================== #
@@ -165,10 +165,10 @@ test_that("get_mallows_loglik() in smc_mallows_new_users_complete() works", {
     alpha_samples_ii <- alpha_samples[ii, tt + 1]
     rho_samples_ii <- rho_samples[ii, , tt + 1]
     for (ii in seq_len(N)) {
-      log_z_alpha <- BayesMallows:::get_partition_function(
+      log_z_alpha <- get_partition_function(
         n_items, alpha_samples_ii, NULL, logz_estimate, metric
       )
-      log_likelihood <- get_mallows_loglik(
+      log_likelihood <- get_exponent_sum(
         alpha_samples_ii, t(rho_samples_ii), n_items,
         new_observed_rankings, metric
       )
