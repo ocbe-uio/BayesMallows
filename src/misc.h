@@ -3,7 +3,6 @@
 
 #include <RcppArmadillo.h> // need because of functions that return arma and Rcpp objects
 
-int binomial_coefficient(int, int);
 arma::uvec std_setdiff(arma::uvec&, arma::uvec&);
 int sample_int(const arma::rowvec& probs);
 double rtruncbeta(int shape1, int shape2, double trunc = 1);

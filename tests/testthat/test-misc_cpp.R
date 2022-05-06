@@ -1,22 +1,5 @@
 context("Testing misc C++ functions")
 
-
-test_that(
-  "C++ binomial coefficient is correct",
-  {
-    vals <- list(
-      c(4, 2),
-      c(5, 1),
-      c(9, 4),
-      c(10, 3)
-    )
-    expect_equal(
-      lapply(X = vals, function(X) binomial_coefficient(X[[1]], X[[2]])),
-      lapply(X = vals, function(X) choose(X[[1]], X[[2]]))
-    )
-  }
-)
-
 test_that(
   "C++ sample_int is correct",
   {

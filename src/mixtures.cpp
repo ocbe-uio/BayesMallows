@@ -46,9 +46,7 @@ uvec update_cluster_labels(
       max(assignment_prob.row(i)));
 
     // Normalize with 1-norm
-    probs = normalise(probs, 1);
-
-    assignment_prob.row(i) = probs;
+    assignment_prob.row(i) = normalise(probs, 1);
     new_cluster_assignment(i) = sample_int(assignment_prob.row(i));
   }
 

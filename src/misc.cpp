@@ -5,28 +5,6 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// [[Rcpp::export]]
-int binomial_coefficient(int n, int k){
-
-  // Special case:
-  if( k > n ) return 0;
-
-  int res = 1;
-
-  // Since C(n, k) = C(n, n-k)
-  if ( k > n - k )
-    k = n - k;
-
-  // Calculate value of [n * (n-1) *---* (n-k+1)] / [k * (k-1) *----* 1]
-  for (int i = 0; i < k; ++i)
-  {
-    res *= (n - i);
-    res /= (i + 1);
-  }
-
-  return res;
-}
-
 // Function to sample an integer given a set of probabilities
 // [[Rcpp::export]]
 int sample_int(const arma::rowvec& probs){
