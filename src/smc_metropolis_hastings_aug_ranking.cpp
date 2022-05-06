@@ -29,7 +29,7 @@ arma::vec metropolis_hastings_aug_ranking(
 	const std::string metric
 ) {
   // augment incomplete ranks to initialise
-  vec ranks = arma_vec_seq(n_items);
+  vec ranks = regspace(1, n_items);
 
   // find items missing from original observed ranking
   const uvec unranked_items = find_nonfinite(partial_ranking);

@@ -14,5 +14,4 @@ arma::sword sample_one_with_prob(arma::vec, arma::vec);
 arma::uvec new_pseudo_proposal(arma::uvec);
 double divide_by_fact(double, int);
 arma::uvec permute_with_weights(arma::vec, int);
-arma::vec arma_vec_seq(int);
 #endif
