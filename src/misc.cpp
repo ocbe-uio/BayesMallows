@@ -134,9 +134,3 @@ uvec permute_with_weights(vec weights, int N) {
   return(index);
 }
 
-vec arma_vec_seq(int N) {
-  // Creates an arma vector filled with {1,...,N}
-  Rcpp::IntegerVector vec_Rcpp = Rcpp::seq(1, N);
-  vec v = Rcpp::as<vec>(vec_Rcpp);
-  return(v);
-}
