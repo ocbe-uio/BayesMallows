@@ -58,18 +58,17 @@ double compute_is_fit(double alpha, vec fit){
 }
 
 double logz_cardinalities(const double& alpha, const int& n_items, const vec& cardinalities, const std::string& metric){
+  vec distances;
   if(metric == "footrule"){
-    vec distances = regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
-    return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
+    distances = regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
   } else if (metric == "spearman"){
-    vec distances = regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
-    return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
+    distances = regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
   } else if (metric == "ulam"){
-    vec distances = regspace(0, 1, n_items - 1);
-    return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
+    distances = regspace(0, 1, n_items - 1);
   } else {
     Rcpp::stop("Cardinalities not implemented for the provided metric.");
   }
+  return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
 }
 
 //' Compute the logarithm of the expected distance of metrics for a Mallows rank model
