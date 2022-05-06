@@ -1,5 +1,6 @@
 #include "RcppArmadillo.h"
 #include "misc.h"
+#include "setdiff.hpp"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Correction Kernel
@@ -35,7 +36,7 @@ Rcpp::List correction_kernel(
     // resample from smaller pool of possible augmented rankings
 
     //  find elements missing from original observed ranking
-    arma::vec remaining_set = arma_setdiff_vec(current_ranking, observed_ranking);
+    arma::vec remaining_set = setdiff_template(current_ranking, observed_ranking);
 
     // create new agumented ranking by sampling remaining ranks from set uniformly
     proposed_ranking = observed_ranking;

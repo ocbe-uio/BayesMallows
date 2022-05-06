@@ -1,6 +1,7 @@
 #include "RcppArmadillo.h"
 #include "smc.h"
 #include "misc.h"
+#include "setdiff.hpp"
 
 using namespace arma;
 
@@ -37,7 +38,7 @@ arma::vec metropolis_hastings_aug_ranking_pseudo(
   const uvec unranked_items = find_nonfinite(partial_ranking);
 
   // find unallocated ranks from original observed ranking
-  const vec remaining_set = arma_setdiff_vec(current_ranking, partial_ranking);
+  const vec remaining_set = setdiff_template(current_ranking, partial_ranking);
 
   // if the observed and augmented ranking are exactly the same then break
   const bool condition_1 = approx_equal(\

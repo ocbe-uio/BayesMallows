@@ -59,7 +59,7 @@ prior distribution.}
 SMC-Mallows algorithm. Defaults to \code{FALSE}.}
 }
 \value{
-a set of particles each containing the values of rho and alpha and the effective sample size (ESS) at each iteration of the SMC 
+a set of particles each containing the values of rho and alpha and the effective sample size (ESS) at each iteration of the SMC
 algorithm as well as the set of augmented rankings at the final iteration.
 }
 \description{

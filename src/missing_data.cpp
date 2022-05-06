@@ -2,6 +2,7 @@
 #include <cmath>
 #include "distances.h"
 #include "misc.h"
+#include "setdiff.hpp"
 
 using namespace arma;
 
@@ -27,7 +28,7 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
       uvec missing_inds = find(missing_indicator.col(i) == 1);
       // Find the available ranks and permute them
       uvec new_ranks = shuffle(Rcpp::as<uvec>(Rcpp::wrap(
-        Rcpp_setdiff_arma(regspace<ivec>(1, rank_vector.size()), present_ranks))));
+        setdiff_template(regspace<ivec>(1, rank_vector.size()), present_ranks))));
 
       for(unsigned int j = 0; j < missing_inds.size(); ++j){
         rank_vector(missing_inds(j)) = static_cast<double>(as_scalar(new_ranks(j)));
