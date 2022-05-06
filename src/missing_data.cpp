@@ -23,13 +23,11 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
       continue;
     } else {
       vec rank_vector = rankings.col(i);
-      uvec present_inds = find(missing_indicator.col(i) == 0);
+      vec present_ranks = rank_vector(find(missing_indicator.col(i) == 0));
       uvec missing_inds = find(missing_indicator.col(i) == 1);
       // Find the available ranks and permute them
-      uvec new_ranks = shuffle(arma_setdiff(
-        linspace<uvec>(1, rank_vector.size()),
-        conv_to<uvec>::from(rank_vector(present_inds))
-      ));
+      uvec new_ranks = shuffle(Rcpp::as<uvec>(Rcpp::wrap(
+        Rcpp_setdiff_arma(regspace<ivec>(1, rank_vector.size()), present_ranks))));
 
       for(unsigned int j = 0; j < missing_inds.size(); ++j){
         rank_vector(missing_inds(j)) = static_cast<double>(as_scalar(new_ranks(j)));
