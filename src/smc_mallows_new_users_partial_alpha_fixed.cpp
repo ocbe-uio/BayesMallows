@@ -1,6 +1,6 @@
 #include "RcppArmadillo.h"
 #include "misc.h"
-#include "setdiff.hpp"
+#include "setdiff.h"
 #include "smc.h"
 #include "partitionfuns.h"
 

@@ -2,7 +2,7 @@
 #include <cmath>
 #include "distances.h"
 #include "misc.h"
-#include "setdiff.hpp"
+#include "setdiff.h"
 
 using namespace arma;
 

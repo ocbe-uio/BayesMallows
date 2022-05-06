@@ -1,7 +1,7 @@
 #include "RcppArmadillo.h"
 #include "smc.h"
 #include "misc.h"
-#include "setdiff.hpp"
+#include "setdiff.h"
 
 using namespace arma;
 
