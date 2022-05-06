@@ -1,6 +1,6 @@
 #include "RcppArmadillo.h"
 #include "misc.h"
-#include <math.h>
+#include <cmath>
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]

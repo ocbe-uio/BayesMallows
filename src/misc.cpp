@@ -1,5 +1,5 @@
 #include <RcppArmadillo.h>
-#include <math.h>
+#include <cmath>
 
 using namespace arma;
 
@@ -141,6 +141,7 @@ uvec new_pseudo_proposal(uvec items) {
 }
 
 double divide_by_fact(double prob, int set_length) {
+  // Using the fact that Gamma(x + 1) = x!
   prob /= tgamma(set_length + 1);
   return(prob);
 }
