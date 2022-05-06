@@ -1,6 +1,7 @@
 #include "RcppArmadillo.h"
 #include "misc.h"
 #include <cmath>
+#include <Rmath.h>
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -61,7 +62,7 @@ vec find_cardinalities(const int& n_items, const std::string& metric){
   if(metric == "footrule"){
     return(regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2)));
   } else if (metric == "spearman"){
-    return(regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3)));
+    return(regspace(0, 2, 2 * R::choose(n_items + 1., 3.)));
   } else if (metric == "ulam"){
     return(regspace(0, 1, n_items - 1));
   } else {

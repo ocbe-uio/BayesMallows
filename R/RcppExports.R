@@ -45,10 +45,6 @@ compute_importance_sampling_estimate <- function(alpha_vector, n_items, metric =
     .Call(`_BayesMallows_compute_importance_sampling_estimate`, alpha_vector, n_items, metric, nmc)
 }
 
-binomial_coefficient <- function(n, k) {
-    .Call(`_BayesMallows_binomial_coefficient`, n, k)
-}
-
 sample_int <- function(probs) {
     .Call(`_BayesMallows_sample_int`, probs)
 }
