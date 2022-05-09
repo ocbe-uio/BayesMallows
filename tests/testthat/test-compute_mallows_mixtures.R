@@ -1,4 +1,3 @@
-library(parallel)
 test_that("compute_mallows_mixtures works", {
   set.seed(1234)
   n_clusters <- c(1, 4, 6)
@@ -85,13 +84,13 @@ test_that("compute_mallows_mixtures works", {
   )
 
   # check that it runs in parallel
-  cl <- makeCluster(1)
+  cl <- parallel::makeCluster(1)
   models <- compute_mallows_mixtures(
     n_clusters = n_clusters,
     nmc = 20L,
     rankings = sushi_rankings[1:100, ],
     cl = cl
   )
-  stopCluster(cl)
+  parallel::stopCluster(cl)
   expect_s3_class(models, "BayesMallowsMixtures")
 })
