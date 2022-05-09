@@ -54,14 +54,3 @@ double divide_by_fact(double prob, int set_length) {
   prob /= tgamma(set_length + 1);
   return(prob);
 }
-
-uvec permute_with_weights(vec weights, int N) {
-  // Using weights_Rcpp so that Rcpp::sample compiles. More details on
-  // https://github.com/ocbe-uio/BayesMallows/issues/90#issuecomment-866614296
-  Rcpp::NumericVector weights_Rcpp;
-  weights_Rcpp = weights;
-  uvec index;
-  index = Rcpp::as<uvec>(Rcpp::sample(N, N, true, weights_Rcpp)) - 1;
-  return(index);
-}
-

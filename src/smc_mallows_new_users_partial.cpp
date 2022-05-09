@@ -183,7 +183,7 @@ Rcpp::List smc_mallows_new_users_partial(
     /* ====================================================== */
 
     /* Resample particles using multinomial resampling ------ */
-    uvec index = permute_with_weights(norm_wgt, N);
+    uvec index = sample(regspace<uvec>(0, N - 1), N, true, norm_wgt);
     uvec tt_vec;
     tt_vec = tt;
 
