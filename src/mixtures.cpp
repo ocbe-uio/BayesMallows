@@ -48,7 +48,7 @@ uvec update_cluster_labels(
 
     // Normalize with 1-norm
     assignment_prob.row(i) = normalise(probs, 1);
-    new_cluster_assignment(span(i)) = sample(regspace<uvec>(0, probs.size() - 1), 1, false, assignment_prob.row(i).t());
+    new_cluster_assignment(span(i)) = sample(regspace<uvec>(0, probs.n_elem - 1), 1, false, assignment_prob.row(i).t());
   }
 
   if(save_ind_clus){

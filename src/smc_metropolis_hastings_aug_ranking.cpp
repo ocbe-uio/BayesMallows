@@ -49,7 +49,7 @@ arma::vec metropolis_hastings_aug_ranking(
   } else {
 
     // generate random order for remaining_set
-    const vec A = sample(remaining_set, remaining_set.size());
+    const vec A = sample(remaining_set, remaining_set.n_elem);
     remaining_set = std::move(A);
 
     // Subset by element position and set equal to the now permuted remaining set

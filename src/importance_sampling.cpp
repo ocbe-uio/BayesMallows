@@ -63,7 +63,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
         int jj = myind(j);
         // Find the elements that have not been taken yet
         uvec inds = find(support != 0);
-        vec log_prob(inds.size());
+        vec log_prob(inds.n_elem);
 
         // Number of elements
         int k_max = inds.n_elem;

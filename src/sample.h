@@ -2,10 +2,10 @@
 #define SAMPLE_H
 
 #include <RcppArmadillo.h>
-arma::vec sample(arma::vec x, int size, bool replace = false);
-arma::vec sample(arma::vec x, int size, bool replace, arma::vec probs);
-arma::uvec sample(arma::uvec x, int size, bool replace = false);
-arma::uvec sample(arma::uvec x, int size, bool replace, arma::vec probs);
+arma::vec sample(const arma::vec& x, const int& size, const bool& replace = false);
+arma::vec sample(const arma::vec& x, const int& size, const bool& replace, const arma::vec& probs);
+arma::uvec sample(const arma::uvec& x, const int& size, const bool& replace = false);
+arma::uvec sample(const arma::uvec& x, const int& size, const bool& replace, const arma::vec& probs);
 
 
 #endif
