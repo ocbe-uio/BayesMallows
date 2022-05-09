@@ -94,13 +94,8 @@ Rcpp::List smc_mallows_new_item_rank(
       vec R_obs_slice_0_row_jj = R_obs.slice(0).row(jj).t();
       const vec remaining_set = setdiff_template(ranks, R_obs_slice_0_row_jj);
       if (aug_method == "random") {
-        // find elements missing from original observed ranking
-        //const Rcpp::NumericVector remaining_set = Rcpp_setdiff_arma(ranks, R_obs_slice_0_row_jj);
-
-
-        // create new agumented ranking by sampling remaining ranks from set uniformly
-        //vec rset = shuffle(remaining_set);
-        vec rset = Rcpp::as<vec>(Rcpp::sample(Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(remaining_set)), remaining_set.size()));
+        // create new augmented ranking by sampling remaining ranks from set uniformly
+        vec rset = shuffle(remaining_set);
 
         vec partial_ranking = R_obs_slice_0_row_jj;
         partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;

@@ -118,11 +118,8 @@ Rcpp::List smc_mallows_new_users_partial(
         // fill in missing ranks based on choice of augmentation method
         if (aug_method == "random") {
 
-          // create new agumented ranking by sampling remaining ranks from set uniformly
-
           //partial_ranking.elem(find_nonfinite(partial_ranking)) = shuffle(missing_ranks);
-          partial_ranking.elem(find_nonfinite(partial_ranking)) =
-            Rcpp::as<vec>(Rcpp::sample(Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(missing_ranks)), missing_ranks.size()));
+          partial_ranking.elem(find_nonfinite(partial_ranking)) = shuffle(missing_ranks);
 
 
           aug_rankings(span(jj), span::all, span(ii)) = partial_ranking;
