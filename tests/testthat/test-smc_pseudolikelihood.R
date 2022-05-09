@@ -90,7 +90,7 @@ test_that("M-H aug ranking pseudo works", {
   test_2 <- metropolis_hastings_aug_ranking_pseudo(
     alpha, rho, n_items, R_obs, R_curr, metric
   )
-  expect_equal(test_2, matrix(c(1, 2, 3, 6, 4, 5)))
+  expect_equal(test_2, matrix(c(1, 2, 3, 5, 6, 4)))
   expect_equal(all(test_2 == R_curr), FALSE)
   R_curr <- c(1, 2, 6, 5, 4, 3)
   R_obs <- c(1, 2, NA, NA, NA, NA)
@@ -119,7 +119,7 @@ test_that("correction_kernel works", {
   R_curr <- c(1, 2, 3, 4, 5, 6)
   R_obs <- c(1, 2, 3, NA, NA, NA)
   test_1 <- correction_kernel_pseudo(R_curr, R_obs, rho, alpha, n_items, metric)
-  expect_equal(test_1$ranking, as.matrix(c(1, 2, 3, 4, 6, 5)))
+  expect_equal(test_1$ranking, as.matrix(c(1, 2, 3, 5, 4, 6)))
   expect_equivalent(test_1$correction_prob, 0.172, tol = 1e-2)
   expect_equal(all(test_1$ranking == R_curr), FALSE)
 
@@ -127,7 +127,7 @@ test_that("correction_kernel works", {
   R_curr <- c(1, 2, 3, 4, 5, 6)
   R_obs <- c(1, 2, 3, 5, NA, NA)
   test_2 <- correction_kernel_pseudo(R_curr, R_obs, rho, alpha, n_items, metric)
-  expect_equal(test_2$ranking, as.matrix(c(1, 2, 3, 5, 6, 4)))
+  expect_equal(test_2$ranking, as.matrix(c(1, 2, 3, 5, 4, 6)))
   expect_equal(test_2$correction_prob, 0.5)
   expect_equal(all(test_2$ranking == R_curr), FALSE)
 

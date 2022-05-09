@@ -105,7 +105,7 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
         const uvec& unranked_items = find_nonfinite(partial_ranking);
 
         // find ranks missing from ranking
-        const vec& missing_ranks = setdiff_template(ranks, partial_ranking);
+        const vec& missing_ranks = setdiff_template(ranks, partial_ranking, true);
 
         // fill in missing ranks based on choice of augmentation method
         if (aug_method == "random") {
