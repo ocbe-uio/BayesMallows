@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include "sample.h"
 #include "misc.h"
 #include "setdiff.h"
 
@@ -46,7 +47,8 @@ Rcpp::List correction_kernel(
       proposed_ranking.elem(unranked_items) = remaining_set;
     } else {
       // generate random order for remaining_set
-      remaining_set = std::move(shuffle(remaining_set));
+      arma::vec A = sample(remaining_set, remaining_set.size());
+      remaining_set = std::move(A);
       proposed_ranking.elem(unranked_items) = remaining_set;
     }
     correction_prob = divide_by_fact(correction_prob, remaining_set.n_elem);

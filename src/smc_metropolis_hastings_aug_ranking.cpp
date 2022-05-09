@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include "sample.h"
 #include "smc.h"
 #include "misc.h"
 #include "setdiff.h"
@@ -48,7 +49,7 @@ arma::vec metropolis_hastings_aug_ranking(
   } else {
 
     // generate random order for remaining_set
-    const vec A = shuffle(remaining_set);
+    const vec A = sample(remaining_set, remaining_set.size());
     remaining_set = std::move(A);
 
     // Subset by element position and set equal to the now permuted remaining set
