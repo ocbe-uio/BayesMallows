@@ -219,6 +219,19 @@ test_that("Specific example results are OK", {
     aug_method      = aug_method
   )
 
+  expect_equal(
+    round(test$alpha_samples[1:3, 1:4], 5),
+    structure(c(0.1271, 1.01988, 0.35984, 0.24885, 0.25341, 0.21513,
+                0.33608, 0.35642, 0.12366, 0.5712, 0.3178, 0.09631), dim = 3:4)
+  )
+  expect_equal(
+    round(test$ESS, 5),
+    structure(c(3.8759, 8.06663, 8.67376, 6.25069, 8.96242, 9.25546,
+                8.63799, 6.10056, 8.89989, 9.51113, 9.76202, 9.83387, 9.93686,
+                8.75139, 8.97513, 9.68603, 9.00262, 4.53248, 7.29597, 7.17366
+    ), dim = c(1L, 20L))
+  )
+
   expect_error(
     compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = NULL, C = 1,
                           type = "CP"),
