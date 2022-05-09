@@ -1,4 +1,4 @@
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
 #include "smc.h"
 #include "misc.h"
 #include "setdiff.h"
@@ -97,8 +97,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
         const vec& remaining_set = setdiff_template(ranks, partial_ranking);
 
         // create new augmented ranking by sampling remaining ranks from set uniformly
-        vec rset = shuffle(remaining_set);
-        partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
+        partial_ranking.elem(find_nonfinite(partial_ranking)) = shuffle(remaining_set);
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
         // fill in missing ranks based on choice of augmentation method
         total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set.size());
@@ -110,8 +109,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
         const vec& remaining_set = setdiff_template(ranks, R_obs_slice_0_row_jj);
 
         // randomly permute the unranked items to give the order in which they will be allocated
-        uvec item_ordering;
-        item_ordering = conv_to<uvec>::from(shuffle(unranked_items));
+        uvec item_ordering = shuffle(unranked_items);
         const Rcpp::List proposal = calculate_forward_probability(\
           item_ordering, R_obs_slice_0_row_jj, remaining_set, rho_samples.slice(0).row(ii).t(),\
           alpha, n_items, metric\
