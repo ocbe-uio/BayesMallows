@@ -3,6 +3,7 @@
 #include "distances.h"
 #include "misc.h"
 #include "setdiff.h"
+#include "sample.h"
 
 using namespace arma;
 
@@ -10,8 +11,9 @@ using namespace arma;
 
 vec propose_augmentation(const vec& ranks, const uvec& indicator){
   vec proposal = ranks;
-  proposal(find(indicator == 1)) = shuffle(ranks(find(indicator == 1)));
-  return(proposal);
+  vec indicated = ranks(find(indicator == 1));
+  proposal(find(indicator == 1)) = sample(indicated, indicated.size(), false);
+  return proposal;
 }
 
 void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
@@ -27,8 +29,8 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
       vec present_ranks = rank_vector(find(missing_indicator.col(i) == 0));
       uvec missing_inds = find(missing_indicator.col(i) == 1);
       // Find the available ranks and permute them
-      uvec new_ranks = shuffle(Rcpp::as<uvec>(Rcpp::wrap(
-        setdiff_template(regspace<ivec>(1, rank_vector.size()), present_ranks))));
+      vec new_ranks = setdiff_template(regspace<vec>(1, rank_vector.size()), present_ranks);
+      new_ranks = sample(new_ranks, new_ranks.size(), false);
 
       for(unsigned int j = 0; j < missing_inds.size(); ++j){
         rank_vector(missing_inds(j)) = static_cast<double>(as_scalar(new_ranks(j)));
