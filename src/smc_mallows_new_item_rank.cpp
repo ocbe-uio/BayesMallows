@@ -1,5 +1,6 @@
 #include "RcppArmadillo.h"
 #include "misc.h"
+#include "setdiff.h"
 #include "smc.h"
 #include "partitionfuns.h"
 
@@ -91,30 +92,24 @@ Rcpp::List smc_mallows_new_item_rank(
     for (uword jj = 0; jj < num_ranks; ++jj) {
       // fill in missing ranks based on choice of augmentation method
       vec R_obs_slice_0_row_jj = R_obs.slice(0).row(jj).t();
+      const vec remaining_set = setdiff_template(ranks, R_obs_slice_0_row_jj);
       if (aug_method == "random") {
         // find elements missing from original observed ranking
-        const Rcpp::NumericVector remaining_set = Rcpp_setdiff_arma(ranks, R_obs_slice_0_row_jj);
+        //const Rcpp::NumericVector remaining_set = Rcpp_setdiff_arma(ranks, R_obs_slice_0_row_jj);
+
 
         // create new agumented ranking by sampling remaining ranks from set uniformly
-        vec rset;
-        const int& remaining_set_length = remaining_set.length();
-        if (remaining_set_length == 1) {
-          rset = Rcpp::as<vec>(remaining_set);
-        } else {
-          rset = Rcpp::as<vec>(Rcpp::sample(remaining_set, remaining_set.length()));
-        }
+        //vec rset = shuffle(remaining_set);
+        vec rset = Rcpp::as<vec>(Rcpp::sample(Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(remaining_set)), remaining_set.size()));
+
         vec partial_ranking = R_obs_slice_0_row_jj;
         partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
 
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
-        total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set_length);
+        total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set.size());
       } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
         // find items missing from original observed ranking
         const uvec& unranked_items = find_nonfinite(R_obs_slice_0_row_jj);
-
-        // find unallocated ranks from original observed ranking
-        const Rcpp::NumericVector& remaining_set = Rcpp_setdiff_arma(ranks, R_obs_slice_0_row_jj);
-
         // randomly permute the unranked items to give the order in which they will be allocated
         uvec item_ordering;
         item_ordering = conv_to<uvec>::from(shuffle(unranked_items));

@@ -1,5 +1,6 @@
 #include "RcppArmadillo.h"
 #include "misc.h"
+#include "setdiff.h"
 #include "smc.h"
 #include "partitionfuns.h"
 
@@ -31,7 +32,7 @@ using namespace arma;
 //' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
 //' @param verbose Logical specifying whether to print out the progress of the
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
-//' @return a set of particles each containing the values of rho and alpha and the effective sample size (ESS) at each iteration of the SMC 
+//' @return a set of particles each containing the values of rho and alpha and the effective sample size (ESS) at each iteration of the SMC
 //' algorithm as well as the set of augmented rankings at the final iteration.
 //' @export
 // [[Rcpp::export]]
@@ -112,20 +113,20 @@ Rcpp::List smc_mallows_new_users_partial(
         uvec unranked_items = find_nonfinite(partial_ranking);
 
         // find ranks missing from ranking
-        const Rcpp::NumericVector missing_ranks = Rcpp::sort_unique(Rcpp_setdiff_arma(ranks, partial_ranking));
+        const vec missing_ranks = setdiff_template(ranks, partial_ranking, true);
 
         // fill in missing ranks based on choice of augmentation method
         if (aug_method == "random") {
 
           // create new agumented ranking by sampling remaining ranks from set uniformly
-          if (missing_ranks.length() == 1) {
-            partial_ranking.elem(find_nonfinite(partial_ranking)) = Rcpp::as<vec>(missing_ranks);
-          } else {
-            partial_ranking.elem(find_nonfinite(partial_ranking)) = Rcpp::as<vec>(Rcpp::sample(missing_ranks, missing_ranks.length()));
-          }
+
+          //partial_ranking.elem(find_nonfinite(partial_ranking)) = shuffle(missing_ranks);
+          partial_ranking.elem(find_nonfinite(partial_ranking)) =
+            Rcpp::as<vec>(Rcpp::sample(Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(missing_ranks)), missing_ranks.size()));
+
 
           aug_rankings(span(jj), span::all, span(ii)) = partial_ranking;
-          aug_prob(ii) = divide_by_fact(aug_prob(ii), missing_ranks.length());
+          aug_prob(ii) = divide_by_fact(aug_prob(ii), missing_ranks.size());
 
         } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
 

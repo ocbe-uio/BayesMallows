@@ -1,6 +1,7 @@
 #include "RcppArmadillo.h"
 #include "smc.h"
 #include "misc.h"
+#include "setdiff.h"
 
 using namespace arma;
 
@@ -47,7 +48,7 @@ Rcpp::List correction_kernel_pseudo(
         const uvec& unranked_items = find_nonfinite(observed_ranking);
 
         // find elements missing from original observed ranking
-        vec remaining_set = arma_setdiff_vec(current_ranking, observed_ranking);
+        vec remaining_set = setdiff_template(current_ranking, observed_ranking);
 
         // if we only have one missing rank, then we can
         if (remaining_set.n_elem == 1) {
