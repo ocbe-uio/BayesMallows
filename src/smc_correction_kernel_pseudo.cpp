@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include "sample.h"
 #include "smc.h"
 #include "misc.h"
 #include "setdiff.h"
@@ -64,7 +65,7 @@ Rcpp::List correction_kernel_pseudo(
 
             // creating now augmented ranking whilst simultaneously calculating the backwards prob of making the same
             // augmented ranking with an alternative item ordering
-            ivec auxiliary_ranking = Rcpp::rep(0, num_items_unranked);
+            vec auxiliary_ranking = zeros<vec>(num_items_unranked);
 
             //########################################################
             //## Create new augmented ranking
@@ -86,7 +87,7 @@ Rcpp::List correction_kernel_pseudo(
                 );
 
                 // fill in the new augmented ranking going forward
-                auxiliary_ranking(jj) = sample_one_with_prob(remaining_set, sample_prob_list);
+                auxiliary_ranking(span(jj)) = sample(remaining_set, 1, false, sample_prob_list);
 
                 // save the probability of selecting the specific item rank in the old
                 // augmented ranking

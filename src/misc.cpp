@@ -38,15 +38,6 @@ uvec maybe_offset_indices(
   return(idx_x);
 }
 
-sword sample_one_with_prob(vec set, vec probs) {
-  // Used in SMC to fill in the new augmented ranking going forward.
-  Rcpp::NumericVector set_Rcpp, probs_Rcpp;
-  set_Rcpp = set;
-  probs_Rcpp = probs;
-  sword chosen_one = Rcpp::as<int>(Rcpp::sample(set_Rcpp, 1, false, probs_Rcpp));
-  return(chosen_one);
-}
-
 uvec new_pseudo_proposal(uvec items) {
   // Used in SMC to create new agumented ranking by using pseudo proposal. This
   // function randomly permutes the unranked items to give the order in which
