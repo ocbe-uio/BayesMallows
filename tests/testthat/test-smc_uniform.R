@@ -1,7 +1,6 @@
 context("SMC uniform functions")
 
 set.seed(101)
-require("BayesMallows")
 
 # tests for M-H_aug_ranking function ===========================================
 
