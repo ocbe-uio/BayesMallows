@@ -25,15 +25,9 @@ validate_permutation <- function(vec) {
   }
 }
 
-
-
-
 # Function for getting an x axis without decimals.
 # Modified from https://stackoverflow.com/questions/21061653/creating-a-density-histogram-in-ggplot2
 scalefun <- function(x) sprintf("%d", as.integer(x))
-
-
-
 
 prepare_partition_function <- function(logz_estimate, metric, n_items) {
   # First, has the user supplied an estimate?
@@ -77,7 +71,6 @@ prepare_partition_function <- function(logz_estimate, metric, n_items) {
   stop("Partition function not available. Please compute an estimate using estimate_partition_function().")
 }
 
-
 # function taken from PLMIX package:
 # Copyright Cristina Mollica and Luca Tardella
 unit_to_freq <- function(data) {
@@ -117,7 +110,6 @@ fill_single_entries <- function(data) {
   }
   return(data)
 }
-
 
 ## Source: https://stackoverflow.com/questions/11095992/generating-all-distinct-permutations-of-a-list-in-r
 permutations <- function(n) {
