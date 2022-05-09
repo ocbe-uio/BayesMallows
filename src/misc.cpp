@@ -4,23 +4,6 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// Function to sample an integer given a set of probabilities
-// [[Rcpp::export]]
-int sample_int(const arma::rowvec& probs){
-
-  if(probs.has_nan() || probs.has_inf()){
-    Rcpp::Rcout << "probs = " << probs << std::endl;
-    Rcpp::stop("Cannot sample_int.");
-  }
-
-  // Draw a uniform random number
-  double u = randu();
-
-  uvec matches = find(cumsum(probs) > u, 1, "first");
-
-  return as_scalar(matches);
-}
-
 // Truncated beta distribution
 double rtruncbeta(int shape1, int shape2, double trunc = 1) {
   int i = 0;
