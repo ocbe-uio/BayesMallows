@@ -38,16 +38,6 @@ uvec maybe_offset_indices(
   return(idx_x);
 }
 
-uvec new_pseudo_proposal(uvec items) {
-  // Used in SMC to create new agumented ranking by using pseudo proposal. This
-  // function randomly permutes the unranked items to give the order in which
-  // they will be allocated.
-  Rcpp::IntegerVector items_Rcpp;
-  items_Rcpp = items;
-  uvec order;
-  order = Rcpp::as<uvec>(Rcpp::sample(items_Rcpp, items_Rcpp.length())) + 1;
-  return(order);
-}
 
 double divide_by_fact(double prob, int set_length) {
   // Using the fact that Gamma(x + 1) = x!
