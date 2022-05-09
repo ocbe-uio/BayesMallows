@@ -1,5 +1,7 @@
+#ifndef SETDIFF_H
+#define SETDIFF_H
+
 #include <RcppArmadillo.h>
-#include <cmath>
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
@@ -17,3 +19,4 @@ arma::vec setdiff_template(arg1 x, arg2 y, const bool& sort_unique = false){
 
   return x_y_diff;
 }
+#endif
