@@ -20,18 +20,18 @@
 #'   which means that each row of \code{rankings} is multiplied by 1. If
 #'   provided, \code{obs_freq} must have the same number of elements as there
 #'   are rows in \code{rankings}, and \code{rankings} cannot be \code{NULL}.
-#' @param log A logical; if TRUE, the log-likelihood value is returned. Default
-#'   is \code{FALSE}.
+#' @param log A logical; if TRUE, the log-likelihood value is returned,
+#'   otherwise its exponential. Default is \code{TRUE}.
 #'
 #' @return The likelihood or the log-likelihood value corresponding to one or
 #'   more observed complete rankings under the Mallows mixture rank model with
 #'   distance specified by the \code{metric} argument.
 #' @export
 #'
-#' @example inst/examples/lik_db_mix_example.R
+#' @example inst/examples/get_mallows_loglik_example.R
 #'
-lik_db_mix <- function(rho, alpha, weights, metric,
-                       rankings, obs_freq = NULL, log = FALSE) {
+get_mallows_loglik <- function(rho, alpha, weights, metric,
+                       rankings, obs_freq = NULL, log = TRUE) {
   if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }
@@ -90,4 +90,12 @@ lik_db_mix <- function(rho, alpha, weights, metric,
   } else {
     sum(loglik)
   }
+}
+
+#' @rdname get_mallows_loglik
+#' @export
+lik_db_mix <- function(rho, alpha, weights, metric,
+                       rankings, obs_freq = NULL, log = FALSE){
+  .Deprecated(new = "get_mallows_loglik")
+  get_mallows_loglik(rho, alpha, weights, metric, rankings, obs_freq, log)
 }

@@ -1,4 +1,4 @@
-test_that("lik_db_mix works", {
+test_that("get_mallows_loglik works", {
   set.seed(1)
   n_items <- 5
   mydata <- sample_mallows(
@@ -14,7 +14,7 @@ test_that("lik_db_mix works", {
     lapply(
       c("ulam", "footrule", "spearman", "kendall", "cayley", "hamming"),
       function(m){
-        lik_db_mix(
+        get_mallows_loglik(
           rho = rbind(1:n_items, 1:n_items),
           alpha = c(2 * n_items, 2 * n_items),
           weights = c(0.5, 0.5),
@@ -32,7 +32,7 @@ test_that("lik_db_mix works", {
     lapply(
       c("ulam", "footrule", "spearman", "kendall", "cayley", "hamming"),
       function(m){
-        lik_db_mix(
+        get_mallows_loglik(
           rho = 1:n_items,
           alpha = 2 * n_items,
           weights = 1,
@@ -45,16 +45,17 @@ test_that("lik_db_mix works", {
          -170.030563541214, -223.987863416978, -224.300341956488))
 
   expect_equal(
-    sprintf("%.3e", lik_db_mix(
+    sprintf("%.3e", get_mallows_loglik(
       rho = rbind(1:n_items, 1:n_items),
       alpha = c(2 * n_items, 2 * n_items),
       weights = c(0.5, 0.5),
       metric = "kendall",
-      rankings = mydata
+      rankings = mydata,
+      log = FALSE
     )), "1.434e-74"
   )
 
-  expect_equal(round(lik_db_mix(
+  expect_equal(round(get_mallows_loglik(
     rho = rbind(1:n_items, 1:n_items),
     alpha = c(2 * n_items, 2 * n_items),
     weights = c(0.5, 0.5),
@@ -66,17 +67,18 @@ test_that("lik_db_mix works", {
   # or equivalently, by using the frequency distribution
   freq_distr <- rank_freq_distr(mydata)
   expect_equal(
-    sprintf("%.3e", lik_db_mix(
+    sprintf("%.3e", get_mallows_loglik(
       rho = rbind(1:n_items, 1:n_items),
       alpha = c(2 * n_items, 2 * n_items),
       weights = c(0.5, 0.5),
       metric = "kendall",
       rankings = freq_distr[, 1:n_items],
-      obs_freq = freq_distr[, n_items + 1]
+      obs_freq = freq_distr[, n_items + 1],
+      log = FALSE
     )), "1.434e-74"
   )
 
-  expect_equal(round(lik_db_mix(
+  expect_equal(round(get_mallows_loglik(
     rho = rbind(1:n_items, 1:n_items),
     alpha = c(2 * n_items, 2 * n_items),
     weights = c(0.5, 0.5),
@@ -87,7 +89,7 @@ test_that("lik_db_mix works", {
   ), 4), -170.0306)
 
   expect_error(
-    lik_db_mix(
+    get_mallows_loglik(
       rho = rbind(1:n_items, 1:n_items),
       alpha = c(2 * n_items, 2 * n_items),
       weights = c(0.5, 0.5),
@@ -99,7 +101,7 @@ test_that("lik_db_mix works", {
   )
 
   expect_error(
-    lik_db_mix(
+    get_mallows_loglik(
       rho = 1:100,
       alpha = 1,
       weights = 1,
@@ -107,5 +109,18 @@ test_that("lik_db_mix works", {
       rankings = do.call(rbind, replicate(3, list(1:100), simplify = "list"))
     ),
     "Given number of items currently not available for the specified metric"
+  )
+
+  expect_warning(
+    lik_db_mix(
+      rho = rbind(1:n_items, 1:n_items),
+      alpha = c(2 * n_items, 2 * n_items),
+      weights = c(0.5, 0.5),
+      metric = "kendall",
+      rankings = freq_distr[, 1:n_items],
+      obs_freq = freq_distr[, n_items + 1],
+      log = TRUE
+    ),
+    "'lik_db_mix' is deprecated."
   )
 })
