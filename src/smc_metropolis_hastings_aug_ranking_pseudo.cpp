@@ -1,4 +1,4 @@
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
 #include "smc.h"
 #include "misc.h"
 #include "setdiff.h"
@@ -50,7 +50,7 @@ arma::vec metropolis_hastings_aug_ranking_pseudo(
   } else {
     // randomly permute the unranked items to give the order in which they will
     // be allocated
-    uvec item_ordering = new_pseudo_proposal(unranked_items);
+    uvec item_ordering = shuffle(unranked_items);
 
     // Calculate probabilities
     const Rcpp::List proposal = calculate_forward_probability(\

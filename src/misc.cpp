@@ -4,23 +4,6 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// Function to sample an integer given a set of probabilities
-// [[Rcpp::export]]
-int sample_int(const arma::rowvec& probs){
-
-  if(probs.has_nan() || probs.has_inf()){
-    Rcpp::Rcout << "probs = " << probs << std::endl;
-    Rcpp::stop("Cannot sample_int.");
-  }
-
-  // Draw a uniform random number
-  double u = randu();
-
-  uvec matches = find(cumsum(probs) > u, 1, "first");
-
-  return as_scalar(matches);
-}
-
 // Truncated beta distribution
 double rtruncbeta(int shape1, int shape2, double trunc = 1) {
   int i = 0;
@@ -55,39 +38,9 @@ uvec maybe_offset_indices(
   return(idx_x);
 }
 
-sword sample_one_with_prob(vec set, vec probs) {
-  // Used in SMC to fill in the new augmented ranking going forward.
-  Rcpp::NumericVector set_Rcpp, probs_Rcpp;
-  set_Rcpp = set;
-  probs_Rcpp = probs;
-  sword chosen_one = Rcpp::as<int>(Rcpp::sample(set_Rcpp, 1, false, probs_Rcpp));
-  return(chosen_one);
-}
-
-uvec new_pseudo_proposal(uvec items) {
-  // Used in SMC to create new agumented ranking by using pseudo proposal. This
-  // function randomly permutes the unranked items to give the order in which
-  // they will be allocated.
-  Rcpp::IntegerVector items_Rcpp;
-  items_Rcpp = items;
-  uvec order;
-  order = Rcpp::as<uvec>(Rcpp::sample(items_Rcpp, items_Rcpp.length())) + 1;
-  return(order);
-}
 
 double divide_by_fact(double prob, int set_length) {
   // Using the fact that Gamma(x + 1) = x!
   prob /= tgamma(set_length + 1);
   return(prob);
 }
-
-uvec permute_with_weights(vec weights, int N) {
-  // Using weights_Rcpp so that Rcpp::sample compiles. More details on
-  // https://github.com/ocbe-uio/BayesMallows/issues/90#issuecomment-866614296
-  Rcpp::NumericVector weights_Rcpp;
-  weights_Rcpp = weights;
-  uvec index;
-  index = Rcpp::as<uvec>(Rcpp::sample(N, N, true, weights_Rcpp)) - 1;
-  return(index);
-}
-

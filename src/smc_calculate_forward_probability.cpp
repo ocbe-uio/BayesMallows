@@ -1,4 +1,5 @@
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
+#include "sample.h"
 #include "smc.h"
 #include "misc.h"
 
@@ -51,7 +52,7 @@ Rcpp::List calculate_forward_probability(
     // uniformly
     partial_ranking.elem(find_nonfinite(partial_ranking)) = remaining_set;
   } else {
-    ivec auxiliary_ranking = Rcpp::rep(0, num_items_unranked);
+    vec auxiliary_ranking = zeros<vec>(num_items_unranked);
 
     /* ====================================================== */
     /* LOOP TO CALCULATE FORWARD AND BACKWARD PROBABILITY     */
@@ -78,7 +79,7 @@ Rcpp::List calculate_forward_probability(
       );
 
       // fill in the new augmented ranking going forward
-      auxiliary_ranking(jj) = sample_one_with_prob(remaining_set, sample_prob_list);
+      auxiliary_ranking(span(jj)) = sample(remaining_set, 1, false, sample_prob_list);
 
       // save the probability of selecting the specific item rank in the old
       // augmented ranking

@@ -1,4 +1,5 @@
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
+#include "sample.h"
 #include "smc.h"
 #include "misc.h"
 #include "setdiff.h"
@@ -57,14 +58,14 @@ Rcpp::List correction_kernel_pseudo(
             observed_ranking.elem(unranked_items) = remaining_set;
         } else {
             // create new agumented ranking by using pseudo proposal
-            uvec item_ordering = new_pseudo_proposal(unranked_items);
+            uvec item_ordering = shuffle(unranked_items);
 
             // item ordering is the order of which items are assigned ranks in a specified order
             const uword& num_items_unranked = item_ordering.n_elem;
 
             // creating now augmented ranking whilst simultaneously calculating the backwards prob of making the same
             // augmented ranking with an alternative item ordering
-            ivec auxiliary_ranking = Rcpp::rep(0, num_items_unranked);
+            vec auxiliary_ranking = zeros<vec>(num_items_unranked);
 
             //########################################################
             //## Create new augmented ranking
@@ -72,12 +73,9 @@ Rcpp::List correction_kernel_pseudo(
             // given the item ordering and the list of missing rank, determine the sample probs for each iteration
             for (uword jj = 0; jj < num_items_unranked - 1; ++jj) {
 
-                // items to sample rank
-                const double& item_to_sample_rank = item_ordering(jj);
-
                 // the rank of item in rho
                 vec rho_item_rank;
-                rho_item_rank = rho(item_to_sample_rank - 1);
+                rho_item_rank = rho(item_ordering(jj));
 
                 // next we get the sample probabilites for selecting a particular rank for
                 // an item based on the current alpha and the rho rank for that item
@@ -86,7 +84,7 @@ Rcpp::List correction_kernel_pseudo(
                 );
 
                 // fill in the new augmented ranking going forward
-                auxiliary_ranking(jj) = sample_one_with_prob(remaining_set, sample_prob_list);
+                auxiliary_ranking(span(jj)) = sample(remaining_set, 1, false, sample_prob_list);
 
                 // save the probability of selecting the specific item rank in the old
                 // augmented ranking
@@ -102,10 +100,8 @@ Rcpp::List correction_kernel_pseudo(
             // last element in augmented ranking is deterministic - the prob is 1
             auxiliary_ranking(num_items_unranked - 1) = as_scalar(remaining_set);
 
-            // fit the augmented ranking within the partial rankings with NAs
-            vec ar;
-            ar = conv_to<vec>::from(auxiliary_ranking);
-            observed_ranking.elem(item_ordering - 1) = ar; // ranks for items
+            // fit the augmented ranking within the partial rankings with NA
+            observed_ranking.elem(item_ordering) = auxiliary_ranking; // ranks for items
         }
         return Rcpp::List::create(
             Rcpp::Named("ranking") = observed_ranking,

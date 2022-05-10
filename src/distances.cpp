@@ -1,4 +1,4 @@
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
 #include "subset.h"
 #include "distances.h"
 

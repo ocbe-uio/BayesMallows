@@ -1,4 +1,4 @@
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
 #include "smc.h"
 #include "misc.h"
 #include "setdiff.h"
@@ -36,7 +36,7 @@ arma::vec metropolis_hastings_aug_ranking(
   const uvec unranked_items = find_nonfinite(partial_ranking);
 
   // find unallocated ranks from original observed ranking
-  vec remaining_set = setdiff_template(current_ranking, partial_ranking, true);
+  vec remaining_set = setdiff_template(current_ranking, partial_ranking);
 
   // if the observed and augmented ranking are exactly the same then break
   const bool condition_1 = approx_equal(\
@@ -47,12 +47,8 @@ arma::vec metropolis_hastings_aug_ranking(
     return(current_ranking);
   } else {
 
-    // generate random order for remaining_set
-    const vec A = shuffle(remaining_set);
-    remaining_set = std::move(A);
-
     // Subset by element position and set equal to the now permuted remaining set
-    partial_ranking.elem(unranked_items) = remaining_set;
+    partial_ranking.elem(unranked_items) = shuffle(remaining_set);
 
     // set the augmented partial ranking as the proposed augmented ranking
     const vec& proposed_ranking = partial_ranking;

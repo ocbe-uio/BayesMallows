@@ -1,4 +1,4 @@
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
 #include "misc.h"
 #include <Rmath.h>
 using namespace arma;

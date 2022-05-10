@@ -45,10 +45,6 @@ compute_importance_sampling_estimate <- function(alpha_vector, n_items, metric =
     .Call(`_BayesMallows_compute_importance_sampling_estimate`, alpha_vector, n_items, metric, nmc)
 }
 
-sample_int <- function(probs) {
-    .Call(`_BayesMallows_sample_int`, probs)
-}
-
 #' Compute the logarithm of the expected distance of metrics for a Mallows rank model
 #'
 #' @param n_items Number of items.

@@ -11,7 +11,7 @@ using namespace arma;
 vec propose_augmentation(const vec& ranks, const uvec& indicator){
   vec proposal = ranks;
   proposal(find(indicator == 1)) = shuffle(ranks(find(indicator == 1)));
-  return(proposal);
+  return proposal;
 }
 
 void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
@@ -27,10 +27,9 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
       vec present_ranks = rank_vector(find(missing_indicator.col(i) == 0));
       uvec missing_inds = find(missing_indicator.col(i) == 1);
       // Find the available ranks and permute them
-      uvec new_ranks = shuffle(Rcpp::as<uvec>(Rcpp::wrap(
-        setdiff_template(regspace<ivec>(1, rank_vector.size()), present_ranks))));
+      vec new_ranks = shuffle(setdiff_template(regspace<vec>(1, rank_vector.n_elem), present_ranks));
 
-      for(unsigned int j = 0; j < missing_inds.size(); ++j){
+      for(unsigned int j = 0; j < missing_inds.n_elem; ++j){
         rank_vector(missing_inds(j)) = static_cast<double>(as_scalar(new_ranks(j)));
       }
       rankings.col(i) = rank_vector;

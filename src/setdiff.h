@@ -6,7 +6,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 template <typename arg1, typename arg2>
-arma::vec setdiff_template(arg1 x, arg2 y, const bool& sort_unique = false){
+arma::vec setdiff_template(const arg1& x, const arg2& y, const bool& sort_unique = true){
   Rcpp::NumericVector x_Rcpp, y_Rcpp;
   arma::vec x_y_diff;
   x_Rcpp = x;

@@ -1,5 +1,6 @@
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
 #include "misc.h"
+#include "sample.h"
 #include "setdiff.h"
 #include "smc.h"
 #include "partitionfuns.h"
@@ -94,25 +95,19 @@ Rcpp::List smc_mallows_new_item_rank(
       vec R_obs_slice_0_row_jj = R_obs.slice(0).row(jj).t();
       const vec remaining_set = setdiff_template(ranks, R_obs_slice_0_row_jj);
       if (aug_method == "random") {
-        // find elements missing from original observed ranking
-        //const Rcpp::NumericVector remaining_set = Rcpp_setdiff_arma(ranks, R_obs_slice_0_row_jj);
-
-
-        // create new agumented ranking by sampling remaining ranks from set uniformly
-        //vec rset = shuffle(remaining_set);
-        vec rset = Rcpp::as<vec>(Rcpp::sample(Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(remaining_set)), remaining_set.size()));
+        // create new augmented ranking by sampling remaining ranks from set uniformly
+        vec rset = shuffle(remaining_set);
 
         vec partial_ranking = R_obs_slice_0_row_jj;
         partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
 
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
-        total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set.size());
+        total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set.n_elem);
       } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
         // find items missing from original observed ranking
         const uvec& unranked_items = find_nonfinite(R_obs_slice_0_row_jj);
         // randomly permute the unranked items to give the order in which they will be allocated
-        uvec item_ordering;
-        item_ordering = conv_to<uvec>::from(shuffle(unranked_items));
+        uvec item_ordering = shuffle(unranked_items);
         const Rcpp::List proposal = calculate_forward_probability(\
           item_ordering, R_obs_slice_0_row_jj, remaining_set, rho_samples.slice(0).row(ii).t(),\
           alpha_samples(ii, 0), n_items, metric\
@@ -171,7 +166,7 @@ Rcpp::List smc_mallows_new_item_rank(
   /* Resample                                               */
   /* ====================================================== */
   /* Resample particles using multinomial resampling ------ */
-  uvec index = permute_with_weights(norm_wgt, N);
+  uvec index = sample(regspace<uvec>(0, N - 1), N, true, norm_wgt);
   rho_samples.slice(0) = rho_samples.slice(0).rows(index);
   const vec& asc = alpha_samples.col(0);
   alpha_samples.col(0) = asc.elem(index);
@@ -291,7 +286,7 @@ Rcpp::List smc_mallows_new_item_rank(
     /* Resample                                               */
     /* ====================================================== */
     /* Resample particles using multinomial resampling ------ */
-    uvec index = permute_with_weights(norm_wgt, N);
+    uvec index = sample(regspace<uvec>(0, N - 1), N, true, norm_wgt);
     rho_samples.slice(tt + 1) = rho_samples.slice(tt + 1).rows(index);
     const vec& asc = alpha_samples.col(tt + 1);
     alpha_samples.col(tt + 1) = asc.elem(index);

@@ -1,4 +1,4 @@
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
 #include "distances.h"
 
 using namespace arma;
@@ -56,13 +56,13 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       vec u = log(randu(n_items));
 
       // Loop over possible values given to item j in random order
-      vec myind = shuffle(regspace(0, n_items - 1));
+      ivec myind = randperm<ivec>(n_items);
 
       for(int j = 0; j < n_items; ++j){
         int jj = myind(j);
         // Find the elements that have not been taken yet
         uvec inds = find(support != 0);
-        vec log_prob(inds.size());
+        vec log_prob(inds.n_elem);
 
         // Number of elements
         int k_max = inds.n_elem;
