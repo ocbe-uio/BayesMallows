@@ -8,7 +8,7 @@ arma::cube initialize_rho(const int& N, const int& n_items, const int& d);
 void smc_mallows_new_users_augment_partial(
     arma::cube& aug_rankings,
     arma::vec& aug_prob,
-    const arma::cube rho_samples,
+    const arma::cube& rho_samples,
     const arma::mat& alpha_samples,
     const int& num_obs,
     const int& num_new_obs,
