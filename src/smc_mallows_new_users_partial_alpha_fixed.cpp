@@ -4,7 +4,7 @@
 #include "setdiff.h"
 #include "smc.h"
 #include "partitionfuns.h"
-#include "smc_mallows_new_users_augment_partial.h"
+#include "smc_mallows_new_users.h"
 
 using namespace arma;
 
@@ -109,34 +109,12 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
     /* Re-weight                                              */
     /* ====================================================== */
 
-    for (int ii{}; ii < N; ++ii) {
-      // evaluate the log estimate of the partition function for a particular
-      // value of alpha
+    vec norm_wgt;
+    smc_mallows_new_users_reweight(
+      log_inc_wgt, ESS_vec, norm_wgt, aug_rankings, rho_samples,
+      alpha, mat(), N, tt, n_items, logz_estimate, metric, num_obs,
+      num_new_obs, aug_prob, false);
 
-      /* Initializing variables ------------------------------- */
-      const Rcpp::Nullable<vec> cardinalities = R_NilValue;
-      const rowvec rho_samples_ii = \
-        rho_samples(span(ii), span::all, span(tt + 1));
-
-      /* Calculating log_z_alpha and log_likelihood ----------- */
-      const double log_z_alpha = get_partition_function(\
-        n_items, alpha, cardinalities, logz_estimate, metric\
-      );
-
-      mat new_observed_rankings;
-      new_observed_rankings = aug_rankings(span(num_obs - num_new_obs, num_obs - 1), span::all, span(ii));
-      double log_likelihood = get_exponent_sum(\
-        alpha, rho_samples_ii.t(), n_items, new_observed_rankings, metric\
-      );
-      log_inc_wgt(ii) = log_likelihood - num_new_obs * log_z_alpha - log(aug_prob(ii));
-    }
-
-    /* normalise weights ------------------------------------ */
-    const double maxw = max(log_inc_wgt);
-    const vec w = exp(log_inc_wgt - maxw);
-    const vec norm_wgt = w / sum(w);
-
-    ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
     /* ====================================================== */
     /* Resample                                               */
