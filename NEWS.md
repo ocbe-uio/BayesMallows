@@ -4,6 +4,7 @@
 
 * Fixes a bug which caused assess_convergence() to fail with 'parameter = "cluster_probs"'.
 * BayesMallows no longer depends on 'dplyr'.
+* Quite extensive internal refactoring of C++ code.
 
 # BayesMallows 1.1.2
 
