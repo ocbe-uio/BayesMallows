@@ -4,6 +4,7 @@
 #include "setdiff.h"
 #include "smc.h"
 #include "partitionfuns.h"
+#include "smc_mallows_new_users_augment_partial.h"
 
 using namespace arma;
 
@@ -39,14 +40,14 @@ using namespace arma;
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users_partial(
   const arma::mat& R_obs,
-  const unsigned int& n_items,
+  const int& n_items,
   const std::string& metric,
   const int& leap_size,
-  const unsigned int& N,
-  const unsigned int Time,
+  const int& N,
+  const int Time,
   const Rcpp::Nullable<arma::vec> logz_estimate,
   const int& mcmc_kernel_app,
-  const unsigned int& num_new_obs,
+  const int& num_new_obs,
   const double alpha_prop_sd,
   const double lambda,
   const double alpha_max,
@@ -56,7 +57,7 @@ Rcpp::List smc_mallows_new_users_partial(
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
-  const int& n_users = R_obs.n_rows; // this is total- number of users
+  int n_users = R_obs.n_rows; // this is total- number of users
 
   /* generate rho samples using uniform prior ------------- */
   cube rho_samples(N, n_items, Time + 1, fill::zeros);
@@ -103,44 +104,14 @@ Rcpp::List smc_mallows_new_users_partial(
     /* Augment partial rankings                               */
     /* ====================================================== */
 
-    const ivec ranks = Rcpp::seq(1, n_items);
-    vec aug_prob = Rcpp::rep(1.0, N);
-
-    for (uword ii = 0; ii < N; ++ii) {
-      for (uword jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
-        vec partial_ranking = R_obs.row(jj).t();
-
-        // find items missing from original observed ranking
-        uvec unranked_items = find_nonfinite(partial_ranking);
-
-        // find ranks missing from ranking
-        const vec missing_ranks = setdiff_template(ranks, partial_ranking);
-
-        // fill in missing ranks based on choice of augmentation method
-        if (aug_method == "random") {
-
-          partial_ranking.elem(find_nonfinite(partial_ranking)) = shuffle(missing_ranks);
-          aug_rankings(span(jj), span::all, span(ii)) = partial_ranking;
-          aug_prob(ii) = divide_by_fact(aug_prob(ii), missing_ranks.n_elem);
-
-        } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
-
-          // randomly permute the unranked items to give the order in which they will be allocated
-          uvec item_ordering = shuffle(unranked_items);
-          const rowvec rho_s = rho_samples(span(ii), span::all, span(tt + 1));
-          const Rcpp::List proposal = calculate_forward_probability(\
-            item_ordering, partial_ranking, missing_ranks, rho_s.t(),\
-            alpha_samples(ii, tt + 1), n_items, metric\
-          );
-          const vec& a_rank = proposal["aug_ranking"];
-          const double& f_prob = proposal["forward_prob"];
-          aug_rankings(span(jj), span::all, span(ii)) = a_rank;
-          aug_prob(ii) = aug_prob(ii) * f_prob;
-        } else {
-          Rcpp::stop("Combined choice of metric and aug_method is incompatible");
-        }
-      }
-    }
+    vec aug_prob = ones(N);
+    smc_mallows_new_users_augment_partial(
+      aug_rankings, aug_prob,
+      rho_samples, alpha_samples,
+      num_obs, num_new_obs, R_obs,
+      aug_method, N, metric,
+      tt, n_items, 0, true
+    );
 
     /* ====================================================== */
     /* Re-weight                                              */
