@@ -60,16 +60,16 @@ test_that("correction_kernel works", {
   R_obs <- c(1, 2, 3, NA, NA, NA)
   set.seed(879)
   test_4 <- correction_kernel(R_obs, R_curr, n_items)
-  expect_equal(test_4$ranking, as.matrix(c(1, 2, 3, 6, 5, 4)))
+  expect_equal(test_4$ranking, as.matrix(c(1, 2, 3, 4, 5, 6)))
   expect_equal(test_4$correction_prob, 1 / 6)
-  expect_equal(all(test_4$ranking == R_curr), FALSE)
+  expect_equal(all(test_4$ranking == R_curr), TRUE)
 
   # Two missing ranks -------------------------------------- #
   R_curr <- c(1, 2, 3, 4, 5, 6)
   R_obs <- c(1, 2, 3, 5, NA, NA)
   set.seed(706)
   test_5 <- correction_kernel(R_obs, R_curr, n_items)
-  expect_equal(test_5$ranking, as.matrix(c(1, 2, 3, 5, 4, 6)))
+  expect_equal(test_5$ranking, as.matrix(c(1, 2, 3, 5, 6, 4)))
   expect_equal(test_5$correction_prob, 0.5)
   expect_equal(all(test_5$ranking == R_curr), FALSE)
 
