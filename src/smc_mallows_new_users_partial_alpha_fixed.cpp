@@ -110,13 +110,13 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
         // fill in missing ranks based on choice of augmentation method
         if (aug_method == "random") {
         // create new augmented ranking by sampling remaining ranks from set uniformly
-          partial_ranking.elem(find_nonfinite(partial_ranking)) = sample(missing_ranks, missing_ranks.n_elem);
+          partial_ranking.elem(find_nonfinite(partial_ranking)) = shuffle(missing_ranks);
 
           aug_rankings(span(jj), span::all, span(ii)) = partial_ranking;
           aug_prob(ii) = divide_by_fact(aug_prob(ii), missing_ranks.n_elem);
         } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
           // randomly permute the unranked items to give the order in which they will be allocated
-          uvec item_ordering = sample(unranked_items, unranked_items.n_elem);
+          uvec item_ordering = shuffle(unranked_items);
           const rowvec& rho_s = rho_samples(span(ii), span::all, span(tt + 1));
           const Rcpp::List& proposal = calculate_forward_probability(\
             item_ordering, partial_ranking, missing_ranks, rho_s.t(),\

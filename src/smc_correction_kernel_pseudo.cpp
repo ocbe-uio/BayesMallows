@@ -58,7 +58,7 @@ Rcpp::List correction_kernel_pseudo(
             observed_ranking.elem(unranked_items) = remaining_set;
         } else {
             // create new agumented ranking by using pseudo proposal
-            uvec item_ordering = sample(unranked_items, unranked_items.n_elem, false);
+            uvec item_ordering = shuffle(unranked_items);
 
             // item ordering is the order of which items are assigned ranks in a specified order
             const uword& num_items_unranked = item_ordering.n_elem;

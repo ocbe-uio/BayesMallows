@@ -51,7 +51,7 @@ arma::vec metropolis_hastings_aug_ranking_pseudo(
   } else {
     // randomly permute the unranked items to give the order in which they will
     // be allocated
-    uvec item_ordering = sample(unranked_items, unranked_items.n_elem, false);
+    uvec item_ordering = shuffle(unranked_items);
 
     // Calculate probabilities
     const Rcpp::List proposal = calculate_forward_probability(\
