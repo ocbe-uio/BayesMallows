@@ -17,13 +17,13 @@ void smc_mallows_new_users_augment_partial(
     const int& num_new_obs,
     const arma::mat& R_obs,
     const std::string& aug_method,
-    const int& N,
     const std::string& metric,
     const int& tt,
-    const int& n_items,
     const double& alpha,
     const bool& augment_alpha
 ){
+  int N = rho_samples.n_rows;
+  int n_items = rho_samples.n_cols;
   ivec ranks = regspace<ivec>(1, n_items);
   for (int ii{}; ii < N; ++ii) {
     for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {

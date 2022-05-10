@@ -15,9 +15,7 @@ void smc_mallows_new_users_reweight(
     const cube& rho_samples,
     const double& alpha,
     const mat& alpha_samples,
-    const int& N,
     const int& tt,
-    const int& n_items,
     const Rcpp::Nullable<vec> logz_estimate,
     const std::string& metric,
     const int& num_obs,
@@ -26,6 +24,8 @@ void smc_mallows_new_users_reweight(
     const bool& augment_alpha,
     const bool& partial
 ){
+  int N = rho_samples.n_rows;
+  int n_items = rho_samples.n_cols;
   for (int ii{}; ii < N; ++ii) {
     Rcpp::Nullable<vec> cardinalities = R_NilValue;
 

@@ -124,7 +124,7 @@ Rcpp::List smc_mallows_new_users_complete(
     vec norm_wgt;
     smc_mallows_new_users_reweight(
       log_inc_wgt, ESS_vec, norm_wgt, cube(), new_observed_rankings, rho_samples,
-      0, alpha_samples, N, tt, n_items, logz_estimate, metric, num_obs,
+      0, alpha_samples, tt, logz_estimate, metric, num_obs,
       num_new_obs, ones(N), true, false);
 
     /* ====================================================== */
@@ -133,7 +133,7 @@ Rcpp::List smc_mallows_new_users_complete(
 
     cube tmp;
     smc_mallows_new_users_resample(
-      rho_samples, alpha_samples, tmp, N, norm_wgt, tt, num_obs, true, false);
+      rho_samples, alpha_samples, tmp, norm_wgt, tt, num_obs, true, false);
 
     /* ====================================================== */
     /* Move step                                              */

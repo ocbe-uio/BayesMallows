@@ -4,55 +4,16 @@
 #include <RcppArmadillo.h>
 
 arma::cube initialize_rho(const int& N, const int& n_items, const int& d);
-
-void smc_mallows_new_users_augment_partial(
-    arma::cube& aug_rankings,
-    arma::vec& aug_prob,
-    const arma::cube& rho_samples,
-    const arma::mat& alpha_samples,
-    const int& num_obs,
-    const int& num_new_obs,
-    const arma::mat& R_obs,
-    const std::string& aug_method,
-    const int& N,
-    const std::string& metric,
-    const int& tt,
-    const int& n_items,
-    const double& alpha,
-    const bool& augment_alpha
-);
-
+void smc_mallows_new_users_augment_partial(arma::cube&, arma::vec&,
+    const arma::cube&, const arma::mat&, const int&, const int&,
+    const arma::mat&, const std::string&, const std::string&, const int&,
+    const double&, const bool&);
 void smc_mallows_new_users_reweight(
-    arma::vec& log_inc_wgt,
-    arma::rowvec& ESS_vec,
-    arma::vec& norm_wgt,
-    const arma::cube& aug_rankings,
-    const arma::mat& observed_rankings,
-    const arma::cube& rho_samples,
-    const double& alpha,
-    const arma::mat& alpha_samples,
-    const int& N,
-    const int& tt,
-    const int& n_items,
-    const Rcpp::Nullable<arma::vec> logz_estimate,
-    const std::string& metric,
-    const int& num_obs,
-    const int& num_new_obs,
-    const arma::vec& aug_prob,
-    const bool& augment_alpha,
-    const bool& partial
-);
-
+    arma::vec&, arma::rowvec&, arma::vec&,
+    const arma::cube&, const arma::mat&, const arma::cube&, const double&,
+    const arma::mat&, const int&, const Rcpp::Nullable<arma::vec>, const std::string&,
+    const int&, const int&, const arma::vec&, const bool&, const bool&);
 void smc_mallows_new_users_resample(
-    arma::cube& rho_samples,
-    arma::mat& alpha_samples,
-    arma::cube& aug_rankings,
-    const int& N,
-    const arma::vec& norm_wgt,
-    const int& tt,
-    const int& num_obs,
-    const bool& augment_alpha,
-    const bool& partial
-);
-
+    arma::cube&, arma::mat&, arma::cube&, const arma::vec&, const int& tt,
+    const int& num_obs, const bool& augment_alpha, const bool& partial);
 #endif

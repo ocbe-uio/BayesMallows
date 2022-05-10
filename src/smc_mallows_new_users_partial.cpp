@@ -101,7 +101,7 @@ Rcpp::List smc_mallows_new_users_partial(
     vec aug_prob = ones(N);
     smc_mallows_new_users_augment_partial(aug_rankings, aug_prob,
       rho_samples, alpha_samples, num_obs, num_new_obs, R_obs,
-      aug_method, N, metric, tt, n_items, 0, true);
+      aug_method, metric, tt, 0, true);
 
     /* ====================================================== */
     /* Re-weight                                              */
@@ -110,7 +110,7 @@ Rcpp::List smc_mallows_new_users_partial(
     vec norm_wgt;
     smc_mallows_new_users_reweight(
       log_inc_wgt, ESS_vec, norm_wgt, aug_rankings, mat(), rho_samples,
-      0, alpha_samples, N, tt, n_items, logz_estimate, metric, num_obs,
+      0, alpha_samples, tt, logz_estimate, metric, num_obs,
       num_new_obs, aug_prob, true, true);
 
     /* ====================================================== */
@@ -118,7 +118,7 @@ Rcpp::List smc_mallows_new_users_partial(
     /* ====================================================== */
 
     smc_mallows_new_users_resample(
-      rho_samples, alpha_samples, aug_rankings, N, norm_wgt, tt, num_obs, true, true);
+      rho_samples, alpha_samples, aug_rankings, norm_wgt, tt, num_obs, true, true);
 
     /* ====================================================== */
     /* Move step                                              */

@@ -6,16 +6,11 @@ using namespace arma;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 void smc_mallows_new_users_resample(
-    cube& rho_samples,
-    mat& alpha_samples,
-    cube& aug_rankings,
-    const int& N,
-    const vec& norm_wgt,
-    const int& tt,
-    const int& num_obs,
-    const bool& augment_alpha,
-    const bool& partial
+    cube& rho_samples, mat& alpha_samples, cube& aug_rankings,
+    const vec& norm_wgt, const int& tt, const int& num_obs,
+    const bool& augment_alpha, const bool& partial
 ){
+  int N = rho_samples.n_rows;
   /* Resample particles using multinomial resampling ------ */
   uvec index = sample(regspace<uvec>(0, N - 1), N, true, norm_wgt);
   uvec tt_vec;
