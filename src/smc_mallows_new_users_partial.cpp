@@ -4,6 +4,7 @@
 #include "setdiff.h"
 #include "smc.h"
 #include "partitionfuns.h"
+#include "smc_mallows_new_users.h"
 
 using namespace arma;
 
@@ -39,14 +40,14 @@ using namespace arma;
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users_partial(
   const arma::mat& R_obs,
-  const unsigned int& n_items,
+  const int& n_items,
   const std::string& metric,
   const int& leap_size,
-  const unsigned int& N,
-  const unsigned int Time,
+  const int& N,
+  const int Time,
   const Rcpp::Nullable<arma::vec> logz_estimate,
   const int& mcmc_kernel_app,
-  const unsigned int& num_new_obs,
+  const int& num_new_obs,
   const double alpha_prop_sd,
   const double lambda,
   const double alpha_max,
@@ -56,21 +57,13 @@ Rcpp::List smc_mallows_new_users_partial(
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
-  const int& n_users = R_obs.n_rows; // this is total- number of users
+  int n_users = R_obs.n_rows; // this is total- number of users
 
   /* generate rho samples using uniform prior ------------- */
-  cube rho_samples(N, n_items, Time + 1, fill::zeros);
-  for (uword i = 0; i < N; ++i) {
-    uvec items_sample = randperm(n_items) + 1;
-    for (uword j = 0; j < n_items; ++j) {
-      rho_samples(i, j, 0) = items_sample(j);
-    }
-  }
+  cube rho_samples = initialize_rho(N, n_items, Time + 1);
 
   /* generate alpha samples using exponential prior ------- */
-  mat alpha_samples(N, Time + 1);
-  const vec& alpha_samples_0 = Rcpp::rexp(N, 1);
-  alpha_samples.col(0) = alpha_samples_0;
+  mat alpha_samples = initialize_alpha(N, Time);
 
   /* generate vector to store ESS */
   rowvec ESS_vec(Time);
@@ -103,99 +96,27 @@ Rcpp::List smc_mallows_new_users_partial(
     /* Augment partial rankings                               */
     /* ====================================================== */
 
-    const ivec ranks = Rcpp::seq(1, n_items);
-    vec aug_prob = Rcpp::rep(1.0, N);
-
-    for (uword ii = 0; ii < N; ++ii) {
-      for (uword jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
-        vec partial_ranking = R_obs.row(jj).t();
-
-        // find items missing from original observed ranking
-        uvec unranked_items = find_nonfinite(partial_ranking);
-
-        // find ranks missing from ranking
-        const vec missing_ranks = setdiff_template(ranks, partial_ranking);
-
-        // fill in missing ranks based on choice of augmentation method
-        if (aug_method == "random") {
-
-          partial_ranking.elem(find_nonfinite(partial_ranking)) = shuffle(missing_ranks);
-          aug_rankings(span(jj), span::all, span(ii)) = partial_ranking;
-          aug_prob(ii) = divide_by_fact(aug_prob(ii), missing_ranks.n_elem);
-
-        } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
-
-          // randomly permute the unranked items to give the order in which they will be allocated
-          uvec item_ordering = shuffle(unranked_items);
-          const rowvec rho_s = rho_samples(span(ii), span::all, span(tt + 1));
-          const Rcpp::List proposal = calculate_forward_probability(\
-            item_ordering, partial_ranking, missing_ranks, rho_s.t(),\
-            alpha_samples(ii, tt + 1), n_items, metric\
-          );
-          const vec& a_rank = proposal["aug_ranking"];
-          const double& f_prob = proposal["forward_prob"];
-          aug_rankings(span(jj), span::all, span(ii)) = a_rank;
-          aug_prob(ii) = aug_prob(ii) * f_prob;
-        } else {
-          Rcpp::stop("Combined choice of metric and aug_method is incompatible");
-        }
-      }
-    }
+    vec aug_prob = ones(N);
+    smc_mallows_new_users_augment_partial(aug_rankings, aug_prob,
+      rho_samples, alpha_samples, num_obs, num_new_obs, R_obs,
+      aug_method, metric, tt, 0, true);
 
     /* ====================================================== */
     /* Re-weight                                              */
     /* ====================================================== */
 
-    for (uword ii = 0; ii < N; ++ii) {
-      // evaluate the log estimate of the partition function for a particular
-      // value of alpha
-
-      /* Initializing variables ------------------------------- */
-      const Rcpp::Nullable<vec>& cardinalities = R_NilValue;
-      double alpha_samples_ii = alpha_samples(ii, tt + 1);
-      rowvec rho_samples_ii = \
-        rho_samples(span(ii), span::all, span(tt + 1));
-
-      /* Calculating log_z_alpha and log_likelihood ----------- */
-      double log_z_alpha, log_likelihood;
-      log_z_alpha = get_partition_function(\
-        n_items, alpha_samples_ii, cardinalities, logz_estimate, metric\
-      );
-
-      mat new_observed_rankings;
-      new_observed_rankings = aug_rankings(span(num_obs - num_new_obs, num_obs - 1), span::all, span(ii));
-      log_likelihood = get_exponent_sum(\
-        alpha_samples_ii, rho_samples_ii.t(), n_items, new_observed_rankings,\
-        metric\
-      );
-      log_inc_wgt(ii) = log_likelihood - num_new_obs * log_z_alpha;
-    }
-
-    /* normalise weights ------------------------------------ */
-    double maxw = max(log_inc_wgt);
-    vec w = exp(log_inc_wgt - maxw);
-    vec norm_wgt = w / sum(w);
-
-    ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
+    vec norm_wgt;
+    smc_mallows_new_users_reweight(
+      log_inc_wgt, ESS_vec, norm_wgt, aug_rankings, mat(), rho_samples,
+      0, alpha_samples, tt, logz_estimate, metric, num_obs,
+      num_new_obs, aug_prob, true, true);
 
     /* ====================================================== */
     /* Resample                                               */
     /* ====================================================== */
 
-    /* Resample particles using multinomial resampling ------ */
-    uvec index = sample(regspace<uvec>(0, N - 1), N, true, norm_wgt);
-    uvec tt_vec;
-    tt_vec = tt;
-
-    /* Replacing tt + 1 slice on rho_samples ---------------- */
-    mat rho_samples_slice_11p1 = rho_samples.slice(tt + 1);
-    rho_samples_slice_11p1 = rho_samples_slice_11p1.rows(index);
-    rho_samples.slice(tt + 1) = rho_samples_slice_11p1;
-
-    /* Replacing tt + 1 column on alpha_samples ------------- */
-    alpha_samples.col(tt + 1) =  alpha_samples.submat(index, tt_vec + 1);
-    cube aug_rankings_index = aug_rankings.slices(index);
-    aug_rankings.rows(0, num_obs - 1) = aug_rankings_index(span(0, num_obs - 1), span::all, span::all);
+    smc_mallows_new_users_resample(
+      rho_samples, alpha_samples, aug_rankings, norm_wgt, tt, num_obs, true, true);
 
     /* ====================================================== */
     /* Move step                                              */

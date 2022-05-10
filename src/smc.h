@@ -14,5 +14,6 @@ arma::vec metropolis_hastings_aug_ranking(double, arma::vec, int, arma::vec, arm
 arma::vec metropolis_hastings_aug_ranking_pseudo(double, arma::vec, int, arma::vec, arma::vec, std::string);
 Rcpp::List correction_kernel(arma::vec, arma::vec, int);
 Rcpp::List correction_kernel_pseudo(arma::vec, arma::vec, arma::vec, double, int, std::string);
+arma::vec metropolis_hastings_aug_ranking_both(double, arma::vec, int, arma::vec, arma::vec, std::string, bool);
 
 #endif
