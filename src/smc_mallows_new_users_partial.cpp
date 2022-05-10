@@ -63,9 +63,7 @@ Rcpp::List smc_mallows_new_users_partial(
   cube rho_samples = initialize_rho(N, n_items, Time + 1);
 
   /* generate alpha samples using exponential prior ------- */
-  mat alpha_samples(N, Time + 1);
-  const vec& alpha_samples_0 = Rcpp::rexp(N, 1);
-  alpha_samples.col(0) = alpha_samples_0;
+  mat alpha_samples = initialize_alpha(N, Time);
 
   /* generate vector to store ESS */
   rowvec ESS_vec(Time);
