@@ -96,7 +96,7 @@ Rcpp::List smc_mallows_new_item_rank(
       const vec remaining_set = setdiff_template(ranks, R_obs_slice_0_row_jj);
       if (aug_method == "random") {
         // create new augmented ranking by sampling remaining ranks from set uniformly
-        vec rset = sample(remaining_set, remaining_set.n_elem);
+        vec rset = shuffle(remaining_set);
 
         vec partial_ranking = R_obs_slice_0_row_jj;
         partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
@@ -107,7 +107,7 @@ Rcpp::List smc_mallows_new_item_rank(
         // find items missing from original observed ranking
         const uvec& unranked_items = find_nonfinite(R_obs_slice_0_row_jj);
         // randomly permute the unranked items to give the order in which they will be allocated
-        uvec item_ordering = sample(unranked_items, unranked_items.n_elem);
+        uvec item_ordering = shuffle(unranked_items);
         const Rcpp::List proposal = calculate_forward_probability(\
           item_ordering, R_obs_slice_0_row_jj, remaining_set, rho_samples.slice(0).row(ii).t(),\
           alpha_samples(ii, 0), n_items, metric\
