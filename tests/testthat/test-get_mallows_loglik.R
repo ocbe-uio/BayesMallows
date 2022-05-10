@@ -121,6 +121,6 @@ test_that("get_mallows_loglik works", {
       obs_freq = freq_distr[, n_items + 1],
       log = TRUE
     ),
-    "lik_db_mix is deprecated, and the log argument now defaults to TRUE."
+    "'lik_db_mix' is deprecated."
   )
 })
