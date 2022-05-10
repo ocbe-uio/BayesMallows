@@ -78,13 +78,7 @@ Rcpp::List smc_mallows_new_users_complete(
   }
 
   /* generate rho samples using uniform prior ------------- */
-  cube rho_samples(N, n_items, (n_users + Time + 1), fill::zeros);
-  for (int i = 0; i < N; ++i) {
-    const uvec items_sample = randperm(n_items) + 1;
-    for (int j = 0; j < n_items; ++j) {
-      rho_samples(i, j, 0) = items_sample(j);
-    }
-  }
+  cube rho_samples = initialize_rho(N, n_items, n_users + Time + 1);
 
   /* generate alpha samples using exponential prior ------- */
   mat alpha_samples(N, (n_users + Time + 1));
@@ -99,7 +93,7 @@ Rcpp::List smc_mallows_new_users_complete(
   /* ====================================================== */
   int num_obs = 0;
 
-  for (uword tt = 0; tt < Time; ++tt) {
+  for (int tt{}; tt < Time; ++tt) {
     if (verbose) REprintf("observe %i out of %i \n", tt + 1, Time);
 
     // keep tally of how many ranking observations we have so far
@@ -127,32 +121,19 @@ Rcpp::List smc_mallows_new_users_complete(
     // calculate incremental weight for each particle, based on
     // new observed rankings
     vec log_inc_wgt(N, fill::zeros);
-
-
     vec norm_wgt;
     smc_mallows_new_users_reweight(
       log_inc_wgt, ESS_vec, norm_wgt, cube(), new_observed_rankings, rho_samples,
       0, alpha_samples, N, tt, n_items, logz_estimate, metric, num_obs,
       num_new_obs, ones(N), true, false);
 
-
-
     /* ====================================================== */
     /* Resample                                               */
     /* ====================================================== */
 
-    /* Resample particles using multinomial resampling ------ */
-    uvec index = sample(regspace<uvec>(0, N - 1), N, true, norm_wgt);
-    uvec tt_vec;
-    tt_vec = tt;
-
-    /* Replacing tt + 1 slice on rho_samples ---------------- */
-    mat& rho_samples_slice_11p1 = rho_samples.slice(tt + 1);
-    rho_samples_slice_11p1 = rho_samples_slice_11p1.rows(index);
-    rho_samples.slice(tt + 1) = rho_samples_slice_11p1;
-
-    /* Replacing tt + 1 column on alpha_samples ------------- */
-    alpha_samples.col(tt + 1) =  alpha_samples.submat(index, tt_vec + 1);
+    cube tmp;
+    smc_mallows_new_users_resample(
+      rho_samples, alpha_samples, tmp, N, norm_wgt, tt, num_obs, true, false);
 
     /* ====================================================== */
     /* Move step                                              */

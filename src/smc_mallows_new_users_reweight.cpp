@@ -1,7 +1,4 @@
 #include <RcppArmadillo.h>
-#include "misc.h"
-#include "sample.h"
-#include "setdiff.h"
 #include "smc.h"
 #include "partitionfuns.h"
 
@@ -43,16 +40,9 @@ void smc_mallows_new_users_reweight(
       n_items, alpha_used, cardinalities, logz_estimate, metric
     );
 
-
-
-    mat obs_ranks;
-    if(partial){
-      obs_ranks = aug_rankings(span(num_obs - num_new_obs, num_obs - 1), span::all, span(ii));
-    } else {
-      obs_ranks = observed_rankings;
-    }
     double log_likelihood = get_exponent_sum(                          \
-      alpha_used, rho_samples_ii.t(), n_items, obs_ranks,
+      alpha_used, rho_samples_ii.t(), n_items,
+      partial ? aug_rankings(span(num_obs - num_new_obs, num_obs - 1), span::all, span(ii)) : observed_rankings,
       metric
     );
     log_inc_wgt(ii) = log_likelihood - num_new_obs * log_z_alpha - log(aug_prob(ii));

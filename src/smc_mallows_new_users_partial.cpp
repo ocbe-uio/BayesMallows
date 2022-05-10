@@ -60,13 +60,7 @@ Rcpp::List smc_mallows_new_users_partial(
   int n_users = R_obs.n_rows; // this is total- number of users
 
   /* generate rho samples using uniform prior ------------- */
-  cube rho_samples(N, n_items, Time + 1, fill::zeros);
-  for (uword i = 0; i < N; ++i) {
-    uvec items_sample = randperm(n_items) + 1;
-    for (uword j = 0; j < n_items; ++j) {
-      rho_samples(i, j, 0) = items_sample(j);
-    }
-  }
+  cube rho_samples = initialize_rho(N, n_items, Time + 1);
 
   /* generate alpha samples using exponential prior ------- */
   mat alpha_samples(N, Time + 1);
@@ -105,13 +99,9 @@ Rcpp::List smc_mallows_new_users_partial(
     /* ====================================================== */
 
     vec aug_prob = ones(N);
-    smc_mallows_new_users_augment_partial(
-      aug_rankings, aug_prob,
-      rho_samples, alpha_samples,
-      num_obs, num_new_obs, R_obs,
-      aug_method, N, metric,
-      tt, n_items, 0, true
-    );
+    smc_mallows_new_users_augment_partial(aug_rankings, aug_prob,
+      rho_samples, alpha_samples, num_obs, num_new_obs, R_obs,
+      aug_method, N, metric, tt, n_items, 0, true);
 
     /* ====================================================== */
     /* Re-weight                                              */
@@ -127,20 +117,8 @@ Rcpp::List smc_mallows_new_users_partial(
     /* Resample                                               */
     /* ====================================================== */
 
-    /* Resample particles using multinomial resampling ------ */
-    uvec index = sample(regspace<uvec>(0, N - 1), N, true, norm_wgt);
-    uvec tt_vec;
-    tt_vec = tt;
-
-    /* Replacing tt + 1 slice on rho_samples ---------------- */
-    mat rho_samples_slice_11p1 = rho_samples.slice(tt + 1);
-    rho_samples_slice_11p1 = rho_samples_slice_11p1.rows(index);
-    rho_samples.slice(tt + 1) = rho_samples_slice_11p1;
-
-    /* Replacing tt + 1 column on alpha_samples ------------- */
-    alpha_samples.col(tt + 1) =  alpha_samples.submat(index, tt_vec + 1);
-    cube aug_rankings_index = aug_rankings.slices(index);
-    aug_rankings.rows(0, num_obs - 1) = aug_rankings_index(span(0, num_obs - 1), span::all, span::all);
+    smc_mallows_new_users_resample(
+      rho_samples, alpha_samples, aug_rankings, N, norm_wgt, tt, num_obs, true, true);
 
     /* ====================================================== */
     /* Move step                                              */

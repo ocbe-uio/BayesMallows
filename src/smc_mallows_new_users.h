@@ -3,6 +3,8 @@
 
 #include <RcppArmadillo.h>
 
+arma::cube initialize_rho(const int& N, const int& n_items, const int& d);
+
 void smc_mallows_new_users_augment_partial(
     arma::cube& aug_rankings,
     arma::vec& aug_prob,
@@ -37,6 +39,18 @@ void smc_mallows_new_users_reweight(
     const int& num_obs,
     const int& num_new_obs,
     const arma::vec& aug_prob,
+    const bool& augment_alpha,
+    const bool& partial
+);
+
+void smc_mallows_new_users_resample(
+    arma::cube& rho_samples,
+    arma::mat& alpha_samples,
+    arma::cube& aug_rankings,
+    const int& N,
+    const arma::vec& norm_wgt,
+    const int& tt,
+    const int& num_obs,
     const bool& augment_alpha,
     const bool& partial
 );
