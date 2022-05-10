@@ -1,5 +1,4 @@
 #include <RcppArmadillo.h>
-#include "sample.h"
 #include "smc.h"
 #include "misc.h"
 #include "setdiff.h"
