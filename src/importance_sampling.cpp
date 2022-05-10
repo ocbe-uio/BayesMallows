@@ -1,6 +1,5 @@
 #include <RcppArmadillo.h>
 #include "distances.h"
-#include "sample.h"
 
 using namespace arma;
 
@@ -57,7 +56,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       vec u = log(randu(n_items));
 
       // Loop over possible values given to item j in random order
-      vec myind = sample(regspace(0, n_items - 1), n_items, false);
+      vec myind = shuffle(regspace(0, n_items - 1));
 
       for(int j = 0; j < n_items; ++j){
         int jj = myind(j);
