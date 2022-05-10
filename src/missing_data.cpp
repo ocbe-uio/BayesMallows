@@ -11,8 +11,7 @@ using namespace arma;
 
 vec propose_augmentation(const vec& ranks, const uvec& indicator){
   vec proposal = ranks;
-  vec indicated = ranks(find(indicator == 1));
-  proposal(find(indicator == 1)) = sample(indicated, indicated.n_elem, false);
+  proposal(find(indicator == 1)) = shuffle(ranks(find(indicator == 1)));
   return proposal;
 }
 
