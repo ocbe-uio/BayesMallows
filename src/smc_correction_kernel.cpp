@@ -47,8 +47,7 @@ Rcpp::List correction_kernel(
       proposed_ranking.elem(unranked_items) = remaining_set;
     } else {
       // generate random order for remaining_set
-      arma::vec A = sample(remaining_set, remaining_set.n_elem);
-      remaining_set = std::move(A);
+      remaining_set = std::move(shuffle(remaining_set));
       proposed_ranking.elem(unranked_items) = remaining_set;
     }
     correction_prob = divide_by_fact(correction_prob, remaining_set.n_elem);

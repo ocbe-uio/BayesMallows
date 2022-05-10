@@ -3,7 +3,6 @@
 #include "distances.h"
 #include "misc.h"
 #include "setdiff.h"
-#include "sample.h"
 
 using namespace arma;
 
