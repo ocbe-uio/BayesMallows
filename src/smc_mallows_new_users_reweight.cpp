@@ -14,6 +14,7 @@ void smc_mallows_new_users_reweight(
     rowvec& ESS_vec,
     vec& norm_wgt,
     const cube& aug_rankings,
+    const mat& observed_rankings,
     const cube& rho_samples,
     const double& alpha,
     const mat& alpha_samples,
@@ -25,7 +26,8 @@ void smc_mallows_new_users_reweight(
     const int& num_obs,
     const int& num_new_obs,
     const vec& aug_prob,
-    const bool& augment_alpha
+    const bool& augment_alpha,
+    const bool& partial
 ){
   for (int ii{}; ii < N; ++ii) {
     Rcpp::Nullable<vec> cardinalities = R_NilValue;
@@ -35,15 +37,23 @@ void smc_mallows_new_users_reweight(
 
     double alpha_used = augment_alpha ? alpha_samples(ii, tt + 1) : alpha;
 
+
     /* Calculating log_z_alpha and log_likelihood ----------- */
     const double log_z_alpha = get_partition_function(
       n_items, alpha_used, cardinalities, logz_estimate, metric
     );
 
-    mat new_observed_rankings;
-    new_observed_rankings = aug_rankings(span(num_obs - num_new_obs, num_obs - 1), span::all, span(ii));
+
+
+    mat obs_ranks;
+    if(partial){
+      obs_ranks = aug_rankings(span(num_obs - num_new_obs, num_obs - 1), span::all, span(ii));
+    } else {
+      obs_ranks = observed_rankings;
+    }
     double log_likelihood = get_exponent_sum(                          \
-      alpha_used, rho_samples_ii.t(), n_items, new_observed_rankings, metric\
+      alpha_used, rho_samples_ii.t(), n_items, obs_ranks,
+      metric
     );
     log_inc_wgt(ii) = log_likelihood - num_new_obs * log_z_alpha - log(aug_prob(ii));
   }

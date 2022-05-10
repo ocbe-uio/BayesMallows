@@ -25,6 +25,7 @@ void smc_mallows_new_users_reweight(
     arma::rowvec& ESS_vec,
     arma::vec& norm_wgt,
     const arma::cube& aug_rankings,
+    const arma::mat& observed_rankings,
     const arma::cube& rho_samples,
     const double& alpha,
     const arma::mat& alpha_samples,
@@ -36,7 +37,8 @@ void smc_mallows_new_users_reweight(
     const int& num_obs,
     const int& num_new_obs,
     const arma::vec& aug_prob,
-    const bool& augment_alpha
+    const bool& augment_alpha,
+    const bool& partial
 );
 
 #endif

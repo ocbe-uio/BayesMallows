@@ -111,9 +111,10 @@ Rcpp::List smc_mallows_new_users_partial_alpha_fixed(
 
     vec norm_wgt;
     smc_mallows_new_users_reweight(
-      log_inc_wgt, ESS_vec, norm_wgt, aug_rankings, rho_samples,
+      log_inc_wgt, ESS_vec, norm_wgt, aug_rankings, mat(), rho_samples,
       alpha, mat(), N, tt, n_items, logz_estimate, metric, num_obs,
-      num_new_obs, aug_prob, false);
+      num_new_obs, aug_prob, false, true);
+
 
 
     /* ====================================================== */

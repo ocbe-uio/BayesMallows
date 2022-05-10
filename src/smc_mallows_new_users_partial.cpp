@@ -119,9 +119,9 @@ Rcpp::List smc_mallows_new_users_partial(
 
     vec norm_wgt;
     smc_mallows_new_users_reweight(
-      log_inc_wgt, ESS_vec, norm_wgt, aug_rankings, rho_samples,
+      log_inc_wgt, ESS_vec, norm_wgt, aug_rankings, mat(), rho_samples,
       0, alpha_samples, N, tt, n_items, logz_estimate, metric, num_obs,
-      num_new_obs, aug_prob, true);
+      num_new_obs, aug_prob, true, true);
 
     /* ====================================================== */
     /* Resample                                               */

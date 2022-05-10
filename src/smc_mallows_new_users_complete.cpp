@@ -3,6 +3,7 @@
 #include "smc.h"
 #include "partitionfuns.h"
 #include "misc.h"
+#include "smc_mallows_new_users.h"
 
 using namespace arma;
 
@@ -68,7 +69,7 @@ Rcpp::List smc_mallows_new_users_complete(
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
-  const int n_users = R_obs.n_rows; // total number of users
+  int n_users = R_obs.n_rows; // total number of users
   if (Time > n_users / num_new_obs) {
     Rcpp::warning(\
       "Time should not exceed n_users / num_new_obs. Recalculating."\
@@ -127,35 +128,13 @@ Rcpp::List smc_mallows_new_users_complete(
     // new observed rankings
     vec log_inc_wgt(N, fill::zeros);
 
-    for (int ii = 0; ii < N; ++ii) {
-      // evaluate the log estimate of the partition function for a particular
-      // value of alpha
 
-      /* Initializing variables ------------------------------- */
-      const Rcpp::Nullable<vec>& cardinalities = R_NilValue;
-      const double& alpha_samples_ii = alpha_samples(ii, tt + 1);
-      const rowvec rho_samples_ii = \
-        rho_samples(span(ii), span::all, span(tt + 1));
+    vec norm_wgt;
+    smc_mallows_new_users_reweight(
+      log_inc_wgt, ESS_vec, norm_wgt, cube(), new_observed_rankings, rho_samples,
+      0, alpha_samples, N, tt, n_items, logz_estimate, metric, num_obs,
+      num_new_obs, ones(N), true, false);
 
-      /* Calculating log_z_alpha and log_likelihood ----------- */
-      double log_z_alpha, log_likelihood;
-      log_z_alpha = get_partition_function(\
-        n_items, alpha_samples_ii, cardinalities, logz_estimate, metric\
-      );
-      log_likelihood = get_exponent_sum(\
-        alpha_samples_ii, rho_samples_ii.t(), n_items, new_observed_rankings,\
-        metric\
-      );
-      log_inc_wgt(ii) = log_likelihood - num_new_obs * log_z_alpha;
-    }
-
-    /* normalise weights ------------------------------------ */
-    const double& maxw = max(log_inc_wgt);
-    const vec& w = exp(log_inc_wgt - maxw);
-    const vec norm_wgt = w / sum(w);
-
-    /* store ESS = sum(w)^2/sum(w^2) */
-    ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
 
     /* ====================================================== */
