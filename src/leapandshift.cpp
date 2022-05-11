@@ -48,10 +48,8 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   int u = randi<int>(distr_param(0, n - 1));
 
   // 2, compute the set S for sampling the new rank
-  support = join_cols(
-    regspace(std::max(1.0, rho(u) - leap_size), 1, rho(u) - 1),
+  support = join_cols(regspace(std::max(1.0, rho(u) - leap_size), 1, rho(u) - 1),
     regspace(rho(u) + 1, 1, std::min(n * 1.0, rho(u) + leap_size)));
-
 
   // 3. assign a random element of the support set, this completes the leap step
   int index = randi<int>(distr_param(0, support.n_elem-1));
@@ -59,16 +57,15 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   rho_proposal(u) = support(index);
 
   // Compute the associated transition probabilities
+  support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) + std::min(n - rho_proposal(u), leap_size * 1.0);
   if(std::abs(rho_proposal(u) - rho(u)) == 1){
     // in this case the transition probabilities coincide! (and in fact for leap_size = 1 the L&S is symmetric)
-    support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) + std::min(n - rho_proposal(u), leap_size * 1.0);
     prob_forward = 1.0 / (n * support.n_elem) + 1.0 / (n * support_new);
     prob_backward = prob_forward;
   } else {
     // P(proposed|current)
     prob_forward = 1.0 / (n * support.n_elem);
     // P(current|proposed)
-    support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) + std::min(n - rho_proposal(u), leap_size * 1.0);
     prob_backward = 1.0 / (n * support_new);
   }
 
