@@ -48,26 +48,15 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   int u = randi<int>(distr_param(0, n - 1));
 
   // 2, compute the set S for sampling the new rank
-  // Defining linspace lengths here to avoid duplication in code
-  double length1 = std::min(rho(u) - 1, leap_size * 1.0);
-  double length2 = std::min(n - rho(u), leap_size * 1.0);
+  support = join_cols(
+    regspace(std::max(1.0, rho(u) - leap_size), 1, rho(u) - 1),
+    regspace(rho(u) + 1, 1, std::min(n * 1.0, rho(u) + leap_size)));
 
-  if ((rho(u) > 1) && (rho(u) < n)) {
-    support = join_cols(
-      linspace(std::max(1.0, rho(u) - leap_size), rho(u) - 1, length1),
-      linspace(rho(u) + 1, std::min(n * 1.0, rho(u) + leap_size), length2));
-  } else if(rho(u) == 1){
-    support = linspace(rho(u) + 1, std::min(n * 1.0, rho(u) + leap_size), length2);
-  } else if(rho(u) == n){
-    support = linspace(std::max(1.0, rho(u) - leap_size), rho(u) - 1, length1);
-  }
 
   // 3. assign a random element of the support set, this completes the leap step
   int index = randi<int>(distr_param(0, support.n_elem-1));
   // Picked element index-1 from the support set
   rho_proposal(u) = support(index);
-
-
 
   // Compute the associated transition probabilities
   if(std::abs(rho_proposal(u) - rho(u)) == 1){
