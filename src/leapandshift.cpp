@@ -47,21 +47,17 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   // 1, sample u randomly between 1 and n
   int u = randi<int>(distr_param(0, n - 1));
 
-
   // 2, compute the set S for sampling the new rank
-  double dobL = static_cast<double>(leap_size);
-  double dobn = static_cast<double>(n);
-
   // Defining linspace lengths here to avoid duplication in code
-  double length1 = std::min(rho(u) - 1, dobL);
-  double length2 = std::min(n - rho(u), dobL);
+  double length1 = std::min(rho(u) - 1, leap_size * 1.0);
+  double length2 = std::min(n - rho(u), leap_size * 1.0);
 
   if ((rho(u) > 1) && (rho(u) < n)) {
     support = join_cols(
       linspace(std::max(1.0, rho(u) - leap_size), rho(u) - 1, length1),
-      linspace(rho(u) + 1, std::min(dobn, rho(u) + leap_size), length2));
+      linspace(rho(u) + 1, std::min(n * 1.0, rho(u) + leap_size), length2));
   } else if(rho(u) == 1){
-    support = linspace(rho(u) + 1, std::min(dobn, rho(u) + leap_size), length2);
+    support = linspace(rho(u) + 1, std::min(n * 1.0, rho(u) + leap_size), length2);
   } else if(rho(u) == n){
     support = linspace(std::max(1.0, rho(u) - leap_size), rho(u) - 1, length1);
   }
@@ -76,14 +72,14 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   // Compute the associated transition probabilities
   if(std::abs(rho_proposal(u) - rho(u)) == 1){
     // in this case the transition probabilities coincide! (and in fact for leap_size = 1 the L&S is symmetric)
-    support_new = std::min(rho_proposal(u) - 1, dobL) + std::min(n - rho_proposal(u), dobL);
+    support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) + std::min(n - rho_proposal(u), leap_size * 1.0);
     prob_forward = 1.0 / (n * support.n_elem) + 1.0 / (n * support_new);
     prob_backward = prob_forward;
   } else {
     // P(proposed|current)
     prob_forward = 1.0 / (n * support.n_elem);
     // P(current|proposed)
-    support_new = std::min(rho_proposal(u) - 1, dobL) + std::min(n - rho_proposal(u), dobL);
+    support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) + std::min(n - rho_proposal(u), leap_size * 1.0);
     prob_backward = 1.0 / (n * support_new);
   }
 
