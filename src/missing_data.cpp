@@ -30,7 +30,7 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
       vec new_ranks = shuffle(setdiff_template(regspace<vec>(1, rank_vector.n_elem), present_ranks));
 
       for(unsigned int j = 0; j < missing_inds.n_elem; ++j){
-        rank_vector(missing_inds(j)) = static_cast<double>(as_scalar(new_ranks(j)));
+        rank_vector(missing_inds(j)) = new_ranks(j);
       }
       rankings.col(i) = rank_vector;
     }

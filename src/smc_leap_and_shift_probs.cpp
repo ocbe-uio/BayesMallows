@@ -31,19 +31,18 @@ using namespace arma;
 Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const int n_items) {
 
   // draw one u uniformly from {1,...,n} to use as index for rho
-  int u = Rcpp::as<int>(Rcpp::sample(n_items, 1));
-  u = u - 1; // adjusting index for easier R correspondence
+  int u = randi<int>(distr_param(0, n_items - 1));
 
   // define set of integers S, the support set for sampling new ranks
   const int rho_minus_leap = rho(u) - leap_size;
   const int rho_plus_leap = rho(u) + leap_size;
   const int low_bd = std::max(1, rho_minus_leap);
   const int max_bd = std::min(n_items, rho_plus_leap);
-  ivec S = Rcpp::seq(low_bd, max_bd);
+  ivec S = regspace<ivec>(low_bd, 1, max_bd);
   S = S.elem(find(S != rho(u)));
 
   // draw a random number r from S
-  int r = as_scalar(randi(1, distr_param(S.min(), S.max())));
+  int r = randi<int>(distr_param(S.min(), S.max()));
   r = r - 1; // adjusting index for R correspondence
 
   // Create leap step
@@ -52,7 +51,7 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
 
   // here, two elements are the same so we need to shift element and replace the repeated r with u
   const int& delta = rho_star(u) - rho(u);
-  ivec rho_prime = Rcpp::rep(0, n_items);
+  ivec rho_prime = zeros<ivec>(n_items);
 
   // shift step
   for (int i = 0; i < n_items; ++i) {

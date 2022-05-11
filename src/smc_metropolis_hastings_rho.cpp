@@ -66,7 +66,7 @@ arma::vec metropolis_hastings_rho(
   const double& loga = std::log(backwards_prob) - std::log(forwards_prob) + mallows_loglik_prop - mallows_loglik_curr;
 
   // determine whether to accept or reject proposed rho and return now consensus ranking
-  const double& p = Rcpp::as<double>(Rcpp::runif(1, 0, 1));
+  const double& p = R::runif(0, 1);
   if (std::log(p) <= loga) {
     return(rho_prime);
   } else {

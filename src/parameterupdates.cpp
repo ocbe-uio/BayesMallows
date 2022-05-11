@@ -41,7 +41,6 @@ double update_alpha(vec& alpha_acceptance,
 
   double rank_dist = rank_dist_sum(rankings, rho_old, metric, obs_freq);
 
-
   // Difference between current and proposed alpha
   double alpha_diff = alpha_old - alpha_proposal;
 

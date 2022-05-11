@@ -108,7 +108,7 @@ vec propose_swap(const vec& ranking, const Rcpp::List& assessor_constraints,
   int n_items = ranking.n_elem;
 
   // Draw a random number, representing an item
-  int u = as_scalar(randi(1, distr_param(1, n_items - Lswap)));
+  int u = randi<int>(distr_param(1, n_items - Lswap));
 
   int ind1 = as_scalar(find(ranking == u));
   int ind2 = as_scalar(find(ranking == (u + Lswap)));
