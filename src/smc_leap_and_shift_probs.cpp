@@ -38,7 +38,7 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
   const int rho_plus_leap = rho(u) + leap_size;
   const int low_bd = std::max(1, rho_minus_leap);
   const int max_bd = std::min(n_items, rho_plus_leap);
-  ivec S = regspace<ivec>(low_bd, 1, max_bd);
+  ivec S = regspace<ivec>(low_bd, max_bd);
   S = S.elem(find(S != rho(u)));
 
   // draw a random number r from S
