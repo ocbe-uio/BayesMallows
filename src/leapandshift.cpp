@@ -46,7 +46,7 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
 
   // Leap 1
   // 1, sample u randomly between 1 and n
-  u = as_scalar(randi(1, distr_param(1, n)));
+  u = randi<int>(distr_param(1, n));
 
   // 2, compute the set S for sampling the new rank
   double dobL = static_cast<double>(leap_size);
@@ -67,7 +67,7 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   }
 
   // 3. assign a random element of the support set, this completes the leap step
-  index = as_scalar(randi(1, distr_param(0, support.n_elem-1)));
+  index = randi<int>(distr_param(0, support.n_elem-1));
   // Picked element index-1 from the support set
   rho_proposal(u-1) = support(index);
 

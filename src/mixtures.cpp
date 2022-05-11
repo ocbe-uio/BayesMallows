@@ -84,7 +84,7 @@ vec update_wcd(const uvec& current_cluster_assignment,
   uvec inds = regspace<uvec>(0, n_clusters - 1);
   for(int i = 0; i < n_clusters; ++i){
     mat dist_vec = dist_mat.submat(find(current_cluster_assignment == i), inds.subvec(i, i));
-    wcd(i) = sum(conv_to<vec>::from(dist_vec));
+    wcd(i) = accu(dist_vec);
   }
 
   return(wcd);

@@ -50,7 +50,7 @@ double metropolis_hastings_alpha(
   const double lambda,
   const double alpha_max
 ) {
-  const double rand = Rcpp::as<double>(Rcpp::rnorm(1, 0, 1));
+  const double rand = R::rnorm(0, 1);
   const double alpha_prime_log = rand * alpha_prop_sd + std::log(alpha);
   const double alpha_prime = std::exp(alpha_prime_log);
 
@@ -71,7 +71,7 @@ double metropolis_hastings_alpha(
 
   // determine whether to accept or reject proposed rho and return now consensus
   // ranking
-  const double p = Rcpp::as<double>(Rcpp::runif(1, 0, 1));
+  const double p = R::runif(0, 1);
   if (log(p) <= loga && alpha_prime < alpha_max) {
     return(alpha_prime);
   } else {
