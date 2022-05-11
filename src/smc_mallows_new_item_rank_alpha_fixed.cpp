@@ -83,7 +83,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   const ivec& ranks = Rcpp::seq(1, n_items);
 
   // total correction prob
-  vec total_correction_prob = Rcpp::rep(1.0, N);
+  vec total_correction_prob = ones(N);
 
   // iterate through each observed ranking and create new "corrected" augmented rankings
   for (uword ii = 0; ii < N; ++ii) {
@@ -206,7 +206,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
     rho_samples.slice(tt + 1) = rho_samples.slice(tt);
 
     // total correction prob
-    vec total_correction_prob = Rcpp::rep(1.0, N);
+    vec total_correction_prob = ones(N);
 
     // iterate through each observed ranking and create new "corrected"
     // augmented rankings
