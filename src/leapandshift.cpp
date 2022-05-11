@@ -68,8 +68,6 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
     // P(current|proposed)
     prob_backward = 1.0 / (n * support_new);
   }
-
-
   shift_step(rho_proposal, rho, u, indices);
 
   if(!reduce_indices){
