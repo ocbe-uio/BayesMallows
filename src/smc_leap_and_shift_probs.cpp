@@ -53,19 +53,6 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
   const int& delta = rho_star(u) - rho(u);
   ivec rho_prime = zeros<ivec>(n_items);
 
-  // shift step
-  for (int i = 0; i < n_items; ++i) {
-    if (rho(i) == rho(u)) {
-      rho_prime(i) = rho_star(u);
-    } else if ((rho(u) < rho(i)) && (rho(i) <= rho_star(u)) && (delta > 0)) {
-      rho_prime(i) = rho(i) - 1;
-    } else if ((rho(u) > rho(i)) && (rho(i) >= rho_star(u)) && (delta < 0)) {
-      rho_prime(i) = rho(i) + 1;
-    } else {
-      rho_prime(i) = rho(i);
-    }
-  }
-
   // Define support set for ranks rho_star[u] can leap to
   const int rho_star_minus_leap = rho_star(u) - leap_size;
   const int rho_star_plus_leap = rho_star(u) + leap_size;
@@ -87,6 +74,19 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
     forwards_prob = 1.0 / (n_items * S.n_elem);
     // p(current|proposed)
     backwards_prob = 1.0 / (n_items * S_star.n_elem);
+  }
+
+  // shift step
+  for (int i = 0; i < n_items; ++i) {
+    if (rho(i) == rho(u)) {
+      rho_prime(i) = rho_star(u);
+    } else if ((rho(u) < rho(i)) && (rho(i) <= rho_star(u)) && (delta > 0)) {
+      rho_prime(i) = rho(i) - 1;
+    } else if ((rho(u) > rho(i)) && (rho(i) >= rho_star(u)) && (delta < 0)) {
+      rho_prime(i) = rho(i) + 1;
+    } else {
+      rho_prime(i) = rho(i);
+    }
   }
 
   // return(leap_shift_list)
