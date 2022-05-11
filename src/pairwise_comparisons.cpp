@@ -78,12 +78,12 @@ vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor
   uvec constrained_items = Rcpp::as<uvec>(assessor_constraints[0]);
 
   // Sample an integer between 1 and n_items
-  int item = randi<int>(distr_param(1, n_items));
+  int item = randi<int>(distr_param(0, n_items - 1));
 
   // Left and right limits of the interval we draw ranks from
   // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
   int left_limit = 0, right_limit = n_items + 1;
-  find_pairwise_limits(left_limit, right_limit, item, assessor_constraints, ranking);
+  find_pairwise_limits(left_limit, right_limit, item + 1, assessor_constraints, ranking);
 
   // Now complete the leap step by sampling a new proposal uniformly between
   // left_limit + 1 and right_limit - 1
@@ -91,13 +91,12 @@ vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor
 
   // Assign the proposal to the (item-1)th item
   vec proposal = ranking;
-  proposal(item - 1) = proposed_rank;
+  proposal(item) = proposed_rank;
 
-  double delta_r;
   uvec indices;
 
   // Do the shift step
-  shift_step(proposal, ranking, item, delta_r, indices);
+  shift_step(proposal, ranking, item, indices);
 
   return proposal;
 }
