@@ -76,8 +76,9 @@ alpha_max <- 1e0
 test_that("Produces the wrong metric and aug_method error", {
   N <- 5
   expect_error(
-    smc_mallows_new_users_partial_alpha_fixed(
+    smc_mallows_new_users(
       alpha           = alpha_0,
+      type            = "partial_alpha_fixed",
       R_obs           = samples,
       n_items         = n_items,
       metric          = "cayley",
@@ -91,8 +92,9 @@ test_that("Produces the wrong metric and aug_method error", {
     )
   )
   expect_error(
-    smc_mallows_new_users_partial(
+    smc_mallows_new_users(
       R_obs           = samples,
+      type            = "partial",
       n_items         = n_items,
       metric          = "cayley",
       leap_size       = leap_size,
@@ -110,8 +112,9 @@ test_that("Produces the wrong metric and aug_method error", {
 })
 test_that("Runs with unif kernel", {
   N <- 5
-  smc_unif_alpha_fixed_unif <- smc_mallows_new_users_partial_alpha_fixed(
+  smc_unif_alpha_fixed_unif <- smc_mallows_new_users(
     alpha           = alpha_0,
+    type            = "partial_alpha_fixed",
     R_obs           = samples,
     n_items         = n_items,
     metric          = "footrule",
@@ -123,11 +126,28 @@ test_that("Runs with unif kernel", {
     num_new_obs     = num_new_obs,
     aug_method      = "random"
   )
+  expect_warning(
+    smc_mallows_new_users_partial_alpha_fixed(
+      alpha           = alpha_0,
+      R_obs           = samples,
+      n_items         = n_items,
+      metric          = "footrule",
+      leap_size       = leap_size,
+      N               = N,
+      Time            = Time,
+      logz_estimate   = logz_estimate,
+      mcmc_kernel_app = mcmc_times,
+      num_new_obs     = num_new_obs,
+      aug_method      = "random"
+    ),
+    "'smc_mallows_new_users_partial_alpha_fixed' is deprecated."
+  )
   expect_is(smc_unif_alpha_fixed_unif, "list")
-  expect_equal(length(smc_unif_alpha_fixed_unif), 3)
+  expect_equal(length(smc_unif_alpha_fixed_unif), 4)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 10, 21))
-  smc_unif <- smc_mallows_new_users_partial(
+  smc_unif <- smc_mallows_new_users(
     R_obs           = samples,
+    type            = "partial",
     n_items         = n_items,
     metric          = "footrule",
     leap_size       = leap_size,
@@ -140,6 +160,24 @@ test_that("Runs with unif kernel", {
     lambda          = lambda,
     alpha_max       = alpha_max,
     aug_method      = "random"
+  )
+  expect_warning(
+    smc_mallows_new_users_partial(
+      R_obs           = samples,
+      n_items         = n_items,
+      metric          = "footrule",
+      leap_size       = leap_size,
+      N               = N,
+      Time            = Time,
+      logz_estimate   = logz_estimate,
+      mcmc_kernel_app = mcmc_times,
+      num_new_obs     = num_new_obs,
+      alpha_prop_sd   = alpha_prop_sd,
+      lambda          = lambda,
+      alpha_max       = alpha_max,
+      aug_method      = "random"
+    ),
+    "'smc_mallows_new_users_partial' is deprecated."
   )
   expect_is(smc_unif, "list")
   expect_equal(length(smc_unif), 4)
@@ -159,8 +197,9 @@ test_that("Runs with unif kernel", {
 
 test_that("Runs with pseudo kernel", {
   N <- 5
-  smc_unif_alpha_fixed_pseudo <- smc_mallows_new_users_partial_alpha_fixed(
+  smc_unif_alpha_fixed_pseudo <- smc_mallows_new_users(
     alpha           = alpha_0,
+    type            = "partial_alpha_fixed",
     R_obs           = samples,
     n_items         = n_items,
     metric          = "footrule",
@@ -173,10 +212,11 @@ test_that("Runs with pseudo kernel", {
     aug_method      = "pseudolikelihood"
   )
   expect_is(smc_unif_alpha_fixed_pseudo, "list")
-  expect_equal(length(smc_unif_alpha_fixed_pseudo), 3)
+  expect_equal(length(smc_unif_alpha_fixed_pseudo), 4)
   expect_equal(dim(smc_unif_alpha_fixed_pseudo$rho_samples), c(N, 10, 21))
-  smc_pseudo <- smc_mallows_new_users_partial(
+  smc_pseudo <- smc_mallows_new_users(
     R_obs           = samples,
+    type            = "partial",
     n_items         = n_items,
     metric          = "footrule",
     leap_size       = leap_size,
@@ -203,8 +243,9 @@ test_that("Specific example results are OK", {
   aug_method <- "random"
   set.seed(5482) # necessary for reproducibility of the random aug_method
 
-  test <- smc_mallows_new_users_partial(
+  test <- smc_mallows_new_users(
     R_obs           = samples,
+    type            = "partial",
     n_items         = n_items,
     metric          = metric,
     leap_size       = leap_size,
@@ -277,8 +318,9 @@ test_that("Specific example results are OK", {
     c(0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25)
   )
 
-  test_fixed <- smc_mallows_new_users_partial_alpha_fixed(
+  test_fixed <- smc_mallows_new_users(
     R_obs           = samples,
+    type            = "partial_alpha_fixed",
     n_items         = n_items,
     metric          = metric,
     leap_size       = leap_size,

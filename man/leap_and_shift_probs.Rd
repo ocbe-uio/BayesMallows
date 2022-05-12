@@ -23,7 +23,7 @@ A list containing:
 }
 }
 \description{
-Determine the new Calculates transition probabilities for proposing a new rho
+Calculates transition probabilities for proposing a new rho
 }
 \examples{
 rho <- c(1, 2, 3, 4, 5, 6)

@@ -5,7 +5,7 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Leap and Shift Probabilities
-//' @description Determine the new Calculates transition probabilities for proposing a new rho
+//' @description Calculates transition probabilities for proposing a new rho
 //' @param rho A ranking sequence
 //' @param leap_size Integer specifying the step size of the leap-and-shift
 //' proposal distribution.
