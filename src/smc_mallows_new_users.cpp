@@ -69,7 +69,6 @@ Rcpp::List smc_mallows_new_users(
   const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
   const bool verbose = false
 ) {
-
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
@@ -180,8 +179,8 @@ Rcpp::List smc_mallows_new_users(
             alpha_prop_sd, lambda, alpha_max                                  \
           );
         }
-      } else if(type == "partial"){
-        double as = alpha_samples(ii, tt + 1);
+      } else if(type == "partial" || type == "partial_alpha_fixed"){
+        double as = (type == "partial" ? alpha_samples(ii, tt + 1) : alpha);
         mat all_observed_rankings;
         all_observed_rankings = aug_rankings(span(0, num_obs - 1), span::all, span(ii));
         mat rs_slice = rho_samples.slice(tt + 1);
@@ -192,10 +191,12 @@ Rcpp::List smc_mallows_new_users(
           metropolis_hastings_rho(                                       \
             as, n_items, all_observed_rankings, metric, rs.t(), leap_size\
           );
-        alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(              \
-          as, n_items, all_observed_rankings, metric, rs.t(), logz_estimate,\
-          alpha_prop_sd, lambda, alpha_max                                  \
-        );
+        if(type == "partial"){
+          alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(              \
+            as, n_items, all_observed_rankings, metric, rs.t(), logz_estimate,\
+            alpha_prop_sd, lambda, alpha_max                                  \
+          );
+        }
         for (uword jj = 0; jj < num_obs; ++jj) {
           rowvec ar;
           ar = aug_rankings(span(jj), span::all, span(ii));
@@ -207,34 +208,7 @@ Rcpp::List smc_mallows_new_users(
           }
           aug_rankings(span(jj), span::all, span(ii)) = mh_aug_result;
         }
-      } else if(type == "partial_alpha_fixed"){
-        mat all_observed_rankings;
-        all_observed_rankings = aug_rankings(span(0, num_obs - 1), span::all, span(ii));
-        const mat& rs_slice = rho_samples.slice(tt + 1);
-        const rowvec& rs = rs_slice.row(ii);
-        // move each particle containing sample of rho and alpha by using
-        // the MCMC kernels
-        rho_samples(span(ii), span::all, span(tt + 1)) =                    \
-          metropolis_hastings_rho(                                          \
-            alpha, n_items, all_observed_rankings, metric, rs.t(), leap_size\
-          );
-        for (uword jj = 0; jj < num_obs; ++jj) {
-          rowvec ar;
-          ar = aug_rankings(span(jj), span::all, span(ii));
-          vec mh_aug_result;
-          if (aug_method == "random") {
-            mh_aug_result = metropolis_hastings_aug_ranking(           \
-              alpha, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric\
-            );
-          } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
-            mh_aug_result = metropolis_hastings_aug_ranking_pseudo(
-              alpha, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric\
-            );
-          }
-          aug_rankings(span(jj), span::all, span(ii)) = mh_aug_result;
-        }
       }
-
     }
   }
   // return the history of the particles and their values
@@ -247,5 +221,3 @@ Rcpp::List smc_mallows_new_users(
   if(type == "complete") particle_history.attr("class") = "SMCMallows"; // TODO: add List
   return particle_history;
 }
-
-
