@@ -113,6 +113,11 @@ to \code{0.1}. When \code{n_cluster > 1}, each mixture component
 \item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential
 prior distribution.}
 
+\item{alpha}{A numeric value of the scale parameter which is known and fixed.}
+
+\item{aug_method}{A character string specifying the approach for filling
+in the missing data, options are "pseudolikelihood" or "random".}
+
 \item{logz_estimate}{Estimate of the partition function, computed with
 \code{\link{estimate_partition_function}} in the BayesMallow R package
 {estimate_partition_function}.}

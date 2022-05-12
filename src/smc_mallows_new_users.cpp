@@ -41,6 +41,9 @@ using namespace arma;
 //'   \eqn{\alpha_{c}} has the same prior distribution.
 //' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
 //'   prior distribution.
+//' @param alpha A numeric value of the scale parameter which is known and fixed.
+//' @param aug_method A character string specifying the approach for filling
+//' in the missing data, options are "pseudolikelihood" or "random".
 //' @param verbose Logical specifying whether to print out the progress of the
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
 //'
