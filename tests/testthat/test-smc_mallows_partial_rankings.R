@@ -260,10 +260,13 @@ test_that("Specific example results are OK", {
     aug_method      = aug_method
   )
 
-  expect_equal(
-    round(test$alpha_samples[1:3, 1:4], 5),
-    structure(c(0.1271, 1.01988, 0.35984, 0.24885, 0.25341, 0.21513,
-                0.33608, 0.23761, 0.14304, 0.5712, 0.29966, 0.09631), dim = 3:4)
+  expect_equivalent(
+    test$alpha_samples[1:3, 1:4],
+    structure(c(0.127095626667142, 1.01987919207187, 0.359836369752884,
+                0.248846439612748, 0.253409754381104, 0.215132582694051, 0.336076924104019,
+                0.237605300968664, 0.103968501079671, 0.571197819323307, 0.340280366360714,
+                0.0669776047021982), dim = 3:4),
+    tolerance = 1e-5
   )
 
   expect_error(
@@ -297,7 +300,7 @@ test_that("Specific example results are OK", {
     output = test$alpha_samples[, Time + 1], nmc = N, burnin = 0
   )
   expect_equal(dim(rho_cp), c(10, 3))
-  expect_equal(dim(rho_map), c(10, 3))
+  expect_equal(dim(rho_map), c(100, 3))
   expect_equal(dim(post_rho), c(10, 7))
   expect_equal(dim(post_alpha), c(1, 6))
 
@@ -307,7 +310,7 @@ test_that("Specific example results are OK", {
     type = "CP"
   )
   expect_equal(rho_cp$cumprob,
-               c(0.75, 1, 0.875, 1, 0.75, 0.5, 0.5, 0.25, 0.25, 0.75))
+               c(0.5, 0.875, 1, 0.625, 1, 0.5, 0.625, 0.625, 0.625, 1))
 
   rho_map <- compute_rho_consensus(
     output = test$rho_samples[, , Time + 1], nmc = N, burnin = 2, C = 1,
@@ -315,7 +318,15 @@ test_that("Specific example results are OK", {
   )
   expect_equal(
     rho_map$probability,
-    c(0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25)
+    c(0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
+      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
+      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
+      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
+      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
+      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
+      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
+      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
+      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125)
   )
 
   test_fixed <- smc_mallows_new_users(
