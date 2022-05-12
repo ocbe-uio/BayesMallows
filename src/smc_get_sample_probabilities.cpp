@@ -29,7 +29,7 @@ arma::vec get_sample_probabilities(
 ) {
   // define a set of probs list
   const unsigned int& num_ranks = remaining_set_ranks.n_elem;
-  vec sample_prob_list = Rcpp::rep(0.0, num_ranks);
+  vec sample_prob_list = zeros(num_ranks);
 
   // cycle through each item and calculate its specific prob
   for (uword ii = 0; ii < num_ranks; ++ii) {
