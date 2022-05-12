@@ -35,8 +35,7 @@ A list is provided with the most commonly used functions in this extension of th
 
 | Function Name                | Description |
 |:-----------------------------|:--------------------------------------------|
-| `smc_mallows_new_users_complete` |  Runs the SMC algorithm for case where we observe full rankings as new observational data. |
-| `smc_mallows_new_users_partial` | Runs the SMC algorithm for case where we observe partial rankings as new observational data. |
+| `smc_mallows_new_users` |  Runs the SMC algorithm for case where we observe full rankings as new observational data. |
 | `smc_mallows_new_item_rank` | Runs the SMC algorithm for case where we observe updated partial rankings as from existing users. |
 | `plot_rho_posterior`| Plots posterior density of $\boldsymbol{\rho}$ for a selection of items.  |
 | `compute_posterior_intervals_rho` | Computes the Bayesian posterior intervals for $\boldsymbol{\rho}$.|
@@ -109,7 +108,7 @@ We are interested in updating the parameter estimates of the Bayesian Mallows mo
 head(sushi_rankings)
 ```
 
-The function `smc_mallows_new_users_complete` shows the simplest version of the SMC algorithm in action. Many of the input variables, that the function requires, are also used in some of the existing functions in the `BayesMallows` R package. However, we will discuss what the new variables refer to in the algorithm. The variable `R_obs` in this instance is a 2D dataset with the number of columns as `n_items` and the number of rows, $M$, represents the number of individuals in the dataset. We begin the algorithm with no observations and in each artificial time step we introduce a batch number of observations, this is controlled by the variable `num_new_obs` to control the size of the bath, and `Time` to specify the number of updates we will perform. There is a limit on the value for `Time`, and this depends on the number of individuals in the dataset and the value of `num_new_obs`. In the move stage we can apply an MCMC kernel as many times as we would like using the variable `mcmc_kernel_app` to specify the value.
+The function `smc_mallows_new_users` with `type = "complete"` shows the simplest version of the SMC algorithm in action. Many of the input variables, that the function requires, are also used in some of the existing functions in the `BayesMallows` R package. However, we will discuss what the new variables refer to in the algorithm. The variable `R_obs` in this instance is a 2D dataset with the number of columns as `n_items` and the number of rows, $M$, represents the number of individuals in the dataset. We begin the algorithm with no observations and in each artificial time step we introduce a batch number of observations, this is controlled by the variable `num_new_obs` to control the size of the bath, and `Time` to specify the number of updates we will perform. There is a limit on the value for `Time`, and this depends on the number of individuals in the dataset and the value of `num_new_obs`. In the move stage we can apply an MCMC kernel as many times as we would like using the variable `mcmc_kernel_app` to specify the value.
 
 ```{r set_seed, message=FALSE, warning=FALSE, include=FALSE}
 set.seed(994)
@@ -132,8 +131,8 @@ data <- sushi_rankings[1:100, ]
 leap_size <- floor(n_items / 5)
 N <- 1000
 Time <- 20
-smc_test <- smc_mallows_new_users_complete(
-  R_obs = data, n_items = n_items,
+smc_test <- smc_mallows_new_users(
+  R_obs = data, type = "complete", n_items = n_items,
   metric = metric, leap_size = leap_size,
   N = N, Time = Time,
   logz_estimate = logz_estimate,
@@ -218,15 +217,16 @@ data_partial[data_partial > 5] <- NA
 head(data_partial)
 ```
 
-We can call the function `smc_mallows_new_user_partial` to run the SMC algorithm for partial ranking data. The variable `aug_method` allows you to choose which data augmentation method to use on the partial ranking data. The option `"pseudolikelihood"` is only compatible with when selecting the distance metric as either `"footrule"` or `"spearman"`.
+We can call the function `smc_mallows_new_users` with `type = "partial"` to run the SMC algorithm for partial ranking data. The variable `aug_method` allows you to choose which data augmentation method to use on the partial ranking data. The option `"pseudolikelihood"` is only compatible with when selecting the distance metric as either `"footrule"` or `"spearman"`.
 
 
 ```{r smc_partial_error, eval=FALSE, error=TRUE}
 aug_method <- "pseudolikelihood"
 metric <- "cayley"
 # example of selecting the incorrect combination of metric and aug_method
-smc_partial_test <- smc_mallows_new_users_partial(
+smc_partial_test <- smc_mallows_new_users(
   R_obs = data_partial,
+  type = "partial",
   n_items = n_items,
   metric = metric,
   leap_size = leap_size, N = N,
@@ -239,7 +239,7 @@ smc_partial_test <- smc_mallows_new_users_partial(
   alpha_max = 1e6,
   aug_method = aug_method
 )
-#>Error in smc_mallows_new_users_partial(R_obs = data_partial, n_items = n_items,
+#>Error in smc_mallows_new_users(R_obs = data_partial, type = "partial", 
 #>: Combined choice of metric and aug_method is incompatible
 ```
 
@@ -253,8 +253,9 @@ set.seed(994)
 # aug_method = "random"
 aug_method <- "pseudolikelihood"
 metric <- "footrule"
-smc_partial_test <- smc_mallows_new_users_partial(
+smc_partial_test <- smc_mallows_new_users(
   R_obs = data_partial,
+  type = "partial",
   n_items = n_items,
   metric = metric,
   leap_size = leap_size, N = N,

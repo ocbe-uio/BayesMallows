@@ -23,8 +23,8 @@ leap_size <- floor(n_items / 5)
 N <- 100
 Time <- 20
 
-model_fit <- smc_mallows_new_users_complete(
-  R_obs = data, n_items = n_items,
+model_fit <- smc_mallows_new_users(
+  R_obs = data, "complete", n_items = n_items,
   metric = metric, leap_size = leap_size,
   N = N, Time = Time,
   logz_estimate = logz_estimate,
