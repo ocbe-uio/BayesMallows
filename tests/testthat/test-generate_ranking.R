@@ -13,7 +13,7 @@ beach_tc <- generate_transitive_closure(beach_preferences)
 test_that("generate_initial_ranking works", {
   expect_error(generate_initial_ranking(pair_comp))
   expect_is(generate_initial_ranking(pair_comp_tc), "matrix")
-  expect_true(all(apply(generate_initial_ranking(pair_comp_tc), 1, BayesMallows:::validate_permutation)))
+  expect_true(all(apply(generate_initial_ranking(pair_comp_tc), 1, validate_permutation)))
   expect_error(generate_initial_ranking(beach_tc, n_items = 10))
 })
 
