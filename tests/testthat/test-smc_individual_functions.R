@@ -92,26 +92,20 @@ test_that("smc_leap_and_shift_probs() works as expected", {
   expect_equal(dist_1, 1)
 
   test_2 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 2)
-  expect_equal(test_2$rho_prime, as.matrix(c(1, 2, 3, 4, 5, 6)))
-  expect_equivalent(test_2$forwards_prob, 0.0556, tol = 1e-4)
-  expect_equivalent(test_2$backwards_prob, 0.0556, tol = 1e-4)
+  expect_equal(test_2$rho_prime, as.matrix(c(1, 2, 3, 5, 4, 6)))
+  expect_equivalent(test_2$forwards_prob, 0.09722222, tol = 1e-4)
+  expect_equivalent(test_2$backwards_prob, 0.09722222, tol = 1e-4)
 
-  dist_2 <- get_rank_distance(
-    rho, test_2$rho_prime,
-    metric = "ulam"
-  )
-  expect_equal(dist_2, 0)
+  dist_2 <- get_rank_distance(rho, test_2$rho_prime, metric = "ulam")
+  expect_equal(dist_2, 1)
 
   test_3 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 3)
-  expect_equal(test_3$rho_prime, as.matrix(c(1, 2, 3, 4, 5, 6)))
-  expect_equivalent(test_3$forwards_prob, 0.0417, tol = 1e-3)
-  expect_equivalent(test_3$backwards_prob, 0.0417, tol = 1e-3)
+  expect_equal(test_3$rho_prime, as.matrix(c(1, 3, 2, 4, 5, 6)))
+  expect_equivalent(test_3$forwards_prob, 0.075, tol = 1e-3)
+  expect_equivalent(test_3$backwards_prob, 0.075, tol = 1e-3)
 
-  dist_3 <- get_rank_distance(
-    rho, test_3$rho_prime,
-    metric = "ulam"
-  )
-  expect_equal(dist_3, 0)
+  dist_3 <- get_rank_distance(rho, test_3$rho_prime, metric = "ulam")
+  expect_equal(dist_3, 1)
 })
 
 # ======================================================== #
@@ -206,4 +200,26 @@ test_that("metropolis_hastings_alpha() works as expected", {
   expect_equivalent(test_2_b, 2.125639, tol = 1e-5)
   expect_equivalent(test_3_b, 2)
   expect_equivalent(test_4_b, 1.904542, tol = 1e-5)
+})
+
+
+test_that("leap_and_shift_probs does not propose current ranking",{
+  set.seed(12)
+  count <- Reduce(`+`, lapply(list(1:4, 1:10), function(rho){
+    n_items = length(rho)
+    count <- 0
+    for(i in 1:20){
+      val <- leap_and_shift_probs(rho, 1, n_items)
+      if(all(val$rho_prime == rho)) {
+        count <- count + 1
+      }
+      val <- leap_and_shift_probs(rho, 2, n_items)
+      if(all(val$rho_prime == rho)) {
+        count <- count + 1
+      }
+    }
+    count
+  }))
+  expect_equal(count, 0)
+
 })

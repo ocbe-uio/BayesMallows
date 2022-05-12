@@ -41,13 +41,14 @@ Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const 
   ivec S = regspace<ivec>(low_bd, max_bd);
   S = S.elem(find(S != rho(u)));
 
-  // draw a random number r from S
-  int r = randi<int>(distr_param(S.min(), S.max()));
-  r = r - 1; // adjusting index for R correspondence
+  // draw a random index ind from the elements of S
+  int ind = randi<int>(distr_param(0, S.n_elem - 1));
+  // store the value r in S corresponding to the index ind
+  int r = S(ind);
 
   // Create leap step
   vec rho_star = rho;
-  rho_star(u) = r + 1; // replace u-th entry with r
+  rho_star(u) = r; // replace u-th entry with r
 
   // here, two elements are the same so we need to shift element and replace the repeated r with u
   const int& delta = rho_star(u) - rho(u);
