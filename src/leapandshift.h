@@ -6,6 +6,6 @@ void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
                     const arma::vec& rho, int leap_size, bool reduce_indices);
 
 void shift_step(arma::vec& rho_proposal, const arma::vec& rho,
-                const int& u, double& delta_r, arma::uvec& indices);
+                const int& u, arma::uvec& indices);
 
 #endif

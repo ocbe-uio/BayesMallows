@@ -81,7 +81,6 @@ void update_rho(cube& rho, vec& rho_acceptance, mat& rho_old,
   leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
                  rho_cluster, leap_size, !((metric == "cayley") || (metric == "ulam")));
 
-
   // Compute the distances to current and proposed ranks
   double dist_new = rank_dist_sum(rankings.rows(indices), rho_proposal(indices), metric, obs_freq);
   double dist_old = rank_dist_sum(rankings.rows(indices), rho_cluster(indices), metric, obs_freq);
