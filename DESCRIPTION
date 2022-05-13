@@ -54,9 +54,10 @@ Imports: Rcpp (>= 1.0.0),
   PerMallows (>= 1.13),
   HDInterval (>= 0.2.0),
   cowplot (>= 1.0.0)
-LinkingTo: Rcpp, RcppArmadillo
+LinkingTo: Rcpp, RcppArmadillo, testthat
 Suggests:
   R.rsp,
+  xml2,
   knitr,
   testthat (>= 3.0.0),
   label.switching (>= 1.7),

@@ -1,6 +1,5 @@
 #include <RcppArmadillo.h>
 #include "smc.h"
-#include <cmath>
 
 using namespace arma;
 

@@ -1,5 +1,4 @@
 #include <RcppArmadillo.h>
-#include <cmath>
 #include "sample.h"
 #include "partitionfuns.h"
 #include "distances.h"

@@ -1,5 +1,4 @@
 #include <RcppArmadillo.h>
-#include <cmath>
 #include "distances.h"
 #include "misc.h"
 #include "setdiff.h"
