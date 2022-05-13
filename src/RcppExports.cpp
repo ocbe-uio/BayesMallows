@@ -414,6 +414,8 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport SEXP run_testthat_tests(SEXP);
+
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
     {"_BayesMallows_rank_dist_sum", (DL_FUNC) &_BayesMallows_rank_dist_sum, 4},
@@ -438,6 +440,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_metropolis_hastings_aug_ranking", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking, 6},
     {"_BayesMallows_metropolis_hastings_aug_ranking_pseudo", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking_pseudo, 6},
     {"_BayesMallows_metropolis_hastings_rho", (DL_FUNC) &_BayesMallows_metropolis_hastings_rho, 6},
+    {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}
 };
 

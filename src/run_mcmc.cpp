@@ -1,6 +1,5 @@
-#include <cmath>
-#include "misc.h"
 #include <RcppArmadillo.h>
+#include "misc.h"
 #include "mixtures.h"
 #include "distances.h"
 #include "missing_data.h"

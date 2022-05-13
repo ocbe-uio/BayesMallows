@@ -348,6 +348,7 @@ get_sample_probabilities <- function(rho_item_rank, alpha, remaining_set_ranks, 
 #' \item \code{backwards_prob} Numeric Value to account for the transition probability from \code{rho_prime} to \code{rho}
 #' }
 #'
+#' @keywords internal
 #' @examples
 #' rho <- c(1, 2, 3, 4, 5, 6)
 #' n_items <- 6
@@ -355,7 +356,6 @@ get_sample_probabilities <- function(rho_item_rank, alpha, remaining_set_ranks, 
 #' leap_and_shift_probs(rho, 1, n_items)
 #' leap_and_shift_probs(rho, 2, n_items)
 #' leap_and_shift_probs(rho, 3, n_items)
-#' @author Anja Stein
 #'
 leap_and_shift_probs <- function(rho, leap_size, n_items) {
     .Call(`_BayesMallows_leap_and_shift_probs`, rho, leap_size, n_items)

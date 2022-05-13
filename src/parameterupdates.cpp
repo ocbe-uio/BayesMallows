@@ -2,7 +2,6 @@
 #include "leapandshift.h"
 #include "distances.h"
 #include "partitionfuns.h"
-#include <cmath>
 
 using namespace arma;
 
