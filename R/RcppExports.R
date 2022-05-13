@@ -355,7 +355,6 @@ get_sample_probabilities <- function(rho_item_rank, alpha, remaining_set_ranks, 
 #' leap_and_shift_probs(rho, 1, n_items)
 #' leap_and_shift_probs(rho, 2, n_items)
 #' leap_and_shift_probs(rho, 3, n_items)
-#' @author Anja Stein
 #'
 leap_and_shift_probs <- function(rho, leap_size, n_items) {
     .Call(`_BayesMallows_leap_and_shift_probs`, rho, leap_size, n_items)
