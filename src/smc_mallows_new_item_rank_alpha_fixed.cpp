@@ -38,7 +38,8 @@ using namespace arma;
 //' the missing data, options are "pseudolikelihood" or "random".
 //' @param verbose Logical specifying whether to print out the progress of the
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
-//' @return a 3d matrix containing the samples of rho and alpha from the SMC algorithm
+//' @return a set of particles each containing the values of rho and the effective sample size (ESS) at each iteration of the SMC 
+//' algorithm as well as the set of augmented rankings at the final iteration.
 //' @export
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
@@ -69,6 +70,9 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
       rho_samples(i, j, 0) = items_sample(j);
     }
   }
+
+   /* generate vector to store ESS */
+  rowvec ESS_vec(Time);
 
   /* ====================================================== */
   /* Augment Rankings                                       */
@@ -160,6 +164,10 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   double maxw = max(log_inc_wgt);
   vec w = exp(log_inc_wgt - maxw);
   vec norm_wgt = w / sum(w);
+
+  /* store ESS = sum(w)^2/sum(w^2) */
+  ESS_vec(0) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
+
 
   /* ====================================================== */
   /* Resample                                               */
@@ -268,6 +276,8 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
     double maxw = max(log_inc_wgt);
     vec w = exp(log_inc_wgt - maxw);
     vec norm_wgt = w / sum(w);
+    /* store ESS = sum(w)^2/sum(w^2) */
+    ESS_vec(tt + 1) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
     /* ====================================================== */
     /* Resample                                               */
@@ -307,5 +317,9 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
   /* ====================================================== */
   /* Post Processing                                        */
   /* ====================================================== */
-  return Rcpp::List::create((Rcpp::Named("rho_samples") = rho_samples));
+  return Rcpp::List::create(
+    Rcpp::Named("rho_samples") = rho_samples,
+    Rcpp::Named("augmented_rankings") = aug_rankings,
+    Rcpp::Named("ESS") = ESS_vec
+  );
 }
