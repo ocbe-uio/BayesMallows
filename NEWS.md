@@ -2,8 +2,10 @@
 
 # Development versions
 
-* Fixes a bug which caused assess_convergence() to fail with 'parameter = 
+* Fixed a bug which caused assess_convergence() to fail with 'parameter = 
   "cluster_probs"'.
+* Fixed unexpected behavior in leap-and-shift proposal distribution for SMC Mallows,
+  causing the function to propose the current rank vector with nonzero probability.
 * BayesMallows no longer depends on 'dplyr'.
 * Quite extensive internal refactoring of C++ code.
 * Function lik_db_mix has been renamed to get_mallows_loglik. lik_db_mix still
