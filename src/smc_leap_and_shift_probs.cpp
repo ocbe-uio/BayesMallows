@@ -18,6 +18,7 @@ using namespace arma;
 //' \item \code{backwards_prob} Numeric Value to account for the transition probability from \code{rho_prime} to \code{rho}
 //' }
 //'
+//' @keywords internal
 //' @examples
 //' rho <- c(1, 2, 3, 4, 5, 6)
 //' n_items <- 6

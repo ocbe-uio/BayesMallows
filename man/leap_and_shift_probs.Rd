@@ -34,3 +34,4 @@ leap_and_shift_probs(rho, 2, n_items)
 leap_and_shift_probs(rho, 3, n_items)
 
 }
+\keyword{internal}
