@@ -22,10 +22,7 @@ context("Test leap and shift C++") {
   vec rho{}, assumption{}, rho_proposal{};
   int leap_size{}, n_items{};
 
-
-
   test_that("leap and shift works") {
-
 
     n_items = 5;
     rho = regspace(1, n_items);
