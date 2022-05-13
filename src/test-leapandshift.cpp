@@ -23,7 +23,6 @@ context("Test leap and shift C++") {
   int leap_size{}, n_items{};
 
   test_that("leap and shift works") {
-
     n_items = 5;
     rho = regspace(1, n_items);
     leap_size = 1;
@@ -35,8 +34,6 @@ context("Test leap and shift C++") {
     expect_true(prob_backward == prob_forward); // for leap_size=1
     expect_true(std::abs(prob_backward - 0.3) < 1e-5);
   }
-
-
 
   test_that("leap and shift works") {
     n_items = 10;
