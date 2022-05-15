@@ -63,7 +63,7 @@ test_that("Runs with unif kernel", {
     )
   )
   expect_is(smc_unif_alpha_fixed_unif, "list")
-  expect_length(smc_unif_alpha_fixed_unif, 3)
+  expect_length(smc_unif_alpha_fixed_unif, 4)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 6, 31))
   smc_unif <- suppressMessages(
     smc_mallows_new_item_rank(
@@ -91,7 +91,7 @@ test_that("Runs with pseudo kernel", {
     )
   )
   expect_is(smc_unif_alpha_fixed_unif, "list")
-  expect_length(smc_unif_alpha_fixed_unif, 3)
+  expect_length(smc_unif_alpha_fixed_unif, 4)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 6, 31))
   smc_unif <- suppressMessages(
     smc_mallows_new_item_rank(

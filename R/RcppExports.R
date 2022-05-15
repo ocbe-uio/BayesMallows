@@ -385,11 +385,12 @@ leap_and_shift_probs <- function(rho, leap_size, n_items) {
 #' @param aug_method A character string specifying the approach for filling in the missing data, options are "pseudolikelihood" or "random"
 #' @param verbose Logical specifying whether to print out the progress of the
 #' SMC-Mallows algorithm. Defaults to \code{FALSE}.
+#' @param alpha_fixed Logical indicating whether to sample \code{alpha} or not.
 #' @return a set of particles each containing the values of rho and alpha and the effective sample size (ESS) at each iteration of the SMC
 #' algorithm as well as the set of augmented rankings at the final iteration.
 #' @export
-smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose = FALSE) {
-    .Call(`_BayesMallows_smc_mallows_new_item_rank`, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method, verbose)
+smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha = 0, alpha_prop_sd = 1, lambda = 1, alpha_max = 1, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE) {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank`, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed)
 }
 
 #' @title SMC-Mallows new item rank (alpha fixed)
