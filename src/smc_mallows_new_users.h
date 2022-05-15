@@ -4,7 +4,7 @@
 #include <RcppArmadillo.h>
 
 arma::mat initialize_alpha(const int& N, const int& Time);
-arma::cube initialize_rho(const int& N, const int& n_items, const int& d);
+arma::mat smc_initialize_rho(const int& N, const int& n_items);
 void smc_mallows_new_users_augment_partial(arma::cube&, arma::vec&,
     const arma::cube&, const arma::mat&, const int&, const int&,
     const arma::mat&, const std::string&, const std::string&, const int&,

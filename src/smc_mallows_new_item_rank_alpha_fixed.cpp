@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include "smc_mallows_new_users.h"
 #include "sample.h"
 #include "smc.h"
 #include "misc.h"
@@ -38,7 +39,7 @@ using namespace arma;
 //' the missing data, options are "pseudolikelihood" or "random".
 //' @param verbose Logical specifying whether to print out the progress of the
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
-//' @return a set of particles each containing the values of rho and the effective sample size (ESS) at each iteration of the SMC 
+//' @return a set of particles each containing the values of rho and the effective sample size (ESS) at each iteration of the SMC
 //' algorithm as well as the set of augmented rankings at the final iteration.
 //' @export
 // [[Rcpp::export]]
@@ -64,12 +65,7 @@ Rcpp::List smc_mallows_new_item_rank_alpha_fixed(
 
   // Generate N initial samples of rho using the uniform prior
   cube rho_samples(N, n_items, Time, fill::zeros);
-  for (uword i = 0; i < N; ++i) {
-    const uvec items_sample = randperm(n_items) + 1;
-    for (uword j = 0; j < n_items; ++j) {
-      rho_samples(i, j, 0) = items_sample(j);
-    }
-  }
+  rho_samples.slice(0) = smc_initialize_rho(N, n_items);
 
    /* generate vector to store ESS */
   rowvec ESS_vec(Time);

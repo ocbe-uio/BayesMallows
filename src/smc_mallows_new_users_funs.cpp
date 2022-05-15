@@ -71,15 +71,10 @@ mat initialize_alpha(const int& N, const int& Time){
   return alpha_samples;
 }
 
-cube initialize_rho(
-    const int& N, const int& n_items, const int& d
-){
-  cube rho_samples(N, n_items, d, fill::zeros);
+mat smc_initialize_rho(const int& N, const int& n_items){
+  mat rho_samples(N, n_items);
   for (uword i = 0; i < N; ++i) {
-    uvec items_sample = randperm(n_items) + 1;
-    for (uword j = 0; j < n_items; ++j) {
-      rho_samples(i, j, 0) = items_sample(j);
-    }
+    rho_samples.row(i) = randperm<vec>(n_items).t() + 1;
   }
   return rho_samples;
 }
