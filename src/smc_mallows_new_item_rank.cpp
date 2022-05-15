@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include "parameterupdates.h"
 #include "smc_mallows_new_users.h"
 #include "misc.h"
 #include "sample.h"
@@ -58,7 +59,7 @@ Rcpp::List smc_mallows_new_item_rank(
 
   // Generate N initial samples of rho using the uniform prior
   cube rho_samples(N, n_items, Time);
-  rho_samples.slice(0) = smc_initialize_rho(N, n_items);
+  rho_samples.slice(0) = initialize_rho(n_items, N).t();
 
   /* generate alpha samples using exponential prior ------- */
   mat alpha_samples(N, Time);

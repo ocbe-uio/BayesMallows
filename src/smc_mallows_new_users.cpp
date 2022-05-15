@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include "parameterupdates.h"
 #include "sample.h"
 #include "smc.h"
 #include "partitionfuns.h"
@@ -87,7 +88,7 @@ Rcpp::List smc_mallows_new_users(
 
   /* generate rho samples using uniform prior ------------- */
   cube rho_samples(N, n_items, Time + 1);
-  rho_samples.slice(0) = smc_initialize_rho(N, n_items);
+  rho_samples.slice(0) = initialize_rho(n_items, N).t();
 
   /* generate alpha samples using exponential prior ------- */
   mat alpha_samples;

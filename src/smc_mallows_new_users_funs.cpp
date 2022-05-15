@@ -71,14 +71,6 @@ mat initialize_alpha(const int& N, const int& Time){
   return alpha_samples;
 }
 
-mat smc_initialize_rho(const int& N, const int& n_items){
-  mat rho_samples(N, n_items);
-  for (uword i = 0; i < N; ++i) {
-    rho_samples.row(i) = randperm<vec>(n_items).t() + 1;
-  }
-  return rho_samples;
-}
-
 void smc_mallows_new_users_resample(
     cube& rho_samples, mat& alpha_samples, cube& aug_rankings,
     const vec& norm_wgt, const int& tt, const int& num_obs,
