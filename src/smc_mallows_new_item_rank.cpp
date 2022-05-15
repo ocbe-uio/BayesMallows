@@ -340,7 +340,6 @@ Rcpp::List smc_mallows_new_item_rank(
       rho_samples, alpha_samples, aug_rankings, R_obs, metric, aug_method,
       logz_estimate, alpha, alpha_prop_sd, lambda, alpha_max, tt + 1, leap_size,
       alpha_fixed);
-
   }
 
   /* ====================================================== */
