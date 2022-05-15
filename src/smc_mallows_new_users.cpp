@@ -210,9 +210,9 @@ Rcpp::List smc_mallows_new_users(
           ar = aug_rankings(span(jj), span::all, span(ii));
           vec mh_aug_result;
           if (aug_method == "random") {
-            mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric);
+            mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric, false);
           } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
-            mh_aug_result = metropolis_hastings_aug_ranking_pseudo(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric);
+            mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric, true);
           }
           aug_rankings(span(jj), span::all, span(ii)) = mh_aug_result;
         }

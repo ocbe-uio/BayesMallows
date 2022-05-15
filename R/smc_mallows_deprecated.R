@@ -44,6 +44,7 @@ smc_mallows_new_users_partial_alpha_fixed <- function(
 #' @describeIn smc_mallows_new_item_rank Deprecated function for
 #' \code{smc_mallows_new_item_rank_alpha_fixed}.
 #' @export
+#' @keywords internal
 smc_mallows_new_item_rank_alpha_fixed <- function(
   alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate,
   mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method,
@@ -53,4 +54,16 @@ smc_mallows_new_item_rank_alpha_fixed <- function(
   smc_mallows_new_item_rank(
     n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app,
     alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, TRUE)
+}
+
+#' @describeIn metropolis_hastings_aug_ranking Deprecated function for
+#' \code{metropolis_hastings_aug_ranking_pseudo}.
+#' @export
+#' @keywords internal
+metropolis_hastings_aug_ranking_pseudo <- function(
+  alpha, rho, n_items, partial_ranking, current_ranking, metric
+) {
+  .Deprecated("metropolis_hastings_aug_ranking")
+  return(metropolis_hastings_aug_ranking(
+    alpha, rho, n_items, partial_ranking, current_ranking, metric, TRUE))
 }

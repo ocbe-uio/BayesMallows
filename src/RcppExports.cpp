@@ -344,34 +344,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // metropolis_hastings_aug_ranking
-arma::vec metropolis_hastings_aug_ranking(const double alpha, const arma::vec rho, const int n_items, arma::vec partial_ranking, const arma::vec current_ranking, const std::string metric);
-RcppExport SEXP _BayesMallows_metropolis_hastings_aug_ranking(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP metricSEXP) {
+arma::vec metropolis_hastings_aug_ranking(double alpha, arma::vec rho, int n_items, arma::vec partial_ranking, arma::vec current_ranking, std::string metric, bool pseudo);
+RcppExport SEXP _BayesMallows_metropolis_hastings_aug_ranking(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP metricSEXP, SEXP pseudoSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const arma::vec >::type rho(rhoSEXP);
-    Rcpp::traits::input_parameter< const int >::type n_items(n_itemsSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type partial_ranking(partial_rankingSEXP);
-    Rcpp::traits::input_parameter< const arma::vec >::type current_ranking(current_rankingSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
-    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_aug_ranking(alpha, rho, n_items, partial_ranking, current_ranking, metric));
-    return rcpp_result_gen;
-END_RCPP
-}
-// metropolis_hastings_aug_ranking_pseudo
-arma::vec metropolis_hastings_aug_ranking_pseudo(const double alpha, const arma::vec rho, const int n_items, const arma::vec partial_ranking, const arma::vec current_ranking, const std::string metric);
-RcppExport SEXP _BayesMallows_metropolis_hastings_aug_ranking_pseudo(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP metricSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const arma::vec >::type rho(rhoSEXP);
-    Rcpp::traits::input_parameter< const int >::type n_items(n_itemsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec >::type partial_ranking(partial_rankingSEXP);
-    Rcpp::traits::input_parameter< const arma::vec >::type current_ranking(current_rankingSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
-    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_aug_ranking_pseudo(alpha, rho, n_items, partial_ranking, current_ranking, metric));
+    Rcpp::traits::input_parameter< arma::vec >::type current_ranking(current_rankingSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    Rcpp::traits::input_parameter< bool >::type pseudo(pseudoSEXP);
+    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_aug_ranking(alpha, rho, n_items, partial_ranking, current_ranking, metric, pseudo));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -414,8 +399,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_smc_mallows_new_item_rank", (DL_FUNC) &_BayesMallows_smc_mallows_new_item_rank, 15},
     {"_BayesMallows_smc_mallows_new_users", (DL_FUNC) &_BayesMallows_smc_mallows_new_users, 16},
     {"_BayesMallows_metropolis_hastings_alpha", (DL_FUNC) &_BayesMallows_metropolis_hastings_alpha, 9},
-    {"_BayesMallows_metropolis_hastings_aug_ranking", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking, 6},
-    {"_BayesMallows_metropolis_hastings_aug_ranking_pseudo", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking_pseudo, 6},
+    {"_BayesMallows_metropolis_hastings_aug_ranking", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking, 7},
     {"_BayesMallows_metropolis_hastings_rho", (DL_FUNC) &_BayesMallows_metropolis_hastings_rho, 6},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}

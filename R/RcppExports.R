@@ -491,29 +491,12 @@ metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, log
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
 #'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 #'   \code{"ulam"}.
+#' @param pseudo Boolean specifying whether to use pseudo proposal or not.s
 #' @return R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
 #' @export
-metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking, current_ranking, metric) {
-    .Call(`_BayesMallows_metropolis_hastings_aug_ranking`, alpha, rho, n_items, partial_ranking, current_ranking, metric)
-}
-
-#' @title Metropolis-Hastings Augmented Ranking (pseudolikelihood)
-#' @description Function to perform Metropolis-Hastings for new augmented ranking using the pseudolikelihood augmentation approach
-#'
-#' @param alpha Numeric value of the scale parameter
-#' @param rho Numeric vector specifying the consensus ranking
-#' @param n_items Integer is the number of items in a ranking
-#' @param partial_ranking An incomplete rank sequence vector of the original observed incomplete ranking which contains NAs
-#' @param current_ranking An complete rank sequence vector of  the proposed augmented ranking obtained from calculate_forward_probability function
-#' @param metric A character string specifying the distance metric to use in the
-#'   Bayesian Mallows Model. Available options are \code{"footrule"},
-#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-#'   \code{"ulam"}.
-#' @return = proposed augmented ranking or current ranking A ranking sequence vector representing proposed augmented ranking for next
-#'         iteration of MCMC chain
-#' @export
-metropolis_hastings_aug_ranking_pseudo <- function(alpha, rho, n_items, partial_ranking, current_ranking, metric) {
-    .Call(`_BayesMallows_metropolis_hastings_aug_ranking_pseudo`, alpha, rho, n_items, partial_ranking, current_ranking, metric)
+#' @keywords internal
+metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking, current_ranking, metric, pseudo) {
+    .Call(`_BayesMallows_metropolis_hastings_aug_ranking`, alpha, rho, n_items, partial_ranking, current_ranking, metric, pseudo)
 }
 
 #' @title Metropolis-Hastings Rho

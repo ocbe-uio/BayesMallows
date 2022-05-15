@@ -21,7 +21,8 @@ test_that("MH-aug ranking works", {
     alpha           = alpha,
     rho             = rho,
     n_items         = n_items,
-    metric          = metric
+    metric          = metric,
+    pseudo = FALSE
   )
   expect_equal(test_1, as.matrix(c(1, 2, 3, 6, 5, 4)))
   expect_equal(get_rank_distance(rho, test_1, metric = "ulam"), 2)
@@ -32,7 +33,7 @@ test_that("MH-aug ranking works", {
   set.seed(866)
   test_2 <- metropolis_hastings_aug_ranking(
     current_ranking = R_curr, partial_ranking = R_obs, alpha = alpha,
-    rho = rho, n_items = n_items, metric = metric
+    rho = rho, n_items = n_items, metric = metric, pseudo = FALSE
   )
   expect_equal(test_2, as.matrix(c(1, 2, 3, 4, 5, 6)))
   expect_equal(all(test_2 == rho), TRUE)
@@ -44,7 +45,7 @@ test_that("MH-aug ranking works", {
   set.seed(545)
   test_3 <- metropolis_hastings_aug_ranking(
     current_ranking = R_curr, partial_ranking = R_obs, alpha = alpha,
-    rho = rho, n_items = n_items, metric = metric
+    rho = rho, n_items = n_items, metric = metric, pseudo = FALSE
   )
   expect_equal(test_3, as.matrix(c(1, 2, 3, 6, 5, 4)))
   expect_equal(all(test_3 == R_curr), TRUE)
