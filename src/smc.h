@@ -12,6 +12,6 @@ Rcpp::List calculate_forward_probability(arma::uvec, arma::vec, arma::vec, arma:
 double calculate_backward_probability(arma::uvec, arma::vec, arma::vec, arma::vec, arma::vec, double, int, std::string);
 Rcpp::List correction_kernel(arma::vec, arma::vec, int);
 Rcpp::List correction_kernel_pseudo(arma::vec, arma::vec, arma::vec, double, int, std::string);
-arma::vec metropolis_hastings_aug_ranking(double, arma::vec, int, arma::vec, arma::vec, std::string, bool);
+arma::vec metropolis_hastings_aug_ranking(const double&, const arma::vec&, const int&, const arma::vec&, const arma::vec&, const std::string&, const bool&);
 
 #endif

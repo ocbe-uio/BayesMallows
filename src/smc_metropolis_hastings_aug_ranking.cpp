@@ -24,13 +24,13 @@ using namespace arma;
 //' @keywords internal
 // [[Rcpp::export]]
 arma::vec metropolis_hastings_aug_ranking(
-	double alpha,
-	arma::vec rho,
-	int n_items,
-	arma::vec partial_ranking,
-	arma::vec current_ranking,
-	std::string metric,
-	bool pseudo
+	const double& alpha,
+	const arma::vec& rho,
+	const int& n_items,
+	const arma::vec& partial_ranking,
+	const arma::vec& current_ranking,
+	const std::string& metric,
+	const bool& pseudo
 ) {
   double forward_backward_prob{};
   vec proposed_ranking;
@@ -73,10 +73,11 @@ arma::vec metropolis_hastings_aug_ranking(
 
     } else {
       // Subset by element position and set equal to the now permuted remaining set
-      partial_ranking.elem(unranked_items) = shuffle(remaining_set);
+      proposed_ranking = partial_ranking;
+      proposed_ranking.elem(unranked_items) = shuffle(remaining_set);
 
       // set the augmented partial ranking as the proposed augmented ranking
-      proposed_ranking = partial_ranking;
+
     }
   }
 
