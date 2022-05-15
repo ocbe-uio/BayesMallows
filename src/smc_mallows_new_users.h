@@ -3,7 +3,6 @@
 
 #include <RcppArmadillo.h>
 
-arma::mat initialize_alpha(const int& N, const int& Time);
 void smc_mallows_new_users_augment_partial(arma::cube&, arma::vec&,
     const arma::cube&, const arma::mat&, const int&, const int&,
     const arma::mat&, const std::string&, const std::string&, const int&,

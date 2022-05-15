@@ -64,11 +64,8 @@ void smc_mallows_new_users_augment_partial(
   }
 }
 
-mat initialize_alpha(const int& N, const int& Time){
-  mat alpha_samples(N, Time + 1);
-  const vec& alpha_samples_0 = Rcpp::rexp(N, 1);
-  alpha_samples.col(0) = alpha_samples_0;
-  return alpha_samples;
+vec initialize_alpha(const int& N){
+  return Rcpp::rexp(N, 1);
 }
 
 void smc_mallows_new_users_resample(

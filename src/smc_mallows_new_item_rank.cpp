@@ -63,8 +63,7 @@ Rcpp::List smc_mallows_new_item_rank(
 
   /* generate alpha samples using exponential prior ------- */
   mat alpha_samples(N, Time);
-  const vec alpha_samples_0 = Rcpp::rexp(N, 1);
-  alpha_samples.col(0) = alpha_samples_0;
+  alpha_samples.col(0) = initialize_alpha(N);
 
   /* ====================================================== */
   /* Augment Rankings                                       */
@@ -76,7 +75,7 @@ Rcpp::List smc_mallows_new_item_rank(
   cube prev_aug_rankings(num_ranks, n_items, N, fill::zeros);
 
   // augment incomplete ranks to initialise
-  const ivec ranks = Rcpp::seq(1, n_items);
+  const ivec ranks = regspace<ivec>(1, n_items);
 
   // total correction prob
   vec total_correction_prob = ones(N);

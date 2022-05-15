@@ -92,7 +92,10 @@ Rcpp::List smc_mallows_new_users(
 
   /* generate alpha samples using exponential prior ------- */
   mat alpha_samples;
-  if(type != "partial_alpha_fixed") alpha_samples = initialize_alpha(N, Time);
+  if(type != "partial_alpha_fixed") {
+    alpha_samples = zeros(N, Time + 1);
+    alpha_samples.col(0) = initialize_alpha(N);
+  }
 
   /* generate vector to store ESS */
   rowvec ESS_vec(Time);
