@@ -33,12 +33,13 @@ alpha_max <- 1e6
 
 test_that("Produces the wrong metric and aug_method error", {
   expect_error(
-    smc_mallows_new_item_rank_alpha_fixed(
+    smc_mallows_new_item_rank(
       alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
       metric = "cayley", leap_size = leap_size, N = N, Time = Time,
       logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
-      alpha_max = alpha_max, aug_method = "pseudolikelihood"
+      alpha_max = alpha_max, aug_method = "pseudolikelihood",
+      alpha_fixed = TRUE
     )
   )
   expect_error(
@@ -52,14 +53,26 @@ test_that("Produces the wrong metric and aug_method error", {
   )
 })
 
+test_that("smc_mallows_new_item_rank_alpha_fixed is deprecated", {
+  expect_warning(smc_mallows_new_item_rank_alpha_fixed(
+    alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
+    metric = "footrule", leap_size = leap_size, N = N, Time = Time,
+    logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_kernel_app,
+    alpha_prop_sd = alpha_prop_sd, lambda = lambda,
+    alpha_max = alpha_max, aug_method = "random"
+  ),
+  "'smc_mallows_new_item_rank_alpha_fixed' is deprecated."
+  )
+})
+
 test_that("Runs with unif kernel", {
   smc_unif_alpha_fixed_unif <- suppressMessages(
-    smc_mallows_new_item_rank_alpha_fixed(
+    smc_mallows_new_item_rank(
       alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
       metric = "footrule", leap_size = leap_size, N = N, Time = Time,
       logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
-      alpha_max = alpha_max, aug_method = "random"
+      alpha_max = alpha_max, aug_method = "random", alpha_fixed = TRUE
     )
   )
   expect_is(smc_unif_alpha_fixed_unif, "list")
@@ -82,12 +95,13 @@ test_that("Runs with unif kernel", {
 
 test_that("Runs with pseudo kernel", {
   smc_unif_alpha_fixed_unif <- suppressMessages(
-    smc_mallows_new_item_rank_alpha_fixed(
+    smc_mallows_new_item_rank(
       alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
       metric = "footrule", leap_size = leap_size, N = N, Time = Time,
       logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
-      alpha_max = alpha_max, aug_method = "pseudolikelihood"
+      alpha_max = alpha_max, aug_method = "pseudolikelihood",
+      alpha_fixed = TRUE
     )
   )
   expect_is(smc_unif_alpha_fixed_unif, "list")
