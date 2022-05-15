@@ -88,29 +88,34 @@ non-transitive pairwise comparisons by Crispino et al. (2019) is also
 implemented. In addition, the partition function of the Mallows model
 can be estimated using the importance sampling algorithm of Vitelli et
 al. (2018) and the asymptotic approximation of Mukherjee (2016). For a
-review of ranking models in general, see Q. Liu et al. (2019a). Crispino
-and Antoniano-Villalobos (2019) outlines how informative priors can be
-used within the model.
+review of ranking models in general, see Liu, Crispino, et al. (2019).
+Crispino and Antoniano-Villalobos (2022) outlines how informative priors
+can be used within the model.
 
 Updating of the posterior distribution based on new data, using
 sequential Monte Carlo methods, is implemented and described in a
-separate vignette which can be shown with the command
-`vignette("SMC-Mallows")`.
+separate vignette which can be shown with the following command.
+
+``` r
+vignette("SMC-Mallows")
+```
 
 ### Applications
 
-Among the current applications, Q. Liu et al. (2019b) applied the
+Among the current applications, Liu, Reiner, et al. (2019) applied the
 Bayesian Mallows model for providing personalized recommendations based
 on clicking data, and Barrett and Crispino (2018) used the model of
 Crispino et al. (2019) to analyze listeners’ understanding of music.
+Eliseussen, Fleischer, and Vitelli (2022) presented an extended model
+for variable selection in genome-wide transcriptomic analyses.
 
 ### Future Extensions
 
-Plans for future extensions of the package include allowing for analysis
-of time-varying ranks as described in Asfaw et al. (2016), and
-implementation of a variational Bayes algorithm for approximation the
-posterior distribution. The sequential Monte Carlo algorithms will also
-be extended to cover a larger part of the model framework.
+Plans for future extensions of the package include implementation of a
+variational Bayes algorithm for approximation the posterior
+distribution. The sequential Monte Carlo algorithms will also be
+extended to cover a larger part of the model framework, and we will add
+more options for specifications of prior distributions.
 
 ## Citation
 
@@ -153,43 +158,43 @@ us.
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 
-<div id="ref-asfaw2016" class="csl-entry">
-
-Asfaw, D., V. Vitelli, Ø Sørensen, E. Arjas, and A. Frigessi. 2016.
-“Time-Varying Rankings with the Bayesian Mallows Model.” *Stat* 6 (1):
-14–30. <https://doi.org/10.1002/sta4.132>.
-
-</div>
-
 <div id="ref-barrett2018" class="csl-entry">
 
-Barrett, N., and M. Crispino. 2018. “The Impact of 3-d Sound
+Barrett, N., and Marta Crispino. 2018. “The Impact of 3-d Sound
 Spatialisation on Listeners’ Understanding of Human Agency in Acousmatic
 Music.” *Journal of New Music Research* 47 (5): 399–415.
 <https://doi.org/10.1080/09298215.2018.1437187>.
 
 </div>
 
-<div id="ref-crispino2019informative" class="csl-entry">
+<div id="ref-crispino2022" class="csl-entry">
 
-Crispino, M., and I. Antoniano-Villalobos. 2019. “Informative Extended
-Mallows Priors in the Bayesian Mallows Model.”
-<https://arxiv.org/abs/1901.10870>.
+Crispino, Marta, and Isadora Antoniano-Villalobos. 2022. “Informative
+Priors for the Consensus Ranking in the Bayesian Mallows Model.”
+*Bayesian Analysis*, January, 1–24. <https://doi.org/10.1214/22-BA1307>.
 
 </div>
 
 <div id="ref-crispino2019" class="csl-entry">
 
-Crispino, M., E. Arjas, V. Vitelli, N. Barrett, and A. Frigessi. 2019.
-“A Bayesian Mallows Approach to Nontransitive Pair Comparison Data: How
-Human Are Sounds?” *The Annals of Applied Statistics* 13 (1): 492–519.
-<https://doi.org/10.1214/18-aoas1203>.
+Crispino, Marta, E. Arjas, V. Vitelli, N. Barrett, and A. Frigessi.
+2019. “A Bayesian Mallows Approach to Nontransitive Pair Comparison
+Data: How Human Are Sounds?” *The Annals of Applied Statistics* 13 (1):
+492–519. <https://doi.org/10.1214/18-aoas1203>.
+
+</div>
+
+<div id="ref-eliseussen2022" class="csl-entry">
+
+Eliseussen, Emilie, Thomas Fleischer, and Valeria Vitelli. 2022.
+“Rank-Based Bayesian Variable Selection for Genome-Wide Transcriptomic
+Analyses.” arXiv. <https://doi.org/10.48550/arXiv.2107.05072>.
 
 </div>
 
 <div id="ref-liu2019" class="csl-entry">
 
-Liu, Q, M Crispino, I Scheel, V Vitelli, and A Frigessi. 2019a.
+Liu, Q., Marta Crispino, I. Scheel, V. Vitelli, and A. Frigessi. 2019.
 “Model-Based Learning from Preference Data.” *Annual Review of
 Statistics and Its Application* 6 (1).
 <https://doi.org/10.1146/annurev-statistics-031017-100213>.
@@ -198,7 +203,7 @@ Statistics and Its Application* 6 (1).
 
 <div id="ref-liu2019b" class="csl-entry">
 
-Liu, Q., A. H. Reiner, A. Frigessi, and I. Scheel. 2019b. “Diverse
+Liu, Q., A. H. Reiner, A. Frigessi, and I. Scheel. 2019. “Diverse
 Personalized Recommendations with Uncertainty from Implicit Preference
 Data with the Bayesian Mallows Model.” *Knowledge-Based Systems* 186
 (December): 104960. <https://doi.org/10.1016/j.knosys.2019.104960>.

@@ -80,17 +80,22 @@ vignette("BayesMallows")
 
 ### Methodology
 
-The BayesMallows package currently implements the complete model described in @vitelli2018, which includes a large number of distance metrics, handling of missing ranks and pairwise comparisons, and clustering of users with similar preferences. The extension to non-transitive pairwise comparisons by @crispino2019 is also implemented. In addition, the partition function of the Mallows model can be estimated using the importance sampling algorithm of @vitelli2018 and the asymptotic approximation of @mukherjee2016. For a review of ranking models in general, see @liu2019. @crispino2019informative outlines how informative priors can be used within the model.
+The BayesMallows package currently implements the complete model described in @vitelli2018, which includes a large number of distance metrics, handling of missing ranks and pairwise comparisons, and clustering of users with similar preferences. The extension to non-transitive pairwise comparisons by @crispino2019 is also implemented. In addition, the partition function of the Mallows model can be estimated using the importance sampling algorithm of @vitelli2018 and the asymptotic approximation of @mukherjee2016. For a review of ranking models in general, see @liu2019. @crispino2022 outlines how informative priors can be used within the model. 
 
-Updating of the posterior distribution based on new data, using sequential Monte Carlo methods, is implemented and described in a separate vignette which can be shown with the command `vignette("SMC-Mallows")`.
+Updating of the posterior distribution based on new data, using sequential Monte Carlo methods, is implemented and described in a separate vignette which can be shown with the following command.
+
+```{r, eval=FALSE}
+vignette("SMC-Mallows")
+```
+
 
 ### Applications
 
-Among the current applications, @liu2019b applied the Bayesian Mallows model for providing personalized recommendations based on clicking data, and @barrett2018 used the model of @crispino2019 to analyze listeners' understanding of music.
+Among the current applications, @liu2019b applied the Bayesian Mallows model for providing personalized recommendations based on clicking data, and @barrett2018 used the model of @crispino2019 to analyze listeners' understanding of music. @eliseussen2022 presented an extended model for variable selection in genome-wide transcriptomic analyses.
 
 ### Future Extensions
 
-Plans for future extensions of the package include allowing for analysis of time-varying ranks as described in @asfaw2016, and implementation of a variational Bayes algorithm for approximation the posterior distribution. The sequential Monte Carlo algorithms will also be extended to cover a larger part of the model framework.
+Plans for future extensions of the package include implementation of a variational Bayes algorithm for approximation the posterior distribution. The sequential Monte Carlo algorithms will also be extended to cover a larger part of the model framework, and we will add more options for specifications of prior distributions.
 
 ## Citation
 
