@@ -97,14 +97,9 @@ test_that("Runs with unif kernel", {
   expect_length(smc_unif, 4)
   expect_equal(dim(smc_unif$rho_samples), c(N, 6, 31))
   expect_equal(dim(smc_unif$alpha_samples), c(N, 31))
-  expect_equal(
-    smc_unif$alpha_samples[5:7, 3:4],
-    structure(c(1.27807653232063, 2.03516991614344, 0.632988580537837,
-                1.14057272709864, 2.00951186144889, 1.49389688379539), dim = 3:2)  )
 })
 
 test_that("Runs with pseudo kernel", {
-  set.seed(3)
   smc_unif_alpha_fixed_unif <- suppressMessages(
     smc_mallows_new_item_rank(
       alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
@@ -118,11 +113,8 @@ test_that("Runs with pseudo kernel", {
   expect_is(smc_unif_alpha_fixed_unif, "list")
   expect_length(smc_unif_alpha_fixed_unif, 4)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 6, 31))
-  expect_equal(
-    smc_unif_alpha_fixed_unif$rho_samples[2:3, 3,9],
-    c(5, 4)
-  )
-  set.seed(5)
+
+  set.seed(1)
   smc_unif <- suppressMessages(
     smc_mallows_new_item_rank(
       n_items = n_items, R_obs = sample_dataset,
@@ -136,8 +128,33 @@ test_that("Runs with pseudo kernel", {
   expect_length(smc_unif, 4)
   expect_equal(dim(smc_unif$rho_samples), c(N, 6, 31))
   expect_equal(dim(smc_unif$alpha_samples), c(N, 31))
+  expect_equal(smc_unif$augmented_rankings[,,10],
+               structure(c(1, 2, 3, 1, 3, 3, 2, 1, 1, 1, 2, 4, 2, 5, 1, 1, 3,
+                           3, 2, 2, 3, 5, 4, 3, 5, 2, 5, 2, 6, 3, 4, 6, 1, 4, 6, 4, 4, 4,
+                           5, 4, 6, 1, 5, 2, 4, 5, 1, 5, 3, 5, 5, 3, 6, 6, 2, 6, 6, 6, 4,
+                           6), dim = c(10L, 6L)))
+  expect_equal(smc_unif$augmented_rankings[,,17],
+                    structure(c(1, 2, 3, 1, 3, 3, 2, 1, 1, 1, 2, 4, 2, 5, 1, 1, 3,
+                                3, 2, 2, 3, 5, 4, 3, 5, 2, 5, 2, 6, 3, 4, 6, 1, 4, 6, 4, 4, 4,
+                                5, 4, 6, 1, 5, 2, 4, 5, 1, 5, 3, 5, 5, 3, 6, 6, 2, 6, 6, 6, 4,
+                                6), dim = c(10L, 6L)))
   expect_equal(
-    smc_unif$alpha_samples[18, 18],
-    0.122031391566014
+    smc_unif$rho_samples[,,7],
+    structure(c(2, 1, 1, 3, 3, 1, 1, 2, 1, 1, 1, 3, 2, 3, 1, 2, 1,
+                3, 2, 1, 1, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 1, 1, 2, 1, 2, 2,
+                1, 2, 4, 4, 4, 5, 5, 4, 3, 6, 3, 5, 5, 4, 4, 4, 4, 6, 5, 4, 6,
+                3, 5, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6, 5, 6, 5, 5, 5, 6, 6, 5, 6,
+                3, 3, 3, 1, 1, 3, 4, 1, 5, 4, 4, 1, 5, 6, 3, 4, 4, 1, 4, 4, 6,
+                5, 5, 4, 4, 5, 5, 4, 4, 3, 3, 6, 3, 2, 6, 3, 3, 5, 3, 5), dim = c(20L,
+                                                                                  6L))
+  )
+  expect_equal(
+    smc_unif$alpha_samples[,10],
+    c(0.602219711983957, 0.864155419159704, 0.19987176844615, 0.212150389835116,
+      0.215010632154594, 0.214553410823427, 2.44508260024763, 0.588951840125527,
+      0.432062764370222, 0.698030157143868, 0.284210349887872, 0.202150647732622,
+      0.569533090734916, 0.1463613773319, 0.253695697680041, 0.863234080153403,
+      0.545039808362408, 0.201199396612719, 2.10350905472693, 0.371588907112214
+    )
   )
 })
