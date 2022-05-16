@@ -66,6 +66,7 @@ test_that("smc_mallows_new_item_rank_alpha_fixed is deprecated", {
 })
 
 test_that("Runs with unif kernel", {
+  set.seed(0)
   smc_unif_alpha_fixed_unif <- suppressMessages(
     smc_mallows_new_item_rank(
       alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
@@ -78,6 +79,11 @@ test_that("Runs with unif kernel", {
   expect_is(smc_unif_alpha_fixed_unif, "list")
   expect_length(smc_unif_alpha_fixed_unif, 4)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 6, 31))
+  expect_equal(
+    smc_unif_alpha_fixed_unif$augmented_rankings[c(4, 7), 5, c(13, 19)],
+    structure(c(2, 1, 2, 1), dim = c(2L, 2L))
+  )
+  set.seed(2)
   smc_unif <- suppressMessages(
     smc_mallows_new_item_rank(
       n_items = n_items, R_obs = sample_dataset,
@@ -91,9 +97,14 @@ test_that("Runs with unif kernel", {
   expect_length(smc_unif, 4)
   expect_equal(dim(smc_unif$rho_samples), c(N, 6, 31))
   expect_equal(dim(smc_unif$alpha_samples), c(N, 31))
+  expect_equal(
+    smc_unif$alpha_samples[5:7, 3:4],
+    structure(c(1.27807653232063, 2.03516991614344, 0.632988580537837,
+                1.14057272709864, 2.00951186144889, 1.49389688379539), dim = 3:2)  )
 })
 
 test_that("Runs with pseudo kernel", {
+  set.seed(3)
   smc_unif_alpha_fixed_unif <- suppressMessages(
     smc_mallows_new_item_rank(
       alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
@@ -107,6 +118,11 @@ test_that("Runs with pseudo kernel", {
   expect_is(smc_unif_alpha_fixed_unif, "list")
   expect_length(smc_unif_alpha_fixed_unif, 4)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 6, 31))
+  expect_equal(
+    smc_unif_alpha_fixed_unif$rho_samples[2:3, 3,9],
+    c(5, 4)
+  )
+  set.seed(5)
   smc_unif <- suppressMessages(
     smc_mallows_new_item_rank(
       n_items = n_items, R_obs = sample_dataset,
@@ -120,4 +136,8 @@ test_that("Runs with pseudo kernel", {
   expect_length(smc_unif, 4)
   expect_equal(dim(smc_unif$rho_samples), c(N, 6, 31))
   expect_equal(dim(smc_unif$alpha_samples), c(N, 31))
+  expect_equal(
+    smc_unif$alpha_samples[18, 18],
+    0.122031391566014
+  )
 })
