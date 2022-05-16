@@ -80,25 +80,25 @@ n_items <- 6
 test_that("M-H aug ranking pseudo works", {
   R_curr <- c(1, 2, 3, 4, 5, 6)
   R_obs <- c(1, 2, 3, 4, 5, 6)
-  test_1 <- metropolis_hastings_aug_ranking_pseudo(
-    alpha, rho, n_items, R_obs, R_curr, metric
+  test_1 <- metropolis_hastings_aug_ranking(
+    alpha, rho, n_items, R_obs, R_curr, metric, TRUE
   )
   expect_equal(test_1, matrix(c(1, 2, 3, 4, 5, 6)))
   expect_equal(all(test_1 == R_curr), TRUE)
   R_obs <- c(1, 2, 3, NA, NA, NA)
   set.seed(6220)
-  test_2 <- metropolis_hastings_aug_ranking_pseudo(
-    alpha, rho, n_items, R_obs, R_curr, metric
+  test_2 <- metropolis_hastings_aug_ranking(
+    alpha, rho, n_items, R_obs, R_curr, metric, TRUE
   )
   expect_equal(test_2, matrix(c(1, 2, 3, 5, 6, 4)))
   expect_equal(all(test_2 == R_curr), FALSE)
   R_curr <- c(1, 2, 6, 5, 4, 3)
   R_obs <- c(1, 2, NA, NA, NA, NA)
   set.seed(8286)
-  test_3 <- metropolis_hastings_aug_ranking_pseudo(
+  test_3 <- metropolis_hastings_aug_ranking(
     alpha, rho, n_items,
     partial_ranking = R_obs, current_ranking = R_curr,
-    metric
+    metric, TRUE
   )
   expect_equal(test_3, matrix(c(1, 2, 4, 3, 5, 6)))
   expect_equal(all(test_3 == R_curr), FALSE)
