@@ -77,7 +77,6 @@ arma::vec metropolis_hastings_aug_ranking(
       proposed_ranking.elem(unranked_items) = shuffle(remaining_set);
 
       // set the augmented partial ranking as the proposed augmented ranking
-
     }
   }
 
