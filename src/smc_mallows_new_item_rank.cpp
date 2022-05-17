@@ -43,20 +43,11 @@ void new_items_move_step(
     }
 
     for (uword jj = 0; jj < num_ranks; ++jj) {
-      vec mh_aug_result;
-      if (aug_method == "random") {
-        mh_aug_result = metropolis_hastings_aug_ranking(                                         \
+      vec mh_aug_result = metropolis_hastings_aug_ranking(                                  \
           alpha_fixed ? alpha : alpha_samples(ii, ttplus1), rho_samples.slice(ttplus1).row(ii).t(),\
           n_items, R_obs.slice(ttplus1).row(jj).t(),                                              \
-          aug_rankings.slice(ii).row(jj).t(), metric, false                                          \
-        );
-      } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
-        mh_aug_result = metropolis_hastings_aug_ranking(                                  \
-          alpha_fixed ? alpha : alpha_samples(ii, ttplus1), rho_samples.slice(ttplus1).row(ii).t(),\
-          n_items, R_obs.slice(ttplus1).row(jj).t(),                                              \
-          aug_rankings.slice(ii).row(jj).t(), metric, true                                           \
-        );
-      }
+          aug_rankings.slice(ii).row(jj).t(), metric,
+          (aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman")));
       aug_rankings.slice(ii).row(jj) = mh_aug_result.t();
     }
   }
