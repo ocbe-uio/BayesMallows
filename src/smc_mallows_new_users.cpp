@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include "parameterupdates.h"
 #include "sample.h"
 #include "smc.h"
 #include "partitionfuns.h"
@@ -86,11 +87,15 @@ Rcpp::List smc_mallows_new_users(
   }
 
   /* generate rho samples using uniform prior ------------- */
-  cube rho_samples = initialize_rho(N, n_items, Time + 1);
+  cube rho_samples(N, n_items, Time + 1);
+  rho_samples.slice(0) = initialize_rho(n_items, N).t();
 
   /* generate alpha samples using exponential prior ------- */
   mat alpha_samples;
-  if(type != "partial_alpha_fixed") alpha_samples = initialize_alpha(N, Time);
+  if(type != "partial_alpha_fixed") {
+    alpha_samples = zeros(N, Time + 1);
+    alpha_samples.col(0) = initialize_alpha(N);
+  }
 
   /* generate vector to store ESS */
   rowvec ESS_vec(Time);
@@ -205,9 +210,9 @@ Rcpp::List smc_mallows_new_users(
           ar = aug_rankings(span(jj), span::all, span(ii));
           vec mh_aug_result;
           if (aug_method == "random") {
-            mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric);
+            mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric, false);
           } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
-            mh_aug_result = metropolis_hastings_aug_ranking_pseudo(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric);
+            mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric, true);
           }
           aug_rankings(span(jj), span::all, span(ii)) = mh_aug_result;
         }

@@ -110,7 +110,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
 
   // Declare the cube to hold the latent ranks
   cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
-  rho.slice(0) = initialize_rho(rho_init, n_items, n_clusters);
+  rho.slice(0) = initialize_rho(n_items, n_clusters, rho_init);
   mat rho_old = rho(span::all, span::all, span(0));
 
   // Declare the vector to hold the scaling parameter alpha

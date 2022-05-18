@@ -10,6 +10,10 @@
 * Quite extensive internal refactoring of C++ code.
 * Function lik_db_mix has been renamed to get_mallows_loglik. lik_db_mix still
   exists as deprecated.
+* When no initial rankings are provided, compute_mallows() and compute_mallows_mixtures()
+  no use independent initial rho in each cluster. Previously a single initial
+  rho was used for all cluster. This should potentially improve convergence, but
+  will lead to different results when n_clusters>=2 for a given random number seed.
 
 # BayesMallows 1.1.2
 

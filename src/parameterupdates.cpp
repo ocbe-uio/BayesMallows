@@ -8,11 +8,15 @@ using namespace arma;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // Initialize latent ranks as provided by rho_init, or randomly:
-mat initialize_rho(Rcpp::Nullable<mat> rho_init, int n_items, int n_clusters){
+arma::mat initialize_rho(int n_items, int n_cols, Rcpp::Nullable<arma::mat> rho_init){
   if(rho_init.isNotNull()){
-    return repmat(Rcpp::as<mat>(rho_init), 1, n_clusters);
+    return repmat(Rcpp::as<mat>(rho_init), 1, n_cols);
   } else {
-    return shuffle(repmat(regspace<mat>(1, 1, n_items), 1, n_clusters));
+    mat rho_samples(n_items, n_cols);
+    for (uword i = 0; i < n_cols; ++i) {
+      rho_samples.col(i) = randperm<vec>(n_items) + 1;
+    }
+    return rho_samples;
   }
 }
 

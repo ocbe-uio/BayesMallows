@@ -64,24 +64,8 @@ void smc_mallows_new_users_augment_partial(
   }
 }
 
-mat initialize_alpha(const int& N, const int& Time){
-  mat alpha_samples(N, Time + 1);
-  const vec& alpha_samples_0 = Rcpp::rexp(N, 1);
-  alpha_samples.col(0) = alpha_samples_0;
-  return alpha_samples;
-}
-
-cube initialize_rho(
-    const int& N, const int& n_items, const int& d
-){
-  cube rho_samples(N, n_items, d, fill::zeros);
-  for (uword i = 0; i < N; ++i) {
-    uvec items_sample = randperm(n_items) + 1;
-    for (uword j = 0; j < n_items; ++j) {
-      rho_samples(i, j, 0) = items_sample(j);
-    }
-  }
-  return rho_samples;
+vec initialize_alpha(const int& N){
+  return Rcpp::rexp(N, 1);
 }
 
 void smc_mallows_new_users_resample(
@@ -155,9 +139,7 @@ void smc_mallows_new_users_reweight(
   }
 
   /* normalise weights ------------------------------------ */
-  const double maxw = max(log_inc_wgt);
-  const vec w = exp(log_inc_wgt - maxw);
-  norm_wgt = w / sum(w);
+  norm_wgt = normalize_weights(log_inc_wgt);
 
   ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
