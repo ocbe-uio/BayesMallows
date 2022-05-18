@@ -2,11 +2,9 @@
 #define PARAMETERUPDATES_H
 
 #include "RcppArmadillo.h"
-#include "leapandshift.h"
-#include "distances.h"
-#include "partitionfuns.h"
 
-
+arma::mat initialize_rho(int n_items, int n_cols,
+                         Rcpp::Nullable<arma::mat> rho_init = R_NilValue);
 double update_alpha(arma::vec& alpha_acceptance,
                   const double& alpha_old,
                   const arma::mat& rankings,
@@ -26,7 +24,6 @@ void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
                 const std::string& metric, const int& n_items, const int& t,
                 const arma::uvec& element_indices, const arma::vec& obs_freq);
 
-arma::mat initialize_rho(Rcpp::Nullable<arma::mat> rho_init, int n_items, int n_clusters);
 
 
 #endif

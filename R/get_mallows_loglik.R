@@ -20,19 +20,18 @@
 #'   which means that each row of \code{rankings} is multiplied by 1. If
 #'   provided, \code{obs_freq} must have the same number of elements as there
 #'   are rows in \code{rankings}, and \code{rankings} cannot be \code{NULL}.
-#' @param log A logical; if TRUE, the log-likelihood value is returned. Default
-#'   is \code{FALSE}.
+#' @param log A logical; if TRUE, the log-likelihood value is returned,
+#'   otherwise its exponential. Default is \code{TRUE}.
 #'
 #' @return The likelihood or the log-likelihood value corresponding to one or
 #'   more observed complete rankings under the Mallows mixture rank model with
 #'   distance specified by the \code{metric} argument.
 #' @export
 #'
-#' @example inst/examples/lik_db_mix_example.R
+#' @example inst/examples/get_mallows_loglik_example.R
 #'
-lik_db_mix <- function(rho, alpha, weights, metric,
-                       rankings, obs_freq = NULL, log = FALSE) {
-
+get_mallows_loglik <- function(rho, alpha, weights, metric,
+                       rankings, obs_freq = NULL, log = TRUE) {
   if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }
@@ -41,29 +40,62 @@ lik_db_mix <- function(rho, alpha, weights, metric,
     if (nrow(rankings) != length(obs_freq)) {
       stop("obs_freq must be of same length as the number of rows in rankings")
     }
+  } else {
+    obs_freq <- rep(1, nrow(rankings))
   }
 
   if (!is.matrix(rho)) {
     rho <- matrix(rho, nrow = 1)
   }
 
-  if (is.null(obs_freq)) {
-    obs_freq <- rep(1, nrow(rankings))
+  n_clusters <- length(weights)
+  n_items <- ncol(rankings)
+  N <- sum(obs_freq)
+
+  if (metric %in% c("ulam", "footrule", "spearman")) {
+    pfd <- partition_function_data[
+      partition_function_data$metric == metric &
+        partition_function_data$n_items == n_items &
+        partition_function_data$type == "cardinalities", ,
+      drop = FALSE
+    ]
+    if (nrow(pfd) == 0) {
+      stop("Given number of items currently not available for the specified metric")
+    } else {
+      card <- pfd$values[[1]]
+    }
+  } else if (metric %in% c("kendall", "cayley", "hamming")) {
+    card <- NULL
   }
 
-  # Fix to get log likelihood on the right scale
-  n_items <- ncol(rankings)
-  alpha <- alpha / n_items
+  loglik <- vapply(
+    X = seq_len(n_clusters),
+    FUN = function(g) {
+      -(alpha[g] / n_items * rank_dist_sum(
+        rankings = t(rankings),
+        rho = rho[g, ],
+        metric = metric, obs_freq = obs_freq
+      ) +
+        N * get_partition_function(
+          alpha = alpha[g],
+          n_items = n_items, metric = metric,
+          cardinalities = card
+        )) * weights[[g]]
+    },
+    FUN.VALUE = numeric(1)
+  )
 
-  out <- log_lik_db_mix(
-    rho = rho,
-    alpha = alpha,
-    weights = weights,
-    metric = metric,
-    rankings = rankings,
-    obs_freq = obs_freq)
+  if (!log) {
+    exp(sum(loglik))
+  } else {
+    sum(loglik)
+  }
+}
 
-  if (!log) out <- exp(out)
-
-  return(out)
+#' @rdname get_mallows_loglik
+#' @export
+lik_db_mix <- function(rho, alpha, weights, metric,
+                       rankings, obs_freq = NULL, log = FALSE){
+  .Deprecated(new = "get_mallows_loglik")
+  get_mallows_loglik(rho, alpha, weights, metric, rankings, obs_freq, log)
 }

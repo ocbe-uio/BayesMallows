@@ -1,6 +1,7 @@
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
 #include "misc.h"
-#include <cmath>
+#include <Rmath.h>
+using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 double cayley_logz(const int& n_items, const double& alpha) {
@@ -17,8 +18,8 @@ double hamming_logz(const int& n_items, const double& alpha){
   double res = 0;
 
   for(int i = 0; i < (n_items + 1); ++i){
-    res += factorial(n_items) * std::exp(-alpha) *
-      std::pow((std::exp(static_cast<double>(alpha / n_items)) - 1), static_cast<double>(i)) / factorial(i);
+    res += tgamma(n_items + 1) * std::exp(-alpha) *
+      std::pow((std::exp(static_cast<double>(alpha / n_items)) - 1), static_cast<double>(i)) / tgamma(i + 1);
   }
 
   return std::log(res);
@@ -45,7 +46,7 @@ double exact_logz(const int& n_items, const double& alpha, const std::string& me
 }
 
 // Helper to compute the importance sampling smoothed fit
-double compute_is_fit(double alpha, arma::vec fit){
+double compute_is_fit(double alpha, vec fit){
   // The partition function
   double logZ = 0;
   int n_items = fit.n_elem;
@@ -56,19 +57,21 @@ double compute_is_fit(double alpha, arma::vec fit){
   return(logZ);
 }
 
-double logz_cardinalities(const double& alpha, const int& n_items, const arma::vec& cardinalities, const std::string& metric){
+vec find_cardinalities(const int& n_items, const std::string& metric){
   if(metric == "footrule"){
-    arma::vec distances = arma::regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
-    return std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
+    return(regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2)));
   } else if (metric == "spearman"){
-    arma::vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
-    return std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
+    return(regspace(0, 2, 2 * R::choose(n_items + 1., 3.)));
   } else if (metric == "ulam"){
-    arma::vec distances = arma::regspace(0, 1, n_items - 1);
-    return std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
+    return(regspace(0, 1, n_items - 1));
   } else {
     Rcpp::stop("Cardinalities not implemented for the provided metric.");
   }
+}
+
+double logz_cardinalities(const double& alpha, const int& n_items, const vec& cardinalities, const std::string& metric){
+  vec distances = find_cardinalities(n_items, metric);
+  return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
 }
 
 //' Compute the logarithm of the expected distance of metrics for a Mallows rank model
@@ -84,21 +87,9 @@ double logz_cardinalities(const double& alpha, const int& n_items, const arma::v
 // [[Rcpp::export]]
 double log_expected_dist(const double& alpha, const int& n_items,
                          const arma::vec& cardinalities, const std::string& metric){
-  if(metric == "footrule"){
-    arma::vec distances = arma::regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2));
-    return std::log(arma::sum(distances % cardinalities % arma::exp(-alpha * distances / n_items)))
-      -std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
-  } else if (metric == "spearman"){
-    arma::vec distances = arma::regspace(0, 2, 2 * binomial_coefficient(n_items + 1, 3));
-    return std::log(arma::sum(distances % cardinalities % arma::exp(-alpha * distances / n_items)))
-      -std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
-  } else if (metric == "ulam"){
-    arma::vec distances = arma::regspace(0, 1, n_items - 1);
-    return std::log(arma::sum(distances % cardinalities % arma::exp(-alpha * distances / n_items)))
-      -std::log(arma::sum(cardinalities % arma::exp(-alpha * distances / n_items)));
-  } else {
-    Rcpp::stop("Cardinalities not implemented for the provided metric.");
-  }
+  vec distances = find_cardinalities(n_items, metric);
+  return std::log(sum(distances % cardinalities % exp(-alpha * distances / n_items)))
+    -std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
 }
 
 
@@ -126,9 +117,9 @@ double get_partition_function(int n_items, double alpha,
 
 
   if(cardinalities.isNotNull()){
-    return logz_cardinalities(alpha, n_items, Rcpp::as<arma::vec>(cardinalities), metric);
+    return logz_cardinalities(alpha, n_items, Rcpp::as<vec>(cardinalities), metric);
   } else if(logz_estimate.isNotNull()) {
-    return compute_is_fit(alpha, Rcpp::as<arma::vec>(logz_estimate));
+    return compute_is_fit(alpha, Rcpp::as<vec>(logz_estimate));
   } else {
     return exact_logz(n_items, alpha, metric);
   }
@@ -159,14 +150,14 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
                                         int K, int n_iterations = 1000, double tol = 1e-9){
   // IPFP procedure
   // Initialize a square matrix where each row/column sums to one
-  arma::mat A = arma::ones<arma::mat>(K, K) * 1.0 / K;
+  mat A = ones<mat>(K, K) * 1.0 / K;
 
-  // arma::accu sums all elements of the tensor
+  // accu sums all elements of the tensor
   // the % operator computes the element-wise product
-  double Z0lim = -2 * std::log(static_cast<double>(K)) - arma::accu(A % arma::log(A));
+  double Z0lim = -2 * std::log(static_cast<double>(K)) - accu(A % log(A));
 
   // Helper matrix
-  arma::mat B(K, K);
+  mat B(K, K);
   for(int i = 0; i < K; ++i){
     for(int j = 0; j < K; ++j){
       if(metric == "footrule"){
@@ -181,28 +172,28 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
   B = B * 1.0 / K;
 
   int n_alpha = alpha_vector.n_elem;
-  arma::vec result(n_alpha);
+  vec result(n_alpha);
 
   for(int i = 0; i < n_alpha; ++i){
     double alpha = alpha_vector(i);
 
-    A = arma::exp(alpha * B);
-    arma::mat A_old = A;
+    A = exp(alpha * B);
+    mat A_old = A;
     for(int i = 0; i < n_iterations; ++i){
       // Note: We can use 1-norm because the exponential never gets negative
       // Normalize rows
-      A = arma::normalise(A, 1, 1);
+      A = normalise(A, 1, 1);
       // Normalize columns
-      A = arma::normalise(A, 1, 0);
+      A = normalise(A, 1, 0);
 
-      double diff = arma::abs((A - A_old)/A_old).max();
+      double diff = abs((A - A_old)/A_old).max();
       if(diff < tol) break;
 
       A_old = A;
     }
 
-    double Zlim = alpha * arma::accu(B % A) - 2 * std::log(K) - arma::accu(A % arma::log(A));
-    double Z0 = arma::sum(arma::log(arma::regspace(1, n_items)));
+    double Zlim = alpha * accu(B % A) - 2 * std::log(K) - accu(A % log(A));
+    double Z0 = sum(log(regspace(1, n_items)));
 
     result(i) = (Zlim - Z0lim)/K * n_items + Z0;
   }

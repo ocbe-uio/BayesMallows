@@ -1,10 +1,12 @@
-#include <cmath>
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
+#include "misc.h"
 #include "mixtures.h"
 #include "distances.h"
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
 #include "parameterupdates.h"
+
+using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
@@ -89,17 +91,17 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   int n_assessors = rankings.n_cols;
 
   bool augpair = (constraints.length() > 0);
-  bool any_missing = !arma::is_finite(rankings);
+  bool any_missing = !is_finite(rankings);
 
-  arma::umat missing_indicator;
-  arma::uvec assessor_missing;
+  umat missing_indicator;
+  uvec assessor_missing;
 
   if(any_missing){
     // Converting to umat will convert NA to 0, but might cause clang-UBSAN error, so converting explicitly.
-    rankings.replace(arma::datum::nan, 0);
-    missing_indicator = arma::conv_to<arma::umat>::from(rankings);
+    rankings.replace(datum::nan, 0);
+    missing_indicator = conv_to<umat>::from(rankings);
     missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
-    assessor_missing = arma::conv_to<arma::uvec>::from(arma::sum(missing_indicator, 0));
+    assessor_missing = conv_to<uvec>::from(sum(missing_indicator, 0));
     initialize_missing_ranks(rankings, missing_indicator, assessor_missing);
   } else {
     missing_indicator.reset();
@@ -107,16 +109,16 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   }
 
   // Declare the cube to hold the latent ranks
-  arma::cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
-  rho.slice(0) = initialize_rho(rho_init, n_items, n_clusters);
-  arma::mat rho_old = rho(arma::span::all, arma::span::all, arma::span(0));
+  cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
+  rho.slice(0) = initialize_rho(n_items, n_clusters, rho_init);
+  mat rho_old = rho(span::all, span::all, span(0));
 
   // Declare the vector to hold the scaling parameter alpha
-  arma::mat alpha(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
+  mat alpha(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
   alpha.col(0).fill(alpha_init);
 
   // If the user wants to save augmented data, we need a cube
-  arma::cube augmented_data;
+  cube augmented_data;
   if(save_aug){
     augmented_data.set_size(n_items, n_assessors, std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
     augmented_data.slice(0) = rankings;
@@ -125,37 +127,37 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   // Clustering
   bool clustering = n_clusters > 1;
   int n_cluster_assignments = n_clusters > 1 ? std::ceil(static_cast<double>(nmc * 1.0 / clus_thin)) : 1;
-  arma::mat cluster_probs(n_clusters, n_cluster_assignments);
+  mat cluster_probs(n_clusters, n_cluster_assignments);
   cluster_probs.col(0).fill(1.0 / n_clusters);
-  arma::vec current_cluster_probs = cluster_probs.col(0);
-  arma::umat cluster_assignment(n_assessors, n_cluster_assignments);
-  cluster_assignment.col(0) = arma::randi<arma::uvec>(n_assessors, arma::distr_param(0, n_clusters - 1));
-  arma::uvec current_cluster_assignment = cluster_assignment.col(0);
+  vec current_cluster_probs = cluster_probs.col(0);
+  umat cluster_assignment(n_assessors, n_cluster_assignments);
+  cluster_assignment.col(0) = randi<uvec>(n_assessors, distr_param(0, n_clusters - 1));
+  uvec current_cluster_assignment = cluster_assignment.col(0);
 
   // Matrix with precomputed distances d(R_j, \rho_j), used to avoid looping during cluster assignment
-  arma::mat dist_mat(n_assessors, n_clusters);
+  mat dist_mat(n_assessors, n_clusters);
   update_dist_mat(dist_mat, rankings, rho_old, metric, obs_freq);
-  arma::mat within_cluster_distance(n_clusters, include_wcd ? nmc : 1);
+  mat within_cluster_distance(n_clusters, include_wcd ? nmc : 1);
   within_cluster_distance.col(0) = update_wcd(current_cluster_assignment, dist_mat);
 
 
   // Declare indicator vectors to hold acceptance or not
-  arma::vec alpha_acceptance = arma::ones(n_clusters);
-  arma::vec rho_acceptance = arma::ones(n_clusters);
+  vec alpha_acceptance = ones(n_clusters);
+  vec rho_acceptance = ones(n_clusters);
 
-  arma::vec aug_acceptance;
+  vec aug_acceptance;
   if(any_missing | augpair){
-    aug_acceptance = arma::ones<arma::vec>(n_assessors);
+    aug_acceptance = ones<vec>(n_assessors);
   } else {
     aug_acceptance.reset();
   }
 
   // Declare vector with Bernoulli parameter for the case of intransitive preferences
-  arma::vec theta, shape_1, shape_2;
+  vec theta, shape_1, shape_2;
   if(error_model == "bernoulli"){
-    theta = arma::zeros<arma::vec>(nmc);
-    shape_1 = arma::zeros<arma::vec>(nmc);
-    shape_2 = arma::zeros<arma::vec>(nmc);
+    theta = zeros<vec>(nmc);
+    shape_1 = zeros<vec>(nmc);
+    shape_2 = zeros<vec>(nmc);
     shape_1(0) = kappa_1;
     shape_2(0) = kappa_2;
   } else {
@@ -166,9 +168,9 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
 
   // Other variables used
   int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
-  arma::vec alpha_old = alpha.col(0);
+  vec alpha_old = alpha.col(0);
 
-  arma::uvec element_indices = arma::regspace<arma::uvec>(0, rankings.n_rows - 1);
+  uvec element_indices = regspace<uvec>(0, rankings.n_rows - 1);
 
   // This is the Metropolis-Hastings loop
 
@@ -197,7 +199,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
     for(int i = 0; i < n_clusters; ++i){
       update_rho(rho, rho_acceptance, rho_old, rho_index, i,
                  rho_thinning, alpha_old(i), leap_size,
-                 clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
+                 clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
                  metric, n_items, t, element_indices, obs_freq);
 
     }
@@ -206,8 +208,8 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
       ++alpha_index;
       for(int i = 0; i < n_clusters; ++i){
         alpha(i, alpha_index) = update_alpha(alpha_acceptance, alpha_old(i),
-              clustering ? rankings.submat(element_indices, arma::find(current_cluster_assignment == i)) : rankings,
-              clustering ? obs_freq(arma::find(current_cluster_assignment == i)) : obs_freq,
+              clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
+              clustering ? obs_freq(find(current_cluster_assignment == i)) : obs_freq,
               i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate, alpha_max);
       }
       // Update alpha_old

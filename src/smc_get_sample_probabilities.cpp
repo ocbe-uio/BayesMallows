@@ -1,5 +1,8 @@
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
 #include "distances.h"
+#include "smc.h"
+
+using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 //' @title Get Sample Probabilities
@@ -27,20 +30,16 @@ arma::vec get_sample_probabilities(
 ) {
   // define a set of probs list
   const unsigned int& num_ranks = remaining_set_ranks.n_elem;
-  arma::vec sample_prob_list = Rcpp::rep(0.0, num_ranks);
+  vec sample_prob_list = zeros(num_ranks);
 
   // cycle through each item and calculate its specific prob
-  for (arma::uword ii = 0; ii < num_ranks; ++ii) {
-    const arma::vec item_rank = {remaining_set_ranks(ii)};
+  for (uword ii = 0; ii < num_ranks; ++ii) {
+    const vec item_rank = {remaining_set_ranks(ii)};
     const double rank_dist = get_rank_distance(rho_item_rank, item_rank, metric);
     const double sample_prob = -(alpha / n_items) * rank_dist;
     sample_prob_list(ii) = sample_prob;
   }
 
-  // normalise probs
-  const double maxw = max(sample_prob_list);
-  const arma::vec w = arma::exp(sample_prob_list - maxw);
-  sample_prob_list = w / arma::sum(w);
+  return normalize_weights(sample_prob_list);
 
-  return(sample_prob_list);
 }

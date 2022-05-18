@@ -2,13 +2,11 @@
 // These functions are downloaded from http://people.sc.fsu.edu/~jburkardt/cpp_src/subset/subset.html
 // and have been modified to work with R and Rcpp.
 
-# include <cmath>
+# include <Rcpp.h>
 # include <cstdlib>
 # include <cstring>
 # include <ctime>
-# include <iomanip>
-# include <iostream>
-# include <Rcpp.h>
+
 
 using namespace std;
 

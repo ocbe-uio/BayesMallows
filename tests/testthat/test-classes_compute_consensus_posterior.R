@@ -26,8 +26,8 @@ data <- sushi_rankings[1:100, ]
 leap_size <- floor(n_items / 5)
 nmc <- N <- 1000
 Time <- 20
-fit_smc <- smc_mallows_new_users_complete(
-  R_obs = data, n_items = n_items, metric = metric, leap_size = leap_size,
+fit_smc <- smc_mallows_new_users(
+  R_obs = data, type = "complete", n_items = n_items, metric = metric, leap_size = leap_size,
   N = N, Time = Time, logz_estimate = logz_estimate, mcmc_kernel_app = 5,
   num_new_obs = 5, alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 1e6
 )
@@ -46,19 +46,14 @@ fit_smc_post_rho <- compute_posterior_intervals_rho(
 # BayesMallows ------------------------------------------- #
 
 fit_bm_alpha <- fit_bm$alpha
-fit_bm_alpha <- dplyr::group_by(fit_bm_alpha, .data$cluster)
-class(fit_bm_alpha) <- c(
-  "posterior_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame"
-)
+fit_bm_alpha <- split(fit_bm_alpha, f = fit_bm_alpha$cluster)
 fit_bm_post_internal_alpha <- .compute_posterior_intervals(
   fit_bm_alpha, "alpha", .95, 3L
 )
 
 fit_bm_rho <- fit_bm$rho
-fit_bm_rho <- dplyr::group_by(fit_bm_rho, .data$cluster)
-class(fit_bm_rho) <- c(
-  "posterior_BayesMallows", "grouped_df", "tbl_df", "tbl", "data.frame"
-)
+fit_bm_rho <- split(fit_bm_rho, f = interaction(fit_bm_rho$cluster, fit_bm_rho$item))
+
 fit_bm_post_internal_rho <- .compute_posterior_intervals(
   fit_bm_rho, "rho", .95, 3L
 )
@@ -68,10 +63,7 @@ fit_bm_post_internal_rho <- .compute_posterior_intervals(
 fit_smc_alpha <- data.frame(iteration = seq_len(nmc), value = fit_smc_alpha)
 fit_smc_alpha$n_clusters <- 1
 fit_smc_alpha$cluster <- "Cluster 1"
-fit_smc_alpha <- dplyr::group_by(fit_smc_alpha, .data$cluster)
-class(fit_smc_alpha) <- c(
-  "posterior_SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame"
-)
+fit_smc_alpha <- split(fit_smc_alpha, f = fit_smc_alpha$cluster)
 fit_smc_post_internal_alpha <- .compute_posterior_intervals(
   fit_smc_alpha, "alpha", .95, 3L
 )
@@ -79,12 +71,10 @@ fit_smc_post_internal_alpha <- .compute_posterior_intervals(
 fit_smc_rho <- smc_processing(fit_smc_rho)
 fit_smc_rho$n_clusters <- 1
 fit_smc_rho$cluster <- "Cluster 1"
-fit_smc_rho <- dplyr::group_by(fit_smc_rho, .data$cluster)
-class(fit_smc_rho) <- c(
-  "posterior_SMCMallows", "grouped_df", "tbl_df", "tbl", "data.frame"
-)
+fit_smc_rho <- split(fit_smc_rho, f = fit_smc_rho$cluster)
 fit_smc_post_internal_rho <- .compute_posterior_intervals(
-  fit_smc_alpha, "rho", .95, 3L, discrete = TRUE
+  fit_smc_alpha, "rho", .95, 3L,
+  discrete = TRUE
 )
 
 # Testing classes ==============================================================

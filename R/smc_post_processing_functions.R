@@ -7,7 +7,6 @@
 # AS: edited this function to include parameter `colnames`. This resolve issues in #118 with post processing functions not printing the names of items in rankings.
 # The `default` is set to NULL so tat we do not cause plotting issues in `plot_rho_heatplot.
 smc_processing <- function(output, colnames = NULL) {
-
   df <- data.frame(data = output)
 
   # if colnames are specified, then incorporate them
@@ -48,7 +47,7 @@ smc_processing <- function(output, colnames = NULL) {
 #' @author Anja Stein
 #'
 # AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
-compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL, verbose=FALSE) {
+compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL, verbose = FALSE) {
   #----------------------------------------------------------------
   # AS: added extra input parameter
   smc_plot <- smc_processing(output = output, colnames = colnames)
@@ -62,7 +61,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
   )
 
   #------------------------------------------------------------------------------------------
-  #AS: reorder items to be in numerical order if no colnames are specified
+  # AS: reorder items to be in numerical order if no colnames are specified
   if (is.null(colnames)) {
     item_numbers <- as.numeric(gsub("\\D", "", rho_posterior_interval$item))
     mixed_order <- match(sort(item_numbers), item_numbers)
@@ -83,8 +82,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
 #' @author Anja Stein
 #'
 # AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
-compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL, verbose=FALSE) {
-
+compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL, verbose = FALSE) {
   n_items <- dim(output)[2]
 
   #----------------------------------------------------------------
@@ -125,12 +123,12 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL,
 #'
 # AS: if you remove the verbose input variable, then the function will be consistent
 # with the other plot functions(they all print when verbose=FALSE, but this function doesn't.)
-#`plot_rho_heatplot` doesn't require the variable `verbose`,
+# `plot_rho_heatplot` doesn't require the variable `verbose`,
 # so I'm not sure if this function does to plot the density of alpha
 plot_alpha_posterior <- function(output, nmc, burnin) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
 
-  plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes_(x = ~ value)) +
+  plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes_(x = ~value)) +
     ggplot2::geom_density() +
     ggplot2::xlab(expression(alpha)) +
     ggplot2::ylab("Posterior density") +
@@ -146,7 +144,7 @@ plot_alpha_posterior <- function(output, nmc, burnin) {
 #' @export
 #' @author Anja Stein
 #'
-compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE) {
+compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose = FALSE) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
   alpha_samples_table$n_clusters <- 1
   alpha_samples_table$cluster <- "Cluster 1"
@@ -172,14 +170,12 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose=FALSE
 #'   vector of indices. If NULL, five items are selected randomly.
 #' @export
 plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = NULL) {
-
   n_items <- dim(output)[2]
 
   if (is.null(items) && n_items > 5) {
     message("Items not provided by user or more than 5 items in a ranking. Picking 5 at random.")
     items <- sample(1:n_items, 5, replace = FALSE)
     items <- sort(items)
-
   } else if (is.null(items) && n_items <= 5) {
     items <- c(1:n_items)
     items <- sort(items)
@@ -199,13 +195,15 @@ plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = 
     df <- cbind(cluster = "Cluster 1", df)
   }
 
-  df <- dplyr::filter(df, .data$iteration > burnin, .data$item %in% items)
+  df <- df[df$iteration > burnin & df$item %in% items, , drop = FALSE]
 
   # Compute the density, rather than the count, since the latter
   # depends on the number of Monte Carlo samples
-  df <- dplyr::group_by(df, .data$cluster, .data$item, .data$value)
-  df <- dplyr::summarise(df, n = dplyr::n())
-  df <- dplyr::mutate(df, pct = .data$n / sum(.data$n))
+  df <- aggregate(list(n = df$iteration),
+    list(cluster = df$cluster, item = df$item, value = df$value),
+    FUN = length
+  )
+  df$pct <- df$n / sum(df$n)
 
   df$item <- factor(df$item, levels = c(items))
 

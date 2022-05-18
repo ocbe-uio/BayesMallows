@@ -1,24 +1,25 @@
-#include "RcppArmadillo.h"
+#include <RcppArmadillo.h>
+using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-void shift_step(arma::vec& rho_proposal, const arma::vec& rho,
-                const int& u, double& delta_r, arma::uvec& indices){
+void shift_step(vec& rho_proposal, const vec& rho,
+                const int& u, uvec& indices){
   // Shift step:
-  delta_r = rho_proposal(u - 1) - rho(u - 1);
-  indices = arma::zeros<arma::uvec>(std::abs(delta_r) + 1);
-  indices[0] = u-1;
+  double delta_r = rho_proposal(u) - rho(u);
+  indices = zeros<uvec>(std::abs(delta_r) + 1);
+  indices[0] = u;
   int index;
 
   if(delta_r > 0){
     for(int k = 1; k <= delta_r; ++k){
-      index = arma::as_scalar(arma::find(rho == rho(u-1) + k));
+      index = as_scalar(find(rho == rho(u) + k));
       rho_proposal(index) -= 1;
       indices[k] = index;
     }
   } else if(delta_r < 0) {
     for(int k = (-1); k >= delta_r; --k){
-      index = arma::as_scalar(arma::find(rho == rho(u-1) + k));
+      index = as_scalar(find(rho == rho(u) + k));
       rho_proposal(index) += 1;
       indices[-(k)] = index;
     }
@@ -26,67 +27,50 @@ void shift_step(arma::vec& rho_proposal, const arma::vec& rho,
 }
 
 
-void leap_and_shift(arma::vec& rho_proposal, arma::uvec& indices,
+void leap_and_shift(vec& rho_proposal, uvec& indices,
                     double& prob_backward, double& prob_forward,
-                    const arma::vec& rho, int leap_size, bool reduce_indices){
+                    const vec& rho, int leap_size, bool reduce_indices){
 
   // Set proposal equal to current
   rho_proposal = rho;
 
   // Help vectors
-  arma::vec support;
+  vec support;
 
   // Number of items
   int n = rho.n_elem;
 
   // Other helper variables
-  int u, index;
-  double delta_r, support_new;
+  double support_new;
 
   // Leap 1
   // 1, sample u randomly between 1 and n
-  u = arma::as_scalar(arma::randi(1, arma::distr_param(1, n)));
+  int u = randi<int>(distr_param(0, n - 1));
 
   // 2, compute the set S for sampling the new rank
-  double dobL = static_cast<double>(leap_size);
-  double dobn = static_cast<double>(n);
-
-  // Defining linspace lengths here to avoid duplication in code
-  double length1 = std::min(rho(u - 1) - 1, dobL);
-  double length2 = std::min(n - rho(u - 1), dobL);
-
-  if ((rho(u - 1) > 1) && (rho(u - 1) < n)) {
-    support = arma::join_cols(arma::linspace(
-      std::max(1.0, rho(u - 1) - leap_size), rho(u - 1) - 1, length1),
-      arma::linspace(rho(u - 1) + 1, std::min(dobn, rho(u - 1) + leap_size), length2));
-  } else if(rho(u - 1) == 1){
-    support = arma::linspace(rho(u - 1) + 1, std::min(dobn, rho(u - 1) + leap_size), length2);
-  } else if(rho(u - 1) == n){
-    support = arma::linspace(std::max(1.0, rho(u - 1) - leap_size), rho(u - 1) - 1, length1);
-  }
+  support = join_cols(regspace(std::max(1.0, rho(u) - leap_size), 1, rho(u) - 1),
+    regspace(rho(u) + 1, 1, std::min(n * 1.0, rho(u) + leap_size)));
 
   // 3. assign a random element of the support set, this completes the leap step
-  index = arma::as_scalar(arma::randi(1, arma::distr_param(0, support.n_elem-1)));
+  int index = randi<int>(distr_param(0, support.n_elem-1));
   // Picked element index-1 from the support set
-  rho_proposal(u-1) = support(index);
+  rho_proposal(u) = support(index);
 
   // Compute the associated transition probabilities
-  if(std::abs(rho_proposal(u - 1) - rho(u - 1)) == 1){
+  support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) + std::min(n - rho_proposal(u), leap_size * 1.0);
+  if(std::abs(rho_proposal(u) - rho(u)) == 1){
     // in this case the transition probabilities coincide! (and in fact for leap_size = 1 the L&S is symmetric)
-    support_new = std::min(rho_proposal(u - 1) - 1, dobL) + std::min(n - rho_proposal(u - 1), dobL);
     prob_forward = 1.0 / (n * support.n_elem) + 1.0 / (n * support_new);
     prob_backward = prob_forward;
   } else {
     // P(proposed|current)
     prob_forward = 1.0 / (n * support.n_elem);
     // P(current|proposed)
-    support_new = std::min(rho_proposal(u - 1) - 1, dobL) + std::min(n - rho_proposal(u-1), dobL);
     prob_backward = 1.0 / (n * support_new);
   }
-
-  shift_step(rho_proposal, rho, u, delta_r, indices);
+  shift_step(rho_proposal, rho, u, indices);
 
   if(!reduce_indices){
-    indices = arma::regspace<arma::uvec>(0, n - 1);
+    indices = regspace<uvec>(0, n - 1);
   }
 }

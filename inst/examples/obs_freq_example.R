@@ -1,5 +1,3 @@
-library(dplyr)
-
 # The first example uses full rankings in the potato_visual dataset, but we assume
 # that each row in the data corresponds to between 100 and 500 assessors.
 set.seed(1234)
@@ -51,14 +49,18 @@ beach_tc <- generate_transitive_closure(beach_preferences)
 # and then concatenating, whereupon we check how many participants there
 # are for each unique concatenation
 # This returns zero rows, so there are no participants with the same transitive closure
-beach_tc %>%
-  arrange(assessor, top_item, bottom_item) %>%
-  group_by(assessor) %>%
-  summarise(concat_ranks = paste(c(bottom_item, top_item), collapse = ","),
-            .groups = "drop") %>%
-  group_by(concat_ranks) %>%
-  summarise(num_assessors = n_distinct(assessor), .groups = "drop") %>%
-  filter(num_assessors > 1)
+beach_tc <- beach_tc[order(beach_tc$assessor, beach_tc$top_item,
+                           beach_tc$bottom_item), ]
+aggr_df <- do.call(rbind, lapply(split(beach_tc, f = beach_tc$assessor), function(x){
+  x$concat_ranks <- paste(c(x$bottom_item, x$top_item), collapse = ",")
+  x
+}))
+
+aggr_df <- aggregate(list(num_assessors = aggr_df$assessor),
+                     aggr_df[, "concat_ranks", drop = FALSE],
+                     FUN = function(x) length(unique(x)))
+
+nrow(aggr_df[aggr_df$num_assessors > 1, , drop = FALSE])
 
 # We now illustrate the weighting procedure by assuming that there are
 # more than one assessor per unique transitive closure. We generate an

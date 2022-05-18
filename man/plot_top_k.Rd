@@ -47,9 +47,7 @@ preferences.
   probs <- predict_top_k(model_fit)
   # To find all items ranked top-3 by assessors 1-3 with probability more than 80 \%,
   # we do
-  library(dplyr)
-  probs \%>\%
-    filter(assessor \%in\% 1:3, prob > 0.8)
+  subset(probs, assessor \%in\% 1:3 & prob > 0.8)
 
 }
 }

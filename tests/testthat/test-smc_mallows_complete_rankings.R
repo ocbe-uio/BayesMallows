@@ -8,7 +8,7 @@ set.seed(994)
 data <- sushi_rankings[1:100, ]
 
 # General
-n_items <- dim(sushi_rankings)[2]  # Number of items
+n_items <- dim(sushi_rankings)[2] # Number of items
 leap_size <- floor(n_items / 5)
 metric <- "footrule"
 
@@ -18,10 +18,12 @@ iter <- 1e2
 degree <- 10
 
 # Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
-logz_estimate <- estimate_partition_function(method = "importance_sampling",
-                                             alpha_vector = alpha_vector,
-                                             n_items = n_items, metric = metric,
-                                             nmc = iter, degree = degree)
+logz_estimate <- estimate_partition_function(
+  method = "importance_sampling",
+  alpha_vector = alpha_vector,
+  n_items = n_items, metric = metric,
+  nmc = iter, degree = degree
+)
 
 
 ######################################
@@ -29,8 +31,10 @@ logz_estimate <- estimate_partition_function(method = "importance_sampling",
 ######################################
 nmc <- 20
 burnin <- 5
-model_fit <- compute_mallows(rankings = data, nmc = nmc, metric = metric, leap_size = leap_size,
-                             alpha_prop_sd = 0.15, logz_estimate = logz_estimate)
+model_fit <- compute_mallows(
+  rankings = data, nmc = nmc, metric = metric, leap_size = leap_size,
+  alpha_prop_sd = 0.15, logz_estimate = logz_estimate
+)
 
 model_fit$burnin <- burnin
 
@@ -52,20 +56,32 @@ num_new_obs <- 10
 Time <- dim(data)[1] / num_new_obs
 N <- 100
 
-test <- smc_mallows_new_users_complete(
-  R_obs = data, n_items = n_items, metric = metric,
+test <- smc_mallows_new_users(
+  R_obs = data, type = "complete", n_items = n_items, metric = metric,
   leap_size = leap_size, N = N, Time = Time,
   logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
   alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
   num_new_obs = num_new_obs, verbose = FALSE
 )
 
+expect_warning(
+  smc_mallows_new_users_complete(
+    R_obs = data, n_items = n_items, metric = metric,
+    leap_size = leap_size, N = N, Time = Time,
+    logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+    alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
+    num_new_obs = num_new_obs, verbose = FALSE
+  ),
+  "'smc_mallows_new_users_complete' is deprecated."
+)
+
 test_that("Output of smc_mallows_new_users_complete is OK", {
   expect_s3_class(test, "SMCMallows")
-  expect_length(test, 2)
-  expect_named(test, c("rho_samples", "alpha_samples"))
-  expect_equal(dim(test$rho_samples), c(100, 10, 111))
-  expect_equal(dim(test$alpha_samples), c(100, 111))
+  expect_length(test, 4)
+  expect_named(test, c("rho_samples", "alpha_samples", "augmented_rankings", "ESS"))
+  expect_equal(dim(test$rho_samples), c(100, 10, 11))
+  expect_equal(dim(test$alpha_samples), c(100, 11))
+  expect_equal(length(test$ESS), 10)
 })
 
 # ###############################
@@ -84,7 +100,7 @@ rho_cp <- compute_rho_consensus(
 rho_map <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "MAP")
 
 test_that("Output of compute_posterior_intervals_rho is OK", {
-  expect_is(rho_temp, "tbl_df")
+  expect_is(rho_temp, "data.frame")
   expect_length(rho_temp, 7)
   expect_named(
     rho_temp,
@@ -93,7 +109,7 @@ test_that("Output of compute_posterior_intervals_rho is OK", {
       "central_interval"
     )
   )
-  expect_equivalent(sapply(rho_temp, length), rep(10, 7))
+  expect_equivalent(vapply(rho_temp, length, numeric(1)), rep(10, 7))
 })
 
 # posterior for alpha
@@ -106,7 +122,7 @@ alpha_posterior_intervals <- compute_posterior_intervals_alpha(
 )
 
 test_that("Output of compute_posterior_intervals_alpha is OK", {
-  expect_is(alpha_posterior_intervals, "tbl_df")
+  expect_is(alpha_posterior_intervals, "data.frame")
   expect_length(alpha_posterior_intervals, 6)
   expect_named(
     alpha_posterior_intervals,
@@ -115,12 +131,12 @@ test_that("Output of compute_posterior_intervals_alpha is OK", {
       "central_interval"
     )
   )
-  expect_equivalent(sapply(alpha_posterior_intervals, length), rep(1, 6))
+  expect_equivalent(vapply(alpha_posterior_intervals, length, numeric(1)), rep(1, 6))
 })
 
 context("SMC complete rankings: breakdown")
 
-test_that("get_mallows_loglik() in smc_mallows_new_users_complete() works", {
+test_that("get_exponent_sum() in smc_mallows_new_users_complete() works", {
   # ======================================================== #
   # Setup                                                    #
   # ======================================================== #
@@ -160,10 +176,10 @@ test_that("get_mallows_loglik() in smc_mallows_new_users_complete() works", {
     alpha_samples_ii <- alpha_samples[ii, tt + 1]
     rho_samples_ii <- rho_samples[ii, , tt + 1]
     for (ii in seq_len(N)) {
-      log_z_alpha <- BayesMallows:::get_partition_function(
+      log_z_alpha <- get_partition_function(
         n_items, alpha_samples_ii, NULL, logz_estimate, metric
       )
-      log_likelihood <- get_mallows_loglik(
+      log_likelihood <- get_exponent_sum(
         alpha_samples_ii, t(rho_samples_ii), n_items,
         new_observed_rankings, metric
       )

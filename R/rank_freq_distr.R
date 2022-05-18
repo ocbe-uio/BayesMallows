@@ -14,7 +14,6 @@
 #' @example /inst/examples/rank_freq_distr_example.R
 #'
 rank_freq_distr <- function(rankings) {
-
   if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }
@@ -24,5 +23,4 @@ rank_freq_distr <- function(rankings) {
   out[out == 0] <- NA
 
   return(out)
-
 }

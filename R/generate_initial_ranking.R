@@ -70,16 +70,16 @@ generate_initial_ranking <- function(tc,
                                      n_items = max(tc[, c("bottom_item", "top_item")]),
                                      cl = NULL, shuffle_unranked = FALSE, random = FALSE,
                                      random_limit = 8L) {
-
-
   if (!(inherits(tc, "BayesMallowsTC"))) {
     stop("tc must be an object returned from generate_transitive_closure")
   }
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
   if (n_items > random_limit && random) {
-    stop(paste("Number of items exceeds the limit for generation of random permutations,\n",
-               "modify the random_limit argument to override this.\n"))
+    stop(paste(
+      "Number of items exceeds the limit for generation of random permutations,\n",
+      "modify the random_limit argument to override this.\n"
+    ))
   }
 
   if (n_items < max(tc[, c("bottom_item", "top_item")])) {
@@ -88,21 +88,20 @@ generate_initial_ranking <- function(tc,
 
   prefs <- split(tc[, c("bottom_item", "top_item"), drop = FALSE], tc$assessor)
   if (is.null(cl)) {
-    prefs <- lapply(prefs, function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
-                    n_items, shuffle_unranked, random)
+    do.call(rbind, lapply(
+      prefs, function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
+      n_items, shuffle_unranked, random))
   } else {
-    prefs <- parallel::parLapply(cl = cl, X = prefs,
-                                 fun = function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
-                                 n_items, shuffle_unranked, random)
+    do.call(rbind, parallel::parLapply(
+      cl = cl, X = prefs,
+      fun = function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
+      n_items, shuffle_unranked, random))
   }
-
-  do.call(rbind, prefs)
 }
 
 create_ranks <- function(mat, n_items, shuffle_unranked, random) {
-
   if (!random) {
-    g <- igraph::graph_from_edgelist(mat)
+    g <- igraph::graph_from_edgelist(as.matrix(mat))
     g <- as.integer(igraph::topo_sort(g))
 
     all_items <- seq(from = 1, to = n_items, by = 1)
@@ -110,7 +109,6 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     if (!shuffle_unranked) {
       # Add unranked elements outside of the range at the end
       g_final <- c(g, setdiff(all_items, g))
-
     } else {
       ranked_items <- unique(c(mat))
       unranked_items <- setdiff(all_items, ranked_items)
@@ -119,13 +117,11 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
       g_final <- rep(NA, n_items)
       g_final[idx_ranked] <- g[g %in% ranked_items]
       g_final[is.na(g_final)] <- unranked_items[sample(length(unranked_items))]
-
     }
 
     # Convert from ordering to ranking
-    r <- create_ranking(rev(g_final))
-    mat <- matrix(r, nrow = 1)
-  } else{
+    return(create_ranking(rev(g_final)))
+  } else {
     graph <- list()
     for (i in seq_len(n_items)) {
       graph[[i]] <- unique(mat[mat[, "top_item"] == i, "bottom_item"])
@@ -134,23 +130,11 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     indegree <- table(unlist(graph))
     indegree_init[as.integer(names(indegree))] <- indegree
     attr(graph, "indegree") <- indegree_init
-    rm(indegree, indegree_init)
-    discovered <- rep(FALSE, n_items)
-    path <- numeric()
 
-    stdout <- vector("character")
-    con <- textConnection("stdout", "wr", local = TRUE)
-    sink(con)
-    all_topological_sorts(graph, path, discovered, n_items)
-    sink()
-    close(con)
-
-    res <- gsub("\\[1\\] ", "", stdout)
-    res <- res[sample(length(stdout), 1)]
-
-    mat <- matrix(as.numeric(strsplit(res, split = "[^0-9]+")[[1]]), nrow = 1)
+    e1 <- new.env()
+    assign("x", list(), envir = e1)
+    assign("num", 0L, envir = e1)
+    all_topological_sorts(graph, n_items, e1)
+    return(get("x", envir = e1)[[sample(get("num", envir = e1), 1)]])
   }
-
-
-  return(mat)
 }

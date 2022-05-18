@@ -67,16 +67,13 @@ determine the directory and filenames of the csv files.
       read.csv(cluster_files[[i]], header = FALSE))
   }
 
-  library(dplyr)
+
   # Create an integer array of latent allocations, as this is required by label.switching
-  z <- m$cluster_assignment \%>\%
-    filter(iteration > burnin) \%>\%
-    mutate(value = as.integer(gsub("Cluster ", "", value))) \%>\%
-    as.data.frame() \%>\%
-    stats::reshape(direction = "wide",
-                   idvar = "iteration", timevar = "assessor") \%>\%
-    select(-iteration) \%>\%
-    as.matrix()
+  z <- subset(m$cluster_assignment, iteration > burnin)
+  z$value <- as.integer(gsub("Cluster ", "", z$value))
+  z <- stats::reshape(z, direction = "wide", idvar = "iteration", timevar = "assessor")
+  z$iteration <- NULL
+  z <- as.matrix(z)
 
   # Now apply Stephen's algorithm
   library(label.switching)

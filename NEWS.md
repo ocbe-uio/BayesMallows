@@ -1,3 +1,20 @@
+# BayesMallows (development version)
+
+# Development versions
+
+* Fixed a bug which caused assess_convergence() to fail with 'parameter = 
+  "cluster_probs"'.
+* Fixed unexpected behavior in leap-and-shift proposal distribution for SMC Mallows,
+  causing the function to propose the current rank vector with nonzero probability.
+* BayesMallows no longer depends on 'dplyr'.
+* Quite extensive internal refactoring of C++ code.
+* Function lik_db_mix has been renamed to get_mallows_loglik. lik_db_mix still
+  exists as deprecated.
+* When no initial rankings are provided, compute_mallows() and compute_mallows_mixtures()
+  no use independent initial rho in each cluster. Previously a single initial
+  rho was used for all cluster. This should potentially improve convergence, but
+  will lead to different results when n_clusters>=2 for a given random number seed.
+
 # BayesMallows 1.1.2
 
 * Fixed an issue with stats::reshape causing an error on R-oldrel.

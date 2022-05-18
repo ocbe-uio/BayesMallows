@@ -23,7 +23,7 @@ A list containing:
 }
 }
 \description{
-Determine the new Calculates transition probabilities for proposing a new rho
+Calculates transition probabilities for proposing a new rho
 }
 \examples{
 rho <- c(1, 2, 3, 4, 5, 6)
@@ -32,7 +32,6 @@ n_items <- 6
 leap_and_shift_probs(rho, 1, n_items)
 leap_and_shift_probs(rho, 2, n_items)
 leap_and_shift_probs(rho, 3, n_items)
+
 }
-\author{
-Anja Stein
-}
+\keyword{internal}

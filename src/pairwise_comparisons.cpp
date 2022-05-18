@@ -2,6 +2,8 @@
 #include "leapandshift.h"
 #include "distances.h"
 
+using namespace arma;
+
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // Update shape parameters for the Bernoulli error model
@@ -10,7 +12,7 @@ void update_shape_bernoulli(
     double& shape_2,
     const double& kappa_1,
     const double& kappa_2,
-    const arma::mat& rankings,
+    const mat& rankings,
     const Rcpp::List& constraints
 ){
 
@@ -22,16 +24,16 @@ void update_shape_bernoulli(
     Rcpp::List assessor_constraints = Rcpp::as<Rcpp::List>(constraints[i]);
     for(int j = 0; j < n_items; ++j){
 
-      arma::uvec items_above = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[j]);
-      arma::uvec items_below = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[j]);
+      uvec items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[j]);
+      uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[j]);
 
-      for(unsigned int k = 0; k < items_above.size(); ++k){
-        int g = (arma::as_scalar(rankings.col(i).row(j)) < arma::as_scalar(rankings.col(i).row(items_above(k) - 1)));
+      for(unsigned int k = 0; k < items_above.n_elem; ++k){
+        int g = (as_scalar(rankings.col(i).row(j)) < as_scalar(rankings.col(i).row(items_above(k) - 1)));
         sum_1 += g;
         sum_2 += 1 - g;
       }
-      for(unsigned int k = 0; k < items_below.size(); ++k){
-        int g = (arma::as_scalar(rankings.col(i).row(j)) > arma::as_scalar(rankings.col(i).row(items_below(k) - 1)));
+      for(unsigned int k = 0; k < items_below.n_elem; ++k){
+        int g = (as_scalar(rankings.col(i).row(j)) > as_scalar(rankings.col(i).row(items_below(k) - 1)));
         sum_1 += g;
         sum_2 += 1 - g;
       }
@@ -44,96 +46,95 @@ void update_shape_bernoulli(
 
 void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
                           const Rcpp::List& assessor_constraints,
-                          const arma::vec& current_ranking){
+                          const vec& current_ranking){
 
   // Find the items which are preferred to the given item
   // Items go from 1, ..., n_items, so must use [item - 1]
-  arma::uvec items_above = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[item - 1]);
-  arma::uvec items_below = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[item - 1]);
+  uvec items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[item - 1]);
+  uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[item - 1]);
 
   // If there are any items above, we must find the possible rankings
   if(items_above.n_elem > 0){
     // Again subtracting 1 because of zero-first indexing
     // Find all the rankings of the items that are preferred to *item*
-    arma::vec rankings_above = current_ranking.elem(items_above - 1);
-    left_limit = arma::max(rankings_above);
+    vec rankings_above = current_ranking.elem(items_above - 1);
+    left_limit = max(rankings_above);
   }
 
   // If there are any items below, we must find the possible rankings
   if(items_below.n_elem > 0){
     // Find all the rankings of the items that are disfavored to *item*
-    arma::vec rankings_below = current_ranking.elem(items_below - 1);
-    right_limit = arma::min(rankings_below);
+    vec rankings_below = current_ranking.elem(items_below - 1);
+    right_limit = min(rankings_below);
   }
 
 }
 
-arma::vec propose_pairwise_augmentation(const arma::vec& ranking, const Rcpp::List& assessor_constraints){
+vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor_constraints){
 
   int n_items = ranking.n_elem;
 
   // Extract the constraints for this particular assessor
-  arma::uvec constrained_items = Rcpp::as<arma::uvec>(assessor_constraints[0]);
+  uvec constrained_items = Rcpp::as<uvec>(assessor_constraints[0]);
 
   // Sample an integer between 1 and n_items
-  int item = arma::randi<int>(arma::distr_param(1, n_items));
+  int item = randi<int>(distr_param(0, n_items - 1));
 
   // Left and right limits of the interval we draw ranks from
   // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
   int left_limit = 0, right_limit = n_items + 1;
-  find_pairwise_limits(left_limit, right_limit, item, assessor_constraints, ranking);
+  find_pairwise_limits(left_limit, right_limit, item + 1, assessor_constraints, ranking);
 
   // Now complete the leap step by sampling a new proposal uniformly between
   // left_limit + 1 and right_limit - 1
-  int proposed_rank = arma::randi<int>(arma::distr_param(left_limit + 1, right_limit - 1));
+  int proposed_rank = randi<int>(distr_param(left_limit + 1, right_limit - 1));
 
   // Assign the proposal to the (item-1)th item
-  arma::vec proposal = ranking;
-  proposal(item - 1) = proposed_rank;
+  vec proposal = ranking;
+  proposal(item) = proposed_rank;
 
-  double delta_r;
-  arma::uvec indices;
+  uvec indices;
 
   // Do the shift step
-  shift_step(proposal, ranking, item, delta_r, indices);
+  shift_step(proposal, ranking, item, indices);
 
   return proposal;
 }
 
-arma::vec propose_swap(const arma::vec& ranking, const Rcpp::List& assessor_constraints,
+vec propose_swap(const vec& ranking, const Rcpp::List& assessor_constraints,
                        int& g_diff, const int& Lswap){
 
   int n_items = ranking.n_elem;
 
   // Draw a random number, representing an item
-  int u = arma::as_scalar(arma::randi(1, arma::distr_param(1, n_items - Lswap)));
+  int u = randi<int>(distr_param(1, n_items - Lswap));
 
-  int ind1 = arma::as_scalar(arma::find(ranking == u));
-  int ind2 = arma::as_scalar(arma::find(ranking == (u + Lswap)));
+  int ind1 = as_scalar(find(ranking == u));
+  int ind2 = as_scalar(find(ranking == (u + Lswap)));
 
-  arma::vec proposal = ranking;
+  vec proposal = ranking;
   proposal(ind1) = ranking(ind2);
   proposal(ind2) = ranking(ind1);
 
   // First consider the first item that was switched
-  arma::uvec items_above = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[ind1]);
-  arma::uvec items_below = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[ind1]);
+  uvec items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[ind1]);
+  uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[ind1]);
 
-  for(unsigned int j = 0; j < items_above.size(); ++j){
+  for(unsigned int j = 0; j < items_above.n_elem; ++j){
     g_diff += (proposal(items_above[j] - 1) > proposal(ind1)) - (ranking(items_above[j] - 1) > ranking(ind1));
   }
-  for(unsigned int j = 0; j < items_below.size(); ++j){
+  for(unsigned int j = 0; j < items_below.n_elem; ++j){
     g_diff += (proposal(items_below[j] - 1) < proposal(ind1)) - (ranking(items_below[j] - 1) < ranking(ind1));
   }
 
   // Now consider the second item
-  items_above = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[ind2]);
-  items_below = Rcpp::as<arma::uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[ind2]);
+  items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[ind2]);
+  items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[ind2]);
 
-  for(unsigned int j = 0; j < items_above.size(); ++j){
+  for(unsigned int j = 0; j < items_above.n_elem; ++j){
     g_diff += (proposal(items_above[j] - 1) > proposal(ind1)) - (ranking(items_above[j] - 1) > ranking(ind1));
   }
-  for(unsigned int j = 0; j < items_below.size(); ++j){
+  for(unsigned int j = 0; j < items_below.n_elem; ++j){
     g_diff += (proposal(items_below[j] - 1) < proposal(ind1)) - (ranking(items_below[j] - 1) < ranking(ind1));
   }
   return proposal;
@@ -141,14 +142,14 @@ arma::vec propose_swap(const arma::vec& ranking, const Rcpp::List& assessor_cons
 
 
 void augment_pairwise(
-    arma::mat& rankings,
-    const arma::uvec& current_cluster_assignment,
-    const arma::vec& alpha,
+    mat& rankings,
+    const uvec& current_cluster_assignment,
+    const vec& alpha,
     const double& theta,
-    const arma::mat& rho,
+    const mat& rho,
     const std::string& metric,
     const Rcpp::List& constraints,
-    arma::vec& aug_acceptance,
+    vec& aug_acceptance,
     const bool& clustering,
     const std::string& error_model,
     const int& Lswap
@@ -159,7 +160,7 @@ void augment_pairwise(
 
   for(int i = 0; i < n_assessors; ++i){
 
-    arma::vec proposal;
+    vec proposal;
     // Summed difference over error function before and after proposal
     int g_diff = 0;
 
@@ -174,7 +175,7 @@ void augment_pairwise(
 
     // Finally, decide whether to accept the proposal or not
     // Draw a uniform random number
-    double u = std::log(arma::randu<double>());
+    double u = std::log(randu<double>());
 
     // Find which cluster the assessor belongs to
     int cluster = current_cluster_assignment(i);

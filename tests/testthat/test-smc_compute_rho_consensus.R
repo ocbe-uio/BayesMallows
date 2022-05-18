@@ -23,8 +23,8 @@ leap_size <- floor(n_items / 5)
 N <- 100
 Time <- 20
 
-model_fit <- smc_mallows_new_users_complete(
-  R_obs = data, n_items = n_items,
+model_fit <- smc_mallows_new_users(
+  R_obs = data, "complete", n_items = n_items,
   metric = metric, leap_size = leap_size,
   N = N, Time = Time,
   logz_estimate = logz_estimate,
@@ -53,7 +53,7 @@ test2 <- compute_rho_consensus(
 )
 
 test_that("Output of compute_rho_consensus (CP) is OK", {
-  expect_is(test1, "tbl_df")
+  expect_is(test1, "data.frame")
   expect_length(test1, 3)
   expect_named(test1, c("ranking", "item", "cumprob"))
   expect_equal(dim(test1), c(n_items, 3))
@@ -62,7 +62,7 @@ test_that("Output of compute_rho_consensus (CP) is OK", {
 })
 
 test_that("Output of compute_rho_consensus (MAP) is OK", {
-  expect_is(test2, "tbl_df")
+  expect_is(test2, "data.frame")
   expect_length(test2, 3)
   expect_named(test2, c("probability", "item", "map_ranking"))
   expect_equal(dim(test2), c(n_items, 3))
