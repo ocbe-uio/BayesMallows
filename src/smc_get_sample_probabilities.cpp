@@ -1,5 +1,6 @@
 #include <RcppArmadillo.h>
 #include "distances.h"
+#include "smc.h"
 
 using namespace arma;
 
@@ -39,10 +40,6 @@ arma::vec get_sample_probabilities(
     sample_prob_list(ii) = sample_prob;
   }
 
-  // normalise probs
-  const double maxw = max(sample_prob_list);
-  const vec w = exp(sample_prob_list - maxw);
-  sample_prob_list = w / sum(w);
+  return normalize_weights(sample_prob_list);
 
-  return(sample_prob_list);
 }

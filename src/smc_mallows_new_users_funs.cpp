@@ -139,9 +139,7 @@ void smc_mallows_new_users_reweight(
   }
 
   /* normalise weights ------------------------------------ */
-  const double maxw = max(log_inc_wgt);
-  const vec w = exp(log_inc_wgt - maxw);
-  norm_wgt = w / sum(w);
+  norm_wgt = normalize_weights(log_inc_wgt);
 
   ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 
