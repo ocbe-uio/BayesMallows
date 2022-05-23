@@ -188,35 +188,37 @@ Rcpp::List smc_mallows_new_users(
           );
         }
       } else if(type == "partial" || type == "partial_alpha_fixed"){
-        double as = (type == "partial" ? alpha_samples(ii, tt + 1) : alpha);
-        mat all_observed_rankings;
-        all_observed_rankings = aug_rankings(span(0, num_obs - 1), span::all, span(ii));
-        mat rs_slice = rho_samples.slice(tt + 1);
-        rowvec rs = rs_slice.row(ii);
-        // move each particle containing sample of rho and alpha by using
-        // the MCMC kernels
-        rho_samples(span(ii), span::all, span(tt + 1)) =                 \
-          metropolis_hastings_rho(                                       \
-            as, n_items, all_observed_rankings, metric, rs.t(), leap_size\
-          );
-        if(type == "partial"){
-          alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(              \
-            as, n_items, all_observed_rankings, metric, rs.t(), logz_estimate,\
-            alpha_prop_sd, lambda, alpha_max                                  \
-          );
-        }
-        for (uword jj = 0; jj < num_obs; ++jj) {
-          rowvec ar;
-          ar = aug_rankings(span(jj), span::all, span(ii));
-          vec mh_aug_result;
-          if (aug_method == "random") {
-            mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric, false);
-          } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
-            mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric, true);
+          for (int kk = 0; kk < mcmc_kernel_app; ++kk) {
+            double as = (type == "partial" ? alpha_samples(ii, tt + 1) : alpha);
+            mat all_observed_rankings;
+            all_observed_rankings = aug_rankings(span(0, num_obs - 1), span::all, span(ii));
+            mat rs_slice = rho_samples.slice(tt + 1);
+            rowvec rs = rs_slice.row(ii);
+            // move each particle containing sample of rho and alpha by using
+            // the MCMC kernels
+            rho_samples(span(ii), span::all, span(tt + 1)) =                 \
+              metropolis_hastings_rho(                                       \
+                as, n_items, all_observed_rankings, metric, rs.t(), leap_size\
+              );
+            if(type == "partial"){
+              alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(              \
+                as, n_items, all_observed_rankings, metric, rs.t(), logz_estimate,\
+                alpha_prop_sd, lambda, alpha_max                                  \
+              );
+            }
+            for (uword jj = num_obs-num_new_obs; jj < num_obs; ++jj) {
+              rowvec ar;
+              ar = aug_rankings(span(jj), span::all, span(ii));
+              vec mh_aug_result;
+              if (aug_method == "random") {
+                mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric, false);
+              } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
+                mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric, true);
+              }
+              aug_rankings(span(jj), span::all, span(ii)) = mh_aug_result;
+            }
           }
-          aug_rankings(span(jj), span::all, span(ii)) = mh_aug_result;
-        }
-      }
+      } 
     }
   }
   // return the history of the particles and their values
