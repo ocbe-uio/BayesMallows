@@ -2,6 +2,8 @@
 
 * Fixed a bug which caused assess_convergence() to fail with 'parameter = 
   "cluster_probs"'.
+* Fixed a bug in smc_mallows_new_users_partial() and 
+  smc_mallows_new_users_partial_alpha_fixed().
 * metropolis_hastings_aug_ranking_pseudo() has been deprecated. Please use
   metropolis_hastings_aug_ranking() instead, with pseudo=TRUE.
 * smc_mallows_new_users_partial_alpha_fixed(), smc_mallows_new_users_complete(),
