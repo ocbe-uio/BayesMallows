@@ -206,7 +206,7 @@ Rcpp::List smc_mallows_new_users(
                 alpha_prop_sd, lambda, alpha_max                                  \
               );
             }
-            for (uword jj = num_obs-num_new_obs; jj < num_obs; ++jj) {
+            for (uword jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
               rowvec ar;
               ar = aug_rankings(span(jj), span::all, span(ii));
               vec mh_aug_result;
@@ -218,7 +218,7 @@ Rcpp::List smc_mallows_new_users(
               aug_rankings(span(jj), span::all, span(ii)) = mh_aug_result;
             }
           }
-      } 
+      }
     }
   }
   // return the history of the particles and their values
