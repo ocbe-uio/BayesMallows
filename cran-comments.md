@@ -1,5 +1,6 @@
 ## Resubmission Note
-This is a resubmission. It contains some bugfixes and a major refactoring of C++ code.
+This is a resubmission. It contains some bugfixes, refactoring of C++ code, and
+(soft-)deprecation of some functions to make the API cleaners.
 
 
 ## Test Environments
