@@ -47,6 +47,5 @@ uvec maybe_offset_indices(
 
 double divide_by_fact(double prob, int set_length) {
   // Using the fact that Gamma(x + 1) = x!
-  prob /= tgamma(set_length + 1);
-  return(prob);
+  return(prob / tgamma(set_length + 1));
 }

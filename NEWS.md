@@ -1,9 +1,17 @@
-# BayesMallows (development version)
-
-# Development versions
+# BayesMallows 1.2.0
 
 * Fixed a bug which caused assess_convergence() to fail with 'parameter = 
   "cluster_probs"'.
+* Fixed a bug in smc_mallows_new_users_partial() and 
+  smc_mallows_new_users_partial_alpha_fixed().
+* metropolis_hastings_aug_ranking_pseudo() has been deprecated. Please use
+  metropolis_hastings_aug_ranking() instead, with pseudo=TRUE.
+* smc_mallows_new_users_partial_alpha_fixed(), smc_mallows_new_users_complete(),
+  and smc_mallows_new_users_partial() have been deprecated. Please use
+  smc_mallows_new_users() instead, and set the type= argument to "complete",
+  "partial", or "partial_alpha_fixed".
+* smc_mallows_new_item_rank_alpha_fixed() has been deprecated. Please use
+  smc_mallows_new_item_rank() instead, with argument alpha_fixed=TRUE.
 * Fixed unexpected behavior in leap-and-shift proposal distribution for SMC Mallows,
   causing the function to propose the current rank vector with nonzero probability.
 * BayesMallows no longer depends on 'dplyr'.
