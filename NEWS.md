@@ -1,3 +1,5 @@
+# Development versions
+
 # BayesMallows 1.2.0
 
 * Fixed a bug which caused assess_convergence() to fail with 'parameter = 
