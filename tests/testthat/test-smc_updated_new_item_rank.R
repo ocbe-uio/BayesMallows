@@ -75,100 +75,100 @@ sample_dataset = example_dataset
 
 # run smc new user with uniform
 set.seed(994)
-# TODO: replace commented code below with equivalent once PRs 190-193 are all
-# merged. From Anja's e-mail "some pull requests need to be dealt with in Github
-# so that we can use the function that begin with smc_mallows_new_users_*​ as
-# the output to feed into the functions in
-# `updated_rankings_functions_for_waldir.R`. So the unit tests will need to be
-# updated with the existing BayesMallows functions once the pull requests have
-# been completed.
 
-# smc_test_new_user_unif = smc_mallows_new_users_uniform(R_obs = sample_dataset, n_items = n_items, metric = metric,
-#                                                        leap_size = leap_size,
-#                                                        N = N, Time = Time, logz_estimate = logz_estimate,
-#                                                        mcmc_kernel_app = mcmc_kernel_app, num_new_obs = num_new_obs,
-#                                                        alpha_prop_sd = 0.5, lambda = 0.1,
-#                                                        alpha_max = 20)
+smc_test_new_user_unif <- smc_mallows_new_users(
+  R_obs = sample_dataset,
+  type = "partial",
+  n_items = n_items,
+  metric = metric,
+  leap_size = leap_size,
+  N = N,
+  Time = Time,
+  mcmc_kernel_app = mcmc_kernel_app,
+  num_new_obs = num_new_obs,
+  alpha_prop_sd = 0.5,
+  lambda = 0.1,
+  alpha_max = 20,
+  aug_method = "random",
+  logz_estimate = logz_estimate
+)
 
-# # run smc updated rankings with alpha unknown
-# Time2 = dim(test_dataset)[3]
-# set.seed(994)
-# smc_test_updated_partial_unif1 = smc_mallows_new_item_rank_updated_alpha_fixed(alpha = 2, n_items = n_items,
-#                                                                    R_obs = test_dataset, metric = metric, leap_size = leap_size,
-#                                                                    N = N, Time = Time2, logz_estimate = logz_estimate,
-#                                                                    mcmc_kernel_app = mcmc_kernel_app, aug_method = "random",
-#                                                                    rho_samples_init = smc_test_new_user_unif$rho_samples[,,Time+1],
-#                                                                    aug_rankings_init = smc_test_new_user_unif$aug_rankings)
-# expect_is(smc_test_updated_partial_unif1, "list")
-# expect_length(smc_test_updated_partial_unif1, 3)
-# expect_equal(dim(smc_test_updated_partial_unif1$rho_samples), c(N, n_items, 6))
-# expect_length(smc_test_updated_partial_unif1$ESS, Time2)
-# expect_equal(dim(smc_test_updated_partial_unif1$augmented_rankings), c(n_users, n_items, N))
+# run smc updated rankings with alpha unknown
+Time2 = dim(test_dataset)[3]
+set.seed(994)
+smc_test_updated_partial_unif1 = smc_mallows_new_item_rank_updated_alpha_fixed(alpha = 2, n_items = n_items,
+                                                                   R_obs = test_dataset, metric = metric, leap_size = leap_size,
+                                                                   N = N, Time = Time2, logz_estimate = logz_estimate,
+                                                                   mcmc_kernel_app = mcmc_kernel_app, aug_method = "random",
+                                                                   rho_samples_init = smc_test_new_user_unif$rho_samples[,,Time+1],
+                                                                   aug_rankings_init = smc_test_new_user_unif$augmented_rankings)
+expect_is(smc_test_updated_partial_unif1, "list")
+expect_length(smc_test_updated_partial_unif1, 3)
+expect_equal(dim(smc_test_updated_partial_unif1$rho_samples), c(N, n_items, 6))
+expect_length(smc_test_updated_partial_unif1$ESS, Time2)
+expect_equal(dim(smc_test_updated_partial_unif1$augmented_rankings), c(n_users, n_items, N))
 
-# # run smc updated rankings with alpha unknown
-# Time2 = dim(test_dataset)[3]
-# set.seed(994)
-# smc_test_updated_partial_unif2 = smc_mallows_new_item_rank_updated(n_items = n_items,
-#                                                                    R_obs = test_dataset, metric = metric, leap_size = leap_size,
-#                                                                    N = N, Time = Time2, logz_estimate = logz_estimate,
-#                                                                    mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
-#                                                                    lambda = 0.1, alpha_max = 20, aug_method = "random",
-#                                                                    alpha_samples_init = smc_test_new_user_unif$alpha_samples[,Time+1],
-#                                                                    rho_samples_init = smc_test_new_user_unif$rho_samples[,,Time+1],
-#                                                                    aug_rankings_init = smc_test_new_user_unif$aug_rankings)
-# expect_is(smc_test_updated_partial_unif2, "list")
-# expect_length(smc_test_updated_partial_unif2, 4)
-# expect_equal(dim(smc_test_updated_partial_unif2$rho_samples), c(N, n_items, 6))
-# expect_length(smc_test_updated_partial_unif2$ESS, Time2)
-# expect_equal(dim(smc_test_updated_partial_unif2$augmented_rankings), c(n_users, n_items, N))
-# expect_equal(dim(smc_test_updated_partial_unif2$alpha_samples), c(N, 6))
+# run smc updated rankings with alpha unknown
+Time2 = dim(test_dataset)[3]
+set.seed(994)
+smc_test_updated_partial_unif2 = smc_mallows_new_item_rank_updated(n_items = n_items,
+                                                                   R_obs = test_dataset, metric = metric, leap_size = leap_size,
+                                                                   N = N, Time = Time2, logz_estimate = logz_estimate,
+                                                                   mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
+                                                                   lambda = 0.1, alpha_max = 20, aug_method = "random",
+                                                                   alpha_samples_init = smc_test_new_user_unif$alpha_samples[,Time+1],
+                                                                   rho_samples_init = smc_test_new_user_unif$rho_samples[,,Time+1],
+                                                                   aug_rankings_init = smc_test_new_user_unif$augmented_rankings)
+expect_is(smc_test_updated_partial_unif2, "list")
+expect_length(smc_test_updated_partial_unif2, 4)
+expect_equal(dim(smc_test_updated_partial_unif2$rho_samples), c(N, n_items, 6))
+expect_length(smc_test_updated_partial_unif2$ESS, Time2)
+expect_equal(dim(smc_test_updated_partial_unif2$augmented_rankings), c(n_users, n_items, N))
+expect_equal(dim(smc_test_updated_partial_unif2$alpha_samples), c(N, 6))
 
+# test with pseudolikelihood
 
-# # test with pseudolikelihood
+N = 1000
+mcmc_kernel_app = 5
+num_new_obs = 10
+Time = n_users/num_new_obs
+sample_dataset = example_dataset
+set.seed(994)
 
+smc_test_new_user_pseudo = smc_mallows_new_users(R_obs = example_dataset, n_items = n_items, metric = metric,
+                                                        leap_size = leap_size,
+                                                        N = N, Time = Time, logz_estimate = logz_estimate,
+                                                        mcmc_kernel_app = mcmc_kernel_app, num_new_obs = num_new_obs,
+                                                        alpha_prop_sd = 0.5, lambda = 0.1,
+                                                        alpha_max = 20, type = "partial", aug_method = "pseudolikelihood")
 
-# N = 1000
-# mcmc_kernel_app = 5
-# num_new_obs = 10
-# Time = n_users/num_new_obs
-# sample_dataset = example_dataset
-# set.seed(994)
-# smc_test_new_user_pseudo = smc_mallows_new_users_pseudo(R_obs = example_dataset, n_items = n_items, metric = metric,
-#                                                         leap_size = leap_size,
-#                                                         N = N, Time = Time, logz_estimate = logz_estimate,
-#                                                         mcmc_kernel_app = mcmc_kernel_app, num_new_obs = num_new_obs,
-#                                                         alpha_prop_sd = 0.5, lambda = 0.1,
-#                                                         alpha_max = 20)
+set.seed(994)
+smc_test_updated_partial_pseudo1 = smc_mallows_new_item_rank_updated_alpha_fixed(alpha = 2, n_items = n_items,
+                                                                                 R_obs = test_dataset, metric = metric, leap_size = leap_size,
+                                                                                 N = N, Time = Time2, logz_estimate = logz_estimate,
+                                                                                 mcmc_kernel_app = mcmc_kernel_app,  aug_method = "pseudolikelihood",
+                                                                                 rho_samples_init = smc_test_new_user_pseudo$rho_samples[,,Time+1],
+                                                                                 aug_rankings_init = smc_test_new_user_pseudo$augmented_rankings)
 
+expect_is(smc_test_updated_partial_pseudo1, "list")
+expect_length(smc_test_updated_partial_pseudo1, 3)
+expect_equal(dim(smc_test_updated_partial_pseudo1$rho_samples), c(N, n_items, 6))
+expect_length(smc_test_updated_partial_pseudo1$ESS, Time2)
+expect_equal(dim(smc_test_updated_partial_pseudo1$augmented_rankings), c(n_users, n_items, N))
 
-# set.seed(994)
-# smc_test_updated_partial_pseudo1 = smc_mallows_new_item_rank_updated_alpha_fixed(alpha = 2, n_items = n_items,
-#                                                                                  R_obs = test_dataset, metric = metric, leap_size = leap_size,
-#                                                                                  N = N, Time = Time2, logz_estimate = logz_estimate,
-#                                                                                  mcmc_kernel_app = mcmc_kernel_app,  aug_method = "pseudolikelihood",
-#                                                                                  rho_samples_init = smc_test_new_user_pseudo$rho_samples[,,Time+1],
-#                                                                                  aug_rankings_init = smc_test_new_user_pseudo$aug_rankings)
+set.seed(994)
+smc_test_updated_partial_pseudo2 = smc_mallows_new_item_rank_updated(n_items = n_items,
+                                                                   R_obs = test_dataset, metric = metric, leap_size = leap_size,
+                                                                   N = N, Time = Time2, logz_estimate = logz_estimate,
+                                                                   mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
+                                                                   lambda = 0.1, alpha_max = 20, aug_method = "pseudolikelihood",
+                                                                   alpha_samples_init = smc_test_new_user_unif$alpha_samples[,Time+1],
+                                                                   rho_samples_init = smc_test_new_user_unif$rho_samples[,,Time+1],
+                                                                   aug_rankings_init = smc_test_new_user_unif$augmented_rankings)
 
-# expect_is(smc_test_updated_partial_pseudo1, "list")
-# expect_length(smc_test_updated_partial_pseudo1, 3)
-# expect_equal(dim(smc_test_updated_partial_pseudo1$rho_samples), c(N, n_items, 6))
-# expect_length(smc_test_updated_partial_pseudo1$ESS, Time2)
-# expect_equal(dim(smc_test_updated_partial_pseudo1$augmented_rankings), c(n_users, n_items, N))
-
-
-# set.seed(994)
-# smc_test_updated_partial_pseudo2 = smc_mallows_new_item_rank_updated(n_items = n_items,
-#                                                                    R_obs = test_dataset, metric = metric, leap_size = leap_size,
-#                                                                    N = N, Time = Time2, logz_estimate = logz_estimate,
-#                                                                    mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
-#                                                                    lambda = 0.1, alpha_max = 20, aug_method = "pseudolikelihood",
-#                                                                    alpha_samples_init = smc_test_new_user_unif$alpha_samples[,Time+1],
-#                                                                    rho_samples_init = smc_test_new_user_unif$rho_samples[,,Time+1],
-#                                                                    aug_rankings_init = smc_test_new_user_unif$aug_rankings)
-
-# expect_is(smc_test_updated_partial_pseudo2, "list")
-# expect_length(smc_test_updated_partial_pseudo2, 4)
-# expect_equal(dim(smc_test_updated_partial_pseudo2$rho_samples), c(N, n_items, 6))
-# expect_length(smc_test_updated_partial_pseudo2$ESS, Time2)
-# expect_equal(dim(smc_test_updated_partial_pseudo2$augmented_rankings), c(n_users, n_items, N))
-# expect_equal(dim(smc_test_updated_partial_pseudo2$alpha_samples), c(N, 6))
+expect_is(smc_test_updated_partial_pseudo2, "list")
+expect_length(smc_test_updated_partial_pseudo2, 4)
+expect_equal(dim(smc_test_updated_partial_pseudo2$rho_samples), c(N, n_items, 6))
+expect_length(smc_test_updated_partial_pseudo2$ESS, Time2)
+expect_equal(dim(smc_test_updated_partial_pseudo2$augmented_rankings), c(n_users, n_items, N))
+expect_equal(dim(smc_test_updated_partial_pseudo2$alpha_samples), c(N, 6))
