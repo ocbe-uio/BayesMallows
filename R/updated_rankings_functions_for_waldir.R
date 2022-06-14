@@ -112,12 +112,12 @@ smc_mallows_new_item_rank_updated = function(n_items, R_obs, metric, leap_size, 
     log_inc_wgt = rep(0, N)
 
     for (ii in 1:N){
-      log_inc_wgt[ii] = get_mallows_loglik(alpha = alpha_samples[ii,tt+1],
+      log_inc_wgt[ii] = get_exponent_sum(alpha = alpha_samples[ii,tt+1],
                                                          rho = rho_samples[ii,,tt+1],
                                                          n_items =n_items,
                                                          rankings = aug_rankings[,,ii],
                                                          metric = metric) -
-                        get_mallows_loglik(alpha = alpha_samples[ii,tt+1],
+                        get_exponent_sum(alpha = alpha_samples[ii,tt+1],
                                                          rho = rho_samples[ii,,tt+1],
                                                          n_items =n_items,
                                                          rankings = prev_aug_rankings[,,ii],
@@ -307,9 +307,9 @@ smc_mallows_new_item_rank_updated_alpha_fixed = function(alpha, n_items, R_obs, 
     log_inc_wgt = rep(0, N)
 
     for (ii in 1:N){
-      log_inc_wgt[ii] = get_mallows_loglik(alpha = alpha, rho = rho_samples[ii,,tt+1],
+      log_inc_wgt[ii] = get_exponent_sum(alpha = alpha, rho = rho_samples[ii,,tt+1],
                                                          n_items =n_items, rankings = aug_rankings[,,ii], metric = metric) -
-        get_mallows_loglik(alpha = alpha, rho = rho_samples[ii,,tt+1],
+        get_exponent_sum(alpha = alpha, rho = rho_samples[ii,,tt+1],
                                          n_items =n_items, rankings = prev_aug_rankings[,,ii], metric = metric) -
         log(particle_correction_prob[ii])
     }
