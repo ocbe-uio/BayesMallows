@@ -23,8 +23,14 @@
 smc_mallows_new_item_rank_updated = function(n_items, R_obs, metric, leap_size, N, Time, logz_estimate,
                                              mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method,
                                              alpha_samples_init, rho_samples_init, aug_rankings_init){
-
-
+  # TODO: implement the diff between the code below and src/smc_mallows_new_item_rank.cpp:
+  # - [ ] Initialize phase
+  # - [ ] Augment rankings
+  # - [ ] Loop for t=1,...,Time
+  # - [ ] Re-weight
+  # - [ ] Resample
+  # - [ ] Move step
+  # - [ ] Post-processing
   ######################
   ## Initialise Phase
   ######################
@@ -221,7 +227,14 @@ smc_mallows_new_item_rank_updated = function(n_items, R_obs, metric, leap_size, 
 #' @export
 smc_mallows_new_item_rank_updated_alpha_fixed = function(alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate,
                                                          mcmc_kernel_app, aug_method, rho_samples_init, aug_rankings_init){
-
+  # TODO: implement the diff between the code below and src/smc_mallows_new_item_rank.cpp
+  # - [ ] Initialize phase
+  # - [ ] Augment rankings
+  # - [ ] Loop for t=1,...,Time
+  # - [ ] Re-weight
+  # - [ ] Resample
+  # - [ ] Move step
+  # - [ ] Post-processing
 
   ######################
   ## Initialise Phase
