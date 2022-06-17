@@ -84,7 +84,7 @@ Rcpp::List smc_mallows_new_item_rank_updated_cpp(
   const int& mcmc_kernel_app,
   arma::mat rho_samples_init,
   arma::cube aug_rankings_init,
-  const arma::vec& alpha_samples_init,
+  const arma::vec alpha_samples_init = 0,
   const double alpha = 0,
   const double alpha_prop_sd = 1,
   const double lambda = 1,
