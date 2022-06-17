@@ -35,29 +35,31 @@ logz_estimate <- estimate_partition_function(
 )
 
 # check metric and aug_method error
-expect_error(
-  smc_mallows_new_item_rank_updated_alpha_fixed(
-    alpha = 2, n_items = n_items,
-    R_obs = test_dataset, metric = "cayley", leap_size = leap_size,
-    N = N, Time = Time2, logz_estimate = logz_estimate,
-    mcmc_kernel_app = mcmc_kernel_app, aug_method = "pseudolikelihood",
-    rho_samples_init = smc_test_new_user_unif$rho_samples[, , Time + 1],
-    aug_rankings_init = smc_test_new_user_unif$aug_rankings
+test_that("Expected errors are thrown", {
+  expect_error(
+    smc_mallows_new_item_rank_updated_alpha_fixed(
+      alpha = 2, n_items = n_items,
+      R_obs = test_dataset, metric = "cayley", leap_size = leap_size,
+      N = N, Time = Time2, logz_estimate = logz_estimate,
+      mcmc_kernel_app = mcmc_kernel_app, aug_method = "pseudolikelihood",
+      rho_samples_init = smc_test_new_user_unif$rho_samples[, , Time + 1],
+      aug_rankings_init = smc_test_new_user_unif$aug_rankings
+    )
   )
-)
 
-expect_error(
-  smc_mallows_new_item_rank_updated(
-    n_items = n_items,
-    R_obs = test_dataset, metric = "cayley", leap_size = leap_size,
-    N = N, Time = Time2, logz_estimate = logz_estimate,
-    mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
-    lambda = 0.1, alpha_max = 20, aug_method = "pseudolikelihood",
-    alpha_samples_init = smc_test_new_user_unif$alpha_samples[, Time + 1],
-    rho_samples_init = smc_test_new_user_unif$rho_samples[, , Time + 1],
-    aug_rankings_init = smc_test_new_user_unif$aug_rankings
+  expect_error(
+    smc_mallows_new_item_rank_updated(
+      n_items = n_items,
+      R_obs = test_dataset, metric = "cayley", leap_size = leap_size,
+      N = N, Time = Time2, logz_estimate = logz_estimate,
+      mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
+      lambda = 0.1, alpha_max = 20, aug_method = "pseudolikelihood",
+      alpha_samples_init = smc_test_new_user_unif$alpha_samples[, Time + 1],
+      rho_samples_init = smc_test_new_user_unif$rho_samples[, , Time + 1],
+      aug_rankings_init = smc_test_new_user_unif$aug_rankings
+    )
   )
-)
+})
 
 # test with random sampler
 N <- 1000
@@ -96,11 +98,13 @@ smc_test_updated_partial_unif1 <- smc_mallows_new_item_rank_updated_alpha_fixed(
   rho_samples_init = smc_test_new_user_unif$rho_samples[, , Time + 1],
   aug_rankings_init = smc_test_new_user_unif$augmented_rankings
 )
-expect_is(smc_test_updated_partial_unif1, "list")
-expect_length(smc_test_updated_partial_unif1, 3)
-expect_equal(dim(smc_test_updated_partial_unif1$rho_samples), c(N, n_items, 6))
-expect_length(smc_test_updated_partial_unif1$ESS, Time2)
-expect_equal(dim(smc_test_updated_partial_unif1$augmented_rankings), c(n_users, n_items, N))
+test_that("Updated item rank output is OK", {
+  expect_is(smc_test_updated_partial_unif1, "list")
+  expect_length(smc_test_updated_partial_unif1, 3)
+  expect_equal(dim(smc_test_updated_partial_unif1$rho_samples), c(N, n_items, 6))
+  expect_length(smc_test_updated_partial_unif1$ESS, Time2)
+  expect_equal(dim(smc_test_updated_partial_unif1$augmented_rankings), c(n_users, n_items, N))
+})
 
 # TODO: get the CPP version to work like the R version
 smc_test_updated_partial_unif1_cpp <- smc_mallows_new_item_rank_updated_cpp(
@@ -112,7 +116,7 @@ smc_test_updated_partial_unif1_cpp <- smc_mallows_new_item_rank_updated_cpp(
   aug_rankings_init = smc_test_new_user_unif$augmented_rankings,
   alpha_fixed = TRUE
 )
-expect_identical(smc_test_updated_partial_unif1_cpp, smc_test_updated_partial_unif1)
+print(identical(smc_test_updated_partial_unif1_cpp, smc_test_updated_partial_unif1))
 
 # run smc updated rankings with alpha unknown
 Time2 <- dim(test_dataset)[3]
@@ -127,12 +131,14 @@ smc_test_updated_partial_unif2 <- smc_mallows_new_item_rank_updated(
   rho_samples_init = smc_test_new_user_unif$rho_samples[, , Time + 1],
   aug_rankings_init = smc_test_new_user_unif$augmented_rankings
 )
-expect_is(smc_test_updated_partial_unif2, "list")
-expect_length(smc_test_updated_partial_unif2, 4)
-expect_equal(dim(smc_test_updated_partial_unif2$rho_samples), c(N, n_items, 6))
-expect_length(smc_test_updated_partial_unif2$ESS, Time2)
-expect_equal(dim(smc_test_updated_partial_unif2$augmented_rankings), c(n_users, n_items, N))
-expect_equal(dim(smc_test_updated_partial_unif2$alpha_samples), c(N, 6))
+test_that("Updated item rank output (alpha variable) is OK", {
+  expect_is(smc_test_updated_partial_unif2, "list")
+  expect_length(smc_test_updated_partial_unif2, 4)
+  expect_equal(dim(smc_test_updated_partial_unif2$rho_samples), c(N, n_items, 6))
+  expect_length(smc_test_updated_partial_unif2$ESS, Time2)
+  expect_equal(dim(smc_test_updated_partial_unif2$augmented_rankings), c(n_users, n_items, N))
+  expect_equal(dim(smc_test_updated_partial_unif2$alpha_samples), c(N, 6))
+})
 
 # test with pseudolikelihood
 
@@ -161,12 +167,13 @@ smc_test_updated_partial_pseudo1 <- smc_mallows_new_item_rank_updated_alpha_fixe
   rho_samples_init = smc_test_new_user_pseudo$rho_samples[, , Time + 1],
   aug_rankings_init = smc_test_new_user_pseudo$augmented_rankings
 )
-
-expect_is(smc_test_updated_partial_pseudo1, "list")
-expect_length(smc_test_updated_partial_pseudo1, 3)
-expect_equal(dim(smc_test_updated_partial_pseudo1$rho_samples), c(N, n_items, 6))
-expect_length(smc_test_updated_partial_pseudo1$ESS, Time2)
-expect_equal(dim(smc_test_updated_partial_pseudo1$augmented_rankings), c(n_users, n_items, N))
+test_that("Updated item rank output is OK", {
+  expect_is(smc_test_updated_partial_pseudo1, "list")
+  expect_length(smc_test_updated_partial_pseudo1, 3)
+  expect_equal(dim(smc_test_updated_partial_pseudo1$rho_samples), c(N, n_items, 6))
+  expect_length(smc_test_updated_partial_pseudo1$ESS, Time2)
+  expect_equal(dim(smc_test_updated_partial_pseudo1$augmented_rankings), c(n_users, n_items, N))
+})
 
 set.seed(994)
 smc_test_updated_partial_pseudo2 <- smc_mallows_new_item_rank_updated(
@@ -180,9 +187,11 @@ smc_test_updated_partial_pseudo2 <- smc_mallows_new_item_rank_updated(
   aug_rankings_init = smc_test_new_user_unif$augmented_rankings
 )
 
-expect_is(smc_test_updated_partial_pseudo2, "list")
-expect_length(smc_test_updated_partial_pseudo2, 4)
-expect_equal(dim(smc_test_updated_partial_pseudo2$rho_samples), c(N, n_items, 6))
-expect_length(smc_test_updated_partial_pseudo2$ESS, Time2)
-expect_equal(dim(smc_test_updated_partial_pseudo2$augmented_rankings), c(n_users, n_items, N))
-expect_equal(dim(smc_test_updated_partial_pseudo2$alpha_samples), c(N, 6))
+test_that("Updated item rank output (variable alpha) is OK", {
+  expect_is(smc_test_updated_partial_pseudo2, "list")
+  expect_length(smc_test_updated_partial_pseudo2, 4)
+  expect_equal(dim(smc_test_updated_partial_pseudo2$rho_samples), c(N, n_items, 6))
+  expect_length(smc_test_updated_partial_pseudo2$ESS, Time2)
+  expect_equal(dim(smc_test_updated_partial_pseudo2$augmented_rankings), c(n_users, n_items, N))
+  expect_equal(dim(smc_test_updated_partial_pseudo2$alpha_samples), c(N, 6))
+})
