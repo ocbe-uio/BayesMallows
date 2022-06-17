@@ -102,6 +102,18 @@ expect_equal(dim(smc_test_updated_partial_unif1$rho_samples), c(N, n_items, 6))
 expect_length(smc_test_updated_partial_unif1$ESS, Time2)
 expect_equal(dim(smc_test_updated_partial_unif1$augmented_rankings), c(n_users, n_items, N))
 
+# TODO: get the CPP version to work like the R version
+smc_test_updated_partial_unif1_cpp <- smc_mallows_new_item_rank_updated_cpp(
+  alpha = 2, n_items = n_items,
+  R_obs = test_dataset, metric = metric, leap_size = leap_size,
+  N = N, Time = Time2, logz_estimate = logz_estimate,
+  mcmc_kernel_app = mcmc_kernel_app, aug_method = "random",
+  rho_samples_init = smc_test_new_user_unif$rho_samples[, , Time + 1],
+  aug_rankings_init = smc_test_new_user_unif$augmented_rankings,
+  alpha_fixed = TRUE
+)
+expect_identical(smc_test_updated_partial_unif1_cpp, smc_test_updated_partial_unif1)
+
 # run smc updated rankings with alpha unknown
 Time2 <- dim(test_dataset)[3]
 set.seed(994)

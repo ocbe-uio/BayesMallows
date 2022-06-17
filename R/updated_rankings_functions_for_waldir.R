@@ -24,13 +24,13 @@ smc_mallows_new_item_rank_updated = function(n_items, R_obs, metric, leap_size, 
                                              mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method,
                                              alpha_samples_init, rho_samples_init, aug_rankings_init){
   # TODO: implement the diff between the code below and src/smc_mallows_new_item_rank.cpp:
-  # - [ ] Initialize phase
-  # - [ ] Augment rankings
-  # - [ ] Loop for t=1,...,Time
-  # - [ ] Re-weight
-  # - [ ] Resample
+  # - [x] Initialize phase
+  # - [x] Augment rankings
+  # - [x] Loop for t=1,...,Time
+  # - [x] Re-weight
+  # - [x] Resample
   # - [ ] Move step
-  # - [ ] Post-processing
+  # - [x] Post-processing
   ######################
   ## Initialise Phase
   ######################
@@ -209,7 +209,6 @@ smc_mallows_new_item_rank_updated = function(n_items, R_obs, metric, leap_size, 
 
 #' @title SMC-Mallows new item rank updated alpha fixed
 #' @description Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user at each time step given an initial particle set obtained from MCMC or SMC. Each correction and augmentation is done by filling in the missing item ranks using pseudolikelihood augmentation.
-
 #' @param alpha numeric value of the scale parameter.
 #' @param n_items Integer is the number of items in a ranking.
 #' @param R_obs 3D matrix of size n_assessors by n_items by Time containing a set of observed rankings of Time steps.
@@ -228,13 +227,13 @@ smc_mallows_new_item_rank_updated = function(n_items, R_obs, metric, leap_size, 
 smc_mallows_new_item_rank_updated_alpha_fixed = function(alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate,
                                                          mcmc_kernel_app, aug_method, rho_samples_init, aug_rankings_init){
   # TODO: implement the diff between the code below and src/smc_mallows_new_item_rank.cpp
-  # - [ ] Initialize phase
-  # - [ ] Augment rankings
-  # - [ ] Loop for t=1,...,Time
-  # - [ ] Re-weight
-  # - [ ] Resample
+  # - [x] Initialize phase
+  # - [x] Augment rankings
+  # - [x] Loop for t=1,...,Time
+  # - [x] Re-weight
+  # - [x] Resample
   # - [ ] Move step
-  # - [ ] Post-processing
+  # - [x] Post-processing
 
   ######################
   ## Initialise Phase
