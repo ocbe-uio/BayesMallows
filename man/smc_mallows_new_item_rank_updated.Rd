@@ -27,7 +27,8 @@ smc_mallows_new_item_rank_updated(
 
 \item{R_obs}{3D matrix of size n_assessors by n_items by Time containing a set of observed rankings of Time steps.}
 
-\item{metric}{A character string specifying the distance metric to use in the Bayesian Mallows Model. Available options are \code{"footrule"},}
+\item{metric}{A character string specifying the distance metric to use in the Bayesian Mallows Model. Available options are \code{"footrule"},
+\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and \code{"ulam"}.}
 
 \item{leap_size}{leap_size Integer specifying the step size of the leap-and-shift proposal distribution.}
 
