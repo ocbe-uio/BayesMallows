@@ -229,6 +229,7 @@ Rcpp::List smc_mallows_new_item_rank_updated_cpp(
       rho_samples, alpha_samples, aug_rankings, R_obs, metric, aug_method,
       logz_estimate, alpha, alpha_prop_sd, lambda, alpha_max, tt + 1, leap_size,
       alpha_fixed);
+    // TODO: check if the above really is the same as the below
     // for (ii in 1:N){
     //   for (kk in 1: mcmc_kernel_app) {
     //     rho_samples[ii,,tt+1] = metropolis_hastings_rho(alpha = alpha_samples[ii,tt+1],
