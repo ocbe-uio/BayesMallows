@@ -84,7 +84,7 @@ Rcpp::List smc_mallows_new_item_rank_updated_cpp(
   const int& mcmc_kernel_app,
   arma::mat rho_samples_init,
   arma::cube aug_rankings_init,
-  const arma::vec alpha_samples_init = 0,
+  arma::vec alpha_samples_init = 0,
   const double alpha = 0,
   const double alpha_prop_sd = 1,
   const double lambda = 1,
@@ -103,8 +103,13 @@ Rcpp::List smc_mallows_new_item_rank_updated_cpp(
 
   mat alpha_samples;
   if(!alpha_fixed){
-    /* generate alpha samples using exponential prior ------- */
+    // If alpha_fixed = false, alpha_samples needs to be generated from
+    // alpha_samples_init
     alpha_samples = zeros(N, Time);
+    if (alpha_samples_init.n_elem != N) {
+      Rcpp::warning("No suitable (N-length) alpha_samples_init provided. Drawing from an expornential prior instead.");
+      alpha_samples_init = initialize_alpha(N);
+    }
     alpha_samples.col(0) = alpha_samples_init;
   }
 
