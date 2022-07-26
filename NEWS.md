@@ -1,3 +1,5 @@
+# BayesMallows (development version)
+
 # Development versions
 
 # BayesMallows 1.2.0
