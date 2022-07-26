@@ -137,12 +137,14 @@ Rcpp::List smc_mallows_new_item_rank_updated_cpp(
   /* Loop for t=1,...,Time                                  */
   /* ====================================================== */
   // Here, we attempt the SMC sampler
-  for (uword tt; tt < Time - 1; ++tt) {
+  for (uword tt = 0; tt < Time - 1; ++tt) {
     if (verbose) REprintf("iteration %i out of %i \n", tt + 1, Time - 1);
     /* New Information -------------------------------------- */
     // new observed item ranks from each user, need to update augmented rankings
     rho_samples.slice(tt + 1) = rho_samples.slice(tt);
-    if(!alpha_fixed) alpha_samples.col(tt + 1) = alpha_samples.col(tt);
+    if (!alpha_fixed) {
+      alpha_samples.col(tt + 1) = alpha_samples.col(tt);
+    }
 
     // total correction prob
     vec particle_correction_prob = ones(N);
@@ -158,13 +160,14 @@ Rcpp::List smc_mallows_new_item_rank_updated_cpp(
         Rcpp::List check_correction;
         if(aug_method == "random") {
           check_correction = correction_kernel(\
-            R_obs.slice(tt + 1).row(jj), aug_rankings.slice(ii).row(jj), n_items\
+            R_obs.slice(tt + 1).row(jj).t(), aug_rankings.slice(ii).row(jj).t(),\
+            n_items
           );
         } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
             check_correction = correction_kernel_pseudo(\
-            aug_rankings.slice(ii).row(jj), R_obs.slice(tt + 1).row(jj),\
-            rho_samples.slice(tt + 1).row(ii), \
-            alpha_samples(ii, tt + 1), n_items, metric\
+            aug_rankings.slice(ii).row(jj).t(), R_obs.slice(tt + 1).row(jj).t(),\
+            rho_samples.slice(tt + 1).row(ii).t(), \
+            alpha_fixed ? alpha : alpha_samples(ii, tt + 1), n_items, metric\
           );
         } else {
           Rcpp::stop(\
