@@ -29,11 +29,11 @@ returns a corresponding vector or matrix of ordered items.
 }
 \section{Functions}{
 \itemize{
-\item \code{create_ranking}: Convert from ordering to ranking.
+\item \code{create_ranking()}: Convert from ordering to ranking.
 
-\item \code{create_ordering}: Convert from ranking to ordering.
+\item \code{create_ordering()}: Convert from ranking to ordering.
+
 }}
-
 \examples{
 # A vector of ordered items.
 orderings <- c(5, 1, 2, 4, 3)
