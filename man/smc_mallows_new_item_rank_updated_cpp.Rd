@@ -15,7 +15,7 @@ smc_mallows_new_item_rank_updated_cpp(
   mcmc_kernel_app,
   rho_samples_init,
   aug_rankings_init,
-  alpha_samples_init,
+  alpha_samples_init = 0L,
   alpha = 0,
   alpha_prop_sd = 1,
   lambda = 1,
