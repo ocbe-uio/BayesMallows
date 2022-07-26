@@ -13,9 +13,9 @@ smc_mallows_new_item_rank_updated_cpp(
   Time,
   logz_estimate,
   mcmc_kernel_app,
-  alpha_samples_init,
   rho_samples_init,
   aug_rankings_init,
+  alpha_samples_init,
   alpha = 0,
   alpha_prop_sd = 1,
   lambda = 1,
@@ -43,11 +43,11 @@ smc_mallows_new_item_rank_updated_cpp(
 
 \item{mcmc_kernel_app}{Integer value for the number of applications we apply the MCMC move kernel.}
 
-\item{alpha_samples_init}{A vector of size N by containing the initial particle set values of alpha.}
-
 \item{rho_samples_init}{2D matrix of size N by n_items containing the initial particle set values of rho.}
 
 \item{aug_rankings_init}{3D matrix of size n_assessors by n_items by N containing the initial particle set values of augmented rankings for R_obs.}
+
+\item{alpha_samples_init}{A vector of size N by containing the initial particle set values of alpha.}
 
 \item{alpha}{numeric value of the scale parameter.}
 
