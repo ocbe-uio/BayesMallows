@@ -55,18 +55,17 @@ jobs:
               "R/RcppExports.R"
             )
             style_rules <- list(
-              absolute_path_linter, assignment_linter, closed_curly_linter,
-              commas_linter, commented_code_linter, cyclocomp_linter,
-              equals_na_linter, function_left_parentheses_linter,
-              infix_spaces_linter, line_length_linter, no_tab_linter,
-              nonportable_path_linter, object_length_linter,
-              open_curly_linter, paren_brace_linter, pipe_continuation_linter,
-              semicolon_terminator_linter, seq_linter, single_quotes_linter,
-              spaces_inside_linter, spaces_left_parentheses_linter,
-              T_and_F_symbol_linter, todo_comment_linter,
-              trailing_blank_lines_linter, trailing_whitespace_linter,
-              undesirable_function_linter, undesirable_operator_linter,
-              unneeded_concatenation_linter
+              absolute_path_linter(), assignment_linter(), brace_linter(),
+              commas_linter(), commented_code_linter(), cyclocomp_linter(),
+              equals_na_linter(), function_left_parentheses_linter(),
+              infix_spaces_linter(), line_length_linter(), no_tab_linter(),
+              nonportable_path_linter(), object_length_linter(),
+              pipe_continuation_linter(), seq_linter(), single_quotes_linter(),
+              spaces_inside_linter(), spaces_left_parentheses_linter(),
+              T_and_F_symbol_linter(), todo_comment_linter(),
+              trailing_blank_lines_linter(), trailing_whitespace_linter(),
+              undesirable_function_linter(), undesirable_operator_linter(),
+              unneeded_concatenation_linter()
             )
             lint_package(linters = style_rules, exclusions = excluded_files)
           shell: Rscript {0}
