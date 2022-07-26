@@ -417,8 +417,8 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time
 #' @param alpha_fixed Logical indicating whether to sample \code{alpha} or not.
 #' @param alpha numeric value of the scale parameter.
 #' @export
-smc_mallows_new_item_rank_updated_cpp <- function(n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, rho_samples_init, aug_rankings_init, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 1, lambda = 1, alpha_max = 1, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE) {
-    .Call(`_BayesMallows_smc_mallows_new_item_rank_updated_cpp`, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, rho_samples_init, aug_rankings_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed)
+smc_mallows_new_item_rank_updated <- function(n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, rho_samples_init, aug_rankings_init, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 1, lambda = 1, alpha_max = 1, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE) {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank_updated`, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, rho_samples_init, aug_rankings_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed)
 }
 
 #' @title SMC-Mallows New Users

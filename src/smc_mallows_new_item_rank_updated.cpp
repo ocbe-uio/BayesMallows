@@ -73,7 +73,7 @@ void new_items_move_step_WET( // TODO: duplicated: ELIMINATE!
 //' @param alpha numeric value of the scale parameter.
 //' @export
 // [[Rcpp::export]]
-Rcpp::List smc_mallows_new_item_rank_updated_cpp(
+Rcpp::List smc_mallows_new_item_rank_updated(
   const unsigned int& n_items,
   arma::cube& R_obs,
   const std::string& metric,
@@ -237,47 +237,6 @@ Rcpp::List smc_mallows_new_item_rank_updated_cpp(
       rho_samples, alpha_samples, aug_rankings, R_obs, metric, aug_method,
       logz_estimate, alpha, alpha_prop_sd, lambda, alpha_max, tt + 1, leap_size,
       alpha_fixed);
-    // TODO: check if the above really is the same as the below
-    // for (ii in 1:N){
-    //   for (kk in 1: mcmc_kernel_app) {
-    //     rho_samples[ii,,tt+1] = metropolis_hastings_rho(alpha = alpha_samples[ii,tt+1],
-    //                                                                   n_items = n_items,
-    //                                                                   rankings = aug_rankings[,,ii],
-    //                                                                   metric = metric,
-    //                                                                   rho = rho_samples[ii,,tt+1],
-    //                                                                   leap_size = leap_size)
-    //     # move once since alpha dist is easier to explore than rho dist
-    //     alpha_samples[ii,tt+1] = metropolis_hastings_alpha(alpha = alpha_samples[ii,tt+1],
-    //                                                                      n_items = n_items,
-    //                                                                      rankings = aug_rankings[,,ii],
-    //                                                                      metric = metric,
-    //                                                                      rho = rho_samples[ii,,tt+1],
-    //                                                                      logz_estimate = logz_estimate,
-    //                                                                      alpha_prop_sd = alpha_prop_sd,
-    //                                                                      lambda = lambda,
-    //                                                                      alpha_max = alpha_max)
-    //   }
-    // }
-    //   for (jj in 1:num_ranks){
-    //     if(aug_method == "random"){
-    //       aug_rankings[jj,,ii] = metropolis_hastings_aug_ranking(current_ranking = aug_rankings[jj,,ii],
-    //                                                                            partial_ranking = R_obs[jj,,tt+1],
-    //                                                                            alpha = alpha_samples[ii,tt+1],
-    //                                                                            rho = rho_samples[ii,,tt+1],
-    //                                                                            n_items = n_items,
-    //                                                                            metric = metric,
-    //                                                                            pseudo = FALSE)
-    //     }else if( (aug_method == "pseudolikelihood") & (metric %in% c("footrule", "spearman")) ){
-    //       aug_rankings[jj,,ii] = metropolis_hastings_aug_ranking(current_ranking = aug_rankings[jj,,ii],
-    //                                                                                    partial_ranking = R_obs[jj,,tt+1],
-    //                                                                                    alpha = alpha_samples[ii,tt+1],
-    //                                                                                    rho = rho_samples[ii,,tt+1],
-    //                                                                                    n_items = n_items,
-    //                                                                                    metric = metric,
-    //                                                                            pseudo = TRUE)
-    //     }
-    //   }
-    // }
   }
   if (alpha_fixed) {
     return Rcpp::List::create(

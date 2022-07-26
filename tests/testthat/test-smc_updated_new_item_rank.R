@@ -90,7 +90,7 @@ smc_test_new_user_unif <- smc_mallows_new_users(
 # run smc updated rankings with alpha unknown
 Time2 <- dim(test_dataset)[3]
 set.seed(994)
-smc_test_updated_partial_unif1 <- smc_mallows_new_item_rank_updated_cpp(
+smc_test_updated_partial_unif1 <- smc_mallows_new_item_rank_updated(
   alpha = 2, n_items = n_items,
   R_obs = test_dataset, metric = metric, leap_size = leap_size,
   N = N, Time = Time2, logz_estimate = logz_estimate,
@@ -110,7 +110,7 @@ test_that("Updated item rank output is OK", {
 # run smc updated rankings with alpha unknown
 Time2 <- dim(test_dataset)[3]
 set.seed(994)
-smc_test_updated_partial_unif2 <- smc_mallows_new_item_rank_updated_cpp(
+smc_test_updated_partial_unif2 <- smc_mallows_new_item_rank_updated(
   n_items = n_items,
   R_obs = test_dataset, metric = metric, leap_size = leap_size,
   N = N, Time = Time2, logz_estimate = logz_estimate,
@@ -148,7 +148,7 @@ smc_test_new_user_pseudo <- smc_mallows_new_users(
 )
 
 set.seed(994)
-smc_test_updated_partial_pseudo1 <- smc_mallows_new_item_rank_updated_cpp(
+smc_test_updated_partial_pseudo1 <- smc_mallows_new_item_rank_updated(
   alpha = 2, n_items = n_items,
   R_obs = test_dataset, metric = metric, leap_size = leap_size,
   N = N, Time = Time2, logz_estimate = logz_estimate,
@@ -166,7 +166,7 @@ test_that("Updated item rank output is OK", {
 })
 
 set.seed(994)
-smc_test_updated_partial_pseudo2 <- smc_mallows_new_item_rank_updated_cpp(
+smc_test_updated_partial_pseudo2 <- smc_mallows_new_item_rank_updated(
   n_items = n_items,
   R_obs = test_dataset, metric = metric, leap_size = leap_size,
   N = N, Time = Time2, logz_estimate = logz_estimate,
@@ -184,7 +184,7 @@ test_that("Updated item rank output (variable alpha) is OK", {
   expect_equal(dim(smc_test_updated_partial_pseudo2$augmented_rankings), c(n_users, n_items, N))
   expect_equal(dim(smc_test_updated_partial_pseudo2$alpha_samples), c(N, 6))
   expect_warning(
-    smc_mallows_new_item_rank_updated_cpp(
+    smc_mallows_new_item_rank_updated(
       n_items = n_items,
       R_obs = test_dataset, metric = metric, leap_size = leap_size,
       N = N, Time = Time2, logz_estimate = logz_estimate,
