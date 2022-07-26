@@ -6,48 +6,6 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-void new_items_move_step_WET( // TODO: duplicated: ELIMINATE!
-    cube& rho_samples,
-    mat& alpha_samples,
-    cube& aug_rankings,
-    const cube& R_obs,
-    const std::string& metric,
-    const std::string& aug_method,
-    const Rcpp::Nullable<arma::vec>& logz_estimate,
-    const double& alpha,
-    const double& alpha_prop_sd,
-    const double& lambda,
-    const double& alpha_max,
-    const uword& ttplus1,
-    const int& leap_size,
-    const bool& alpha_fixed
-){
-  uword num_ranks = R_obs.n_rows;
-  uword N = rho_samples.n_rows;
-  int n_items = rho_samples.n_cols;
-  for (uword ii = 0; ii < N; ++ii) {
-    rho_samples.slice(ttplus1).row(ii) = metropolis_hastings_rho(
-      alpha_fixed ? alpha : alpha_samples(ii, ttplus1), n_items, aug_rankings.slice(ii), metric,
-      rho_samples.slice(ttplus1).row(ii).t(), leap_size
-    ).t();
-    if(!alpha_fixed){
-      alpha_samples(ii, ttplus1) = metropolis_hastings_alpha(
-        alpha_samples(ii, ttplus1), n_items, aug_rankings.slice(ii), metric,
-        rho_samples.slice(ttplus1).row(ii).t(), logz_estimate,
-        alpha_prop_sd, lambda, alpha_max);
-    }
-
-    for (uword jj = 0; jj < num_ranks; ++jj) {
-      vec mh_aug_result = metropolis_hastings_aug_ranking(                                  \
-          alpha_fixed ? alpha : alpha_samples(ii, ttplus1), rho_samples.slice(ttplus1).row(ii).t(),\
-          n_items, R_obs.slice(ttplus1).row(jj).t(),                                              \
-          aug_rankings.slice(ii).row(jj).t(), metric,
-          (aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman")));
-      aug_rankings.slice(ii).row(jj) = mh_aug_result.t();
-    }
-  }
-}
-
 //' @title SMC-Mallows new item rank updated
 //' @description Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user at each time step given an initial particle set obtained from MCMC or SMC. Each correction and augmentation is done by filling in the missing item ranks using pseudolikelihood augmentation.
 //' @param n_items Integer is the number of items in a ranking.
@@ -233,7 +191,7 @@ Rcpp::List smc_mallows_new_item_rank_updated(
     /* ====================================================== */
     /* Move step                                              */
     /* ====================================================== */
-    new_items_move_step_WET(
+    new_items_move_step(
       rho_samples, alpha_samples, aug_rankings, R_obs, metric, aug_method,
       logz_estimate, alpha, alpha_prop_sd, lambda, alpha_max, tt + 1, leap_size,
       alpha_fixed);

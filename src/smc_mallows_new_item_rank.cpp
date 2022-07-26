@@ -11,7 +11,6 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-
 void new_items_move_step(
     cube& rho_samples,
     mat& alpha_samples,
