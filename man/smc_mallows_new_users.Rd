@@ -133,16 +133,16 @@ receive new users with complete rankings at each time step
 }
 \section{Functions}{
 \itemize{
-\item \code{smc_mallows_new_users_partial}: Deprecated function for
+\item \code{smc_mallows_new_users_partial()}: Deprecated function for
 \code{smc_mallows_new_users_partial}.
 
-\item \code{smc_mallows_new_users_complete}: Deprecated function for
+\item \code{smc_mallows_new_users_complete()}: Deprecated function for
 \code{smc_mallows_new_users_complete}.
 
-\item \code{smc_mallows_new_users_partial_alpha_fixed}: Deprecated function for
+\item \code{smc_mallows_new_users_partial_alpha_fixed()}: Deprecated function for
 \code{smc_mallows_new_users_partial_alpha_fixed}.
-}}
 
+}}
 \examples{
 # Generate basic elements
 data <- sushi_rankings[1:100, ]
