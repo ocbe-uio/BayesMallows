@@ -53,7 +53,10 @@ smc_mallows_new_item_rank_alpha_fixed <- function(
   .Deprecated("smc_mallows_new_item_rank")
   smc_mallows_new_item_rank(
     n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app,
-    alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, TRUE)
+    alpha = alpha, alpha_prop_sd = alpha_prop_sd, lambda = lambda,
+    alpha_max = alpha_max, aug_method = aug_method, verbose = verbose,
+    alpha_fixed = TRUE
+  )
 }
 
 #' @describeIn metropolis_hastings_aug_ranking Deprecated function for
