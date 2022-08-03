@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include "smc.h"
 #include "sample.h"
+#include "parameterupdates.h"
 
 using namespace arma;
 
@@ -86,8 +87,8 @@ Rcpp::List smc_mallows_new_item_rank(
   const unsigned int Time,
   const Rcpp::Nullable<arma::vec> logz_estimate,
   const int& mcmc_kernel_app,
-  arma::mat rho_samples_init,
   arma::cube aug_rankings_init,
+  Rcpp::Nullable<arma::mat> rho_samples_init = R_NilValue,
   arma::vec alpha_samples_init = 0,
   const double alpha = 0,
   const double alpha_prop_sd = 1,
@@ -103,7 +104,11 @@ Rcpp::List smc_mallows_new_item_rank(
 
   // Generate N initial samples of rho using the uniform prior
   cube rho_samples(N, n_items, Time);
-  rho_samples.slice(0) = rho_samples_init;
+  if (rho_samples_init.isNotNull()) {
+    rho_samples.slice(0) = Rcpp::as<arma::mat>(rho_samples_init);
+  } else {
+    rho_samples.slice(0) = initialize_rho(n_items, N).t();
+  }
 
   mat alpha_samples;
   if(!alpha_fixed){
