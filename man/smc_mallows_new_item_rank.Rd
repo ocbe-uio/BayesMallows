@@ -14,6 +14,9 @@ smc_mallows_new_item_rank(
   Time,
   logz_estimate,
   mcmc_kernel_app,
+  rho_samples_init,
+  aug_rankings_init,
+  alpha_samples_init = 0L,
   alpha = 0,
   alpha_prop_sd = 1,
   lambda = 1,
@@ -62,6 +65,8 @@ proposal distribution}
 
 \item{mcmc_kernel_app}{Integer value for the number of applications we apply the MCMC move kernel}
 
+\item{alpha}{numeric value of the scale parameter.}
+
 \item{alpha_prop_sd}{Numeric value of the standard deviation of the prior distribution for alpha}
 
 \item{lambda}{Strictly positive numeric value specifying the rate parameter
@@ -78,8 +83,7 @@ SMC-Mallows algorithm. Defaults to \code{FALSE}.}
 \item{alpha_fixed}{Logical indicating whether to sample \code{alpha} or not.}
 }
 \value{
-a set of particles each containing the values of rho and alpha and the effective sample size (ESS) at each iteration of the SMC
-algorithm as well as the set of augmented rankings at the final iteration.
+a 3d matrix containing: the samples of: rho, alpha and the augmented rankings, and the effective sample size at each iteration of the SMC algorithm.
 }
 \description{
 Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user

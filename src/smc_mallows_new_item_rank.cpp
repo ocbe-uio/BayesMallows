@@ -1,11 +1,6 @@
 #include <RcppArmadillo.h>
-#include "parameterupdates.h"
-#include "smc_mallows_new_users.h"
-#include "misc.h"
-#include "sample.h"
-#include "setdiff.h"
 #include "smc.h"
-#include "partitionfuns.h"
+#include "sample.h"
 
 using namespace arma;
 
@@ -78,8 +73,8 @@ void new_items_move_step(
 //' @param verbose Logical specifying whether to print out the progress of the
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
 //' @param alpha_fixed Logical indicating whether to sample \code{alpha} or not.
-//' @return a set of particles each containing the values of rho and alpha and the effective sample size (ESS) at each iteration of the SMC
-//' algorithm as well as the set of augmented rankings at the final iteration.
+//' @param alpha numeric value of the scale parameter.
+//' @return a 3d matrix containing: the samples of: rho, alpha and the augmented rankings, and the effective sample size at each iteration of the SMC algorithm.
 //' @export
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_item_rank(
@@ -91,6 +86,9 @@ Rcpp::List smc_mallows_new_item_rank(
   const unsigned int Time,
   const Rcpp::Nullable<arma::vec> logz_estimate,
   const int& mcmc_kernel_app,
+  arma::mat rho_samples_init,
+  arma::cube aug_rankings_init,
+  arma::vec alpha_samples_init = 0,
   const double alpha = 0,
   const double alpha_prop_sd = 1,
   const double lambda = 1,
@@ -98,24 +96,30 @@ Rcpp::List smc_mallows_new_item_rank(
   const std::string& aug_method = "random",
   const bool verbose = false,
   const bool alpha_fixed = false
-) {
+){
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
 
   // Generate N initial samples of rho using the uniform prior
   cube rho_samples(N, n_items, Time);
-  rho_samples.slice(0) = initialize_rho(n_items, N).t();
+  rho_samples.slice(0) = rho_samples_init;
 
   mat alpha_samples;
   if(!alpha_fixed){
-    /* generate alpha samples using exponential prior ------- */
+    // If alpha_fixed = false, alpha_samples needs to be generated from
+    // alpha_samples_init
     alpha_samples = zeros(N, Time);
-    alpha_samples.col(0) = initialize_alpha(N);
+    if (alpha_samples_init.n_elem != N) {
+      Rcpp::warning("No suitable (N-length) alpha_samples_init provided. Drawing from an expornential prior instead.");
+      alpha_samples_init = initialize_alpha(N);
+    }
+    alpha_samples.col(0) = alpha_samples_init;
   }
 
   /* generate vector to store ESS */
   rowvec ESS_vec(Time);
+  ESS_vec(0) = 1;
 
   /* ====================================================== */
   /* Augment Rankings                                       */
@@ -129,112 +133,21 @@ Rcpp::List smc_mallows_new_item_rank(
   // augment incomplete ranks to initialise
   const ivec ranks = regspace<ivec>(1, n_items);
 
-  // total correction prob
-  vec total_correction_prob = ones(N);
-
-  // iterate through each observed ranking and create new "corrected" augmented rankings
+  // augment rankings for proposal
   for (uword ii = 0; ii < N; ++ii) {
-    // set t-1 generation to old as we sample for t new
-    prev_aug_rankings.slice(ii) = aug_rankings.slice(ii);
-
-    // make the correction
-    for (uword jj = 0; jj < num_ranks; ++jj) {
-      // fill in missing ranks based on choice of augmentation method
-      vec R_obs_slice_0_row_jj = R_obs.slice(0).row(jj).t();
-      const vec remaining_set = setdiff_template(ranks, R_obs_slice_0_row_jj);
-      if (aug_method == "random") {
-        // create new augmented ranking by sampling remaining ranks from set uniformly
-        vec rset = shuffle(remaining_set);
-
-        vec partial_ranking = R_obs_slice_0_row_jj;
-        partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
-
-        aug_rankings.slice(ii).row(jj) = partial_ranking.t();
-        total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set.n_elem);
-      } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
-        // find items missing from original observed ranking
-        const uvec& unranked_items = find_nonfinite(R_obs_slice_0_row_jj);
-        // randomly permute the unranked items to give the order in which they will be allocated
-        uvec item_ordering = shuffle(unranked_items);
-        const Rcpp::List proposal = calculate_forward_probability(\
-          item_ordering, R_obs_slice_0_row_jj, remaining_set, rho_samples.slice(0).row(ii).t(),\
-          alpha_fixed ? alpha : alpha_samples(ii, 0), n_items, metric\
-        );
-        const vec& a_rank = proposal["aug_ranking"];
-        const double& f_prob = proposal["forward_prob"];
-        aug_rankings(span(jj), span::all, span(ii)) = a_rank;
-        total_correction_prob(ii) *= f_prob;
-      } else {
-        Rcpp::stop(\
-          "Combined choice of metric and aug_method is incompatible. ",
-          "The value is TRUE, so the script must end here"\
-        );
-      }
-    }
+    aug_rankings.slice(ii) = aug_rankings_init.slice(ii);
   }
+  // set the old augmentation as we will compare the t^th augmentation
+  // to the (t-1)^th augmentation
+  prev_aug_rankings = aug_rankings;
 
-  /* ====================================================== */
-  /* Re-weight                                              */
-  /* ====================================================== */
-
-  // incremental weight for each particle, based on new observed rankings
-  vec log_inc_wgt(N, fill::zeros);
-
-  for (uword ii = 0; ii < N; ++ii) {
-    // evaluate the log estimate of the partition function for a particular
-    // value of alpha
-
-    /* Initializing variables ------------------------------- */
-    const Rcpp::Nullable<vec>& cardinalities = R_NilValue;
-
-    /* Calculating log_z_alpha and log_likelihood ----------- */
-    const double& log_z_alpha = get_partition_function(\
-      n_items, alpha_fixed ? alpha : alpha_samples(ii, 0),
-      cardinalities, logz_estimate, metric\
-    );
-    const double& log_likelihood = get_exponent_sum(\
-      alpha_fixed ? alpha : alpha_samples(ii, 0),
-      rho_samples.slice(0).row(ii).t(), n_items,\
-      aug_rankings.slice(ii), metric\
-    );
-    const double& log_tcp = std::log(total_correction_prob(ii));
-    log_inc_wgt(ii) = log_likelihood - num_ranks * log_z_alpha - log_tcp;
-  }
-
-  vec norm_wgt = normalize_weights(log_inc_wgt);
-
-  /* store ESS result in first entry of the vector ESS_vec */
-  /* generate vector to store ESS */
-  ESS_vec(0) = sum(norm_wgt) * sum(norm_wgt) / sum(norm_wgt % norm_wgt);
-
-  /* ====================================================== */
-  /* Resample                                               */
-  /* ====================================================== */
-  /* Resample particles using multinomial resampling ------ */
-  uvec index = sample(regspace<uvec>(0, N - 1), N, true, norm_wgt);
-  rho_samples.slice(0) = rho_samples.slice(0).rows(index);
-  if(!alpha_fixed){
-    const vec& asc = alpha_samples.col(0);
-    alpha_samples.col(0) = asc.elem(index);
-  }
-
-  aug_rankings = aug_rankings.slices(index);
-
-  /* ====================================================== */
-  /* Move step                                              */
-  /* ====================================================== */
-  new_items_move_step(
-    rho_samples, alpha_samples, aug_rankings, R_obs, metric, aug_method,
-    logz_estimate, alpha, alpha_prop_sd, lambda, alpha_max, 0, leap_size,
-    alpha_fixed);
 
   /* ====================================================== */
   /* Loop for t=1,...,Time                                  */
   /* ====================================================== */
-
+  // Here, we attempt the SMC sampler
   for (uword tt = 0; tt < Time - 1; ++tt) {
     if (verbose) REprintf("iteration %i out of %i \n", tt + 1, Time - 1);
-
     /* New Information -------------------------------------- */
     // new observed item ranks from each user, need to update augmented rankings
     rho_samples.slice(tt + 1) = rho_samples.slice(tt);
@@ -245,62 +158,60 @@ Rcpp::List smc_mallows_new_item_rank(
 
     // iterate through each observed ranking and create new "corrected"
     // augmented rankings
-
     for (uword ii = 0; ii < N; ++ii) {
       // set t-1 generation to old as we sample for t new
       prev_aug_rankings.slice(ii) = aug_rankings.slice(ii);
 
       // make the correction
       for (uword jj = 0; jj < num_ranks; ++jj) {
+        Rcpp::List check_correction;
         if (aug_method == "random") {
-          const Rcpp::List check_correction = correction_kernel(\
-            R_obs.slice(tt + 1).row(jj).t(), aug_rankings.slice(ii).row(jj).t(),\
+          check_correction = correction_kernel(
+            R_obs.slice(tt + 1).row(jj).t(), aug_rankings.slice(ii).row(jj).t(),
             n_items
           );
-          const vec c_rank = check_correction["ranking"];
-          const double c_prob = check_correction["correction_prob"];
-          aug_rankings.slice(ii).row(jj) = c_rank.t();
-          particle_correction_prob(ii) *= c_prob;
         } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
-          const Rcpp::List check_correction = correction_kernel_pseudo(
+          check_correction = correction_kernel_pseudo(
             aug_rankings.slice(ii).row(jj).t(), R_obs.slice(tt + 1).row(jj).t(),
-            rho_samples.slice(tt + 1).row(ii).t(), alpha_fixed ? alpha : alpha_samples(ii, tt + 1),
-            n_items, metric
+            rho_samples.slice(tt + 1).row(ii).t(),
+            alpha_fixed ? alpha : alpha_samples(ii, tt + 1), n_items, metric
           );
-          const vec c_rank = check_correction["ranking"];
-          const double c_prob = check_correction["correction_prob"];
-          aug_rankings.slice(ii).row(jj) = c_rank.t();
-          // # these probs are in real scale
-          particle_correction_prob(ii) *= c_prob;
         } else {
           Rcpp::stop("Combined choice of metric and aug_method is incompatible");
         }
+        const vec& c_rank = check_correction["ranking"];
+        aug_rankings(span(jj), span::all, span(ii)) = c_rank;
+        const double& c_prob = check_correction["correction_prob"];
+        particle_correction_prob(ii) *= c_prob;
       }
     }
-
     /* ====================================================== */
     /* Re-weight                                              */
     /* ====================================================== */
 
     // incremental weight for each particle, based on new observed rankings
     vec log_inc_wgt(N, fill::zeros);
+
     for (uword ii = 0; ii < N; ++ii) {
       // evaluate the log estimate of the partition function for a particular
       // value of alpha
 
       /* Calculating log_z_alpha and log_likelihood ----------- */
-      double loglik_1 = get_exponent_sum(\
-        alpha_fixed ? alpha : alpha_samples(ii, tt + 1), rho_samples.slice(tt + 1).row(ii).t(), n_items,\
+      const double& loglik_1 = get_exponent_sum(\
+        alpha_fixed ? alpha : alpha_samples(ii, tt + 1),\
+        rho_samples.slice(tt + 1).row(ii).t(), n_items,\
         aug_rankings.slice(ii), metric\
       );
-      double loglik_2 = get_exponent_sum(\
-        alpha_fixed ? alpha : alpha_samples(ii, tt + 1), rho_samples.slice(tt + 1).row(ii).t(), n_items,\
+      const double& loglik_2 = get_exponent_sum(\
+        alpha_fixed ? alpha : alpha_samples(ii, tt + 1),\
+        rho_samples.slice(tt + 1).row(ii).t(), n_items,\
         prev_aug_rankings.slice(ii), metric\
       );
-      double log_pcp = std::log(particle_correction_prob(ii));
+      const double& log_pcp = std::log(particle_correction_prob(ii));
       log_inc_wgt(ii) = loglik_1 - loglik_2 - log_pcp;
     }
 
+    // update weights
     vec norm_wgt = normalize_weights(log_inc_wgt);
 
     /* store ESS = sum(w)^2/sum(w^2) */
@@ -331,10 +242,18 @@ Rcpp::List smc_mallows_new_item_rank(
   /* ====================================================== */
   /* Post Processing                                        */
   /* ====================================================== */
-  return Rcpp::List::create(
-    Rcpp::Named("rho_samples") = rho_samples,
-    Rcpp::Named("alpha_samples") = alpha_samples,
-    Rcpp::Named("augmented_rankings") = aug_rankings,
-    Rcpp::Named("ESS") = ESS_vec
-  );
+  if (alpha_fixed) {
+    return Rcpp::List::create(
+      Rcpp::Named("rho_samples") = rho_samples,
+      Rcpp::Named("augmented_rankings") = aug_rankings,
+      Rcpp::Named("ESS") = ESS_vec
+    );
+  } else {
+    return Rcpp::List::create(
+      Rcpp::Named("rho_samples") = rho_samples,
+      Rcpp::Named("alpha_samples") = alpha_samples,
+      Rcpp::Named("augmented_rankings") = aug_rankings,
+      Rcpp::Named("ESS") = ESS_vec
+    );
+  }
 }

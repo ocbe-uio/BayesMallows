@@ -14,5 +14,4 @@ double calculate_backward_probability(arma::uvec, arma::vec, arma::vec, arma::ve
 Rcpp::List correction_kernel(arma::vec, arma::vec, int);
 Rcpp::List correction_kernel_pseudo(arma::vec, arma::vec, arma::vec, double, int, std::string);
 arma::vec metropolis_hastings_aug_ranking(const double&, const arma::vec&, const int&, const arma::vec&, const arma::vec&, const std::string&, const bool&);
-void new_items_move_step(arma::cube&, arma::mat&, arma::cube&, const arma::cube&, const std::string&, const std::string&, const Rcpp::Nullable<arma::vec>&, const double&, const double&, const double&, const double&, const arma::uword&, const int&, const bool&);
 #endif
