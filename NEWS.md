@@ -1,10 +1,12 @@
-# Development versions
+# BayesMallows (development version)
+
+* Improved documentation of `sample_dataset`
 
 # BayesMallows 1.2.0
 
-* Fixed a bug which caused assess_convergence() to fail with 'parameter = 
+* Fixed a bug which caused assess_convergence() to fail with 'parameter =
   "cluster_probs"'.
-* Fixed a bug in smc_mallows_new_users_partial() and 
+* Fixed a bug in smc_mallows_new_users_partial() and
   smc_mallows_new_users_partial_alpha_fixed().
 * metropolis_hastings_aug_ranking_pseudo() has been deprecated. Please use
   metropolis_hastings_aug_ranking() instead, with pseudo=TRUE.
@@ -41,13 +43,13 @@
 
 # BayesMallows 1.0.4.9001
 
-* This is a major update, with new functions for estimating the Bayesian Mallows 
-  model using sequential Monte Carlo. The methods are described in the vignette 
+* This is a major update, with new functions for estimating the Bayesian Mallows
+  model using sequential Monte Carlo. The methods are described in the vignette
   titled "SMC-Mallows Tutorial".
 
 # BayesMallows 1.0.4.9000
 
-* Removed a large number of dependencies by converting to base R code. This will 
+* Removed a large number of dependencies by converting to base R code. This will
 make the package easier to install across a range of systems, and less vulnerable
 to changes in other packages.
 
@@ -201,7 +203,7 @@ to changes in other packages.
 * Argument `type` to `plot.BayesMallows` and `assess_convergence` has been renamed to `parameter`, to be more consistent.
 
 # BayesMallows 0.1.1.9002
-* Argument `save_augment_data` to `compute_mallows` has been renamed to `save_aug`. 
+* Argument `save_augment_data` to `compute_mallows` has been renamed to `save_aug`.
 * `compute_mallows` fills in implied ranks when an assessor has only one missing rank. This avoids unnecessary augmentation in MCMC.
 * `generate_ranking` and `generate_ordering` now work with missing ranks.
 
