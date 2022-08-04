@@ -183,15 +183,4 @@ test_that("Updated item rank output (variable alpha) is OK", {
   expect_length(smc_test_partial_pseudo2$ESS, Time2)
   expect_equal(dim(smc_test_partial_pseudo2$augmented_rankings), c(n_users, n_items, N))
   expect_equal(dim(smc_test_partial_pseudo2$alpha_samples), c(N, 6))
-  expect_warning(
-    smc_mallows_new_item_rank(
-      n_items = n_items,
-      R_obs = test_dataset, metric = metric, leap_size = leap_size,
-      N = N, Time = Time2, logz_estimate = logz_estimate,
-      mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
-      lambda = 0.1, alpha_max = 20, aug_method = "pseudolikelihood",
-      rho_samples_init = smc_test_new_user_unif$rho_samples[, , Time + 1],
-      aug_rankings_init = smc_test_new_user_unif$augmented_rankings
-    )
-  )
 })

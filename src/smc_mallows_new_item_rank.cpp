@@ -116,7 +116,6 @@ Rcpp::List smc_mallows_new_item_rank(
     // alpha_samples_init
     alpha_samples = zeros(N, Time);
     if (alpha_samples_init.n_elem != N) {
-      Rcpp::warning("No suitable (N-length) alpha_samples_init provided. Drawing from an expornential prior instead.");
       alpha_samples_init = initialize_alpha(N);
     }
     alpha_samples.col(0) = alpha_samples_init;
