@@ -30,7 +30,7 @@
 #' @references \insertAllCited{}
 "sushi_rankings"
 
-#'
+#' A synthetic 3D matrix generated using the sample_mallows function
 #'
 #' A synthetic 3D matrix (\code{n_users}, \code{n_items}, \code{Time}) generated
 #' using the sample_mallows function. These are test datasets used to run
