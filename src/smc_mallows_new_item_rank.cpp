@@ -2,6 +2,8 @@
 #include "smc.h"
 #include "sample.h"
 #include "parameterupdates.h"
+#include "setdiff.h"
+#include "misc.h"
 
 using namespace arma;
 
@@ -45,6 +47,85 @@ void new_items_move_step(
           aug_rankings.slice(ii).row(jj).t(), metric,
           (aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman")));
       aug_rankings.slice(ii).row(jj) = mh_aug_result.t();
+    }
+  }
+}
+
+void augment_rankings(
+  const unsigned int& n_items,
+  arma::cube& R_obs,
+  const std::string& metric,
+  const int& leap_size,
+  const unsigned int& N,
+  const unsigned int Time,
+  const Rcpp::Nullable<arma::vec> logz_estimate,
+  const int& mcmc_kernel_app,
+  arma::cube aug_rankings_init,
+  arma::cube rho_samples,
+  arma::mat alpha_samples,
+  Rcpp::Nullable<arma::mat> rho_samples_init = R_NilValue,
+  arma::vec alpha_samples_init = 0,
+  const double alpha = 0,
+  const double alpha_prop_sd = 1,
+  const double lambda = 1,
+  const double alpha_max = 1,
+  const std::string& aug_method = "random",
+  const bool verbose = false,
+  const bool alpha_fixed = false
+) {
+  /* ====================================================== */
+  /* Augment Rankings                                       */
+  /* ====================================================== */
+  const unsigned int& num_ranks = R_obs.n_rows;
+
+  // each particle has its own set of augmented rankings
+  cube aug_rankings(num_ranks, n_items, N, fill::zeros);
+  cube prev_aug_rankings(num_ranks, n_items, N, fill::zeros);
+
+  // augment incomplete ranks to initialise
+  const ivec ranks = regspace<ivec>(1, n_items);
+
+  // total correction prob
+  vec total_correction_prob = ones(N);
+
+  // iterate through each observed ranking and create new "corrected" augmented rankings
+  for (uword ii = 0; ii < N; ++ii) {
+    // set t-1 generation to old as we sample for t new
+    prev_aug_rankings.slice(ii) = aug_rankings.slice(ii);
+
+    // make the correction
+    for (uword jj = 0; jj < num_ranks; ++jj) {
+      // fill in missing ranks based on choice of augmentation method
+      vec R_obs_slice_0_row_jj = R_obs.slice(0).row(jj).t();
+      const vec remaining_set = setdiff_template(ranks, R_obs_slice_0_row_jj);
+      if (aug_method == "random") {
+        // create new augmented ranking by sampling remaining ranks from set uniformly
+        vec rset = shuffle(remaining_set);
+
+        vec partial_ranking = R_obs_slice_0_row_jj;
+        partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
+
+        aug_rankings.slice(ii).row(jj) = partial_ranking.t();
+        total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set.n_elem);
+      } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
+        // find items missing from original observed ranking
+        const uvec& unranked_items = find_nonfinite(R_obs_slice_0_row_jj);
+        // randomly permute the unranked items to give the order in which they will be allocated
+        uvec item_ordering = shuffle(unranked_items);
+        const Rcpp::List proposal = calculate_forward_probability(\
+          item_ordering, R_obs_slice_0_row_jj, remaining_set, rho_samples.slice(0).row(ii).t(),\
+          alpha_fixed ? alpha : alpha_samples(ii, 0), n_items, metric\
+        );
+        const vec& a_rank = proposal["aug_ranking"];
+        const double& f_prob = proposal["forward_prob"];
+        aug_rankings(span(jj), span::all, span(ii)) = a_rank;
+        total_correction_prob(ii) *= f_prob;
+      } else {
+        Rcpp::stop(\
+          "Combined choice of metric and aug_method is incompatible. ",
+          "The value is TRUE, so the script must end here"\
+        );
+      }
     }
   }
 }
