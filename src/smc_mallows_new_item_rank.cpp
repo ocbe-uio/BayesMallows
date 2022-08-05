@@ -51,26 +51,15 @@ void new_items_move_step(
   }
 }
 
-void augment_rankings(
+arma::cube augment_rankings(
   const unsigned int& n_items,
   arma::cube& R_obs,
   const std::string& metric,
-  const int& leap_size,
   const unsigned int& N,
-  const unsigned int Time,
-  const Rcpp::Nullable<arma::vec> logz_estimate,
-  const int& mcmc_kernel_app,
-  arma::cube aug_rankings_init,
   arma::cube rho_samples,
   arma::mat alpha_samples,
-  Rcpp::Nullable<arma::mat> rho_samples_init = R_NilValue,
-  arma::vec alpha_samples_init = 0,
   const double alpha = 0,
-  const double alpha_prop_sd = 1,
-  const double lambda = 1,
-  const double alpha_max = 1,
   const std::string& aug_method = "random",
-  const bool verbose = false,
   const bool alpha_fixed = false
 ) {
   /* ====================================================== */
@@ -106,7 +95,6 @@ void augment_rankings(
         partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
 
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
-        total_correction_prob(ii) = divide_by_fact(total_correction_prob(ii), remaining_set.n_elem);
       } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
         // find items missing from original observed ranking
         const uvec& unranked_items = find_nonfinite(R_obs_slice_0_row_jj);
@@ -117,9 +105,7 @@ void augment_rankings(
           alpha_fixed ? alpha : alpha_samples(ii, 0), n_items, metric\
         );
         const vec& a_rank = proposal["aug_ranking"];
-        const double& f_prob = proposal["forward_prob"];
         aug_rankings(span(jj), span::all, span(ii)) = a_rank;
-        total_correction_prob(ii) *= f_prob;
       } else {
         Rcpp::stop(\
           "Combined choice of metric and aug_method is incompatible. ",
@@ -128,6 +114,7 @@ void augment_rankings(
       }
     }
   }
+  return(aug_rankings);
 }
 
 //' @title SMC-Mallows new users rank
@@ -219,8 +206,15 @@ Rcpp::List smc_mallows_new_item_rank(
   const ivec ranks = regspace<ivec>(1, n_items);
 
   // augment rankings for proposal
-  for (uword ii = 0; ii < N; ++ii) {
-    aug_rankings.slice(ii) = aug_rankings_init.slice(ii);
+  if (aug_rankings_init.n_elem != num_ranks * n_items * N) {
+    for (uword ii = 0; ii < N; ++ii) {
+      aug_rankings.slice(ii) = aug_rankings_init.slice(ii);
+    }
+  } else {
+    aug_rankings = augment_rankings(
+      n_items, R_obs, metric, N, rho_samples, alpha_samples, alpha, aug_method,
+      alpha_fixed
+    );
   }
   // set the old augmentation as we will compare the t^th augmentation
   // to the (t-1)^th augmentation
