@@ -40,7 +40,8 @@ test_that("Produces the wrong metric and aug_method error", {
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "pseudolikelihood",
       alpha_fixed = TRUE
-    )
+    ),
+    "Combined choice of metric and aug_method is incompatible"
   )
   expect_error(
     smc_mallows_new_item_rank(
@@ -49,7 +50,8 @@ test_that("Produces the wrong metric and aug_method error", {
       logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "pseudolikelihood"
-    )
+    ),
+    "Combined choice of metric and aug_method is incompatible"
   )
 })
 
