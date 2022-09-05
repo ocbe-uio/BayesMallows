@@ -35,29 +35,16 @@ logz_estimate <- estimate_partition_function(
 )
 
 # check metric and aug_method error
-test_that("Expected errors are thrown", {
+test_that("metric and aug_method must match", {
   expect_error(
-    smc_mallows_new_item_rank_alpha_fixed(
+    smc_mallows_new_item_rank(
       alpha = 2, n_items = n_items,
       R_obs = test_dataset, metric = "cayley", leap_size = leap_size,
       N = N, Time = Time2, logz_estimate = logz_estimate,
       mcmc_kernel_app = mcmc_kernel_app, aug_method = "pseudolikelihood",
-      rho_samples_init = smc_test_new_user_unif$rho_samples[, , Time + 1],
-      aug_rankings_init = smc_test_new_user_unif$aug_rankings
-    )
-  )
-
-  expect_error(
-    smc_mallows_new_item_rank(
-      n_items = n_items,
-      R_obs = test_dataset, metric = "cayley", leap_size = leap_size,
-      N = N, Time = Time2, logz_estimate = logz_estimate,
-      mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
-      lambda = 0.1, alpha_max = 20, aug_method = "pseudolikelihood",
-      alpha_samples_init = smc_test_new_user_unif$alpha_samples[, Time + 1],
-      rho_samples_init = smc_test_new_user_unif$rho_samples[, , Time + 1],
-      aug_rankings_init = smc_test_new_user_unif$aug_rankings
-    )
+      alpha_fixed = TRUE
+    ),
+    "Combined choice of metric and aug_method is incompatible"
   )
 })
 
