@@ -25,8 +25,8 @@ void new_items_move_step(
     const int& leap_size,
     const bool& alpha_fixed
 ){
-  int num_ranks = R_obs.n_rows;
-  int N = rho_samples.n_rows;
+  const uword num_ranks = R_obs.n_rows;
+  const uword N = rho_samples.n_rows;
   int n_items = rho_samples.n_cols;
   for (uword ii = 0; ii < N; ++ii) {
     rho_samples.slice(ttplus1).row(ii) = metropolis_hastings_rho(
