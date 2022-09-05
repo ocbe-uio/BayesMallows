@@ -207,9 +207,7 @@ Rcpp::List smc_mallows_new_item_rank(
 
   // augment rankings for proposal
   if (aug_rankings_init.n_elem != num_ranks * n_items * N) {
-    for (uword ii = 0; ii < N; ++ii) {
-      aug_rankings.slice(ii) = aug_rankings_init.slice(ii);
-    }
+      aug_rankings = aug_rankings_init;
   } else {
     aug_rankings = augment_rankings(
       n_items, R_obs, metric, N, rho_samples, alpha_samples, alpha, aug_method,
