@@ -34,20 +34,6 @@ logz_estimate <- estimate_partition_function(
   nmc = iter, degree = degree
 )
 
-# check metric and aug_method error
-test_that("metric and aug_method must match", {
-  expect_error(
-    smc_mallows_new_item_rank(
-      alpha = 2, n_items = n_items,
-      R_obs = test_dataset, metric = "cayley", leap_size = leap_size,
-      N = N, Time = Time2, logz_estimate = logz_estimate,
-      mcmc_kernel_app = mcmc_kernel_app, aug_method = "pseudolikelihood",
-      alpha_fixed = TRUE
-    ),
-    "Combined choice of metric and aug_method is incompatible"
-  )
-})
-
 # test with random sampler
 N <- 1000
 mcmc_kernel_app <- 5
@@ -170,4 +156,18 @@ test_that("Updated item rank output (variable alpha) is OK", {
   expect_length(smc_test_partial_pseudo2$ESS, Time2)
   expect_equal(dim(smc_test_partial_pseudo2$augmented_rankings), c(n_users, n_items, N))
   expect_equal(dim(smc_test_partial_pseudo2$alpha_samples), c(N, 6))
+})
+
+# check metric and aug_method error
+test_that("metric and aug_method must match", {
+  expect_error(
+    smc_mallows_new_item_rank(
+      alpha = 2, n_items = n_items,
+      R_obs = test_dataset, metric = "cayley", leap_size = leap_size,
+      N = N, Time = Time2, logz_estimate = logz_estimate,
+      mcmc_kernel_app = mcmc_kernel_app, aug_method = "pseudolikelihood",
+      alpha_fixed = TRUE
+    ),
+    "Combined choice of metric and aug_method is incompatible"
+  )
 })
