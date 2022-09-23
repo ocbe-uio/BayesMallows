@@ -19,7 +19,7 @@ for (ii in (n_items - 1):(n_items / 2)) {
 
 # Generate estimate of Z_n(alpha) ==============================================
 alpha_vector <- seq(from = 0, to = 20, by = 0.1)
-iter <- 1e4
+iter <- 10
 degree <- 10
 
 metric <- "footrule"
@@ -35,10 +35,11 @@ logz_estimate <- estimate_partition_function(
 )
 
 # test with random sampler
-N <- 1000
+N <- 2
 mcmc_kernel_app <- 5
 num_new_obs <- 10
 Time <- n_users / num_new_obs
+Time2 <- dim(test_dataset)[3]
 sample_dataset <- example_dataset
 
 # run smc new user with uniform
@@ -61,8 +62,6 @@ smc_test_new_user_unif <- smc_mallows_new_users(
 )
 
 # run smc updated rankings with alpha unknown
-Time2 <- dim(test_dataset)[3]
-set.seed(994)
 smc_test_partial_unif1 <- smc_mallows_new_item_rank(
   alpha = 2, n_items = n_items,
   R_obs = test_dataset, metric = metric, leap_size = leap_size,
@@ -81,8 +80,6 @@ test_that("Updated item rank output is OK", {
 })
 
 # run smc updated rankings with alpha unknown
-Time2 <- dim(test_dataset)[3]
-set.seed(994)
 smc_test_partial_unif2 <- smc_mallows_new_item_rank(
   n_items = n_items,
   R_obs = test_dataset, metric = metric, leap_size = leap_size,
@@ -104,13 +101,6 @@ test_that("Updated item rank output (alpha variable) is OK", {
 
 # test with pseudolikelihood
 
-N <- 1000
-mcmc_kernel_app <- 5
-num_new_obs <- 10
-Time <- n_users / num_new_obs
-sample_dataset <- example_dataset
-
-set.seed(994)
 smc_test_new_user_pseudo <- smc_mallows_new_users(
   R_obs = example_dataset, n_items = n_items, metric = metric,
   leap_size = leap_size,
@@ -120,7 +110,6 @@ smc_test_new_user_pseudo <- smc_mallows_new_users(
   alpha_max = 20, type = "partial", aug_method = "pseudolikelihood"
 )
 
-set.seed(994)
 smc_test_partial_pseudo1 <- smc_mallows_new_item_rank(
   alpha = 2, n_items = n_items,
   R_obs = test_dataset, metric = metric, leap_size = leap_size,
@@ -138,7 +127,6 @@ test_that("Updated item rank output is OK", {
   expect_equal(dim(smc_test_partial_pseudo1$augmented_rankings), c(n_users, n_items, N))
 })
 
-set.seed(994)
 smc_test_partial_pseudo2 <- smc_mallows_new_item_rank(
   n_items = n_items,
   R_obs = test_dataset, metric = metric, leap_size = leap_size,
