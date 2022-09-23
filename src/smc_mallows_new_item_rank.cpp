@@ -107,14 +107,27 @@ arma::cube augment_rankings(
         const vec& a_rank = proposal["aug_ranking"];
         aug_rankings(span(jj), span::all, span(ii)) = a_rank;
       } else {
-        Rcpp::stop(\
-          "Combined choice of metric and aug_method is incompatible. ",
-          "The value is TRUE, so the script must end here"\
-        );
+        Rcpp::stop("Combined choice of metric and aug_method is incompatible.");
       }
     }
   }
   return(aug_rankings);
+}
+
+arma::cube array2cube_Nullable(Rcpp::Nullable<Rcpp::NumericVector> x = R_NilValue) {
+  // Needed because Rcpp doesn't seem to support arrays, so even though
+  // arma::cube is a thing, Rcpp::Nullable can only cast from arma::vec and
+  // arma::mat.
+  // Implementation adapted from http://markovjumps.blogspot.com/2011/12/r-array-to-rcpparmadillo-cube.html
+  if (x.isNotNull()) {
+    Rcpp::NumericVector xVec(x);
+    Rcpp::IntegerVector xVecDims = xVec.attr("dim");
+    arma::cube xCube(xVec.begin(), xVecDims[0], xVecDims[1], xVecDims[2], false);
+    return(xCube);
+  } else {
+    arma::cube xCube(0, 0, 0);
+    return(xCube);
+  }
 }
 
 //' @title SMC-Mallows new users rank
@@ -155,7 +168,7 @@ Rcpp::List smc_mallows_new_item_rank(
   const unsigned int Time,
   const Rcpp::Nullable<arma::vec> logz_estimate,
   const int& mcmc_kernel_app,
-  arma::cube aug_rankings_init, // TODO: default to NULL
+  Rcpp::Nullable<Rcpp::NumericVector> aug_rankings_init = R_NilValue,
   Rcpp::Nullable<arma::mat> rho_samples_init = R_NilValue,
   arma::vec alpha_samples_init = 0,
   const double alpha = 0,
@@ -206,18 +219,19 @@ Rcpp::List smc_mallows_new_item_rank(
   const ivec ranks = regspace<ivec>(1, n_items);
 
   // augment rankings for proposal
-  if (aug_rankings_init.n_elem != num_ranks * n_items * N) {
-      aug_rankings = aug_rankings_init;
-  } else {
+  arma::cube aug_rankings_init_2;
+  aug_rankings_init_2 = array2cube_Nullable(aug_rankings_init);
+  if (aug_rankings_init_2.size() == 0) {
     aug_rankings = augment_rankings(
       n_items, R_obs, metric, N, rho_samples, alpha_samples, alpha, aug_method,
       alpha_fixed
     );
+  } else {
+      aug_rankings = aug_rankings_init_2;
   }
   // set the old augmentation as we will compare the t^th augmentation
   // to the (t-1)^th augmentation
   prev_aug_rankings = aug_rankings;
-
 
   /* ====================================================== */
   /* Loop for t=1,...,Time                                  */

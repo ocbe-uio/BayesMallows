@@ -14,7 +14,7 @@ smc_mallows_new_item_rank(
   Time,
   logz_estimate,
   mcmc_kernel_app,
-  aug_rankings_init,
+  aug_rankings_init = NULL,
   rho_samples_init = NULL,
   alpha_samples_init = 0L,
   alpha = 0,
