@@ -77,7 +77,8 @@ arma::cube augment_rankings(
   // total correction prob
   vec total_correction_prob = ones(N);
 
-  // iterate through each observed ranking and create new "corrected" augmented rankings
+  // iterate through each observed ranking and create new "corrected" augmented
+  // rankings
   for (uword ii = 0; ii < N; ++ii) {
     // set t-1 generation to old as we sample for t new
     prev_aug_rankings.slice(ii) = aug_rankings.slice(ii);
@@ -178,7 +179,7 @@ Rcpp::List smc_mallows_new_item_rank(
   const std::string& aug_method = "random",
   const bool verbose = false,
   const bool alpha_fixed = false
-){
+) {
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
