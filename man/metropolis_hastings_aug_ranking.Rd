@@ -50,8 +50,8 @@ Function to perform Metropolis-Hastings for new augmented ranking
 }
 \section{Functions}{
 \itemize{
-\item \code{metropolis_hastings_aug_ranking_pseudo}: Deprecated function for
+\item \code{metropolis_hastings_aug_ranking_pseudo()}: Deprecated function for
 \code{metropolis_hastings_aug_ranking_pseudo}.
-}}
 
+}}
 \keyword{internal}

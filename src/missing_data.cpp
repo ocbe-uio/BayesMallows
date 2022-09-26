@@ -15,7 +15,6 @@ vec propose_augmentation(const vec& ranks, const uvec& indicator){
 
 void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
                               const uvec& assessor_missing) {
-
   int n_assessors = rankings.n_cols;
 
   for(int i = 0; i < n_assessors; ++i){
@@ -41,8 +40,7 @@ void update_missing_ranks(mat& rankings, const uvec& current_cluster_assignment,
                           const umat& missing_indicator,
                           const uvec& assessor_missing,
                           const vec& alpha, const mat& rho,
-                          const std::string& metric){
-
+                          const std::string& metric) {
   int n_items = rankings.n_rows;
   int n_assessors = rankings.n_cols;
 

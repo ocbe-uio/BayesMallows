@@ -5,7 +5,6 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 double cayley_logz(const int& n_items, const double& alpha) {
-
   double res = 0;
 
   for(int i = 1; i < n_items; ++i){
@@ -114,11 +113,9 @@ double get_partition_function(int n_items, double alpha,
                               const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
                               const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue,
                               std::string metric = "footrule"){
-
-
-  if(cardinalities.isNotNull()){
+  if (cardinalities.isNotNull()) {
     return logz_cardinalities(alpha, n_items, Rcpp::as<vec>(cardinalities), metric);
-  } else if(logz_estimate.isNotNull()) {
+  } else if (logz_estimate.isNotNull()) {
     return compute_is_fit(alpha, Rcpp::as<vec>(logz_estimate));
   } else {
     return exact_logz(n_items, alpha, metric);
@@ -200,7 +197,3 @@ arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std
 
   return(result);
 }
-
-
-
-

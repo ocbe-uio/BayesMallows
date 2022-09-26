@@ -53,7 +53,6 @@ double spearman_distance(const vec& r1, const vec& r2){
 }
 
 double ulam_distance(const vec& r1, const vec& r2){
-
   int N = r1.n_elem;
 
   ivec a = conv_to<ivec>::from(r1);
@@ -97,7 +96,6 @@ double ulam_distance(const vec& r1, const vec& r2){
 //' @keywords internal
 // [[Rcpp::export]]
 double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
-
   if (r1.n_elem != r2.n_elem){
     Rcpp::stop("r1 and r2 must have the same length");
   }
@@ -134,7 +132,6 @@ arma::vec rank_dist_vec(const arma::mat& rankings,
                         const arma::vec& rho,
                         const std::string& metric,
                         const arma::vec& obs_freq){
-
   int n = rankings.n_cols;
   vec result = zeros(n);
 

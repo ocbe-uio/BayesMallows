@@ -42,8 +42,7 @@ arma::mat rmallows(
     int thinning,
     int leap_size = 1,
     std::string metric = "footrule"
-  ){
-
+  ) {
   // The number of items ranked
   int n_items = rho0.n_elem;
 
@@ -60,7 +59,6 @@ arma::mat rmallows(
   int t = 1;
   // This is the Metropolis-Hastings loop
   while(rho_index < n_samples){
-
     // Check if the user has tried to stop the running
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
 

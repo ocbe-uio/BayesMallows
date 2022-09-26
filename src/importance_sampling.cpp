@@ -23,7 +23,6 @@ using namespace arma;
 arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_items,
                           std::string metric = "footrule", int nmc = 1e4
                           ) {
-
   // The dispersion parameter alpha comes as a vector value
   int n_alphas = alpha_vector.n_elem;
 

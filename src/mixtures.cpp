@@ -61,7 +61,6 @@ vec update_cluster_probs(
     const int& n_clusters,
     const int& psi
 ){
-
   vec cluster_probs(n_clusters);
 
   for(int i = 0; i < n_clusters; ++i){
@@ -71,7 +70,6 @@ vec update_cluster_probs(
   // Finally, normalize cluster_probs with 1-norm.
   // result now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
   return normalise(cluster_probs, 1);
-
 }
 
 

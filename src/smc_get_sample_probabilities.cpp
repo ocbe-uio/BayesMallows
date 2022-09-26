@@ -41,5 +41,4 @@ arma::vec get_sample_probabilities(
   }
 
   return normalize_weights(sample_prob_list);
-
 }

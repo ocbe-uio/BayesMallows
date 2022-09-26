@@ -1,4 +1,3 @@
-library(BayesMallows)
 
 # Load the full data
 load("./data-raw/Beaches_data.Rdata")

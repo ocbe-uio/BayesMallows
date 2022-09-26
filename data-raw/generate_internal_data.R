@@ -1,6 +1,6 @@
 # This code generates the internal data sets needed for computing the partition functions.
 # Start with the current
-pfd_old <- BayesMallows:::partition_function_data
+pfd_old <- partition_function_data
 # First we load the cardinalities for the footrule
 load("./data-raw/footrule_cardinalities.Rdata", verbose = TRUE)
 

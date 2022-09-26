@@ -53,7 +53,6 @@ Rcpp::List correction_kernel_pseudo(
 
         // if we only have one missing rank, then we can
         if (remaining_set.n_elem == 1) {
-
             // create new agumented ranking by sampling remaining ranks from set uniformly
             observed_ranking.elem(unranked_items) = remaining_set;
         } else {
@@ -72,7 +71,6 @@ Rcpp::List correction_kernel_pseudo(
             //########################################################
             // given the item ordering and the list of missing rank, determine the sample probs for each iteration
             for (uword jj = 0; jj < num_items_unranked - 1; ++jj) {
-
                 // the rank of item in rho
                 vec rho_item_rank;
                 rho_item_rank = rho(item_ordering(jj));

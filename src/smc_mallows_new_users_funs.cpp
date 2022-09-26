@@ -93,7 +93,6 @@ void smc_mallows_new_users_resample(
     cube aug_rankings_index = aug_rankings.slices(index);
     aug_rankings.rows(0, num_obs - 1) = aug_rankings_index(span(0, num_obs - 1), span::all, span::all);
   }
-
 }
 
 void smc_mallows_new_users_reweight(
@@ -142,6 +141,4 @@ void smc_mallows_new_users_reweight(
   norm_wgt = normalize_weights(log_inc_wgt);
 
   ESS_vec(tt) = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
-
 }
-

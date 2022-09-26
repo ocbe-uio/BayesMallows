@@ -19,7 +19,8 @@ set.seed(1234)
 obs_freq <- sample(x = seq(from = 100L, to = 500L, by = 1L),
                   size = nrow(potato_visual), replace = TRUE)
 # We also create a set of repeated indices, used to extend the matrix rows
-repeated_indices <- unlist(Map(function(x, y) rep(x, each = y), 1:nrow(potato_visual), obs_freq))
+repeated_indices <- unlist(Map(function(x, y) rep(x, each = y),
+                               seq_len(nrow(potato_visual)), obs_freq))
 # The potato_repeated matrix consists of all rows repeated corresponding to
 # the number of assessors in the obs_freq vector. This is how a large dataset
 # would look like without using the obs_freq argument
