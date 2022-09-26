@@ -188,7 +188,7 @@ plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = 
     items <- unique(smc_plot$item)[items]
   }
 
-  iteration <- rep(c(1:nmc), times = n_items)
+  iteration <- rep(seq(from = 1L, to = nmc, by = 1L), times = n_items)
   df <- cbind(iteration, smc_plot)
 
   if (C == 1) {
