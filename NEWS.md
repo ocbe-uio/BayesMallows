@@ -1,5 +1,6 @@
 # BayesMallows (development version)
 
+* Refactoring of data augmentation function for SMC Mallows.
 * Improved documentation of `sample_dataset`
 
 # BayesMallows 1.2.0
