@@ -13,7 +13,7 @@ smc_processing <- function(output, colnames = NULL) {
   if (is.null(colnames)) {
     n_items <- ncol(df)
     cletters <- rep("Item", times = n_items)
-    cindexes <- seq(from = 1L, to = n_items, by = 1L)
+    cindexes <- seq_len(n_items)
     cnames <- c(paste(cletters, cindexes, sep = " "))
     colnames(df) <- cnames
   } else {
@@ -174,10 +174,10 @@ plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = 
 
   if (is.null(items) && n_items > 5) {
     message("Items not provided by user or more than 5 items in a ranking. Picking 5 at random.")
-    items <- sample(1:n_items, 5, replace = FALSE)
+    items <- sample(seq_len(n_items), 5, replace = FALSE)
     items <- sort(items)
   } else if (is.null(items) && n_items <= 5) {
-    items <- c(1:n_items)
+    items <- seq_len(n_items)
     items <- sort(items)
   }
 
@@ -188,7 +188,7 @@ plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = 
     items <- unique(smc_plot$item)[items]
   }
 
-  iteration <- rep(seq(from = 1L, to = nmc, by = 1L), times = n_items)
+  iteration <- rep(seq_len(nmc), times = n_items)
   df <- cbind(iteration, smc_plot)
 
   if (C == 1) {
