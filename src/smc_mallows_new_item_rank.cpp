@@ -115,22 +115,6 @@ arma::cube augment_rankings(
   return(aug_rankings);
 }
 
-arma::cube array2cube_Nullable(Rcpp::Nullable<Rcpp::NumericVector> x = R_NilValue) {
-  // Needed because Rcpp doesn't seem to support arrays, so even though
-  // arma::cube is a thing, Rcpp::Nullable can only cast from arma::vec and
-  // arma::mat.
-  // Implementation adapted from http://markovjumps.blogspot.com/2011/12/r-array-to-rcpparmadillo-cube.html
-  if (x.isNotNull()) {
-    Rcpp::NumericVector xVec(x);
-    Rcpp::IntegerVector xVecDims = xVec.attr("dim");
-    arma::cube xCube(xVec.begin(), xVecDims[0], xVecDims[1], xVecDims[2], false);
-    return(xCube);
-  } else {
-    arma::cube xCube(0, 0, 0);
-    return(xCube);
-  }
-}
-
 //' @title SMC-Mallows new users rank
 //' @description Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user
 //' at each time step. Each correction and augmentation is done by filling in the missing item ranks using pseudolikelihood augmentation.
@@ -220,8 +204,7 @@ Rcpp::List smc_mallows_new_item_rank(
   const ivec ranks = regspace<ivec>(1, n_items);
 
   // augment rankings for proposal
-  arma::cube aug_rankings_init_2;
-  aug_rankings_init_2 = array2cube_Nullable(aug_rankings_init);
+  arma::cube aug_rankings_init_2 = aug_rankings_init.isNotNull() ? Rcpp::as<arma::cube>(aug_rankings_init) : arma::cube(0,0,0);
   if (aug_rankings_init_2.size() == 0) {
     aug_rankings = augment_rankings(
       n_items, R_obs, metric, N, rho_samples, alpha_samples, alpha, aug_method,
