@@ -15,15 +15,12 @@ void update_shape_bernoulli(
     const mat& rankings,
     const Rcpp::List& constraints
 ){
-
   int n_items = rankings.n_rows;
   int n_assessors = rankings.n_cols;
   int sum_1 = 0, sum_2 = 0;
   for(int i = 0; i < n_assessors; ++i){
-
     Rcpp::List assessor_constraints = Rcpp::as<Rcpp::List>(constraints[i]);
-    for(int j = 0; j < n_items; ++j){
-
+    for(int j = 0; j < n_items; ++j) {
       uvec items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[j]);
       uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[j]);
 
@@ -41,20 +38,18 @@ void update_shape_bernoulli(
   }
   shape_1 = kappa_1 + sum_1;
   shape_2 = kappa_2 + sum_2;
-
 }
 
 void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
                           const Rcpp::List& assessor_constraints,
-                          const vec& current_ranking){
-
+                          const vec& current_ranking) {
   // Find the items which are preferred to the given item
   // Items go from 1, ..., n_items, so must use [item - 1]
   uvec items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[item - 1]);
   uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[item - 1]);
 
   // If there are any items above, we must find the possible rankings
-  if(items_above.n_elem > 0){
+  if(items_above.n_elem > 0) {
     // Again subtracting 1 because of zero-first indexing
     // Find all the rankings of the items that are preferred to *item*
     vec rankings_above = current_ranking.elem(items_above - 1);
@@ -62,7 +57,7 @@ void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
   }
 
   // If there are any items below, we must find the possible rankings
-  if(items_below.n_elem > 0){
+  if(items_below.n_elem > 0) {
     // Find all the rankings of the items that are disfavored to *item*
     vec rankings_below = current_ranking.elem(items_below - 1);
     right_limit = min(rankings_below);
@@ -70,8 +65,7 @@ void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
 
 }
 
-vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor_constraints){
-
+vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor_constraints) {
   int n_items = ranking.n_elem;
 
   // Extract the constraints for this particular assessor
@@ -102,8 +96,7 @@ vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor
 }
 
 vec propose_swap(const vec& ranking, const Rcpp::List& assessor_constraints,
-                       int& g_diff, const int& Lswap){
-
+                       int& g_diff, const int& Lswap) {
   int n_items = ranking.n_elem;
 
   // Draw a random number, representing an item
@@ -154,12 +147,10 @@ void augment_pairwise(
     const std::string& error_model,
     const int& Lswap
 ){
-
   int n_assessors = rankings.n_cols;
   int n_items = rankings.n_rows;
 
-  for(int i = 0; i < n_assessors; ++i){
-
+  for(int i = 0; i < n_assessors; ++i) {
     vec proposal;
     // Summed difference over error function before and after proposal
     int g_diff = 0;
@@ -193,6 +184,4 @@ void augment_pairwise(
       ++aug_acceptance(i);
     }
   }
-
 }
-

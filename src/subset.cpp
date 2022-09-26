@@ -88,7 +88,6 @@ int i4_sign ( int i )
   {
     return 1;
   }
-
 }
 
 bool perm0_check ( int n, int p[] )
@@ -153,7 +152,6 @@ bool perm0_check ( int n, int p[] )
       Rcpp::Rcout << "  Permutation is missing value " << value << "\n";
       break;
     }
-
   }
 
   return check;
@@ -356,7 +354,6 @@ int *perm0_inverse ( int n, int p1[] )
   //    Output, int PERM0_INVERSE[N], the inverse permutation.
   //
 {
-
   int i;
   int i0;
   int i1;
@@ -401,7 +398,6 @@ int *perm0_inverse ( int n, int p1[] )
 
     is = - i4_sign ( p2[i-1] );
     p2[i-1] = abs ( p2[i-1] ) * i4_sign ( is );
-
   }
 
   for ( i = 1; i <= n; i++ )

@@ -32,8 +32,6 @@ double update_alpha(vec& alpha_acceptance,
                   const Rcpp::Nullable<vec> cardinalities = R_NilValue,
                   const Rcpp::Nullable<vec> logz_estimate = R_NilValue,
                   double alpha_max = 1e6) {
-
-
   // Set the number of assessors. Not using the variable from run_mcmc because
   // here we want the number of assessors in this cluster
   //int n_assessors = rankings.n_cols;
@@ -73,7 +71,6 @@ void update_rho(cube& rho, vec& rho_acceptance, mat& rho_old,
                 const double& alpha_old, const int& leap_size, const mat& rankings,
                 const std::string& metric, const int& n_items, const int& t,
                 const uvec& element_indices, const vec& obs_freq) {
-
   vec rho_cluster = rho_old.col(cluster_index);
 
   // Sample a rank proposal
@@ -107,6 +104,3 @@ void update_rho(cube& rho, vec& rho_acceptance, mat& rho_old,
   }
 
 }
-
-
-

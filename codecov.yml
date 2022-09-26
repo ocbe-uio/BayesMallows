@@ -12,3 +12,5 @@ coverage:
         target: auto
         threshold: 1%
         informational: true
+ignore:
+    - "inst\examples\sample_mallows_example.R"

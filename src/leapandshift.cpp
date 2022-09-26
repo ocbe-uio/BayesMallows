@@ -30,7 +30,6 @@ void shift_step(vec& rho_proposal, const vec& rho,
 void leap_and_shift(vec& rho_proposal, uvec& indices,
                     double& prob_backward, double& prob_forward,
                     const vec& rho, int leap_size, bool reduce_indices){
-
   // Set proposal equal to current
   rho_proposal = rho;
 

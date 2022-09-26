@@ -83,7 +83,6 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
                     double kappa_2 = 1.0,
                       bool save_ind_clus = false
                       ){
-
   // The number of items ranked
   int n_items = rankings.n_rows;
 
@@ -177,18 +176,15 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   // Starting at t = 1, meaning that alpha and rho must be initialized at index 0,
   // and this has been done above
   for(int t = 1; t < nmc; ++t){
-
     // Check if the user has tried to interrupt.
     if (t % 1000 == 0) {
       Rcpp::checkUserInterrupt();
       if(verbose){
         Rcpp::Rcout << "First " << t << " iterations of Metropolis-Hastings algorithm completed." << std::endl;
       }
-
     }
 
     if(error_model == "bernoulli"){
-
       update_shape_bernoulli(shape_1(t), shape_2(t), kappa_1, kappa_2,
                              rankings, constraints);
 
@@ -201,7 +197,6 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
                  rho_thinning, alpha_old(i), leap_size,
                  clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
                  metric, n_items, t, element_indices, obs_freq);
-
     }
 
     if(t % alpha_jump == 0) {
@@ -245,7 +240,6 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   if(augpair){
     augment_pairwise(rankings, current_cluster_assignment, alpha_old, 0.1, rho_old,
                      metric, constraints, aug_acceptance, clustering, error_model, Lswap);
-
   }
 
   // Save augmented data if the user wants this. Uses the same index as rho.
@@ -281,9 +275,4 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
     Rcpp::Named("n_assessors") = n_assessors,
     Rcpp::Named("obs_freq") = obs_freq
   );
-
-
 }
-
-
-

@@ -18,10 +18,8 @@ double smc_calculate_probability(
   const int& n_items,
   const std::string& metric,
   const bool& forward
-){
-
+) {
   for (uword jj = 0; jj < num_items_unranked - 1; ++jj) {
-
     // items to sample rank
     const uword item_to_sample_rank = item_ordering(jj);
 
