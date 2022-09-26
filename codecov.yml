@@ -13,4 +13,4 @@ coverage:
         threshold: 1%
         informational: true
 ignore:
-    - "inst\examples\sample_mallows_example.R"
+    - "inst/examples/sample_mallows_example.R"
