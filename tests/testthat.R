@@ -1,3 +1,1 @@
-library(testthat)
-library(BayesMallows)
-test_check("BayesMallows")
+testthat::test_check("BayesMallows")
