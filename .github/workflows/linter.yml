@@ -53,6 +53,7 @@ jobs:
               "inst/examples/plot_top_k_example.R",
               "inst/examples/plot.BayesMallows_example.R",
               "data-raw/",
+              "tests/testthat.R",
               "R/RcppExports.R"
             )
             style_rules <- list(
