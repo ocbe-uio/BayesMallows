@@ -153,7 +153,7 @@ Rcpp::List smc_mallows_new_item_rank(
   const unsigned int Time,
   const Rcpp::Nullable<arma::vec> logz_estimate,
   const int& mcmc_kernel_app,
-  Rcpp::Nullable<Rcpp::NumericVector> aug_rankings_init = R_NilValue,
+  Rcpp::Nullable<arma::cube> aug_rankings_init = R_NilValue,
   Rcpp::Nullable<arma::mat> rho_samples_init = R_NilValue,
   arma::vec alpha_samples_init = 0,
   const double alpha = 0,
