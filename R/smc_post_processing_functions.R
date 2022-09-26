@@ -13,7 +13,7 @@ smc_processing <- function(output, colnames = NULL) {
   if (is.null(colnames)) {
     n_items <- ncol(df)
     cletters <- rep("Item", times = n_items)
-    cindexes <- (c(1:n_items))
+    cindexes <- seq(from = 1L, to = n_items, by = 1L)
     cnames <- c(paste(cletters, cindexes, sep = " "))
     colnames(df) <- cnames
   } else {
