@@ -55,12 +55,7 @@ prepare_partition_function <- function(logz_estimate, metric, n_items) {
 
   # Fourth, is it the Ulam distance?
   if (metric == "ulam") {
-    return(list(
-      cardinalities = unlist(lapply(
-        0:(n_items - 1),
-        function(x) PerMallows::count.perms(perm.length = n_items, dist.value = x, dist.name = "ulam")
-      ))
-    ))
+    message("Exact partition function no longer available for Ulam distance with >95 items.")
   }
 
   # Fifth, can we compute the partition function in our C++ code?
