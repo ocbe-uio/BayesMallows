@@ -1,10 +1,10 @@
 ## Resubmission Note
-This is a resubmission. It contains some bugfixes, refactoring of C++ code, and
-(soft-)deprecation of some functions to make the API cleaners.
+This is a resubmission. It removes the dependency on the PerMallows package, due to an
+e-mail from Dr. Hornik warning that PerMallows is scheduled to be archived from CRAN.
 
 
 ## Test Environments
-* local Windows install, R 4.2.0.
+* local Windows install, R 4.2.1.
 * windows, devel, release and old-release.
 * Apple Silicon (M1) via rhub.
 * valgrind and GCC-UBSAN via rhub.
