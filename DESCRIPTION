@@ -1,7 +1,7 @@
 Package: BayesMallows
 Type: Package
 Title: Bayesian Preference Learning with the Mallows Rank Model
-Version: 1.2.0.9002
+Version: 1.2.1
 Authors@R: c(person("Oystein", "Sorensen",
                     email = "oystein.sorensen.1985@gmail.com",
                     role = c("aut", "cre"),
@@ -51,7 +51,6 @@ Imports: Rcpp (>= 1.0.0),
   sets (>= 1.0-18),
   relations (>= 0.6-8),
   rlang (>= 0.3.1),
-  PerMallows (>= 1.13),
   HDInterval (>= 0.2.0),
   cowplot (>= 1.0.0)
 LinkingTo: Rcpp, RcppArmadillo, testthat

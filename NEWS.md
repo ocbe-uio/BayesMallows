@@ -1,5 +1,8 @@
-# BayesMallows (development version)
+# BayesMallows 1.2.1
 
+* PerMallows package has been removed from Imports because it is at risk of
+  being removed from CRAN. This means that for Ulam distance with more than 
+  95 items, the user will have to compute an importance sampling estimate.
 * Refactoring of data augmentation function for SMC Mallows.
 * Improved documentation of `sample_dataset`
 

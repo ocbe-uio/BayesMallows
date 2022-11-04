@@ -33,14 +33,20 @@ test_that("Spearman distance is correct", {
 
 # Loop over some n values
 test_that("Kendall distance is correct", {
-  for (n in c(2, 3, 5)) {
+  ns <- c(2, 3, 5)
+  correct <- list(c(0, 1), c(0, 1, 1, 2, 2, 3),
+                  c(0, 1, 1, 2, 2, 3, 1, 2, 2, 3, 3, 4, 2, 3, 3, 4, 4, 5, 3, 4,
+                    4, 5, 5, 6, 1, 2, 2, 3, 3, 4, 2, 3, 3, 4, 4, 5, 3, 4, 4, 5, 5,
+                    6, 4, 5, 5, 6, 6, 7, 2, 3, 3, 4, 4, 5, 3, 4, 4, 5, 5, 6, 4, 5,
+                    5, 6, 6, 7, 5, 6, 6, 7, 7, 8, 3, 4, 4, 5, 5, 6, 4, 5, 5, 6, 6,
+                    7, 5, 6, 6, 7, 7, 8, 6, 7, 7, 8, 8, 9, 4, 5, 5, 6, 6, 7, 5, 6,
+                    6, 7, 7, 8, 6, 7, 7, 8, 8, 9, 7, 8, 8, 9, 9, 10))
+  for (i in seq_along(ns)) {
     expect_equal(
-      check_dist(n, fun = function(r1, r2) {
+      check_dist(ns[[i]], fun = function(r1, r2) {
         get_rank_distance(r1, r2, "kendall")
       }),
-      check_dist(n, fun = function(r1, r2) {
-        PerMallows::distance(r1, r2, "kendall")
-      })
+      correct[[i]]
     )
   }
 })
@@ -48,14 +54,20 @@ test_that("Kendall distance is correct", {
 
 # Loop over some n values
 test_that("Cayley distance is correct", {
-  for (n in c(2, 3, 5)) {
+  ns <- c(2, 3, 5)
+  correct <- list(c(0, 1), c(0, 1, 1, 2, 2, 1),
+                  c(0, 1, 1, 2, 2, 1, 1, 2, 2, 3, 3, 2, 2, 3, 1, 2, 2, 3, 3, 2,
+                    2, 1, 3, 2, 1, 2, 2, 3, 3, 2, 2, 3, 3, 4, 4, 3, 3, 4, 2, 3, 3,
+                    4, 4, 3, 3, 2, 4, 3, 2, 3, 3, 4, 4, 3, 1, 2, 2, 3, 3, 2, 2, 3,
+                    3, 4, 4, 3, 3, 2, 4, 3, 3, 4, 3, 4, 2, 3, 3, 4, 2, 3, 1, 2, 2,
+                    3, 3, 4, 2, 3, 3, 4, 4, 3, 3, 4, 2, 3, 4, 3, 3, 2, 4, 3, 3, 2,
+                    2, 1, 3, 2, 4, 3, 3, 2, 4, 3, 3, 4, 4, 3, 3, 2))
+  for (i in seq_along(ns)) {
     expect_equal(
-      check_dist(n, fun = function(r1, r2) {
+      check_dist(ns[[i]], fun = function(r1, r2) {
         get_rank_distance(r1, r2, "cayley")
       }),
-      check_dist(n, fun = function(r1, r2) {
-        PerMallows::distance(r1, r2, "cayley")
-      })
+      correct[[i]]
     )
   }
 })
@@ -63,14 +75,20 @@ test_that("Cayley distance is correct", {
 
 # Loop over some n values
 test_that("Hamming distance is correct", {
-  for (n in c(2, 3, 5)) {
+  ns <- c(2, 3, 5)
+  correct <- list(c(0, 2), c(0, 2, 2, 3, 3, 2),
+                  c(0, 2, 2, 3, 3, 2, 2, 4, 3, 4, 4, 3, 3, 4, 2, 3, 4, 4, 4, 3,
+                    3, 2, 4, 4, 2, 4, 4, 5, 5, 4, 3, 5, 4, 5, 5, 4, 4, 5, 3, 4, 5,
+                    5, 5, 4, 4, 3, 5, 5, 3, 5, 4, 5, 5, 4, 2, 4, 3, 4, 4, 3, 4, 5,
+                    4, 5, 5, 5, 5, 4, 5, 4, 5, 5, 4, 5, 3, 4, 5, 5, 3, 4, 2, 3, 4,
+                    4, 4, 5, 4, 5, 5, 5, 5, 5, 5, 5, 4, 4, 5, 4, 4, 3, 5, 5, 4, 3,
+                    3, 2, 4, 4, 5, 4, 5, 4, 5, 5, 5, 5, 5, 5, 4, 4))
+  for (i in seq_along(ns)) {
     expect_equal(
-      check_dist(n, fun = function(r1, r2) {
+      check_dist(ns[[i]], fun = function(r1, r2) {
         get_rank_distance(r1, r2, "hamming")
       }),
-      check_dist(n, fun = function(r1, r2) {
-        PerMallows::distance(r1, r2, "hamming")
-      })
+      correct[[i]]
     )
   }
 })
@@ -78,14 +96,20 @@ test_that("Hamming distance is correct", {
 
 # Loop over some n values
 test_that("Ulam distance is correct", {
-  for (n in c(2, 3, 5)) {
+  ns <- c(2, 3, 5)
+  correct <- list(c(0, 1), c(0, 1, 1, 1, 1, 2),
+                  c(0, 1, 1, 1, 1, 2, 1, 2, 1, 1, 2, 2, 1, 2, 2, 2, 2, 2, 1, 2,
+                    2, 2, 2, 3, 1, 2, 2, 2, 2, 3, 1, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2,
+                    2, 2, 3, 2, 2, 3, 3, 1, 2, 2, 2, 2, 3, 2, 3, 2, 2, 3, 3, 2, 2,
+                    2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 1, 2, 2, 2, 2, 3, 2, 3, 2, 2, 3,
+                    3, 2, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 3, 1, 2, 2, 2, 2, 3, 2, 3,
+                    2, 2, 3, 3, 2, 3, 3, 3, 3, 3, 2, 3, 3, 3, 3, 4))
+  for (i in seq_along(ns)) {
     expect_equal(
-      check_dist(n, fun = function(r1, r2) {
+      check_dist(ns[[i]], fun = function(r1, r2) {
         get_rank_distance(r1, r2, "ulam")
       }),
-      check_dist(n, fun = function(r1, r2) {
-        PerMallows::distance(r1, r2, "ulam")
-      })
+      correct[[i]]
     )
   }
 })

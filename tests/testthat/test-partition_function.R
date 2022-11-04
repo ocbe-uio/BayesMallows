@@ -26,10 +26,6 @@ check_log_zn <- function(n, alpha, metric) {
       get_rank_distance,
       r2 = 1:n, metric = "hamming"
     ))))
-  } else if (metric == "ulam") {
-    log(sum(unlist(lapply(seq(0, n - 1, by = 1), function(x) {
-      PerMallows::count.perms(perm.length = n, dist.value = x, dist.name = "ulam") * exp(-alpha / n * x)
-    }))))
   } else {
     stop("Unknown metric.")
   }
@@ -110,6 +106,10 @@ test_that("Hamming partition function is correct", {
 })
 
 test_that("Ulam partition function is correct", {
+  # Correct values are computed from PerMallows::count.perms()
+  correct <- list(0, 0, 0, 0.692897211809945, 0.668459648013286, 0.474076984180107,
+                  1.79142615441324, 1.75861132107948, 1.47694423521443)
+  i <- 1
   ulam_sequence <- subset(
     partition_function_data,
     metric == "ulam" & type == "cardinalities"
@@ -122,8 +122,9 @@ test_that("Ulam partition function is correct", {
           cardinalities = ulam_sequence[[n]],
           metric = "ulam"
         ),
-        check_log_zn(n, alpha, "ulam")
+        correct[[i]]
       )
+      i <- i + 1
     }
   }
 })
