@@ -335,5 +335,4 @@ Rcpp::List smc_mallows_new_item_rank(
     particle_history.attr("class") = "SMCMallows";
     return particle_history;
   }
-
 }
