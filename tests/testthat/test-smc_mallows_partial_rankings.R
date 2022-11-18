@@ -142,7 +142,7 @@ test_that("Runs with unif kernel", {
     ),
     "'smc_mallows_new_users_partial_alpha_fixed' is deprecated."
   )
-  expect_is(smc_unif_alpha_fixed_unif, "list")
+  expect_is(smc_unif_alpha_fixed_unif, "SMCMallows")
   expect_equal(length(smc_unif_alpha_fixed_unif), 4)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 10, 21))
   smc_unif <- smc_mallows_new_users(
@@ -211,7 +211,7 @@ test_that("Runs with pseudo kernel", {
     num_new_obs     = num_new_obs,
     aug_method      = "pseudolikelihood"
   )
-  expect_is(smc_unif_alpha_fixed_pseudo, "list")
+  expect_is(smc_unif_alpha_fixed_pseudo, "SMCMallows")
   expect_equal(length(smc_unif_alpha_fixed_pseudo), 4)
   expect_equal(dim(smc_unif_alpha_fixed_pseudo$rho_samples), c(N, 10, 21))
   smc_pseudo <- smc_mallows_new_users(
@@ -230,7 +230,7 @@ test_that("Runs with pseudo kernel", {
     alpha_max       = alpha_max,
     aug_method      = "pseudolikelihood"
   )
-  expect_is(smc_pseudo, "list")
+  expect_is(smc_pseudo, "SMCMallows")
   expect_equal(length(smc_pseudo), 4)
   expect_equal(dim(smc_pseudo$rho_samples), c(N, 10, 21))
   expect_equal(dim(smc_pseudo$alpha_samples), c(N, 21))
