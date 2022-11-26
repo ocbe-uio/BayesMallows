@@ -37,13 +37,10 @@ A list is provided with the most commonly used functions in this extension of th
 |:-----------------------------|:--------------------------------------------|
 | `smc_mallows_new_users` |  Runs the SMC algorithm for case where we observe full rankings as new observational data. |
 | `smc_mallows_new_item_rank` | Runs the SMC algorithm for case where we observe updated partial rankings as from existing users. |
-| `plot_rho_posterior`| Plots posterior density of $\boldsymbol{\rho}$ for a selection of items.  |
+| `plot`| Plots posterior density of $\boldsymbol{\rho}$ or $\alpha$ for a selection of items. |
 | `compute_posterior_intervals_rho` | Computes the Bayesian posterior intervals for $\boldsymbol{\rho}$.|
 | `compute_consensus_rho`| Computes the CP estimate or MAP estimate of the latent ranks. |
-| `plot_alpha_posterior` | Plots the posterior density of $\alpha$.|
 | `compute_posterior_intervals_alpha` | Computes the Bayesian posterior intervals for $\alpha$.|
-
-
 
 
 ## Introduction
@@ -152,15 +149,10 @@ smc_test <- smc_mallows_new_users(
 
 The example `smc_test` returns a list variable of the particles values for $\boldsymbol{\rho}$ and $\alpha$ at each time step, so we can observe the posterior as it evolves. Specifically the list contains a three dimensional matrix of size `N` by `n_items` by `Time+1`, named `rho_samples`,  and an `N` by `Time+1` matrix called `alpha_samples`. These matrices can be studied using some post-processing functions for visualising and analysing the posterior. It is also possible to make comparative results using the MCMC algorithm and the SMC algorithm. Unlike MCMC we cannot observe the trace plots and we do not need to specify a non-zero value for the burn-in. The indexing in R means that we have to view the `Time+1` slice of the output in order to view the posterior once all 100 rankings have been observed.
 
-Here, we can observe the posterior probabilities of $\boldsymbol{\rho}$ for a selection of items can be observed by calling the function `plot_rho_posterior`.
+Here, we can observe the posterior probabilities of $\boldsymbol{\rho}$ for a selection of items can be observed by calling the function `plot()`.
 
 ```{r smc_complete_analysis_heatplot, message=FALSE, warning=FALSE}
-test_sample_rho <- smc_test$rho_samples[, , Time + 1]
-plot_rho_posterior(
-  output = test_sample_rho,
-  nmc = N, burnin = 0, C = 1,
-  colnames = colnames(sushi_rankings)
-)
+plot(smc_test, colnames = colnames(sushi_rankings), parameter = "rho")
 ```
 
 The posterior distributions of $\boldsymbol{\rho}$ and $\alpha$ can be studied with some of the the analysis tools provided by the extension. The posterior intervals for the consensus ranking of each sushi item are obtained by calling `compute_posterior_intervals_rho`.
@@ -184,14 +176,11 @@ compute_rho_consensus(
 )
 ```
 
-Similarly, we can observe the posterior density and the posterior intervals for the scale parameter using the functions `plot_alpha_posterior` and `compute_posterior_intervals_alpha`.
+Similarly, we can observe the posterior density and the posterior intervals for the scale parameter using the functions `plot()` and `compute_posterior_intervals_alpha`.
 
 ```{r smc_complete_alpha_analysis, message=FALSE, warning=FALSE}
+plot(smc_test, nmc = N, burnin = 0, parameter = "alpha")
 test_sample_alpha <- smc_test$alpha_samples[, Time + 1]
-plot_alpha_posterior(
-  output = test_sample_alpha, nmc = N,
-  burnin = 0
-)
 compute_posterior_intervals_alpha(
   output = test_sample_alpha,
   nmc = N, burnin = 0, verbose = FALSE
@@ -248,7 +237,7 @@ smc_partial_test <- smc_mallows_new_users(
   alpha_max = 1e6,
   aug_method = aug_method
 )
-#>Error in smc_mallows_new_users(R_obs = data_partial, type = "partial", 
+#>Error in smc_mallows_new_users(R_obs = data_partial, type = "partial",
 #>: Combined choice of metric and aug_method is incompatible
 ```
 
@@ -284,16 +273,8 @@ The variable `smc_test_partial` contains a list with three dimensional matrix of
 
 
 ```{r smc_partial_analysis, message=FALSE, warning=FALSE}
-partial_test_sample_rho <- smc_partial_test$rho_samples[, , Time + 1]
-partial_test_sample_alpha <- smc_partial_test$alpha_samples[, Time + 1]
-plot_rho_posterior(
-  output = partial_test_sample_rho, nmc = N,
-  burnin = 0, C = 1, colnames = colnames(sushi_rankings)
-)
-plot_alpha_posterior(
-  output = partial_test_sample_alpha, nmc = N,
-  burnin = 0
-)
+plot(smc_partial_test, colnames = colnames(sushi_rankings), parameter = "rho")
+plot(smc_partial_test, nmc = N, burnin = 0, parameter = "alpha")
 ```
 
 
@@ -367,13 +348,8 @@ smc_test_updated_partial <- smc_mallows_new_item_rank(
 Unlike the two previous demonstrations, the final slice of the output occurs at `Time` instead of `Time+1`. This is because we initialised the algorithm with the first slice of the `test_dataset` rather than initialising with no observed data. We observe the posterior probabilities for items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ by using the same post-processing functions as before.
 
 ```{r smc_updated_partial_analysis, message=FALSE, warning=FALSE}
-updated_partial_test_sample_rho <- smc_test_updated_partial$rho_samples[, , Time]
-updated_partial_test_sample_alpha <- smc_test_updated_partial$alpha_samples[, Time]
-plot_rho_posterior(output = updated_partial_test_sample_rho, nmc = N, burnin = 0, C = 1)
-plot_alpha_posterior(output = updated_partial_test_sample_alpha, nmc = N, burnin = 0)
+plot(smc_test_updated_partial, parameter = "rho")
+plot(smc_test_updated_partial, parameter = "alpha")
 ```
-
-
-
 
 ## References
