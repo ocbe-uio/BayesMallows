@@ -1,3 +1,5 @@
+# BayesMallows (development version)
+
 # BayesMallows (development versions)
 
 * Added `plot.SMCMallows()` method
