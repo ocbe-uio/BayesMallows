@@ -70,3 +70,21 @@ metropolis_hastings_aug_ranking_pseudo <- function(
   return(metropolis_hastings_aug_ranking(
     alpha, rho, n_items, partial_ranking, current_ranking, metric, TRUE))
 }
+
+#' @describeIn plot.SMCMallows Deprecated function for
+#' \code{plot_alpha_posterior}.
+#' @export
+#' @keywords internal
+plot_alpha_posterior <- function(output, nmc, burnin) {
+  .Deprecated("plot")
+}
+
+#' @describeIn plot.SMCMallows Deprecated function for
+#' \code{plot_rho_posterior}.
+#' @export
+#' @keywords internal
+plot_rho_posterior <- function(
+  output, nmc, burnin, C, colnames = NULL, items = NULL
+) {
+  .Deprecated("plot")
+}

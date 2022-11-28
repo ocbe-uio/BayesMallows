@@ -26,26 +26,16 @@ plot.SMCMallows <- function(x, nmc = nrow(x$rho_samples[, 1, ]), burnin = 0,
 
   if (parameter == "alpha") {
     output <- x$alpha_samples[, time]
-    plot_alpha_posterior(output, nmc, burnin)
+    plot_alpha_smc(output, nmc, burnin)
   } else if (parameter == "rho") {
     output <- x$rho_samples[, , time]
-    plot_rho_posterior(output, nmc, burnin, C, colnames, items)
+    plot_rho_smc(output, nmc, burnin, C, colnames, items)
   } else {
     stop("parameter must be either 'alpha' or 'rho'.")
   }
 }
 
-#' @title Plot Alpha Posterior
-#' @description posterior for alpha
-#' @inheritParams compute_posterior_intervals_rho
-#' @export
-#' @author Anja Stein
-#'
-# AS: if you remove the verbose input variable, then the function will be consistent
-# with the other plot functions(they all print when verbose=FALSE, but this function doesn't.)
-# `plot_rho_heatplot` doesn't require the variable `verbose`,
-# so I'm not sure if this function does to plot the density of alpha
-plot_alpha_posterior <- function(output, nmc, burnin) {
+plot_alpha_smc <- function(output, nmc, burnin) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
 
   plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes_(x = ~value)) +
@@ -58,18 +48,7 @@ plot_alpha_posterior <- function(output, nmc, burnin) {
   print(plot_posterior_alpha)
 }
 
-#' @title Plot the posterior for rho for each item
-#' @param output input
-#' @param nmc Number of Monte Carlo samples
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}
-#' @param C Number of cluster
-#' @param colnames A vector of item names. If NULL, we generate generic names for the items in the ranking.
-#' @param items Either a vector of item names, or a
-#'   vector of indices. If NULL, five items are selected randomly.
-#' @export
-plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = NULL) {
+plot_rho_smc <- function(output, nmc, burnin, C, colnames = NULL, items = NULL) {
   n_items <- dim(output)[2]
 
   if (is.null(items) && n_items > 5) {
