@@ -18,14 +18,14 @@
 }
 \arguments{
 \item{x}{An object of type \code{SMC-Mallows}, returned for example from
-[smc_mallows_new_users()].}
+\code{\link{smc_mallows_new_users}}.}
 
 \item{nmc}{Number of Monte Carlo samples}
 
 \item{burnin}{A numeric value specifying the number of iterations
 to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
 provided if \code{model_fit$burnin} does not exist. See
-[assess_convergence()]}
+\code{\link{assess_convergence}}.}
 
 \item{parameter}{Character string defining the parameter to plot. Available
 options are \code{"alpha"} and \code{"rho"}.}
@@ -40,7 +40,7 @@ for the items in the ranking.}
 \item{items}{Either a vector of item names, or a vector of indices. If NULL,
 five items are selected randomly.}
 
-\item{...}{Other arguments passed to [base::plot()] (not used).}
+\item{...}{Other arguments passed to \code{\link[base]{plot}} (not used).}
 }
 \value{
 A plot of the posterior distributions

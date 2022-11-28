@@ -165,10 +165,10 @@ covered by the prior distribution for \eqn{\alpha} with high probability.
 In the case that a cluster \eqn{\alpha_c} becomes empty during the
 Metropolis-Hastings algorithm, the posterior of \eqn{\alpha_c} equals its
 prior. For example, if the rate parameter of the exponential prior equals,
-say \eqn{\lambda = 0.001}, there is about 37 \% (or exactly: \code{1 -
-pexp(1000, 0.001)}) prior probability that \eqn{\alpha_c > 1000}. Hence
-when \code{n_clusters > 1}, the estimated partition function should cover
-this range, or \eqn{\lambda} should be increased.}
+say \eqn{\lambda = 0.001}, there is about 37 \% (or exactly:
+\code{1 - pexp(1000, 0.001)}) prior probability that \eqn{\alpha_c > 1000}.
+Hence when \code{n_clusters > 1}, the estimated partition function should
+cover this range, or \eqn{\lambda} should be increased.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
