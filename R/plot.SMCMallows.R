@@ -107,9 +107,6 @@ plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = 
 
   df$item <- factor(df$item, levels = c(items))
 
-  # Taken from misc.R function in BayesMallows
-  scalefun <- function(x) sprintf("%d", as.integer(x))
-
   # Finally create the plot
   p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
     ggplot2::geom_col() +
