@@ -186,6 +186,15 @@ test_that("Runs with unif kernel", {
 
   expect_s3_class(plot(smc_unif, burnin = 2), "ggplot")
   expect_s3_class(plot(smc_unif, parameter = "rho"), "ggplot")
+  expect_warning(
+    plot_alpha_posterior(smc_unif$alpha_samples[, Time + 1], nmc = N, burnin = 2),
+    "'plot_alpha_posterior' is deprecated"
+  )
+  expect_warning(
+    plot_rho_posterior(smc_unif$rho_samples[, , Time + 1], nmc = N, burnin = 2),
+    "'plot_rho_posterior' is deprecated"
+  )
+  expect_s3_class(plot(smc_unif, parameter = "rho"), "ggplot")
 })
 
 test_that("Runs with pseudo kernel", {
