@@ -15,7 +15,7 @@ smc_mallows_new_users(
   Time,
   mcmc_kernel_app,
   num_new_obs,
-  alpha_prop_sd = 1,
+  alpha_prop_sd = 0.5,
   lambda = 1,
   alpha_max = 1,
   alpha = 0,

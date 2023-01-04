@@ -63,7 +63,7 @@ Rcpp::List smc_mallows_new_users(
   int Time,
   const int& mcmc_kernel_app,
   const int& num_new_obs,
-  const double alpha_prop_sd = 1,
+  const double alpha_prop_sd = 0.5,
   const double lambda = 1,
   const double alpha_max = 1,
   const double alpha = 0,
@@ -184,7 +184,7 @@ Rcpp::List smc_mallows_new_users(
             );
           alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(              \
             as, n_items, all_observed_rankings, rs.t(), logz_estimate,\
-            alpha_prop_sd, lambda, alpha_max, metric\
+            lambda, alpha_max, metric, alpha_prop_sd\
           );
         }
       } else if(type == "partial" || type == "partial_alpha_fixed"){
@@ -203,7 +203,7 @@ Rcpp::List smc_mallows_new_users(
             if(type == "partial"){
               alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(\
                 as, n_items, all_observed_rankings, rs.t(), logz_estimate,\
-                alpha_prop_sd, lambda, alpha_max, metric\
+                lambda, alpha_max, metric, alpha_prop_sd\
               );
             }
             for (uword jj = num_obs - num_new_obs; jj < num_obs; ++jj) {

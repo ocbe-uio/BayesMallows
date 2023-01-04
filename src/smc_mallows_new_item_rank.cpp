@@ -17,13 +17,13 @@ void new_items_move_step(
     const std::string& aug_method,
     const Rcpp::Nullable<arma::vec>& logz_estimate,
     const double& alpha,
-    const double& alpha_prop_sd,
     const double& lambda,
     const double& alpha_max,
     const uword& ttplus1,
     const bool& alpha_fixed,
     const std::string& metric = "footrule",
-    const int& leap_size = 1
+    const int& leap_size = 1,
+    const double& alpha_prop_sd = 0.5
 ){
   const uword num_ranks = R_obs.n_rows;
   const uword N = rho_samples.n_rows;
@@ -37,7 +37,7 @@ void new_items_move_step(
       alpha_samples(ii, ttplus1) = metropolis_hastings_alpha(
         alpha_samples(ii, ttplus1), n_items, aug_rankings.slice(ii),
         rho_samples.slice(ttplus1).row(ii).t(), logz_estimate,
-        alpha_prop_sd, lambda, alpha_max, metric
+        lambda, alpha_max, metric, alpha_prop_sd
       );
     }
 
@@ -158,7 +158,7 @@ Rcpp::List smc_mallows_new_item_rank(
   Rcpp::Nullable<arma::mat> rho_samples_init = R_NilValue,
   arma::vec alpha_samples_init = 0,
   const double alpha = 0,
-  const double alpha_prop_sd = 1,
+  const double alpha_prop_sd = 0.5,
   const double lambda = 1,
   const double alpha_max = 1,
   const std::string& aug_method = "random",
@@ -313,8 +313,8 @@ Rcpp::List smc_mallows_new_item_rank(
     /* ====================================================== */
     new_items_move_step(
       rho_samples, alpha_samples, aug_rankings, R_obs, aug_method,
-      logz_estimate, alpha, alpha_prop_sd, lambda, alpha_max, tt + 1,
-      alpha_fixed, metric, leap_size);
+      logz_estimate, alpha, lambda, alpha_max, tt + 1,
+      alpha_fixed, metric, leap_size, alpha_prop_sd);
   }
 
   /* ====================================================== */

@@ -16,7 +16,7 @@ smc_mallows_new_item_rank(
   rho_samples_init = NULL,
   alpha_samples_init = 0L,
   alpha = 0,
-  alpha_prop_sd = 1,
+  alpha_prop_sd = 0.5,
   lambda = 1,
   alpha_max = 1,
   aug_method = "random",

@@ -10,10 +10,10 @@ metropolis_hastings_alpha(
   rankings,
   rho,
   logz_estimate,
-  alpha_prop_sd,
   lambda,
   alpha_max,
-  metric = "footrule"
+  metric = "footrule",
+  alpha_prop_sd = 0.5
 )
 }
 \arguments{
@@ -29,10 +29,6 @@ metropolis_hastings_alpha(
 computed with \code{\link{estimate_partition_function}} in
 the BayesMallow R package {estimate_partition_function}.}
 
-\item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
-lognormal proposal distribution used for \eqn{\alpha} in the
-Metropolis-Hastings algorithm. Defaults to \code{0.1}.}
-
 \item{lambda}{Strictly positive numeric value specifying the rate parameter
 of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
 to \code{0.1}. When \code{n_cluster > 1}, each mixture component
@@ -45,6 +41,10 @@ prior distribution.}
 in the Bayesian Mallows Model. Available options are \code{"footrule"},
 \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
 and \code{"ulam"}.}
+
+\item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
+lognormal proposal distribution used for \eqn{\alpha} in the
+Metropolis-Hastings algorithm. Defaults to \code{0.1}.}
 }
 \value{
 \code{alpha} or \code{alpha_prime}: Numeric value to be used
