@@ -13,10 +13,10 @@ item_ordering <- c(3, 6, 4, 5)
 partial_ranking <- c(1, 2, NA, NA, NA, NA)
 remaining_set <- c(3, 4, 5, 6)
 test_1 <- get_sample_probabilities(
-  rho_item_rank = rho[3], alpha, remaining_set, metric, n_items
+  rho_item_rank = rho[3], alpha, remaining_set, n_items, metric
 )
 test_2 <- get_sample_probabilities(
-  rho_item_rank = rho[4], alpha, remaining_set, metric, n_items
+  rho_item_rank = rho[4], alpha, remaining_set, n_items, metric
 )
 
 test_that("get_sample_probabilities outputs as expected", {
@@ -81,14 +81,14 @@ test_that("M-H aug ranking pseudo works", {
   R_curr <- c(1, 2, 3, 4, 5, 6)
   R_obs <- c(1, 2, 3, 4, 5, 6)
   test_1 <- metropolis_hastings_aug_ranking(
-    alpha, rho, n_items, R_obs, R_curr, metric, TRUE
+    alpha, rho, n_items, R_obs, R_curr, TRUE, metric
   )
   expect_equal(test_1, matrix(c(1, 2, 3, 4, 5, 6)))
   expect_equal(all(test_1 == R_curr), TRUE)
   R_obs <- c(1, 2, 3, NA, NA, NA)
   set.seed(6220)
   test_2 <- metropolis_hastings_aug_ranking(
-    alpha, rho, n_items, R_obs, R_curr, metric, TRUE
+    alpha, rho, n_items, R_obs, R_curr, TRUE, metric
   )
   expect_equal(test_2, matrix(c(1, 2, 3, 5, 6, 4)))
   expect_equal(all(test_2 == R_curr), FALSE)
@@ -98,7 +98,7 @@ test_that("M-H aug ranking pseudo works", {
   test_3 <- metropolis_hastings_aug_ranking(
     alpha, rho, n_items,
     partial_ranking = R_obs, current_ranking = R_curr,
-    metric, TRUE
+    TRUE, metric
   )
   expect_equal(test_3, matrix(c(1, 2, 4, 3, 5, 6)))
   expect_equal(all(test_3 == R_curr), FALSE)

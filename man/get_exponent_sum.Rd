@@ -4,7 +4,7 @@
 \alias{get_exponent_sum}
 \title{Get exponent in Mallows log-likelihood}
 \usage{
-get_exponent_sum(alpha, rho, n_items, rankings, metric)
+get_exponent_sum(alpha, rho, n_items, rankings, metric = "footrule")
 }
 \arguments{
 \item{alpha}{Numeric value of the scale parameter}

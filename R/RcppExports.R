@@ -196,7 +196,7 @@ run_mcmc <- function(rankings, obs_freq, nmc, constraints, cardinalities, logz_e
 #' @return backward_auxiliary_ranking_probability A numerical value of creating the previous augmented ranking using the same item ordering used to create the
 #' new augmented ranking in calculate_forward_probability function.
 #' @export
-calculate_backward_probability <- function(item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric) {
+calculate_backward_probability <- function(item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric = "footrule") {
     .Call(`_BayesMallows_calculate_backward_probability`, item_ordering, partial_ranking, current_ranking, remaining_set, rho, alpha, n_items, metric)
 }
 
@@ -224,7 +224,7 @@ calculate_backward_probability <- function(item_ordering, partial_ranking, curre
 #'   proposed augmented ranking and forward_prob a numerical value of the
 #'   probability of creating the augmented ranking using the pseudolikelihood
 #'   augmentation.
-calculate_forward_probability <- function(item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric) {
+calculate_forward_probability <- function(item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric = "footrule") {
     .Call(`_BayesMallows_calculate_forward_probability`, item_ordering, partial_ranking, remaining_set, rho, alpha, n_items, metric)
 }
 
@@ -262,7 +262,7 @@ correction_kernel <- function(observed_ranking, current_ranking, n_items) {
 #'   \code{"ulam"}.
 #' @return list containing R_obs, the proposed 'corrected' augmented ranking that is compatible with the new observed ranking for a user, and
 #'         forward_auxiliary_ranking_probability, a numerical value for the probability of correcting the ranking to be compatible with R_obs.
-correction_kernel_pseudo <- function(current_ranking, observed_ranking, rho, alpha, n_items, metric) {
+correction_kernel_pseudo <- function(current_ranking, observed_ranking, rho, alpha, n_items, metric = "footrule") {
     .Call(`_BayesMallows_correction_kernel_pseudo`, current_ranking, observed_ranking, rho, alpha, n_items, metric)
 }
 
@@ -311,7 +311,7 @@ correction_kernel_pseudo <- function(current_ranking, observed_ranking, rho, alp
 #'   alpha = alpha, rho = rho,  n_items = n_items, rankings = rankings ,
 #'   metric = metric
 #' )
-get_exponent_sum <- function(alpha, rho, n_items, rankings, metric) {
+get_exponent_sum <- function(alpha, rho, n_items, rankings, metric = "footrule") {
     .Call(`_BayesMallows_get_exponent_sum`, alpha, rho, n_items, rankings, metric)
 }
 
@@ -330,8 +330,8 @@ get_exponent_sum <- function(alpha, rho, n_items, rankings, metric) {
 #' @return sample_prob_list A numeric sequence of sample probabilities for selecting a specific rank given the current
 #'         rho_item_rank
 #' @export
-get_sample_probabilities <- function(rho_item_rank, alpha, remaining_set_ranks, metric, n_items) {
-    .Call(`_BayesMallows_get_sample_probabilities`, rho_item_rank, alpha, remaining_set_ranks, metric, n_items)
+get_sample_probabilities <- function(rho_item_rank, alpha, remaining_set_ranks, n_items, metric = "footrule") {
+    .Call(`_BayesMallows_get_sample_probabilities`, rho_item_rank, alpha, remaining_set_ranks, n_items, metric)
 }
 
 #' @title Leap and Shift Probabilities
@@ -389,8 +389,8 @@ leap_and_shift_probs <- function(rho, leap_size, n_items) {
 #' @param alpha numeric value of the scale parameter.
 #' @return a 3d matrix containing: the samples of: rho, alpha and the augmented rankings, and the effective sample size at each iteration of the SMC algorithm.
 #' @export
-smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 1, lambda = 1, alpha_max = 1, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE) {
-    .Call(`_BayesMallows_smc_mallows_new_item_rank`, n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed)
+smc_mallows_new_item_rank <- function(n_items, R_obs, leap_size, N, Time, logz_estimate, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 1, lambda = 1, alpha_max = 1, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule") {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank`, n_items, R_obs, leap_size, N, Time, logz_estimate, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric)
 }
 
 #' @title SMC-Mallows New Users
@@ -438,8 +438,8 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, metric, leap_size, N, Time
 #'
 #' @example inst/examples/smc_mallows_new_users_complete_example.R
 #'
-smc_mallows_new_users <- function(R_obs, type, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 1, lambda = 1, alpha_max = 1, alpha = 0, aug_method = "random", logz_estimate = NULL, verbose = FALSE) {
-    .Call(`_BayesMallows_smc_mallows_new_users`, R_obs, type, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, verbose)
+smc_mallows_new_users <- function(R_obs, type, n_items, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 1, lambda = 1, alpha_max = 1, alpha = 0, aug_method = "random", logz_estimate = NULL, verbose = FALSE, metric = "footnote") {
+    .Call(`_BayesMallows_smc_mallows_new_users`, R_obs, type, n_items, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, verbose, metric)
 }
 
 #' @title Metropolis-Hastings Alpha
@@ -475,8 +475,8 @@ smc_mallows_new_users <- function(R_obs, type, n_items, metric, leap_size, N, Ti
 #' @example /inst/examples/metropolis_hastings_alpha_example.R
 #'
 #' @export
-metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max) {
-    .Call(`_BayesMallows_metropolis_hastings_alpha`, alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max)
+metropolis_hastings_alpha <- function(alpha, n_items, rankings, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max, metric = "footrule") {
+    .Call(`_BayesMallows_metropolis_hastings_alpha`, alpha, n_items, rankings, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max, metric)
 }
 
 #' @title Metropolis-Hastings Augmented Ranking
@@ -495,8 +495,8 @@ metropolis_hastings_alpha <- function(alpha, n_items, rankings, metric, rho, log
 #' @return R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
 #' @export
 #' @keywords internal
-metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking, current_ranking, metric, pseudo) {
-    .Call(`_BayesMallows_metropolis_hastings_aug_ranking`, alpha, rho, n_items, partial_ranking, current_ranking, metric, pseudo)
+metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking, current_ranking, pseudo, metric = "footnote") {
+    .Call(`_BayesMallows_metropolis_hastings_aug_ranking`, alpha, rho, n_items, partial_ranking, current_ranking, pseudo, metric)
 }
 
 #' @title Metropolis-Hastings Rho
@@ -535,7 +535,7 @@ metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking
 #' 	rho = rho, leap_size = 1
 #' )
 #'
-metropolis_hastings_rho <- function(alpha, n_items, rankings, metric, rho, leap_size) {
-    .Call(`_BayesMallows_metropolis_hastings_rho`, alpha, n_items, rankings, metric, rho, leap_size)
+metropolis_hastings_rho <- function(alpha, n_items, rankings, rho, leap_size, metric = "footnote") {
+    .Call(`_BayesMallows_metropolis_hastings_rho`, alpha, n_items, rankings, rho, leap_size, metric)
 }
 

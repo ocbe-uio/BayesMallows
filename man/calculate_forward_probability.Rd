@@ -11,7 +11,7 @@ calculate_forward_probability(
   rho,
   alpha,
   n_items,
-  metric
+  metric = "footrule"
 )
 }
 \arguments{

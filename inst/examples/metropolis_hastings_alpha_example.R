@@ -17,21 +17,21 @@ logz_estimate <- estimate_partition_function(
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd = 0.5,
-  lambda = 0.1, alpha_max = 20
+  alpha, n_items, rankings, rho, logz_estimate, alpha_prop_sd = 0.5,
+  lambda = 0.1, alpha_max = 20, metric
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate,
-  alpha_prop_sd = 0.15, lambda = 0.1, alpha_max = 20
+  alpha, n_items, rankings, rho, logz_estimate,
+  alpha_prop_sd = 0.15, lambda = 0.1, alpha_max = 20, metric
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate,
-  alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 20
+  alpha, n_items, rankings, rho, logz_estimate,
+  alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 20, metric
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate,
-  alpha_prop_sd = 0.15, lambda = 0.15, alpha_max = 20
+  alpha, n_items, rankings, rho, logz_estimate,
+  alpha_prop_sd = 0.15, lambda = 0.15, alpha_max = 20, metric
 )

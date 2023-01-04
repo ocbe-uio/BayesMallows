@@ -7,9 +7,9 @@ smc_mallows_new_users_partial <- function(
 ) {
   .Deprecated("smc_mallows_new_users")
   smc_mallows_new_users(
-    R_obs, "partial", n_items, metric, leap_size, N, Time, mcmc_kernel_app,
+    R_obs, "partial", n_items, leap_size, N, Time, mcmc_kernel_app,
     num_new_obs, alpha_prop_sd, lambda, alpha_max, 0, aug_method, logz_estimate,
-    verbose
+    verbose, metric
   )
 }
 
@@ -22,9 +22,9 @@ smc_mallows_new_users_complete <- function(
 ) {
   .Deprecated("smc_mallows_new_users")
   smc_mallows_new_users(
-    R_obs, "complete", n_items, metric, leap_size, N, Time, mcmc_kernel_app,
+    R_obs, "complete", n_items, leap_size, N, Time, mcmc_kernel_app,
     num_new_obs, alpha_prop_sd, lambda, alpha_max, 0, "random",
-    logz_estimate, verbose
+    logz_estimate, verbose, metric
   )
 }
 
@@ -36,9 +36,10 @@ smc_mallows_new_users_partial_alpha_fixed <- function(
     num_new_obs, aug_method, alpha) {
   .Deprecated("smc_mallows_new_users")
   smc_mallows_new_users(
-    R_obs, "partial_alpha_fixed", n_items, metric, leap_size, N, Time,
+    R_obs, "partial_alpha_fixed", n_items, leap_size, N, Time,
     mcmc_kernel_app, num_new_obs, 1, 1, 1, alpha, aug_method, logz_estimate,
-    FALSE)
+    FALSE, metric
+  )
 }
 
 #' @describeIn smc_mallows_new_item_rank Deprecated function for
@@ -52,10 +53,10 @@ smc_mallows_new_item_rank_alpha_fixed <- function(
 ){
   .Deprecated("smc_mallows_new_item_rank")
   smc_mallows_new_item_rank(
-    n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app,
+    n_items, R_obs, leap_size, N, Time, logz_estimate, mcmc_kernel_app,
     alpha = alpha, alpha_prop_sd = alpha_prop_sd, lambda = lambda,
     alpha_max = alpha_max, aug_method = aug_method, verbose = verbose,
-    alpha_fixed = TRUE
+    alpha_fixed = TRUE, metric = metric
   )
 }
 
@@ -68,7 +69,7 @@ metropolis_hastings_aug_ranking_pseudo <- function(
 ) {
   .Deprecated("metropolis_hastings_aug_ranking")
   return(metropolis_hastings_aug_ranking(
-    alpha, rho, n_items, partial_ranking, current_ranking, metric, TRUE))
+    alpha, rho, n_items, partial_ranking, current_ranking, TRUE, metric))
 }
 
 #' @describeIn plot.SMCMallows Deprecated function for

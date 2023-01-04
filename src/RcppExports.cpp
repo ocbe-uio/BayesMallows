@@ -246,17 +246,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // get_sample_probabilities
-arma::vec get_sample_probabilities(const arma::vec rho_item_rank, const double alpha, const arma::vec remaining_set_ranks, const std::string metric, const int n_items);
-RcppExport SEXP _BayesMallows_get_sample_probabilities(SEXP rho_item_rankSEXP, SEXP alphaSEXP, SEXP remaining_set_ranksSEXP, SEXP metricSEXP, SEXP n_itemsSEXP) {
+arma::vec get_sample_probabilities(const arma::vec rho_item_rank, const double alpha, const arma::vec remaining_set_ranks, const int n_items, const std::string metric);
+RcppExport SEXP _BayesMallows_get_sample_probabilities(SEXP rho_item_rankSEXP, SEXP alphaSEXP, SEXP remaining_set_ranksSEXP, SEXP n_itemsSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::vec >::type rho_item_rank(rho_item_rankSEXP);
     Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type remaining_set_ranks(remaining_set_ranksSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< const int >::type n_items(n_itemsSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_sample_probabilities(rho_item_rank, alpha, remaining_set_ranks, metric, n_items));
+    Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_sample_probabilities(rho_item_rank, alpha, remaining_set_ranks, n_items, metric));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -274,14 +274,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // smc_mallows_new_item_rank
-Rcpp::List smc_mallows_new_item_rank(const unsigned int& n_items, arma::cube& R_obs, const std::string& metric, const int& leap_size, const unsigned int& N, const unsigned int Time, const Rcpp::Nullable<arma::vec> logz_estimate, const int& mcmc_kernel_app, Rcpp::Nullable<arma::cube> aug_rankings_init, Rcpp::Nullable<arma::mat> rho_samples_init, arma::vec alpha_samples_init, const double alpha, const double alpha_prop_sd, const double lambda, const double alpha_max, const std::string& aug_method, const bool verbose, const bool alpha_fixed);
-RcppExport SEXP _BayesMallows_smc_mallows_new_item_rank(SEXP n_itemsSEXP, SEXP R_obsSEXP, SEXP metricSEXP, SEXP leap_sizeSEXP, SEXP NSEXP, SEXP TimeSEXP, SEXP logz_estimateSEXP, SEXP mcmc_kernel_appSEXP, SEXP aug_rankings_initSEXP, SEXP rho_samples_initSEXP, SEXP alpha_samples_initSEXP, SEXP alphaSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP, SEXP aug_methodSEXP, SEXP verboseSEXP, SEXP alpha_fixedSEXP) {
+Rcpp::List smc_mallows_new_item_rank(const unsigned int& n_items, arma::cube& R_obs, const int& leap_size, const unsigned int& N, const unsigned int Time, const Rcpp::Nullable<arma::vec> logz_estimate, const int& mcmc_kernel_app, Rcpp::Nullable<arma::cube> aug_rankings_init, Rcpp::Nullable<arma::mat> rho_samples_init, arma::vec alpha_samples_init, const double alpha, const double alpha_prop_sd, const double lambda, const double alpha_max, const std::string& aug_method, const bool verbose, const bool alpha_fixed, const std::string& metric);
+RcppExport SEXP _BayesMallows_smc_mallows_new_item_rank(SEXP n_itemsSEXP, SEXP R_obsSEXP, SEXP leap_sizeSEXP, SEXP NSEXP, SEXP TimeSEXP, SEXP logz_estimateSEXP, SEXP mcmc_kernel_appSEXP, SEXP aug_rankings_initSEXP, SEXP rho_samples_initSEXP, SEXP alpha_samples_initSEXP, SEXP alphaSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP, SEXP aug_methodSEXP, SEXP verboseSEXP, SEXP alpha_fixedSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const unsigned int& >::type n_items(n_itemsSEXP);
     Rcpp::traits::input_parameter< arma::cube& >::type R_obs(R_obsSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< const int& >::type leap_size(leap_sizeSEXP);
     Rcpp::traits::input_parameter< const unsigned int& >::type N(NSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type Time(TimeSEXP);
@@ -297,20 +296,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const std::string& >::type aug_method(aug_methodSEXP);
     Rcpp::traits::input_parameter< const bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< const bool >::type alpha_fixed(alpha_fixedSEXP);
-    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_item_rank(n_items, R_obs, metric, leap_size, N, Time, logz_estimate, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed));
+    Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_item_rank(n_items, R_obs, leap_size, N, Time, logz_estimate, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric));
     return rcpp_result_gen;
 END_RCPP
 }
 // smc_mallows_new_users
-Rcpp::List smc_mallows_new_users(const arma::mat& R_obs, const std::string& type, const int& n_items, const std::string& metric, const int& leap_size, const int& N, int Time, const int& mcmc_kernel_app, const int& num_new_obs, const double alpha_prop_sd, const double lambda, const double alpha_max, const double alpha, const std::string& aug_method, const Rcpp::Nullable<arma::vec>& logz_estimate, const bool verbose);
-RcppExport SEXP _BayesMallows_smc_mallows_new_users(SEXP R_obsSEXP, SEXP typeSEXP, SEXP n_itemsSEXP, SEXP metricSEXP, SEXP leap_sizeSEXP, SEXP NSEXP, SEXP TimeSEXP, SEXP mcmc_kernel_appSEXP, SEXP num_new_obsSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP, SEXP alphaSEXP, SEXP aug_methodSEXP, SEXP logz_estimateSEXP, SEXP verboseSEXP) {
+Rcpp::List smc_mallows_new_users(const arma::mat& R_obs, const std::string& type, const int& n_items, const int& leap_size, const int& N, int Time, const int& mcmc_kernel_app, const int& num_new_obs, const double alpha_prop_sd, const double lambda, const double alpha_max, const double alpha, const std::string& aug_method, const Rcpp::Nullable<arma::vec>& logz_estimate, const bool verbose, const std::string& metric);
+RcppExport SEXP _BayesMallows_smc_mallows_new_users(SEXP R_obsSEXP, SEXP typeSEXP, SEXP n_itemsSEXP, SEXP leap_sizeSEXP, SEXP NSEXP, SEXP TimeSEXP, SEXP mcmc_kernel_appSEXP, SEXP num_new_obsSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP, SEXP alphaSEXP, SEXP aug_methodSEXP, SEXP logz_estimateSEXP, SEXP verboseSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type R_obs(R_obsSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type type(typeSEXP);
     Rcpp::traits::input_parameter< const int& >::type n_items(n_itemsSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< const int& >::type leap_size(leap_sizeSEXP);
     Rcpp::traits::input_parameter< const int& >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type Time(TimeSEXP);
@@ -323,32 +322,33 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const std::string& >::type aug_method(aug_methodSEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::vec>& >::type logz_estimate(logz_estimateSEXP);
     Rcpp::traits::input_parameter< const bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_users(R_obs, type, n_items, metric, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, verbose));
+    Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_users(R_obs, type, n_items, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, verbose, metric));
     return rcpp_result_gen;
 END_RCPP
 }
 // metropolis_hastings_alpha
-double metropolis_hastings_alpha(const double alpha, const int n_items, const arma::mat rankings, const std::string metric, const arma::vec rho, const Rcpp::Nullable<arma::vec> logz_estimate, const double alpha_prop_sd, const double lambda, const double alpha_max);
-RcppExport SEXP _BayesMallows_metropolis_hastings_alpha(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP rankingsSEXP, SEXP metricSEXP, SEXP rhoSEXP, SEXP logz_estimateSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP) {
+double metropolis_hastings_alpha(const double alpha, const int n_items, const arma::mat rankings, const arma::vec rho, const Rcpp::Nullable<arma::vec> logz_estimate, const double alpha_prop_sd, const double lambda, const double alpha_max, const std::string metric);
+RcppExport SEXP _BayesMallows_metropolis_hastings_alpha(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP rankingsSEXP, SEXP rhoSEXP, SEXP logz_estimateSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< const int >::type n_items(n_itemsSEXP);
     Rcpp::traits::input_parameter< const arma::mat >::type rankings(rankingsSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::vec> >::type logz_estimate(logz_estimateSEXP);
     Rcpp::traits::input_parameter< const double >::type alpha_prop_sd(alpha_prop_sdSEXP);
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const double >::type alpha_max(alpha_maxSEXP);
-    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_alpha(alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max));
+    Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_alpha(alpha, n_items, rankings, rho, logz_estimate, alpha_prop_sd, lambda, alpha_max, metric));
     return rcpp_result_gen;
 END_RCPP
 }
 // metropolis_hastings_aug_ranking
-arma::vec metropolis_hastings_aug_ranking(const double& alpha, const arma::vec& rho, const int& n_items, const arma::vec& partial_ranking, const arma::vec& current_ranking, const std::string& metric, const bool& pseudo);
-RcppExport SEXP _BayesMallows_metropolis_hastings_aug_ranking(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP metricSEXP, SEXP pseudoSEXP) {
+arma::vec metropolis_hastings_aug_ranking(const double& alpha, const arma::vec& rho, const int& n_items, const arma::vec& partial_ranking, const arma::vec& current_ranking, const bool& pseudo, const std::string& metric);
+RcppExport SEXP _BayesMallows_metropolis_hastings_aug_ranking(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP pseudoSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -357,25 +357,25 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const int& >::type n_items(n_itemsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type partial_ranking(partial_rankingSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type current_ranking(current_rankingSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< const bool& >::type pseudo(pseudoSEXP);
-    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_aug_ranking(alpha, rho, n_items, partial_ranking, current_ranking, metric, pseudo));
+    Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_aug_ranking(alpha, rho, n_items, partial_ranking, current_ranking, pseudo, metric));
     return rcpp_result_gen;
 END_RCPP
 }
 // metropolis_hastings_rho
-arma::vec metropolis_hastings_rho(const double alpha, const int n_items, const arma::mat rankings, const std::string metric, const arma::vec rho, const int leap_size);
-RcppExport SEXP _BayesMallows_metropolis_hastings_rho(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP rankingsSEXP, SEXP metricSEXP, SEXP rhoSEXP, SEXP leap_sizeSEXP) {
+arma::vec metropolis_hastings_rho(const double alpha, const int n_items, const arma::mat rankings, const arma::vec rho, const int leap_size, const std::string metric);
+RcppExport SEXP _BayesMallows_metropolis_hastings_rho(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP rankingsSEXP, SEXP rhoSEXP, SEXP leap_sizeSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< const int >::type n_items(n_itemsSEXP);
     Rcpp::traits::input_parameter< const arma::mat >::type rankings(rankingsSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< const arma::vec >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< const int >::type leap_size(leap_sizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_rho(alpha, n_items, rankings, metric, rho, leap_size));
+    Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_rho(alpha, n_items, rankings, rho, leap_size, metric));
     return rcpp_result_gen;
 END_RCPP
 }

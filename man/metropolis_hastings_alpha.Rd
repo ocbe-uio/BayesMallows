@@ -8,12 +8,12 @@ metropolis_hastings_alpha(
   alpha,
   n_items,
   rankings,
-  metric,
   rho,
   logz_estimate,
   alpha_prop_sd,
   lambda,
-  alpha_max
+  alpha_max,
+  metric = "footrule"
 )
 }
 \arguments{
@@ -22,11 +22,6 @@ metropolis_hastings_alpha(
 \item{n_items}{Integer is the number of items in a ranking}
 
 \item{rankings}{the observed rankings, i.e, preference data}
-
-\item{metric}{A character string specifying the distance metric to use
-in the Bayesian Mallows Model. Available options are \code{"footrule"},
-\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
-and \code{"ulam"}.}
 
 \item{rho}{Numeric vector specifying the current consensus ranking}
 
@@ -45,6 +40,11 @@ to \code{0.1}. When \code{n_cluster > 1}, each mixture component
 
 \item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential
 prior distribution.}
+
+\item{metric}{A character string specifying the distance metric to use
+in the Bayesian Mallows Model. Available options are \code{"footrule"},
+\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
+and \code{"ulam"}.}
 }
 \value{
 \code{alpha} or \code{alpha_prime}: Numeric value to be used
@@ -79,23 +79,23 @@ logz_estimate <- estimate_partition_function(
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd = 0.5,
-  lambda = 0.1, alpha_max = 20
+  alpha, n_items, rankings, rho, logz_estimate, alpha_prop_sd = 0.5,
+  lambda = 0.1, alpha_max = 20, metric
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate,
-  alpha_prop_sd = 0.15, lambda = 0.1, alpha_max = 20
+  alpha, n_items, rankings, rho, logz_estimate,
+  alpha_prop_sd = 0.15, lambda = 0.1, alpha_max = 20, metric
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate,
-  alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 20
+  alpha, n_items, rankings, rho, logz_estimate,
+  alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 20, metric
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate,
-  alpha_prop_sd = 0.15, lambda = 0.15, alpha_max = 20
+  alpha, n_items, rankings, rho, logz_estimate,
+  alpha_prop_sd = 0.15, lambda = 0.15, alpha_max = 20, metric
 )
 }
 \author{
