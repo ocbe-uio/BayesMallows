@@ -4,15 +4,15 @@
 \alias{leap_and_shift_probs}
 \title{Leap and Shift Probabilities}
 \usage{
-leap_and_shift_probs(rho, leap_size, n_items)
+leap_and_shift_probs(rho, n_items, leap_size = 1L)
 }
 \arguments{
 \item{rho}{A ranking sequence}
 
+\item{n_items}{Integer is the number of items in a ranking}
+
 \item{leap_size}{Integer specifying the step size of the leap-and-shift
 proposal distribution.}
-
-\item{n_items}{Integer is the number of items in a ranking}
 }
 \value{
 A list containing:
@@ -29,9 +29,9 @@ Calculates transition probabilities for proposing a new rho
 rho <- c(1, 2, 3, 4, 5, 6)
 n_items <- 6
 
-leap_and_shift_probs(rho, 1, n_items)
-leap_and_shift_probs(rho, 2, n_items)
-leap_and_shift_probs(rho, 3, n_items)
+leap_and_shift_probs(rho, n_items, 1)
+leap_and_shift_probs(rho, n_items, 2)
+leap_and_shift_probs(rho, n_items, 3)
 
 }
 \keyword{internal}

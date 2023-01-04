@@ -8,12 +8,12 @@ metropolis_hastings_alpha(
   alpha,
   n_items,
   rankings,
-  metric,
   rho,
   logz_estimate,
-  alpha_prop_sd,
-  lambda,
-  alpha_max
+  metric = "footrule",
+  alpha_prop_sd = 0.5,
+  alpha_max = 1e+06,
+  lambda = 0.1
 )
 }
 \arguments{
@@ -23,28 +23,28 @@ metropolis_hastings_alpha(
 
 \item{rankings}{the observed rankings, i.e, preference data}
 
-\item{metric}{A character string specifying the distance metric to use
-in the Bayesian Mallows Model. Available options are \code{"footrule"},
-\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
-and \code{"ulam"}.}
-
 \item{rho}{Numeric vector specifying the current consensus ranking}
 
 \item{logz_estimate}{Estimate  grid of log of partition function,
 computed with \code{\link{estimate_partition_function}} in
 the BayesMallow R package {estimate_partition_function}.}
 
+\item{metric}{A character string specifying the distance metric to use
+in the Bayesian Mallows Model. Available options are \code{"footrule"},
+\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
+and \code{"ulam"}.}
+
 \item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
 lognormal proposal distribution used for \eqn{\alpha} in the
 Metropolis-Hastings algorithm. Defaults to \code{0.1}.}
+
+\item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential
+prior distribution.}
 
 \item{lambda}{Strictly positive numeric value specifying the rate parameter
 of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
 to \code{0.1}. When \code{n_cluster > 1}, each mixture component
 \eqn{\alpha_{c}} has the same prior distribution.}
-
-\item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential
-prior distribution.}
 }
 \value{
 \code{alpha} or \code{alpha_prime}: Numeric value to be used
@@ -79,23 +79,23 @@ logz_estimate <- estimate_partition_function(
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate, alpha_prop_sd = 0.5,
-  lambda = 0.1, alpha_max = 20
+  alpha, n_items, rankings, rho, logz_estimate, alpha_prop_sd = 0.5,
+  lambda = 0.1, alpha_max = 20, metric
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate,
-  alpha_prop_sd = 0.15, lambda = 0.1, alpha_max = 20
+  alpha, n_items, rankings, rho, logz_estimate,
+  alpha_prop_sd = 0.15, lambda = 0.1, alpha_max = 20, metric
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate,
-  alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 20
+  alpha, n_items, rankings, rho, logz_estimate,
+  alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 20, metric
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, metric, rho, logz_estimate,
-  alpha_prop_sd = 0.15, lambda = 0.15, alpha_max = 20
+  alpha, n_items, rankings, rho, logz_estimate,
+  alpha_prop_sd = 0.15, lambda = 0.15, alpha_max = 20, metric
 )
 }
 \author{

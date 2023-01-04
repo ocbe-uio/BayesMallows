@@ -18,10 +18,10 @@ void smc_mallows_new_users_augment_partial(
     const int& num_new_obs,
     const arma::mat& R_obs,
     const std::string& aug_method,
-    const std::string& metric,
     const int& tt,
     const double& alpha,
-    const bool& augment_alpha
+    const bool& augment_alpha,
+    const std::string& metric = "footrule"
 ){
   int N = rho_samples.n_rows;
   int n_items = rho_samples.n_cols;
@@ -106,12 +106,12 @@ void smc_mallows_new_users_reweight(
     const mat& alpha_samples,
     const int& tt,
     const Rcpp::Nullable<vec> logz_estimate,
-    const std::string& metric,
     const int& num_obs,
     const int& num_new_obs,
     const vec& aug_prob,
     const bool& augment_alpha,
-    const bool& partial
+    const bool& partial,
+    const std::string& metric = "footrule"
 ){
   int N = rho_samples.n_rows;
   int n_items = rho_samples.n_cols;

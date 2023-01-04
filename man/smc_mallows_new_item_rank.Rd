@@ -8,8 +8,6 @@
 smc_mallows_new_item_rank(
   n_items,
   R_obs,
-  metric,
-  leap_size,
   N,
   Time,
   logz_estimate,
@@ -18,12 +16,14 @@ smc_mallows_new_item_rank(
   rho_samples_init = NULL,
   alpha_samples_init = 0L,
   alpha = 0,
-  alpha_prop_sd = 1,
-  lambda = 1,
-  alpha_max = 1,
+  alpha_prop_sd = 0.5,
+  lambda = 0.1,
+  alpha_max = 1e+06,
   aug_method = "random",
   verbose = FALSE,
-  alpha_fixed = FALSE
+  alpha_fixed = FALSE,
+  metric = "footrule",
+  leap_size = 1L
 )
 
 smc_mallows_new_item_rank_alpha_fixed(
@@ -47,14 +47,6 @@ smc_mallows_new_item_rank_alpha_fixed(
 \item{n_items}{Integer is the number of items in a ranking}
 
 \item{R_obs}{3D matrix of size n_assessors by n_items by Time containing a set of observed rankings of Time time steps}
-
-\item{metric}{A character string specifying the distance metric to use in the
-Bayesian Mallows Model. Available options are \code{"footrule"},
-\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-\code{"ulam"}.}
-
-\item{leap_size}{leap_size Integer specifying the step size of the leap-and-shift
-proposal distribution}
 
 \item{N}{Integer specifying the number of particles}
 
@@ -81,6 +73,14 @@ prior distribution.}
 SMC-Mallows algorithm. Defaults to \code{FALSE}.}
 
 \item{alpha_fixed}{Logical indicating whether to sample \code{alpha} or not.}
+
+\item{metric}{A character string specifying the distance metric to use in the
+Bayesian Mallows Model. Available options are \code{"footrule"},
+\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+\code{"ulam"}.}
+
+\item{leap_size}{leap_size Integer specifying the step size of the leap-and-shift
+proposal distribution}
 }
 \value{
 a 3d matrix containing: the samples of: rho, alpha and the augmented rankings, and the effective sample size at each iteration of the SMC algorithm.

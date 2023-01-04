@@ -55,7 +55,7 @@ double get_exponent_sum(
   const arma::vec rho,
   const int n_items,
   arma::mat rankings,
-  const std::string metric
+  const std::string metric = "footrule"
 ) {
   /* Transpose matrices as needed ------------------------- */
   if (rho.n_rows == rankings.n_cols) {

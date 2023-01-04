@@ -29,8 +29,8 @@ arma::vec metropolis_hastings_aug_ranking(
 	const int& n_items,
 	const arma::vec& partial_ranking,
 	const arma::vec& current_ranking,
-	const std::string& metric,
-	const bool& pseudo
+	const bool& pseudo,
+	const std::string& metric = "footnote"
 ) {
   double forward_backward_prob{};
   vec proposed_ranking;

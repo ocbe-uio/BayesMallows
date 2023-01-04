@@ -8,8 +8,8 @@ get_sample_probabilities(
   rho_item_rank,
   alpha,
   remaining_set_ranks,
-  metric,
-  n_items
+  n_items,
+  metric = "footrule"
 )
 }
 \arguments{
@@ -19,12 +19,12 @@ get_sample_probabilities(
 
 \item{remaining_set_ranks}{A sequence of integer values of the set of possible ranks that we can assign the item}
 
+\item{n_items}{Integer is the number of items in the consensus ranking}
+
 \item{metric}{A character string specifying the distance metric to use in the
 Bayesian Mallows Model. Available options are \code{"footrule"},
 \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 \code{"ulam"}.}
-
-\item{n_items}{Integer is the number of items in the consensus ranking}
 }
 \value{
 sample_prob_list A numeric sequence of sample probabilities for selecting a specific rank given the current

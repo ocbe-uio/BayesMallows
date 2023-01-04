@@ -4,7 +4,6 @@
 #' @author Anja Stein
 #' @param output input
 #' @param colnames colnames
-# AS: edited this function to include parameter `colnames`. This resolve issues in #118 with post processing functions not printing the names of items in rankings.
 # The `default` is set to NULL so tat we do not cause plotting issues in `plot_rho_heatplot.
 smc_processing <- function(output, colnames = NULL) {
   df <- data.frame(data = output)
@@ -39,8 +38,7 @@ smc_processing <- function(output, colnames = NULL) {
 #' @inheritParams smc_processing
 #' @param nmc Number of Monte Carlo samples
 #' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
+#' to discard as burn-in.
 #' @param verbose if \code{TRUE}, prints the final output even if the function
 #' is assigned to an object. Defaults to \code{FALSE}.
 #' @export
@@ -82,7 +80,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
 #' @author Anja Stein
 #'
 # AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
-compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL, verbose = FALSE) {
+compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames = NULL, verbose = FALSE) {
   n_items <- dim(output)[2]
 
   #----------------------------------------------------------------

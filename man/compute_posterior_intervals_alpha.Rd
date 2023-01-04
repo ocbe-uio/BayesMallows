@@ -12,8 +12,7 @@ compute_posterior_intervals_alpha(output, nmc, burnin, verbose = FALSE)
 \item{nmc}{Number of Monte Carlo samples}
 
 \item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
+to discard as burn-in.}
 
 \item{verbose}{if \code{TRUE}, prints the final output even if the function
 is assigned to an object. Defaults to \code{FALSE}.}

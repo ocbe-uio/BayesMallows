@@ -10,7 +10,7 @@ correction_kernel_pseudo(
   rho,
   alpha,
   n_items,
-  metric
+  metric = "footrule"
 )
 }
 \arguments{

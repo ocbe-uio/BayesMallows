@@ -16,8 +16,8 @@ double smc_calculate_probability(
   const uword& num_items_unranked,
   const double& alpha,
   const int& n_items,
-  const std::string& metric,
-  const bool& forward
+  const bool& forward,
+  const std::string& metric = "footrule"
 ) {
   for (uword jj = 0; jj < num_items_unranked - 1; ++jj) {
     // items to sample rank
@@ -30,7 +30,7 @@ double smc_calculate_probability(
     // next we get the sample probabilites for selecting a particular rank for
     // an item based on the current alpha and the rho rank for that item
     vec sample_prob_list = get_sample_probabilities(
-      rho_item_rank, alpha, remaining_set, metric, n_items
+      rho_item_rank, alpha, remaining_set, n_items, metric
     );
 
     // fill in the new augmented ranking going forward
@@ -80,7 +80,7 @@ double calculate_backward_probability(
     const arma::vec rho,
     const double alpha,
     const int n_items,
-    const std::string metric
+    const std::string metric = "footrule"
 ) {
   // given an old and new item ordering, sample ranking with new ordering and
   // calc the forward and backward prob
@@ -108,7 +108,7 @@ double calculate_backward_probability(
     backward_auxiliary_ranking_probability =
     smc_calculate_probability(
       backward_auxiliary_ranking_probability, remaining_set, item_ordering,
-      current_ranking, rho, num_items_unranked, alpha, n_items, metric, false
+      current_ranking, rho, num_items_unranked, alpha, n_items, false, metric
     );
   }
   return backward_auxiliary_ranking_probability;
@@ -146,7 +146,7 @@ Rcpp::List calculate_forward_probability(
     const arma::vec rho,
     const double alpha,
     const int n_items,
-    const std::string metric
+    const std::string metric = "footrule"
 ) {
   // item ordering is the order of which items are assigned ranks in a specified
   // order
@@ -173,7 +173,7 @@ Rcpp::List calculate_forward_probability(
 
     forward_auxiliary_ranking_probability = smc_calculate_probability(
       forward_auxiliary_ranking_probability, remaining_set, item_ordering,
-      auxiliary_ranking, rho, num_items_unranked, alpha, n_items, metric, true
+      auxiliary_ranking, rho, num_items_unranked, alpha, n_items, true, metric
     );
     // last element in augmented ranking is deterministic - the prob is 1
     auxiliary_ranking(num_items_unranked - 1) = as_scalar(remaining_set);
