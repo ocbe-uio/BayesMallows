@@ -11,7 +11,6 @@ smc_mallows_new_users(
   R_obs,
   type,
   n_items,
-  leap_size,
   N,
   Time,
   mcmc_kernel_app,
@@ -23,7 +22,8 @@ smc_mallows_new_users(
   aug_method = "random",
   logz_estimate = NULL,
   verbose = FALSE,
-  metric = "footnote"
+  metric = "footnote",
+  leap_size = 1L
 )
 
 smc_mallows_new_users_partial(
@@ -82,9 +82,6 @@ n_assessors by n_items}
 
 \item{n_items}{Integer is the number of items in a ranking}
 
-\item{leap_size}{leap_size Integer specifying the step size of the
-leap-and-shift proposal distribution}
-
 \item{N}{Integer specifying the number of particles}
 
 \item{Time}{Integer specifying the number of time steps in the SMC algorithm}
@@ -123,6 +120,9 @@ SMC-Mallows algorithm. Defaults to \code{FALSE}.}
 in the Bayesian Mallows Model. Available options are \code{"footrule"},
 \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 \code{"ulam"}.}
+
+\item{leap_size}{leap_size Integer specifying the step size of the
+leap-and-shift proposal distribution}
 }
 \value{
 a set of particles each containing a value of rho and alpha

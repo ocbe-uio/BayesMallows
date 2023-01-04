@@ -29,8 +29,8 @@ test_that("Functions accept rankings and rho as row or column vectors", {
     alpha_init, n_items,
     rankings = as.matrix(cluster_rankings),
     rho = rho_init,
-    leap_size,
-    metric
+    metric,
+    leap_size
   )
   mha_r_r <- metropolis_hastings_alpha(
     alpha_init, n_items,
@@ -46,8 +46,8 @@ test_that("Functions accept rankings and rho as row or column vectors", {
     alpha_init, n_items,
     rankings = t(cluster_rankings),
     rho = rho_init,
-    leap_size,
-    metric
+    metric,
+    leap_size
   )
   mha_rt_r <- metropolis_hastings_alpha(
     alpha_init, n_items,
@@ -63,8 +63,8 @@ test_that("Functions accept rankings and rho as row or column vectors", {
     alpha_init, n_items,
     rankings = as.matrix(cluster_rankings),
     rho = t(rho_init),
-    leap_size,
-    metric
+    metric,
+    leap_size
   )
   mha_r_rt <- metropolis_hastings_alpha(
     alpha_init, n_items,
@@ -80,8 +80,8 @@ test_that("Functions accept rankings and rho as row or column vectors", {
     alpha_init, n_items,
     rankings = t(cluster_rankings),
     rho = t(rho_init),
-    leap_size,
-    metric
+    metric,
+    leap_size
   )
   mha_rt_rt <- metropolis_hastings_alpha(
     alpha_init, n_items,

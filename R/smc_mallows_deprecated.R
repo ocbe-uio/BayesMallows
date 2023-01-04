@@ -7,9 +7,9 @@ smc_mallows_new_users_partial <- function(
 ) {
   .Deprecated("smc_mallows_new_users")
   smc_mallows_new_users(
-    R_obs, "partial", n_items, leap_size, N, Time, mcmc_kernel_app,
+    R_obs, "partial", n_items, N, Time, mcmc_kernel_app,
     num_new_obs, alpha_prop_sd, lambda, alpha_max, 0, aug_method, logz_estimate,
-    verbose, metric
+    verbose, metric, leap_size
   )
 }
 
@@ -22,9 +22,9 @@ smc_mallows_new_users_complete <- function(
 ) {
   .Deprecated("smc_mallows_new_users")
   smc_mallows_new_users(
-    R_obs, "complete", n_items, leap_size, N, Time, mcmc_kernel_app,
+    R_obs, "complete", n_items, N, Time, mcmc_kernel_app,
     num_new_obs, alpha_prop_sd, lambda, alpha_max, 0, "random",
-    logz_estimate, verbose, metric
+    logz_estimate, verbose, metric, leap_size
   )
 }
 
@@ -36,9 +36,9 @@ smc_mallows_new_users_partial_alpha_fixed <- function(
     num_new_obs, aug_method, alpha) {
   .Deprecated("smc_mallows_new_users")
   smc_mallows_new_users(
-    R_obs, "partial_alpha_fixed", n_items, leap_size, N, Time,
+    R_obs, "partial_alpha_fixed", n_items, N, Time,
     mcmc_kernel_app, num_new_obs, 1, 1, 1, alpha, aug_method, logz_estimate,
-    FALSE, metric
+    FALSE, metric, leap_size
   )
 }
 
@@ -53,10 +53,10 @@ smc_mallows_new_item_rank_alpha_fixed <- function(
 ){
   .Deprecated("smc_mallows_new_item_rank")
   smc_mallows_new_item_rank(
-    n_items, R_obs, leap_size, N, Time, logz_estimate, mcmc_kernel_app,
+    n_items, R_obs, N, Time, logz_estimate, mcmc_kernel_app,
     alpha = alpha, alpha_prop_sd = alpha_prop_sd, lambda = lambda,
     alpha_max = alpha_max, aug_method = aug_method, verbose = verbose,
-    alpha_fixed = TRUE, metric = metric
+    alpha_fixed = TRUE, metric = metric, leap_size = leap_size
   )
 }
 

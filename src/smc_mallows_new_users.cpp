@@ -59,7 +59,6 @@ Rcpp::List smc_mallows_new_users(
   const arma::mat& R_obs,
   const std::string& type,
   const int& n_items,
-  const int& leap_size,
   const int& N,
   int Time,
   const int& mcmc_kernel_app,
@@ -71,7 +70,8 @@ Rcpp::List smc_mallows_new_users(
   const std::string& aug_method = "random",
   const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
   const bool verbose = false,
-  const std::string& metric = "footnote"
+  const std::string& metric = "footnote",
+  const int& leap_size = 1
 ) {
   /* ====================================================== */
   /* Initialise Phase                                       */
@@ -180,7 +180,7 @@ Rcpp::List smc_mallows_new_users(
             rho_samples(span(ii), span::all, span(tt + 1));
           rho_samples(span(ii), span::all, span(tt + 1)) =                 \
             metropolis_hastings_rho(                                       \
-              as, n_items, all_observed_rankings, rs.t(), leap_size, metric\
+              as, n_items, all_observed_rankings, rs.t(), metric, leap_size\
             );
           alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(              \
             as, n_items, all_observed_rankings, rs.t(), logz_estimate,\
@@ -198,7 +198,7 @@ Rcpp::List smc_mallows_new_users(
             // the MCMC kernels
             rho_samples(span(ii), span::all, span(tt + 1)) =                 \
               metropolis_hastings_rho(                                       \
-                as, n_items, all_observed_rankings, rs.t(), leap_size, metric\
+                as, n_items, all_observed_rankings, rs.t(), metric, leap_size\
               );
             if(type == "partial"){
               alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(\

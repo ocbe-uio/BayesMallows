@@ -21,9 +21,9 @@ void new_items_move_step(
     const double& lambda,
     const double& alpha_max,
     const uword& ttplus1,
-    const int& leap_size,
     const bool& alpha_fixed,
-    const std::string& metric = "footrule"
+    const std::string& metric = "footrule",
+    const int& leap_size = 1
 ){
   const uword num_ranks = R_obs.n_rows;
   const uword N = rho_samples.n_rows;
@@ -31,7 +31,7 @@ void new_items_move_step(
   for (uword ii = 0; ii < N; ++ii) {
     rho_samples.slice(ttplus1).row(ii) = metropolis_hastings_rho(
       alpha_fixed ? alpha : alpha_samples(ii, ttplus1), n_items, aug_rankings.slice(ii),
-      rho_samples.slice(ttplus1).row(ii).t(), leap_size, metric
+      rho_samples.slice(ttplus1).row(ii).t(), metric, leap_size
     ).t();
     if(!alpha_fixed){
       alpha_samples(ii, ttplus1) = metropolis_hastings_alpha(
@@ -150,7 +150,6 @@ arma::cube augment_rankings(
 Rcpp::List smc_mallows_new_item_rank(
   const unsigned int& n_items,
   arma::cube& R_obs,
-  const int& leap_size,
   const unsigned int& N,
   const unsigned int Time,
   const Rcpp::Nullable<arma::vec> logz_estimate,
@@ -165,7 +164,8 @@ Rcpp::List smc_mallows_new_item_rank(
   const std::string& aug_method = "random",
   const bool verbose = false,
   const bool alpha_fixed = false,
-  const std::string& metric = "footrule"
+  const std::string& metric = "footrule",
+  const int& leap_size = 1
 ) {
   /* ====================================================== */
   /* Initialise Phase                                       */
@@ -313,8 +313,8 @@ Rcpp::List smc_mallows_new_item_rank(
     /* ====================================================== */
     new_items_move_step(
       rho_samples, alpha_samples, aug_rankings, R_obs, aug_method,
-      logz_estimate, alpha, alpha_prop_sd, lambda, alpha_max, tt + 1, leap_size,
-      alpha_fixed, metric);
+      logz_estimate, alpha, alpha_prop_sd, lambda, alpha_max, tt + 1,
+      alpha_fixed, metric, leap_size);
   }
 
   /* ====================================================== */

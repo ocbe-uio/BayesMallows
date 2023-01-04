@@ -9,8 +9,8 @@ metropolis_hastings_rho(
   n_items,
   rankings,
   rho,
-  leap_size,
-  metric = "footnote"
+  metric = "footnote",
+  leap_size = 1L
 )
 }
 \arguments{
@@ -27,12 +27,12 @@ can be a vector.}
 
 \item{rho}{A ranking sequence}
 
-\item{leap_size}{Integer specifying the step size of the leap-and-shift
-proposal distribution.}
-
 \item{metric}{Character string specifying the distance measure to use.
 Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
 \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.}
+
+\item{leap_size}{Integer specifying the step size of the leap-and-shift
+proposal distribution.}
 }
 \description{
 Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!

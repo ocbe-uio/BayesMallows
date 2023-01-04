@@ -353,12 +353,12 @@ get_sample_probabilities <- function(rho_item_rank, alpha, remaining_set_ranks, 
 #' rho <- c(1, 2, 3, 4, 5, 6)
 #' n_items <- 6
 #'
-#' leap_and_shift_probs(rho, 1, n_items)
-#' leap_and_shift_probs(rho, 2, n_items)
-#' leap_and_shift_probs(rho, 3, n_items)
+#' leap_and_shift_probs(rho, n_items, 1)
+#' leap_and_shift_probs(rho, n_items, 2)
+#' leap_and_shift_probs(rho, n_items, 3)
 #'
-leap_and_shift_probs <- function(rho, leap_size, n_items) {
-    .Call(`_BayesMallows_leap_and_shift_probs`, rho, leap_size, n_items)
+leap_and_shift_probs <- function(rho, n_items, leap_size = 1L) {
+    .Call(`_BayesMallows_leap_and_shift_probs`, rho, n_items, leap_size)
 }
 
 #' @title SMC-Mallows new users rank
@@ -389,8 +389,8 @@ leap_and_shift_probs <- function(rho, leap_size, n_items) {
 #' @param alpha numeric value of the scale parameter.
 #' @return a 3d matrix containing: the samples of: rho, alpha and the augmented rankings, and the effective sample size at each iteration of the SMC algorithm.
 #' @export
-smc_mallows_new_item_rank <- function(n_items, R_obs, leap_size, N, Time, logz_estimate, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 1, lambda = 1, alpha_max = 1, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule") {
-    .Call(`_BayesMallows_smc_mallows_new_item_rank`, n_items, R_obs, leap_size, N, Time, logz_estimate, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric)
+smc_mallows_new_item_rank <- function(n_items, R_obs, N, Time, logz_estimate, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 1, lambda = 1, alpha_max = 1, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank`, n_items, R_obs, N, Time, logz_estimate, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
 }
 
 #' @title SMC-Mallows New Users
@@ -438,8 +438,8 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, leap_size, N, Time, logz_e
 #'
 #' @example inst/examples/smc_mallows_new_users_complete_example.R
 #'
-smc_mallows_new_users <- function(R_obs, type, n_items, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 1, lambda = 1, alpha_max = 1, alpha = 0, aug_method = "random", logz_estimate = NULL, verbose = FALSE, metric = "footnote") {
-    .Call(`_BayesMallows_smc_mallows_new_users`, R_obs, type, n_items, leap_size, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, verbose, metric)
+smc_mallows_new_users <- function(R_obs, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 1, lambda = 1, alpha_max = 1, alpha = 0, aug_method = "random", logz_estimate = NULL, verbose = FALSE, metric = "footnote", leap_size = 1L) {
+    .Call(`_BayesMallows_smc_mallows_new_users`, R_obs, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, verbose, metric, leap_size)
 }
 
 #' @title Metropolis-Hastings Alpha
@@ -535,7 +535,7 @@ metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking
 #' 	rho = rho, leap_size = 1
 #' )
 #'
-metropolis_hastings_rho <- function(alpha, n_items, rankings, rho, leap_size, metric = "footnote") {
-    .Call(`_BayesMallows_metropolis_hastings_rho`, alpha, n_items, rankings, rho, leap_size, metric)
+metropolis_hastings_rho <- function(alpha, n_items, rankings, rho, metric = "footnote", leap_size = 1L) {
+    .Call(`_BayesMallows_metropolis_hastings_rho`, alpha, n_items, rankings, rho, metric, leap_size)
 }
 

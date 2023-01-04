@@ -23,12 +23,12 @@ using namespace arma;
 //' rho <- c(1, 2, 3, 4, 5, 6)
 //' n_items <- 6
 //'
-//' leap_and_shift_probs(rho, 1, n_items)
-//' leap_and_shift_probs(rho, 2, n_items)
-//' leap_and_shift_probs(rho, 3, n_items)
+//' leap_and_shift_probs(rho, n_items, 1)
+//' leap_and_shift_probs(rho, n_items, 2)
+//' leap_and_shift_probs(rho, n_items, 3)
 //'
 // [[Rcpp::export]]
-Rcpp::List leap_and_shift_probs(const arma::vec rho, const int leap_size, const int n_items) {
+Rcpp::List leap_and_shift_probs(const arma::vec rho, const int n_items, const int leap_size = 1) {
   vec rho_proposal{};
   uvec indices{};
   double prob_forward, prob_backward;

@@ -47,8 +47,8 @@ arma::vec metropolis_hastings_rho(
 	const int n_items,
 	const arma::mat rankings,
 	const arma::vec rho,
-	const int leap_size,
-	const std::string metric = "footnote"
+	const std::string metric = "footnote",
+	const int leap_size = 1
 ) {
   // create new potential consensus ranking
   vec rho_proposal{};
