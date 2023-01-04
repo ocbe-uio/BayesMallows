@@ -80,7 +80,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
 #' @author Anja Stein
 #'
 # AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
-compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL, verbose = FALSE) {
+compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames = NULL, verbose = FALSE) {
   n_items <- dim(output)[2]
 
   #----------------------------------------------------------------
