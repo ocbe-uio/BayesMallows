@@ -18,7 +18,7 @@ smc_mallows_new_item_rank(
   alpha = 0,
   alpha_prop_sd = 0.5,
   lambda = 1,
-  alpha_max = 1,
+  alpha_max = 1e+06,
   aug_method = "random",
   verbose = FALSE,
   alpha_fixed = FALSE,

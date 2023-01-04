@@ -17,7 +17,7 @@ smc_mallows_new_users(
   num_new_obs,
   alpha_prop_sd = 0.5,
   lambda = 1,
-  alpha_max = 1,
+  alpha_max = 1e+06,
   alpha = 0,
   aug_method = "random",
   logz_estimate = NULL,

@@ -11,9 +11,9 @@ metropolis_hastings_alpha(
   rho,
   logz_estimate,
   lambda,
-  alpha_max,
   metric = "footrule",
-  alpha_prop_sd = 0.5
+  alpha_prop_sd = 0.5,
+  alpha_max = 1e+06
 )
 }
 \arguments{
@@ -34,9 +34,6 @@ of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
 to \code{0.1}. When \code{n_cluster > 1}, each mixture component
 \eqn{\alpha_{c}} has the same prior distribution.}
 
-\item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential
-prior distribution.}
-
 \item{metric}{A character string specifying the distance metric to use
 in the Bayesian Mallows Model. Available options are \code{"footrule"},
 \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
@@ -45,6 +42,9 @@ and \code{"ulam"}.}
 \item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
 lognormal proposal distribution used for \eqn{\alpha} in the
 Metropolis-Hastings algorithm. Defaults to \code{0.1}.}
+
+\item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential
+prior distribution.}
 }
 \value{
 \code{alpha} or \code{alpha_prime}: Numeric value to be used

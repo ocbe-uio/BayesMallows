@@ -38,9 +38,9 @@ test_that("Functions accept rankings and rho as row or column vectors", {
     rho = rho_init,
     logz_estimate,
     lambda,
-    alpha_max,
     metric,
-    alpha_prop_sd
+    alpha_prop_sd,
+    alpha_max
   )
   mhr_rt_r <- metropolis_hastings_rho(
     alpha_init, n_items,
@@ -55,9 +55,9 @@ test_that("Functions accept rankings and rho as row or column vectors", {
     rho = rho_init,
     logz_estimate,
     lambda,
-    alpha_max,
     metric,
-    alpha_prop_sd
+    alpha_prop_sd,
+    alpha_max
   )
   mhr_r_rt <- metropolis_hastings_rho(
     alpha_init, n_items,
@@ -72,9 +72,9 @@ test_that("Functions accept rankings and rho as row or column vectors", {
     rho = t(rho_init),
     logz_estimate,
     lambda,
-    alpha_max,
     metric,
-    alpha_prop_sd
+    alpha_prop_sd,
+    alpha_max
   )
   mhr_rt_rt <- metropolis_hastings_rho(
     alpha_init, n_items,
@@ -89,9 +89,9 @@ test_that("Functions accept rankings and rho as row or column vectors", {
     rho = t(rho_init),
     logz_estimate,
     lambda,
-    alpha_max,
     metric,
-    alpha_prop_sd
+    alpha_prop_sd,
+    alpha_max
   )
   expect_equal(dim(mhr_r_r), c(10, 1))
   expect_length(mha_r_r, 1)

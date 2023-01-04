@@ -46,9 +46,9 @@ double metropolis_hastings_alpha(
   const arma::vec rho,
   const Rcpp::Nullable<arma::vec> logz_estimate,
   const double lambda,
-  const double alpha_max,
   const std::string metric = "footrule",
-  const double alpha_prop_sd = 0.5
+  const double alpha_prop_sd = 0.5,
+  const double alpha_max = 1e6
 ) {
   const double rand = R::rnorm(0, 1);
   const double alpha_prime_log = rand * alpha_prop_sd + std::log(alpha);
