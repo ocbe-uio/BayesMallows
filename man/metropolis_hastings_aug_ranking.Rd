@@ -11,8 +11,8 @@ metropolis_hastings_aug_ranking(
   n_items,
   partial_ranking,
   current_ranking,
-  metric,
-  pseudo
+  pseudo,
+  metric = "footnote"
 )
 
 metropolis_hastings_aug_ranking_pseudo(
@@ -35,12 +35,12 @@ metropolis_hastings_aug_ranking_pseudo(
 
 \item{current_ranking}{An complete rank sequence vector of  the proposed augmented ranking obtained from calculate_forward_probability function}
 
+\item{pseudo}{Boolean specifying whether to use pseudo proposal or not.s}
+
 \item{metric}{A character string specifying the distance metric to use in the
 Bayesian Mallows Model. Available options are \code{"footrule"},
 \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 \code{"ulam"}.}
-
-\item{pseudo}{Boolean specifying whether to use pseudo proposal or not.s}
 }
 \value{
 R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain

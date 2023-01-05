@@ -59,19 +59,19 @@ Rcpp::List smc_mallows_new_users(
   const arma::mat& R_obs,
   const std::string& type,
   const int& n_items,
-  const std::string& metric,
-  const int& leap_size,
   const int& N,
   int Time,
   const int& mcmc_kernel_app,
   const int& num_new_obs,
-  const double alpha_prop_sd = 1,
-  const double lambda = 1,
-  const double alpha_max = 1,
+  const double alpha_prop_sd = 0.5,
+  const double lambda = 0.1,
+  const double alpha_max = 1e6,
   const double alpha = 0,
   const std::string& aug_method = "random",
   const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
-  const bool verbose = false
+  const bool verbose = false,
+  const std::string& metric = "footnote",
+  const int& leap_size = 1
 ) {
   /* ====================================================== */
   /* Initialise Phase                                       */
@@ -143,7 +143,7 @@ Rcpp::List smc_mallows_new_users(
     if(type == "partial" || type == "partial_alpha_fixed"){
       smc_mallows_new_users_augment_partial(
         aug_rankings, aug_prob, rho_samples, alpha_samples, num_obs, num_new_obs,
-        R_obs, aug_method, metric, tt, alpha, type != "partial_alpha_fixed");
+        R_obs, aug_method, tt, alpha, type != "partial_alpha_fixed", metric);
     }
 
     /* ====================================================== */
@@ -156,8 +156,8 @@ Rcpp::List smc_mallows_new_users(
     vec norm_wgt;
     smc_mallows_new_users_reweight(
       log_inc_wgt, ESS_vec, norm_wgt, aug_rankings, new_observed_rankings, rho_samples,
-      alpha, alpha_samples, tt, logz_estimate, metric, num_obs,
-      num_new_obs, ones(N), type != "partial_alpha_fixed", type != "complete");
+      alpha, alpha_samples, tt, logz_estimate, num_obs, num_new_obs, ones(N),
+      type != "partial_alpha_fixed", type != "complete", metric);
 
     /* ====================================================== */
     /* Resample                                               */
@@ -180,11 +180,11 @@ Rcpp::List smc_mallows_new_users(
             rho_samples(span(ii), span::all, span(tt + 1));
           rho_samples(span(ii), span::all, span(tt + 1)) =                 \
             metropolis_hastings_rho(                                       \
-              as, n_items, all_observed_rankings, metric, rs.t(), leap_size\
+              as, n_items, all_observed_rankings, rs.t(), metric, leap_size\
             );
           alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(              \
-            as, n_items, all_observed_rankings, metric, rs.t(), logz_estimate,\
-            alpha_prop_sd, lambda, alpha_max                                  \
+            as, n_items, all_observed_rankings, rs.t(), logz_estimate,\
+            metric, alpha_prop_sd, alpha_max, lambda\
           );
         }
       } else if(type == "partial" || type == "partial_alpha_fixed"){
@@ -198,12 +198,12 @@ Rcpp::List smc_mallows_new_users(
             // the MCMC kernels
             rho_samples(span(ii), span::all, span(tt + 1)) =                 \
               metropolis_hastings_rho(                                       \
-                as, n_items, all_observed_rankings, metric, rs.t(), leap_size\
+                as, n_items, all_observed_rankings, rs.t(), metric, leap_size\
               );
             if(type == "partial"){
-              alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(              \
-                as, n_items, all_observed_rankings, metric, rs.t(), logz_estimate,\
-                alpha_prop_sd, lambda, alpha_max                                  \
+              alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(\
+                as, n_items, all_observed_rankings, rs.t(), logz_estimate,\
+                metric, alpha_prop_sd, alpha_max, lambda\
               );
             }
             for (uword jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
@@ -211,9 +211,9 @@ Rcpp::List smc_mallows_new_users(
               ar = aug_rankings(span(jj), span::all, span(ii));
               vec mh_aug_result;
               if (aug_method == "random") {
-                mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric, false);
+                mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), false, metric);
               } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
-                mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), metric, true);
+                mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), true, metric);
               }
               aug_rankings(span(jj), span::all, span(ii)) = mh_aug_result;
             }
@@ -228,6 +228,6 @@ Rcpp::List smc_mallows_new_users(
     Rcpp::Named("augmented_rankings") = aug_rankings,
     Rcpp::Named("ESS") = ESS_vec
   );
-  if(type == "complete") particle_history.attr("class") = "SMCMallows"; // TODO: add List
+  particle_history.attr("class") = "SMCMallows"; // TODO: add List
   return particle_history;
 }

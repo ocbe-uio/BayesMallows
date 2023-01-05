@@ -4,7 +4,6 @@
 #' @author Anja Stein
 #' @param output input
 #' @param colnames colnames
-# AS: edited this function to include parameter `colnames`. This resolve issues in #118 with post processing functions not printing the names of items in rankings.
 # The `default` is set to NULL so tat we do not cause plotting issues in `plot_rho_heatplot.
 smc_processing <- function(output, colnames = NULL) {
   df <- data.frame(data = output)
@@ -39,8 +38,7 @@ smc_processing <- function(output, colnames = NULL) {
 #' @inheritParams smc_processing
 #' @param nmc Number of Monte Carlo samples
 #' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
+#' to discard as burn-in.
 #' @param verbose if \code{TRUE}, prints the final output even if the function
 #' is assigned to an object. Defaults to \code{FALSE}.
 #' @export
@@ -82,7 +80,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
 #' @author Anja Stein
 #'
 # AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
-compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL, verbose = FALSE) {
+compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames = NULL, verbose = FALSE) {
   n_items <- dim(output)[2]
 
   #----------------------------------------------------------------
@@ -115,29 +113,6 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type, colnames = NULL,
   return(results)
 }
 
-#' @title Plot Alpha Posterior
-#' @description posterior for alpha
-#' @inheritParams compute_posterior_intervals_rho
-#' @export
-#' @author Anja Stein
-#'
-# AS: if you remove the verbose input variable, then the function will be consistent
-# with the other plot functions(they all print when verbose=FALSE, but this function doesn't.)
-# `plot_rho_heatplot` doesn't require the variable `verbose`,
-# so I'm not sure if this function does to plot the density of alpha
-plot_alpha_posterior <- function(output, nmc, burnin) {
-  alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
-
-  plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes_(x = ~value)) +
-    ggplot2::geom_density() +
-    ggplot2::xlab(expression(alpha)) +
-    ggplot2::ylab("Posterior density") +
-    ggplot2::ggtitle(label = "Implemented SMC scheme") +
-    ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
-  print(plot_posterior_alpha)
-}
-
 #' @title Compute Posterior Intervals Alpha
 #' @description posterior confidence intervals
 #' @inheritParams compute_posterior_intervals_rho
@@ -156,72 +131,4 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose = FAL
   )
   if (verbose) print(alpha_mixture_posterior_interval)
   return(alpha_mixture_posterior_interval)
-}
-
-#' @title Plot the posterior for rho for each item
-#' @param output input
-#' @param nmc Number of Monte Carlo samples
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}
-#' @param C Number of cluster
-#' @param colnames A vector of item names. If NULL, we generate generic names for the items in the ranking.
-#' @param items Either a vector of item names, or a
-#'   vector of indices. If NULL, five items are selected randomly.
-#' @export
-plot_rho_posterior <- function(output, nmc, burnin, C, colnames = NULL, items = NULL) {
-  n_items <- dim(output)[2]
-
-  if (is.null(items) && n_items > 5) {
-    message("Items not provided by user or more than 5 items in a ranking. Picking 5 at random.")
-    items <- sample(seq_len(n_items), 5, replace = FALSE)
-    items <- sort(items)
-  } else if (is.null(items) && n_items <= 5) {
-    items <- seq_len(n_items)
-    items <- sort(items)
-  }
-
-  # do smc processing here
-  smc_plot <- smc_processing(output = output, colnames = colnames)
-
-  if (!is.character(items)) {
-    items <- unique(smc_plot$item)[items]
-  }
-
-  iteration <- rep(seq_len(nmc), times = n_items)
-  df <- cbind(iteration, smc_plot)
-
-  if (C == 1) {
-    df <- cbind(cluster = "Cluster 1", df)
-  }
-
-  df <- df[df$iteration > burnin & df$item %in% items, , drop = FALSE]
-
-  # Compute the density, rather than the count, since the latter
-  # depends on the number of Monte Carlo samples
-  df <- aggregate(list(n = df$iteration),
-    list(cluster = df$cluster, item = df$item, value = df$value),
-    FUN = length
-  )
-  df$pct <- df$n / sum(df$n)
-
-  df$item <- factor(df$item, levels = c(items))
-
-  # Taken from misc.R function in BayesMallows
-  scalefun <- function(x) sprintf("%d", as.integer(x))
-
-  # Finally create the plot
-  p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
-    ggplot2::geom_col() +
-    ggplot2::scale_x_continuous(labels = scalefun) +
-    ggplot2::xlab("rank") +
-    ggplot2::ylab("Posterior probability")
-
-  if (C == 1) {
-    p <- p + ggplot2::facet_wrap(~ .data$item)
-  } else {
-    p <- p + ggplot2::facet_wrap(~ .data$cluster + .data$item)
-  }
-
-  return(p)
 }

@@ -9,7 +9,7 @@ compute_rho_consensus(
   nmc,
   burnin,
   C,
-  type,
+  type = "CP",
   colnames = NULL,
   verbose = FALSE
 )
@@ -20,8 +20,7 @@ compute_rho_consensus(
 \item{nmc}{Number of Monte Carlo samples}
 
 \item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
+to discard as burn-in.}
 
 \item{C}{C}
 

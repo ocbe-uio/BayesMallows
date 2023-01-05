@@ -29,7 +29,7 @@ Rcpp::List correction_kernel_pseudo(
     const arma::vec rho,
     const double alpha,
     const int n_items,
-    const std::string metric
+    const std::string metric = "footrule"
 ) {
     bool observed_equals_current = approx_equal(\
         observed_ranking, current_ranking, "absdiff", 0.1\
@@ -78,7 +78,7 @@ Rcpp::List correction_kernel_pseudo(
                 // next we get the sample probabilites for selecting a particular rank for
                 // an item based on the current alpha and the rho rank for that item
                 const vec sample_prob_list = get_sample_probabilities(\
-                    rho_item_rank, alpha, remaining_set, metric, n_items\
+                    rho_item_rank, alpha, remaining_set, n_items, metric\
                 );
 
                 // fill in the new augmented ranking going forward

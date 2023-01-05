@@ -28,70 +28,70 @@ test_that("Functions accept rankings and rho as row or column vectors", {
   mhr_r_r <- metropolis_hastings_rho(
     alpha_init, n_items,
     rankings = as.matrix(cluster_rankings),
-    metric,
     rho = rho_init,
+    metric,
     leap_size
   )
   mha_r_r <- metropolis_hastings_alpha(
     alpha_init, n_items,
     rankings = as.matrix(cluster_rankings),
-    metric,
     rho = rho_init,
     logz_estimate,
+    metric,
     alpha_prop_sd,
-    lambda,
-    alpha_max
+    alpha_max,
+    lambda
   )
   mhr_rt_r <- metropolis_hastings_rho(
     alpha_init, n_items,
     rankings = t(cluster_rankings),
-    metric,
     rho = rho_init,
+    metric,
     leap_size
   )
   mha_rt_r <- metropolis_hastings_alpha(
     alpha_init, n_items,
     rankings = t(cluster_rankings),
-    metric,
     rho = rho_init,
     logz_estimate,
+    metric,
     alpha_prop_sd,
-    lambda,
-    alpha_max
+    alpha_max,
+    lambda
   )
   mhr_r_rt <- metropolis_hastings_rho(
     alpha_init, n_items,
     rankings = as.matrix(cluster_rankings),
-    metric,
     rho = t(rho_init),
+    metric,
     leap_size
   )
   mha_r_rt <- metropolis_hastings_alpha(
     alpha_init, n_items,
     rankings = as.matrix(cluster_rankings),
-    metric,
     rho = t(rho_init),
     logz_estimate,
+    metric,
     alpha_prop_sd,
-    lambda,
-    alpha_max
+    alpha_max,
+    lambda
   )
   mhr_rt_rt <- metropolis_hastings_rho(
     alpha_init, n_items,
     rankings = t(cluster_rankings),
-    metric,
     rho = t(rho_init),
+    metric,
     leap_size
   )
   mha_rt_rt <- metropolis_hastings_alpha(
     alpha_init, n_items,
     rankings = t(cluster_rankings),
-    metric,
     rho = t(rho_init),
     logz_estimate,
+    metric,
     alpha_prop_sd,
-    lambda,
-    alpha_max
+    alpha_max,
+    lambda
   )
   expect_equal(dim(mhr_r_r), c(10, 1))
   expect_length(mha_r_r, 1)

@@ -25,8 +25,8 @@ arma::vec get_sample_probabilities(
   const arma::vec rho_item_rank,
   const double alpha,
   const arma::vec remaining_set_ranks,
-  const std::string metric,
-  const int n_items
+  const int n_items,
+  const std::string metric = "footrule"
 ) {
   // define a set of probs list
   const unsigned int& num_ranks = remaining_set_ranks.n_elem;

@@ -72,7 +72,7 @@ smc_test_partial_unif1 <- smc_mallows_new_item_rank(
   alpha_fixed = TRUE
 )
 test_that("Updated item rank output is OK", {
-  expect_is(smc_test_partial_unif1, "list")
+  expect_is(smc_test_partial_unif1, "SMCMallows")
   expect_length(smc_test_partial_unif1, 3)
   expect_equal(dim(smc_test_partial_unif1$rho_samples), c(N, n_items, 6))
   expect_length(smc_test_partial_unif1$ESS, Time2)
@@ -91,7 +91,7 @@ smc_test_partial_unif2 <- smc_mallows_new_item_rank(
   aug_rankings_init = smc_test_new_user_unif$augmented_rankings
 )
 test_that("Updated item rank output (alpha variable) is OK", {
-  expect_is(smc_test_partial_unif2, "list")
+  expect_is(smc_test_partial_unif2, "SMCMallows")
   expect_length(smc_test_partial_unif2, 4)
   expect_equal(dim(smc_test_partial_unif2$rho_samples), c(N, n_items, 6))
   expect_length(smc_test_partial_unif2$ESS, Time2)
@@ -120,7 +120,7 @@ smc_test_partial_pseudo1 <- smc_mallows_new_item_rank(
   alpha_fixed = TRUE
 )
 test_that("Updated item rank output is OK", {
-  expect_is(smc_test_partial_pseudo1, "list")
+  expect_is(smc_test_partial_pseudo1, "SMCMallows")
   expect_length(smc_test_partial_pseudo1, 3)
   expect_equal(dim(smc_test_partial_pseudo1$rho_samples), c(N, n_items, 6))
   expect_length(smc_test_partial_pseudo1$ESS, Time2)
@@ -138,7 +138,7 @@ smc_test_partial_pseudo2 <- smc_mallows_new_item_rank(
   aug_rankings_init = smc_test_new_user_unif$augmented_rankings
 )
 test_that("Updated item rank output (variable alpha) is OK", {
-  expect_is(smc_test_partial_pseudo2, "list")
+  expect_is(smc_test_partial_pseudo2, "SMCMallows")
   expect_length(smc_test_partial_pseudo2, 4)
   expect_equal(dim(smc_test_partial_pseudo2$rho_samples), c(N, n_items, 6))
   expect_length(smc_test_partial_pseudo2$ESS, Time2)

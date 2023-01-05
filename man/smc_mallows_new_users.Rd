@@ -11,19 +11,19 @@ smc_mallows_new_users(
   R_obs,
   type,
   n_items,
-  metric,
-  leap_size,
   N,
   Time,
   mcmc_kernel_app,
   num_new_obs,
-  alpha_prop_sd = 1,
-  lambda = 1,
-  alpha_max = 1,
+  alpha_prop_sd = 0.5,
+  lambda = 0.1,
+  alpha_max = 1e+06,
   alpha = 0,
   aug_method = "random",
   logz_estimate = NULL,
-  verbose = FALSE
+  verbose = FALSE,
+  metric = "footnote",
+  leap_size = 1L
 )
 
 smc_mallows_new_users_partial(
@@ -82,14 +82,6 @@ n_assessors by n_items}
 
 \item{n_items}{Integer is the number of items in a ranking}
 
-\item{metric}{A character string specifying the distance metric to use
-in the Bayesian Mallows Model. Available options are \code{"footrule"},
-\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-\code{"ulam"}.}
-
-\item{leap_size}{leap_size Integer specifying the step size of the
-leap-and-shift proposal distribution}
-
 \item{N}{Integer specifying the number of particles}
 
 \item{Time}{Integer specifying the number of time steps in the SMC algorithm}
@@ -123,6 +115,14 @@ in the missing data, options are "pseudolikelihood" or "random".}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 SMC-Mallows algorithm. Defaults to \code{FALSE}.}
+
+\item{metric}{A character string specifying the distance metric to use
+in the Bayesian Mallows Model. Available options are \code{"footrule"},
+\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+\code{"ulam"}.}
+
+\item{leap_size}{leap_size Integer specifying the step size of the
+leap-and-shift proposal distribution}
 }
 \value{
 a set of particles each containing a value of rho and alpha

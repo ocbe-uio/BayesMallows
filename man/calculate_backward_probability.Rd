@@ -12,7 +12,7 @@ calculate_backward_probability(
   rho,
   alpha,
   n_items,
-  metric
+  metric = "footrule"
 )
 }
 \arguments{

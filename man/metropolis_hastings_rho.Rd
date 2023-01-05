@@ -4,7 +4,14 @@
 \alias{metropolis_hastings_rho}
 \title{Metropolis-Hastings Rho}
 \usage{
-metropolis_hastings_rho(alpha, n_items, rankings, metric, rho, leap_size)
+metropolis_hastings_rho(
+  alpha,
+  n_items,
+  rankings,
+  rho,
+  metric = "footnote",
+  leap_size = 1L
+)
 }
 \arguments{
 \item{alpha}{Numeric value of the scale parameter}
@@ -18,11 +25,11 @@ can be a vector.}
 rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
 can be a vector.}
 
+\item{rho}{A ranking sequence}
+
 \item{metric}{Character string specifying the distance measure to use.
 Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
 \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.}
-
-\item{rho}{A ranking sequence}
 
 \item{leap_size}{Integer specifying the step size of the leap-and-shift
 proposal distribution.}
