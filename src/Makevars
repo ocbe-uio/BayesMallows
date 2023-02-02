@@ -1,4 +1,4 @@
-CXX_STD = CXX11
+CXX_STD = CXX17
 CC=ccache clang -Qunused-arguments
 CXX=ccache clang++ -Qunused-arguments
 CCACHE_CPP2=yes
