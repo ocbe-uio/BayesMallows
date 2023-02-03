@@ -202,18 +202,18 @@ test_that("metropolis_hastings_alpha() works as expected", {
 })
 
 
-test_that("leap_and_shift_probs does not propose current ranking",{
+test_that("leap_and_shift_probs does not propose current ranking", {
   set.seed(12)
-  count <- Reduce(`+`, lapply(list(1:4, 1:10), function(rho){
-    n_items = length(rho)
+  count <- Reduce(`+`, lapply(list(1:4, 1:10), function(rho) {
+    n_items <- length(rho)
     count <- 0
-    for(i in 1:20){
+    for (i in 1:20) {
       val <- leap_and_shift_probs(rho, 1, n_items)
-      if(all(val$rho_prime == rho)) {
+      if (all(val$rho_prime == rho)) {
         count <- count + 1
       }
       val <- leap_and_shift_probs(rho, 2, n_items)
-      if(all(val$rho_prime == rho)) {
+      if (all(val$rho_prime == rho)) {
         count <- count + 1
       }
     }
