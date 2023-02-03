@@ -56,7 +56,8 @@ jobs:
               "inst/examples/sample_mallows_example.R",
               "data-raw/",
               "tests/testthat.R",
-              "R/RcppExports.R"
+              "R/RcppExports.R",
+              "vignettes/SMC-Mallows.Rmd" = 16
             )
             style_rules <- list(
               absolute_path_linter(), assignment_linter(), brace_linter(),

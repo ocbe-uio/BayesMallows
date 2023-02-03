@@ -13,10 +13,10 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(BayesMallows)
 ```
 
 This vignette describes the `SMC-Mallows` functions of the package. These use Sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. We use an alternative data augmentation method, called the pseudolikelihood approach, when we are using the footrule and Spearman distance functions instead of using an independent sampler. `SMC-Mallow` uses functions similar to their base MCMC counterparts in the `BayesMallows` package, to visualise and analyse the posterior distributions.
-
 
 ### SMC-Mallows functions
 
