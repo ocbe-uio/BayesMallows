@@ -75,4 +75,3 @@ test_that("assess_convergence works with mixtures", {
   print(plt)
   dev.off()
 })
-

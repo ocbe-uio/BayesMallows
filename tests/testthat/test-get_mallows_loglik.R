@@ -13,7 +13,7 @@ test_that("get_mallows_loglik works", {
   expect_equal(
     lapply(
       c("ulam", "footrule", "spearman", "kendall", "cayley", "hamming"),
-      function(m){
+      function(m) {
         get_mallows_loglik(
           rho = rbind(1:n_items, 1:n_items),
           alpha = c(2 * n_items, 2 * n_items),
@@ -31,7 +31,7 @@ test_that("get_mallows_loglik works", {
   expect_equal(
     lapply(
       c("ulam", "footrule", "spearman", "kendall", "cayley", "hamming"),
-      function(m){
+      function(m) {
         get_mallows_loglik(
           rho = 1:n_items,
           alpha = 2 * n_items,
