@@ -131,18 +131,18 @@ test_that("Runs with pseudo kernel", {
   expect_length(smc_unif, 4)
   expect_equal(dim(smc_unif$rho_samples), c(N, 6, 31))
   expect_equal(dim(smc_unif$alpha_samples), c(N, 31))
-  expect_equal(smc_unif$augmented_rankings[,,10],
+  expect_equal(smc_unif$augmented_rankings[, , 10],
                structure(c(1, 2, 3, 1, 3, 3, 2, 1, 1, 1, 2, 4, 2, 5, 1, 1, 3,
                            3, 2, 2, 3, 5, 4, 3, 5, 2, 5, 2, 6, 3, 4, 6, 1, 4, 6, 4, 4, 4,
                            5, 4, 6, 1, 5, 2, 4, 5, 1, 5, 3, 5, 5, 3, 6, 6, 2, 6, 6, 6, 4,
                            6), dim = c(10L, 6L)))
-  expect_equal(smc_unif$augmented_rankings[,,17],
+  expect_equal(smc_unif$augmented_rankings[, , 17],
                     structure(c(1, 2, 3, 1, 3, 3, 2, 1, 1, 1, 2, 4, 2, 5, 1, 1, 3,
                                 3, 2, 2, 3, 5, 4, 3, 5, 2, 5, 2, 6, 3, 4, 6, 1, 4, 6, 4, 4, 4,
                                 5, 4, 6, 1, 5, 2, 4, 5, 1, 5, 3, 5, 5, 3, 6, 6, 2, 6, 6, 6, 4,
                                 6), dim = c(10L, 6L)))
   expect_equal(
-    smc_unif$rho_samples[,,7],
+    smc_unif$rho_samples[, , 7],
     structure(
       c(
         4, 6, 6, 6, 3, 6, 6, 6, 6, 6, 4, 6, 6, 5, 6, 5, 5, 5, 5, 5, 5, 3, 5, 5,
@@ -155,7 +155,7 @@ test_that("Runs with pseudo kernel", {
     )
   )
   expect_equal(
-    smc_unif$alpha_samples[,10],
+    smc_unif$alpha_samples[, 10],
     c(
       0.1455621, 0.1945882, 0.0784438, 0.1732896, 0.09138699, 0.2689943,
       0.09694153, 0.1892184, 0.505403, 0.07356979, 0.7224048, 0.5333023,
