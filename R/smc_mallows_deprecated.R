@@ -50,7 +50,7 @@ smc_mallows_new_item_rank_alpha_fixed <- function(
   alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate,
   mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method,
   verbose = FALSE
-) {
+){
   .Deprecated("smc_mallows_new_item_rank")
   smc_mallows_new_item_rank(
     n_items, R_obs, N, Time, logz_estimate, mcmc_kernel_app,

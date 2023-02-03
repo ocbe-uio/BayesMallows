@@ -24,3 +24,4 @@ all_topological_sorts <- function(graph, n_items, env, path = integer(),
     assign("num", get("num", envir = env) + 1, envir = env)
   }
 }
+

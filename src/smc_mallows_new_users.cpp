@@ -206,7 +206,7 @@ Rcpp::List smc_mallows_new_users(
                 metric, alpha_prop_sd, alpha_max, lambda\
               );
             }
-            for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
+            for (uword jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
               rowvec ar;
               ar = aug_rankings(span(jj), span::all, span(ii));
               vec mh_aug_result;

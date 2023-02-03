@@ -13,7 +13,7 @@ arma::mat initialize_rho(int n_items, int n_cols, Rcpp::Nullable<arma::mat> rho_
     return repmat(Rcpp::as<mat>(rho_init), 1, n_cols);
   } else {
     mat rho_samples(n_items, n_cols);
-    for (int i = 0; i < n_cols; ++i) {
+    for (uword i = 0; i < n_cols; ++i) {
       rho_samples.col(i) = randperm<vec>(n_items) + 1;
     }
     return rho_samples;

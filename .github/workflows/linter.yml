@@ -24,18 +24,17 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
         - name: Checking out the repository
-          uses: actions/checkout@v3
+          uses: actions/checkout@v2
 
         - name: Setting up R
-          uses: r-lib/actions/setup-r@v2
+          uses: r-lib/actions/setup-r@v1
           with:
             use-public-rspm: true
 
         - name: Installing dependencies
-          uses: r-lib/actions/setup-r-dependencies@v2
+          uses: r-lib/actions/setup-r-dependencies@v1
           with:
-            extra-packages: any::lintr, local::.
-            needs: lint
+            extra-packages: lintr
 
         - name: Picking on the coding style
           run: |
@@ -56,23 +55,20 @@ jobs:
               "inst/examples/sample_mallows_example.R",
               "data-raw/",
               "tests/testthat.R",
-              "R/RcppExports.R",
-              "vignettes/SMC-Mallows.Rmd" = 16
+              "R/RcppExports.R"
             )
             style_rules <- list(
               absolute_path_linter(), assignment_linter(), brace_linter(),
-              commas_linter(), commented_code_linter(),
+              commas_linter(), commented_code_linter(), cyclocomp_linter(),
               equals_na_linter(), function_left_parentheses_linter(),
-              infix_spaces_linter(), no_tab_linter(),
-              nonportable_path_linter(),
+              infix_spaces_linter(), line_length_linter(), no_tab_linter(),
+              nonportable_path_linter(), object_length_linter(),
               pipe_continuation_linter(), seq_linter(), single_quotes_linter(),
               spaces_inside_linter(), spaces_left_parentheses_linter(),
               T_and_F_symbol_linter(), todo_comment_linter(),
               trailing_blank_lines_linter(), trailing_whitespace_linter(),
-              undesirable_function_linter(),
+              undesirable_function_linter(), undesirable_operator_linter(),
               unneeded_concatenation_linter()
             )
             lint_package(linters = style_rules, exclusions = excluded_files)
           shell: Rscript {0}
-          env:
-            LINTR_ERROR_ON_LINT: true
