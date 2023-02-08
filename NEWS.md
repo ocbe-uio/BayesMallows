@@ -1,3 +1,7 @@
+# BayesMallows (development versions)
+
+* Replaced deprecated ggplot2::aes_ function with ggplot2::aes.
+
 # BayesMallows 1.2.2
 
 * Added `plot.SMCMallows()` method
