@@ -1,7 +1,8 @@
-# BayesMallows (development versions)
+# BayesMallows 1.2.2
 
 * Added `plot.SMCMallows()` method
 * Changed default values and argument order on several SMC functions (see PR #269)
+* Modifications to internal C++ code to avoid CRAN NOTEs.
 
 # BayesMallows 1.2.1
 
