@@ -1,9 +1,8 @@
 # BayesMallows (development version)
 
-# BayesMallows (development versions)
-
 * Added `plot.SMCMallows()` method
 * Changed default values and argument order on several SMC functions (see PR #269)
+* Refactoring of SMC functions (#257)
 
 # BayesMallows 1.2.1
 
