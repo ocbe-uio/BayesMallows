@@ -224,8 +224,6 @@ smc_partial_test <- smc_mallows_new_users(
   alpha_max = 1e6,
   aug_method = aug_method
 )
-#>Error in smc_mallows_new_users(R_obs = data_partial, type = "partial",
-#>: Combined choice of metric and aug_method is incompatible
 ```
 
 This time we call the function again but this time we provide a valid combination of the augmentation method and the distance metric.
