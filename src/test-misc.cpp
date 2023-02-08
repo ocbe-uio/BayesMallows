@@ -31,5 +31,4 @@ context("Assorted functions in misc.h") {
     expect_false(is_pseudo("random", "cayley"));
     expect_false(is_pseudo("random", "hamming"));
   }
-
 }

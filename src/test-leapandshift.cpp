@@ -48,5 +48,3 @@ context("Test leap and shift C++") {
     expect_true(std::abs(prob_forward - 0.0166667) < 1e-5);
   }
 }
-
-
