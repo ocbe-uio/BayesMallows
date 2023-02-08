@@ -1,5 +1,6 @@
-# BayesMallows (development version)
+# BayesMallows (development versions)
 
+* Replaced deprecated ggplot2::aes_ function with ggplot2::aes.
 * Refactoring of SMC functions (#257)
 
 # BayesMallows 1.2.2
