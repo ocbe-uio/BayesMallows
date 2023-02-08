@@ -1,10 +1,9 @@
 ## Resubmission Note
-This is a resubmission. It removes the dependency on the PerMallows package, due to an
-e-mail from Dr. Hornik warning that PerMallows is scheduled to be archived from CRAN.
+This is a resubmission. It removes a CRAN NOTE about C++ version, and it also removes two comparison of signed and unsigned integers.
 
 
 ## Test Environments
-* local Windows install, R 4.2.1.
+* local Windows install, R 4.2.2.
 * windows, devel, release and old-release.
 * Apple Silicon (M1) via rhub.
 * valgrind and GCC-UBSAN via rhub.
