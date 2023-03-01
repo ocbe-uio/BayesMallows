@@ -49,6 +49,7 @@ smc_processing <- function(output, colnames = NULL) {
 #' @inherit smc_processing seealso
 #' @export
 #' @author Anja Stein
+#' @inherit compute_rho_consensus examples
 # AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
 compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL, verbose = FALSE) {
   # Validation
@@ -86,6 +87,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
 #' @param type type
 #' @export
 #' @author Anja Stein
+#' @example inst/examples/smc_post_processing_functions_example.R
 #' @inherit smc_processing seealso
 # AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
 compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames = NULL, verbose = FALSE) {
@@ -131,6 +133,7 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames 
 #' @export
 #' @author Anja Stein
 #' @inherit smc_processing seealso
+#' @inherit compute_rho_consensus examples
 compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose = FALSE) {
   # Validation
   stopifnot(is(output, "numeric"))
