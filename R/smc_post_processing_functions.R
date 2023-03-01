@@ -1,11 +1,17 @@
-#' @importFrom graphics mtext par
-
 #' @title SMC Processing
 #' @author Anja Stein
-#' @param output input
+#' @param output a subset of an SMCMallows object (though technically any matrix will do)
 #' @param colnames colnames
-# The `default` is set to NULL so tat we do not cause plotting issues in `plot_rho_heatplot.
+#' @return A processed file of the SMCMallows class
+#' @seealso \code{\link{smc_mallows_new_item_rank}} and
+#' \code{\link{smc_mallows_new_users}}, which are functions generating objects
+#' of SMCMallows class.
+#' @importFrom methods is
 smc_processing <- function(output, colnames = NULL) {
+  # Validation
+  stopifnot(is(output, "matrix"))
+
+  # Recasting of input for proper handling below
   df <- data.frame(data = output)
 
   # if colnames are specified, then incorporate them
@@ -27,11 +33,10 @@ smc_processing <- function(output, colnames = NULL) {
     timevar = "item",
     times = names(df)
   )
-  new_df$id <- NULL # drop the "id" column
+  new_df$id <- NULL # the "id" should not be part of the SMCMallows object
   class(new_df) <- c("SMCMallows", "data.frame")
   return(new_df)
 }
-
 
 #' @title Compute Posterior Intervals Rho
 #' @description posterior confidence intervals for rho
@@ -41,11 +46,15 @@ smc_processing <- function(output, colnames = NULL) {
 #' to discard as burn-in.
 #' @param verbose if \code{TRUE}, prints the final output even if the function
 #' is assigned to an object. Defaults to \code{FALSE}.
+#' @inherit smc_processing seealso
 #' @export
 #' @author Anja Stein
-#'
+#' @inherit compute_rho_consensus examples
 # AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
 compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL, verbose = FALSE) {
+  # Validation
+  stopifnot(is(output, "matrix"))
+
   #----------------------------------------------------------------
   # AS: added extra input parameter
   smc_plot <- smc_processing(output = output, colnames = colnames)
@@ -78,9 +87,13 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
 #' @param type type
 #' @export
 #' @author Anja Stein
-#'
+#' @example inst/examples/smc_post_processing_functions_example.R
+#' @inherit smc_processing seealso
 # AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
 compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames = NULL, verbose = FALSE) {
+  # Validation
+  stopifnot(is(output, "matrix"))
+
   n_items <- dim(output)[2]
 
   #----------------------------------------------------------------
@@ -116,10 +129,15 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames 
 #' @title Compute Posterior Intervals Alpha
 #' @description posterior confidence intervals
 #' @inheritParams compute_posterior_intervals_rho
+#' @param output a subset of an SMCMallows object (though technically any numeric vector will do)
 #' @export
 #' @author Anja Stein
-#'
+#' @inherit smc_processing seealso
+#' @inherit compute_rho_consensus examples
 compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose = FALSE) {
+  # Validation
+  stopifnot(is(output, "numeric"))
+
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
   alpha_samples_table$n_clusters <- 1
   alpha_samples_table$cluster <- "Cluster 1"
