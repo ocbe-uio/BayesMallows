@@ -7,7 +7,7 @@
 compute_posterior_intervals_alpha(output, nmc, burnin, verbose = FALSE)
 }
 \arguments{
-\item{output}{input}
+\item{output}{a subset of an SMCMallows object (though technically any numeric vector will do)}
 
 \item{nmc}{Number of Monte Carlo samples}
 
@@ -19,6 +19,11 @@ is assigned to an object. Defaults to \code{FALSE}.}
 }
 \description{
 posterior confidence intervals
+}
+\seealso{
+\code{\link{smc_mallows_new_item_rank}} and
+\code{\link{smc_mallows_new_users}}, which are functions generating objects
+of SMCMallows class.
 }
 \author{
 Anja Stein
