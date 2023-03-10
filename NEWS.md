@@ -1,5 +1,6 @@
 # BayesMallows (development version)
 
+* Added heat_plot() function (#255)
 * Replaced deprecated ggplot2::aes_ function with ggplot2::aes.
 * Refactoring of SMC functions (#257)
 * Improved validation and documentation of SMC post-processing functions (#262)
