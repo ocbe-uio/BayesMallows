@@ -1,5 +1,5 @@
 ## Resubmission Note
-This is a resubmission. It removes a CRAN NOTE about C++ version, and it also removes two comparison of signed and unsigned integers.
+This is a resubmission. It adds a heat plot function, removes use of some soft-deprecated ggplot functions, improves documentation, and does internal refactoring.
 
 
 ## Test Environments
