@@ -46,7 +46,7 @@ void new_items_move_step(
           alpha_fixed ? alpha : alpha_samples(ii, ttplus1), rho_samples.slice(ttplus1).row(ii).t(),\
           n_items, R_obs.slice(ttplus1).row(jj).t(),                                              \
           aug_rankings.slice(ii).row(jj).t(),
-          (aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman")),
+          is_pseudo(aug_method, metric),
           metric
         );
       aug_rankings.slice(ii).row(jj) = mh_aug_result.t();
@@ -91,7 +91,8 @@ arma::cube augment_rankings(
       // fill in missing ranks based on choice of augmentation method
       vec R_obs_slice_0_row_jj = R_obs.slice(0).row(jj).t();
       const vec remaining_set = setdiff_template(ranks, R_obs_slice_0_row_jj);
-      if (aug_method == "random") {
+      const bool pseudo = is_pseudo(aug_method, metric);
+      if (!pseudo) {
         // create new augmented ranking by sampling remaining ranks from set uniformly
         vec rset = shuffle(remaining_set);
 
@@ -99,7 +100,7 @@ arma::cube augment_rankings(
         partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
 
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
-      } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
+      } else {
         // find items missing from original observed ranking
         const uvec& unranked_items = find_nonfinite(R_obs_slice_0_row_jj);
         // randomly permute the unranked items to give the order in which they will be allocated
@@ -110,8 +111,6 @@ arma::cube augment_rankings(
         );
         const vec& a_rank = proposal["aug_ranking"];
         aug_rankings(span(jj), span::all, span(ii)) = a_rank;
-      } else {
-        Rcpp::stop("Combined choice of metric and aug_method is incompatible.");
       }
     }
   }
@@ -224,6 +223,7 @@ Rcpp::List smc_mallows_new_item_rank(
   /* Loop for t=1,...,Time                                  */
   /* ====================================================== */
   // Here, we attempt the SMC sampler
+  const bool pseudo = is_pseudo(aug_method, metric);
   for (uword tt = 0; tt < Time - 1; ++tt) {
     if (verbose) REprintf("iteration %i out of %i \n", tt + 1, Time - 1);
     /* New Information -------------------------------------- */
@@ -243,19 +243,17 @@ Rcpp::List smc_mallows_new_item_rank(
       // make the correction
       for (uword jj = 0; jj < num_ranks; ++jj) {
         Rcpp::List check_correction;
-        if (aug_method == "random") {
+        if (!pseudo) {
           check_correction = correction_kernel(
             R_obs.slice(tt + 1).row(jj).t(), aug_rankings.slice(ii).row(jj).t(),
             n_items
           );
-        } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
+        } else {
           check_correction = correction_kernel_pseudo(
             aug_rankings.slice(ii).row(jj).t(), R_obs.slice(tt + 1).row(jj).t(),
             rho_samples.slice(tt + 1).row(ii).t(),
             alpha_fixed ? alpha : alpha_samples(ii, tt + 1), n_items, metric
           );
-        } else {
-          Rcpp::stop("Combined choice of metric and aug_method is incompatible");
         }
         const vec& c_rank = check_correction["ranking"];
         aug_rankings(span(jj), span::all, span(ii)) = c_rank;

@@ -38,14 +38,13 @@ plot.SMCMallows <- function(x, nmc = nrow(x$rho_samples[, 1, ]), burnin = 0,
 plot_alpha_smc <- function(output, nmc, burnin) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
 
-  plot_posterior_alpha <- ggplot2::ggplot(alpha_samples_table, ggplot2::aes_(x = ~value)) +
+  ggplot2::ggplot(alpha_samples_table, ggplot2::aes(x = .data$value)) +
     ggplot2::geom_density() +
     ggplot2::xlab(expression(alpha)) +
     ggplot2::ylab("Posterior density") +
     ggplot2::ggtitle(label = "Implemented SMC scheme") +
     ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 
-  print(plot_posterior_alpha)
 }
 
 plot_rho_smc <- function(output, nmc, burnin, C, colnames = NULL, items = NULL) {

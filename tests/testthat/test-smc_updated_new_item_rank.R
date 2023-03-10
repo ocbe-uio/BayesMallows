@@ -156,6 +156,6 @@ test_that("metric and aug_method must match", {
       mcmc_kernel_app = mcmc_kernel_app, aug_method = "pseudolikelihood",
       alpha_fixed = TRUE
     ),
-    "Combined choice of metric and aug_method is incompatible"
+    "Pseudolikelihood only supports footrule and spearman metrics"
   )
 })

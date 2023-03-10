@@ -210,11 +210,10 @@ Rcpp::List smc_mallows_new_users(
               rowvec ar;
               ar = aug_rankings(span(jj), span::all, span(ii));
               vec mh_aug_result;
-              if (aug_method == "random") {
-                mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), false, metric);
-              } else if ((aug_method == "pseudolikelihood") && ((metric == "footrule") || (metric == "spearman"))) {
-                mh_aug_result = metropolis_hastings_aug_ranking(as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(), true, metric);
-              }
+              mh_aug_result = metropolis_hastings_aug_ranking(\
+                as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(),
+                is_pseudo(aug_method, metric), metric
+              );
               aug_rankings(span(jj), span::all, span(ii)) = mh_aug_result;
             }
           }
