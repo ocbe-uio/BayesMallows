@@ -13,4 +13,3 @@ model_fit$burnin <- 10
 
 expect_s3_class(heat_plot(model_fit), "ggplot")
 expect_s3_class(heat_plot(model_fit, type = "MAP"), "ggplot")
-

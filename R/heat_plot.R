@@ -21,14 +21,14 @@
 #'
 #' @example /inst/examples/heat_plot_example.R
 #'
-heat_plot <- function(model_fit, burnin = model_fit$burnin, ...){
+heat_plot <- function(model_fit, burnin = model_fit$burnin, ...) {
 
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
   if (model_fit$nmc <= burnin) stop("burnin must be <= nmc")
-  if(is.null(model_fit$burnin)) model_fit$burnin <- burnin
-  if(model_fit$n_clusters != 1) stop("heat_plot only works for a single cluster")
+  if (is.null(model_fit$burnin)) model_fit$burnin <- burnin
+  if (model_fit$n_clusters != 1) stop("heat_plot only works for a single cluster")
 
   item_order <- compute_consensus(model_fit, ...)[["item"]]
 
