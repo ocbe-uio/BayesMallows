@@ -48,7 +48,7 @@ heat_plot <- function(model_fit, burnin = model_fit$burnin, ...){
   heatplot_expanded <- merge(heatplot_expanded, heatplot_data, by = c("cluster", "item", "value"), all.x = TRUE)
   heatplot_expanded$probability[is.na(heatplot_expanded$probability)] <- 0
 
-  ggplot2::ggplot(heatplot_expanded, ggplot2::aes(x = item, y = value, fill = probability)) +
+  ggplot2::ggplot(heatplot_expanded, ggplot2::aes(x = .data$item, y = .data$value, fill = .data$probability)) +
     ggplot2::geom_tile() +
     ggplot2::labs(fill = "Probability") +
     ggplot2::xlab("Item") +
