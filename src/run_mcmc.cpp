@@ -57,15 +57,15 @@ using namespace arma;
 //' @keywords internal
 //'
 // [[Rcpp::export]]
-Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
+Rcpp::List run_mcmc(arma::umat rankings, arma::uvec obs_freq, int nmc,
                     Rcpp::List constraints,
                     Rcpp::Nullable<arma::vec> cardinalities,
                     Rcpp::Nullable<arma::vec> logz_estimate,
-                    Rcpp::Nullable<arma::mat> rho_init,
+                    Rcpp::Nullable<arma::umat> rho_init,
                     std::string metric = "footrule",
                     std::string error_model = "none",
                     int Lswap = 1,
-                    int n_clusters = 1,
+                    uint n_clusters = 1,
                     bool include_wcd = false,
                     int leap_size = 1,
                     double alpha_prop_sd = 0.5,
@@ -84,7 +84,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
                       bool save_ind_clus = false
                       ){
   // The number of items ranked
-  int n_items = rankings.n_rows;
+  uint n_items = rankings.n_rows;
 
   // The number of assessors
   int n_assessors = rankings.n_cols;
@@ -108,16 +108,16 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   }
 
   // Declare the cube to hold the latent ranks
-  cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
+  ucube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
   rho.slice(0) = initialize_rho(n_items, n_clusters, rho_init);
-  mat rho_old = rho(span::all, span::all, span(0));
+  umat rho_old = rho(span::all, span::all, span(0));
 
   // Declare the vector to hold the scaling parameter alpha
   mat alpha(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
   alpha.col(0).fill(alpha_init);
 
   // If the user wants to save augmented data, we need a cube
-  cube augmented_data;
+  ucube augmented_data;
   if(save_aug){
     augmented_data.set_size(n_items, n_assessors, std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
     augmented_data.slice(0) = rankings;
@@ -192,7 +192,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
       theta(t) = rtruncbeta(shape_1(t), shape_2(t), 0.5);
     }
 
-    for(int i = 0; i < n_clusters; ++i){
+    for(uint i = 0; i < n_clusters; ++i){
       update_rho(rho, rho_acceptance, rho_old, rho_index, i,
                  rho_thinning, alpha_old(i), leap_size,
                  clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
@@ -201,7 +201,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
 
     if(t % alpha_jump == 0) {
       ++alpha_index;
-      for(int i = 0; i < n_clusters; ++i){
+      for(uint i = 0; i < n_clusters; ++i){
         alpha(i, alpha_index) = update_alpha(alpha_acceptance, alpha_old(i),
               clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
               clustering ? obs_freq(find(current_cluster_assignment == i)) : obs_freq,

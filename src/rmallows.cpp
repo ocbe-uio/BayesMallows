@@ -33,9 +33,9 @@ using namespace arma;
 //' @references \insertAllCited{}
 //'
 // [[Rcpp::export]]
-arma::mat rmallows(
-    arma::vec rho0,
-    arma::vec obs_freq,
+arma::umat rmallows(
+    arma::uvec rho0,
+    arma::uvec obs_freq,
     double alpha0,
     int n_samples,
     int burnin,
@@ -47,14 +47,14 @@ arma::mat rmallows(
   int n_items = rho0.n_elem;
 
   // Declare the matrix to hold the sampled ranks
-  mat rho(n_items, n_samples);
+  umat rho(n_items, n_samples);
 
   // Other variables used
   int rho_index = 0;
 
   // Vector to hold the iteration value of rho
   // Initializing it to the modal ranking
-  vec rho_iter = rho0;
+  uvec rho_iter = rho0;
 
   int t = 1;
   // This is the Metropolis-Hastings loop
@@ -62,7 +62,7 @@ arma::mat rmallows(
     // Check if the user has tried to stop the running
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
 
-    vec rho_proposal;
+    uvec rho_proposal;
     uvec indices;
     double prob_backward, prob_forward;
 

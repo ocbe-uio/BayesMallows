@@ -7,13 +7,13 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-vec propose_augmentation(const vec& ranks, const uvec& indicator){
-  vec proposal = ranks;
+uvec propose_augmentation(const uvec& ranks, const uvec& indicator){
+  uvec proposal = ranks;
   proposal(find(indicator == 1)) = shuffle(ranks(find(indicator == 1)));
   return proposal;
 }
 
-void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
+void initialize_missing_ranks(umat& rankings, const umat& missing_indicator,
                               const uvec& assessor_missing) {
   int n_assessors = rankings.n_cols;
 
@@ -21,8 +21,8 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
     if(assessor_missing(i) == 0) {
       continue;
     } else {
-      vec rank_vector = rankings.col(i);
-      vec present_ranks = rank_vector(find(missing_indicator.col(i) == 0));
+      uvec rank_vector = rankings.col(i);
+      uvec present_ranks = rank_vector(find(missing_indicator.col(i) == 0));
       uvec missing_inds = find(missing_indicator.col(i) == 1);
       // Find the available ranks and permute them
       vec new_ranks = shuffle(setdiff_template(regspace<vec>(1, rank_vector.n_elem), present_ranks));
@@ -35,11 +35,11 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
   }
 }
 
-void update_missing_ranks(mat& rankings, const uvec& current_cluster_assignment,
+void update_missing_ranks(umat& rankings, const uvec& current_cluster_assignment,
                           vec& aug_acceptance,
                           const umat& missing_indicator,
                           const uvec& assessor_missing,
-                          const vec& alpha, const mat& rho,
+                          const vec& alpha, const umat& rho,
                           const std::string& metric) {
   int n_items = rankings.n_rows;
   int n_assessors = rankings.n_cols;
@@ -51,7 +51,7 @@ void update_missing_ranks(mat& rankings, const uvec& current_cluster_assignment,
     }
 
     // Sample an augmentation proposal
-    vec proposal = propose_augmentation(rankings.col(i), missing_indicator.col(i));
+    uvec proposal = propose_augmentation(rankings.col(i), missing_indicator.col(i));
 
     // Draw a uniform random number
     double u = std::log(randu<double>());

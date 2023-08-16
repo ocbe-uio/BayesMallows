@@ -28,8 +28,8 @@ using namespace arma;
 //' leap_and_shift_probs(rho, n_items, 3)
 //'
 // [[Rcpp::export]]
-Rcpp::List leap_and_shift_probs(const arma::vec rho, const int n_items, const int leap_size = 1) {
-  vec rho_proposal{};
+Rcpp::List leap_and_shift_probs(const arma::uvec rho, const int n_items, const int leap_size = 1) {
+  uvec rho_proposal{};
   uvec indices{};
   double prob_forward, prob_backward;
   leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,

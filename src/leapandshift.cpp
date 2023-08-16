@@ -3,7 +3,7 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-void shift_step(vec& rho_proposal, const vec& rho,
+void shift_step(uvec& rho_proposal, const uvec& rho,
                 const int& u, uvec& indices){
   // Shift step:
   double delta_r = rho_proposal(u) - rho(u);
@@ -27,9 +27,9 @@ void shift_step(vec& rho_proposal, const vec& rho,
 }
 
 
-void leap_and_shift(vec& rho_proposal, uvec& indices,
+void leap_and_shift(uvec& rho_proposal, uvec& indices,
                     double& prob_backward, double& prob_forward,
-                    const vec& rho, int leap_size, bool reduce_indices){
+                    const uvec& rho, int leap_size, bool reduce_indices){
   // Set proposal equal to current
   rho_proposal = rho;
 
@@ -47,8 +47,8 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   int u = randi<int>(distr_param(0, n - 1));
 
   // 2, compute the set S for sampling the new rank
-  support = join_cols(regspace(std::max(1.0, rho(u) - leap_size), 1, rho(u) - 1),
-    regspace(rho(u) + 1, 1, std::min(n * 1.0, rho(u) + leap_size)));
+  support = join_cols(regspace(std::max<uint>(1, rho(u) - leap_size), 1, rho(u) - 1),
+    regspace(rho(u) + 1, 1, std::min<uint>(n * 1, rho(u) + leap_size)));
 
   // 3. assign a random element of the support set, this completes the leap step
   int index = randi<int>(distr_param(0, support.n_elem-1));
@@ -56,8 +56,8 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   rho_proposal(u) = support(index);
 
   // Compute the associated transition probabilities
-  support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) + std::min(n - rho_proposal(u), leap_size * 1.0);
-  if(std::abs(rho_proposal(u) - rho(u)) == 1){
+  support_new = std::min<uint>(rho_proposal(u) - 1, leap_size * 1) + std::min<uint>(n - rho_proposal(u), leap_size * 1);
+  if(std::abs<int>(rho_proposal(u) - rho(u)) == 1){
     // in this case the transition probabilities coincide! (and in fact for leap_size = 1 the L&S is symmetric)
     prob_forward = 1.0 / (n * support.n_elem) + 1.0 / (n * support_new);
     prob_backward = prob_forward;

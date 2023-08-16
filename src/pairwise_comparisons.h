@@ -6,16 +6,16 @@ void update_shape_bernoulli(
     double& shape_2,
     const double& kappa_1,
     const double& kappa_2,
-    const arma::mat& rankings,
+    const arma::umat& rankings,
     const Rcpp::List& constraints
 );
 
 void augment_pairwise(
-    arma::mat& rankings,
+    arma::umat& rankings,
     const arma::uvec& current_cluster_assignment,
     const arma::vec& alpha,
     const double& theta,
-    const arma::mat& rho,
+    const arma::umat& rho,
     const std::string& metric,
     const Rcpp::List& constraints,
     arma::vec& aug_acceptance,

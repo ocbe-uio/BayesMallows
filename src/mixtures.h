@@ -3,9 +3,9 @@
 
 #include "RcppArmadillo.h"
 
-void update_dist_mat(arma::mat& dist_mat, const arma::mat& rankings,
-                     const arma::mat& rho_old, const std::string& metric,
-                     const arma::vec& obs_freq);
+void update_dist_mat(arma::mat& dist_mat, const arma::umat& rankings,
+                     const arma::umat& rho_old, const std::string& metric,
+                     const arma::uvec& obs_freq);
 
 arma::uvec update_cluster_labels(
     const arma::mat& dist_mat,

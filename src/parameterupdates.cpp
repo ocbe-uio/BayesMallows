@@ -8,13 +8,13 @@ using namespace arma;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // Initialize latent ranks as provided by rho_init, or randomly:
-arma::mat initialize_rho(int n_items, int n_cols, Rcpp::Nullable<arma::mat> rho_init){
+arma::umat initialize_rho(uint n_items, uint n_cols, Rcpp::Nullable<arma::umat> rho_init){
   if(rho_init.isNotNull()){
-    return repmat(Rcpp::as<mat>(rho_init), 1, n_cols);
+    return repmat(Rcpp::as<umat>(rho_init), 1, n_cols);
   } else {
-    mat rho_samples(n_items, n_cols);
-    for (int i = 0; i < n_cols; ++i) {
-      rho_samples.col(i) = randperm<vec>(n_items) + 1;
+    umat rho_samples(n_items, n_cols);
+    for (uint i = 0; i < n_cols; ++i) {
+      rho_samples.col(i) = randperm<uvec>(n_items) + 1;
     }
     return rho_samples;
   }
@@ -22,10 +22,10 @@ arma::mat initialize_rho(int n_items, int n_cols, Rcpp::Nullable<arma::mat> rho_
 
 double update_alpha(vec& alpha_acceptance,
                   const double& alpha_old,
-                  const mat& rankings,
-                  const vec& obs_freq,
+                  const umat& rankings,
+                  const uvec& obs_freq,
                   const int& cluster_index,
-                  const vec& rho_old,
+                  const uvec& rho_old,
                   const double& alpha_prop_sd,
                   const std::string& metric,
                   const double& lambda,
@@ -66,15 +66,15 @@ double update_alpha(vec& alpha_acceptance,
 }
 
 
-void update_rho(cube& rho, vec& rho_acceptance, mat& rho_old,
+void update_rho(ucube& rho, vec& rho_acceptance, umat& rho_old,
                 int& rho_index, const int& cluster_index, const int& rho_thinning,
-                const double& alpha_old, const int& leap_size, const mat& rankings,
+                const double& alpha_old, const int& leap_size, const umat& rankings,
                 const std::string& metric, const int& n_items, const int& t,
-                const uvec& element_indices, const vec& obs_freq) {
-  vec rho_cluster = rho_old.col(cluster_index);
+                const uvec& element_indices, const uvec& obs_freq) {
+  uvec rho_cluster = rho_old.col(cluster_index);
 
   // Sample a rank proposal
-  vec rho_proposal;
+  uvec rho_proposal;
   uvec indices;
   double prob_backward, prob_forward;
 

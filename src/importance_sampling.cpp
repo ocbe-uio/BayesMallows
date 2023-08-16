@@ -20,14 +20,14 @@ using namespace arma;
 //' @keywords internal
 //'
 // [[Rcpp::export]]
-arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_items,
+arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, uint n_items,
                           std::string metric = "footrule", int nmc = 1e4
                           ) {
   // The dispersion parameter alpha comes as a vector value
   int n_alphas = alpha_vector.n_elem;
 
   // The reference ranking
-  vec rho = regspace<vec>(1, n_items);
+  uvec rho = regspace<uvec>(1, n_items);
 
   // Vector which holds the result for all alphas
   vec logZ = zeros(n_alphas);
@@ -45,8 +45,8 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       vec support = regspace<vec>(1, n_items);
 
       // Vector which holds the proposed ranks
-      vec ranks = zeros(n_items);
-      vec ranks2 = zeros(n_items);
+      uvec ranks = zeros<uvec>(n_items);
+      uvec ranks2 = zeros<uvec>(n_items);
 
       // Probability of the ranks we get
       double log_q = 0;
@@ -57,7 +57,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       // Loop over possible values given to item j in random order
       ivec myind = randperm<ivec>(n_items);
 
-      for(int j = 0; j < n_items; ++j){
+      for(uint j = 0; j < n_items; ++j){
         int jj = myind(j);
         // Find the elements that have not been taken yet
         uvec inds = find(support != 0);

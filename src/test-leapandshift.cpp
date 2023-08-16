@@ -19,12 +19,12 @@ using namespace arma;
 context("Test leap and shift C++") {
   uvec indices{};
   double prob_backward{}, prob_forward{};
-  vec rho{}, assumption{}, rho_proposal{};
-  int leap_size{}, n_items{};
+  uvec rho{}, assumption{}, rho_proposal{};
+  uint leap_size{}, n_items{};
 
   test_that("leap and shift works") {
     n_items = 5;
-    rho = regspace(1, n_items);
+    rho = conv_to<uvec>::from(regspace(1, n_items));
     leap_size = 1;
     leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
                    rho, leap_size, false);
@@ -37,7 +37,7 @@ context("Test leap and shift C++") {
 
   test_that("leap and shift works") {
     n_items = 10;
-    rho = regspace(1, n_items);
+    rho = conv_to<uvec>::from(regspace(1, n_items));
     rho_proposal = rho;
     leap_size = 3;
     leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,

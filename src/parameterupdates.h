@@ -3,14 +3,14 @@
 
 #include "RcppArmadillo.h"
 
-arma::mat initialize_rho(int n_items, int n_cols,
-                         Rcpp::Nullable<arma::mat> rho_init = R_NilValue);
+arma::umat initialize_rho(uint n_items, uint n_cols,
+                         Rcpp::Nullable<arma::umat> rho_init = R_NilValue);
 double update_alpha(arma::vec& alpha_acceptance,
                   const double& alpha_old,
-                  const arma::mat& rankings,
-                  const arma::vec& obs_freq,
+                  const arma::umat& rankings,
+                  const arma::uvec& obs_freq,
                   const int& cluster_index,
-                  const arma::vec& rho_old,
+                  const arma::uvec& rho_old,
                   const double& alpha_prop_sd,
                   const std::string& metric,
                   const double& lambda,
@@ -18,11 +18,11 @@ double update_alpha(arma::vec& alpha_acceptance,
                   const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue,
                   double alpha_max = 1e6);
 
-void update_rho(arma::cube& rho, arma::vec& rho_acceptance, arma::mat& rho_old,
+void update_rho(arma::ucube& rho, arma::vec& rho_acceptance, arma::umat& rho_old,
                 int& rho_index, const int& cluster_index, const int& rho_thinning,
-                const double& alpha_old, const int& leap_size, const arma::mat& rankings,
+                const double& alpha_old, const int& leap_size, const arma::umat& rankings,
                 const std::string& metric, const int& n_items, const int& t,
-                const arma::uvec& element_indices, const arma::vec& obs_freq);
+                const arma::uvec& element_indices, const arma::uvec& obs_freq);
 
 
 

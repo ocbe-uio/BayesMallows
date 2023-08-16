@@ -56,13 +56,13 @@ using namespace arma;
 //'
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users(
-  const arma::mat& R_obs,
+  const arma::umat& R_obs,
   const std::string& type,
-  const int& n_items,
+  const uint& n_items,
   const int& N,
-  int Time,
+  uint Time,
   const int& mcmc_kernel_app,
-  const int& num_new_obs,
+  const uint& num_new_obs,
   const double alpha_prop_sd = 0.5,
   const double lambda = 0.1,
   const double alpha_max = 1e6,
@@ -76,7 +76,7 @@ Rcpp::List smc_mallows_new_users(
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
-  int n_users = R_obs.n_rows; // total number of users
+  uint n_users = R_obs.n_rows; // total number of users
   if(type == "complete"){
     if (Time > n_users / num_new_obs) {
       Rcpp::warning(                                                  \
@@ -87,7 +87,7 @@ Rcpp::List smc_mallows_new_users(
   }
 
   /* generate rho samples using uniform prior ------------- */
-  cube rho_samples(N, n_items, Time + 1);
+  ucube rho_samples(N, n_items, Time + 1);
   rho_samples.slice(0) = initialize_rho(n_items, N).t();
 
   /* generate alpha samples using exponential prior ------- */
@@ -101,9 +101,9 @@ Rcpp::List smc_mallows_new_users(
   rowvec ESS_vec(Time);
 
   // this is to store the augmentations of the observed rankings for each particle
-  cube aug_rankings; // no. users by items by particles
+  ucube aug_rankings; // no. users by items by particles
   if(type == "partial" || type == "partial_alpha_fixed"){
-    aug_rankings = zeros(n_users, n_items, N);
+    aug_rankings = zeros<ucube>(n_users, n_items, N);
   }
 
   /* ====================================================== */
@@ -111,7 +111,7 @@ Rcpp::List smc_mallows_new_users(
   /* ====================================================== */
   int num_obs = 0;
 
-  for (int tt{}; tt < Time; ++tt) {
+  for (uint tt{}; tt < Time; ++tt) {
     if (verbose) REprintf("observe %i out of %i \n", tt + 1, Time);
 
     // keep tally of how many ranking observations we have so far
@@ -123,7 +123,7 @@ Rcpp::List smc_mallows_new_users(
     // create two ranking dataset to use for the reweight and move stages of the
     // algorithm
     int row_start;
-    mat new_observed_rankings, all_observed_rankings;
+    umat new_observed_rankings, all_observed_rankings;
     if(type == "complete"){
       row_start = num_obs - num_new_obs;
       new_observed_rankings = R_obs.submat(row_start, 0, num_obs - 1, R_obs.n_cols - 1);
@@ -176,7 +176,7 @@ Rcpp::List smc_mallows_new_users(
           // move each particle containing sample of rho and alpha by using
           // the MCMC kernels
           const double& as = alpha_samples(ii, tt + 1);
-          const rowvec& rs = \
+          const urowvec& rs = \
             rho_samples(span(ii), span::all, span(tt + 1));
           rho_samples(span(ii), span::all, span(tt + 1)) =                 \
             metropolis_hastings_rho(                                       \
@@ -190,10 +190,10 @@ Rcpp::List smc_mallows_new_users(
       } else if(type == "partial" || type == "partial_alpha_fixed"){
           for (int kk = 0; kk < mcmc_kernel_app; ++kk) {
             double as = (type == "partial" ? alpha_samples(ii, tt + 1) : alpha);
-            mat all_observed_rankings;
+            umat all_observed_rankings;
             all_observed_rankings = aug_rankings(span(0, num_obs - 1), span::all, span(ii));
-            mat rs_slice = rho_samples.slice(tt + 1);
-            rowvec rs = rs_slice.row(ii);
+            umat rs_slice = rho_samples.slice(tt + 1);
+            urowvec rs = rs_slice.row(ii);
             // move each particle containing sample of rho and alpha by using
             // the MCMC kernels
             rho_samples(span(ii), span::all, span(tt + 1)) =                 \
@@ -207,9 +207,9 @@ Rcpp::List smc_mallows_new_users(
               );
             }
             for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
-              rowvec ar;
+              urowvec ar;
               ar = aug_rankings(span(jj), span::all, span(ii));
-              vec mh_aug_result;
+              uvec mh_aug_result;
               mh_aug_result = metropolis_hastings_aug_ranking(\
                 as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(),
                 is_pseudo(aug_method, metric), metric

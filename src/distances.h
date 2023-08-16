@@ -4,10 +4,10 @@
 #include "RcppArmadillo.h" // needed because of rank_dist_vec function
 
 
-double get_rank_distance(arma::vec, arma::vec, std::string);
-double rank_dist_sum(const arma::mat&, const arma::vec&, const std::string&, const arma::vec&);
+double get_rank_distance(arma::uvec, arma::uvec, std::string);
+double rank_dist_sum(const arma::umat&, const arma::uvec&, const std::string&, const arma::uvec&);
 
-arma::vec rank_dist_vec(const arma::mat& rankings, const arma::vec& rho,
-                        const std::string& metric, const arma::vec& obs_freq);
+arma::vec rank_dist_vec(const arma::umat& rankings, const arma::uvec& rho,
+                        const std::string& metric, const arma::uvec& obs_freq);
 
 #endif

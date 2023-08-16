@@ -20,23 +20,23 @@
 //' that is compatible with the new observed ranking for a user
 // [[Rcpp::export]]
 Rcpp::List correction_kernel(
-  const arma::vec observed_ranking, //R_obs
-  const arma::vec current_ranking,  // R_curr
-  const int n_items
+  const arma::uvec observed_ranking, //R_obs
+  const arma::uvec current_ranking,  // R_curr
+  const uint n_items
 ) {
   // check if new information means 'mistakes' made with augmented rankings
   const bool observed_equals_current = approx_equal(\
     observed_ranking, current_ranking, "absdiff", 0.1\
   );
   double correction_prob = 1.0;
-  arma::vec proposed_ranking;
+  arma::uvec proposed_ranking;
   if (observed_equals_current) {
     proposed_ranking = current_ranking;
   } else {
     // resample from smaller pool of possible augmented rankings
 
     //  find elements missing from original observed ranking
-    arma::vec remaining_set = setdiff_template(current_ranking, observed_ranking);
+    arma::uvec remaining_set = arma::conv_to<arma::uvec>::from(setdiff_template(current_ranking, observed_ranking));
 
     // create new agumented ranking by sampling remaining ranks from set uniformly
     proposed_ranking = observed_ranking;

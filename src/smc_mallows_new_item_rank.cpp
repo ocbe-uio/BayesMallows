@@ -10,10 +10,10 @@ using namespace arma;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 void new_items_move_step(
-    cube& rho_samples,
+    ucube& rho_samples,
     mat& alpha_samples,
-    cube& aug_rankings,
-    const cube& R_obs,
+    ucube& aug_rankings,
+    const ucube& R_obs,
     const std::string& aug_method,
     const Rcpp::Nullable<arma::vec>& logz_estimate,
     const double& alpha,
@@ -42,7 +42,7 @@ void new_items_move_step(
     }
 
     for (uword jj = 0; jj < num_ranks; ++jj) {
-      vec mh_aug_result = metropolis_hastings_aug_ranking(                                  \
+      uvec mh_aug_result = metropolis_hastings_aug_ranking(                                  \
           alpha_fixed ? alpha : alpha_samples(ii, ttplus1), rho_samples.slice(ttplus1).row(ii).t(),\
           n_items, R_obs.slice(ttplus1).row(jj).t(),                                              \
           aug_rankings.slice(ii).row(jj).t(),
@@ -54,11 +54,11 @@ void new_items_move_step(
   }
 }
 
-arma::cube augment_rankings(
+arma::ucube augment_rankings(
   const unsigned int& n_items,
-  arma::cube& R_obs,
+  arma::ucube& R_obs,
   const unsigned int& N,
-  arma::cube rho_samples,
+  arma::ucube rho_samples,
   arma::mat alpha_samples,
   const double alpha = 0,
   const std::string& aug_method = "random",
@@ -71,8 +71,8 @@ arma::cube augment_rankings(
   const unsigned int& num_ranks = R_obs.n_rows;
 
   // each particle has its own set of augmented rankings
-  cube aug_rankings(num_ranks, n_items, N, fill::zeros);
-  cube prev_aug_rankings(num_ranks, n_items, N, fill::zeros);
+  ucube aug_rankings(num_ranks, n_items, N, fill::zeros);
+  ucube prev_aug_rankings(num_ranks, n_items, N, fill::zeros);
 
   // augment incomplete ranks to initialise
   const ivec ranks = regspace<ivec>(1, n_items);
@@ -89,14 +89,14 @@ arma::cube augment_rankings(
     // make the correction
     for (uword jj = 0; jj < num_ranks; ++jj) {
       // fill in missing ranks based on choice of augmentation method
-      vec R_obs_slice_0_row_jj = R_obs.slice(0).row(jj).t();
-      const vec remaining_set = setdiff_template(ranks, R_obs_slice_0_row_jj);
+      uvec R_obs_slice_0_row_jj = R_obs.slice(0).row(jj).t();
+      const uvec remaining_set = conv_to<uvec>::from(setdiff_template(ranks, R_obs_slice_0_row_jj));
       const bool pseudo = is_pseudo(aug_method, metric);
       if (!pseudo) {
         // create new augmented ranking by sampling remaining ranks from set uniformly
-        vec rset = shuffle(remaining_set);
+        uvec rset = shuffle(remaining_set);
 
-        vec partial_ranking = R_obs_slice_0_row_jj;
+        uvec partial_ranking = R_obs_slice_0_row_jj;
         partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
 
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
@@ -109,7 +109,7 @@ arma::cube augment_rankings(
           item_ordering, R_obs_slice_0_row_jj, remaining_set, rho_samples.slice(0).row(ii).t(),\
           alpha_fixed ? alpha : alpha_samples(ii, 0), n_items, metric\
         );
-        const vec& a_rank = proposal["aug_ranking"];
+        const uvec& a_rank = proposal["aug_ranking"];
         aug_rankings(span(jj), span::all, span(ii)) = a_rank;
       }
     }
@@ -148,13 +148,13 @@ arma::cube augment_rankings(
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_item_rank(
   const unsigned int& n_items,
-  arma::cube& R_obs,
+  arma::ucube& R_obs,
   const unsigned int& N,
   const unsigned int Time,
   const Rcpp::Nullable<arma::vec> logz_estimate,
   const int& mcmc_kernel_app,
   Rcpp::Nullable<arma::cube> aug_rankings_init = R_NilValue,
-  Rcpp::Nullable<arma::mat> rho_samples_init = R_NilValue,
+  Rcpp::Nullable<arma::umat> rho_samples_init = R_NilValue,
   arma::vec alpha_samples_init = 0,
   const double alpha = 0,
   const double alpha_prop_sd = 0.5,
@@ -171,9 +171,9 @@ Rcpp::List smc_mallows_new_item_rank(
   /* ====================================================== */
 
   // Generate N initial samples of rho using the uniform prior
-  cube rho_samples(N, n_items, Time);
+  ucube rho_samples(N, n_items, Time);
   if (rho_samples_init.isNotNull()) {
-    rho_samples.slice(0) = Rcpp::as<arma::mat>(rho_samples_init);
+    rho_samples.slice(0) = Rcpp::as<arma::umat>(rho_samples_init);
   } else {
     rho_samples.slice(0) = initialize_rho(n_items, N).t();
   }
@@ -199,14 +199,14 @@ Rcpp::List smc_mallows_new_item_rank(
   const unsigned int& num_ranks = R_obs.n_rows;
 
   // each particle has its own set of augmented rankings
-  cube aug_rankings(num_ranks, n_items, N, fill::zeros);
-  cube prev_aug_rankings(num_ranks, n_items, N, fill::zeros);
+  ucube aug_rankings(num_ranks, n_items, N, fill::zeros);
+  ucube prev_aug_rankings(num_ranks, n_items, N, fill::zeros);
 
   // augment incomplete ranks to initialise
   const ivec ranks = regspace<ivec>(1, n_items);
 
   // augment rankings for proposal
-  arma::cube aug_rankings_init_2 = aug_rankings_init.isNotNull() ? Rcpp::as<arma::cube>(aug_rankings_init) : arma::cube(0,0,0);
+  arma::ucube aug_rankings_init_2 = aug_rankings_init.isNotNull() ? Rcpp::as<arma::ucube>(aug_rankings_init) : arma::ucube(0,0,0);
   if (aug_rankings_init_2.size() == 0) {
     aug_rankings = augment_rankings(
       n_items, R_obs, N, rho_samples, alpha_samples, alpha, aug_method,
@@ -255,7 +255,7 @@ Rcpp::List smc_mallows_new_item_rank(
             alpha_fixed ? alpha : alpha_samples(ii, tt + 1), n_items, metric
           );
         }
-        const vec& c_rank = check_correction["ranking"];
+        const uvec& c_rank = check_correction["ranking"];
         aug_rankings(span(jj), span::all, span(ii)) = c_rank;
         const double& c_prob = check_correction["correction_prob"];
         particle_correction_prob(ii) *= c_prob;

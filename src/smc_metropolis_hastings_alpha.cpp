@@ -41,9 +41,9 @@ using namespace arma;
 // [[Rcpp::export]]
 double metropolis_hastings_alpha(
   const double alpha,
-  const int n_items,
-  const arma::mat rankings,
-  const arma::vec rho,
+  const uint n_items,
+  const arma::umat rankings,
+  const arma::uvec rho,
   const Rcpp::Nullable<arma::vec> logz_estimate,
   const std::string metric = "footrule",
   const double alpha_prop_sd = 0.5,

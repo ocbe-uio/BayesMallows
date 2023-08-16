@@ -24,9 +24,9 @@ using namespace arma;
 //'         forward_auxiliary_ranking_probability, a numerical value for the probability of correcting the ranking to be compatible with R_obs.
 // [[Rcpp::export]]
 Rcpp::List correction_kernel_pseudo(
-    const arma::vec current_ranking,  //R_curr
-    arma::vec observed_ranking, //R_obs
-    const arma::vec rho,
+    const arma::uvec current_ranking,  //R_curr
+    arma::uvec observed_ranking, //R_obs
+    const arma::uvec rho,
     const double alpha,
     const int n_items,
     const std::string metric = "footrule"
@@ -49,7 +49,7 @@ Rcpp::List correction_kernel_pseudo(
         const uvec& unranked_items = find_nonfinite(observed_ranking);
 
         // find elements missing from original observed ranking
-        vec remaining_set = setdiff_template(current_ranking, observed_ranking);
+        uvec remaining_set = arma::conv_to<uvec>::from(setdiff_template(current_ranking, observed_ranking));
 
         // if we only have one missing rank, then we can
         if (remaining_set.n_elem == 1) {
@@ -64,7 +64,7 @@ Rcpp::List correction_kernel_pseudo(
 
             // creating now augmented ranking whilst simultaneously calculating the backwards prob of making the same
             // augmented ranking with an alternative item ordering
-            vec auxiliary_ranking = zeros<vec>(num_items_unranked);
+            uvec auxiliary_ranking = zeros<uvec>(num_items_unranked);
 
             //########################################################
             //## Create new augmented ranking
@@ -72,7 +72,7 @@ Rcpp::List correction_kernel_pseudo(
             // given the item ordering and the list of missing rank, determine the sample probs for each iteration
             for (uword jj = 0; jj < num_items_unranked - 1; ++jj) {
                 // the rank of item in rho
-                vec rho_item_rank;
+                uvec rho_item_rank;
                 rho_item_rank = rho(item_ordering(jj));
 
                 // next we get the sample probabilites for selecting a particular rank for

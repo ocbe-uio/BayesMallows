@@ -9,10 +9,10 @@ using namespace arma;
 
 double smc_calculate_probability(
   double auxiliary_ranking_probability,
-  vec& remaining_set,
+  uvec& remaining_set,
   const uvec& item_ordering,
-  vec& current_ranking,
-  const vec& rho,
+  uvec& current_ranking,
+  const uvec& rho,
   const uword& num_items_unranked,
   const double& alpha,
   const int& n_items,
@@ -24,7 +24,7 @@ double smc_calculate_probability(
     const uword item_to_sample_rank = item_ordering(jj);
 
     // the rank of item in rho
-    vec rho_item_rank;
+    uvec rho_item_rank;
     rho_item_rank = rho(item_to_sample_rank);
 
     // next we get the sample probabilites for selecting a particular rank for
@@ -74,10 +74,10 @@ double smc_calculate_probability(
 // [[Rcpp::export]]
 double calculate_backward_probability(
     arma::uvec item_ordering,
-    arma::vec partial_ranking,
-    arma::vec current_ranking,
-    arma::vec remaining_set,
-    const arma::vec rho,
+    arma::uvec partial_ranking,
+    arma::uvec current_ranking,
+    arma::uvec remaining_set,
+    const arma::uvec rho,
     const double alpha,
     const int n_items,
     const std::string metric = "footrule"
@@ -141,9 +141,9 @@ double calculate_backward_probability(
 // [[Rcpp::export]]
 Rcpp::List calculate_forward_probability(
     arma::uvec item_ordering,
-    arma::vec partial_ranking,
-    arma::vec remaining_set,
-    const arma::vec rho,
+    arma::uvec partial_ranking,
+    arma::uvec remaining_set,
+    const arma::uvec rho,
     const double alpha,
     const int n_items,
     const std::string metric = "footrule"
@@ -160,7 +160,7 @@ Rcpp::List calculate_forward_probability(
     // uniformly
     partial_ranking.elem(find_nonfinite(partial_ranking)) = remaining_set;
   } else {
-    vec auxiliary_ranking = zeros<vec>(num_items_unranked);
+    uvec auxiliary_ranking = zeros<uvec>(num_items_unranked);
 
     /* ====================================================== */
     /* LOOP TO CALCULATE FORWARD AND BACKWARD PROBABILITY     */
@@ -179,7 +179,7 @@ Rcpp::List calculate_forward_probability(
     auxiliary_ranking(num_items_unranked - 1) = as_scalar(remaining_set);
 
     // fit the augmented ranking within the partial rankings with NAs
-    const vec& ar = conv_to<vec>::from(auxiliary_ranking);
+    const uvec& ar = conv_to<uvec>::from(auxiliary_ranking);
     partial_ranking.elem(item_ordering) = ar; // ranks for items
   }
   return Rcpp::List::create(

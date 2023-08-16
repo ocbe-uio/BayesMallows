@@ -42,16 +42,16 @@ using namespace arma;
 //' )
 //'
 // [[Rcpp::export]]
-arma::vec metropolis_hastings_rho(
+arma::uvec metropolis_hastings_rho(
 	const double alpha,
-	const int n_items,
-	const arma::mat rankings,
-	const arma::vec rho,
+	const uint n_items,
+	const arma::umat rankings,
+	const arma::uvec rho,
 	const std::string metric = "footnote",
 	const int leap_size = 1
 ) {
   // create new potential consensus ranking
-  vec rho_proposal{};
+  uvec rho_proposal{};
   uvec indices{};
   double prob_forward, prob_backward;
   leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,

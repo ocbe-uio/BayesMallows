@@ -25,7 +25,7 @@ double rtruncbeta(int shape1, int shape2, double trunc = 1) {
 }
 
 uvec maybe_offset_indices(
-  vec& x,
+  uvec& x,
   uvec idx_x,
   const bool& quiet = true
 ) {

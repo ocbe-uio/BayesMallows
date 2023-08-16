@@ -52,9 +52,9 @@ using namespace arma;
 // [[Rcpp::export]]
 double get_exponent_sum(
   const double alpha,
-  const arma::vec rho,
-  const int n_items,
-  arma::mat rankings,
+  const arma::uvec rho,
+  const uint n_items,
+  arma::umat rankings,
   const std::string metric = "footrule"
 ) {
   /* Transpose matrices as needed ------------------------- */
@@ -62,7 +62,7 @@ double get_exponent_sum(
     rankings = rankings.t();
   }
 
-  vec obs_freq = ones(rankings.n_cols);
+  uvec obs_freq = ones<uvec>(rankings.n_cols);
   double sum_distance = rank_dist_sum(rankings, rho, metric, obs_freq);
   double mallows_loglik = -alpha / n_items * sum_distance;
   return(mallows_loglik);

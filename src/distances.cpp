@@ -6,11 +6,11 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-double cayley_distance(const vec& r1, const vec& r2){
+double cayley_distance(const uvec& r1, const uvec& r2){
   double distance = 0;
   int n = r1.n_elem;
   double tmp1;
-  vec tmp2 = r1;
+  uvec tmp2 = r1;
 
   // This is a C++ translation of Rankcluster::distCayley
   for(int i = 0; i < n; ++i){
@@ -25,15 +25,15 @@ double cayley_distance(const vec& r1, const vec& r2){
   return distance;
 }
 
-double footrule_distance(const vec& r1, const vec& r2){
+double footrule_distance(const uvec& r1, const uvec& r2){
   return norm(r1 - r2, 1);
 }
 
-double hamming_distance(const vec& r1, const vec& r2){
+double hamming_distance(const uvec& r1, const uvec& r2){
   return sum(r1 != r2);
 }
 
-double kendall_distance(const vec& r1, const vec& r2){
+double kendall_distance(const uvec& r1, const uvec& r2){
   double distance = 0;
   int n = r1.n_elem;
 
@@ -48,11 +48,11 @@ double kendall_distance(const vec& r1, const vec& r2){
   return distance;
 }
 
-double spearman_distance(const vec& r1, const vec& r2){
+double spearman_distance(const uvec& r1, const uvec& r2){
   return std::pow(norm(r1 - r2, 2), 2.0);
 }
 
-double ulam_distance(const vec& r1, const vec& r2){
+double ulam_distance(const uvec& r1, const uvec& r2){
   int N = r1.n_elem;
 
   ivec a = conv_to<ivec>::from(r1);
@@ -95,7 +95,7 @@ double ulam_distance(const vec& r1, const vec& r2){
 //' @references \insertAllCited{}
 //' @keywords internal
 // [[Rcpp::export]]
-double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
+double  get_rank_distance(arma::uvec r1, arma::uvec r2, std::string metric){
   if (r1.n_elem != r2.n_elem){
     Rcpp::stop("r1 and r2 must have the same length");
   }
@@ -120,18 +120,18 @@ double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
 
 
 // [[Rcpp::export]]
-double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho,
-                     const std::string& metric, const arma::vec& obs_freq){
+double rank_dist_sum(const arma::umat& rankings, const arma::uvec& rho,
+                     const std::string& metric, const arma::uvec& obs_freq){
   return sum(rank_dist_vec(rankings, rho, metric, obs_freq));
 }
 
 
 
 // [[Rcpp::export]]
-arma::vec rank_dist_vec(const arma::mat& rankings,
-                        const arma::vec& rho,
+arma::vec rank_dist_vec(const arma::umat& rankings,
+                        const arma::uvec& rho,
                         const std::string& metric,
-                        const arma::vec& obs_freq){
+                        const arma::uvec& obs_freq){
   int n = rankings.n_cols;
   vec result = zeros(n);
 

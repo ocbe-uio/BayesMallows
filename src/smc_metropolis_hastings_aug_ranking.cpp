@@ -23,17 +23,17 @@ using namespace arma;
 //' @export
 //' @keywords internal
 // [[Rcpp::export]]
-arma::vec metropolis_hastings_aug_ranking(
+arma::uvec metropolis_hastings_aug_ranking(
 	const double& alpha,
-	const arma::vec& rho,
-	const int& n_items,
-	const arma::vec& partial_ranking,
-	const arma::vec& current_ranking,
+	const arma::uvec& rho,
+	const uint& n_items,
+	const arma::uvec& partial_ranking,
+	const arma::uvec& current_ranking,
 	const bool& pseudo,
 	const std::string& metric = "footnote"
 ) {
   double forward_backward_prob{};
-  vec proposed_ranking;
+  uvec proposed_ranking;
   // augment incomplete ranks to initialise
   vec ranks = regspace(1, n_items);
 
@@ -41,7 +41,7 @@ arma::vec metropolis_hastings_aug_ranking(
   const uvec unranked_items = find_nonfinite(partial_ranking);
 
   // find unallocated ranks from original observed ranking
-  const vec remaining_set = setdiff_template(current_ranking, partial_ranking);
+  const uvec remaining_set = conv_to<uvec>::from(setdiff_template(current_ranking, partial_ranking));
 
   // if the observed and augmented ranking are exactly the same then break
   const bool condition_1 = approx_equal(
@@ -61,7 +61,7 @@ arma::vec metropolis_hastings_aug_ranking(
         item_ordering, partial_ranking, remaining_set, rho, alpha, n_items,
         metric
       );
-      const vec& proposed_augmented_ranking = proposal["aug_ranking"];
+      const uvec& proposed_augmented_ranking = proposal["aug_ranking"];
       double forward_prob = proposal["forward_prob"];
 
       double backward_prob = calculate_backward_probability(

@@ -22,9 +22,9 @@ using namespace arma;
 //' @export
 // [[Rcpp::export]]
 arma::vec get_sample_probabilities(
-  const arma::vec rho_item_rank,
+  const arma::uvec rho_item_rank,
   const double alpha,
-  const arma::vec remaining_set_ranks,
+  const arma::uvec remaining_set_ranks,
   const int n_items,
   const std::string metric = "footrule"
 ) {
@@ -34,7 +34,7 @@ arma::vec get_sample_probabilities(
 
   // cycle through each item and calculate its specific prob
   for (uword ii = 0; ii < num_ranks; ++ii) {
-    const vec item_rank = {remaining_set_ranks(ii)};
+    const uvec item_rank = {remaining_set_ranks(ii)};
     const double rank_dist = get_rank_distance(rho_item_rank, item_rank, metric);
     const double sample_prob = -(alpha / n_items) * rank_dist;
     sample_prob_list(ii) = sample_prob;
