@@ -41,7 +41,7 @@ Rcpp::List correction_kernel(
     // create new agumented ranking by sampling remaining ranks from set uniformly
     proposed_ranking = observed_ranking;
 
-    const arma::uvec unranked_items = find_nonfinite(proposed_ranking);
+    const arma::uvec unranked_items = find(proposed_ranking == 0);
     if (remaining_set.n_elem == 1) {
       proposed_ranking.elem(unranked_items) = remaining_set;
     } else {

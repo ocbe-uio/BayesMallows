@@ -31,7 +31,7 @@ uvec maybe_offset_indices(
 ) {
   // Adjust the indices of x (i.e., idx_x) depending on whether it seems to be
   // using R or C++ indices.
-  const uvec& io_idx_cpp   = find_nonfinite(x);
+  const uvec& io_idx_cpp   = find(x == 0);
   const uvec& io_idx_input = sort(idx_x);
   std::string message = "C++ indices detected. Unchanged.";
   if (any(io_idx_input - io_idx_cpp)) {

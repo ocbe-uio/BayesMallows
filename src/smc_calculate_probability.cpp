@@ -158,7 +158,7 @@ Rcpp::List calculate_forward_probability(
   if (num_items_unranked == 1) {
     // create new agumented ranking by sampling remaining ranks from set
     // uniformly
-    partial_ranking.elem(find_nonfinite(partial_ranking)) = remaining_set;
+    partial_ranking.elem(find(partial_ranking == 0)) = remaining_set;
   } else {
     uvec auxiliary_ranking = zeros<uvec>(num_items_unranked);
 

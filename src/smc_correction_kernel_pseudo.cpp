@@ -46,7 +46,7 @@ Rcpp::List correction_kernel_pseudo(
         // ranks = c(1:n_items)
 
         // find items missing from original observed ranking
-        const uvec& unranked_items = find_nonfinite(observed_ranking);
+        const uvec& unranked_items = find(observed_ranking == 0);
 
         // find elements missing from original observed ranking
         uvec remaining_set = arma::conv_to<uvec>::from(setdiff_template(current_ranking, observed_ranking));

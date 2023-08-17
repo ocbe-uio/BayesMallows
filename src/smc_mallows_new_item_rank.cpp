@@ -97,12 +97,12 @@ arma::ucube augment_rankings(
         uvec rset = shuffle(remaining_set);
 
         uvec partial_ranking = R_obs_slice_0_row_jj;
-        partial_ranking.elem(find_nonfinite(partial_ranking)) = rset;
+        partial_ranking.elem(find(partial_ranking == 0)) = rset;
 
         aug_rankings.slice(ii).row(jj) = partial_ranking.t();
       } else {
         // find items missing from original observed ranking
-        const uvec& unranked_items = find_nonfinite(R_obs_slice_0_row_jj);
+        const uvec& unranked_items = find(R_obs_slice_0_row_jj == 0);
         // randomly permute the unranked items to give the order in which they will be allocated
         uvec item_ordering = shuffle(unranked_items);
         const Rcpp::List proposal = calculate_forward_probability(\

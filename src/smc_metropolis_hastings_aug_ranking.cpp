@@ -38,7 +38,7 @@ arma::uvec metropolis_hastings_aug_ranking(
   vec ranks = regspace(1, n_items);
 
   // find items missing from original observed ranking
-  const uvec unranked_items = find_nonfinite(partial_ranking);
+  const uvec unranked_items = find(partial_ranking == 0);
 
   // find unallocated ranks from original observed ranking
   const uvec remaining_set = conv_to<uvec>::from(setdiff_template(current_ranking, partial_ranking));
