@@ -6,7 +6,7 @@ using namespace arma;
 void shift_step(uvec& rho_proposal, const uvec& rho,
                 const int& u, uvec& indices){
   // Shift step:
-  double delta_r = rho_proposal(u) - rho(u);
+  int delta_r = rho_proposal(u) - rho(u);
   indices = zeros<uvec>(std::abs(delta_r) + 1);
   indices[0] = u;
   int index;
