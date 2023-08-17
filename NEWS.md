@@ -1,3 +1,5 @@
+# BayesMallows (development version)
+
 # BayesMallows 1.3.0
 
 * Added heat_plot() function (#255)
