@@ -1,4 +1,6 @@
-# BayesMallows (development version)
+# BayesMallows 1.3.1
+
+* Fixed package documentation issue on CRAN.
 
 # BayesMallows 1.3.0
 
