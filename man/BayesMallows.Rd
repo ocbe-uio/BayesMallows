@@ -3,6 +3,7 @@
 \docType{package}
 \name{BayesMallows}
 \alias{BayesMallows}
+\alias{BayesMallows-package}
 \title{BayesMallows: Bayesian Preference Learning with the Mallows Rank Model.}
 \description{
 The BayesMallows package provides functionality for fully

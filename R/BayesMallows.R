@@ -27,6 +27,7 @@
 #'
 #' @docType package
 #' @name BayesMallows
+#' @aliases BayesMallows-package
 #'
 #' @references \insertAllCited{}
 NULL
