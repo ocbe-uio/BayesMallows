@@ -14,11 +14,11 @@ compute_consensus <- function(model_fit, ...) {
   UseMethod("compute_consensus")
 }
 
-.compute_cp_consensus <- function(df, ...) {
+.compute_cp_consensus <- function(model_fit, ...) {
   UseMethod(".compute_cp_consensus")
 }
 
-.compute_map_consensus <- function(df, ...) {
+.compute_map_consensus <- function(model_fit, ...) {
   UseMethod(".compute_map_consensus")
 }
 
@@ -119,33 +119,37 @@ compute_consensus.BayesMallows <- function(model_fit, type = "CP", burnin = mode
 #' @param burnin A numeric value specifying the number of iterations
 #' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
 #' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
-#' @author Anja Stein
 #'
-compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin) {
+#' @param ... other arguments passed to methods.
+#'
+#' @author Anja Stein
+#' @export
+#'
+compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin, ...) {
   if (type == "CP") {
-    .compute_cp_consensus(model_fit, burnin = burnin)
+    .compute_cp_consensus(model_fit, burnin = burnin, ...)
   } else if (type == "MAP") {
-    .compute_map_consensus(model_fit, burnin = burnin)
+    .compute_map_consensus(model_fit, burnin = burnin, ...)
   }
 }
 
-.compute_cp_consensus.consensus_BayesMallows <- function(df) {
+.compute_cp_consensus.consensus_BayesMallows <- function(model_fit, ...) {
   # Count per item, cluster, and value
-  df <- aggregate_cp_consensus(df)
+  model_fit <- aggregate_cp_consensus(model_fit)
   # Find the CP consensus per cluster, using the find_cpc function
-  df <- find_cpc(df)
+  model_fit <- find_cpc(model_fit)
 
-  df <- df[order(df$cluster, df$ranking), ]
+  model_fit <- model_fit[order(model_fit$cluster, model_fit$ranking), ]
 
   # If there is only one cluster, we drop the cluster column
-  if (length(unique(df$cluster)) == 1) {
-    df$cluster <- NULL
+  if (length(unique(model_fit$cluster)) == 1) {
+    model_fit$cluster <- NULL
   }
 
-  return(df)
+  return(model_fit)
 }
 
-.compute_cp_consensus.consensus_SMCMallows <- function(model_fit, burnin) {
+.compute_cp_consensus.consensus_SMCMallows <- function(model_fit, burnin, ...) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
@@ -222,46 +226,46 @@ find_cpc <- function(group_df, group_var = "cluster") {
   return(result)
 }
 
-.compute_map_consensus.consensus_BayesMallows <- function(df) {
+.compute_map_consensus.consensus_BayesMallows <- function(model_fit, ...) {
 
   # Store the total number of iterations after burnin
-  n_samples <- length(unique(df$iteration))
+  n_samples <- length(unique(model_fit$iteration))
 
   # Reshape to get items along columns
-  df <- stats::reshape(as.data.frame(df),
+  model_fit <- stats::reshape(as.data.frame(model_fit),
     direction = "wide",
     idvar = c("cluster", "iteration"),
     timevar = "item"
   )
-  names(df) <- gsub("^value\\.", "", names(df))
+  names(model_fit) <- gsub("^value\\.", "", names(model_fit))
 
-  df <- aggregate_map_consensus(df, n_samples)
+  model_fit <- aggregate_map_consensus(model_fit, n_samples)
 
   # Now collect one set of ranks per cluster
-  df$id <- seq_len(nrow(df))
-  df <- stats::reshape(as.data.frame(df),
+  model_fit$id <- seq_len(nrow(model_fit))
+  model_fit <- stats::reshape(as.data.frame(model_fit),
     direction = "long",
-    varying = setdiff(names(df), c("cluster", "probability", "id")),
+    varying = setdiff(names(model_fit), c("cluster", "probability", "id")),
     v.names = "map_ranking",
     timevar = "item",
     idvar = c("cluster", "probability", "id"),
-    times = setdiff(names(df), c("cluster", "probability", "id"))
+    times = setdiff(names(model_fit), c("cluster", "probability", "id"))
   )
-  rownames(df) <- NULL
-  df$id <- NULL
+  rownames(model_fit) <- NULL
+  model_fit$id <- NULL
 
   # Sort according to cluster and ranking
-  df <- df[order(df$cluster, df$map_ranking), , drop = FALSE]
+  model_fit <- model_fit[order(model_fit$cluster, model_fit$map_ranking), , drop = FALSE]
 
-  if (length(unique(df$cluster)) == 1) {
-    df$cluster <- NULL
+  if (length(unique(model_fit$cluster)) == 1) {
+    model_fit$cluster <- NULL
   }
 
-  return(df)
+  return(model_fit)
 }
 
 # AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_rho_consensus
-.compute_map_consensus.consensus_SMCMallows <- function(model_fit, burnin = model_fit$burnin) {
+.compute_map_consensus.consensus_SMCMallows <- function(model_fit, burnin = model_fit$burnin, ...) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
