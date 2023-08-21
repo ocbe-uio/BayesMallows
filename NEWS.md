@@ -1,3 +1,7 @@
+# BayesMallows 1.3.1
+
+* Fixed package documentation issue on CRAN.
+
 # BayesMallows 1.3.0
 
 * Added heat_plot() function (#255)
