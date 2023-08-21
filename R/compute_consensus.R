@@ -123,6 +123,7 @@ compute_consensus.BayesMallows <- function(model_fit, type = "CP", burnin = mode
 #' @param ... other arguments passed to methods.
 #'
 #' @author Anja Stein
+#' @export
 #'
 compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin, ...) {
   if (type == "CP") {
