@@ -4,7 +4,7 @@
 \alias{compute_consensus.consensus_SMCMallows}
 \title{Compute Consensus Ranking}
 \usage{
-\method{compute_consensus}{consensus_SMCMallows}(model_fit, type, burnin)
+\method{compute_consensus}{consensus_SMCMallows}(model_fit, type, burnin, ...)
 }
 \arguments{
 \item{model_fit}{An object returned from \code{\link{compute_mallows}}.}
@@ -15,6 +15,8 @@
 \item{burnin}{A numeric value specifying the number of iterations
 to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
 provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
+
+\item{...}{other arguments passed to methods.}
 }
 \description{
 Compute the consensus ranking using either cumulative probability (CP) or maximum a posteriori (MAP) consensus

@@ -1,12 +1,10 @@
 ## Resubmission Note
-This is a resubmission. It adds a heat plot function, removes use of some soft-deprecated ggplot functions, improves documentation, and does internal refactoring.
+This is a resubmission. It fixes a documentation issues, by creating an alias "BayesMallows-package". It also fixes some issues related to S3 methods which now generate NOTEs in r-devel, but have previously gone unnoticed.
 
 
 ## Test Environments
-* local Windows install, R 4.2.2.
+* local Windows install, R 4.3.1.
 * windows, devel, release and old-release.
-* Apple Silicon (M1) via rhub.
-* valgrind and GCC-UBSAN via rhub.
 * R-CMD-check via GitHub Actions on windows-latest, macOS-latest, ubuntu-20.04 (release), and ubuntu-20.04 (devel).
 
 ## R CMD CHECK results
