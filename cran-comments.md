@@ -1,5 +1,5 @@
 ## Resubmission Note
-This is a resubmission. It fixes a documentation issues, by creating an alias "BayesMallows-package". It also fixes some issues related to S3 methods which now generate NOTEs in r-devel, but have previously gone unnoticed.
+This is a resubmission. It fixes an LTO issue caused by src/RcppExports.cpp.
 
 
 ## Test Environments
