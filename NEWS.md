@@ -1,4 +1,6 @@
-# BayesMallows (development version)
+# BayesMallows 1.3.2
+
+* Fixed LTO compilation notes on CRAN.
 
 # BayesMallows 1.3.1
 
