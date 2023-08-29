@@ -1,2 +1,4 @@
 set.seed(1)
-run_cpp_tests("BayesMallows")
+(function() {
+  .Call("run_testthat_tests", FALSE, PACKAGE = "BayesMallows")
+})
