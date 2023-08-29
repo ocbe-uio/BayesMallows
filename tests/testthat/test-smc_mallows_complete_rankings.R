@@ -64,17 +64,6 @@ test <- smc_mallows_new_users(
   num_new_obs = num_new_obs, verbose = FALSE
 )
 
-expect_warning(
-  smc_mallows_new_users_complete(
-    R_obs = data, n_items = n_items, metric = metric,
-    leap_size = leap_size, N = N, Time = Time,
-    logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-    alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
-    num_new_obs = num_new_obs, verbose = FALSE
-  ),
-  "'smc_mallows_new_users_complete' is deprecated."
-)
-
 test_that("Output of smc_mallows_new_users_complete is OK", {
   expect_s3_class(test, "SMCMallows")
   expect_length(test, 4)
