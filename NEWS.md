@@ -1,3 +1,7 @@
+# BayesMallows 1.3.2
+
+* Fixed LTO compilation notes on CRAN.
+
 # BayesMallows 1.3.1
 
 * Fixed package documentation issue on CRAN.
