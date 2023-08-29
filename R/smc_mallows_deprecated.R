@@ -73,7 +73,7 @@ metropolis_hastings_aug_ranking_pseudo <- function(
 #' @describeIn plot.SMCMallows Deprecated function for
 #' \code{plot_alpha_posterior}.
 #' @export
-plot_alpha_posterior <- function(output, nmc, burnin) {
+plot_alpha_posterior <- function(x, nmc, burnin) {
   .Deprecated("plot")
 }
 

@@ -18,7 +18,7 @@
   ...
 )
 
-plot_alpha_posterior(output, nmc, burnin)
+plot_alpha_posterior(x, nmc, burnin)
 
 plot_rho_posterior(output, nmc, burnin, C, colnames = NULL, items = NULL)
 }

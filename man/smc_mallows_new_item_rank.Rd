@@ -57,6 +57,12 @@ smc_mallows_new_item_rank_alpha_fixed(
 
 \item{mcmc_kernel_app}{Integer value for the number of applications we apply the MCMC move kernel}
 
+\item{aug_rankings_init}{Initial values for augmented rankings.}
+
+\item{rho_samples_init}{Initial values for rho samples.}
+
+\item{alpha_samples_init}{Initial values for alpha samples.}
+
 \item{alpha}{numeric value of the scale parameter.}
 
 \item{alpha_prop_sd}{Numeric value of the standard deviation of the prior distribution for alpha}

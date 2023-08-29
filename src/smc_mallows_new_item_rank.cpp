@@ -143,6 +143,9 @@ arma::cube augment_rankings(
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
 //' @param alpha_fixed Logical indicating whether to sample \code{alpha} or not.
 //' @param alpha numeric value of the scale parameter.
+//' @param aug_rankings_init Initial values for augmented rankings.
+//' @param rho_samples_init Initial values for rho samples.
+//' @param alpha_samples_init Initial values for alpha samples.
 //'
 //' @return a 3d matrix containing: the samples of: rho, alpha and the augmented rankings, and the effective sample size at each iteration of the SMC algorithm.
 //'
