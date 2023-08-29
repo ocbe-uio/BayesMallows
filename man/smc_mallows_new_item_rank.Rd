@@ -3,7 +3,7 @@
 \name{smc_mallows_new_item_rank}
 \alias{smc_mallows_new_item_rank}
 \alias{smc_mallows_new_item_rank_alpha_fixed}
-\title{SMC-Mallows new users rank}
+\title{SMC-Mallows new item rank}
 \usage{
 smc_mallows_new_item_rank(
   n_items,
@@ -53,9 +53,15 @@ smc_mallows_new_item_rank_alpha_fixed(
 \item{Time}{Integer specifying the number of time steps in the SMC algorithm}
 
 \item{logz_estimate}{Estimate of the partition function, computed with
-\code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.}
+\code{\link{estimate_partition_function}}.}
 
 \item{mcmc_kernel_app}{Integer value for the number of applications we apply the MCMC move kernel}
+
+\item{aug_rankings_init}{Initial values for augmented rankings.}
+
+\item{rho_samples_init}{Initial values for rho samples.}
+
+\item{alpha_samples_init}{Initial values for alpha samples.}
 
 \item{alpha}{numeric value of the scale parameter.}
 
@@ -95,4 +101,3 @@ at each time step. Each correction and augmentation is done by filling in the mi
 \code{smc_mallows_new_item_rank_alpha_fixed}.
 
 }}
-\keyword{internal}

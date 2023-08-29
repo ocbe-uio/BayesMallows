@@ -45,7 +45,6 @@ smc_mallows_new_users_partial_alpha_fixed <- function(
 #' @describeIn smc_mallows_new_item_rank Deprecated function for
 #' \code{smc_mallows_new_item_rank_alpha_fixed}.
 #' @export
-#' @keywords internal
 smc_mallows_new_item_rank_alpha_fixed <- function(
   alpha, n_items, R_obs, metric, leap_size, N, Time, logz_estimate,
   mcmc_kernel_app, alpha_prop_sd, lambda, alpha_max, aug_method,
@@ -63,7 +62,6 @@ smc_mallows_new_item_rank_alpha_fixed <- function(
 #' @describeIn metropolis_hastings_aug_ranking Deprecated function for
 #' \code{metropolis_hastings_aug_ranking_pseudo}.
 #' @export
-#' @keywords internal
 metropolis_hastings_aug_ranking_pseudo <- function(
   alpha, rho, n_items, partial_ranking, current_ranking, metric
 ) {
@@ -75,17 +73,15 @@ metropolis_hastings_aug_ranking_pseudo <- function(
 #' @describeIn plot.SMCMallows Deprecated function for
 #' \code{plot_alpha_posterior}.
 #' @export
-#' @keywords internal
-plot_alpha_posterior <- function(output, nmc, burnin) {
+plot_alpha_posterior <- function(x, nmc, burnin) {
   .Deprecated("plot")
 }
 
 #' @describeIn plot.SMCMallows Deprecated function for
 #' \code{plot_rho_posterior}.
 #' @export
-#' @keywords internal
 plot_rho_posterior <- function(
-  output, nmc, burnin, C, colnames = NULL, items = NULL
+  x, nmc, burnin, C, colnames = NULL, items = NULL
 ) {
   .Deprecated("plot")
 }
