@@ -81,7 +81,7 @@ plot_alpha_posterior <- function(x, nmc, burnin) {
 #' \code{plot_rho_posterior}.
 #' @export
 plot_rho_posterior <- function(
-  output, nmc, burnin, C, colnames = NULL, items = NULL
+  x, nmc, burnin, C, colnames = NULL, items = NULL
 ) {
   .Deprecated("plot")
 }

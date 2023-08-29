@@ -20,7 +20,7 @@
 
 plot_alpha_posterior(x, nmc, burnin)
 
-plot_rho_posterior(output, nmc, burnin, C, colnames = NULL, items = NULL)
+plot_rho_posterior(x, nmc, burnin, C, colnames = NULL, items = NULL)
 }
 \arguments{
 \item{x}{An object of type \code{SMC-Mallows}, returned for example from
