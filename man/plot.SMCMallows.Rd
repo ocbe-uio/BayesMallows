@@ -93,4 +93,3 @@ plot(smc_test, parameter = "alpha")
 \author{
 Waldir Leoncio
 }
-\keyword{internal}

@@ -117,7 +117,7 @@ arma::cube augment_rankings(
   return(aug_rankings);
 }
 
-//' @title SMC-Mallows new users rank
+//' @title SMC-Mallows new item rank
 //' @description Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user
 //' at each time step. Each correction and augmentation is done by filling in the missing item ranks using pseudolikelihood augmentation.
 //' @param n_items Integer is the number of items in a ranking
@@ -131,7 +131,7 @@ arma::cube augment_rankings(
 //' @param N Integer specifying the number of particles
 //' @param Time Integer specifying the number of time steps in the SMC algorithm
 //' @param logz_estimate Estimate of the partition function, computed with
-//' \code{\link{estimate_partition_function}} in the BayesMallow R package {estimate_partition_function}.
+//' \code{\link{estimate_partition_function}}.
 //' @param mcmc_kernel_app Integer value for the number of applications we apply the MCMC move kernel
 //' @param alpha_prop_sd Numeric value of the standard deviation of the prior distribution for alpha
 //' @param lambda Strictly positive numeric value specifying the rate parameter
@@ -143,8 +143,11 @@ arma::cube augment_rankings(
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
 //' @param alpha_fixed Logical indicating whether to sample \code{alpha} or not.
 //' @param alpha numeric value of the scale parameter.
+//'
 //' @return a 3d matrix containing: the samples of: rho, alpha and the augmented rankings, and the effective sample size at each iteration of the SMC algorithm.
+//'
 //' @export
+//'
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_item_rank(
   const unsigned int& n_items,

@@ -111,9 +111,10 @@ Among the current applications, Liu, Reiner, et al.
 personalized recommendations based on clicking data, and Barrett and
 Crispino ([2018](#ref-barrett2018)) used the model of Crispino et al.
 ([2019](#ref-crispino2019)) to analyze listeners’ understanding of
-music. Eliseussen, Fleischer, and Vitelli ([2022](#ref-eliseussen2022))
-presented an extended model for variable selection in genome-wide
-transcriptomic analyses.
+music. Eliseussen, Fleischer, and Vitelli
+([2022](#ref-eliseussenRankbasedBayesianVariable2022)) presented an
+extended model for variable selection in genome-wide transcriptomic
+analyses.
 
 ### Future Extensions
 
@@ -190,11 +191,12 @@ Data: How Human Are Sounds?” *The Annals of Applied Statistics* 13 (1):
 
 </div>
 
-<div id="ref-eliseussen2022" class="csl-entry">
+<div id="ref-eliseussenRankbasedBayesianVariable2022" class="csl-entry">
 
 Eliseussen, Emilie, Thomas Fleischer, and Valeria Vitelli. 2022.
 “Rank-Based Bayesian Variable Selection for Genome-Wide Transcriptomic
-Analyses.” arXiv. <https://doi.org/10.48550/arXiv.2107.05072>.
+Analyses.” *Statistics in Medicine* 41 (23): 4532–53.
+<https://doi.org/10.1002/sim.9524>.
 
 </div>
 

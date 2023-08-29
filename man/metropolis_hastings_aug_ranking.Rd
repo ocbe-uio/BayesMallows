@@ -54,4 +54,3 @@ Function to perform Metropolis-Hastings for new augmented ranking
 \code{metropolis_hastings_aug_ranking_pseudo}.
 
 }}
-\keyword{internal}
