@@ -1,5 +1,7 @@
 # BayesMallows (development version)
 
+* Removed SMC functions deprecated on version 1.2.0 (#301)
+
 # BayesMallows 1.3.2
 
 * Fixed LTO compilation notes on CRAN.

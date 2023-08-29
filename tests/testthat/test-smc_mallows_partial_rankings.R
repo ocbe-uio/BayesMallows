@@ -126,22 +126,6 @@ test_that("Runs with unif kernel", {
     num_new_obs     = num_new_obs,
     aug_method      = "random"
   )
-  expect_warning(
-    smc_mallows_new_users_partial_alpha_fixed(
-      alpha           = alpha_0,
-      R_obs           = samples,
-      n_items         = n_items,
-      metric          = "footrule",
-      leap_size       = leap_size,
-      N               = N,
-      Time            = Time,
-      logz_estimate   = logz_estimate,
-      mcmc_kernel_app = mcmc_times,
-      num_new_obs     = num_new_obs,
-      aug_method      = "random"
-    ),
-    "'smc_mallows_new_users_partial_alpha_fixed' is deprecated."
-  )
   expect_is(smc_unif_alpha_fixed_unif, "SMCMallows")
   expect_equal(length(smc_unif_alpha_fixed_unif), 4)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 10, 21))
@@ -161,24 +145,6 @@ test_that("Runs with unif kernel", {
     alpha_max       = alpha_max,
     aug_method      = "random"
   )
-  expect_warning(
-    smc_mallows_new_users_partial(
-      R_obs           = samples,
-      n_items         = n_items,
-      metric          = "footrule",
-      leap_size       = leap_size,
-      N               = N,
-      Time            = Time,
-      logz_estimate   = logz_estimate,
-      mcmc_kernel_app = mcmc_times,
-      num_new_obs     = num_new_obs,
-      alpha_prop_sd   = alpha_prop_sd,
-      lambda          = lambda,
-      alpha_max       = alpha_max,
-      aug_method      = "random"
-    ),
-    "'smc_mallows_new_users_partial' is deprecated."
-  )
   expect_is(smc_unif, "SMCMallows")
   expect_equal(length(smc_unif), 4)
   expect_equal(dim(smc_unif$rho_samples), c(N, 10, 21))
@@ -186,14 +152,6 @@ test_that("Runs with unif kernel", {
 
   expect_s3_class(plot(smc_unif, burnin = 2), "ggplot")
   expect_s3_class(plot(smc_unif, parameter = "rho"), "ggplot")
-  expect_warning(
-    plot_alpha_posterior(smc_unif$alpha_samples[, Time + 1], nmc = N, burnin = 2),
-    "'plot_alpha_posterior' is deprecated"
-  )
-  expect_warning(
-    plot_rho_posterior(smc_unif$rho_samples[, , Time + 1], nmc = N, burnin = 2),
-    "'plot_rho_posterior' is deprecated"
-  )
   expect_s3_class(plot(smc_unif, parameter = "rho"), "ggplot")
 })
 
