@@ -11,7 +11,7 @@ coverage](https://codecov.io/gh/ocbe-uio/BayesMallows/branch/master/graph/badge.
 
 This package provides a general framework for analyzing rank and
 preference data based on the Bayesian Mallows model first described in
-[Vitelli et al.(2018)](https://jmlr.org/papers/v18/15-481.html).
+Vitelli et al. ([2018](#ref-vitelli2018)).
 
 ## Installation
 
@@ -69,8 +69,8 @@ plot(fit, burnin = 500)
 ![](man/figures/README-unnamed-chunk-6-1.png)<!-- -->
 
 For more examples, please see the vignette, which is based on Sørensen
-et al. (2020), and the function documentation. The vignette can be
-opened by issuing the following command.
+et al. ([2020](#ref-sorensen2020)), and the function documentation. The
+vignette can be opened by issuing the following command.
 
 ``` r
 vignette("BayesMallows")
@@ -81,20 +81,24 @@ vignette("BayesMallows")
 ### Methodology
 
 The BayesMallows package currently implements the complete model
-described in Vitelli et al. (2018), which includes a large number of
-distance metrics, handling of missing ranks and pairwise comparisons,
-and clustering of users with similar preferences. The extension to
-non-transitive pairwise comparisons by Crispino et al. (2019) is also
-implemented. In addition, the partition function of the Mallows model
-can be estimated using the importance sampling algorithm of Vitelli et
-al. (2018) and the asymptotic approximation of Mukherjee (2016). For a
-review of ranking models in general, see Liu, Crispino, et al. (2019).
-Crispino and Antoniano-Villalobos (2022) outlines how informative priors
-can be used within the model.
+described in Vitelli et al. ([2018](#ref-vitelli2018)), which includes a
+large number of distance metrics, handling of missing ranks and pairwise
+comparisons, and clustering of users with similar preferences. The
+extension to non-transitive pairwise comparisons by Crispino et al.
+([2019](#ref-crispino2019)) is also implemented. In addition, the
+partition function of the Mallows model can be estimated using the
+importance sampling algorithm of Vitelli et al.
+([2018](#ref-vitelli2018)) and the asymptotic approximation of Mukherjee
+([2016](#ref-mukherjee2016)). For a review of ranking models in general,
+see Liu, Crispino, et al. ([2019](#ref-liu2019)). Crispino and
+Antoniano-Villalobos ([2022](#ref-crispino2022)) outlines how
+informative priors can be used within the model.
 
 Updating of the posterior distribution based on new data, using
 sequential Monte Carlo methods, is implemented and described in a
-separate vignette which can be shown with the following command.
+separate vignette which can be shown with the following command. The
+computational algorithms are described in further detail in Stein
+([2023](#ref-steinSequentialInferenceMallows2023)).
 
 ``` r
 vignette("SMC-Mallows")
@@ -102,12 +106,14 @@ vignette("SMC-Mallows")
 
 ### Applications
 
-Among the current applications, Liu, Reiner, et al. (2019) applied the
-Bayesian Mallows model for providing personalized recommendations based
-on clicking data, and Barrett and Crispino (2018) used the model of
-Crispino et al. (2019) to analyze listeners’ understanding of music.
-Eliseussen, Fleischer, and Vitelli (2022) presented an extended model
-for variable selection in genome-wide transcriptomic analyses.
+Among the current applications, Liu, Reiner, et al.
+([2019](#ref-liu2019b)) applied the Bayesian Mallows model for providing
+personalized recommendations based on clicking data, and Barrett and
+Crispino ([2018](#ref-barrett2018)) used the model of Crispino et al.
+([2019](#ref-crispino2019)) to analyze listeners’ understanding of
+music. Eliseussen, Fleischer, and Vitelli ([2022](#ref-eliseussen2022))
+presented an extended model for variable selection in genome-wide
+transcriptomic analyses.
 
 ### Future Extensions
 
@@ -120,11 +126,11 @@ more options for specifications of prior distributions.
 ## Citation
 
 If using the BayesMallows package in academic work, please cite Sørensen
-et al. (2020), in addition to the relevant methodological papers.
+et al. ([2020](#ref-sorensen2020)), in addition to the relevant
+methodological papers.
 
 ``` r
 citation("BayesMallows")
-#> 
 #> To cite package 'BayesMallows' in publications use:
 #> 
 #>   Sørensen Ø, Crispino M, Liu Q, Vitelli V (2020). "BayesMallows: An R
@@ -223,6 +229,13 @@ Permutations.” *The Annals of Statistics* 44 (2): 853–75.
 Sørensen, Øystein, Marta Crispino, Qinghua Liu, and Valeria Vitelli.
 2020. “BayesMallows: An R Package for the Bayesian Mallows Model.” *The
 R Journal* 12 (1): 324–42. <https://doi.org/10.32614/RJ-2020-026>.
+
+</div>
+
+<div id="ref-steinSequentialInferenceMallows2023" class="csl-entry">
+
+Stein, Anja. 2023. “Sequential Inference with the Mallows Model.” PhD
+thesis, Lancaster University.
 
 </div>
 
