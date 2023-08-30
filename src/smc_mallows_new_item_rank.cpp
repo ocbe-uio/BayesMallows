@@ -119,7 +119,7 @@ arma::cube augment_rankings(
   return(aug_rankings);
 }
 
-//' @title SMC-Mallows new users rank
+//' @title SMC-Mallows new item rank
 //' @description Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user
 //' at each time step. Each correction and augmentation is done by filling in the missing item ranks using pseudolikelihood augmentation.
 //' @param n_items Integer is the number of items in a ranking
@@ -147,8 +147,14 @@ arma::cube augment_rankings(
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
 //' @param alpha_fixed Logical indicating whether to sample \code{alpha} or not.
 //' @param alpha numeric value of the scale parameter.
+//' @param aug_rankings_init Initial values for augmented rankings.
+//' @param rho_samples_init Initial values for rho samples.
+//' @param alpha_samples_init Initial values for alpha samples.
+//'
 //' @return a 3d matrix containing: the samples of: rho, alpha and the augmented rankings, and the effective sample size at each iteration of the SMC algorithm.
+//'
 //' @export
+//'
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_item_rank(
   const unsigned int& n_items,

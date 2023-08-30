@@ -68,6 +68,7 @@ expect_warning(
   "'smc_mallows_new_users_complete' is deprecated."
 )
 
+
 test_that("Output of smc_mallows_new_users_complete is OK", {
   expect_s3_class(test, "SMCMallows")
   expect_length(test, 4)

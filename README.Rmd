@@ -92,7 +92,7 @@ vignette("SMC-Mallows")
 
 ### Applications
 
-Among the current applications, @liu2019b applied the Bayesian Mallows model for providing personalized recommendations based on clicking data, and @barrett2018 used the model of @crispino2019 to analyze listeners' understanding of music. @eliseussen2022 presented an extended model for variable selection in genome-wide transcriptomic analyses.
+Among the current applications, @liu2019b applied the Bayesian Mallows model for providing personalized recommendations based on clicking data, and @barrett2018 used the model of @crispino2019 to analyze listeners' understanding of music. @eliseussenRankbasedBayesianVariable2022 presented an extended model for variable selection in genome-wide transcriptomic analyses.
 
 ### Future Extensions
 
