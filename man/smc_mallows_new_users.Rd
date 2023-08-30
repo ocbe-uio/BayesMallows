@@ -21,6 +21,7 @@ smc_mallows_new_users(
   alpha = 0,
   aug_method = "random",
   logz_estimate = NULL,
+  cardinalities = NULL,
   verbose = FALSE,
   metric = "footnote",
   leap_size = 1L
@@ -110,8 +111,10 @@ prior distribution.}
 in the missing data, options are "pseudolikelihood" or "random".}
 
 \item{logz_estimate}{Estimate of the partition function, computed with
-\code{\link{estimate_partition_function}} in the BayesMallow R package
-{estimate_partition_function}.}
+\code{\link{estimate_partition_function}}.}
+
+\item{cardinalities}{Cardinalities for exact evaluation of partition function,
+returned from \code{\link{prepare_partition_function}}.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 SMC-Mallows algorithm. Defaults to \code{FALSE}.}

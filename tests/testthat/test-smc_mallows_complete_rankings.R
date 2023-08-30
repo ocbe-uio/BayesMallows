@@ -12,20 +12,6 @@ n_items <- dim(sushi_rankings)[2] # Number of items
 leap_size <- floor(n_items / 5)
 metric <- "footrule"
 
-# Generate estimate of Z_n(alpha)
-alpha_vector <- seq(from = 0, to = 15, by = 1)
-iter <- 1e2
-degree <- 10
-
-# Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
-logz_estimate <- estimate_partition_function(
-  method = "importance_sampling",
-  alpha_vector = alpha_vector,
-  n_items = n_items, metric = metric,
-  nmc = iter, degree = degree
-)
-
-
 ######################################
 # BayesMallows Analysis (MCMC)
 ######################################
@@ -33,7 +19,7 @@ nmc <- 20
 burnin <- 5
 model_fit <- compute_mallows(
   rankings = data, nmc = nmc, metric = metric, leap_size = leap_size,
-  alpha_prop_sd = 0.15, logz_estimate = logz_estimate
+  alpha_prop_sd = 0.15
 )
 
 model_fit$burnin <- burnin
@@ -48,6 +34,8 @@ alpha_0 <- 1.7
 # heatplot - there is no burnin!
 mcmc_rho_matrix <- matrix(model_fit$rho$value, ncol = n_items, nrow = nmc, byrow = TRUE)
 
+
+
 # ###################################################################
 # # SMC
 # ###################################################################
@@ -56,10 +44,14 @@ num_new_obs <- 10
 Time <- dim(data)[1] / num_new_obs
 N <- 100
 
+logz_list <- prepare_partition_function(metric = metric, n_items = n_items)
+
 test <- smc_mallows_new_users(
   R_obs = data, type = "complete", n_items = n_items, metric = metric,
   leap_size = leap_size, N = N, Time = Time,
-  logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+  logz_estimate = logz_list$logz_estimate,
+  cardinalities = logz_list$cardinalities,
+  mcmc_kernel_app = mcmc_times,
   alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
   num_new_obs = num_new_obs, verbose = FALSE
 )
@@ -68,7 +60,8 @@ expect_warning(
   smc_mallows_new_users_complete(
     R_obs = data, n_items = n_items, metric = metric,
     leap_size = leap_size, N = N, Time = Time,
-    logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+    logz_estimate = NULL, cardinalities = logz_list$cardinalities,
+    mcmc_kernel_app = mcmc_times,
     alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
     num_new_obs = num_new_obs, verbose = FALSE
   ),

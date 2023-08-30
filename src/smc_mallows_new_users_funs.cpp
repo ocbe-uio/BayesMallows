@@ -105,6 +105,7 @@ void smc_mallows_new_users_reweight(
     const mat& alpha_samples,
     const int& tt,
     const Rcpp::Nullable<vec> logz_estimate,
+    const Rcpp::Nullable<vec> cardinalities,
     const int& num_obs,
     const int& num_new_obs,
     const vec& aug_prob,
@@ -115,7 +116,6 @@ void smc_mallows_new_users_reweight(
   int N = rho_samples.n_rows;
   int n_items = rho_samples.n_cols;
   for (int ii{}; ii < N; ++ii) {
-    Rcpp::Nullable<vec> cardinalities = R_NilValue;
 
     rowvec rho_samples_ii = \
       rho_samples(span(ii), span::all, span(tt + 1));

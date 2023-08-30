@@ -20,8 +20,9 @@ using namespace arma;
 //'   and \code{"ulam"}.
 //' @param rho Numeric vector specifying the current consensus ranking
 //' @param logz_estimate Estimate  grid of log of partition function,
-//'   computed with \code{\link{estimate_partition_function}} in
-//'   the BayesMallow R package {estimate_partition_function}.
+//'   computed with \code{\link{estimate_partition_function}}.
+//' @param cardinalities Cardinalities for exact computation of partition function,
+//' returned from \code{\link{prepare_partition_function}}.
 //' @param alpha_prop_sd Numeric value specifying the standard deviation of the
 //'   lognormal proposal distribution used for \eqn{\alpha} in the
 //'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
@@ -36,7 +37,6 @@ using namespace arma;
 //' @importFrom stats dexp rlnorm runif
 //' @author Anja Stein
 //' @example /inst/examples/metropolis_hastings_alpha_example.R
-//'
 //' @export
 // [[Rcpp::export]]
 double metropolis_hastings_alpha(
@@ -45,6 +45,7 @@ double metropolis_hastings_alpha(
   const arma::mat rankings,
   const arma::vec rho,
   const Rcpp::Nullable<arma::vec> logz_estimate,
+  const Rcpp::Nullable<arma::vec> cardinalities,
   const std::string metric = "footrule",
   const double alpha_prop_sd = 0.5,
   const double alpha_max = 1e6,
@@ -60,7 +61,6 @@ double metropolis_hastings_alpha(
 
   // evaluate the log estimate of the partition function for a particular
   // value of alpha
-  const Rcpp::Nullable<vec>& cardinalities = R_NilValue;
   const double logz_alpha = get_partition_function(n_items, alpha, cardinalities, logz_estimate, metric);
   const double logz_alpha_prime = get_partition_function(n_items, alpha_prime, cardinalities, logz_estimate, metric);
 

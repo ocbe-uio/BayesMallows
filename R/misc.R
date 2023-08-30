@@ -29,7 +29,22 @@ validate_permutation <- function(vec) {
 # Modified from https://stackoverflow.com/questions/21061653/creating-a-density-histogram-in-ggplot2
 scalefun <- function(x) sprintf("%d", as.integer(x))
 
-prepare_partition_function <- function(logz_estimate, metric, n_items) {
+#' Prepare partition functions
+#'
+#' Utility function for estimating partition function of the Mallows model.
+#'
+#' @param logz_estimate Optional argument containing the result of calling
+#'   \code{\link{estimation_partition_function}}.
+#' @param metric Metric to be used.
+#' @param n_items Number of items.
+#'
+#' @return List with two elements, \code{cardinalities} and \code{logz_estimate},
+#' one of which is \code{NULL} and the other of which contains partition function
+#' estimates.
+#'
+#' @export
+#'
+prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
   # First, has the user supplied an estimate?
   if (!is.null(logz_estimate)) {
     return(list(cardinalities = NULL, logz_estimate = logz_estimate))
