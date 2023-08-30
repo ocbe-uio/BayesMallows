@@ -116,7 +116,6 @@ void smc_mallows_new_users_reweight(
   int N = rho_samples.n_rows;
   int n_items = rho_samples.n_cols;
   for (int ii{}; ii < N; ++ii) {
-
     rowvec rho_samples_ii = \
       rho_samples(span(ii), span::all, span(tt + 1));
 
