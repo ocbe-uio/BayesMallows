@@ -34,7 +34,7 @@ scalefun <- function(x) sprintf("%d", as.integer(x))
 #' Utility function for estimating partition function of the Mallows model.
 #'
 #' @param logz_estimate Optional argument containing the result of calling
-#'   \code{\link{estimation_partition_function}}.
+#'   \code{\link{estimate_partition_function}}.
 #' @param metric Metric to be used.
 #' @param n_items Number of items.
 #'

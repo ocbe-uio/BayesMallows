@@ -44,28 +44,16 @@ num_new_obs <- 10
 Time <- dim(data)[1] / num_new_obs
 N <- 100
 
-logz_list <- prepare_partition_function(metric = metric, n_items = n_items)
+cardinalities <- prepare_partition_function(metric = metric, n_items = n_items)$cardinalities
 
 test <- smc_mallows_new_users(
   R_obs = data, type = "complete", n_items = n_items, metric = metric,
   leap_size = leap_size, N = N, Time = Time,
-  logz_estimate = logz_list$logz_estimate,
-  cardinalities = logz_list$cardinalities,
+  logz_estimate = NULL,
+  cardinalities = cardinalities,
   mcmc_kernel_app = mcmc_times,
   alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
   num_new_obs = num_new_obs, verbose = FALSE
-)
-
-expect_warning(
-  smc_mallows_new_users_complete(
-    R_obs = data, n_items = n_items, metric = metric,
-    leap_size = leap_size, N = N, Time = Time,
-    logz_estimate = NULL, cardinalities = logz_list$cardinalities,
-    mcmc_kernel_app = mcmc_times,
-    alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
-    num_new_obs = num_new_obs, verbose = FALSE
-  ),
-  "'smc_mallows_new_users_complete' is deprecated."
 )
 
 
@@ -151,15 +139,6 @@ test_that("get_exponent_sum() in smc_mallows_new_users_complete() works", {
   alpha_samples <- matrix(nrow = N, ncol = (n_items + Time + 1))
   alpha_samples[, 1] <- rexp(N, rate = 1)
 
-  # logz_estimate ------------------------------------------ #
-  alpha_vector <- seq(from = 0, to = 15, by = 1)
-  iter <- 3e2
-  degree <- 10
-  logz_estimate <- estimate_partition_function(
-    method = "importance_sampling", alpha_vector = alpha_vector,
-    n_items = n_items, metric = metric, nmc = iter, degree = degree
-  )
-
   num_obs <- 0
   out_loglik <- vector(mode = "numeric", length = Time)
   for (tt in seq_len(Time)) {
@@ -170,9 +149,6 @@ test_that("get_exponent_sum() in smc_mallows_new_users_complete() works", {
     alpha_samples_ii <- alpha_samples[ii, tt + 1]
     rho_samples_ii <- rho_samples[ii, , tt + 1]
     for (ii in seq_len(N)) {
-      log_z_alpha <- get_partition_function(
-        n_items, alpha_samples_ii, NULL, logz_estimate, metric
-      )
       log_likelihood <- get_exponent_sum(
         alpha_samples_ii, t(rho_samples_ii), n_items,
         new_observed_rankings, metric

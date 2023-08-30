@@ -8,7 +8,7 @@ prepare_partition_function(logz_estimate = NULL, metric, n_items)
 }
 \arguments{
 \item{logz_estimate}{Optional argument containing the result of calling
-\code{\link{estimation_partition_function}}.}
+\code{\link{estimate_partition_function}}.}
 
 \item{metric}{Metric to be used.}
 
