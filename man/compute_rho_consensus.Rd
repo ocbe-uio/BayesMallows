@@ -40,26 +40,19 @@ data <- sushi_rankings[1:100, ]
 n_items <- ncol(data)
 leap_size <- floor(n_items / 5)
 metric <- "footrule"
-alpha_vector <- seq(from = 0, to = 15, by = 0.1)
-iter <- 100
-degree <- 10
-N <- 100
 Time <- 20
+N <- 100
 
-# Estimating the logarithm of the partition function of the Mallows rank model
-logz_estimate <- estimate_partition_function(
-  method = "importance_sampling",
-  alpha_vector = alpha_vector,
-  n_items = n_items, metric = metric,
-  nmc = iter, degree = degree
-)
+# Prepare exact partition function
+cardinalities <- prepare_partition_function(metric = metric,
+                                            n_items = n_items)$cardinalities
 
 # Performing SMC
 smc_test <- smc_mallows_new_users(
   R_obs = data, type = "complete", n_items = n_items,
   metric = metric, leap_size = leap_size,
   N = N, Time = Time,
-  logz_estimate = logz_estimate,
+  cardinalities = cardinalities,
   mcmc_kernel_app = 5,
   num_new_obs = 5,
   alpha_prop_sd = 0.5,
