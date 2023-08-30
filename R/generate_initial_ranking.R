@@ -90,12 +90,14 @@ generate_initial_ranking <- function(tc,
   if (is.null(cl)) {
     do.call(rbind, lapply(
       prefs, function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
-      n_items, shuffle_unranked, random))
+      n_items, shuffle_unranked, random
+    ))
   } else {
     do.call(rbind, parallel::parLapply(
       cl = cl, X = prefs,
       fun = function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
-      n_items, shuffle_unranked, random))
+      n_items, shuffle_unranked, random
+    ))
   }
 }
 

@@ -15,5 +15,5 @@ names(potato_true_ranking) <- paste0("P", 1:length(potato_true_ranking))
 
 
 devtools::use_data(potato_visual, potato_weighing, potato_true_ranking,
-                   overwrite = TRUE)
-
+  overwrite = TRUE
+)

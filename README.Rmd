@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  eval=TRUE
+  eval = TRUE
 )
 ```
 # BayesMallows
@@ -37,7 +37,7 @@ install.packages("BayesMallows")
 To install the current development version, use
 
 ```{r,eval=FALSE}
-#install.packages("remotes")
+# install.packages("remotes")
 remotes::install_github("ocbe-uio/BayesMallows")
 
 # Set build_vignettes to TRUE to also get the package vignettes

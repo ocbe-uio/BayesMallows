@@ -1,7 +1,9 @@
 context("Testing compute_consensus")
 
-beach_small <- subset(beach_preferences,
-                      bottom_item %in% 1:3 & top_item %in% 1:3)
+beach_small <- subset(
+  beach_preferences,
+  bottom_item %in% 1:3 & top_item %in% 1:3
+)
 
 b <- compute_mallows(preferences = beach_preferences, nmc = 100, seed = 123L)
 b$burnin <- 2

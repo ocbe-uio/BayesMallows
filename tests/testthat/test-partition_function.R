@@ -107,8 +107,10 @@ test_that("Hamming partition function is correct", {
 
 test_that("Ulam partition function is correct", {
   # Correct values are computed from PerMallows::count.perms()
-  correct <- list(0, 0, 0, 0.692897211809945, 0.668459648013286, 0.474076984180107,
-                  1.79142615441324, 1.75861132107948, 1.47694423521443)
+  correct <- list(
+    0, 0, 0, 0.692897211809945, 0.668459648013286, 0.474076984180107,
+    1.79142615441324, 1.75861132107948, 1.47694423521443
+  )
   i <- 1
   ulam_sequence <- subset(
     partition_function_data,
@@ -134,7 +136,8 @@ test_that("partition function data is sane", {
   pfd <- aggregate(
     list(n = seq_len(nrow(partition_function_data))),
     partition_function_data[, c("n_items", "metric", "type")],
-    FUN = length)
+    FUN = length
+  )
 
   expect_equal(
     nrow(subset(pfd, n > 1)),

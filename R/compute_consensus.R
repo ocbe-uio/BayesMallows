@@ -227,7 +227,6 @@ find_cpc <- function(group_df, group_var = "cluster") {
 }
 
 .compute_map_consensus.consensus_BayesMallows <- function(model_fit, ...) {
-
   # Store the total number of iterations after burnin
   n_samples <- length(unique(model_fit$iteration))
 
