@@ -68,10 +68,15 @@ test_that("compute posterior intervals works", {
   m <- compute_mallows(potato_visual, nmc = 10, n_clusters = 2)
   expect_equal(
     compute_posterior_intervals(m, burnin = 8),
-    structure(list(cluster = structure(1:2, levels = c("Cluster 1",
-                                                       "Cluster 2"), class = "factor"), parameter = c("alpha", "alpha"
-                                                       ), mean = c(0.605, 1.299), median = c(0.605, 1.299), conf_level = c("95 %",
-                                                                                                                           "95 %"), hpdi = c("[0.589,0.621]", "[1.246,1.352]"), central_interval = c("[0.589,0.620]",
-                                                                                                                                                                                                     "[1.249,1.349]")), row.names = c(NA, -2L), class = "data.frame")
+    structure(list(cluster = structure(1:2, levels = c(
+      "Cluster 1",
+      "Cluster 2"
+    ), class = "factor"), parameter = c("alpha", "alpha"), mean = c(0.605, 1.299), median = c(0.605, 1.299), conf_level = c(
+      "95 %",
+      "95 %"
+    ), hpdi = c("[0.589,0.621]", "[1.246,1.352]"), central_interval = c(
+      "[0.589,0.620]",
+      "[1.249,1.349]"
+    )), row.names = c(NA, -2L), class = "data.frame")
   )
 })

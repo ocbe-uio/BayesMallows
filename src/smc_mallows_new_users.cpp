@@ -27,8 +27,9 @@ using namespace arma;
 //' @param N Integer specifying the number of particles
 //' @param Time Integer specifying the number of time steps in the SMC algorithm
 //' @param logz_estimate Estimate of the partition function, computed with
-//' \code{\link{estimate_partition_function}} in the BayesMallow R package
-//' {estimate_partition_function}.
+//' \code{\link{estimate_partition_function}}.
+//' @param cardinalities Cardinalities for exact evaluation of partition function,
+//' returned from \code{\link{prepare_partition_function}}.
 //' @param mcmc_kernel_app Integer value for the number of applications we
 //' apply the MCMC move kernel
 //' @param num_new_obs Integer value for the number of new observations
@@ -69,6 +70,7 @@ Rcpp::List smc_mallows_new_users(
   const double alpha = 0,
   const std::string& aug_method = "random",
   const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
+  const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue,
   const bool verbose = false,
   const std::string& metric = "footnote",
   const int& leap_size = 1
@@ -156,7 +158,7 @@ Rcpp::List smc_mallows_new_users(
     vec norm_wgt;
     smc_mallows_new_users_reweight(
       log_inc_wgt, ESS_vec, norm_wgt, aug_rankings, new_observed_rankings, rho_samples,
-      alpha, alpha_samples, tt, logz_estimate, num_obs, num_new_obs, ones(N),
+      alpha, alpha_samples, tt, logz_estimate, cardinalities, num_obs, num_new_obs, ones(N),
       type != "partial_alpha_fixed", type != "complete", metric);
 
     /* ====================================================== */
@@ -178,13 +180,13 @@ Rcpp::List smc_mallows_new_users(
           const double& as = alpha_samples(ii, tt + 1);
           const rowvec& rs = \
             rho_samples(span(ii), span::all, span(tt + 1));
-          rho_samples(span(ii), span::all, span(tt + 1)) =                 \
-            metropolis_hastings_rho(                                       \
-              as, n_items, all_observed_rankings, rs.t(), metric, leap_size\
+          rho_samples(span(ii), span::all, span(tt + 1)) =
+            metropolis_hastings_rho(
+              as, n_items, all_observed_rankings, rs.t(), metric, leap_size
             );
-          alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(              \
-            as, n_items, all_observed_rankings, rs.t(), logz_estimate,\
-            metric, alpha_prop_sd, alpha_max, lambda\
+          alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(
+            as, n_items, all_observed_rankings, rs.t(), logz_estimate,
+            cardinalities, metric, alpha_prop_sd, alpha_max, lambda
           );
         }
       } else if(type == "partial" || type == "partial_alpha_fixed"){
@@ -196,21 +198,21 @@ Rcpp::List smc_mallows_new_users(
             rowvec rs = rs_slice.row(ii);
             // move each particle containing sample of rho and alpha by using
             // the MCMC kernels
-            rho_samples(span(ii), span::all, span(tt + 1)) =                 \
-              metropolis_hastings_rho(                                       \
-                as, n_items, all_observed_rankings, rs.t(), metric, leap_size\
+            rho_samples(span(ii), span::all, span(tt + 1)) =
+              metropolis_hastings_rho(
+                as, n_items, all_observed_rankings, rs.t(), metric, leap_size
               );
             if(type == "partial"){
-              alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(\
-                as, n_items, all_observed_rankings, rs.t(), logz_estimate,\
-                metric, alpha_prop_sd, alpha_max, lambda\
+              alpha_samples(ii, tt + 1) = metropolis_hastings_alpha(
+                as, n_items, all_observed_rankings, rs.t(), logz_estimate,
+                cardinalities, metric, alpha_prop_sd, alpha_max, lambda
               );
             }
             for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
               rowvec ar;
               ar = aug_rankings(span(jj), span::all, span(ii));
               vec mh_aug_result;
-              mh_aug_result = metropolis_hastings_aug_ranking(\
+              mh_aug_result = metropolis_hastings_aug_ranking(
                 as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(),
                 is_pseudo(aug_method, metric), metric
               );

@@ -1,7 +1,9 @@
 context("Testing plot_top_k and predict_top_k")
 
-beach_small <- subset(beach_preferences,
-                      bottom_item %in% 1:5 & top_item %in% 1:5)
+beach_small <- subset(
+  beach_preferences,
+  bottom_item %in% 1:5 & top_item %in% 1:5
+)
 beach_tc <- generate_transitive_closure(beach_small)
 beach_init_rank <- generate_initial_ranking(beach_tc)
 
@@ -47,11 +49,12 @@ test_that("plot_top_k and predict_top_k fail when they should", {
 
   expect_equal(
     pred[order(pred$assessor, pred$item), ][13:16, ],
-    structure(list(
-      assessor = c(3, 3, 3, 4), item = c("Item 3", "Item 4", "Item 5", "Item 1"),
-      prob = c(1, 0.3125, 0, 0.5625)
-    ),
-    row.names = c(119L, 177L, 235L, 4L), class = "data.frame"
+    structure(
+      list(
+        assessor = c(3, 3, 3, 4), item = c("Item 3", "Item 4", "Item 5", "Item 1"),
+        prob = c(1, 0.3125, 0, 0.5625)
+      ),
+      row.names = c(119L, 177L, 235L, 4L), class = "data.frame"
     )
   )
 

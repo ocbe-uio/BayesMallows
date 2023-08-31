@@ -81,7 +81,6 @@ generate_transitive_closure <- function(df, cl = NULL) {
 #'   upper ranked item.
 #' @keywords internal
 .generate_transitive_closure <- function(mat) {
-
   # This line was an answer to StackOverflow question 51794127
   my_set <- do.call(sets::set, apply(mat, 1, sets::as.tuple))
 

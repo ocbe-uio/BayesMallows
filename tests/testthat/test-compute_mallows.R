@@ -92,8 +92,10 @@ test_that("compute_mallows runs with the right distances", {
 
 test_that("compute_mallows handles integer preferences", {
   set.seed(123)
-  m <- subset(beach_preferences,
-              top_item %in% c(1, 2, 3) | bottom_item %in% c(1, 2, 3))
+  m <- subset(
+    beach_preferences,
+    top_item %in% c(1, 2, 3) | bottom_item %in% c(1, 2, 3)
+  )
   m[sample(nrow(m), 20), , ]
   for (col in names(m)) {
     eval(parse(text = paste("m$", col, "<- as.integer(m$", col, ")")))

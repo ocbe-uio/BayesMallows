@@ -10,7 +10,6 @@ metric <- "footrule"
 n_items <- 6
 
 test_that("MH-aug ranking works", {
-
   # Three missing ranks ------------------------------------ #
   R_curr <- c(1, 2, 3, 6, 5, 4)
   R_obs <- c(1, 2, 3, NA, NA, NA)
@@ -18,10 +17,10 @@ test_that("MH-aug ranking works", {
   test_1 <- metropolis_hastings_aug_ranking(
     current_ranking = R_curr,
     partial_ranking = R_obs,
-    alpha           = alpha,
-    rho             = rho,
-    n_items         = n_items,
-    metric          = metric,
+    alpha = alpha,
+    rho = rho,
+    n_items = n_items,
+    metric = metric,
     pseudo = FALSE
   )
   expect_equal(test_1, as.matrix(c(1, 2, 3, 6, 5, 4)))

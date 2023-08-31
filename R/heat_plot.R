@@ -22,7 +22,6 @@
 #' @example /inst/examples/heat_plot_example.R
 #'
 heat_plot <- function(model_fit, burnin = model_fit$burnin, ...) {
-
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
@@ -36,15 +35,18 @@ heat_plot <- function(model_fit, burnin = model_fit$burnin, ...) {
   posterior_ranks$probability <- 1
   posterior_ranks$iteration <- NULL
   heatplot_data <- aggregate(posterior_ranks[, "probability", drop = FALSE],
-            by = list(cluster = posterior_ranks$cluster, item = posterior_ranks$item, value = posterior_ranks$value),
-            FUN = function(x) sum(x) / (model_fit$nmc - burnin))
+    by = list(cluster = posterior_ranks$cluster, item = posterior_ranks$item, value = posterior_ranks$value),
+    FUN = function(x) sum(x) / (model_fit$nmc - burnin)
+  )
 
   heatplot_data$item <- factor(heatplot_data$item, levels = item_order)
   heatplot_data <- heatplot_data[order(heatplot_data$item), , drop = FALSE]
 
-  heatplot_expanded <- expand.grid(cluster = unique(heatplot_data$cluster),
-              item = unique(heatplot_data$item),
-              value = unique(heatplot_data$value))
+  heatplot_expanded <- expand.grid(
+    cluster = unique(heatplot_data$cluster),
+    item = unique(heatplot_data$item),
+    value = unique(heatplot_data$value)
+  )
   heatplot_expanded <- merge(heatplot_expanded, heatplot_data, by = c("cluster", "item", "value"), all.x = TRUE)
   heatplot_expanded$probability[is.na(heatplot_expanded$probability)] <- 0
 

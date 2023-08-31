@@ -31,11 +31,12 @@ test_that("rank_freq_distr works", {
   )
 
   set.seed(9988)
-  rows <- unlist(Map(function(x, y) {
-    rep(y, each = x)
-  },
-  x = sample(20:100, nrow(potato_visual), replace = TRUE),
-  y = 1:12
+  rows <- unlist(Map(
+    function(x, y) {
+      rep(y, each = x)
+    },
+    x = sample(20:100, nrow(potato_visual), replace = TRUE),
+    y = 1:12
   ))
   mat <- potato_visual[rows, ]
   expect_equal(

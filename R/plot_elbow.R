@@ -24,7 +24,6 @@
 #' @example /inst/examples/compute_mallows_mixtures_example.R
 #'
 plot_elbow <- function(..., burnin = NULL) {
-
   # Put the models into a list. These are typically fitted with different number of clusters
   models <- list(...)
 

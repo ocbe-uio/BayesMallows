@@ -10,6 +10,7 @@ smc_mallows_new_item_rank(
   N,
   Time,
   logz_estimate,
+  cardinalities,
   mcmc_kernel_app,
   aug_rankings_init = NULL,
   rho_samples_init = NULL,
@@ -36,6 +37,9 @@ smc_mallows_new_item_rank(
 
 \item{logz_estimate}{Estimate of the partition function, computed with
 \code{\link{estimate_partition_function}}.}
+
+\item{cardinalities}{Cardinalities for exact computation of partition function,
+returned from \code{\link{prepare_partition_function}}.}
 
 \item{mcmc_kernel_app}{Integer value for the number of applications we apply the MCMC move kernel}
 

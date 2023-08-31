@@ -1,8 +1,11 @@
 ---
-title: "SMC-Mallows Tutorial"
+title: "Sequential Inference with the Mallows Model"
 author: "Anja Stein"
 date: "2021-10-25"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    fig_width: 6
+    fig_height: 4
 bibliography: ../inst/REFERENCES.bib
 link-citations: yes
 vignette: >
@@ -17,6 +20,8 @@ library(BayesMallows)
 ```
 
 This vignette describes the `SMC-Mallows` functions of the package. These use Sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. We use an alternative data augmentation method, called the pseudolikelihood approach, when we are using the footrule and Spearman distance functions instead of using an independent sampler. `SMC-Mallow` uses functions similar to their base MCMC counterparts in the `BayesMallows` package, to visualise and analyse the posterior distributions.
+
+For an in-depth treatment of the implemented methodology, see @steinSequentialInferenceMallows2023. 
 
 ### SMC-Mallows functions
 
@@ -105,18 +110,11 @@ set.seed(994)
 ```
 
 ```{r smc_complete_set_up}
-n_items <- dim(sushi_rankings)[2]
+n_items <- ncol(sushi_rankings)
 metric <- "footrule"
-alpha_vector <- seq(from = 0, to = 15, by = 0.1)
-iter <- 1e4
-degree <- 10
-# Estimate the logarithm of the partition function of the Mallows rank model
-logz_estimate <- estimate_partition_function(
-  method = "importance_sampling",
-  alpha_vector = alpha_vector,
-  n_items = n_items, metric = metric,
-  nmc = iter, degree = degree
-)
+
+logz_list <- prepare_partition_function(metric = metric, n_items = n_items)
+
 data <- sushi_rankings[1:100, ]
 leap_size <- floor(n_items / 5)
 N <- 1000
@@ -125,7 +123,8 @@ smc_test <- smc_mallows_new_users(
   R_obs = data, type = "complete", n_items = n_items,
   metric = metric, leap_size = leap_size,
   N = N, Time = Time,
-  logz_estimate = logz_estimate,
+  logz_estimate = logz_list$logz_estimate,
+  cardinalities = logz_list$cardinalities,
   mcmc_kernel_app = 5,
   num_new_obs = 5,
   alpha_prop_sd = 0.5,
@@ -216,7 +215,8 @@ smc_partial_test <- smc_mallows_new_users(
   metric = metric,
   leap_size = leap_size, N = N,
   Time = Time,
-  logz_estimate = logz_estimate,
+  logz_estimate = logz_list$logz_estimate,
+  cardinalities = logz_list$cardinalities,
   mcmc_kernel_app = 5,
   num_new_obs = 5,
   alpha_prop_sd = 0.5,
@@ -242,7 +242,8 @@ smc_partial_test <- smc_mallows_new_users(
   metric = metric,
   leap_size = leap_size, N = N,
   Time = Time,
-  logz_estimate = logz_estimate,
+  logz_estimate = logz_list$logz_estimate,
+  cardinalities = logz_list$cardinalities,
   mcmc_kernel_app = 5,
   num_new_obs = 5,
   alpha_prop_sd = 0.5,
@@ -297,19 +298,16 @@ test_dataset[, , 5]
 
 
 We can now run an experiment with the altered `potato_visual` dataset by calling the function `smc_mallows_new_item_rank`.
+
 ```{r set_seed3, message=FALSE, warning=FALSE, include=FALSE}
 set.seed(995)
 ```
 
 
+
 ```{r new_item_rank_example, message=FALSE, warning=FALSE}
-# Recalculate the estimate of the partition function for 20 items
-logz_estimate <- estimate_partition_function(
-  method = "importance_sampling",
-  alpha_vector = alpha_vector,
-  n_items = n_items, metric = metric,
-  nmc = iter, degree = degree
-)
+logz_list <- prepare_partition_function(metric = metric, n_items = n_items)
+
 Time <- dim(test_dataset)[3]
 N <- 1000
 aug_method <- "pseudolikelihood"
@@ -320,7 +318,8 @@ smc_test_updated_partial <- smc_mallows_new_item_rank(
   metric = metric,
   leap_size = leap_size, N = N,
   Time = Time,
-  logz_estimate = logz_estimate,
+  logz_estimate = NULL,
+  cardinalities = logz_list$cardinalities,
   mcmc_kernel_app = 5,
   alpha_prop_sd = 0.5,
   lambda = 0.15,
@@ -332,7 +331,7 @@ smc_test_updated_partial <- smc_mallows_new_item_rank(
 Unlike the two previous demonstrations, the final slice of the output occurs at `Time` instead of `Time+1`. This is because we initialised the algorithm with the first slice of the `test_dataset` rather than initialising with no observed data. We observe the posterior probabilities for items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ by using the same post-processing functions as before.
 
 ```{r smc_updated_partial_analysis, message=FALSE, warning=FALSE}
-plot(smc_test_updated_partial, parameter = "rho")
+plot(smc_test_updated_partial, parameter = "rho", items = c(4, 6, 7))
 plot(smc_test_updated_partial, parameter = "alpha")
 ```
 

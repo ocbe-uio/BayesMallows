@@ -20,10 +20,10 @@
 #' @author Waldir Leoncio
 #' @export
 #' @example /inst/examples/plot.SMCMallows_example.R
-plot.SMCMallows <- function(x, nmc = nrow(x$rho_samples[, 1, ]), burnin = 0,
-  parameter = "alpha", time = ncol(x$rho_samples[, 1, ]), C = 1,
-  colnames = NULL, items = NULL, ...) {
-
+plot.SMCMallows <- function(
+    x, nmc = nrow(x$rho_samples[, 1, ]), burnin = 0,
+    parameter = "alpha", time = ncol(x$rho_samples[, 1, ]), C = 1,
+    colnames = NULL, items = NULL, ...) {
   if (parameter == "alpha") {
     output <- x$alpha_samples[, time]
     plot_alpha_smc(output, nmc, burnin)
@@ -44,7 +44,6 @@ plot_alpha_smc <- function(output, nmc, burnin) {
     ggplot2::ylab("Posterior density") +
     ggplot2::ggtitle(label = "Implemented SMC scheme") +
     ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
-
 }
 
 plot_rho_smc <- function(output, nmc, burnin, C, colnames = NULL, items = NULL) {

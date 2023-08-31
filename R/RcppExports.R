@@ -376,6 +376,8 @@ leap_and_shift_probs <- function(rho, n_items, leap_size = 1L) {
 #' @param Time Integer specifying the number of time steps in the SMC algorithm
 #' @param logz_estimate Estimate of the partition function, computed with
 #' \code{\link{estimate_partition_function}}.
+#' @param cardinalities Cardinalities for exact computation of partition function,
+#' returned from \code{\link{prepare_partition_function}}.
 #' @param mcmc_kernel_app Integer value for the number of applications we apply the MCMC move kernel
 #' @param alpha_prop_sd Numeric value of the standard deviation of the prior distribution for alpha
 #' @param lambda Strictly positive numeric value specifying the rate parameter
@@ -395,8 +397,8 @@ leap_and_shift_probs <- function(rho, n_items, leap_size = 1L) {
 #'
 #' @export
 #'
-smc_mallows_new_item_rank <- function(n_items, R_obs, N, Time, logz_estimate, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
-    .Call(`_BayesMallows_smc_mallows_new_item_rank`, n_items, R_obs, N, Time, logz_estimate, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
+smc_mallows_new_item_rank <- function(n_items, R_obs, N, Time, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank`, n_items, R_obs, N, Time, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
 }
 
 #' @title SMC-Mallows New Users
@@ -417,8 +419,9 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, N, Time, logz_estimate, mc
 #' @param N Integer specifying the number of particles
 #' @param Time Integer specifying the number of time steps in the SMC algorithm
 #' @param logz_estimate Estimate of the partition function, computed with
-#' \code{\link{estimate_partition_function}} in the BayesMallow R package
-#' {estimate_partition_function}.
+#' \code{\link{estimate_partition_function}}.
+#' @param cardinalities Cardinalities for exact evaluation of partition function,
+#' returned from \code{\link{prepare_partition_function}}.
 #' @param mcmc_kernel_app Integer value for the number of applications we
 #' apply the MCMC move kernel
 #' @param num_new_obs Integer value for the number of new observations
@@ -444,8 +447,8 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, N, Time, logz_estimate, mc
 #'
 #' @example inst/examples/smc_mallows_new_users_complete_example.R
 #'
-smc_mallows_new_users <- function(R_obs, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, verbose = FALSE, metric = "footnote", leap_size = 1L) {
-    .Call(`_BayesMallows_smc_mallows_new_users`, R_obs, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, verbose, metric, leap_size)
+smc_mallows_new_users <- function(R_obs, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footnote", leap_size = 1L) {
+    .Call(`_BayesMallows_smc_mallows_new_users`, R_obs, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size)
 }
 
 #' @title Metropolis-Hastings Alpha
@@ -463,8 +466,9 @@ smc_mallows_new_users <- function(R_obs, type, n_items, N, Time, mcmc_kernel_app
 #'   and \code{"ulam"}.
 #' @param rho Numeric vector specifying the current consensus ranking
 #' @param logz_estimate Estimate  grid of log of partition function,
-#'   computed with \code{\link{estimate_partition_function}} in
-#'   the BayesMallow R package {estimate_partition_function}.
+#'   computed with \code{\link{estimate_partition_function}}.
+#' @param cardinalities Cardinalities for exact computation of partition function,
+#' returned from \code{\link{prepare_partition_function}}.
 #' @param alpha_prop_sd Numeric value specifying the standard deviation of the
 #'   lognormal proposal distribution used for \eqn{\alpha} in the
 #'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
@@ -479,10 +483,9 @@ smc_mallows_new_users <- function(R_obs, type, n_items, N, Time, mcmc_kernel_app
 #' @importFrom stats dexp rlnorm runif
 #' @author Anja Stein
 #' @example /inst/examples/metropolis_hastings_alpha_example.R
-#'
 #' @export
-metropolis_hastings_alpha <- function(alpha, n_items, rankings, rho, logz_estimate, metric = "footrule", alpha_prop_sd = 0.5, alpha_max = 1e6, lambda = 0.1) {
-    .Call(`_BayesMallows_metropolis_hastings_alpha`, alpha, n_items, rankings, rho, logz_estimate, metric, alpha_prop_sd, alpha_max, lambda)
+metropolis_hastings_alpha <- function(alpha, n_items, rankings, rho, logz_estimate, cardinalities, metric = "footrule", alpha_prop_sd = 0.5, alpha_max = 1e6, lambda = 0.1) {
+    .Call(`_BayesMallows_metropolis_hastings_alpha`, alpha, n_items, rankings, rho, logz_estimate, cardinalities, metric, alpha_prop_sd, alpha_max, lambda)
 }
 
 #' @title Metropolis-Hastings Augmented Ranking

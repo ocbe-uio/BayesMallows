@@ -16,6 +16,7 @@ void new_items_move_step(
     const cube& R_obs,
     const std::string& aug_method,
     const Rcpp::Nullable<arma::vec>& logz_estimate,
+    const Rcpp::Nullable<arma::vec>& cardinalities,
     const double& alpha,
     const uword& ttplus1,
     const bool& alpha_fixed,
@@ -37,6 +38,7 @@ void new_items_move_step(
       alpha_samples(ii, ttplus1) = metropolis_hastings_alpha(
         alpha_samples(ii, ttplus1), n_items, aug_rankings.slice(ii),
         rho_samples.slice(ttplus1).row(ii).t(), logz_estimate,
+        cardinalities,
         metric, alpha_prop_sd, alpha_max, lambda
       );
     }
@@ -132,6 +134,8 @@ arma::cube augment_rankings(
 //' @param Time Integer specifying the number of time steps in the SMC algorithm
 //' @param logz_estimate Estimate of the partition function, computed with
 //' \code{\link{estimate_partition_function}}.
+//' @param cardinalities Cardinalities for exact computation of partition function,
+//' returned from \code{\link{prepare_partition_function}}.
 //' @param mcmc_kernel_app Integer value for the number of applications we apply the MCMC move kernel
 //' @param alpha_prop_sd Numeric value of the standard deviation of the prior distribution for alpha
 //' @param lambda Strictly positive numeric value specifying the rate parameter
@@ -158,6 +162,7 @@ Rcpp::List smc_mallows_new_item_rank(
   const unsigned int& N,
   const unsigned int Time,
   const Rcpp::Nullable<arma::vec> logz_estimate,
+  const Rcpp::Nullable<arma::vec> cardinalities,
   const int& mcmc_kernel_app,
   Rcpp::Nullable<arma::cube> aug_rankings_init = R_NilValue,
   Rcpp::Nullable<arma::mat> rho_samples_init = R_NilValue,
@@ -317,7 +322,7 @@ Rcpp::List smc_mallows_new_item_rank(
     /* ====================================================== */
     new_items_move_step(
       rho_samples, alpha_samples, aug_rankings, R_obs, aug_method,
-      logz_estimate, alpha, tt + 1,
+      logz_estimate, cardinalities, alpha, tt + 1,
       alpha_fixed, metric, leap_size, alpha_prop_sd, alpha_max, lambda);
   }
 

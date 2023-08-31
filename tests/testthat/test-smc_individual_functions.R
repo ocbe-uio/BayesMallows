@@ -112,7 +112,7 @@ test_that("smc_leap_and_shift_probs() works as expected", {
 # unit test for metropolis_hastings_alpha.R                #
 # ======================================================== #
 
-metropolis_hastings_alpha_old <- function(alpha, n_items, rankings, metric, rho, logz_estimate) {
+metropolis_hastings_alpha_old <- function(alpha, n_items, rankings, metric, rho, cardinalities) {
   exp_alpha_prime <- rlnorm(1, mean = alpha, sd = 0.15) # 1
   alpha_prime <- log(exp_alpha_prime)
 
@@ -125,11 +125,13 @@ metropolis_hastings_alpha_old <- function(alpha, n_items, rankings, metric, rho,
   # evaluate the log estimate of the partition function
   # for a particular value of alpha
   logz_alpha <- get_partition_function(
-    n_items = n_items, alpha = alpha, logz_estimate = logz_estimate,
+    n_items = n_items, alpha = alpha, logz_estimate = NULL,
+    cardinalities = cardinalities,
     metric = metric
   )
   logz_alpha_prime <- get_partition_function(
-    n_items = n_items, alpha = alpha_prime, logz_estimate = logz_estimate,
+    n_items = n_items, alpha = alpha_prime, logz_estimate = NULL,
+    cardinalities = cardinalities,
     metric = metric
   )
 
@@ -157,38 +159,37 @@ n_items <- 6
 rankings <- sample_mallows(
   rho0 = rho, alpha0 = alpha, n_samples = 10, burnin = 1000, thinning = 500
 )
-alpha_vector <- seq(from = 0, to = 20, by = 1)
-iter <- 1e4
-degree <- 10
 
-# Estimate the logarithm of the partition function of the Mallows rank model
-# using the estimate partition function
-logz_estimate <- estimate_partition_function(
-  method = "importance_sampling", alpha_vector = alpha_vector,
-  n_items = n_items, metric = "footrule", nmc = iter, degree = degree
-)
+# Exact paritition function
+cardinalities <- prepare_partition_function(metric = metric, n_items = n_items)$cardinalities
+
 set.seed(101)
-test_1_a <- metropolis_hastings_alpha_old(alpha, n_items, rankings, metric, rho, logz_estimate)
+test_1_a <- metropolis_hastings_alpha_old(alpha, n_items, rankings, metric, rho, cardinalities)
 test_1_b <- metropolis_hastings_alpha(
-  alpha, n_items, rankings, rho, logz_estimate, alpha_prop_sd = 0.5,
+  alpha, n_items, rankings, rho,
+  logz_estimate = NULL, cardinalities = cardinalities, alpha_prop_sd = 0.5,
   lambda = 0.1, alpha_max = 20, metric
 )
 set.seed(101)
 test_2_a <- metropolis_hastings_alpha_old(
-  alpha, n_items, rankings, metric, rho, logz_estimate
+  alpha, n_items, rankings, metric, rho,
+  cardinalities = cardinalities
 )
 test_2_b <- metropolis_hastings_alpha(
-  alpha, n_items, rankings, rho, logz_estimate, alpha_prop_sd = 0.15,
+  alpha, n_items, rankings, rho,
+  logz_estimate = NULL, cardinalities = cardinalities, alpha_prop_sd = 0.15,
   lambda = 0.1, alpha_max = 20, metric
 )
 set.seed(101)
 test_3_b <- metropolis_hastings_alpha(
-  alpha, n_items, rankings, rho, logz_estimate, alpha_prop_sd = 0.5,
+  alpha, n_items, rankings, rho,
+  logz_estimate = NULL, cardinalities = cardinalities, alpha_prop_sd = 0.5,
   lambda = 0.15, alpha_max = 20, metric
 )
 set.seed(101)
 test_4_b <- metropolis_hastings_alpha(
-  alpha, n_items, rankings, rho, logz_estimate, alpha_prop_sd = 0.15,
+  alpha, n_items, rankings, rho,
+  logz_estimate = NULL, cardinalities = cardinalities, alpha_prop_sd = 0.15,
   lambda = 0.15, alpha_max = 20, metric
 )
 
@@ -220,5 +221,4 @@ test_that("leap_and_shift_probs does not propose current ranking", {
     count
   }))
   expect_equal(count, 0)
-
 })
