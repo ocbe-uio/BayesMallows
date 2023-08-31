@@ -1,5 +1,6 @@
 # BayesMallows (development version)
 
+* SMC functions now accept exact partition functions where these are available.
 * Removed SMC functions deprecated on version 1.2.0 (#301)
 
 # BayesMallows 1.3.2
