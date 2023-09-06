@@ -82,7 +82,8 @@ a set of particles each containing a value of rho and alpha
 }
 \description{
 Function to perform resample-move SMC algorithm where we
-receive new users with complete rankings at each time step
+receive new users with complete rankings at each time step. See Chapter 4
+of \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
 }
 \examples{
 # Generate basic elements

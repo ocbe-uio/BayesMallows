@@ -14,7 +14,7 @@ colnames(beach_init) <- paste("Beach", seq(from = 1, to = ncol(beach_init), by =
 head(beach_init)
 
 # By default, the algorithm for generating the initial ranking is deterministic.
-# It is possible to randomly permuted the unranked items with the argument shuffle_unranked,
+# It is possible to randomly permute the unranked items with the argument shuffle_unranked,
 # as demonstrated below. This algorithm is computationally efficient, but defaults to FALSE
 # for backward compatibility.
 set.seed(2233)

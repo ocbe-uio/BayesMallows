@@ -403,7 +403,8 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, N, Time, logz_estimate, ca
 
 #' @title SMC-Mallows New Users
 #' @description Function to perform resample-move SMC algorithm where we
-#' receive new users with complete rankings at each time step
+#' receive new users with complete rankings at each time step. See Chapter 4
+#' of \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
 #'
 #' @param R_obs Matrix containing the full set of observed rankings of size
 #' n_assessors by n_items
