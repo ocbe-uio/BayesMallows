@@ -9,7 +9,7 @@ output:
 bibliography: ../inst/REFERENCES.bib
 link-citations: yes
 vignette: >
-  %\VignetteIndexEntry{SMC-Mallows Tutorial}
+  %\VignetteIndexEntry{Sequential Inference with the Mallows Model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

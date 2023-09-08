@@ -1,0 +1,12 @@
+---
+title: "Introduction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<!--- <iframe src="vignette_1.pdf"/> -->
+
+For an introduction to the package, please see our [R journal paper.](https://doi.org/10.32614/RJ-2020-026)
