@@ -13,3 +13,6 @@ LICENSE
 ^Meta$
 ^\.github$
 ^CRAN-SUBMISSION$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
