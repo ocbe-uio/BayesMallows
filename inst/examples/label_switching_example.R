@@ -34,7 +34,7 @@
   # Find the iteration each file corresponds to, by extracting its number
   iteration_number <- as.integer(
     gsub("(^[a-zA-Z\\_\\.]*)([0-9]+)([a-zA-Z\\_\\.]+$)", "\\2",
-         scluster_files, perl = TRUE))
+         cluster_files, perl = TRUE))
   # Remove all files before burnin
   file.remove(cluster_files[iteration_number <= burnin])
   # Update the vector of files, after the deletion
