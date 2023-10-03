@@ -28,7 +28,7 @@ test_that("generate_transitive_closure works", {
 
   # This causes an error message and prints out the problematic rankings:
   expect_error(
-    generate_transitive_closure(pair_comp),
+    capture.output(generate_transitive_closure(pair_comp)),
     "Cannot compute transitive closure. Please run compute_mallows with error_model='bernoulli'."
   )
 })
