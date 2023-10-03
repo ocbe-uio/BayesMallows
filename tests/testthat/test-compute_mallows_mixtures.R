@@ -54,4 +54,26 @@ test_that("compute_mallows_mixtures works", {
   )
   parallel::stopCluster(cl)
   expect_s3_class(models, "BayesMallowsMixtures")
+
+  # check that psi argument is being used
+  set.seed(123)
+  mixture_model1 <- compute_mallows(
+    rankings = sushi_rankings[1:100, ], n_clusters = 5,
+    psi = 100,
+    include_wcd = TRUE, save_clus = TRUE, nmc = 10
+  )
+
+  set.seed(123)
+  mixture_model2 <- compute_mallows(
+    rankings = sushi_rankings[1:100, ], n_clusters = 5,
+    include_wcd = TRUE, save_clus = TRUE, nmc = 10, psi = .1
+  )
+
+  expect_lt(max(mixture_model1$cluster_probs$value),
+            max(mixture_model$cluster_probs$value))
+
+  expect_gt(max(mixture_model2$cluster_probs$value),
+            max(mixture_model$cluster_probs$value))
+
+
 })

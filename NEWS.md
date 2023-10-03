@@ -1,5 +1,10 @@
 # BayesMallows (development version)
 
+* Bug fix: psi argument to compute_mallows() and compute_mallows_mixtures(), 
+  specifying the concentration parameter of the Dirichlet prior, is now 
+  forwarded to the underlying run_mcmc() function. Previously, this argument
+  has had no effect, and the default psi=10 has been used regardless of the 
+  input. Thanks to Lorenzo Zuccato for discovering this bug.
 * SMC functions now accept exact partition functions where these are available.
 * Removed SMC functions deprecated on version 1.2.0 (#301)
 * Website deployed at https://ocbe-uio.github.io/BayesMallows.
