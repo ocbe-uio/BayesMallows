@@ -79,7 +79,6 @@ tidy_alpha <- function(fit) {
 }
 
 tidy_cluster_assignment <- function(fit) {
-
   # Tidy cluster assignment
   if (fit$save_clus) {
     if (fit$n_clusters > 1) {

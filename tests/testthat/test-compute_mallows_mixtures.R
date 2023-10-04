@@ -36,10 +36,12 @@ test_that("compute_mallows_mixtures works", {
 
   expect_equal(
     mixture_model$within_cluster_distance$value,
-    c(684, 740, 716, 770, 506, 726, 574, 434, 420, 856, 678, 502,
+    c(
+      684, 740, 716, 770, 506, 726, 574, 434, 420, 856, 678, 502,
       388, 370, 996, 746, 366, 462, 390, 988, 1082, 250, 248, 82, 1170,
       778, 194, 206, 106, 1444, 492, 60, 270, 342, 1580, 618, 70, 106,
-      432, 1510, 716, 92, 272, 206, 1402, 728, 156, 196, 170, 1532)
+      432, 1510, 716, 92, 272, 206, 1402, 728, 156, 196, 170, 1532
+    )
   )
 
   # check that it runs in parallel
@@ -52,4 +54,26 @@ test_that("compute_mallows_mixtures works", {
   )
   parallel::stopCluster(cl)
   expect_s3_class(models, "BayesMallowsMixtures")
+
+  # check that psi argument is being used
+  set.seed(123)
+  mixture_model1 <- compute_mallows(
+    rankings = sushi_rankings[1:100, ], n_clusters = 5,
+    psi = 100,
+    include_wcd = TRUE, save_clus = TRUE, nmc = 10
+  )
+
+  set.seed(123)
+  mixture_model2 <- compute_mallows(
+    rankings = sushi_rankings[1:100, ], n_clusters = 5,
+    include_wcd = TRUE, save_clus = TRUE, nmc = 10, psi = .1
+  )
+
+  expect_lt(max(mixture_model1$cluster_probs$value),
+            max(mixture_model$cluster_probs$value))
+
+  expect_gt(max(mixture_model2$cluster_probs$value),
+            max(mixture_model$cluster_probs$value))
+
+
 })

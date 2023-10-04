@@ -43,7 +43,6 @@ NULL
 #' @describeIn rank_conversion Convert from ordering to ranking.
 #' @export
 create_ranking <- function(orderings) {
-
   # Check that it is a permutation
   if (is.vector(orderings)) {
     stopifnot(validate_permutation(orderings))

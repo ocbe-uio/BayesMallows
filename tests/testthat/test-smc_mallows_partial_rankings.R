@@ -126,22 +126,6 @@ test_that("Runs with unif kernel", {
     num_new_obs     = num_new_obs,
     aug_method      = "random"
   )
-  expect_warning(
-    smc_mallows_new_users_partial_alpha_fixed(
-      alpha           = alpha_0,
-      R_obs           = samples,
-      n_items         = n_items,
-      metric          = "footrule",
-      leap_size       = leap_size,
-      N               = N,
-      Time            = Time,
-      logz_estimate   = logz_estimate,
-      mcmc_kernel_app = mcmc_times,
-      num_new_obs     = num_new_obs,
-      aug_method      = "random"
-    ),
-    "'smc_mallows_new_users_partial_alpha_fixed' is deprecated."
-  )
   expect_is(smc_unif_alpha_fixed_unif, "SMCMallows")
   expect_equal(length(smc_unif_alpha_fixed_unif), 4)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 10, 21))
@@ -161,24 +145,6 @@ test_that("Runs with unif kernel", {
     alpha_max       = alpha_max,
     aug_method      = "random"
   )
-  expect_warning(
-    smc_mallows_new_users_partial(
-      R_obs           = samples,
-      n_items         = n_items,
-      metric          = "footrule",
-      leap_size       = leap_size,
-      N               = N,
-      Time            = Time,
-      logz_estimate   = logz_estimate,
-      mcmc_kernel_app = mcmc_times,
-      num_new_obs     = num_new_obs,
-      alpha_prop_sd   = alpha_prop_sd,
-      lambda          = lambda,
-      alpha_max       = alpha_max,
-      aug_method      = "random"
-    ),
-    "'smc_mallows_new_users_partial' is deprecated."
-  )
   expect_is(smc_unif, "SMCMallows")
   expect_equal(length(smc_unif), 4)
   expect_equal(dim(smc_unif$rho_samples), c(N, 10, 21))
@@ -186,14 +152,6 @@ test_that("Runs with unif kernel", {
 
   expect_s3_class(plot(smc_unif, burnin = 2), "ggplot")
   expect_s3_class(plot(smc_unif, parameter = "rho"), "ggplot")
-  expect_warning(
-    plot_alpha_posterior(smc_unif$alpha_samples[, Time + 1], nmc = N, burnin = 2),
-    "'plot_alpha_posterior' is deprecated"
-  )
-  expect_warning(
-    plot_rho_posterior(smc_unif$rho_samples[, , Time + 1], nmc = N, burnin = 2),
-    "'plot_rho_posterior' is deprecated"
-  )
   expect_s3_class(plot(smc_unif, parameter = "rho"), "ggplot")
 })
 
@@ -264,18 +222,22 @@ test_that("Specific example results are OK", {
 
   expect_equivalent(
     test$alpha_samples[1:3, 1:4],
-    structure(c(0.127095626667142, 1.01987919207187, 0.359836369752884,
-                0.252836572866912, 0.707217839795325, 0.337840167678165, 0.123483377876088,
-                0.0766661493660047, 0.901749237961603, 0.155759850023329, 0.346042115242859,
-                0.0934527121554998), dim = 3:4),
+    structure(c(
+      0.127095626667142, 1.01987919207187, 0.359836369752884,
+      0.252836572866912, 0.707217839795325, 0.337840167678165, 0.123483377876088,
+      0.0766661493660047, 0.901749237961603, 0.155759850023329, 0.346042115242859,
+      0.0934527121554998
+    ), dim = 3:4),
     tolerance = 1e-5
   )
 
   expect_error(
-    compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = NULL, C = 1,
-                          type = "CP"),
+    compute_rho_consensus(
+      output = test$rho_samples[, , Time + 1], nmc = N, burnin = NULL, C = 1,
+      type = "CP"
+    ),
     "Please specify the burnin."
-    )
+  )
 
   expect_error(
     compute_rho_consensus(
@@ -311,8 +273,10 @@ test_that("Specific example results are OK", {
     output = test$rho_samples[, , Time + 1], nmc = N, burnin = 2, C = 1,
     type = "CP"
   )
-  expect_equal(rho_cp$cumprob,
-               c(1, 0.625, 0.625, 0.625, 1, 0.5, 0.5, 0.25, 0.125, 0.25))
+  expect_equal(
+    rho_cp$cumprob,
+    c(1, 0.625, 0.625, 0.625, 1, 0.5, 0.5, 0.25, 0.125, 0.25)
+  )
 
   rho_map <- compute_rho_consensus(
     output = test$rho_samples[, , Time + 1], nmc = N, burnin = 2, C = 1,
@@ -320,7 +284,7 @@ test_that("Specific example results are OK", {
   )
   expect_equal(
     rho_map$probability,
-    c(0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
+    c(
       0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
       0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
       0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
@@ -328,7 +292,9 @@ test_that("Specific example results are OK", {
       0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
       0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
       0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
-      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125)
+      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
+      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125
+    )
   )
 
   test_fixed <- smc_mallows_new_users(
@@ -360,5 +326,4 @@ test_that("Specific example results are OK", {
   expect_equal(dim(rho_cp_fixed), c(10, 3))
   expect_equal(dim(rho_map_fixed), c(10, 3))
   expect_equal(dim(post_rho_fixed), c(10, 7))
-
 })

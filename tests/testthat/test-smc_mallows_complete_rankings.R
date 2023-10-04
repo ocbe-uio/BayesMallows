@@ -12,20 +12,6 @@ n_items <- dim(sushi_rankings)[2] # Number of items
 leap_size <- floor(n_items / 5)
 metric <- "footrule"
 
-# Generate estimate of Z_n(alpha)
-alpha_vector <- seq(from = 0, to = 15, by = 1)
-iter <- 1e2
-degree <- 10
-
-# Estimate the logarithm of the partition function of the Mallows rank model using the estimate partition function
-logz_estimate <- estimate_partition_function(
-  method = "importance_sampling",
-  alpha_vector = alpha_vector,
-  n_items = n_items, metric = metric,
-  nmc = iter, degree = degree
-)
-
-
 ######################################
 # BayesMallows Analysis (MCMC)
 ######################################
@@ -33,7 +19,7 @@ nmc <- 20
 burnin <- 5
 model_fit <- compute_mallows(
   rankings = data, nmc = nmc, metric = metric, leap_size = leap_size,
-  alpha_prop_sd = 0.15, logz_estimate = logz_estimate
+  alpha_prop_sd = 0.15
 )
 
 model_fit$burnin <- burnin
@@ -48,6 +34,8 @@ alpha_0 <- 1.7
 # heatplot - there is no burnin!
 mcmc_rho_matrix <- matrix(model_fit$rho$value, ncol = n_items, nrow = nmc, byrow = TRUE)
 
+
+
 # ###################################################################
 # # SMC
 # ###################################################################
@@ -56,24 +44,18 @@ num_new_obs <- 10
 Time <- dim(data)[1] / num_new_obs
 N <- 100
 
+cardinalities <- prepare_partition_function(metric = metric, n_items = n_items)$cardinalities
+
 test <- smc_mallows_new_users(
   R_obs = data, type = "complete", n_items = n_items, metric = metric,
   leap_size = leap_size, N = N, Time = Time,
-  logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
+  logz_estimate = NULL,
+  cardinalities = cardinalities,
+  mcmc_kernel_app = mcmc_times,
   alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
   num_new_obs = num_new_obs, verbose = FALSE
 )
 
-expect_warning(
-  smc_mallows_new_users_complete(
-    R_obs = data, n_items = n_items, metric = metric,
-    leap_size = leap_size, N = N, Time = Time,
-    logz_estimate = logz_estimate, mcmc_kernel_app = mcmc_times,
-    alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
-    num_new_obs = num_new_obs, verbose = FALSE
-  ),
-  "'smc_mallows_new_users_complete' is deprecated."
-)
 
 test_that("Output of smc_mallows_new_users_complete is OK", {
   expect_s3_class(test, "SMCMallows")
@@ -157,15 +139,6 @@ test_that("get_exponent_sum() in smc_mallows_new_users_complete() works", {
   alpha_samples <- matrix(nrow = N, ncol = (n_items + Time + 1))
   alpha_samples[, 1] <- rexp(N, rate = 1)
 
-  # logz_estimate ------------------------------------------ #
-  alpha_vector <- seq(from = 0, to = 15, by = 1)
-  iter <- 3e2
-  degree <- 10
-  logz_estimate <- estimate_partition_function(
-    method = "importance_sampling", alpha_vector = alpha_vector,
-    n_items = n_items, metric = metric, nmc = iter, degree = degree
-  )
-
   num_obs <- 0
   out_loglik <- vector(mode = "numeric", length = Time)
   for (tt in seq_len(Time)) {
@@ -176,9 +149,6 @@ test_that("get_exponent_sum() in smc_mallows_new_users_complete() works", {
     alpha_samples_ii <- alpha_samples[ii, tt + 1]
     rho_samples_ii <- rho_samples[ii, , tt + 1]
     for (ii in seq_len(N)) {
-      log_z_alpha <- get_partition_function(
-        n_items, alpha_samples_ii, NULL, logz_estimate, metric
-      )
       log_likelihood <- get_exponent_sum(
         alpha_samples_ii, t(rho_samples_ii), n_items,
         new_observed_rankings, metric

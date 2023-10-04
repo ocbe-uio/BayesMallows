@@ -1,5 +1,9 @@
 ## Resubmission Note
-This is a resubmission. It fixes an LTO issue caused by src/RcppExports.cpp.
+
+This is a resubmission. It fixes a bug related to an argument that was not 
+properly forwarded, it allows the sequential Monte Carlo functions to use 
+exact partition functions, removes deprecated functions, adds link to 
+website, and improves the unit test outputs.
 
 
 ## Test Environments

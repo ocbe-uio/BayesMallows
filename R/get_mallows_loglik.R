@@ -31,7 +31,7 @@
 #' @example inst/examples/get_mallows_loglik_example.R
 #'
 get_mallows_loglik <- function(rho, alpha, weights, metric,
-                       rankings, obs_freq = NULL, log = TRUE) {
+                               rankings, obs_freq = NULL, log = TRUE) {
   if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }

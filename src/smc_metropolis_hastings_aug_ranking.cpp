@@ -21,7 +21,6 @@ using namespace arma;
 //' @param pseudo Boolean specifying whether to use pseudo proposal or not.s
 //' @return R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
 //' @export
-//' @keywords internal
 // [[Rcpp::export]]
 arma::vec metropolis_hastings_aug_ranking(
 	const double& alpha,

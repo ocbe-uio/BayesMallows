@@ -10,6 +10,7 @@ metropolis_hastings_alpha(
   rankings,
   rho,
   logz_estimate,
+  cardinalities,
   metric = "footrule",
   alpha_prop_sd = 0.5,
   alpha_max = 1e+06,
@@ -26,8 +27,10 @@ metropolis_hastings_alpha(
 \item{rho}{Numeric vector specifying the current consensus ranking}
 
 \item{logz_estimate}{Estimate  grid of log of partition function,
-computed with \code{\link{estimate_partition_function}} in
-the BayesMallow R package {estimate_partition_function}.}
+computed with \code{\link{estimate_partition_function}}.}
+
+\item{cardinalities}{Cardinalities for exact computation of partition function,
+returned from \code{\link{prepare_partition_function}}.}
 
 \item{metric}{A character string specifying the distance metric to use
 in the Bayesian Mallows Model. Available options are \code{"footrule"},
@@ -67,35 +70,33 @@ n_items <- 6
 rankings <- sample_mallows(
   rho0 = rho, alpha0 = alpha, n_samples = 10, burnin = 1000, thinning = 500
 )
-alpha_vector <- seq(from = 0, to = 20, by = 0.1)
-iter <- 1e2
-degree <- 10
 
-# Estimate the logarithm of the partition function of the Mallows rank model
-# using the estimate partition function
-logz_estimate <- estimate_partition_function(
-  method = "importance_sampling", alpha_vector = alpha_vector,
-  n_items = n_items, metric = "footrule", nmc = iter, degree = degree
-)
+# Copmute exact partition function
+cardinalities <- prepare_partition_function(metric = metric,
+                                            n_items = n_items)$cardinalities
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, rho, logz_estimate, alpha_prop_sd = 0.5,
+  alpha, n_items, rankings, rho, logz_estimate = NULL,
+  cardinalities = cardinalities, alpha_prop_sd = 0.5,
   lambda = 0.1, alpha_max = 20, metric
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, rho, logz_estimate,
-  alpha_prop_sd = 0.15, lambda = 0.1, alpha_max = 20, metric
+  alpha, n_items, rankings, rho, logz_estimate = NULL,
+  cardinalities = cardinalities, alpha_prop_sd = 0.15, lambda = 0.1,
+  alpha_max = 20, metric
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, rho, logz_estimate,
-  alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 20, metric
+  alpha, n_items, rankings, rho, logz_estimate = NULL,
+  cardinalities = cardinalities, alpha_prop_sd = 0.5, lambda = 0.15,
+  alpha_max = 20, metric
 )
 
 metropolis_hastings_alpha(
-  alpha, n_items, rankings, rho, logz_estimate,
-  alpha_prop_sd = 0.15, lambda = 0.15, alpha_max = 20, metric
+  alpha, n_items, rankings, rho, logz_estimate = NULL,
+  cardinalities = cardinalities, alpha_prop_sd = 0.15, lambda = 0.15,
+  alpha_max = 20, metric
 )
 }
 \author{
