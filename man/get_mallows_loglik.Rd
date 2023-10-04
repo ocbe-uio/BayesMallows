@@ -105,3 +105,12 @@ get_mallows_loglik(
   log = TRUE
   )
 }
+\seealso{
+Other rank functions: 
+\code{\link{expected_dist}()},
+\code{\link{rank_conversion}},
+\code{\link{rank_distance}()},
+\code{\link{rank_freq_distr}()},
+\code{\link{sample_mallows}()}
+}
+\concept{rank functions}

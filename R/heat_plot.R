@@ -20,7 +20,7 @@
 #' @export
 #'
 #' @example /inst/examples/heat_plot_example.R
-#'
+#' @family posteriors quantities
 heat_plot <- function(model_fit, burnin = model_fit$burnin, ...) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")

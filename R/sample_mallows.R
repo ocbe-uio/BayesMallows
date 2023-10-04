@@ -40,6 +40,7 @@
 #' @export
 #'
 #' @example /inst/examples/sample_mallows_example.R
+#' @family rank functions
 #'
 sample_mallows <- function(rho0, alpha0, n_samples,
                            leap_size = max(1L, floor(n_items / 5)),

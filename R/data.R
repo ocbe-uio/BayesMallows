@@ -1,17 +1,20 @@
 #' True ranking of the weights of 20 potatoes.
 #'
+#' @family datasets
 #' @references \insertRef{liu2019}{BayesMallows}
 "potato_true_ranking"
 
 #' Result of ranking potatoes by weight, where the assessors were only allowed
 #' to inspected the potatoes visually. 12 assessors ranked 20 potatoes.
 #'
+#' @family datasets
 #' @references \insertRef{liu2019}{BayesMallows}
 "potato_visual"
 
 #' Result of ranking potatoes by weight, where the assessors were
 #' allowed to lift the potatoes. 12 assessors ranked 20 potatoes.
 #'
+#' @family datasets
 #' @references \insertRef{liu2019}{BayesMallows}
 "potato_weighing"
 
@@ -19,6 +22,7 @@
 #'
 #' Example dataset from \insertCite{vitelli2018}{BayesMallows}, Section 6.2.
 #'
+#' @family datasets
 #' @references \insertAllCited{}
 "beach_preferences"
 
@@ -27,6 +31,7 @@
 #' Complete rankings of 10 types of sushi from
 #' 5000 assessors \insertCite{kamishima2003}{BayesMallows}.
 #'
+#' @family datasets
 #' @references \insertAllCited{}
 "sushi_rankings"
 
@@ -45,5 +50,6 @@
 #' one user at a time, then the next top ranked item, and so on until we have
 #' a complete dataset at \code{sample_dataset[, , Time]}.
 #'
+#' @family datasets
 #' @references https://github.com/anjastein/SMC-Mallows/tree/main/data
 "sample_dataset"

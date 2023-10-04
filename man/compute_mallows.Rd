@@ -358,4 +358,10 @@ help("obs_freq")
 \seealso{
 \code{\link{compute_mallows_mixtures}} for a function that computes
   separate Mallows models for varying numbers of clusters.
+
+Other modeling: 
+\code{\link{compute_mallows_mixtures}()},
+\code{\link{smc_mallows_new_item_rank}()},
+\code{\link{smc_mallows_new_users}()}
 }
+\concept{modeling}

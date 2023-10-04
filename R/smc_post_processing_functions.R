@@ -6,6 +6,7 @@
 #' @seealso \code{\link{smc_mallows_new_item_rank}} and
 #' \code{\link{smc_mallows_new_users}}, which are functions generating objects
 #' of SMCMallows class.
+#' @keywords internal
 #' @importFrom methods is
 smc_processing <- function(output, colnames = NULL) {
   # Validation
@@ -50,7 +51,8 @@ smc_processing <- function(output, colnames = NULL) {
 #' @export
 #' @author Anja Stein
 #' @inherit compute_rho_consensus examples
-# AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
+#' @family posteriors quantities
+#' @keywords internal
 compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL, verbose = FALSE) {
   # Validation
   stopifnot(is(output, "matrix"))
@@ -89,7 +91,7 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
 #' @author Anja Stein
 #' @example inst/examples/smc_post_processing_functions_example.R
 #' @inherit smc_processing seealso
-# AS: added an extra inout variable `colnames`. This is called in the function `smc_processing`.
+#' @family posteriors quantities
 compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames = NULL, verbose = FALSE) {
   # Validation
   stopifnot(is(output, "matrix"))
@@ -134,6 +136,8 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames 
 #' @author Anja Stein
 #' @inherit smc_processing seealso
 #' @inherit compute_rho_consensus examples
+#' @family posteriors quantities
+#' @keywords internal
 compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose = FALSE) {
   # Validation
   stopifnot(is(output, "numeric"))

@@ -51,3 +51,12 @@ rank_distance(rankings = data0, rho = 1:10, metric = "kendall")
 \references{
 \insertAllCited
 }
+\seealso{
+Other rank functions: 
+\code{\link{expected_dist}()},
+\code{\link{get_mallows_loglik}()},
+\code{\link{rank_conversion}},
+\code{\link{rank_freq_distr}()},
+\code{\link{sample_mallows}()}
+}
+\concept{rank functions}

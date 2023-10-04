@@ -9,4 +9,5 @@
 #'
 #' @name obs_freq
 #' @example /inst/examples/obs_freq_example.R
+#' @family preprocessing
 NULL

@@ -37,3 +37,4 @@ list containing R_obs, the proposed 'corrected' augmented ranking that is compat
 Function to determine if the augmented ranking is compatible with the new observed partial ranking.
 If it is not, the we create a new augmentation using the pseudolikelihood approach and calculate the augmentation probability.
 }
+\keyword{internal}

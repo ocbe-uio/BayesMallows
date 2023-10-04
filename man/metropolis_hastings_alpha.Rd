@@ -102,3 +102,4 @@ metropolis_hastings_alpha(
 \author{
 Anja Stein
 }
+\keyword{internal}

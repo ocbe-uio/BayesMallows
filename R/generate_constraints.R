@@ -23,6 +23,8 @@
 #'
 #' @example /inst/examples/generate_constraints_example.R
 #'
+#' @family preprocessing
+#'
 generate_constraints <- function(preferences, n_items, cl = NULL) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 

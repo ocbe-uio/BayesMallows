@@ -28,3 +28,12 @@ data0 <- sample_mallows(rho0 = 1:5, alpha = 10, n_samples = 1000,
 # Find the frequency distribution
 rank_freq_distr(rankings = data0)
 }
+\seealso{
+Other rank functions: 
+\code{\link{expected_dist}()},
+\code{\link{get_mallows_loglik}()},
+\code{\link{rank_conversion}},
+\code{\link{rank_distance}()},
+\code{\link{sample_mallows}()}
+}
+\concept{rank functions}

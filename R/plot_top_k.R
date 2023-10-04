@@ -22,7 +22,7 @@
 #' @export
 #'
 #' @example /inst/examples/plot_top_k_example.R
-#'
+#' @family posteriors quantities
 plot_top_k <- function(model_fit, burnin = model_fit$burnin,
                        k = 3,
                        rel_widths = c(model_fit$n_clusters, 10)) {

@@ -48,6 +48,7 @@
 #' @references \insertAllCited{}
 #'
 #' @example /inst/examples/estimate_partition_function_example.R
+#' @family preprocessing
 #'
 estimate_partition_function <- function(method = "importance_sampling",
                                         alpha_vector, n_items, metric,

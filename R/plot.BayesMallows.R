@@ -23,7 +23,7 @@
 #' @export
 #'
 #' @example /inst/examples/plot.BayesMallows_example.R
-#'
+#' @family posteriors quantities
 plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items = NULL, ...) {
   # Note, the first argument must be named x, otherwise R CMD CHECK will
   # issue a warning. This is because plot.BayesMallows must have the same

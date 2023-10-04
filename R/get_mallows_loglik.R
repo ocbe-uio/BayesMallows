@@ -29,6 +29,7 @@
 #' @export
 #'
 #' @example inst/examples/get_mallows_loglik_example.R
+#' @family rank functions
 #'
 get_mallows_loglik <- function(rho, alpha, weights, metric,
                                rankings, obs_freq = NULL, log = TRUE) {

@@ -10,6 +10,7 @@
 #'   corresponding frequencies indicated in the last \code{(n_items+1)}-th
 #'   column.
 #' @export
+#' @family rank functions
 #'
 #' @example /inst/examples/rank_freq_distr_example.R
 #'

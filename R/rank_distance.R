@@ -18,6 +18,7 @@
 #' translation of \code{Rankcluster::distCayley} \insertCite{Grimonprez2016}{BayesMallows}.
 #'
 #' @references \insertAllCited
+#' @family rank functions
 #'
 #' @example /inst/examples/rank_distance_example.R
 rank_distance <- function(rankings, rho, metric, obs_freq = 1) {

@@ -35,4 +35,8 @@ algorithm.
 }
 \seealso{
 \code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
+
+Other diagnostics: 
+\code{\link{label_switching}}
 }
+\concept{diagnostics}

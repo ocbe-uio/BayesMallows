@@ -54,3 +54,12 @@ preferences = beach_tc, constraints = constr)
 \references{
 \insertAllCited{}
 }
+\seealso{
+Other preprocessing: 
+\code{\link{estimate_partition_function}()},
+\code{\link{generate_initial_ranking}()},
+\code{\link{generate_transitive_closure}()},
+\code{\link{obs_freq}},
+\code{\link{prepare_partition_function}()}
+}
+\concept{preprocessing}

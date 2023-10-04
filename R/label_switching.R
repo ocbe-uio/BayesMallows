@@ -16,6 +16,6 @@
 #' @name label_switching
 #'
 #' @references \insertAllCited{}
-#'
+#' @family diagnostics
 #' @example /inst/examples/label_switching_example.R
 NULL

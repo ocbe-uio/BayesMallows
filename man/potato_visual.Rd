@@ -18,4 +18,13 @@ to inspected the potatoes visually. 12 assessors ranked 20 potatoes.
 \references{
 \insertRef{liu2019}{BayesMallows}
 }
+\seealso{
+Other datasets: 
+\code{\link{beach_preferences}},
+\code{\link{potato_true_ranking}},
+\code{\link{potato_weighing}},
+\code{\link{sample_dataset}},
+\code{\link{sushi_rankings}}
+}
+\concept{datasets}
 \keyword{datasets}

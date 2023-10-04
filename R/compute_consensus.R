@@ -10,6 +10,9 @@
 #' @references \insertAllCited{}
 #' @export
 #' @example /inst/examples/compute_consensus_example.R
+#'
+#' @family posteriors quantities
+#'
 compute_consensus <- function(model_fit, ...) {
   UseMethod("compute_consensus")
 }
@@ -37,6 +40,7 @@ compute_consensus <- function(model_fit, ...) {
 #' define the assessors for which to compute the augmented ranking. Defaults to
 #' \code{1L}, which yields augmented rankings for assessor 1.
 #' @export
+#' @family posteriors quantities
 compute_consensus.BayesMallows <- function(model_fit, type = "CP", burnin = model_fit$burnin, parameter = "rho",
                                            assessors = 1L, ...) {
   if (is.null(burnin)) {
@@ -124,7 +128,7 @@ compute_consensus.BayesMallows <- function(model_fit, type = "CP", burnin = mode
 #'
 #' @author Anja Stein
 #' @export
-#'
+#' @family posteriors quantities
 compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin, ...) {
   if (type == "CP") {
     .compute_cp_consensus(model_fit, burnin = burnin, ...)

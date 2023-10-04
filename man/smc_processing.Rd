@@ -25,3 +25,4 @@ of SMCMallows class.
 \author{
 Anja Stein
 }
+\keyword{internal}

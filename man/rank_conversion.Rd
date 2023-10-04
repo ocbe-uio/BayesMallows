@@ -58,3 +58,12 @@ orderings_2 <- create_ordering(rankings)
 # Confirm that we get back what we had
 all.equal(orderings, orderings_2)
 }
+\seealso{
+Other rank functions: 
+\code{\link{expected_dist}()},
+\code{\link{get_mallows_loglik}()},
+\code{\link{rank_distance}()},
+\code{\link{rank_freq_distr}()},
+\code{\link{sample_mallows}()}
+}
+\concept{rank functions}

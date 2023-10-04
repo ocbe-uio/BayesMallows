@@ -47,3 +47,4 @@ Function to calculate probability of assigning a set of
   specific ranks to an specific item
 given its rank in the consensus ranking
 }
+\keyword{internal}

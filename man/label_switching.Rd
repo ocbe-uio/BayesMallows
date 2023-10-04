@@ -93,3 +93,8 @@ determine the directory and filenames of the csv files.
 \references{
 \insertAllCited{}
 }
+\seealso{
+Other diagnostics: 
+\code{\link{assess_convergence}()}
+}
+\concept{diagnostics}

@@ -43,6 +43,7 @@ scalefun <- function(x) sprintf("%d", as.integer(x))
 #' estimates.
 #'
 #' @export
+#' @family preprocessing
 #'
 prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
   # First, has the user supplied an estimate?

@@ -155,6 +155,8 @@ arma::cube augment_rankings(
 //'
 //' @export
 //'
+//' @family modeling
+//'
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_item_rank(
   const unsigned int& n_items,

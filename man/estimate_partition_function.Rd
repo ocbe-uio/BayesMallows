@@ -138,3 +138,12 @@ asymptotic approximation described in \insertCite{mukherjee2016}{BayesMallows}.
 \references{
 \insertAllCited{}
 }
+\seealso{
+Other preprocessing: 
+\code{\link{generate_constraints}()},
+\code{\link{generate_initial_ranking}()},
+\code{\link{generate_transitive_closure}()},
+\code{\link{obs_freq}},
+\code{\link{prepare_partition_function}()}
+}
+\concept{preprocessing}

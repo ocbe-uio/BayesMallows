@@ -38,3 +38,4 @@ R_curr or R_obs A ranking sequence vector representing proposed augmented rankin
 \description{
 Function to perform Metropolis-Hastings for new augmented ranking
 }
+\keyword{internal}

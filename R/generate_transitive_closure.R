@@ -41,6 +41,8 @@
 #'
 #' @example /inst/examples/generate_transitive_closure_example.R
 #'
+#' @family preprocessing
+#'
 generate_transitive_closure <- function(df, cl = NULL) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
   prefs <- split(df[, c("bottom_item", "top_item"), drop = FALSE], df$assessor)

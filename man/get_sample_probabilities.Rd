@@ -34,3 +34,4 @@ sample_prob_list A numeric sequence of sample probabilities for selecting a spec
 Calculate probability of assigning a set of specific ranks to an specific item
 given its rank in the consensus ranking
 }
+\keyword{internal}

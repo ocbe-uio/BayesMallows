@@ -71,6 +71,7 @@ double smc_calculate_probability(
 //' @return backward_auxiliary_ranking_probability A numerical value of creating the previous augmented ranking using the same item ordering used to create the
 //' new augmented ranking in calculate_forward_probability function.
 //' @export
+//' @keywords internal
 // [[Rcpp::export]]
 double calculate_backward_probability(
     arma::uvec item_ordering,
@@ -138,6 +139,7 @@ double calculate_backward_probability(
 //'   proposed augmented ranking and forward_prob a numerical value of the
 //'   probability of creating the augmented ranking using the pseudolikelihood
 //'   augmentation.
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List calculate_forward_probability(
     arma::uvec item_ordering,
