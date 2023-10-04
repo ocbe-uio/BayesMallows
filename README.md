@@ -24,7 +24,7 @@ install.packages("BayesMallows")
 To install the current development version, use
 
 ``` r
-#install.packages("remotes")
+# install.packages("remotes")
 remotes::install_github("ocbe-uio/BayesMallows")
 
 # Set build_vignettes to TRUE to also get the package vignettes
