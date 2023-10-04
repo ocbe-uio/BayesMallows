@@ -69,11 +69,13 @@ test_that("compute_mallows_mixtures works", {
     include_wcd = TRUE, save_clus = TRUE, nmc = 10, psi = .1
   )
 
-  expect_lt(max(mixture_model1$cluster_probs$value),
-            max(mixture_model$cluster_probs$value))
+  expect_lt(
+    max(mixture_model1$cluster_probs$value),
+    max(mixture_model$cluster_probs$value)
+  )
 
-  expect_gt(max(mixture_model2$cluster_probs$value),
-            max(mixture_model$cluster_probs$value))
-
-
+  expect_gt(
+    max(mixture_model2$cluster_probs$value),
+    max(mixture_model$cluster_probs$value)
+  )
 })
