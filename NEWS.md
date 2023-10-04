@@ -1,3 +1,7 @@
+# BayesMallows (development versions)
+
+* Documentation of functions are now grouped in families.
+
 # BayesMallows 1.4.0
 
 * Bug fix: psi argument to compute_mallows() and compute_mallows_mixtures(), 
