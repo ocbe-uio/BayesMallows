@@ -115,46 +115,46 @@ for each assessor, by setting <code>parameter = "Rtilde"</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1        1  P12   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2        2  P13   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3        3   P9   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        4  P10   0.993</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        5  P17   0.890</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        6   P7   0.966</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        4  P10   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        5  P17   0.952</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        6   P7   0.977</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7        7  P14   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8        8  P16   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9        9   P1   0.527</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10      10   P5   0.560</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11      11  P11   0.947</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9        9   P1   0.555</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      10   P5   0.573</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11      11  P11   0.924</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12      12  P19   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13      13  P18   0.734</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13      13  P18   0.584</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14      14  P20   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15      15   P6   0.958</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16      16   P4   0.741</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17      17   P2   0.682</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15      15   P6   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16      16   P4   0.835</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17      17   P2   0.801</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 18      18  P15   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19      19   P3   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 20      20   P8   1.000</span>
 <span class="r-in"><span><span class="co"># And we compute the MAP consensus</span></span></span>
 <span class="r-in"><span><span class="fu">compute_consensus</span><span class="op">(</span><span class="va">model_fit</span>, type <span class="op">=</span> <span class="st">"MAP"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    probability item map_ranking</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0.082  P12           1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        0.082  P13           2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        0.082   P9           3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        0.082  P10           4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        0.082  P17           5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        0.082   P7           6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7        0.082  P14           7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        0.082  P16           8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9        0.082   P1           9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       0.082   P5          10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11       0.082  P11          11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12       0.082  P19          12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13       0.082  P18          13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14       0.082  P20          14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15       0.082   P6          15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16       0.082   P4          16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17       0.082   P2          17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18       0.082  P15          18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19       0.082   P3          19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20       0.082   P8          20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        0.193  P12           1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        0.193  P13           2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        0.193   P9           3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        0.193  P10           4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        0.193  P17           5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        0.193   P7           6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7        0.193  P14           7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8        0.193  P16           8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9        0.193   P1           9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10       0.193   P5          10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       0.193  P11          11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12       0.193  P19          12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13       0.193  P20          13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14       0.193  P18          14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15       0.193   P6          15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16       0.193   P4          16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17       0.193   P2          17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18       0.193  P15          18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19       0.193   P3          19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20       0.193   P8          20</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="co"># CLUSTERWISE CONSENSUS</span></span></span>
