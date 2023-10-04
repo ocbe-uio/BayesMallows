@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,9 +54,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="bayesmallows-development-version">BayesMallows (development version)<a class="anchor" aria-label="anchor" href="#bayesmallows-development-version"></a></h2>
-<ul><li>SMC functions now accept exact partition functions where these are available.</li>
+<h2 class="pkg-version" data-toc-text="1.4.0" id="bayesmallows-140">BayesMallows 1.4.0<a class="anchor" aria-label="anchor" href="#bayesmallows-140"></a></h2>
+<ul><li>Bug fix: psi argument to compute_mallows() and compute_mallows_mixtures(), specifying the concentration parameter of the Dirichlet prior, is now forwarded to the underlying run_mcmc() function. Previously, this argument has had no effect, and the default psi=10 has been used regardless of the input. Thanks to Lorenzo Zuccato for discovering this bug.</li>
+<li>SMC functions now accept exact partition functions where these are available.</li>
 <li>Removed SMC functions deprecated on version 1.2.0 (<a href="https://github.com/ocbe-uio/BayesMallows/issues/301" class="external-link">#301</a>)</li>
+<li>Website deployed at <a href="https://ocbe-uio.github.io/BayesMallows" class="external-link uri">https://ocbe-uio.github.io/BayesMallows</a>.</li>
+<li>Reordering of authors, so Waldir Leoncio appears second in the list.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.2" id="bayesmallows-132">BayesMallows 1.3.2<a class="anchor" aria-label="anchor" href="#bayesmallows-132"></a></h2><p class="text-muted">CRAN release: 2023-08-24</p>

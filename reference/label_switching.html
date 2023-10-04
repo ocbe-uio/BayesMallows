@@ -34,7 +34,7 @@ determine the directory and filenames of the csv files."><!-- mathjax --><script
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -146,7 +146,7 @@ ISSN 1548-7660, <a href="https://doi.org/10.18637/jss.v069.c01" class="external-
 <span class="r-in"><span>  <span class="co"># Find the iteration each file corresponds to, by extracting its number</span></span></span>
 <span class="r-in"><span>  <span class="va">iteration_number</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"(^[a-zA-Z\\_\\.]*)([0-9]+)([a-zA-Z\\_\\.]+$)"</span>, <span class="st">"\\2"</span>,</span></span>
-<span class="r-in"><span>         <span class="va">scluster_files</span>, perl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>         <span class="va">cluster_files</span>, perl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># Remove all files before burnin</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.remove</a></span><span class="op">(</span><span class="va">cluster_files</span><span class="op">[</span><span class="va">iteration_number</span> <span class="op">&lt;=</span> <span class="va">burnin</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># Update the vector of files, after the deletion</span></span></span>
