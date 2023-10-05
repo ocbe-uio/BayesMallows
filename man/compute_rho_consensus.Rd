@@ -15,82 +15,32 @@ compute_rho_consensus(
 )
 }
 \arguments{
-\item{output}{a subset of an SMCMallows object (though technically any matrix
-will do)}
+\item{output}{Matrix}
 
 \item{nmc}{Number of Monte Carlo samples}
 
-\item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in.}
+\item{burnin}{Burnin}
 
-\item{C}{C}
+\item{C}{C Number of clusters.}
 
 \item{type}{type}
 
-\item{colnames}{Column names.}
+\item{colnames}{Column names}
 
-\item{verbose}{if \code{TRUE}, prints the final output even if the function
-is assigned to an object. Defaults to \code{FALSE}.}
+\item{verbose}{Logical}
 }
 \description{
-MAP AND CP consensus ranking estimates
-}
-\examples{
-# Basic elements
-data <- sushi_rankings[1:100, ]
-n_items <- ncol(data)
-leap_size <- floor(n_items / 5)
-metric <- "footrule"
-Time <- 20
-N <- 100
+This function has been deprecated. Please use
+  \code{\link{compute_consensus.SMCMallows}}.
 
-# Prepare exact partition function
-cardinalities <- prepare_partition_function(metric = metric,
-                                            n_items = n_items)$cardinalities
+MAP and CP consensus ranking estimates
 
-# Performing SMC
-smc_test <- smc_mallows_new_users(
-  R_obs = data, type = "complete", n_items = n_items,
-  metric = metric, leap_size = leap_size,
-  N = N, Time = Time,
-  cardinalities = cardinalities,
-  mcmc_kernel_app = 5,
-  num_new_obs = 5,
-  alpha_prop_sd = 0.5,
-  lambda = 0.15,
-  alpha_max = 1e6
-)
-
-compute_posterior_intervals(smc_test, parameter = "rho")
-
-test_sample_rho <- smc_test$rho_samples[, , Time + 1]
-compute_rho_consensus(
-  output = test_sample_rho, nmc = N,
-  burnin = 0, C = 1, type = "CP",
-  verbose = FALSE
-)
-
-compute_posterior_intervals(smc_test, parameter = "alpha")
+  This function is deprecated. Please use
+  \code{\link{compute_consensus.SMCMallows}} instead.
 }
 \seealso{
-Other posteriors quantities: 
-\code{\link{assign_cluster}()},
-\code{\link{compute_consensus.BayesMallows}()},
-\code{\link{compute_consensus.consensus_SMCMallows}()},
-\code{\link{compute_consensus}()},
-\code{\link{compute_posterior_intervals.BayesMallows}()},
-\code{\link{compute_posterior_intervals.SMCMallows}()},
-\code{\link{compute_posterior_intervals}()},
-\code{\link{heat_plot}()},
-\code{\link{plot.BayesMallows}()},
-\code{\link{plot.SMCMallows}()},
-\code{\link{plot_elbow}()},
-\code{\link{plot_top_k}()},
-\code{\link{predict_top_k}()},
-\code{\link{print.BayesMallowsMixtures}()},
-\code{\link{print.BayesMallows}()}
+Other deprecated: 
+\code{\link{compute_posterior_intervals_alpha}()},
+\code{\link{compute_posterior_intervals_rho}()}
 }
-\author{
-Anja Stein
-}
-\concept{posteriors quantities}
+\concept{deprecated}

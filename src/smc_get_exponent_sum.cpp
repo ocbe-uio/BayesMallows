@@ -22,7 +22,6 @@ using namespace arma;
 //' @return Exponent in the Mallows log likelihood. Note that it does not include
 //' the partition function, and since the partition function depends on \code{alpha},
 //' this is not a likelihood per se.
-//' @author Anja Stein
 //' @noRd
 //' @examples
 //' set.seed(101)

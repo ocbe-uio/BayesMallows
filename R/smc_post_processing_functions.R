@@ -1,5 +1,4 @@
 #' @title SMC Processing
-#' @author Anja Stein
 #' @param output a subset of an SMCMallows object (though technically any matrix will do)
 #' @param colnames colnames
 #' @return A processed file of the SMCMallows class
@@ -9,9 +8,6 @@
 #' @noRd
 #' @importFrom methods is
 smc_processing <- function(output, colnames = NULL) {
-  # Validation
-  stopifnot(is(output, "matrix"))
-
   # Recasting of input for proper handling below
   df <- data.frame(data = output)
 
@@ -50,14 +46,16 @@ smc_processing <- function(output, colnames = NULL) {
 #' @param verbose if \code{TRUE}, prints the final output even if the function
 #' is assigned to an object. Defaults to \code{FALSE}.
 #' @export
-#' @author Anja Stein
 #' @inherit compute_rho_consensus examples
 #' @family deprecated
 compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL, verbose = FALSE) {
   .Deprecated(
     new = "compute_posterior_intervals",
-    msg = paste("compute_posterior_intervals_rho() is deprecated. Please",
-                "use compute_posterior_intervals() with argument parameter = 'rho'."))
+    msg = paste(
+      "compute_posterior_intervals_rho() is deprecated. Please",
+      "use compute_posterior_intervals() with argument parameter = 'rho'."
+    )
+  )
   # Validation
   stopifnot(is(output, "matrix"))
 
@@ -87,62 +85,49 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
 }
 
 #' @title Compute rho consensus
-#' @description MAP AND CP consensus ranking estimates
-#' @inheritParams compute_posterior_intervals_rho
-#' @param C C
+#'
+#' @description This function has been deprecated. Please use
+#'   \code{\link{compute_consensus.SMCMallows}}.
+#'
+#'
+#' @description MAP and CP consensus ranking estimates
+#'
+#'   This function is deprecated. Please use
+#'   \code{\link{compute_consensus.SMCMallows}} instead.
+#'
+#' @param C C Number of clusters.
+#' @param output Matrix
+#' @param nmc Number of Monte Carlo samples
+#' @param burnin Burnin
+#' @param colnames Column names
+#' @param verbose Logical
 #' @param type type
+#'
 #' @export
-#' @author Anja Stein
-#' @example inst/examples/smc_post_processing_functions_example.R
-#' @family posteriors quantities
+#' @family deprecated
 compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames = NULL, verbose = FALSE) {
-  # Validation
-  stopifnot(is(output, "matrix"))
-
-  n_items <- dim(output)[2]
-
-  #----------------------------------------------------------------
-  # AS: added extra input parameter
-  smc_plot <- smc_processing(output = output, colnames = colnames)
-  #----------------------------------------------------------------
-
-  iteration <- array(rep((1:nmc), n_items))
-  smc_plot <- data.frame(data = cbind(iteration, smc_plot))
-  colnames(smc_plot) <- c("iteration", "item", "value")
-
-  smc_plot$n_clusters <- C
-  smc_plot$parameter <- "rho"
-  smc_plot$cluster <- "cluster 1"
-
-  class(smc_plot) <- c("consensus_SMCMallows", "data.frame")
-
-  # rho estimation using cumulative probability
-  if (type == "CP") {
-    results <- compute_consensus(
-      model_fit = smc_plot, type = "CP", burnin = burnin
+  .Deprecated("compute_consensus",
+    msg = paste(
+      "compute_rho_consensus has been deprecated. Please use",
+      "compute_consensus instead."
     )
-  } else {
-    results <- compute_consensus(
-      model_fit = smc_plot, type = "MAP", burnin = burnin
-    )
-  }
-  if (verbose) print(results)
-
-  return(results)
+  )
 }
 
 #' @title Compute Posterior Intervals Alpha
 #' @description posterior confidence intervals
 #' @inheritParams compute_posterior_intervals_rho
 #' @export
-#' @author Anja Stein
 #' @inherit compute_rho_consensus examples
 #' @family deprecated
 compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose = FALSE) {
   .Deprecated(
     new = "compute_posterior_intervals",
-    msg = paste("compute_posterior_intervals_alpha() is deprecated. Please",
-                "use compute_posterior_intervals() with argument parameter = 'alpha'."))
+    msg = paste(
+      "compute_posterior_intervals_alpha() is deprecated. Please",
+      "use compute_posterior_intervals() with argument parameter = 'alpha'."
+    )
+  )
   # Validation
   stopifnot(is(output, "numeric"))
 
@@ -161,7 +146,7 @@ compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose = FAL
 
 
 compute_posterior_intervals_SMCMallows_deprecated <- function(model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
-                                                   decimals = 3L, ...) {
+                                                              decimals = 3L, ...) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
@@ -182,8 +167,8 @@ compute_posterior_intervals_SMCMallows_deprecated <- function(model_fit, burnin 
   } else if (parameter == "rho") {
     decimals <- 0
     df <- .compute_posterior_intervals(split(df, f = interaction(df$cluster, df$item)),
-                                       parameter, level, decimals,
-                                       discrete = TRUE
+      parameter, level, decimals,
+      discrete = TRUE
     )
   }
 

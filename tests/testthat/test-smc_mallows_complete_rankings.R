@@ -74,10 +74,8 @@ test_that("Output of smc_mallows_new_users_complete is OK", {
 rho_temp <- compute_posterior_intervals(test, parameter = "rho")
 
 # MAP AND CP consensus ranking estimates
-rho_cp <- compute_rho_consensus(
-  output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "CP"
-)
-rho_map <- compute_rho_consensus(output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1, type = "MAP")
+rho_cp <- compute_consensus(test)
+rho_map <- compute_consensus(test, type = "MAP")
 
 test_that("Output of compute_posterior_intervals_rho is OK", {
   expect_is(rho_temp, "data.frame")
@@ -98,7 +96,8 @@ alpha_samples_table <- data.frame(
 )
 # posterior confidence intervals
 alpha_posterior_intervals <- compute_posterior_intervals(
-  test, parameter = "alpha"
+  test,
+  parameter = "alpha"
 )
 
 test_that("Output of compute_posterior_intervals_alpha is OK", {

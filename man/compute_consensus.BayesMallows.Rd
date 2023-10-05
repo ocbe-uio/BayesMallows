@@ -14,37 +14,39 @@
 )
 }
 \arguments{
-\item{model_fit}{An object returned from \code{\link{compute_mallows}}.}
+\item{model_fit}{Object of type \code{BayesMallows} returned from
+\code{\link{compute_mallows}}.}
 
 \item{type}{Character string specifying which consensus to compute. Either
 \code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.}
 
-\item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
+\item{burnin}{A numeric value specifying the number of iterations to discard
+as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
+\code{model_fit$burnin} does not exist. See
+\code{\link{assess_convergence}}.}
 
-\item{parameter}{Character string defining the parameter for which to compute the
-consensus. Defaults to \code{"rho"}. Available options are \code{"rho"} and \code{"Rtilde"},
-with the latter giving consensus rankings for augmented ranks.}
+\item{parameter}{Character string defining the parameter for which to compute
+the consensus. Defaults to \code{"rho"}. Available options are \code{"rho"}
+and \code{"Rtilde"}, with the latter giving consensus rankings for
+augmented ranks.}
 
-\item{assessors}{When \code{parameter = "rho"}, this integer vector is used to
-define the assessors for which to compute the augmented ranking. Defaults to
-\code{1L}, which yields augmented rankings for assessor 1.}
+\item{assessors}{When \code{parameter = "rho"}, this integer vector is used
+to define the assessors for which to compute the augmented ranking.}
 
-\item{...}{other arguments passed to methods.}
+\item{...}{Other arguments passed on to other methods. Currently not used.
+Defaults to \code{1L}, which yields augmented rankings for assessor 1.}
 }
 \description{
 Compute Consensus Ranking
 }
 \seealso{
-Other posteriors quantities: 
+Other posterior quantities: 
 \code{\link{assign_cluster}()},
-\code{\link{compute_consensus.consensus_SMCMallows}()},
+\code{\link{compute_consensus.SMCMallows}()},
 \code{\link{compute_consensus}()},
 \code{\link{compute_posterior_intervals.BayesMallows}()},
 \code{\link{compute_posterior_intervals.SMCMallows}()},
 \code{\link{compute_posterior_intervals}()},
-\code{\link{compute_rho_consensus}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},
 \code{\link{plot.SMCMallows}()},
@@ -54,4 +56,4 @@ Other posteriors quantities:
 \code{\link{print.BayesMallowsMixtures}()},
 \code{\link{print.BayesMallows}()}
 }
-\concept{posteriors quantities}
+\concept{posterior quantities}
