@@ -61,7 +61,8 @@ compute_posterior_intervals.BayesMallows <- function(
   if (length(parameter) > 1) stop("Only one parameter allowed.")
   parameter <- match.arg(
     parameter,
-    c("alpha", "rho", "cluster_probs", "cluster_assignment"))
+    c("alpha", "rho", "cluster_probs", "cluster_assignment")
+  )
 
   stopifnot(level > 0 && level < 1)
 
@@ -106,10 +107,10 @@ compute_posterior_intervals.BayesMallows <- function(
 compute_posterior_intervals.SMCMallows <- function(
     model_fit, parameter = "alpha", level = 0.95,
     decimals = 3L, ...) {
-
   if (length(parameter) > 1) stop("Only one parameter allowed.")
   parameter <- match.arg(
-    parameter, c("alpha", "rho"))
+    parameter, c("alpha", "rho")
+  )
 
   stopifnot(level > 0 && level < 1)
 
@@ -124,19 +125,20 @@ compute_posterior_intervals.SMCMallows <- function(
       df = split(tab, f = tab$cluster),
       parameter = parameter,
       level = level,
-      decimals = decimals)
-
+      decimals = decimals
+    )
   } else if (parameter == "rho") {
     tab <- smc_processing(
-      model_fit$rho_samples[, , dim(model_fit$rho_samples)[[3]], drop = TRUE])
+      model_fit$rho_samples[, , dim(model_fit$rho_samples)[[3]], drop = TRUE]
+    )
     tab$n_clusters <- 1
     tab$cluster <- "Cluster 1"
 
     tab <- .compute_posterior_intervals(
       df = split(tab, f = interaction(tab$cluster, tab$item)),
       parameter = parameter, level = level,
-      decimals = decimals, discrete = TRUE)
-
+      decimals = decimals, discrete = TRUE
+    )
   }
 
   if (length(unique(tab$cluster)) == 1) {

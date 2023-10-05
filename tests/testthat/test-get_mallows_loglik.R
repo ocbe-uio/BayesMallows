@@ -118,5 +118,4 @@ test_that("get_mallows_loglik works", {
     ),
     "Given number of items currently not available for the specified metric"
   )
-
 })

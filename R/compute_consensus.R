@@ -46,8 +46,9 @@ compute_consensus <- function(model_fit, ...) {
 #'   Defaults to \code{1L}, which yields augmented rankings for assessor 1.
 #' @export
 #' @family posterior quantities
-compute_consensus.BayesMallows <- function(model_fit, type = "CP", burnin = model_fit$burnin, parameter = "rho",
-                                           assessors = 1L, ...) {
+compute_consensus.BayesMallows <- function(
+    model_fit, type = "CP", burnin = model_fit$burnin, parameter = "rho",
+    assessors = 1L, ...) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
@@ -57,7 +58,8 @@ compute_consensus.BayesMallows <- function(model_fit, type = "CP", burnin = mode
 
   stopifnot(inherits(model_fit, "BayesMallows"))
 
-  if (parameter == "Rtilde" && !inherits(model_fit$augmented_data, "data.frame")) {
+  if (parameter == "Rtilde" &&
+      !inherits(model_fit$augmented_data, "data.frame")) {
     stop("For augmented ranks, please refit model with option 'save_aug = TRUE'.")
   }
 
@@ -118,16 +120,16 @@ compute_consensus.BayesMallows <- function(model_fit, type = "CP", burnin = mode
 
 #' Compute Consensus Ranking
 #'
-#' Compute the consensus ranking using either cumulative probability (CP) or maximum a posteriori (MAP) consensus
-#' \insertCite{vitelli2018}{BayesMallows}. For mixture models, the
-#' consensus is given for each mixture.
+#' Compute the consensus ranking using either cumulative probability (CP) or
+#' maximum a posteriori (MAP) consensus \insertCite{vitelli2018}{BayesMallows}.
+#' For mixture models, the consensus is given for each mixture.
 #'
 #' @param model_fit An object of class \code{SMCMallows}, returned from
 #'   \code{\link{smc_mallows_new_item_rank}} or
 #'   \code{\link{smc_mallows_new_users}}.
 #'
 #' @param type Character string specifying which consensus to compute. Either
-#' \code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.
+#'   \code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.
 #'
 #'
 #' @param ... Other optional arguments passed to methods. Currently not used.
@@ -137,7 +139,6 @@ compute_consensus.BayesMallows <- function(model_fit, type = "CP", burnin = mode
 #'
 #' @example inst/examples/smc_post_processing_functions_example.R
 compute_consensus.SMCMallows <- function(model_fit, type = "CP", ...) {
-
   type <- match.arg(type, c("CP", "MAP"))
 
   if (type == "CP") {
@@ -166,8 +167,7 @@ compute_consensus.SMCMallows <- function(model_fit, type = "CP", ...) {
 }
 
 .compute_cp_consensus.SMCMallows <- function(model_fit, ...) {
-
-  df <- smc_processing(model_fit$rho_samples[,,dim(model_fit$rho_samples)[[3]]])
+  df <- smc_processing(model_fit$rho_samples[, , dim(model_fit$rho_samples)[[3]]])
   df$cluster <- "Cluster 1"
   n_rows <- length(unique(interaction(df$item, df$cluster)))
   df$iteration <- seq_len(nrow(df))
@@ -252,7 +252,8 @@ find_cpc <- function(group_df, group_var = "cluster") {
   model_fit$id <- NULL
 
   # Sort according to cluster and ranking
-  model_fit <- model_fit[order(model_fit$cluster, model_fit$map_ranking), , drop = FALSE]
+  model_fit <-
+    model_fit[order(model_fit$cluster, model_fit$map_ranking), , drop = FALSE]
 
   if (length(unique(model_fit$cluster)) == 1) {
     model_fit$cluster <- NULL
@@ -263,8 +264,8 @@ find_cpc <- function(group_df, group_var = "cluster") {
 
 
 .compute_map_consensus.SMCMallows <- function(model_fit, ...) {
-
-  df <- as.data.frame(model_fit$rho_samples[,,dim(model_fit$rho_samples)[[3]]])
+  df <-
+    as.data.frame(model_fit$rho_samples[, , dim(model_fit$rho_samples)[[3]]])
   colnames(df) <- paste("Item", seq_len(ncol(df)))
   n_items <- ncol(df)
   iterations <- seq_len(nrow(df))

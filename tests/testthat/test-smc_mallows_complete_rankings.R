@@ -96,7 +96,8 @@ alpha_samples_table <- data.frame(
 )
 # posterior confidence intervals
 alpha_posterior_intervals <- compute_posterior_intervals(
-  test, parameter = "alpha"
+  test,
+  parameter = "alpha"
 )
 
 test_that("Output of compute_posterior_intervals_alpha is OK", {
