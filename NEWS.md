@@ -1,6 +1,7 @@
 # BayesMallows (development versions)
 
 * Documentation of functions are now grouped in families.
+* lik_db_mix() is now deprecated in favor of get_mallows_loglik()
 
 # BayesMallows 1.4.0
 

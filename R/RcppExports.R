@@ -53,7 +53,7 @@ compute_importance_sampling_estimate <- function(alpha_vector, n_items, metric =
 #' Applicable for Footrule and Spearman distance.
 #' @param metric A string. Available options are \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
 #' @return A scalar, the logarithm of the partition function.
-#' @keywords internal
+#' @noRd
 #'
 log_expected_dist <- function(alpha, n_items, cardinalities, metric) {
     .Call(`_BayesMallows_log_expected_dist`, alpha, n_items, cardinalities, metric)
@@ -70,7 +70,7 @@ log_expected_dist <- function(alpha, n_items, cardinalities, metric) {
 #' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, and \code{"ulam"}.
 #' Defaults to \code{"footrule"}.
 #' @return A scalar, the logarithm of the partition function.
-#' @keywords internal
+#' @noRd
 #'
 #' @references \insertAllCited{}
 #'
@@ -288,9 +288,8 @@ correction_kernel_pseudo <- function(current_ranking, observed_ranking, rho, alp
 #' @return Exponent in the Mallows log likelihood. Note that it does not include
 #' the partition function, and since the partition function depends on \code{alpha},
 #' this is not a likelihood per se.
-#' @export
 #' @author Anja Stein
-#' @keywords internal
+#' @noRd
 #' @examples
 #' set.seed(101)
 #' rho <- t(c(1, 2, 3, 4, 5, 6))
@@ -333,7 +332,7 @@ get_exponent_sum <- function(alpha, rho, n_items, rankings, metric = "footrule")
 #' @param n_items Integer is the number of items in the consensus ranking
 #' @return sample_prob_list A numeric sequence of sample probabilities for selecting a specific rank given the current
 #'         rho_item_rank
-#' @keywords internal
+#' @noRd
 #'
 get_sample_probabilities <- function(rho_item_rank, alpha, remaining_set_ranks, n_items, metric = "footrule") {
     .Call(`_BayesMallows_get_sample_probabilities`, rho_item_rank, alpha, remaining_set_ranks, n_items, metric)
@@ -345,7 +344,6 @@ get_sample_probabilities <- function(rho_item_rank, alpha, remaining_set_ranks, 
 #' @param leap_size Integer specifying the step size of the leap-and-shift
 #' proposal distribution.
 #' @param n_items Integer is the number of items in a ranking
-#' @export
 #' @return A list containing:
 #' \itemize{
 #' \item \code{rho_prime} A ranking sequence proposed consensus ranking
@@ -353,7 +351,7 @@ get_sample_probabilities <- function(rho_item_rank, alpha, remaining_set_ranks, 
 #' \item \code{backwards_prob} Numeric Value to account for the transition probability from \code{rho_prime} to \code{rho}
 #' }
 #'
-#' @keywords internal
+#' @noRd
 #' @examples
 #' rho <- c(1, 2, 3, 4, 5, 6)
 #' n_items <- 6
@@ -490,10 +488,9 @@ smc_mallows_new_users <- function(R_obs, type, n_items, N, Time, mcmc_kernel_app
 #'   \eqn{\alpha_{c}} has the same prior distribution.
 #' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
 #'   prior distribution.
-#' @importFrom stats dexp rlnorm runif
 #' @author Anja Stein
 #' @example /inst/examples/metropolis_hastings_alpha_example.R
-#' @keywords internal
+#' @noRd
 metropolis_hastings_alpha <- function(alpha, n_items, rankings, rho, logz_estimate, cardinalities, metric = "footrule", alpha_prop_sd = 0.5, alpha_max = 1e6, lambda = 0.1) {
     .Call(`_BayesMallows_metropolis_hastings_alpha`, alpha, n_items, rankings, rho, logz_estimate, cardinalities, metric, alpha_prop_sd, alpha_max, lambda)
 }
@@ -512,7 +509,7 @@ metropolis_hastings_alpha <- function(alpha, n_items, rankings, rho, logz_estima
 #'   \code{"ulam"}.
 #' @param pseudo Boolean specifying whether to use pseudo proposal or not.s
 #' @return R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
-#' @keywords internal
+#' @noRd
 metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking, current_ranking, pseudo, metric = "footnote") {
     .Call(`_BayesMallows_metropolis_hastings_aug_ranking`, alpha, rho, n_items, partial_ranking, current_ranking, pseudo, metric)
 }
@@ -522,7 +519,7 @@ metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking
 #' @inheritParams get_exponent_sum
 #' @param leap_size Integer specifying the step size of the leap-and-shift
 #' proposal distribution.
-#' @keywords internal
+#' @noRd
 #' @author Anja Stein
 #' @examples
 #' rho <- t(c(1,2,3,4,5,6))

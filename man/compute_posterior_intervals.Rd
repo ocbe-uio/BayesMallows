@@ -7,7 +7,7 @@
 compute_posterior_intervals(model_fit, ...)
 }
 \arguments{
-\item{model_fit}{An object returned from \code{\link{compute_mallows}}.}
+\item{model_fit}{A model object.}
 
 \item{...}{other arguments passed to methods.}
 }
@@ -64,8 +64,6 @@ Other posteriors quantities:
 \code{\link{compute_consensus}()},
 \code{\link{compute_posterior_intervals.BayesMallows}()},
 \code{\link{compute_posterior_intervals.SMCMallows}()},
-\code{\link{compute_posterior_intervals_alpha}()},
-\code{\link{compute_posterior_intervals_rho}()},
 \code{\link{compute_rho_consensus}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},

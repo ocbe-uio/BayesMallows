@@ -13,7 +13,7 @@ NULL
 #' Check if a vector is a permutation
 #' @param vec a vector
 #' @return TRUE if vec is a permutation
-#' @keywords internal
+#' @noRd
 validate_permutation <- function(vec) {
   if (!any(is.na(vec))) {
     return(all(sort(vec) == seq_along(vec)))

@@ -35,12 +35,8 @@ smc_test <- smc_mallows_new_users(
 test_sample_rho <- smc_test$rho_samples[, , Time + 1]
 test_sample_alpha <- smc_test$alpha_samples[, Time + 1]
 
-test_that("compute_posterior_intervals_rho output has expected structure", {
-  cpir <- compute_posterior_intervals_rho(
-    output = test_sample_rho,
-    nmc = N, burnin = 0,
-    verbose = FALSE
-  )
+test_that("compute_posterior_intervals (rho) output has expected structure", {
+  cpir <- compute_posterior_intervals(smc_test, parameter = "rho")
   expect_s3_class(cpir, "data.frame")
   expect_named(
     cpir,
@@ -60,11 +56,8 @@ test_that("compute_rho_consensus output has expected structure", {
   expect_equal(dim(crc), c(10L, 3L))
 })
 
-test_that("compute_rho_consensus output has expected structure", {
-  cpia <- compute_posterior_intervals_alpha(
-    output = test_sample_alpha,
-    nmc = N, burnin = 0, verbose = FALSE
-  )
+test_that("compute_posterior_intervals (alpha) output has expected structure", {
+  cpia <- compute_posterior_intervals(smc_test, parameter = "alpha")
   expect_s3_class(cpia, "data.frame")
   expect_named(
     cpia,
@@ -75,12 +68,8 @@ test_that("compute_rho_consensus output has expected structure", {
 
 test_that("Wrong input is caught", {
   expect_error(
-    compute_posterior_intervals_rho(
-      output = smc_test,
-      nmc = N, burnin = 0,
-      verbose = FALSE
-    ),
-    'is\\(output, "matrix"\\) is not TRUE'
+    compute_posterior_intervals(test_sample_rho),
+    'no applicable method'
   )
   expect_error(
     compute_rho_consensus(
@@ -91,10 +80,7 @@ test_that("Wrong input is caught", {
     'is\\(output, "matrix"\\) is not TRUE'
   )
   expect_error(
-    compute_posterior_intervals_alpha(
-      output = smc_test,
-      nmc = N, burnin = 0, verbose = FALSE
-    ),
-    'is\\(output, "numeric"\\) is not TRUE'
+    compute_posterior_intervals(test_sample_alpha),
+    'no applicable method'
   )
 })

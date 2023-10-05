@@ -3,7 +3,7 @@
 #'
 #' Compute posterior intervals of parameters of interest.
 #'
-#' @param model_fit An object returned from \code{\link{compute_mallows}}.
+#' @param model_fit A model object.
 #'
 #' @param ... other arguments passed to methods.
 #'
@@ -26,24 +26,30 @@ compute_posterior_intervals <- function(model_fit, ...) {
 }
 
 
-#' @title Compute posterior intervals
-#' @inheritParams compute_posterior_intervals
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-#' provided if \code{model_fit$burnin} does not exist.
-#' See \code{\link{assess_convergence}}.
+#' Compute posterior intervals
+#'
+#' @param model_fit An object of class \code{BayesMallows} returned from
+#'   \code{\link{compute_mallows}}.
+#' @param burnin A numeric value specifying the number of iterations to discard
+#'   as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
+#'   \code{model_fit$burnin} does not exist. See
+#'   \code{\link{assess_convergence}}.
 #' @param parameter Character string defining which parameter to compute
-#' posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
-#' \code{"cluster_probs"}. Default is \code{"alpha"}.
+#'   posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
+#'   \code{"cluster_probs"}. Default is \code{"alpha"}.
 #' @param level Decimal number in \eqn{[0,1]} specifying the confidence level.
-#' Defaults to \code{0.95}.
-#' @param decimals Integer specifying the number of decimals to include
-#' in posterior intervals and the mean and median. Defaults to \code{3}.
+#'   Defaults to \code{0.95}.
+#' @param decimals Integer specifying the number of decimals to include in
+#'   posterior intervals and the mean and median. Defaults to \code{3}.
+#' @param ... Other arguments. Currently not used.
+#'
 #' @seealso assess_convergence
 #' @export
 #' @family posteriors quantities
-compute_posterior_intervals.BayesMallows <- function(model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
-                                                     decimals = 3L, ...) {
+compute_posterior_intervals.BayesMallows <- function(
+    model_fit, burnin = model_fit$burnin,
+    parameter = "alpha",
+    level = 0.95, decimals = 3L, ...) {
   stopifnot(inherits(model_fit, "BayesMallows"))
 
   if (is.null(burnin)) {
@@ -51,7 +57,12 @@ compute_posterior_intervals.BayesMallows <- function(model_fit, burnin = model_f
   }
 
   stopifnot(burnin < model_fit$nmc)
-  stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment"))
+
+  if(length(parameter) > 1) stop("Only one parameter allowed.")
+  parameter <- match.arg(
+    parameter,
+    c("alpha", "rho", "cluster_probs", "cluster_assignment"))
+
   stopifnot(level > 0 && level < 1)
 
   df <- model_fit[[parameter]][model_fit[[parameter]]$iteration > burnin, , drop = FALSE]
@@ -74,40 +85,63 @@ compute_posterior_intervals.BayesMallows <- function(model_fit, burnin = model_f
 }
 
 #' @title Compute posterior intervals
-#' @inheritParams compute_posterior_intervals.BayesMallows
+#'
+#' @description This function computes posterior intervals based on the set of samples at the
+#' last timepoint of the SMC algorithm.
+#'
+#' @param model_fit An object of class \code{SMCMallows}, returned from
+#'   \code{\link{smc_mallows_new_item_rank}} or
+#'   \code{\link{smc_mallows_new_users}}.
+#' @param parameter Character string defining which parameter to compute
+#'   posterior intervals for. One of \code{"alpha"} or \code{"rho"}.
+#' @param level Decimal number in \eqn{[0,1]} specifying the confidence level.
+#'   Defaults to \code{0.95}.
+#' @param decimals Integer specifying the number of decimals to include in
+#'   posterior intervals and the mean and median. Defaults to \code{3}.
+#' @param ... Other arguments. Currently not used.
 #' @export
 #' @family posteriors quantities
-compute_posterior_intervals.SMCMallows <- function(model_fit, burnin = model_fit$burnin, parameter = "alpha", level = 0.95,
-                                                   decimals = 3L, ...) {
-  if (is.null(burnin)) {
-    stop("Please specify the burnin.")
-  }
+compute_posterior_intervals.SMCMallows <- function(
+    model_fit, parameter = "alpha", level = 0.95,
+    decimals = 3L, ...) {
 
-  stopifnot(burnin < model_fit$nmc)
-  stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment"))
+  if(length(parameter) > 1) stop("Only one parameter allowed.")
+  parameter <- match.arg(
+    parameter, c("alpha", "rho"))
+
   stopifnot(level > 0 && level < 1)
 
-
-  if (burnin != 0) {
-    df <- model_fit[model_fit$iteration > burnin, , drop = FALSE]
-  } else {
-    df <- model_fit
-  }
-
-  if (parameter == "alpha" || parameter == "cluster_probs") {
-    df <- .compute_posterior_intervals(split(df, f = df$cluster), parameter, level, decimals)
-  } else if (parameter == "rho") {
-    decimals <- 0
-    df <- .compute_posterior_intervals(split(df, f = interaction(df$cluster, df$item)),
-      parameter, level, decimals,
-      discrete = TRUE
+  if(parameter == "alpha") {
+    tab <- data.frame(
+      value = model_fit$alpha_samples[, ncol(model_fit$alpha_samples), drop = TRUE]
     )
+    tab$n_clusters <- 1
+    tab$cluster <- "Cluster 1"
+
+    tab <- .compute_posterior_intervals(
+      df = split(tab, f = tab$cluster),
+      parameter = parameter,
+      level = level,
+      decimals = decimals)
+
+  } else if(parameter == "rho") {
+    tab <- smc_processing(
+      model_fit$rho_samples[,,dim(model_fit$rho_samples)[[3]], drop = TRUE])
+    tab$n_clusters <- 1
+    tab$cluster <- "Cluster 1"
+
+    tab <- .compute_posterior_intervals(
+      df = split(tab, f = interaction(tab$cluster, tab$item)),
+      parameter = parameter, level = level,
+      decimals = decimals, discrete = TRUE)
+
   }
 
+  if(length(unique(tab$cluster)) == 1) {
+    tab$cluster <- NULL
+  }
 
-  if (model_fit$n_clusters[1] == 1) df$cluster <- NULL
-
-  return(df)
+  return(tab)
 }
 
 .compute_posterior_intervals <- function(df, parameter, level, decimals, discrete = FALSE, ...) {

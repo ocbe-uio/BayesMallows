@@ -81,7 +81,7 @@ double logz_cardinalities(const double& alpha, const int& n_items, const vec& ca
 //' Applicable for Footrule and Spearman distance.
 //' @param metric A string. Available options are \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
 //' @return A scalar, the logarithm of the partition function.
-//' @keywords internal
+//' @noRd
 //'
 // [[Rcpp::export]]
 double log_expected_dist(const double& alpha, const int& n_items,
@@ -104,7 +104,7 @@ double log_expected_dist(const double& alpha, const int& n_items,
 //' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, and \code{"ulam"}.
 //' Defaults to \code{"footrule"}.
 //' @return A scalar, the logarithm of the partition function.
-//' @keywords internal
+//' @noRd
 //'
 //' @references \insertAllCited{}
 //'

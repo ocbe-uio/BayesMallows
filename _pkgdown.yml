@@ -33,3 +33,8 @@ reference:
   desc: Example datasets included in the package.
   contents:
   - has_concept("datasets")
+
+- title: Deprecated
+  desc: Soft-deprecated functions, which will be removed in a future release.
+  contents:
+  - has_concept("deprecated")

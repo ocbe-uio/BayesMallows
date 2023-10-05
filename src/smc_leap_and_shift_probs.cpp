@@ -10,7 +10,6 @@ using namespace arma;
 //' @param leap_size Integer specifying the step size of the leap-and-shift
 //' proposal distribution.
 //' @param n_items Integer is the number of items in a ranking
-//' @export
 //' @return A list containing:
 //' \itemize{
 //' \item \code{rho_prime} A ranking sequence proposed consensus ranking
@@ -18,7 +17,7 @@ using namespace arma;
 //' \item \code{backwards_prob} Numeric Value to account for the transition probability from \code{rho_prime} to \code{rho}
 //' }
 //'
-//' @keywords internal
+//' @noRd
 //' @examples
 //' rho <- c(1, 2, 3, 4, 5, 6)
 //' n_items <- 6

@@ -19,7 +19,7 @@ using namespace arma;
 //' @param n_items Integer is the number of items in the consensus ranking
 //' @return sample_prob_list A numeric sequence of sample probabilities for selecting a specific rank given the current
 //'         rho_item_rank
-//' @keywords internal
+//' @noRd
 //'
 // [[Rcpp::export]]
 arma::vec get_sample_probabilities(

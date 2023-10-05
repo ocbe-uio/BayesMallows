@@ -7,7 +7,8 @@
 compute_posterior_intervals_alpha(output, nmc, burnin, verbose = FALSE)
 }
 \arguments{
-\item{output}{a subset of an SMCMallows object (though technically any numeric vector will do)}
+\item{output}{a subset of an SMCMallows object (though technically any matrix
+will do)}
 
 \item{nmc}{Number of Monte Carlo samples}
 
@@ -46,47 +47,22 @@ smc_test <- smc_mallows_new_users(
   alpha_max = 1e6
 )
 
-test_sample_rho <- smc_test$rho_samples[, , Time + 1]
-compute_posterior_intervals_rho(
-  output = test_sample_rho,
-  nmc = N, burnin = 0,
-  verbose = FALSE
-)
+compute_posterior_intervals(smc_test, parameter = "rho")
 
+test_sample_rho <- smc_test$rho_samples[, , Time + 1]
 compute_rho_consensus(
   output = test_sample_rho, nmc = N,
   burnin = 0, C = 1, type = "CP",
   verbose = FALSE
 )
 
-test_sample_alpha <- smc_test$alpha_samples[, Time + 1]
-compute_posterior_intervals_alpha(
-  output = test_sample_alpha,
-  nmc = N, burnin = 0, verbose = FALSE
-)
+compute_posterior_intervals(smc_test, parameter = "alpha")
 }
 \seealso{
-Other posteriors quantities: 
-\code{\link{assign_cluster}()},
-\code{\link{compute_consensus.BayesMallows}()},
-\code{\link{compute_consensus.consensus_SMCMallows}()},
-\code{\link{compute_consensus}()},
-\code{\link{compute_posterior_intervals.BayesMallows}()},
-\code{\link{compute_posterior_intervals.SMCMallows}()},
-\code{\link{compute_posterior_intervals_rho}()},
-\code{\link{compute_posterior_intervals}()},
-\code{\link{compute_rho_consensus}()},
-\code{\link{heat_plot}()},
-\code{\link{plot.BayesMallows}()},
-\code{\link{plot.SMCMallows}()},
-\code{\link{plot_elbow}()},
-\code{\link{plot_top_k}()},
-\code{\link{predict_top_k}()},
-\code{\link{print.BayesMallowsMixtures}()},
-\code{\link{print.BayesMallows}()}
+Other deprecated: 
+\code{\link{compute_posterior_intervals_rho}()}
 }
 \author{
 Anja Stein
 }
-\concept{posteriors quantities}
-\keyword{internal}
+\concept{deprecated}

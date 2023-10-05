@@ -92,11 +92,3 @@ get_mallows_loglik <- function(rho, alpha, weights, metric,
     sum(loglik)
   }
 }
-
-#' @rdname get_mallows_loglik
-#' @export
-lik_db_mix <- function(rho, alpha, weights, metric,
-                       rankings, obs_freq = NULL, log = FALSE) {
-  .Deprecated(new = "get_mallows_loglik")
-  get_mallows_loglik(rho, alpha, weights, metric, rankings, obs_freq, log)
-}

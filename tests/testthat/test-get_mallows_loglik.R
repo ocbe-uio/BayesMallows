@@ -119,16 +119,4 @@ test_that("get_mallows_loglik works", {
     "Given number of items currently not available for the specified metric"
   )
 
-  expect_warning(
-    lik_db_mix(
-      rho = rbind(1:n_items, 1:n_items),
-      alpha = c(2 * n_items, 2 * n_items),
-      weights = c(0.5, 0.5),
-      metric = "kendall",
-      rankings = freq_distr[, 1:n_items],
-      obs_freq = freq_distr[, n_items + 1],
-      log = TRUE
-    ),
-    "'lik_db_mix' is deprecated."
-  )
 })
