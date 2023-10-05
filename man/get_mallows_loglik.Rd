@@ -2,7 +2,6 @@
 % Please edit documentation in R/get_mallows_loglik.R
 \name{get_mallows_loglik}
 \alias{get_mallows_loglik}
-\alias{lik_db_mix}
 \title{Likelihood and log-likelihood evaluation for a Mallows mixture model}
 \usage{
 get_mallows_loglik(
@@ -14,8 +13,6 @@ get_mallows_loglik(
   obs_freq = NULL,
   log = TRUE
 )
-
-lik_db_mix(rho, alpha, weights, metric, rankings, obs_freq = NULL, log = FALSE)
 }
 \arguments{
 \item{rho}{A matrix of size \code{n_clusters x n_items} whose rows are
@@ -105,3 +102,12 @@ get_mallows_loglik(
   log = TRUE
   )
 }
+\seealso{
+Other rank functions: 
+\code{\link{expected_dist}()},
+\code{\link{rank_conversion}},
+\code{\link{rank_distance}()},
+\code{\link{rank_freq_distr}()},
+\code{\link{sample_mallows}()}
+}
+\concept{rank functions}

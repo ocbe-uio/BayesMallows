@@ -14,12 +14,13 @@
 )
 }
 \arguments{
-\item{model_fit}{An object returned from \code{\link{compute_mallows}}.}
+\item{model_fit}{An object of class \code{BayesMallows} returned from
+\code{\link{compute_mallows}}.}
 
-\item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-provided if \code{model_fit$burnin} does not exist.
-See \code{\link{assess_convergence}}.}
+\item{burnin}{A numeric value specifying the number of iterations to discard
+as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
+\code{model_fit$burnin} does not exist. See
+\code{\link{assess_convergence}}.}
 
 \item{parameter}{Character string defining which parameter to compute
 posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
@@ -28,14 +29,32 @@ posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
 \item{level}{Decimal number in \eqn{[0,1]} specifying the confidence level.
 Defaults to \code{0.95}.}
 
-\item{decimals}{Integer specifying the number of decimals to include
-in posterior intervals and the mean and median. Defaults to \code{3}.}
+\item{decimals}{Integer specifying the number of decimals to include in
+posterior intervals and the mean and median. Defaults to \code{3}.}
 
-\item{...}{other arguments passed to methods.}
+\item{...}{Other arguments. Currently not used.}
 }
 \description{
 Compute posterior intervals
 }
 \seealso{
 assess_convergence
+
+Other posteriors quantities: 
+\code{\link{assign_cluster}()},
+\code{\link{compute_consensus.BayesMallows}()},
+\code{\link{compute_consensus.consensus_SMCMallows}()},
+\code{\link{compute_consensus}()},
+\code{\link{compute_posterior_intervals.SMCMallows}()},
+\code{\link{compute_posterior_intervals}()},
+\code{\link{compute_rho_consensus}()},
+\code{\link{heat_plot}()},
+\code{\link{plot.BayesMallows}()},
+\code{\link{plot.SMCMallows}()},
+\code{\link{plot_elbow}()},
+\code{\link{plot_top_k}()},
+\code{\link{predict_top_k}()},
+\code{\link{print.BayesMallowsMixtures}()},
+\code{\link{print.BayesMallows}()}
 }
+\concept{posteriors quantities}

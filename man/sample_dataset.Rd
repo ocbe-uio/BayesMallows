@@ -27,4 +27,13 @@ a complete dataset at \code{sample_dataset[, , Time]}.
 \references{
 https://github.com/anjastein/SMC-Mallows/tree/main/data
 }
+\seealso{
+Other datasets: 
+\code{\link{beach_preferences}},
+\code{\link{potato_true_ranking}},
+\code{\link{potato_visual}},
+\code{\link{potato_weighing}},
+\code{\link{sushi_rankings}}
+}
+\concept{datasets}
 \keyword{datasets}

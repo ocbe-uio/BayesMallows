@@ -257,12 +257,9 @@ test_that("Specific example results are OK", {
     output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1,
     type = "MAP"
   )
-  post_rho <- compute_posterior_intervals_rho(
-    output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0
-  )
-  post_alpha <- compute_posterior_intervals_alpha(
-    output = test$alpha_samples[, Time + 1], nmc = N, burnin = 0
-  )
+  post_rho <- compute_posterior_intervals(test, parameter = "rho")
+  post_alpha <- compute_posterior_intervals(test, parameter = "alpha")
+
   expect_equal(dim(rho_cp), c(10, 3))
   expect_equal(dim(rho_map), c(100, 3))
   expect_equal(dim(post_rho), c(10, 7))
@@ -320,9 +317,7 @@ test_that("Specific example results are OK", {
     output = test_fixed$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1,
     type = "MAP"
   )
-  post_rho_fixed <- compute_posterior_intervals_rho(
-    output = test_fixed$rho_samples[, , Time + 1], nmc = N, burnin = 0
-  )
+  post_rho_fixed <- compute_posterior_intervals(test_fixed, parameter = "rho")
   expect_equal(dim(rho_cp_fixed), c(10, 3))
   expect_equal(dim(rho_map_fixed), c(10, 3))
   expect_equal(dim(post_rho_fixed), c(10, 7))

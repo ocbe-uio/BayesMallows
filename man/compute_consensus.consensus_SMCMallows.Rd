@@ -23,6 +23,25 @@ Compute the consensus ranking using either cumulative probability (CP) or maximu
 \insertCite{vitelli2018}{BayesMallows}. For mixture models, the
 consensus is given for each mixture.
 }
+\seealso{
+Other posteriors quantities: 
+\code{\link{assign_cluster}()},
+\code{\link{compute_consensus.BayesMallows}()},
+\code{\link{compute_consensus}()},
+\code{\link{compute_posterior_intervals.BayesMallows}()},
+\code{\link{compute_posterior_intervals.SMCMallows}()},
+\code{\link{compute_posterior_intervals}()},
+\code{\link{compute_rho_consensus}()},
+\code{\link{heat_plot}()},
+\code{\link{plot.BayesMallows}()},
+\code{\link{plot.SMCMallows}()},
+\code{\link{plot_elbow}()},
+\code{\link{plot_top_k}()},
+\code{\link{predict_top_k}()},
+\code{\link{print.BayesMallowsMixtures}()},
+\code{\link{print.BayesMallows}()}
+}
 \author{
 Anja Stein
 }
+\concept{posteriors quantities}

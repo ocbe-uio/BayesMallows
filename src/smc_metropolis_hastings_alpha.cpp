@@ -34,10 +34,9 @@ using namespace arma;
 //'   \eqn{\alpha_{c}} has the same prior distribution.
 //' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
 //'   prior distribution.
-//' @importFrom stats dexp rlnorm runif
 //' @author Anja Stein
 //' @example /inst/examples/metropolis_hastings_alpha_example.R
-//' @export
+//' @noRd
 // [[Rcpp::export]]
 double metropolis_hastings_alpha(
   const double alpha,

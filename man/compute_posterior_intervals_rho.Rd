@@ -13,14 +13,15 @@ compute_posterior_intervals_rho(
 )
 }
 \arguments{
-\item{output}{a subset of an SMCMallows object (though technically any matrix will do)}
+\item{output}{a subset of an SMCMallows object (though technically any matrix
+will do)}
 
 \item{nmc}{Number of Monte Carlo samples}
 
 \item{burnin}{A numeric value specifying the number of iterations
 to discard as burn-in.}
 
-\item{colnames}{colnames}
+\item{colnames}{Column names.}
 
 \item{verbose}{if \code{TRUE}, prints the final output even if the function
 is assigned to an object. Defaults to \code{FALSE}.}
@@ -54,30 +55,22 @@ smc_test <- smc_mallows_new_users(
   alpha_max = 1e6
 )
 
-test_sample_rho <- smc_test$rho_samples[, , Time + 1]
-compute_posterior_intervals_rho(
-  output = test_sample_rho,
-  nmc = N, burnin = 0,
-  verbose = FALSE
-)
+compute_posterior_intervals(smc_test, parameter = "rho")
 
+test_sample_rho <- smc_test$rho_samples[, , Time + 1]
 compute_rho_consensus(
   output = test_sample_rho, nmc = N,
   burnin = 0, C = 1, type = "CP",
   verbose = FALSE
 )
 
-test_sample_alpha <- smc_test$alpha_samples[, Time + 1]
-compute_posterior_intervals_alpha(
-  output = test_sample_alpha,
-  nmc = N, burnin = 0, verbose = FALSE
-)
+compute_posterior_intervals(smc_test, parameter = "alpha")
 }
 \seealso{
-\code{\link{smc_mallows_new_item_rank}} and
-\code{\link{smc_mallows_new_users}}, which are functions generating objects
-of SMCMallows class.
+Other deprecated: 
+\code{\link{compute_posterior_intervals_alpha}()}
 }
 \author{
 Anja Stein
 }
+\concept{deprecated}

@@ -13,7 +13,7 @@ NULL
 #' Check if a vector is a permutation
 #' @param vec a vector
 #' @return TRUE if vec is a permutation
-#' @keywords internal
+#' @noRd
 validate_permutation <- function(vec) {
   if (!any(is.na(vec))) {
     return(all(sort(vec) == seq_along(vec)))
@@ -43,6 +43,7 @@ scalefun <- function(x) sprintf("%d", as.integer(x))
 #' estimates.
 #'
 #' @export
+#' @family preprocessing
 #'
 prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
   # First, has the user supplied an estimate?

@@ -66,6 +66,8 @@
 #'
 #' @example /inst/examples/generate_initial_ranking_example.R
 #'
+#' @family preprocessing
+#'
 generate_initial_ranking <- function(tc,
                                      n_items = max(tc[, c("bottom_item", "top_item")]),
                                      cl = NULL, shuffle_unranked = FALSE, random = FALSE,

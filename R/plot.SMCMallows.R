@@ -20,6 +20,7 @@
 #' @author Waldir Leoncio
 #' @export
 #' @example /inst/examples/plot.SMCMallows_example.R
+#' @family posteriors quantities
 plot.SMCMallows <- function(
     x, nmc = nrow(x$rho_samples[, 1, ]), burnin = 0,
     parameter = "alpha", time = ncol(x$rho_samples[, 1, ]), C = 1,

@@ -108,3 +108,10 @@ samples <- smc_mallows_new_users(
 # Studying the structure of the output
 str(samples)
 }
+\seealso{
+Other modeling: 
+\code{\link{compute_mallows_mixtures}()},
+\code{\link{compute_mallows}()},
+\code{\link{smc_mallows_new_item_rank}()}
+}
+\concept{modeling}

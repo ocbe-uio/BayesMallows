@@ -27,3 +27,12 @@ expected_dist(5, 30, "ulam")
 expected_dist(3.5, 45, "footrule")
 expected_dist(4, 10, "spearman")
 }
+\seealso{
+Other rank functions: 
+\code{\link{get_mallows_loglik}()},
+\code{\link{rank_conversion}},
+\code{\link{rank_distance}()},
+\code{\link{rank_freq_distr}()},
+\code{\link{sample_mallows}()}
+}
+\concept{rank functions}

@@ -29,6 +29,7 @@
 #' @export
 #'
 #' @example inst/examples/get_mallows_loglik_example.R
+#' @family rank functions
 #'
 get_mallows_loglik <- function(rho, alpha, weights, metric,
                                rankings, obs_freq = NULL, log = TRUE) {
@@ -90,12 +91,4 @@ get_mallows_loglik <- function(rho, alpha, weights, metric,
   } else {
     sum(loglik)
   }
-}
-
-#' @rdname get_mallows_loglik
-#' @export
-lik_db_mix <- function(rho, alpha, weights, metric,
-                       rankings, obs_freq = NULL, log = FALSE) {
-  .Deprecated(new = "get_mallows_loglik")
-  get_mallows_loglik(rho, alpha, weights, metric, rankings, obs_freq, log)
 }

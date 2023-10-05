@@ -56,6 +56,8 @@ using namespace arma;
 //'
 //' @example inst/examples/smc_mallows_new_users_complete_example.R
 //'
+//' @family modeling
+//'
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users(
   const arma::mat& R_obs,

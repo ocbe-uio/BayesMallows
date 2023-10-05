@@ -1,3 +1,8 @@
+# BayesMallows (development versions)
+
+* Documentation of functions are now grouped in families.
+* lik_db_mix() is now deprecated in favor of get_mallows_loglik()
+
 # BayesMallows 1.4.0
 
 * Bug fix: psi argument to compute_mallows() and compute_mallows_mixtures(), 

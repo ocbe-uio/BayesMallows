@@ -30,9 +30,8 @@ For an in-depth treatment of the implemented methodology, see @steinSequentialIn
 | `smc_mallows_new_users` |  Runs the SMC algorithm for case where we observe full rankings as new observational data. |
 | `smc_mallows_new_item_rank` | Runs the SMC algorithm for case where we observe updated partial rankings as from existing users. |
 | `plot`| Plots posterior density of $\boldsymbol{\rho}$ or $\alpha$ for a selection of items. |
-| `compute_posterior_intervals_rho` | Computes the Bayesian posterior intervals for $\boldsymbol{\rho}$.|
 | `compute_consensus_rho`| Computes the CP estimate or MAP estimate of the latent ranks. |
-| `compute_posterior_intervals_alpha` | Computes the Bayesian posterior intervals for $\alpha$.|
+| `compute_posterior_intervals` | Computes the Bayesian posterior intervals for $\alpha$ and $\boldsymbol{\rho}$.|
 
 
 ## Introduction
@@ -141,20 +140,16 @@ Here, we can observe the posterior probabilities of $\boldsymbol{\rho}$ for a se
 plot(smc_test, colnames = colnames(sushi_rankings), parameter = "rho")
 ```
 
-The posterior distributions of $\boldsymbol{\rho}$ and $\alpha$ can be studied with some of the the analysis tools provided by `SMC-Mallows`. The posterior intervals for the consensus ranking of each sushi item are obtained by calling `compute_posterior_intervals_rho`.
+The posterior distributions of $\boldsymbol{\rho}$ and $\alpha$ can be studied with some of the the analysis tools provided by `SMC-Mallows`. The posterior intervals for the consensus ranking of each sushi item are obtained by calling `compute_posterior_intervals`.
 
 ```{r posterior_intervals_rho, message=FALSE, warning=FALSE}
-test_sample_rho <- smc_test$rho_samples[, , Time + 1]
-compute_posterior_intervals_rho(
-  output = test_sample_rho,
-  nmc = N, burnin = 0,
-  verbose = FALSE
-)
+compute_posterior_intervals(smc_test, parameter = "rho")
 ```
 
 We can also rank the sushi items according to their cumulative probability (CP) consensus and their maximum posterior rankings (MAP). These are calculated by calling the function `compute_consensus_rho`. We demonstrate with the CP consensus:
 
 ```{r consensus_ranking_estimates, message=FALSE, warning=FALSE}
+test_sample_rho <- smc_test$rho_samples[, , Time + 1]
 compute_rho_consensus(
   output = test_sample_rho, nmc = N,
   burnin = 0, C = 1, type = "CP",
@@ -162,15 +157,11 @@ compute_rho_consensus(
 )
 ```
 
-Similarly, we can observe the posterior density and the posterior intervals for the scale parameter using the functions `plot()` and `compute_posterior_intervals_alpha`.
+Similarly, we can observe the posterior density and the posterior intervals for the scale parameter using the functions `plot()` and `compute_posterior_intervals`.
 
 ```{r smc_complete_alpha_analysis, message=FALSE, warning=FALSE}
 plot(smc_test, nmc = N, burnin = 0, parameter = "alpha")
-test_sample_alpha <- smc_test$alpha_samples[, Time + 1]
-compute_posterior_intervals_alpha(
-  output = test_sample_alpha,
-  nmc = N, burnin = 0, verbose = FALSE
-)
+compute_posterior_intervals(smc_test, parameter = "alpha")
 ```
 
 ### Partial Rankings

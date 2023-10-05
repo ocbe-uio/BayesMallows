@@ -94,4 +94,12 @@ pair_comp <- data.frame(
 }
 \seealso{
 \code{\link{generate_initial_ranking}}
+
+Other preprocessing: 
+\code{\link{estimate_partition_function}()},
+\code{\link{generate_constraints}()},
+\code{\link{generate_initial_ranking}()},
+\code{\link{obs_freq}},
+\code{\link{prepare_partition_function}()}
 }
+\concept{preprocessing}

@@ -17,6 +17,7 @@
 #' for each number of mixtures that
 #' was computed. This object can be studied with \code{\link{plot_elbow}}.
 #'
+#' @family modeling
 #'
 #' @export
 #'

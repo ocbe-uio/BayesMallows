@@ -8,8 +8,9 @@
 #' @return A scalar providing the expected value of the \code{metric} under the Mallows rank model with distance specified by the \code{metric} argument.
 #' @export
 #'
+#' @family rank functions
+#'
 #' @example /inst/examples/expected_dist_example.R
-
 expected_dist <- function(alpha, n_items, metric) {
   if (n_items < 1 | floor(n_items) != n_items) {
     stop("Number of items must be a positive integer")

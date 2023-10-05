@@ -153,3 +153,12 @@ generate_initial_ranking(tc = small_tc[small_tc$assessor \%in\% c(1, 2), ],
   stopCluster(cl)
 }
 }
+\seealso{
+Other preprocessing: 
+\code{\link{estimate_partition_function}()},
+\code{\link{generate_constraints}()},
+\code{\link{generate_transitive_closure}()},
+\code{\link{obs_freq}},
+\code{\link{prepare_partition_function}()}
+}
+\concept{preprocessing}

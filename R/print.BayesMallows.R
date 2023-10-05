@@ -10,7 +10,7 @@
 #'
 #' @export
 #'
-#'
+#' @family posteriors quantities
 print.BayesMallows <- function(x, ...) {
   # Note, the first argument must be named x, otherwise R CMD CHECK will
   # issue a warning. This is because print.BayesMallows must have the same

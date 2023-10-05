@@ -16,4 +16,13 @@ Example dataset from \insertCite{vitelli2018}{BayesMallows}, Section 6.2.
 \references{
 \insertAllCited{}
 }
+\seealso{
+Other datasets: 
+\code{\link{potato_true_ranking}},
+\code{\link{potato_visual}},
+\code{\link{potato_weighing}},
+\code{\link{sample_dataset}},
+\code{\link{sushi_rankings}}
+}
+\concept{datasets}
 \keyword{datasets}

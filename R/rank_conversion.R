@@ -13,6 +13,7 @@
 #'
 #' @return A vector or matrix of rankings. Missing orderings coded as \code{NA} are propagated into corresponding missing ranks and vice versa.
 #'
+#' @family rank functions
 #'
 #' @examples
 #' # A vector of ordered items.

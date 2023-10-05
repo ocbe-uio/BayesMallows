@@ -22,3 +22,12 @@ estimates.
 \description{
 Utility function for estimating partition function of the Mallows model.
 }
+\seealso{
+Other preprocessing: 
+\code{\link{estimate_partition_function}()},
+\code{\link{generate_constraints}()},
+\code{\link{generate_initial_ranking}()},
+\code{\link{generate_transitive_closure}()},
+\code{\link{obs_freq}}
+}
+\concept{preprocessing}

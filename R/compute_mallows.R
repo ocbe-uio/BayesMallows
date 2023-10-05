@@ -206,6 +206,8 @@
 #' @export
 #' @importFrom rlang .data
 #'
+#' @family modeling
+#'
 #' @example /inst/examples/compute_mallows_example.R
 #'
 compute_mallows <- function(rankings = NULL,

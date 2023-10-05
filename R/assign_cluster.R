@@ -30,6 +30,8 @@
 #'
 #' @export
 #'
+#' @family posteriors quantities
+#'
 assign_cluster <- function(model_fit, burnin = model_fit$burnin, soft = TRUE, expand = FALSE) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")

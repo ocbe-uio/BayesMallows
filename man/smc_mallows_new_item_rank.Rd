@@ -81,3 +81,10 @@ a 3d matrix containing: the samples of: rho, alpha and the augmented rankings, a
 Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user
 at each time step. Each correction and augmentation is done by filling in the missing item ranks using pseudolikelihood augmentation.
 }
+\seealso{
+Other modeling: 
+\code{\link{compute_mallows_mixtures}()},
+\code{\link{compute_mallows}()},
+\code{\link{smc_mallows_new_users}()}
+}
+\concept{modeling}

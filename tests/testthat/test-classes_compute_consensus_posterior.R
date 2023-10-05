@@ -32,14 +32,9 @@ fit_smc <- smc_mallows_new_users(
   num_new_obs = 5, alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 1e6
 )
 fit_smc_alpha <- fit_smc$alpha_samples[, Time + 1]
-fit_smc_post_alpha <- compute_posterior_intervals_alpha(
-  output = fit_smc_alpha, nmc = nmc, burnin = 0, verbose = FALSE
-)
+fit_smc_post_alpha <- compute_posterior_intervals(fit_smc, parameter = "alpha")
 fit_smc_rho <- fit_smc$rho_samples[, , Time + 1]
-fit_smc_post_rho <- compute_posterior_intervals_rho(
-  output = fit_smc_rho, nmc = nmc, burnin = 0,
-  verbose = FALSE
-)
+fit_smc_post_rho <- compute_posterior_intervals(fit_smc, parameter = "rho")
 
 # Emulating the internal workings of compute_posterior_intervals ===============
 

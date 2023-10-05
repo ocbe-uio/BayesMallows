@@ -18,6 +18,7 @@
 //'
 //' @return List containing the proposed 'corrected' augmented ranking
 //' that is compatible with the new observed ranking for a user
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List correction_kernel(
   const arma::vec observed_ranking, //R_obs

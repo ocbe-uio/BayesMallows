@@ -7,7 +7,8 @@
 compute_posterior_intervals_alpha(output, nmc, burnin, verbose = FALSE)
 }
 \arguments{
-\item{output}{a subset of an SMCMallows object (though technically any numeric vector will do)}
+\item{output}{a subset of an SMCMallows object (though technically any matrix
+will do)}
 
 \item{nmc}{Number of Monte Carlo samples}
 
@@ -46,30 +47,22 @@ smc_test <- smc_mallows_new_users(
   alpha_max = 1e6
 )
 
-test_sample_rho <- smc_test$rho_samples[, , Time + 1]
-compute_posterior_intervals_rho(
-  output = test_sample_rho,
-  nmc = N, burnin = 0,
-  verbose = FALSE
-)
+compute_posterior_intervals(smc_test, parameter = "rho")
 
+test_sample_rho <- smc_test$rho_samples[, , Time + 1]
 compute_rho_consensus(
   output = test_sample_rho, nmc = N,
   burnin = 0, C = 1, type = "CP",
   verbose = FALSE
 )
 
-test_sample_alpha <- smc_test$alpha_samples[, Time + 1]
-compute_posterior_intervals_alpha(
-  output = test_sample_alpha,
-  nmc = N, burnin = 0, verbose = FALSE
-)
+compute_posterior_intervals(smc_test, parameter = "alpha")
 }
 \seealso{
-\code{\link{smc_mallows_new_item_rank}} and
-\code{\link{smc_mallows_new_users}}, which are functions generating objects
-of SMCMallows class.
+Other deprecated: 
+\code{\link{compute_posterior_intervals_rho}()}
 }
 \author{
 Anja Stein
 }
+\concept{deprecated}
