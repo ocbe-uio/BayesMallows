@@ -20,7 +20,7 @@ the observation frequencies."><!-- mathjax --><script src="https://cdnjs.cloudfl
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,6 +74,15 @@ the observation frequencies.</p>
     </div>
 
 
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p>Other preprocessing: 
+<code><a href="estimate_partition_function.html">estimate_partition_function</a>()</code>,
+<code><a href="generate_constraints.html">generate_constraints</a>()</code>,
+<code><a href="generate_initial_ranking.html">generate_initial_ranking</a>()</code>,
+<code><a href="generate_transitive_closure.html">generate_transitive_closure</a>()</code>,
+<code><a href="prepare_partition_function.html">prepare_partition_function</a>()</code></p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -97,7 +106,7 @@ the observation frequencies.</p>
 <span class="r-in"><span>  <span class="va">m_obs_freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">potato_visual</span>, obs_freq <span class="op">=</span> <span class="va">obs_freq</span>, nmc <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    user  system elapsed </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.262   0.004   0.266 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.333   0.000   0.334 </span>
 <span class="r-in"><span><span class="co"># Next we use the full ranking matrix</span></span></span>
 <span class="r-in"><span><span class="co"># This takes about 11.3 seconds, about 50 times longer!</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
@@ -209,7 +218,8 @@ the observation frequencies.</p>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

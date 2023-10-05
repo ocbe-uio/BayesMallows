@@ -88,9 +88,6 @@
     <loc>/reference/correction_kernel_pseudo.html</loc>
   </url>
   <url>
-    <loc>/reference/dot-generate_transitive_closure.html</loc>
-  </url>
-  <url>
     <loc>/reference/estimate_partition_function.html</loc>
   </url>
   <url>
@@ -106,19 +103,10 @@
     <loc>/reference/generate_transitive_closure.html</loc>
   </url>
   <url>
-    <loc>/reference/get_exponent_sum.html</loc>
-  </url>
-  <url>
     <loc>/reference/get_mallows_loglik.html</loc>
   </url>
   <url>
-    <loc>/reference/get_partition_function.html</loc>
-  </url>
-  <url>
     <loc>/reference/get_rank_distance.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_sample_probabilities.html</loc>
   </url>
   <url>
     <loc>/reference/heat_plot.html</loc>
@@ -128,21 +116,6 @@
   </url>
   <url>
     <loc>/reference/label_switching.html</loc>
-  </url>
-  <url>
-    <loc>/reference/leap_and_shift_probs.html</loc>
-  </url>
-  <url>
-    <loc>/reference/log_expected_dist.html</loc>
-  </url>
-  <url>
-    <loc>/reference/metropolis_hastings_alpha.html</loc>
-  </url>
-  <url>
-    <loc>/reference/metropolis_hastings_aug_ranking.html</loc>
-  </url>
-  <url>
-    <loc>/reference/metropolis_hastings_rho.html</loc>
   </url>
   <url>
     <loc>/reference/obs_freq.html</loc>
@@ -208,12 +181,6 @@
     <loc>/reference/smc_mallows_new_users.html</loc>
   </url>
   <url>
-    <loc>/reference/smc_processing.html</loc>
-  </url>
-  <url>
     <loc>/reference/sushi_rankings.html</loc>
-  </url>
-  <url>
-    <loc>/reference/validate_permutation.html</loc>
   </url>
 </urlset>

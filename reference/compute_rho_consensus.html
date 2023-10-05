@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,8 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>output</dt>
-<dd><p>a subset of an SMCMallows object (though technically any matrix will do)</p></dd>
+<dd><p>a subset of an SMCMallows object (though technically any matrix
+will do)</p></dd>
 
 
 <dt>nmc</dt>
@@ -95,7 +96,7 @@ to discard as burn-in.</p></dd>
 
 
 <dt>colnames</dt>
-<dd><p>colnames</p></dd>
+<dd><p>Column names.</p></dd>
 
 
 <dt>verbose</dt>
@@ -105,9 +106,22 @@ is assigned to an object. Defaults to <code>FALSE</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="smc_mallows_new_item_rank.html">smc_mallows_new_item_rank</a></code> and
-<code><a href="smc_mallows_new_users.html">smc_mallows_new_users</a></code>, which are functions generating objects
-of SMCMallows class.</p></div>
+    <div class="dont-index"><p>Other posteriors quantities: 
+<code><a href="assign_cluster.html">assign_cluster</a>()</code>,
+<code><a href="compute_consensus.BayesMallows.html">compute_consensus.BayesMallows</a>()</code>,
+<code><a href="compute_consensus.consensus_SMCMallows.html">compute_consensus.consensus_SMCMallows</a>()</code>,
+<code><a href="compute_consensus.html">compute_consensus</a>()</code>,
+<code><a href="compute_posterior_intervals.BayesMallows.html">compute_posterior_intervals.BayesMallows</a>()</code>,
+<code><a href="compute_posterior_intervals.SMCMallows.html">compute_posterior_intervals.SMCMallows</a>()</code>,
+<code><a href="compute_posterior_intervals.html">compute_posterior_intervals</a>()</code>,
+<code><a href="heat_plot.html">heat_plot</a>()</code>,
+<code><a href="plot.BayesMallows.html">plot.BayesMallows</a>()</code>,
+<code><a href="plot.SMCMallows.html">plot.SMCMallows</a>()</code>,
+<code><a href="plot_elbow.html">plot_elbow</a>()</code>,
+<code><a href="plot_top_k.html">plot_top_k</a>()</code>,
+<code><a href="predict_top_k.html">predict_top_k</a>()</code>,
+<code><a href="print.BayesMallowsMixtures.html">print.BayesMallowsMixtures</a>()</code>,
+<code><a href="print.BayesMallows.html">print.BayesMallows</a>()</code></p></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -141,35 +155,31 @@ of SMCMallows class.</p></div>
 <span class="r-in"><span>  alpha_max <span class="op">=</span> <span class="fl">1e6</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">test_sample_rho</span> <span class="op">&lt;-</span> <span class="va">smc_test</span><span class="op">$</span><span class="va">rho_samples</span><span class="op">[</span>, , <span class="va">Time</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="compute_posterior_intervals_rho.html">compute_posterior_intervals_rho</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  output <span class="op">=</span> <span class="va">test_sample_rho</span>,</span></span>
-<span class="r-in"><span>  nmc <span class="op">=</span> <span class="va">N</span>, burnin <span class="op">=</span> <span class="fl">0</span>,</span></span>
-<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">smc_test</span>, parameter <span class="op">=</span> <span class="st">"rho"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                      item parameter mean median conf_level      hpdi</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 1   Item 1       rho    4      4       95 %     [2,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 2   Item 2       rho    4      4       95 %     [3,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 3   Item 3       rho    2      2       95 % [2,3],[5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 4   Item 4       rho    6      6       95 %     [6,8]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 5   Item 5       rho    8      8       95 % [6],[8,9]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 6   Item 6       rho    4      4       95 %     [2,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 7   Item 7       rho    9      9       95 %     [8,9]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 8   Item 8       rho    1      1       95 %       [1]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 9   Item 9       rho    7      7       95 %     [6,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 10 Item 10       rho   10     10       95 %      [10]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 1   Item 1       rho 3.54    3.5       95 %     [2,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 10 Item 10       rho 9.98   10.0       95 %      [10]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 2   Item 2       rho 4.02    4.0       95 %     [3,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 3   Item 3       rho 2.24    2.0       95 % [2,3],[5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 4   Item 4       rho 6.39    6.0       95 %     [6,8]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 5   Item 5       rho 8.06    8.0       95 % [6],[8,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 6   Item 6       rho 4.21    4.5       95 %     [2,5]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 7   Item 7       rho 8.85    9.0       95 %     [8,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 8   Item 8       rho 1.01    1.0       95 %       [1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 9   Item 9       rho 6.70    7.0       95 %     [6,7]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   central_interval</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 1             [2,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 2             [2,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 3             [2,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 4             [6,8]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 5             [6,9]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 6             [2,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 7             [8,9]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 8               [1]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 9             [6,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 10             [10]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 1     [2.000,5.000]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 10         [10.000]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 2     [2.000,5.000]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 3     [2.000,5.000]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 4     [6.000,8.000]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 5     [6.000,9.000]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 6     [2.000,5.000]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 7     [8.000,9.000]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 8           [1.000]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 9     [6.000,7.000]</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">test_sample_rho</span> <span class="op">&lt;-</span> <span class="va">smc_test</span><span class="op">$</span><span class="va">rho_samples</span><span class="op">[</span>, , <span class="va">Time</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="fu">compute_rho_consensus</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  output <span class="op">=</span> <span class="va">test_sample_rho</span>, nmc <span class="op">=</span> <span class="va">N</span>,</span></span>
 <span class="r-in"><span>  burnin <span class="op">=</span> <span class="fl">0</span>, C <span class="op">=</span> <span class="fl">1</span>, type <span class="op">=</span> <span class="st">"CP"</span>,</span></span>
@@ -187,13 +197,9 @@ of SMCMallows class.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> cluster 18       9  Item 7    0.98</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> cluster 19      10 Item 10    1.00</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">test_sample_alpha</span> <span class="op">&lt;-</span> <span class="va">smc_test</span><span class="op">$</span><span class="va">alpha_samples</span><span class="op">[</span>, <span class="va">Time</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="compute_posterior_intervals_alpha.html">compute_posterior_intervals_alpha</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  output <span class="op">=</span> <span class="va">test_sample_alpha</span>,</span></span>
-<span class="r-in"><span>  nmc <span class="op">=</span> <span class="va">N</span>, burnin <span class="op">=</span> <span class="fl">0</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           parameter mean median conf_level        hpdi central_interval</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1     alpha 1.68   1.68       95 % [1.43,1.91]      [1.45,1.93]</span>
+<span class="r-in"><span><span class="fu"><a href="compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">smc_test</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           parameter  mean median conf_level          hpdi central_interval</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1     alpha 1.683   1.68       95 % [1.429,1.910]    [1.449,1.935]</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,17 +126,13 @@ updated partial rankings as from existing users.</td>
 <td align="left">Plots posterior density of <span class="math inline">\(\boldsymbol{\rho}\)</span> or <span class="math inline">\(\alpha\)</span> for a selection of items.</td>
 </tr>
 <tr class="even">
-<td align="left"><code>compute_posterior_intervals_rho</code></td>
-<td align="left">Computes the Bayesian posterior intervals for <span class="math inline">\(\boldsymbol{\rho}\)</span>.</td>
-</tr>
-<tr class="odd">
 <td align="left"><code>compute_consensus_rho</code></td>
 <td align="left">Computes the CP estimate or MAP estimate of the latent
 ranks.</td>
 </tr>
-<tr class="even">
-<td align="left"><code>compute_posterior_intervals_alpha</code></td>
-<td align="left">Computes the Bayesian posterior intervals for <span class="math inline">\(\alpha\)</span>.</td>
+<tr class="odd">
+<td align="left"><code>compute_posterior_intervals</code></td>
+<td align="left">Computes the Bayesian posterior intervals for <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\boldsymbol{\rho}\)</span>.</td>
 </tr>
 </tbody>
 </table>
@@ -425,43 +421,39 @@ items can be observed by calling the function <code><a href="https://rdrr.io/r/g
 <p>The posterior distributions of <span class="math inline">\(\boldsymbol{\rho}\)</span> and <span class="math inline">\(\alpha\)</span> can be studied with some of the
 the analysis tools provided by <code>SMC-Mallows</code>. The posterior
 intervals for the consensus ranking of each sushi item are obtained by
-calling <code>compute_posterior_intervals_rho</code>.</p>
+calling <code>compute_posterior_intervals</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">test_sample_rho</span> <span class="op">&lt;-</span> <span class="va">smc_test</span><span class="op">$</span><span class="va">rho_samples</span><span class="op">[</span>, , <span class="va">Time</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span></span>
-<span><span class="fu"><a href="../reference/compute_posterior_intervals_rho.html">compute_posterior_intervals_rho</a></span><span class="op">(</span></span>
-<span>  output <span class="op">=</span> <span class="va">test_sample_rho</span>,</span>
-<span>  nmc <span class="op">=</span> <span class="va">N</span>, burnin <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                      item parameter mean median conf_level  hpdi</span></span>
-<span><span class="co">## Cluster 1.Item 1   Item 1       rho    4      4       95 % [2,5]</span></span>
-<span><span class="co">## Cluster 1.Item 2   Item 2       rho    4      4       95 % [2,5]</span></span>
-<span><span class="co">## Cluster 1.Item 3   Item 3       rho    2      2       95 % [2,3]</span></span>
-<span><span class="co">## Cluster 1.Item 4   Item 4       rho    7      6       95 % [6,8]</span></span>
-<span><span class="co">## Cluster 1.Item 5   Item 5       rho    8      8       95 % [6,9]</span></span>
-<span><span class="co">## Cluster 1.Item 6   Item 6       rho    4      4       95 % [3,5]</span></span>
-<span><span class="co">## Cluster 1.Item 7   Item 7       rho    9      9       95 % [8,9]</span></span>
-<span><span class="co">## Cluster 1.Item 8   Item 8       rho    1      1       95 %   [1]</span></span>
-<span><span class="co">## Cluster 1.Item 9   Item 9       rho    7      7       95 % [6,8]</span></span>
-<span><span class="co">## Cluster 1.Item 10 Item 10       rho   10     10       95 %  [10]</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">smc_test</span>, parameter <span class="op">=</span> <span class="st">"rho"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                      item parameter  mean median conf_level  hpdi</span></span>
+<span><span class="co">## Cluster 1.Item 1   Item 1       rho 3.601      4       95 % [2,5]</span></span>
+<span><span class="co">## Cluster 1.Item 10 Item 10       rho 9.982     10       95 %  [10]</span></span>
+<span><span class="co">## Cluster 1.Item 2   Item 2       rho 4.235      4       95 % [2,5]</span></span>
+<span><span class="co">## Cluster 1.Item 3   Item 3       rho 2.191      2       95 % [2,3]</span></span>
+<span><span class="co">## Cluster 1.Item 4   Item 4       rho 6.548      6       95 % [6,8]</span></span>
+<span><span class="co">## Cluster 1.Item 5   Item 5       rho 7.713      8       95 % [6,9]</span></span>
+<span><span class="co">## Cluster 1.Item 6   Item 6       rho 4.048      4       95 % [3,5]</span></span>
+<span><span class="co">## Cluster 1.Item 7   Item 7       rho 8.936      9       95 % [8,9]</span></span>
+<span><span class="co">## Cluster 1.Item 8   Item 8       rho 1.000      1       95 %   [1]</span></span>
+<span><span class="co">## Cluster 1.Item 9   Item 9       rho 6.746      7       95 % [6,8]</span></span>
 <span><span class="co">##                   central_interval</span></span>
-<span><span class="co">## Cluster 1.Item 1             [2,5]</span></span>
-<span><span class="co">## Cluster 1.Item 2             [2,6]</span></span>
-<span><span class="co">## Cluster 1.Item 3             [2,4]</span></span>
-<span><span class="co">## Cluster 1.Item 4             [5,8]</span></span>
-<span><span class="co">## Cluster 1.Item 5             [6,9]</span></span>
-<span><span class="co">## Cluster 1.Item 6             [2,5]</span></span>
-<span><span class="co">## Cluster 1.Item 7             [8,9]</span></span>
-<span><span class="co">## Cluster 1.Item 8               [1]</span></span>
-<span><span class="co">## Cluster 1.Item 9             [6,8]</span></span>
-<span><span class="co">## Cluster 1.Item 10             [10]</span></span></code></pre>
+<span><span class="co">## Cluster 1.Item 1     [2.000,5.000]</span></span>
+<span><span class="co">## Cluster 1.Item 10         [10.000]</span></span>
+<span><span class="co">## Cluster 1.Item 2     [2.000,6.000]</span></span>
+<span><span class="co">## Cluster 1.Item 3     [2.000,4.000]</span></span>
+<span><span class="co">## Cluster 1.Item 4     [5.000,8.000]</span></span>
+<span><span class="co">## Cluster 1.Item 5     [6.000,9.000]</span></span>
+<span><span class="co">## Cluster 1.Item 6     [2.000,5.000]</span></span>
+<span><span class="co">## Cluster 1.Item 7     [8.000,9.000]</span></span>
+<span><span class="co">## Cluster 1.Item 8           [1.000]</span></span>
+<span><span class="co">## Cluster 1.Item 9     [6.000,8.000]</span></span></code></pre>
 <p>We can also rank the sushi items according to their cumulative
 probability (CP) consensus and their maximum posterior rankings (MAP).
 These are calculated by calling the function
 <code>compute_consensus_rho</code>. We demonstrate with the CP
 consensus:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_rho_consensus.html">compute_rho_consensus</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">test_sample_rho</span> <span class="op">&lt;-</span> <span class="va">smc_test</span><span class="op">$</span><span class="va">rho_samples</span><span class="op">[</span>, , <span class="va">Time</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span></span>
+<span><span class="fu"><a href="../reference/compute_rho_consensus.html">compute_rho_consensus</a></span><span class="op">(</span></span>
 <span>  output <span class="op">=</span> <span class="va">test_sample_rho</span>, nmc <span class="op">=</span> <span class="va">N</span>,</span>
 <span>  burnin <span class="op">=</span> <span class="fl">0</span>, C <span class="op">=</span> <span class="fl">1</span>, type <span class="op">=</span> <span class="st">"CP"</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -479,19 +471,14 @@ consensus:</p>
 <span><span class="co">## cluster 19      10 Item 10   1.000</span></span></code></pre>
 <p>Similarly, we can observe the posterior density and the posterior
 intervals for the scale parameter using the functions
-<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> and
-<code>compute_posterior_intervals_alpha</code>.</p>
+<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> and <code>compute_posterior_intervals</code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">smc_test</span>, nmc <span class="op">=</span> <span class="va">N</span>, burnin <span class="op">=</span> <span class="fl">0</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="SMC-Mallows_files/figure-html/smc_complete_alpha_analysis-1.png" width="700"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">test_sample_alpha</span> <span class="op">&lt;-</span> <span class="va">smc_test</span><span class="op">$</span><span class="va">alpha_samples</span><span class="op">[</span>, <span class="va">Time</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span></span>
-<span><span class="fu"><a href="../reference/compute_posterior_intervals_alpha.html">compute_posterior_intervals_alpha</a></span><span class="op">(</span></span>
-<span>  output <span class="op">=</span> <span class="va">test_sample_alpha</span>,</span>
-<span>  nmc <span class="op">=</span> <span class="va">N</span>, burnin <span class="op">=</span> <span class="fl">0</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##           parameter mean median conf_level        hpdi central_interval</span></span>
-<span><span class="co">## Cluster 1     alpha  1.7   1.69       95 % [1.45,1.97]      [1.45,1.96]</span></span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">smc_test</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##           parameter  mean median conf_level          hpdi central_interval</span></span>
+<span><span class="co">## Cluster 1     alpha 1.697  1.692       95 % [1.447,1.966]    [1.446,1.965]</span></span></code></pre>
 </div>
 </div>
 <div class="section level3">
