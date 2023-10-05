@@ -1,5 +1,4 @@
 #' @title SMC Processing
-#' @author Anja Stein
 #' @param output a subset of an SMCMallows object (though technically any matrix will do)
 #' @param colnames colnames
 #' @return A processed file of the SMCMallows class
@@ -50,7 +49,6 @@ smc_processing <- function(output, colnames = NULL) {
 #' @param verbose if \code{TRUE}, prints the final output even if the function
 #' is assigned to an object. Defaults to \code{FALSE}.
 #' @export
-#' @author Anja Stein
 #' @inherit compute_rho_consensus examples
 #' @family deprecated
 compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL, verbose = FALSE) {
@@ -92,7 +90,6 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
 #' @param C C
 #' @param type type
 #' @export
-#' @author Anja Stein
 #' @example inst/examples/smc_post_processing_functions_example.R
 #' @family posteriors quantities
 compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames = NULL, verbose = FALSE) {
@@ -135,7 +132,6 @@ compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames 
 #' @description posterior confidence intervals
 #' @inheritParams compute_posterior_intervals_rho
 #' @export
-#' @author Anja Stein
 #' @inherit compute_rho_consensus examples
 #' @family deprecated
 compute_posterior_intervals_alpha <- function(output, nmc, burnin, verbose = FALSE) {

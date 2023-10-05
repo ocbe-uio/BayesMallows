@@ -11,7 +11,6 @@ using namespace arma;
 //' @param leap_size Integer specifying the step size of the leap-and-shift
 //' proposal distribution.
 //' @noRd
-//' @author Anja Stein
 //' @examples
 //' rho <- t(c(1,2,3,4,5,6))
 //' alpha <- 2
