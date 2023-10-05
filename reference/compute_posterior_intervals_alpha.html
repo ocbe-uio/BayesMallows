@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,87 +87,10 @@ is assigned to an object. Defaults to <code>FALSE</code>.</p></dd>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other deprecated: 
-<code><a href="compute_posterior_intervals_rho.html">compute_posterior_intervals_rho</a>()</code></p></div>
-    </div>
-    <div class="section level2">
-    <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p>Anja Stein</p>
+<code><a href="compute_posterior_intervals_rho.html">compute_posterior_intervals_rho</a>()</code>,
+<code><a href="compute_rho_consensus.html">compute_rho_consensus</a>()</code></p></div>
     </div>
 
-    <div class="section level2">
-    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Basic elements</span></span></span>
-<span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="va">sushi_rankings</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">n_items</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">leap_size</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">n_items</span> <span class="op">/</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">metric</span> <span class="op">&lt;-</span> <span class="st">"footrule"</span></span></span>
-<span class="r-in"><span><span class="va">Time</span> <span class="op">&lt;-</span> <span class="fl">20</span></span></span>
-<span class="r-in"><span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Prepare exact partition function</span></span></span>
-<span class="r-in"><span><span class="va">cardinalities</span> <span class="op">&lt;-</span> <span class="fu"><a href="prepare_partition_function.html">prepare_partition_function</a></span><span class="op">(</span>metric <span class="op">=</span> <span class="va">metric</span>,</span></span>
-<span class="r-in"><span>                                            n_items <span class="op">=</span> <span class="va">n_items</span><span class="op">)</span><span class="op">$</span><span class="va">cardinalities</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Performing SMC</span></span></span>
-<span class="r-in"><span><span class="va">smc_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="smc_mallows_new_users.html">smc_mallows_new_users</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  R_obs <span class="op">=</span> <span class="va">data</span>, type <span class="op">=</span> <span class="st">"complete"</span>, n_items <span class="op">=</span> <span class="va">n_items</span>,</span></span>
-<span class="r-in"><span>  metric <span class="op">=</span> <span class="va">metric</span>, leap_size <span class="op">=</span> <span class="va">leap_size</span>,</span></span>
-<span class="r-in"><span>  N <span class="op">=</span> <span class="va">N</span>, Time <span class="op">=</span> <span class="va">Time</span>,</span></span>
-<span class="r-in"><span>  cardinalities <span class="op">=</span> <span class="va">cardinalities</span>,</span></span>
-<span class="r-in"><span>  mcmc_kernel_app <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>  num_new_obs <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>  alpha_prop_sd <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
-<span class="r-in"><span>  lambda <span class="op">=</span> <span class="fl">0.15</span>,</span></span>
-<span class="r-in"><span>  alpha_max <span class="op">=</span> <span class="fl">1e6</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">smc_test</span>, parameter <span class="op">=</span> <span class="st">"rho"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      item parameter mean median conf_level  hpdi</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 1   Item 1       rho 3.55      4       95 % [2,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 10 Item 10       rho 9.98     10       95 %  [10]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 2   Item 2       rho 4.28      4       95 % [2,6]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 3   Item 3       rho 2.20      2       95 % [2,4]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 4   Item 4       rho 6.38      6       95 % [5,8]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 5   Item 5       rho 8.01      8       95 % [6,9]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 6   Item 6       rho 4.05      4       95 % [3,5]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 7   Item 7       rho 8.83      9       95 % [8,9]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 8   Item 8       rho 1.00      1       95 %   [1]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 9   Item 9       rho 6.72      7       95 % [6,7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   central_interval</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 1     [2.000,5.000]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 10         [10.000]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 2     [2.000,6.000]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 3     [2.000,4.000]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 4     [5.000,8.000]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 5     [6.000,9.000]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 6     [3.000,5.000]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 7     [8.000,9.000]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 8           [1.000]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1.Item 9     [6.000,7.000]</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">test_sample_rho</span> <span class="op">&lt;-</span> <span class="va">smc_test</span><span class="op">$</span><span class="va">rho_samples</span><span class="op">[</span>, , <span class="va">Time</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="compute_rho_consensus.html">compute_rho_consensus</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  output <span class="op">=</span> <span class="va">test_sample_rho</span>, nmc <span class="op">=</span> <span class="va">N</span>,</span></span>
-<span class="r-in"><span>  burnin <span class="op">=</span> <span class="fl">0</span>, C <span class="op">=</span> <span class="fl">1</span>, type <span class="op">=</span> <span class="st">"CP"</span>,</span></span>
-<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            ranking    item cumprob</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cluster 1        1  Item 8    1.00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cluster 11       2  Item 3    0.87</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cluster 12       3  Item 1    0.48</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cluster 13       4  Item 6    0.60</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cluster 14       5  Item 2    0.93</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cluster 15       6  Item 4    0.65</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cluster 16       7  Item 9    0.98</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cluster 17       8  Item 5    0.82</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cluster 18       9  Item 7    0.99</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cluster 19      10 Item 10    1.00</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">smc_test</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           parameter  mean median conf_level          hpdi central_interval</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster 1     alpha 1.696  1.709       95 % [1.403,1.915]    [1.411,1.911]</span>
-</code></pre></div>
-    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,7 +126,7 @@ updated partial rankings as from existing users.</td>
 <td align="left">Plots posterior density of <span class="math inline">\(\boldsymbol{\rho}\)</span> or <span class="math inline">\(\alpha\)</span> for a selection of items.</td>
 </tr>
 <tr class="even">
-<td align="left"><code>compute_consensus_rho</code></td>
+<td align="left"><code>compute_consensus</code></td>
 <td align="left">Computes the CP estimate or MAP estimate of the latent
 ranks.</td>
 </tr>
@@ -450,25 +450,20 @@ calling <code>compute_posterior_intervals</code>.</p>
 probability (CP) consensus and their maximum posterior rankings (MAP).
 These are calculated by calling the function
 <code>compute_consensus_rho</code>. We demonstrate with the CP
-consensus:</p>
+consensus, which is the default.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">test_sample_rho</span> <span class="op">&lt;-</span> <span class="va">smc_test</span><span class="op">$</span><span class="va">rho_samples</span><span class="op">[</span>, , <span class="va">Time</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span></span>
-<span><span class="fu"><a href="../reference/compute_rho_consensus.html">compute_rho_consensus</a></span><span class="op">(</span></span>
-<span>  output <span class="op">=</span> <span class="va">test_sample_rho</span>, nmc <span class="op">=</span> <span class="va">N</span>,</span>
-<span>  burnin <span class="op">=</span> <span class="fl">0</span>, C <span class="op">=</span> <span class="fl">1</span>, type <span class="op">=</span> <span class="st">"CP"</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##            ranking    item cumprob</span></span>
-<span><span class="co">## cluster 1        1  Item 8   1.000</span></span>
-<span><span class="co">## cluster 11       2  Item 3   0.872</span></span>
-<span><span class="co">## cluster 12       3  Item 1   0.451</span></span>
-<span><span class="co">## cluster 13       4  Item 6   0.601</span></span>
-<span><span class="co">## cluster 14       5  Item 2   0.955</span></span>
-<span><span class="co">## cluster 15       6  Item 4   0.553</span></span>
-<span><span class="co">## cluster 16       7  Item 9   0.937</span></span>
-<span><span class="co">## cluster 17       8  Item 5   0.919</span></span>
-<span><span class="co">## cluster 18       9  Item 7   0.983</span></span>
-<span><span class="co">## cluster 19      10 Item 10   1.000</span></span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_consensus.html">compute_consensus</a></span><span class="op">(</span><span class="va">smc_test</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##    ranking    item cumprob</span></span>
+<span><span class="co">## 1        1  Item 8   1.000</span></span>
+<span><span class="co">## 2        2  Item 3   0.872</span></span>
+<span><span class="co">## 3        3  Item 1   0.451</span></span>
+<span><span class="co">## 4        4  Item 6   0.601</span></span>
+<span><span class="co">## 5        5  Item 2   0.955</span></span>
+<span><span class="co">## 6        6  Item 4   0.553</span></span>
+<span><span class="co">## 7        7  Item 9   0.937</span></span>
+<span><span class="co">## 8        8  Item 5   0.919</span></span>
+<span><span class="co">## 9        9  Item 7   0.983</span></span>
+<span><span class="co">## 10      10 Item 10   1.000</span></span></code></pre>
 <p>Similarly, we can observe the posterior density and the posterior
 intervals for the scale parameter using the functions
 <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> and <code>compute_posterior_intervals</code>.</p>
