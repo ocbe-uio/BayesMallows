@@ -20,7 +20,7 @@
 #' @example /inst/examples/compute_posterior_intervals_example.R
 #'
 #' @export
-#' @family posteriors quantities
+#' @family posterior quantities
 compute_posterior_intervals <- function(model_fit, ...) {
   UseMethod("compute_posterior_intervals")
 }
@@ -45,7 +45,7 @@ compute_posterior_intervals <- function(model_fit, ...) {
 #'
 #' @seealso assess_convergence
 #' @export
-#' @family posteriors quantities
+#' @family posterior quantities
 compute_posterior_intervals.BayesMallows <- function(
     model_fit, burnin = model_fit$burnin,
     parameter = "alpha",
@@ -100,7 +100,9 @@ compute_posterior_intervals.BayesMallows <- function(
 #'   posterior intervals and the mean and median. Defaults to \code{3}.
 #' @param ... Other arguments. Currently not used.
 #' @export
-#' @family posteriors quantities
+#' @family posterior quantities
+#'
+#' @example inst/examples/smc_post_processing_functions_example.R
 compute_posterior_intervals.SMCMallows <- function(
     model_fit, parameter = "alpha", level = 0.95,
     decimals = 3L, ...) {

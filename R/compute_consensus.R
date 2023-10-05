@@ -5,13 +5,13 @@
 #' consensus is given for each mixture. Consensus of augmented ranks
 #' can also be computed
 #' for each assessor, by setting \code{parameter = "Rtilde"}.
-#' @param model_fit An object returned from \code{\link{compute_mallows}}.
+#' @param model_fit A model fit.
 #' @param ... other arguments passed to methods.
 #' @references \insertAllCited{}
 #' @export
 #' @example /inst/examples/compute_consensus_example.R
 #'
-#' @family posteriors quantities
+#' @family posterior quantities
 #'
 compute_consensus <- function(model_fit, ...) {
   UseMethod("compute_consensus")
@@ -27,26 +27,33 @@ compute_consensus <- function(model_fit, ...) {
 
 
 #' @title Compute Consensus Ranking
-#' @inheritParams compute_consensus
+#'
+#' @param model_fit Object of type \code{BayesMallows} returned from
+#'   \code{\link{compute_mallows}}.
 #' @param type Character string specifying which consensus to compute. Either
-#' \code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
-#' @param parameter Character string defining the parameter for which to compute the
-#' consensus. Defaults to \code{"rho"}. Available options are \code{"rho"} and \code{"Rtilde"},
-#' with the latter giving consensus rankings for augmented ranks.
-#' @param assessors When \code{parameter = "rho"}, this integer vector is used to
-#' define the assessors for which to compute the augmented ranking. Defaults to
-#' \code{1L}, which yields augmented rankings for assessor 1.
+#'   \code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.
+#' @param burnin A numeric value specifying the number of iterations to discard
+#'   as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
+#'   \code{model_fit$burnin} does not exist. See
+#'   \code{\link{assess_convergence}}.
+#' @param parameter Character string defining the parameter for which to compute
+#'   the consensus. Defaults to \code{"rho"}. Available options are \code{"rho"}
+#'   and \code{"Rtilde"}, with the latter giving consensus rankings for
+#'   augmented ranks.
+#' @param assessors When \code{parameter = "rho"}, this integer vector is used
+#'   to define the assessors for which to compute the augmented ranking.
+#' @param ... Other arguments passed on to other methods. Currently not used.
+#'   Defaults to \code{1L}, which yields augmented rankings for assessor 1.
 #' @export
-#' @family posteriors quantities
+#' @family posterior quantities
 compute_consensus.BayesMallows <- function(model_fit, type = "CP", burnin = model_fit$burnin, parameter = "rho",
                                            assessors = 1L, ...) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
   stopifnot(burnin < model_fit$nmc)
+
+  type <- match.arg(type, c("CP", "MAP"))
 
   stopifnot(inherits(model_fit, "BayesMallows"))
 
@@ -115,26 +122,31 @@ compute_consensus.BayesMallows <- function(model_fit, type = "CP", burnin = mode
 #' \insertCite{vitelli2018}{BayesMallows}. For mixture models, the
 #' consensus is given for each mixture.
 #'
-#' @param model_fit An object returned from \code{\link{compute_mallows}}.
+#' @param model_fit An object of class \code{SMCMallows}, returned from
+#'   \code{\link{smc_mallows_new_item_rank}} or
+#'   \code{\link{smc_mallows_new_users}}.
 #'
 #' @param type Character string specifying which consensus to compute. Either
 #' \code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.
 #'
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
 #'
-#' @param ... other arguments passed to methods.
+#' @param ... Other optional arguments passed to methods. Currently not used.
 #'
-#' @author Anja Stein
 #' @export
-#' @family posteriors quantities
-compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin, ...) {
+#' @family posterior quantities
+#'
+#' @example inst/examples/smc_post_processing_functions_example.R
+compute_consensus.SMCMallows <- function(model_fit, type = "CP", ...) {
+
+  type <- match.arg(type, c("CP", "MAP"))
+
   if (type == "CP") {
-    .compute_cp_consensus(model_fit, burnin = burnin, ...)
+    ret <- .compute_cp_consensus(model_fit, ...)
   } else if (type == "MAP") {
-    .compute_map_consensus(model_fit, burnin = burnin, ...)
+    ret <- .compute_map_consensus(model_fit, ...)
   }
+  rownames(ret) <- NULL
+  ret
 }
 
 .compute_cp_consensus.consensus_BayesMallows <- function(model_fit, ...) {
@@ -153,37 +165,19 @@ compute_consensus.consensus_SMCMallows <- function(model_fit, type, burnin, ...)
   return(model_fit)
 }
 
-.compute_cp_consensus.consensus_SMCMallows <- function(model_fit, burnin, ...) {
-  if (is.null(burnin)) {
-    stop("Please specify the burnin.")
-  }
+.compute_cp_consensus.SMCMallows <- function(model_fit, ...) {
 
-  stopifnot(burnin < model_fit$nmc)
-
-  # Filter out the pre-burnin iterations
-  if (burnin != 0) {
-    df <- model_fit[model_fit$iteration > burnin, , drop = FALSE]
-  } else {
-    df <- model_fit
-  }
-
-  # Find the problem dimensions
+  df <- smc_processing(model_fit$rho_samples[,,dim(model_fit$rho_samples)[[3]]])
+  df$cluster <- "Cluster 1"
   n_rows <- length(unique(interaction(df$item, df$cluster)))
+  df$iteration <- seq_len(nrow(df))
 
   # Check that there are rows.
   stopifnot(n_rows > 0)
 
-  # Check that the number of rows are consistent with the information in
-  # the model object
-  stopifnot(model_fit$n_clusters * model_fit$n_items == n_rows)
-
   df <- aggregate_cp_consensus(df)
   df <- find_cpc(df)
-
-  # If there is only one cluster, we drop the cluster column
-  if (model_fit$n_clusters[1] == 1) {
-    df$cluster <- NULL
-  }
+  df$cluster <- NULL
 
   return(df)
 }
@@ -267,28 +261,21 @@ find_cpc <- function(group_df, group_var = "cluster") {
   return(model_fit)
 }
 
-# AS: added one extra line of code to resolve of the issues in #118 with plotting too many rows in compute_rho_consensus
-.compute_map_consensus.consensus_SMCMallows <- function(model_fit, burnin = model_fit$burnin, ...) {
-  if (is.null(burnin)) {
-    stop("Please specify the burnin.")
-  }
 
-  if (burnin != 0) {
-    df <- model_fit[model_fit$iteration > burnin, , drop = FALSE]
-  } else {
-    df <- model_fit
-  }
+.compute_map_consensus.SMCMallows <- function(model_fit, ...) {
 
-  # Store the total number of iterations after burnin
-  n_samples <- length(unique(df$iteration))
+  df <- as.data.frame(model_fit$rho_samples[,,dim(model_fit$rho_samples)[[3]]])
+  colnames(df) <- paste("Item", seq_len(ncol(df)))
+  n_items <- ncol(df)
+  iterations <- seq_len(nrow(df))
+  df <- smc_processing(df)
+  df$iteration <- rep(iterations, n_items)
 
-  #-----------------------------------------------------------
-  # AS: remove the column n_clusters, parameter
-  df <- within(df, {
-    n_clusters <- NULL
-    parameter <- NULL
-  })
-  #------------------------------------------------------------
+  df$cluster <- "Cluster 1"
+  n_rows <- length(unique(interaction(df$item, df$cluster)))
+
+  # Check that there are rows.
+  stopifnot(n_rows > 0)
 
   # Spread to get items along columns
   df <- stats::reshape(
@@ -300,7 +287,7 @@ find_cpc <- function(group_df, group_var = "cluster") {
   )
   attr(df, "reshapeWide") <- NULL # maintain identity to spread() output
 
-  df <- aggregate_map_consensus(df, n_samples)
+  df <- aggregate_map_consensus(df, max(iterations))
 
   # Now collect one set of ranks per cluster
   df <- stats::reshape(
@@ -318,10 +305,7 @@ find_cpc <- function(group_df, group_var = "cluster") {
 
   # Sort according to cluster and ranking
   df <- df[order(df$cluster, df$map_ranking), , drop = FALSE]
-
-  if (model_fit$n_clusters[1] == 1) {
-    df$cluster <- NULL
-  }
+  df$cluster <- NULL
 
   return(df)
 }

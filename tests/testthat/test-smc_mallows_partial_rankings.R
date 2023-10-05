@@ -231,32 +231,18 @@ test_that("Specific example results are OK", {
     tolerance = 1e-5
   )
 
-  expect_error(
+  expect_warning(
     compute_rho_consensus(
       output = test$rho_samples[, , Time + 1], nmc = N, burnin = NULL, C = 1,
       type = "CP"
     ),
-    "Please specify the burnin."
+    "deprecated"
   )
 
-  expect_error(
-    compute_rho_consensus(
-      output = test$rho_samples[, , Time + 1], nmc = N, burnin = NULL, C = 1,
-      type = "MAP"
-    ),
-    "Please specify the burnin."
-  )
-
-  rho_cp <- compute_rho_consensus(
-    output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1,
-    type = "CP"
-  )
+  rho_cp <- compute_consensus(test)
 
   set.seed(545)
-  rho_map <- compute_rho_consensus(
-    output = test$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1,
-    type = "MAP"
-  )
+  rho_map <- compute_consensus(test, type = "MAP")
   post_rho <- compute_posterior_intervals(test, parameter = "rho")
   post_alpha <- compute_posterior_intervals(test, parameter = "alpha")
 
@@ -264,35 +250,6 @@ test_that("Specific example results are OK", {
   expect_equal(dim(rho_map), c(100, 3))
   expect_equal(dim(post_rho), c(10, 7))
   expect_equal(dim(post_alpha), c(1, 6))
-
-  # Test with nonzero burnin
-  rho_cp <- compute_rho_consensus(
-    output = test$rho_samples[, , Time + 1], nmc = N, burnin = 2, C = 1,
-    type = "CP"
-  )
-  expect_equal(
-    rho_cp$cumprob,
-    c(1, 0.625, 0.625, 0.625, 1, 0.5, 0.5, 0.25, 0.125, 0.25)
-  )
-
-  rho_map <- compute_rho_consensus(
-    output = test$rho_samples[, , Time + 1], nmc = N, burnin = 2, C = 1,
-    type = "MAP"
-  )
-  expect_equal(
-    rho_map$probability,
-    c(
-      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
-      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
-      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
-      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
-      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
-      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
-      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
-      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125,
-      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125
-    )
-  )
 
   test_fixed <- smc_mallows_new_users(
     R_obs           = samples,
@@ -308,15 +265,9 @@ test_that("Specific example results are OK", {
     aug_method      = aug_method,
     alpha           = alpha_0
   )
-  rho_cp_fixed <- compute_rho_consensus(
-    output = test_fixed$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1,
-    type = "CP"
-  )
+  rho_cp_fixed <- compute_consensus(test_fixed)
   set.seed(584)
-  rho_map_fixed <- compute_rho_consensus(
-    output = test_fixed$rho_samples[, , Time + 1], nmc = N, burnin = 0, C = 1,
-    type = "MAP"
-  )
+  rho_map_fixed <- compute_consensus(test_fixed, type = "MAP")
   post_rho_fixed <- compute_posterior_intervals(test_fixed, parameter = "rho")
   expect_equal(dim(rho_cp_fixed), c(10, 3))
   expect_equal(dim(rho_map_fixed), c(10, 3))

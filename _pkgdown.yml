@@ -12,7 +12,7 @@ reference:
 - title: Posterior quantities
   desc: Functions for studying posterior distributions of model parameters.
   contents:
-  - has_concept("posteriors quantities")
+  - has_concept("posterior quantities")
 
 - title: Preprocessing
   desc: Functions to run prior to fitting a model.

@@ -8,8 +8,6 @@
 #' @noRd
 #' @importFrom methods is
 smc_processing <- function(output, colnames = NULL) {
-  # Validation
-  stopifnot(is(output, "matrix"))
 
   # Recasting of input for proper handling below
   df <- data.frame(data = output)
@@ -85,47 +83,30 @@ compute_posterior_intervals_rho <- function(output, nmc, burnin, colnames = NULL
 }
 
 #' @title Compute rho consensus
-#' @description MAP AND CP consensus ranking estimates
-#' @inheritParams compute_posterior_intervals_rho
-#' @param C C
+#'
+#' @description This function has been deprecated. Please use
+#'   \code{\link{compute_consensus.SMCMallows}}.
+#'
+#'
+#' @description MAP and CP consensus ranking estimates
+#'
+#'   This function is deprecated. Please use
+#'   \code{\link{compute_consensus.SMCMallows}} instead.
+#'
+#' @param C C Number of clusters.
+#' @param output Matrix
+#' @param nmc Number of Monte Carlo samples
+#' @param burnin Burnin
+#' @param colnames Column names
+#' @param verbose Logical
 #' @param type type
+#'
 #' @export
-#' @example inst/examples/smc_post_processing_functions_example.R
-#' @family posteriors quantities
+#' @family deprecated
 compute_rho_consensus <- function(output, nmc, burnin, C, type = "CP", colnames = NULL, verbose = FALSE) {
-  # Validation
-  stopifnot(is(output, "matrix"))
-
-  n_items <- dim(output)[2]
-
-  #----------------------------------------------------------------
-  # AS: added extra input parameter
-  smc_plot <- smc_processing(output = output, colnames = colnames)
-  #----------------------------------------------------------------
-
-  iteration <- array(rep((1:nmc), n_items))
-  smc_plot <- data.frame(data = cbind(iteration, smc_plot))
-  colnames(smc_plot) <- c("iteration", "item", "value")
-
-  smc_plot$n_clusters <- C
-  smc_plot$parameter <- "rho"
-  smc_plot$cluster <- "cluster 1"
-
-  class(smc_plot) <- c("consensus_SMCMallows", "data.frame")
-
-  # rho estimation using cumulative probability
-  if (type == "CP") {
-    results <- compute_consensus(
-      model_fit = smc_plot, type = "CP", burnin = burnin
-    )
-  } else {
-    results <- compute_consensus(
-      model_fit = smc_plot, type = "MAP", burnin = burnin
-    )
-  }
-  if (verbose) print(results)
-
-  return(results)
+  .Deprecated("compute_consensus",
+              msg = paste("compute_rho_consensus has been deprecated. Please use",
+                          "compute_consensus instead."))
 }
 
 #' @title Compute Posterior Intervals Alpha

@@ -1,5 +1,11 @@
 # BayesMallows (development versions)
 
+* compute_rho_consensus() for SMC Mallows has been deprecated in favor of 
+  compute_consensus().
+* compute_posterior_intervals_rho() and compute_posterior_intervals_alpha()
+  for SMC Mallows have been deprecated in factor of 
+  compute_posterior_intervals() with argument parameter = "rho" and
+  parameter = "alpha".
 * Documentation of functions are now grouped in families.
 * lik_db_mix() is now deprecated in favor of get_mallows_loglik()
 

@@ -38,19 +38,10 @@ model_fit <- smc_mallows_new_users(
 ##################
 # Run tests
 ##################
-test_sample_rho <- model_fit$rho_samples[, , Time + 1]
 
-test1 <- compute_rho_consensus(
-  output = test_sample_rho, nmc = N,
-  burnin = 0, C = 1, type = "CP",
-  verbose = FALSE
-)
 
-test2 <- compute_rho_consensus(
-  output = test_sample_rho, nmc = N,
-  burnin = 0, C = 1, type = "MAP",
-  verbose = FALSE
-)
+test1 <- compute_consensus(model_fit, type = "CP")
+test2 <- compute_consensus(model_fit, type = "MAP")
 
 test_that("Output of compute_rho_consensus (CP) is OK", {
   expect_is(test1, "data.frame")

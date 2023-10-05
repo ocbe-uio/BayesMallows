@@ -288,7 +288,6 @@ correction_kernel_pseudo <- function(current_ranking, observed_ranking, rho, alp
 #' @return Exponent in the Mallows log likelihood. Note that it does not include
 #' the partition function, and since the partition function depends on \code{alpha},
 #' this is not a likelihood per se.
-#' @author Anja Stein
 #' @noRd
 #' @examples
 #' set.seed(101)
@@ -488,7 +487,6 @@ smc_mallows_new_users <- function(R_obs, type, n_items, N, Time, mcmc_kernel_app
 #'   \eqn{\alpha_{c}} has the same prior distribution.
 #' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
 #'   prior distribution.
-#' @author Anja Stein
 #' @example /inst/examples/metropolis_hastings_alpha_example.R
 #' @noRd
 metropolis_hastings_alpha <- function(alpha, n_items, rankings, rho, logz_estimate, cardinalities, metric = "footrule", alpha_prop_sd = 0.5, alpha_max = 1e6, lambda = 0.1) {
@@ -520,7 +518,6 @@ metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking
 #' @param leap_size Integer specifying the step size of the leap-and-shift
 #' proposal distribution.
 #' @noRd
-#' @author Anja Stein
 #' @examples
 #' rho <- t(c(1,2,3,4,5,6))
 #' alpha <- 2

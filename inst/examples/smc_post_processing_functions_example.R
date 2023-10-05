@@ -25,11 +25,7 @@ smc_test <- smc_mallows_new_users(
 
 compute_posterior_intervals(smc_test, parameter = "rho")
 
-test_sample_rho <- smc_test$rho_samples[, , Time + 1]
-compute_rho_consensus(
-  output = test_sample_rho, nmc = N,
-  burnin = 0, C = 1, type = "CP",
-  verbose = FALSE
-)
+compute_consensus(model_fit = smc_test, type = "CP")
+compute_consensus(model_fit = smc_test, type = "MAP")
 
 compute_posterior_intervals(smc_test, parameter = "alpha")
