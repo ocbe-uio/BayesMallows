@@ -69,7 +69,7 @@ test_that("compute_posterior_intervals (alpha) output has expected structure", {
 test_that("Wrong input is caught", {
   expect_error(
     compute_posterior_intervals(test_sample_rho),
-    'no applicable method'
+    "no applicable method"
   )
   expect_error(
     compute_rho_consensus(
@@ -81,6 +81,6 @@ test_that("Wrong input is caught", {
   )
   expect_error(
     compute_posterior_intervals(test_sample_alpha),
-    'no applicable method'
+    "no applicable method"
   )
 })
