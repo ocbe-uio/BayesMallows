@@ -145,6 +145,8 @@ compute_posterior_intervals.SMCMallows <- function(
     tab$cluster <- NULL
   }
 
+  rownames(tab) <- NULL
+
   return(tab)
 }
 
