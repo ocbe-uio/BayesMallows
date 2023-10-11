@@ -193,6 +193,8 @@
 #'
 #' @param seed Optional integer to be used as random number seed.
 #'
+#' @param cl Optional cluster.
+#'
 #'
 #' @return A list of class BayesMallows.
 #'
@@ -238,7 +240,8 @@ compute_mallows <- function(rankings = NULL,
                             na_action = "augment",
                             constraints = NULL,
                             save_ind_clus = FALSE,
-                            seed = NULL) {
+                            seed = NULL,
+                            cl = NULL) {
   if (!is.null(seed)) set.seed(seed)
 
   # Check if there are NAs in rankings, if it is provided
@@ -361,61 +364,118 @@ compute_mallows <- function(rankings = NULL,
 
   # Transpose rankings to get samples along columns, since we typically want
   # to extract one sample at a time. armadillo is column major, just like rankings
-  fit <- run_mcmc(
-    rankings = t(rankings),
-    obs_freq = obs_freq,
-    nmc = nmc,
-    constraints = constraints,
-    cardinalities = logz_list$cardinalities,
-    logz_estimate = logz_list$logz_estimate,
-    rho_init = rho_init,
-    metric = metric,
-    error_model = ifelse(is.null(error_model), "none", error_model),
-    Lswap = swap_leap,
-    n_clusters = n_clusters,
-    include_wcd = include_wcd,
-    lambda = lambda,
-    alpha_max = alpha_max,
-    psi = psi,
-    leap_size = leap_size,
-    alpha_prop_sd = alpha_prop_sd,
-    alpha_init = alpha_init,
-    alpha_jump = alpha_jump,
-    rho_thinning = rho_thinning,
-    aug_thinning = aug_thinning,
-    clus_thin = clus_thin,
-    save_aug = save_aug,
-    verbose = verbose,
-    save_ind_clus = save_ind_clus
-  )
+  if(is.null(cl)) {
+    fits <- list(run_mcmc(
+      rankings = t(rankings),
+      obs_freq = obs_freq,
+      nmc = nmc,
+      constraints = constraints,
+      cardinalities = logz_list$cardinalities,
+      logz_estimate = logz_list$logz_estimate,
+      rho_init = rho_init,
+      metric = metric,
+      error_model = ifelse(is.null(error_model), "none", error_model),
+      Lswap = swap_leap,
+      n_clusters = n_clusters,
+      include_wcd = include_wcd,
+      lambda = lambda,
+      alpha_max = alpha_max,
+      psi = psi,
+      leap_size = leap_size,
+      alpha_prop_sd = alpha_prop_sd,
+      alpha_init = alpha_init,
+      alpha_jump = alpha_jump,
+      rho_thinning = rho_thinning,
+      aug_thinning = aug_thinning,
+      clus_thin = clus_thin,
+      save_aug = save_aug,
+      verbose = verbose,
+      kappa_1 = 1.0,
+      kappa_2 = 1.0,
+      save_ind_clus = save_ind_clus
+    ))
+  } else {
+    rankings <- t(rankings)
+    cardinalities <- logz_list$cardinalities
+    logz_estimate <- logz_list$logz_estimate
+    error_model <- ifelse(is.null(error_model), "none", error_model)
+    kappa_1 <- 1.0
+    kappa_2 <- 1.0
+    Lswap <- swap_leap
+
+    parallel::clusterExport(cl = cl, varlist = names(formals(run_mcmc)),
+                            envir = environment())
+
+
+    fits <- parallel::parLapply(cl = cl, X = seq_along(cl), function(x) {
+      run_mcmc(
+        rankings = rankings,
+        obs_freq = obs_freq,
+        nmc = nmc,
+        constraints = constraints,
+        cardinalities = cardinalities,
+        logz_estimate = logz_estimate,
+        rho_init = rho_init,
+        metric = metric,
+        error_model = error_model,
+        Lswap = Lswap,
+        n_clusters = n_clusters,
+        include_wcd = include_wcd,
+        lambda = lambda,
+        alpha_max = alpha_max,
+        psi = psi,
+        leap_size = leap_size,
+        alpha_prop_sd = alpha_prop_sd,
+        alpha_init = alpha_init,
+        alpha_jump = alpha_jump,
+        rho_thinning = rho_thinning,
+        aug_thinning = aug_thinning,
+        clus_thin = clus_thin,
+        save_aug = save_aug,
+        verbose = verbose,
+        kappa_1 = kappa_1,
+        kappa_2 = kappa_2,
+        save_ind_clus = save_ind_clus
+      )
+    })
+
+  }
+
 
   if (verbose) {
     print("Metropolis-Hastings algorithm completed. Post-processing data.")
   }
 
   # Add some arguments
-  fit$metric <- metric
-  fit$lambda <- lambda
-  fit$nmc <- nmc
-  fit$n_items <- n_items
-  fit$n_clusters <- n_clusters
-  fit$alpha_jump <- alpha_jump
-  fit$rho_thinning <- rho_thinning
-  fit$aug_thinning <- aug_thinning
-  fit$leap_size <- leap_size
-  fit$alpha_prop_sd <- alpha_prop_sd
-  fit$include_wcd <- include_wcd
-  fit$save_aug <- save_aug
-  fit$save_clus <- save_clus
+  fits <- lapply(fits, function(fit) {
+    fit$metric <- metric
+    fit$lambda <- lambda
+    fit$nmc <- nmc
+    fit$n_items <- n_items
+    fit$n_clusters <- n_clusters
+    fit$alpha_jump <- alpha_jump
+    fit$rho_thinning <- rho_thinning
+    fit$aug_thinning <- aug_thinning
+    fit$leap_size <- leap_size
+    fit$alpha_prop_sd <- alpha_prop_sd
+    fit$include_wcd <- include_wcd
+    fit$save_aug <- save_aug
+    fit$save_clus <- save_clus
+    # Add names of item
+    if (!is.null(colnames(rankings))) {
+      fit$items <- colnames(rankings)
+    } else {
+      fit$items <- paste("Item", seq(from = 1, to = nrow(fit$rho), by = 1))
+    }
+    fit
+  })
 
-  # Add names of item
-  if (!is.null(colnames(rankings))) {
-    fit$items <- colnames(rankings)
+  if(is.null(cl)) {
+    fit <- tidy_mcmc(fits[[1]])
   } else {
-    fit$items <- paste("Item", seq(from = 1, to = nrow(fit$rho), by = 1))
+    fit <- fits
   }
 
-  fit <- tidy_mcmc(fit)
 
   # Add class attribute
   class(fit) <- "BayesMallows"
