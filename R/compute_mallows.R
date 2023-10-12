@@ -385,7 +385,7 @@ compute_mallows <- function(rankings = NULL,
   }
   # to extract one sample at a time. armadillo is column major, just like rankings
   fits <- lapplyfun(X = chain_seq, FUN = function(i) {
-    if(length(alpha_init) > 1) {
+    if (length(alpha_init) > 1) {
       alpha_init <- alpha_init[i]
     }
     run_mcmc(
