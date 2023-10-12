@@ -412,7 +412,7 @@ compute_mallows <- function(rankings = NULL,
       cl = cl, varlist = names(formals(run_mcmc)),
       envir = environment()
     )
-    if(!is.null(seed)) parallel::clusterSetRNGStream(cl, seed)
+    if (!is.null(seed)) parallel::clusterSetRNGStream(cl, seed)
 
     fits <- parallel::parLapply(cl = cl, X = seq_along(cl), function(i) {
       run_mcmc(
