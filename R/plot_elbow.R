@@ -43,7 +43,9 @@ plot_elbow <- function(..., burnin = NULL) {
       }
     }
 
-    if (!x$include_wcd) stop("To get an elbow plot, set include_wcd=TRUE in compute_mallows")
+    if (is.null(x$within_cluster_distance)) {
+      stop("To get an elbow plot, set include_wcd=TRUE in compute_mallows")
+    }
 
     df <- x$within_cluster_distance[x$within_cluster_distance$iteration > x$burnin, , drop = FALSE]
 

@@ -17,9 +17,9 @@
 \item{...}{Other optional arguments passed to methods. Currently not used.}
 }
 \description{
-Compute the consensus ranking using either cumulative probability (CP) or maximum a posteriori (MAP) consensus
-\insertCite{vitelli2018}{BayesMallows}. For mixture models, the
-consensus is given for each mixture.
+Compute the consensus ranking using either cumulative probability (CP) or
+maximum a posteriori (MAP) consensus \insertCite{vitelli2018}{BayesMallows}.
+For mixture models, the consensus is given for each mixture.
 }
 \examples{
 # Basic elements

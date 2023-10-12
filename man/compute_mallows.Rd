@@ -11,7 +11,6 @@ compute_mallows(
   metric = "footrule",
   error_model = NULL,
   n_clusters = 1L,
-  save_clus = FALSE,
   clus_thin = 1L,
   nmc = 2000L,
   leap_size = max(1L, floor(n_items/5)),
@@ -33,7 +32,8 @@ compute_mallows(
   na_action = "augment",
   constraints = NULL,
   save_ind_clus = FALSE,
-  seed = NULL
+  seed = NULL,
+  cl = NULL
 )
 }
 \arguments{
@@ -56,14 +56,14 @@ will give \code{preferences} the class \code{"BayesMallowsTC"}. If
 on \code{preferences} before computations are done. In the current version,
 the pairwise preferences are assumed to be mutually compatible.}
 
-\item{obs_freq}{A vector of observation frequencies (weights) to apply do each row in \code{rankings}.
-This can speed up computation if a large number of assessors share the same
-rank pattern. Defaults to \code{NULL}, which means that each row of
-\code{rankings} is multiplied by 1. If provided, \code{obs_freq} must have
-the same number of elements as there are rows in \code{rankings}, and
-\code{rankings} cannot be \code{NULL}. See \code{\link{obs_freq}} for
-more information and \code{\link{rank_freq_distr}} for a convenience function
-for computing it.}
+\item{obs_freq}{A vector of observation frequencies (weights) to apply do
+each row in \code{rankings}. This can speed up computation if a large
+number of assessors share the same rank pattern. Defaults to \code{NULL},
+which means that each row of \code{rankings} is multiplied by 1. If
+provided, \code{obs_freq} must have the same number of elements as there
+are rows in \code{rankings}, and \code{rankings} cannot be \code{NULL}. See
+\code{\link{obs_freq}} for more information and
+\code{\link{rank_freq_distr}} for a convenience function for computing it.}
 
 \item{metric}{A character string specifying the distance metric to use in the
 Bayesian Mallows Model. Available options are \code{"footrule"},
@@ -83,9 +83,6 @@ of mixture components to use. Defaults to \code{1L}, which means no
 clustering is performed. See \code{\link{compute_mallows_mixtures}} for a
 convenience function for computing several models with varying numbers of
 mixtures.}
-
-\item{save_clus}{Logical specifying whether or not to save cluster
-assignments. Defaults to \code{FALSE}.}
 
 \item{clus_thin}{Integer specifying the thinning to be applied to cluster
 assignments and cluster probabilities. Defaults to \code{1L}.}
@@ -118,7 +115,10 @@ Metropolis-Hastings algorithm. Defaults to \code{0.1}.}
 
 \item{alpha_init}{Numeric value specifying the initial value of the scale
 parameter \eqn{\alpha}. Defaults to \code{1}. When \code{n_clusters > 1},
-each mixture component \eqn{\alpha_{c}} gets the same initial value.}
+each mixture component \eqn{\alpha_{c}} gets the same initial value. When
+chains are run in parallel, by providing an argument \code{cl = cl}, then
+\code{alpha_init} can be a vector of of length \code{length(cl)}, each
+element of which becomes an initial value for the given chain.}
 
 \item{alpha_jump}{Integer specifying how many times to sample \eqn{\rho}
 between each sampling of \eqn{\alpha}. In other words, how many times to
@@ -180,13 +180,13 @@ generated from \code{preferences}) should be validated. Defaults to
 number of items or assessors.}
 
 \item{na_action}{Character specifying how to deal with \code{NA} values in
-the \code{rankings} matrix, if provided. Defaults to \code{"augment"}, which
-means that missing values are automatically filled in using the Bayesian
-data augmentation scheme described in \insertCite{vitelli2018;textual}{BayesMallows}.
-The other options for this argument are \code{"fail"}, which means that an error
-message is printed and the algorithm stops if there are \code{NA}s in
-\code{rankings}, and \code{"omit"} which simply deletes rows with \code{NA}s
-in them.}
+the \code{rankings} matrix, if provided. Defaults to \code{"augment"},
+which means that missing values are automatically filled in using the
+Bayesian data augmentation scheme described in
+\insertCite{vitelli2018;textual}{BayesMallows}. The other options for this
+argument are \code{"fail"}, which means that an error message is printed
+and the algorithm stops if there are \code{NA}s in \code{rankings}, and
+\code{"omit"} which simply deletes rows with \code{NA}s in them.}
 
 \item{constraints}{Optional constraint set returned from
 \code{\link{generate_constraints}}. Defaults to \code{NULL}, which means
@@ -203,6 +203,8 @@ is necessary for detecting label switching using Stephen's algorithm. See
 \code{\link{label_switching}} for more information.}
 
 \item{seed}{Optional integer to be used as random number seed.}
+
+\item{cl}{Optional cluster.}
 }
 \value{
 A list of class BayesMallows.
@@ -299,10 +301,9 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
 \dontrun{
   # The example dataset sushi_rankings contains 5000 complete
   # rankings of 10 types of sushi
-  # We start with computing a 3-cluster solution, and save
-  # cluster assignments by setting save_clus = TRUE
+  # We start with computing a 3-cluster solution
   model_fit <- compute_mallows(sushi_rankings, n_clusters = 3,
-                               nmc = 10000, save_clus = TRUE, verbose = TRUE)
+                               nmc = 10000, verbose = TRUE)
   # We then assess convergence of the scale parameter alpha
   assess_convergence(model_fit)
   # Next, we assess convergence of the cluster probabilities

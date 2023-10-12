@@ -5,7 +5,6 @@ set.seed(200)
 model_fit <- compute_mallows(potato_weighing, metric = "footrule", nmc = 1000)
 mean_alpha <- mean(model_fit$alpha$value[501:1000])
 
-
 test_that(
   "alpha is in a decent range for footrule",
   expect_true(mean_alpha > 10 && mean_alpha < 20)
