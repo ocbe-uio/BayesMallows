@@ -136,6 +136,7 @@ compute_consensus.SMCMallows <- function(model_fit, type = "CP", ...) {
   type <- match.arg(type, c("CP", "MAP"))
 
   if (type == "CP") {
+
     df <- smc_processing(model_fit$rho_samples[, , dim(model_fit$rho_samples)[[3]]])
     df$cluster <- "Cluster 1"
     n_rows <- length(unique(interaction(df$item, df$cluster)))
@@ -143,6 +144,7 @@ compute_consensus.SMCMallows <- function(model_fit, type = "CP", ...) {
 
     # Check that there are rows.
     stopifnot(n_rows > 0)
+
 
     df <- aggregate_cp_consensus(df)
     df <- find_cpc(df)
@@ -155,6 +157,7 @@ compute_consensus.SMCMallows <- function(model_fit, type = "CP", ...) {
     iterations <- seq_len(nrow(df))
     df <- smc_processing(df)
     df$iteration <- rep(iterations, n_items)
+
 
     df$cluster <- "Cluster 1"
     n_rows <- length(unique(interaction(df$item, df$cluster)))
@@ -238,6 +241,7 @@ find_cpc <- function(group_df, group_var = "cluster") {
   }
   return(result)
 }
+
 
 aggregate_cp_consensus <- function(df) {
   # Convert items and cluster to character, since factor levels are not needed in this case
