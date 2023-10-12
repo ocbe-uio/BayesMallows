@@ -75,9 +75,12 @@ assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
 
 trace_alpha <- function(m, clusters) {
   # Create the diagnostic plot for alpha
-  p <- ggplot2::ggplot(m, ggplot2::aes(x = .data$iteration, y = .data$value)) +
+  p <- ggplot2::ggplot(m, ggplot2::aes(
+    x = .data$iteration, y = .data$value,
+    group = .data$chain, color = .data$chain)) +
     ggplot2::xlab("Iteration") +
-    ggplot2::ylab(expression(alpha))
+    ggplot2::ylab(expression(alpha)) +
+    ggplot2::labs(color = "Chain")
 
   if (!clusters) {
     p <- p + ggplot2::geom_line()
@@ -114,6 +117,11 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1) {
 
   if (clusters) {
     p <- p + ggplot2::facet_wrap(ggplot2::vars(.data$cluster))
+  } else {
+    p <- p +
+      ggplot2::facet_wrap(
+        ggplot2::vars(.data$chain),
+        labeller = ggplot2::as_labeller(function(x) paste("Chain", x)))
   }
 
   return(p)

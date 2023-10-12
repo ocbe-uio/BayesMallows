@@ -43,14 +43,14 @@
 #'   on \code{preferences} before computations are done. In the current version,
 #'   the pairwise preferences are assumed to be mutually compatible.
 #'
-#' @param obs_freq A vector of observation frequencies (weights) to apply do each row in \code{rankings}.
-#'   This can speed up computation if a large number of assessors share the same
-#'   rank pattern. Defaults to \code{NULL}, which means that each row of
-#'   \code{rankings} is multiplied by 1. If provided, \code{obs_freq} must have
-#'   the same number of elements as there are rows in \code{rankings}, and
-#'   \code{rankings} cannot be \code{NULL}. See \code{\link{obs_freq}} for
-#'   more information and \code{\link{rank_freq_distr}} for a convenience function
-#'   for computing it.
+#' @param obs_freq A vector of observation frequencies (weights) to apply do
+#'   each row in \code{rankings}. This can speed up computation if a large
+#'   number of assessors share the same rank pattern. Defaults to \code{NULL},
+#'   which means that each row of \code{rankings} is multiplied by 1. If
+#'   provided, \code{obs_freq} must have the same number of elements as there
+#'   are rows in \code{rankings}, and \code{rankings} cannot be \code{NULL}. See
+#'   \code{\link{obs_freq}} for more information and
+#'   \code{\link{rank_freq_distr}} for a convenience function for computing it.
 #'
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
@@ -107,7 +107,10 @@
 #'
 #' @param alpha_init Numeric value specifying the initial value of the scale
 #'   parameter \eqn{\alpha}. Defaults to \code{1}. When \code{n_clusters > 1},
-#'   each mixture component \eqn{\alpha_{c}} gets the same initial value.
+#'   each mixture component \eqn{\alpha_{c}} gets the same initial value. When
+#'   chains are run in parallel, by providing an argument \code{cl = cl}, then
+#'   \code{alpha_init} can be a vector of of length \code{length(cl)}, each
+#'   element of which becomes an initial value for the given chain.
 #'
 #' @param alpha_jump Integer specifying how many times to sample \eqn{\rho}
 #'   between each sampling of \eqn{\alpha}. In other words, how many times to
@@ -169,13 +172,13 @@
 #'   number of items or assessors.
 #'
 #' @param na_action Character specifying how to deal with \code{NA} values in
-#'   the \code{rankings} matrix, if provided. Defaults to \code{"augment"}, which
-#'   means that missing values are automatically filled in using the Bayesian
-#'   data augmentation scheme described in \insertCite{vitelli2018;textual}{BayesMallows}.
-#'   The other options for this argument are \code{"fail"}, which means that an error
-#'   message is printed and the algorithm stops if there are \code{NA}s in
-#'   \code{rankings}, and \code{"omit"} which simply deletes rows with \code{NA}s
-#'   in them.
+#'   the \code{rankings} matrix, if provided. Defaults to \code{"augment"},
+#'   which means that missing values are automatically filled in using the
+#'   Bayesian data augmentation scheme described in
+#'   \insertCite{vitelli2018;textual}{BayesMallows}. The other options for this
+#'   argument are \code{"fail"}, which means that an error message is printed
+#'   and the algorithm stops if there are \code{NA}s in \code{rankings}, and
+#'   \code{"omit"} which simply deletes rows with \code{NA}s in them.
 #'
 #' @param constraints Optional constraint set returned from
 #'   \code{\link{generate_constraints}}. Defaults to \code{NULL}, which means
@@ -365,35 +368,36 @@ compute_mallows <- function(rankings = NULL,
   # Transpose rankings to get samples along columns, since we typically want
   # to extract one sample at a time. armadillo is column major, just like rankings
   if(is.null(cl)) {
-    fits <- list(run_mcmc(
-      rankings = t(rankings),
-      obs_freq = obs_freq,
-      nmc = nmc,
-      constraints = constraints,
-      cardinalities = logz_list$cardinalities,
-      logz_estimate = logz_list$logz_estimate,
-      rho_init = rho_init,
-      metric = metric,
-      error_model = ifelse(is.null(error_model), "none", error_model),
-      Lswap = swap_leap,
-      n_clusters = n_clusters,
-      include_wcd = include_wcd,
-      lambda = lambda,
-      alpha_max = alpha_max,
-      psi = psi,
-      leap_size = leap_size,
-      alpha_prop_sd = alpha_prop_sd,
-      alpha_init = alpha_init,
-      alpha_jump = alpha_jump,
-      rho_thinning = rho_thinning,
-      aug_thinning = aug_thinning,
-      clus_thin = clus_thin,
-      save_aug = save_aug,
-      verbose = verbose,
-      kappa_1 = 1.0,
-      kappa_2 = 1.0,
-      save_ind_clus = save_ind_clus
-    ))
+    fits <- list(
+      run_mcmc(
+        rankings = t(rankings),
+        obs_freq = obs_freq,
+        nmc = nmc,
+        constraints = constraints,
+        cardinalities = logz_list$cardinalities,
+        logz_estimate = logz_list$logz_estimate,
+        rho_init = rho_init,
+        metric = metric,
+        error_model = ifelse(is.null(error_model), "none", error_model),
+        Lswap = swap_leap,
+        n_clusters = n_clusters,
+        include_wcd = include_wcd,
+        lambda = lambda,
+        alpha_max = alpha_max,
+        psi = psi,
+        leap_size = leap_size,
+        alpha_prop_sd = alpha_prop_sd,
+        alpha_init = alpha_init,
+        alpha_jump = alpha_jump,
+        rho_thinning = rho_thinning,
+        aug_thinning = aug_thinning,
+        clus_thin = clus_thin,
+        save_aug = save_aug,
+        verbose = verbose,
+        kappa_1 = 1.0,
+        kappa_2 = 1.0,
+        save_ind_clus = save_ind_clus)
+    )
   } else {
     rankings <- t(rankings)
     cardinalities <- logz_list$cardinalities
@@ -407,7 +411,7 @@ compute_mallows <- function(rankings = NULL,
                             envir = environment())
 
 
-    fits <- parallel::parLapply(cl = cl, X = seq_along(cl), function(x) {
+    fits <- parallel::parLapply(cl = cl, X = seq_along(cl), function(i) {
       run_mcmc(
         rankings = rankings,
         obs_freq = obs_freq,
@@ -426,7 +430,7 @@ compute_mallows <- function(rankings = NULL,
         psi = psi,
         leap_size = leap_size,
         alpha_prop_sd = alpha_prop_sd,
-        alpha_init = alpha_init,
+        alpha_init = ifelse(length(alpha_init) == 1, alpha_init, alpha_init[[i]]),
         alpha_jump = alpha_jump,
         rho_thinning = rho_thinning,
         aug_thinning = aug_thinning,
@@ -438,6 +442,7 @@ compute_mallows <- function(rankings = NULL,
         save_ind_clus = save_ind_clus
       )
     })
+    rankings <- t(rankings)
 
   }
 
@@ -446,18 +451,13 @@ compute_mallows <- function(rankings = NULL,
     print("Metropolis-Hastings algorithm completed. Post-processing data.")
   }
 
-  # Add some arguments
-  fits <- lapply(fits, function(fit) {
-    fit$metric <- metric
-    fit$lambda <- lambda
+  fit0 <- lapply(seq_along(fits), function(i) {
+    fit <- fits[[i]]
     fit$nmc <- nmc
-    fit$n_items <- n_items
     fit$n_clusters <- n_clusters
     fit$alpha_jump <- alpha_jump
     fit$rho_thinning <- rho_thinning
     fit$aug_thinning <- aug_thinning
-    fit$leap_size <- leap_size
-    fit$alpha_prop_sd <- alpha_prop_sd
     fit$include_wcd <- include_wcd
     fit$save_aug <- save_aug
     fit$save_clus <- save_clus
@@ -467,15 +467,40 @@ compute_mallows <- function(rankings = NULL,
     } else {
       fit$items <- paste("Item", seq(from = 1, to = nrow(fit$rho), by = 1))
     }
-    fit
+
+    tidy_mcmc(fit, chain = i)
   })
 
-  if(is.null(cl)) {
-    fit <- tidy_mcmc(fits[[1]])
-  } else {
-    fit <- fits
-  }
+  fit <- list()
+  fit$rho <- do.call(rbind, lapply(fit0, function(x) x$rho))
+  fit$alpha <- do.call(rbind, lapply(fit0, function(x) x$alpha))
+  fit$cluster_assignment <- do.call(rbind, lapply(fit0, function(x) x$cluster_assignment))
+  fit$cluster_probs <- do.call(rbind, lapply(fit0, function(x) x$cluster_probs))
+  fit$within_cluster_distance <- do.call(rbind, lapply(fit0, function(x) x$within_cluster_distance))
+  fit$augmented_data <- do.call(rbind, lapply(fit0, function(x) x$augmented_data))
+  fit$aug_acceptance <- do.call(rbind, lapply(fit0, function(x) x$aug_acceptance))
+  fit$theta <- do.call(rbind, lapply(fit0, function(x) x$theta))
 
+  # Add some arguments
+  fit$metric <- metric
+  fit$lambda <- lambda
+  fit$nmc <- nmc
+  fit$n_items <- n_items
+  fit$n_clusters <- n_clusters
+  fit$alpha_jump <- alpha_jump
+  fit$rho_thinning <- rho_thinning
+  fit$aug_thinning <- aug_thinning
+  fit$leap_size <- leap_size
+  fit$alpha_prop_sd <- alpha_prop_sd
+  fit$include_wcd <- include_wcd
+  fit$save_aug <- save_aug
+  fit$save_clus <- save_clus
+  # Add names of item
+  if (!is.null(colnames(rankings))) {
+    fit$items <- colnames(rankings)
+  } else {
+    fit$items <- paste("Item", seq(from = 1, to = nrow(fit$rho), by = 1))
+  }
 
   # Add class attribute
   class(fit) <- "BayesMallows"

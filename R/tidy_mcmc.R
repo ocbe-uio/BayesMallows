@@ -1,19 +1,19 @@
-tidy_mcmc <- function(fit) {
-  fit <- tidy_rho(fit)
-  fit <- tidy_alpha(fit)
-  fit <- tidy_cluster_assignment(fit)
-  fit <- tidy_cluster_probabilities(fit)
-  fit <- tidy_wcd(fit)
-  fit <- tidy_augmented_data(fit)
-  fit <- tidy_augmentation_acceptance(fit)
-  fit <- tidy_error_probability(fit)
+tidy_mcmc <- function(fit, chain = 1) {
+  fit <- tidy_rho(fit, chain)
+  fit <- tidy_alpha(fit, chain)
+  fit <- tidy_cluster_assignment(fit, chain)
+  fit <- tidy_cluster_probabilities(fit, chain)
+  fit <- tidy_wcd(fit, chain)
+  fit <- tidy_augmented_data(fit, chain)
+  fit <- tidy_augmentation_acceptance(fit, chain)
+  fit <- tidy_error_probability(fit, chain)
 
   return(fit)
 }
 
 
 
-tidy_rho <- function(fit) {
+tidy_rho <- function(fit, chain) {
   # Tidy rho
   rho_dims <- dim(fit$rho)
   # Item1, Item2, Item3, ...., Item1, Item2, Item3
@@ -39,6 +39,7 @@ tidy_rho <- function(fit) {
 
   # Store the final rho as a dataframe
   fit$rho <- data.frame(
+    chain = factor(chain),
     item = item,
     cluster = cluster,
     iteration = iteration,
@@ -48,7 +49,7 @@ tidy_rho <- function(fit) {
   return(fit)
 }
 
-tidy_alpha <- function(fit) {
+tidy_alpha <- function(fit, chain) {
   # Tidy alpha
   alpha_dims <- dim(fit$alpha)
   # Cluster1, Cluster2, ..., Cluster1, Cluster2
@@ -70,6 +71,7 @@ tidy_alpha <- function(fit) {
   )
 
   fit$alpha <- data.frame(
+    chain = factor(chain),
     cluster = cluster,
     iteration = iteration,
     value = value
@@ -78,7 +80,7 @@ tidy_alpha <- function(fit) {
   return(fit)
 }
 
-tidy_cluster_assignment <- function(fit) {
+tidy_cluster_assignment <- function(fit, chain) {
   # Tidy cluster assignment
   if (fit$save_clus) {
     if (fit$n_clusters > 1) {
@@ -103,6 +105,7 @@ tidy_cluster_assignment <- function(fit) {
     )
 
     fit$cluster_assignment <- data.frame(
+      chain = factor(chain),
       assessor = assessor,
       iteration = iteration,
       value = value
@@ -115,7 +118,7 @@ tidy_cluster_assignment <- function(fit) {
   return(fit)
 }
 
-tidy_cluster_probabilities <- function(fit) {
+tidy_cluster_probabilities <- function(fit, chain) {
   # Tidy cluster probabilities
   if (fit$n_clusters > 1) {
     clusprob_dims <- dim(fit$cluster_probs)
@@ -143,6 +146,7 @@ tidy_cluster_probabilities <- function(fit) {
   )
 
   fit$cluster_probs <- data.frame(
+    chain = factor(chain),
     cluster = cluster,
     iteration = iteration,
     value = value
@@ -151,7 +155,7 @@ tidy_cluster_probabilities <- function(fit) {
 }
 
 
-tidy_wcd <- function(fit) {
+tidy_wcd <- function(fit, chain) {
   # Tidy the within-cluster distances, or delete the empty matrix
   if (fit$include_wcd) {
     wcd_dims <- dim(fit$within_cluster_distance)
@@ -174,6 +178,7 @@ tidy_wcd <- function(fit) {
     )
 
     fit$within_cluster_distance <- data.frame(
+      chain = factor(chain),
       cluster = cluster,
       iteration = iteration,
       value = value
@@ -184,7 +189,7 @@ tidy_wcd <- function(fit) {
   return(fit)
 }
 
-tidy_augmented_data <- function(fit) {
+tidy_augmented_data <- function(fit, chain) {
   # Tidy augmented data, or delete
   if (fit$save_aug) {
     augdata_dims <- dim(fit$augmented_data)
@@ -207,6 +212,7 @@ tidy_augmented_data <- function(fit) {
     )
 
     fit$augmented_data <- data.frame(
+      chain = factor(chain),
       iteration = iteration,
       assessor = assessor,
       item = item,
@@ -220,13 +226,14 @@ tidy_augmented_data <- function(fit) {
 }
 
 
-tidy_augmentation_acceptance <- function(fit) {
+tidy_augmentation_acceptance <- function(fit, chain) {
   # Augmentation acceptance
 
   if (fit$any_missing || fit$augpair) {
     fit$aug_acceptance <- data.frame(acceptance_rate = c(fit$aug_acceptance))
     fit$aug_acceptance$assessor <- seq_len(nrow(fit$aug_acceptance))
     fit$aug_acceptance <- fit$aug_acceptance[, c("assessor", "acceptance_rate")]
+    fit$aug_acceptance$chain <- chain
   } else {
     fit$aug_acceptance <- NULL
   }
@@ -235,11 +242,12 @@ tidy_augmentation_acceptance <- function(fit) {
 
 
 
-tidy_error_probability <- function(fit) {
+tidy_error_probability <- function(fit, chain) {
   theta_length <- length(fit$theta)
 
   if (theta_length > 0) {
     fit$theta <- data.frame(
+      chain = factor(chain),
       iteration = seq(from = 1, to = theta_length, by = 1),
       value = c(fit$theta)
     )

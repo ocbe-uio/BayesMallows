@@ -33,7 +33,8 @@ compute_mallows(
   na_action = "augment",
   constraints = NULL,
   save_ind_clus = FALSE,
-  seed = NULL
+  seed = NULL,
+  cl = NULL
 )
 }
 \arguments{
@@ -203,6 +204,8 @@ is necessary for detecting label switching using Stephen's algorithm. See
 \code{\link{label_switching}} for more information.}
 
 \item{seed}{Optional integer to be used as random number seed.}
+
+\item{cl}{Optional cluster.}
 }
 \value{
 A list of class BayesMallows.
