@@ -25,7 +25,6 @@
 #' @example /inst/examples/plot.BayesMallows_example.R
 #' @family posterior quantities
 plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items = NULL, ...) {
-
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }

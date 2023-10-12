@@ -1,6 +1,5 @@
 tidy_mcmc <- function(fits, rho_thinning, rankings, alpha_jump,
                       n_clusters, nmc, aug_thinning, n_items) {
-
   fit <- list()
 
   # Add names of item
@@ -36,7 +35,8 @@ tidy_mcmc <- function(fits, rho_thinning, rankings, alpha_jump,
 
   fit$aug_acceptance <- lapply(seq_along(fits), function(i) {
     tidy_augmentation_acceptance(
-      fits[[i]]$aug_acceptance, i, fits[[i]]$any_missing, fits[[i]]$augpair)
+      fits[[i]]$aug_acceptance, i, fits[[i]]$any_missing, fits[[i]]$augpair
+    )
   })
 
   fit$theta <- do.call(rbind, lapply(seq_along(fits), function(i) {
@@ -51,13 +51,11 @@ tidy_mcmc <- function(fits, rho_thinning, rankings, alpha_jump,
   fit$alpha_acceptance <- rowMeans(matrix(
     vapply(fits, function(x) x$alpha_acceptance, numeric(n_clusters)),
     nrow = n_clusters
-    )
-  )
+  ))
   fit$rho_acceptance <- rowMeans(matrix(
     vapply(fits, function(x) x$rho_acceptance, numeric(n_clusters)),
     nrow = n_clusters
-  )
-  )
+  ))
 
   return(fit)
 }
@@ -96,7 +94,6 @@ tidy_rho <- function(rho_mat, chain, rho_thinning, items) {
     iteration = iteration,
     value = value
   )
-
 }
 
 tidy_alpha <- function(alpha_mat, chain, alpha_jump) {
@@ -126,13 +123,11 @@ tidy_alpha <- function(alpha_mat, chain, alpha_jump) {
     iteration = iteration,
     value = c(alpha_mat)
   )
-
 }
 
 tidy_cluster_assignment <- function(
     cluster_assignment, chain, n_clusters,
     n_assessors, nmc) {
-
   if (n_clusters > 1) {
     cluster_dims <- dim(cluster_assignment)
     value <- paste("Cluster", cluster_assignment)
@@ -160,7 +155,6 @@ tidy_cluster_assignment <- function(
     iteration = iteration,
     value = value
   )
-
 }
 
 tidy_cluster_probabilities <- function(cluster_probs, chain, n_clusters, nmc) {
@@ -196,7 +190,6 @@ tidy_cluster_probabilities <- function(cluster_probs, chain, n_clusters, nmc) {
     iteration = iteration,
     value = value
   )
-
 }
 
 
@@ -265,7 +258,6 @@ tidy_augmented_data <- function(augmented_data, chain, items, aug_thinning) {
   } else {
     NULL
   }
-
 }
 
 
@@ -281,7 +273,6 @@ tidy_augmentation_acceptance <- function(aug_acceptance, chain, any_missing, aug
   } else {
     NULL
   }
-
 }
 
 tidy_error_probability <- function(theta, chain) {
@@ -296,5 +287,4 @@ tidy_error_probability <- function(theta, chain) {
   } else {
     NULL
   }
-
 }

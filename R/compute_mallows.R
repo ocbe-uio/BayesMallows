@@ -362,18 +362,18 @@ compute_mallows <- function(rankings = NULL,
     if (tolower(abort) %in% c("n", "no")) stop()
   }
 
-  if(is.null(cl)) {
+  if (is.null(cl)) {
     lapplyfun <- lapply
     chain_seq <- 1
   } else {
-
     parallel::clusterExport(
       cl = cl,
-      varlist = c("rankings", "obs_freq", "nmc", "constraints", "logz_list",
-                  "rho_init", "metric", "swap_leap", "error_model",
-                  "n_clusters", "include_wcd", "leap_size", "alpha_prop_sd", "alpha_init",
-                  "alpha_jump", "lambda", "alpha_max", "psi", "rho_thinning", "aug_thinning",
-                  "clus_thin", "save_aug", "verbose", "save_ind_clus"
+      varlist = c(
+        "rankings", "obs_freq", "nmc", "constraints", "logz_list",
+        "rho_init", "metric", "swap_leap", "error_model",
+        "n_clusters", "include_wcd", "leap_size", "alpha_prop_sd", "alpha_init",
+        "alpha_jump", "lambda", "alpha_max", "psi", "rho_thinning", "aug_thinning",
+        "clus_thin", "save_aug", "verbose", "save_ind_clus"
       ),
       envir = environment()
     )
@@ -383,7 +383,7 @@ compute_mallows <- function(rankings = NULL,
     }
     chain_seq <- seq_along(cl)
   }
-# to extract one sample at a time. armadillo is column major, just like rankings
+  # to extract one sample at a time. armadillo is column major, just like rankings
   fits <- lapplyfun(X = chain_seq, FUN = function(i) {
     run_mcmc(
       rankings = t(rankings),
@@ -421,8 +421,10 @@ compute_mallows <- function(rankings = NULL,
     print("Metropolis-Hastings algorithm completed. Post-processing data.")
   }
 
-  fit <- tidy_mcmc(fits, rho_thinning, rankings, alpha_jump,
-                   n_clusters, nmc, aug_thinning, n_items)
+  fit <- tidy_mcmc(
+    fits, rho_thinning, rankings, alpha_jump,
+    n_clusters, nmc, aug_thinning, n_items
+  )
 
   fit$save_aug <- save_aug
 
