@@ -11,7 +11,6 @@ compute_mallows(
   metric = "footrule",
   error_model = NULL,
   n_clusters = 1L,
-  save_clus = FALSE,
   clus_thin = 1L,
   nmc = 2000L,
   leap_size = max(1L, floor(n_items/5)),
@@ -84,9 +83,6 @@ of mixture components to use. Defaults to \code{1L}, which means no
 clustering is performed. See \code{\link{compute_mallows_mixtures}} for a
 convenience function for computing several models with varying numbers of
 mixtures.}
-
-\item{save_clus}{Logical specifying whether or not to save cluster
-assignments. Defaults to \code{FALSE}.}
 
 \item{clus_thin}{Integer specifying the thinning to be applied to cluster
 assignments and cluster probabilities. Defaults to \code{1L}.}
@@ -305,10 +301,9 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
 \dontrun{
   # The example dataset sushi_rankings contains 5000 complete
   # rankings of 10 types of sushi
-  # We start with computing a 3-cluster solution, and save
-  # cluster assignments by setting save_clus = TRUE
+  # We start with computing a 3-cluster solution
   model_fit <- compute_mallows(sushi_rankings, n_clusters = 3,
-                               nmc = 10000, save_clus = TRUE, verbose = TRUE)
+                               nmc = 10000, verbose = TRUE)
   # We then assess convergence of the scale parameter alpha
   assess_convergence(model_fit)
   # Next, we assess convergence of the cluster probabilities

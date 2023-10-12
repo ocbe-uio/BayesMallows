@@ -72,8 +72,6 @@
 #'   mixtures.
 #'
 #'
-#' @param save_clus Logical specifying whether or not to save cluster
-#'   assignments. Defaults to \code{FALSE}.
 #'
 #' @param clus_thin Integer specifying the thinning to be applied to cluster
 #'   assignments and cluster probabilities. Defaults to \code{1L}.
@@ -221,7 +219,6 @@ compute_mallows <- function(rankings = NULL,
                             metric = "footrule",
                             error_model = NULL,
                             n_clusters = 1L,
-                            save_clus = FALSE,
                             clus_thin = 1L,
                             nmc = 2000L,
                             leap_size = max(1L, floor(n_items / 5)),
@@ -424,64 +421,10 @@ compute_mallows <- function(rankings = NULL,
     print("Metropolis-Hastings algorithm completed. Post-processing data.")
   }
 
-  fit0 <- lapply(seq_along(fits), function(i) {
-    fit <- fits[[i]]
-    fit$nmc <- nmc
-    fit$n_clusters <- n_clusters
-    fit$alpha_jump <- alpha_jump
-    fit$rho_thinning <- rho_thinning
-    fit$aug_thinning <- aug_thinning
-    fit$include_wcd <- include_wcd
-    fit$save_aug <- save_aug
-    fit$save_clus <- save_clus
-    # Add names of item
-    if (!is.null(colnames(rankings))) {
-      fit$items <- colnames(rankings)
-    } else {
-      fit$items <- paste("Item", seq(from = 1, to = nrow(fit$rho), by = 1))
-    }
+  fit <- tidy_mcmc(fits, rho_thinning, rankings, alpha_jump,
+                   n_clusters, nmc, aug_thinning, n_items)
 
-    tidy_mcmc(fit, chain = i)
-  })
-
-  fit <- list()
-  fit$rho <- do.call(rbind, lapply(fit0, function(x) x$rho))
-  fit$rho_acceptance <- vapply(fit0, function(x) x$rho_acceptance, numeric(n_clusters))
-  fit$alpha <- do.call(rbind, lapply(fit0, function(x) x$alpha))
-  fit$alpha_acceptance <- vapply(fit0, function(x) x$alpha_acceptance, numeric(n_clusters))
-  fit$cluster_assignment <- do.call(rbind, lapply(fit0, function(x) x$cluster_assignment))
-  fit$cluster_probs <- do.call(rbind, lapply(fit0, function(x) x$cluster_probs))
-  fit$within_cluster_distance <- do.call(rbind, lapply(fit0, function(x) x$within_cluster_distance))
-  fit$augmented_data <- do.call(rbind, lapply(fit0, function(x) x$augmented_data))
-  fit$aug_acceptance <- do.call(rbind, lapply(fit0, function(x) x$aug_acceptance))
-  fit$theta <- do.call(rbind, lapply(fit0, function(x) x$theta))
-  fit$shape_1 <- lapply(fit0, function(x) x$shape_1)
-  fit$shape_2 <- lapply(fit0, function(x) x$shape_2)
-
-  # Add some arguments
-  fit$any_missing <- fit0[[1]]$any_missing
-  fit$n_assessors <- fit0[[1]]$n_assessors
-  fit$augpair <- fit0[[1]]$augpair
-  fit$obs_freq <- fit0[[1]]$obs_freq
-  fit$metric <- metric
-  fit$lambda <- lambda
-  fit$nmc <- sum(vapply(fit0, function(x) x$nmc, numeric(1)))
-  fit$n_items <- n_items
-  fit$n_clusters <- n_clusters
-  fit$alpha_jump <- alpha_jump
-  fit$rho_thinning <- rho_thinning
-  fit$aug_thinning <- aug_thinning
-  fit$leap_size <- leap_size
-  fit$alpha_prop_sd <- alpha_prop_sd
-  fit$include_wcd <- include_wcd
   fit$save_aug <- save_aug
-  fit$save_clus <- save_clus
-  # Add names of item
-  if (!is.null(colnames(rankings))) {
-    fit$items <- colnames(rankings)
-  } else {
-    fit$items <- paste("Item", seq(from = 1, to = nrow(fit$rho), by = 1))
-  }
 
   # Add class attribute
   class(fit) <- "BayesMallows"

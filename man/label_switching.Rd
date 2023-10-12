@@ -31,12 +31,12 @@ determine the directory and filenames of the csv files.
   # probabilities The purpose of this is to assess the time it takes to save
   # the cluster probabilites
   system.time(m <- compute_mallows(rankings = sushi_rankings,
-                                   n_clusters = 6, nmc = 2000, save_clus = TRUE,
+                                   n_clusters = 6, nmc = 2000,
                                    save_ind_clus = FALSE, verbose = TRUE))
   # With this options, compute_mallows will save cluster_probs2.csv,
   # cluster_probs3.csv, ..., cluster_probs[nmc].csv.
   system.time(m <- compute_mallows(rankings = sushi_rankings, n_clusters = 6,
-                                   nmc = 2000, save_clus = TRUE,
+                                   nmc = 2000,
                                    save_ind_clus = TRUE, verbose = TRUE))
 
   # Next, we check convergence of alpha

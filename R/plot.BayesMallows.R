@@ -25,9 +25,6 @@
 #' @example /inst/examples/plot.BayesMallows_example.R
 #' @family posterior quantities
 plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items = NULL, ...) {
-  # Note, the first argument must be named x, otherwise R CMD CHECK will
-  # issue a warning. This is because plot.BayesMallows must have the same
-  # required arguments as graphics::plot.
 
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
@@ -96,7 +93,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
       ggplot2::facet_wrap(~ .data$cluster)
   } else if (parameter == "cluster_assignment") {
     if (is.null(x$cluster_assignment)) {
-      stop("Please rerun compute_mallows with save_clus = TRUE")
+      stop("No cluster assignments.")
     }
 
     # First get one cluster per assessor, and sort these

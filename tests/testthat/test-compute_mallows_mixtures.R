@@ -7,7 +7,6 @@ test_that("compute_mallows_mixtures works", {
     rankings = sushi_rankings[1:100, ]
   )
 
-
   expect_equal(
     round(models[[1]]$alpha$value, 10),
     c(
@@ -25,14 +24,14 @@ test_that("compute_mallows_mixtures works", {
 
   expect_equal(
     models[[3]]$rho_acceptance,
-    structure(c(0.75, 0.8, 0.95, 0.45, 0.9, 0.45), dim = c(6L, 1L))
+    c(0.75, 0.8, 0.95, 0.45, 0.9, 0.45)
   )
 
 
   set.seed(123)
   mixture_model <- compute_mallows(
     rankings = sushi_rankings[1:100, ], n_clusters = 5,
-    include_wcd = TRUE, save_clus = TRUE, nmc = 10
+    include_wcd = TRUE, nmc = 10
   )
 
   expect_equal(
@@ -61,13 +60,13 @@ test_that("compute_mallows_mixtures works", {
   mixture_model1 <- compute_mallows(
     rankings = sushi_rankings[1:100, ], n_clusters = 5,
     psi = 100,
-    include_wcd = TRUE, save_clus = TRUE, nmc = 10
+    include_wcd = TRUE, nmc = 10
   )
 
   set.seed(123)
   mixture_model2 <- compute_mallows(
     rankings = sushi_rankings[1:100, ], n_clusters = 5,
-    include_wcd = TRUE, save_clus = TRUE, nmc = 10, psi = .1
+    include_wcd = TRUE, nmc = 10, psi = .1
   )
 
   expect_lt(

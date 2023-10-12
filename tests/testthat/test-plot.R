@@ -18,7 +18,7 @@ test_that("plot.BayesMallows works", {
   expect_s3_class(plot(m, parameter = "rho"), "ggplot")
   expect_s3_class(plot(m, parameter = "rho", items = 2:3), "ggplot")
 
-  m <- compute_mallows(potato_visual, nmc = 10, n_clusters = 3, save_clus = TRUE)
+  m <- compute_mallows(potato_visual, nmc = 10, n_clusters = 3)
   expect_s3_class(plot(m, burnin = 4, parameter = "cluster_probs"), "ggplot")
   expect_s3_class(plot(m, burnin = 4, parameter = "cluster_assignment"), "ggplot")
 
