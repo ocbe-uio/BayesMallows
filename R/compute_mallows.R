@@ -43,14 +43,14 @@
 #'   on \code{preferences} before computations are done. In the current version,
 #'   the pairwise preferences are assumed to be mutually compatible.
 #'
-#' @param obs_freq A vector of observation frequencies (weights) to apply do each row in \code{rankings}.
-#'   This can speed up computation if a large number of assessors share the same
-#'   rank pattern. Defaults to \code{NULL}, which means that each row of
-#'   \code{rankings} is multiplied by 1. If provided, \code{obs_freq} must have
-#'   the same number of elements as there are rows in \code{rankings}, and
-#'   \code{rankings} cannot be \code{NULL}. See \code{\link{obs_freq}} for
-#'   more information and \code{\link{rank_freq_distr}} for a convenience function
-#'   for computing it.
+#' @param obs_freq A vector of observation frequencies (weights) to apply do
+#'   each row in \code{rankings}. This can speed up computation if a large
+#'   number of assessors share the same rank pattern. Defaults to \code{NULL},
+#'   which means that each row of \code{rankings} is multiplied by 1. If
+#'   provided, \code{obs_freq} must have the same number of elements as there
+#'   are rows in \code{rankings}, and \code{rankings} cannot be \code{NULL}. See
+#'   \code{\link{obs_freq}} for more information and
+#'   \code{\link{rank_freq_distr}} for a convenience function for computing it.
 #'
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
@@ -72,8 +72,6 @@
 #'   mixtures.
 #'
 #'
-#' @param save_clus Logical specifying whether or not to save cluster
-#'   assignments. Defaults to \code{FALSE}.
 #'
 #' @param clus_thin Integer specifying the thinning to be applied to cluster
 #'   assignments and cluster probabilities. Defaults to \code{1L}.
@@ -107,7 +105,10 @@
 #'
 #' @param alpha_init Numeric value specifying the initial value of the scale
 #'   parameter \eqn{\alpha}. Defaults to \code{1}. When \code{n_clusters > 1},
-#'   each mixture component \eqn{\alpha_{c}} gets the same initial value.
+#'   each mixture component \eqn{\alpha_{c}} gets the same initial value. When
+#'   chains are run in parallel, by providing an argument \code{cl = cl}, then
+#'   \code{alpha_init} can be a vector of of length \code{length(cl)}, each
+#'   element of which becomes an initial value for the given chain.
 #'
 #' @param alpha_jump Integer specifying how many times to sample \eqn{\rho}
 #'   between each sampling of \eqn{\alpha}. In other words, how many times to
@@ -169,13 +170,13 @@
 #'   number of items or assessors.
 #'
 #' @param na_action Character specifying how to deal with \code{NA} values in
-#'   the \code{rankings} matrix, if provided. Defaults to \code{"augment"}, which
-#'   means that missing values are automatically filled in using the Bayesian
-#'   data augmentation scheme described in \insertCite{vitelli2018;textual}{BayesMallows}.
-#'   The other options for this argument are \code{"fail"}, which means that an error
-#'   message is printed and the algorithm stops if there are \code{NA}s in
-#'   \code{rankings}, and \code{"omit"} which simply deletes rows with \code{NA}s
-#'   in them.
+#'   the \code{rankings} matrix, if provided. Defaults to \code{"augment"},
+#'   which means that missing values are automatically filled in using the
+#'   Bayesian data augmentation scheme described in
+#'   \insertCite{vitelli2018;textual}{BayesMallows}. The other options for this
+#'   argument are \code{"fail"}, which means that an error message is printed
+#'   and the algorithm stops if there are \code{NA}s in \code{rankings}, and
+#'   \code{"omit"} which simply deletes rows with \code{NA}s in them.
 #'
 #' @param constraints Optional constraint set returned from
 #'   \code{\link{generate_constraints}}. Defaults to \code{NULL}, which means
@@ -192,6 +193,8 @@
 #'   \code{\link{label_switching}} for more information.
 #'
 #' @param seed Optional integer to be used as random number seed.
+#'
+#' @param cl Optional cluster.
 #'
 #'
 #' @return A list of class BayesMallows.
@@ -216,7 +219,6 @@ compute_mallows <- function(rankings = NULL,
                             metric = "footrule",
                             error_model = NULL,
                             n_clusters = 1L,
-                            save_clus = FALSE,
                             clus_thin = 1L,
                             nmc = 2000L,
                             leap_size = max(1L, floor(n_items / 5)),
@@ -238,7 +240,8 @@ compute_mallows <- function(rankings = NULL,
                             na_action = "augment",
                             constraints = NULL,
                             save_ind_clus = FALSE,
-                            seed = NULL) {
+                            seed = NULL,
+                            cl = NULL) {
   if (!is.null(seed)) set.seed(seed)
 
   # Check if there are NAs in rankings, if it is provided
@@ -359,63 +362,74 @@ compute_mallows <- function(rankings = NULL,
     if (tolower(abort) %in% c("n", "no")) stop()
   }
 
-  # Transpose rankings to get samples along columns, since we typically want
+  if (is.null(cl)) {
+    lapplyfun <- lapply
+    chain_seq <- 1
+  } else {
+    parallel::clusterExport(
+      cl = cl,
+      varlist = c(
+        "rankings", "obs_freq", "nmc", "constraints", "logz_list",
+        "rho_init", "metric", "swap_leap", "error_model",
+        "n_clusters", "include_wcd", "leap_size", "alpha_prop_sd", "alpha_init",
+        "alpha_jump", "lambda", "alpha_max", "psi", "rho_thinning", "aug_thinning",
+        "clus_thin", "save_aug", "verbose", "save_ind_clus"
+      ),
+      envir = environment()
+    )
+    if (!is.null(seed)) parallel::clusterSetRNGStream(cl, seed)
+    lapplyfun <- function(X, FUN, ...) {
+      parallel::parLapply(cl = cl, X = X, fun = FUN, ...)
+    }
+    chain_seq <- seq_along(cl)
+  }
   # to extract one sample at a time. armadillo is column major, just like rankings
-  fit <- run_mcmc(
-    rankings = t(rankings),
-    obs_freq = obs_freq,
-    nmc = nmc,
-    constraints = constraints,
-    cardinalities = logz_list$cardinalities,
-    logz_estimate = logz_list$logz_estimate,
-    rho_init = rho_init,
-    metric = metric,
-    error_model = ifelse(is.null(error_model), "none", error_model),
-    Lswap = swap_leap,
-    n_clusters = n_clusters,
-    include_wcd = include_wcd,
-    lambda = lambda,
-    alpha_max = alpha_max,
-    psi = psi,
-    leap_size = leap_size,
-    alpha_prop_sd = alpha_prop_sd,
-    alpha_init = alpha_init,
-    alpha_jump = alpha_jump,
-    rho_thinning = rho_thinning,
-    aug_thinning = aug_thinning,
-    clus_thin = clus_thin,
-    save_aug = save_aug,
-    verbose = verbose,
-    save_ind_clus = save_ind_clus
-  )
+  fits <- lapplyfun(X = chain_seq, FUN = function(i) {
+    if (length(alpha_init) > 1) {
+      alpha_init <- alpha_init[i]
+    }
+    run_mcmc(
+      rankings = t(rankings),
+      obs_freq = obs_freq,
+      nmc = nmc,
+      constraints = constraints,
+      cardinalities = logz_list$cardinalities,
+      logz_estimate = logz_list$logz_estimate,
+      rho_init = rho_init,
+      metric = metric,
+      error_model = ifelse(is.null(error_model), "none", error_model),
+      Lswap = swap_leap,
+      n_clusters = n_clusters,
+      include_wcd = include_wcd,
+      lambda = lambda,
+      alpha_max = alpha_max,
+      psi = psi,
+      leap_size = leap_size,
+      alpha_prop_sd = alpha_prop_sd,
+      alpha_init = alpha_init,
+      alpha_jump = alpha_jump,
+      rho_thinning = rho_thinning,
+      aug_thinning = aug_thinning,
+      clus_thin = clus_thin,
+      save_aug = save_aug,
+      verbose = verbose,
+      kappa_1 = 1.0,
+      kappa_2 = 1.0,
+      save_ind_clus = save_ind_clus
+    )
+  })
+
 
   if (verbose) {
     print("Metropolis-Hastings algorithm completed. Post-processing data.")
   }
 
-  # Add some arguments
-  fit$metric <- metric
-  fit$lambda <- lambda
-  fit$nmc <- nmc
-  fit$n_items <- n_items
-  fit$n_clusters <- n_clusters
-  fit$alpha_jump <- alpha_jump
-  fit$rho_thinning <- rho_thinning
-  fit$aug_thinning <- aug_thinning
-  fit$leap_size <- leap_size
-  fit$alpha_prop_sd <- alpha_prop_sd
-  fit$include_wcd <- include_wcd
+  fit <- tidy_mcmc(
+    fits, rho_thinning, rankings, alpha_jump,
+    n_clusters, nmc, aug_thinning, n_items
+  )
+
   fit$save_aug <- save_aug
-  fit$save_clus <- save_clus
-
-  # Add names of item
-  if (!is.null(colnames(rankings))) {
-    fit$items <- colnames(rankings)
-  } else {
-    fit$items <- paste("Item", seq(from = 1, to = nrow(fit$rho), by = 1))
-  }
-
-  fit <- tidy_mcmc(fit)
 
   # Add class attribute
   class(fit) <- "BayesMallows"

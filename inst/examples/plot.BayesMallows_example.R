@@ -30,7 +30,7 @@ plot(model_fit)
   # We can run a mixture of Mallows models, using the n_clusters argument
   # We use the sushi example data. See the documentation of compute_mallows for a more elaborate
   # example
-  model_fit <- compute_mallows(sushi_rankings, n_clusters = 5, save_clus = TRUE)
+  model_fit <- compute_mallows(sushi_rankings, n_clusters = 5)
   model_fit$burnin <- 1000
   # We can then plot the posterior distributions of the cluster probabilities
   plot(model_fit, parameter = "cluster_probs")

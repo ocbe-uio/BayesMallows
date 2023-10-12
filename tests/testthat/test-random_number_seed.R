@@ -3,7 +3,7 @@ context("Testing that the random numbers are equal between platforms")
 bmm <- compute_mallows_mixtures(
   n_clusters = c(1, 4),
   rankings = sushi_rankings, nmc = 50,
-  save_clus = FALSE, include_wcd = FALSE, seed = 432
+  include_wcd = FALSE, seed = 432
 )
 
 expect_equal(
