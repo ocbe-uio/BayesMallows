@@ -1,5 +1,8 @@
 # BayesMallows (development versions)
 
+* Argument save_clus to compute_mallows() has been removed, as it was not used.
+* compute_mallows() now supports parallel chains, by providing a 'cl' argument.
+  See vignette "MCMC with Parallel Chains" for a tutorial.
 * compute_rho_consensus() for SMC Mallows has been deprecated in favor of 
   compute_consensus().
 * compute_posterior_intervals_rho() and compute_posterior_intervals_alpha()

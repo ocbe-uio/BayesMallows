@@ -44,7 +44,7 @@ library(parallel)
 cl <- makeCluster(2)
 fit <- compute_mallows(
   rankings = potato_visual, nmc = 5000,
-  alpha_init = runif(2, 3, 13), cl = cl
+  cl = cl
 )
 stopCluster(cl)
 ```

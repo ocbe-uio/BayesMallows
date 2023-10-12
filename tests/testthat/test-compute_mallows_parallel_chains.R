@@ -246,4 +246,9 @@ test_that("compute_mallows treats obs_freq properly", {
   )
 })
 
+test_that("compute_mallows() takes initial alpha", {
+  mm <- compute_mallows(potato_visual, nmc = 5, cl = cl, alpha_init = c(3, 4))
+  expect_s3_class(mm, "BayesMallows")
+})
+
 parallel::stopCluster(cl)
