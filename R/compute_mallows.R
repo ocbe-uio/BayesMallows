@@ -367,7 +367,7 @@ compute_mallows <- function(rankings = NULL,
 
   # Transpose rankings to get samples along columns, since we typically want
   # to extract one sample at a time. armadillo is column major, just like rankings
-  if(is.null(cl)) {
+  if (is.null(cl)) {
     fits <- list(
       run_mcmc(
         rankings = t(rankings),
@@ -396,7 +396,8 @@ compute_mallows <- function(rankings = NULL,
         verbose = verbose,
         kappa_1 = 1.0,
         kappa_2 = 1.0,
-        save_ind_clus = save_ind_clus)
+        save_ind_clus = save_ind_clus
+      )
     )
   } else {
     rankings <- t(rankings)
@@ -407,9 +408,11 @@ compute_mallows <- function(rankings = NULL,
     kappa_2 <- 1.0
     Lswap <- swap_leap
 
-    parallel::clusterExport(cl = cl, varlist = names(formals(run_mcmc)),
-                            envir = environment())
-
+    parallel::clusterExport(
+      cl = cl, varlist = names(formals(run_mcmc)),
+      envir = environment()
+    )
+    if(!is.null(seed)) parallel::clusterSetRNGStream(cl, seed)
 
     fits <- parallel::parLapply(cl = cl, X = seq_along(cl), function(i) {
       run_mcmc(
@@ -443,7 +446,6 @@ compute_mallows <- function(rankings = NULL,
       )
     })
     rankings <- t(rankings)
-
   }
 
 
@@ -473,18 +475,26 @@ compute_mallows <- function(rankings = NULL,
 
   fit <- list()
   fit$rho <- do.call(rbind, lapply(fit0, function(x) x$rho))
+  fit$rho_acceptance <- vapply(fit0, function(x) x$rho_acceptance, numeric(n_clusters))
   fit$alpha <- do.call(rbind, lapply(fit0, function(x) x$alpha))
+  fit$alpha_acceptance <- vapply(fit0, function(x) x$alpha_acceptance, numeric(n_clusters))
   fit$cluster_assignment <- do.call(rbind, lapply(fit0, function(x) x$cluster_assignment))
   fit$cluster_probs <- do.call(rbind, lapply(fit0, function(x) x$cluster_probs))
   fit$within_cluster_distance <- do.call(rbind, lapply(fit0, function(x) x$within_cluster_distance))
   fit$augmented_data <- do.call(rbind, lapply(fit0, function(x) x$augmented_data))
   fit$aug_acceptance <- do.call(rbind, lapply(fit0, function(x) x$aug_acceptance))
   fit$theta <- do.call(rbind, lapply(fit0, function(x) x$theta))
+  fit$shape_1 <- lapply(fit0, function(x) x$shape_1)
+  fit$shape_2 <- lapply(fit0, function(x) x$shape_2)
 
   # Add some arguments
+  fit$any_missing <- fit0[[1]]$any_missing
+  fit$n_assessors <- fit0[[1]]$n_assessors
+  fit$augpair <- fit0[[1]]$augpair
+  fit$obs_freq <- fit0[[1]]$obs_freq
   fit$metric <- metric
   fit$lambda <- lambda
-  fit$nmc <- nmc
+  fit$nmc <- sum(vapply(fit0, function(x) x$nmc, numeric(1)))
   fit$n_items <- n_items
   fit$n_clusters <- n_clusters
   fit$alpha_jump <- alpha_jump

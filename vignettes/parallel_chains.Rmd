@@ -42,8 +42,10 @@ In "BayesMallows" we use the "parallel" package for parallel computation. Parall
 ```{r}
 library(parallel)
 cl <- makeCluster(2)
-fit <- compute_mallows(rankings = potato_visual, nmc = 5000, 
-                       alpha_init = runif(2, 3, 13), cl = cl)
+fit <- compute_mallows(
+  rankings = potato_visual, nmc = 5000,
+  alpha_init = runif(2, 3, 13), cl = cl
+)
 stopCluster(cl)
 ```
 
@@ -94,11 +96,15 @@ Next we run two parallel chains, letting the package generate random initial ran
 
 ```{r}
 cl <- makeCluster(2)
-fit <- compute_mallows(preferences = beach_tc, nmc = 2000, 
-                       alpha_init = runif(2, 1, 4),
-                       save_aug = TRUE, cl = cl)
+fit <- compute_mallows(
+  preferences = beach_tc, nmc = 4000,
+  alpha_init = runif(2, 1, 4),
+  save_aug = TRUE, cl = cl
+)
 stopCluster(cl)
 ```
+
+### Trace Plots
 
 The convergence plots shows some long-range autocorrelation, but otherwise it seems to mix relatively well.
 
@@ -112,9 +118,61 @@ Here is the convergence plot for $\boldsymbol{\rho}$:
 assess_convergence(fit, parameter = "rho", items = 4:6)
 ```
 
+To avoid overplotting, it's a good idea to pick a low number of assessors and chains. We here look at items 1-3 of assessors 1 and 2.
+
 ```{r}
-assess_convergence(fit, parameter = "Rtilde", items = 1:3, assessors = 1)
+assess_convergence(fit,
+  parameter = "Rtilde",
+  items = 1:3, assessors = 1:2
+)
 ```
+
+### Posterior Quantities
+
+Based on the trace plots, the chains seem to be mixing well. We set the burnin to 700 again.
+
+```{r}
+fit$burnin <- 700
+```
+
+We can now study the posterior distributions. Here is the posterior for $\alpha$. Note that by increasing the `nmc` argument to `compute_mallows` above, the density would appear smoother. In this vignette we have kept it low to reduce the run time.
+
+```{r}
+plot(fit)
+```
+
+We can also look at the posterior for $\boldsymbol{\rho}$.
+
+```{r}
+plot(fit, parameter = "rho", items = 6:9)
+```
+
+We can also compute posterior intervals in the usual way:
+
+```{r}
+compute_posterior_intervals(fit, parameter = "alpha")
+```
+
+```{r}
+compute_posterior_intervals(fit, parameter = "rho")
+```
+
+And we can compute the consensus ranking:
+
+```{r}
+compute_consensus(fit)
+```
+
+```{r}
+compute_consensus(fit, type = "MAP")
+```
+
+We can compute the probability of being top-$k$, here for $k=4$:
+
+```{r}
+plot_top_k(fit, k = 4)
+```
+
 
 
 # References

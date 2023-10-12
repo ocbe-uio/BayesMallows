@@ -7,6 +7,7 @@ test_that("compute_mallows_mixtures works", {
     rankings = sushi_rankings[1:100, ]
   )
 
+
   expect_equal(
     round(models[[1]]$alpha$value, 10),
     c(

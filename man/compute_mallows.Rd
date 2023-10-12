@@ -57,14 +57,14 @@ will give \code{preferences} the class \code{"BayesMallowsTC"}. If
 on \code{preferences} before computations are done. In the current version,
 the pairwise preferences are assumed to be mutually compatible.}
 
-\item{obs_freq}{A vector of observation frequencies (weights) to apply do each row in \code{rankings}.
-This can speed up computation if a large number of assessors share the same
-rank pattern. Defaults to \code{NULL}, which means that each row of
-\code{rankings} is multiplied by 1. If provided, \code{obs_freq} must have
-the same number of elements as there are rows in \code{rankings}, and
-\code{rankings} cannot be \code{NULL}. See \code{\link{obs_freq}} for
-more information and \code{\link{rank_freq_distr}} for a convenience function
-for computing it.}
+\item{obs_freq}{A vector of observation frequencies (weights) to apply do
+each row in \code{rankings}. This can speed up computation if a large
+number of assessors share the same rank pattern. Defaults to \code{NULL},
+which means that each row of \code{rankings} is multiplied by 1. If
+provided, \code{obs_freq} must have the same number of elements as there
+are rows in \code{rankings}, and \code{rankings} cannot be \code{NULL}. See
+\code{\link{obs_freq}} for more information and
+\code{\link{rank_freq_distr}} for a convenience function for computing it.}
 
 \item{metric}{A character string specifying the distance metric to use in the
 Bayesian Mallows Model. Available options are \code{"footrule"},
@@ -119,7 +119,10 @@ Metropolis-Hastings algorithm. Defaults to \code{0.1}.}
 
 \item{alpha_init}{Numeric value specifying the initial value of the scale
 parameter \eqn{\alpha}. Defaults to \code{1}. When \code{n_clusters > 1},
-each mixture component \eqn{\alpha_{c}} gets the same initial value.}
+each mixture component \eqn{\alpha_{c}} gets the same initial value. When
+chains are run in parallel, by providing an argument \code{cl = cl}, then
+\code{alpha_init} can be a vector of of length \code{length(cl)}, each
+element of which becomes an initial value for the given chain.}
 
 \item{alpha_jump}{Integer specifying how many times to sample \eqn{\rho}
 between each sampling of \eqn{\alpha}. In other words, how many times to
@@ -181,13 +184,13 @@ generated from \code{preferences}) should be validated. Defaults to
 number of items or assessors.}
 
 \item{na_action}{Character specifying how to deal with \code{NA} values in
-the \code{rankings} matrix, if provided. Defaults to \code{"augment"}, which
-means that missing values are automatically filled in using the Bayesian
-data augmentation scheme described in \insertCite{vitelli2018;textual}{BayesMallows}.
-The other options for this argument are \code{"fail"}, which means that an error
-message is printed and the algorithm stops if there are \code{NA}s in
-\code{rankings}, and \code{"omit"} which simply deletes rows with \code{NA}s
-in them.}
+the \code{rankings} matrix, if provided. Defaults to \code{"augment"},
+which means that missing values are automatically filled in using the
+Bayesian data augmentation scheme described in
+\insertCite{vitelli2018;textual}{BayesMallows}. The other options for this
+argument are \code{"fail"}, which means that an error message is printed
+and the algorithm stops if there are \code{NA}s in \code{rankings}, and
+\code{"omit"} which simply deletes rows with \code{NA}s in them.}
 
 \item{constraints}{Optional constraint set returned from
 \code{\link{generate_constraints}}. Defaults to \code{NULL}, which means

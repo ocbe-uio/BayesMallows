@@ -77,7 +77,8 @@ trace_alpha <- function(m, clusters) {
   # Create the diagnostic plot for alpha
   p <- ggplot2::ggplot(m, ggplot2::aes(
     x = .data$iteration, y = .data$value,
-    group = .data$chain, color = .data$chain)) +
+    group = .data$chain, color = .data$chain
+  )) +
     ggplot2::xlab("Iteration") +
     ggplot2::ylab(expression(alpha)) +
     ggplot2::labs(color = "Chain")
@@ -121,7 +122,8 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1) {
     p <- p +
       ggplot2::facet_wrap(
         ggplot2::vars(.data$chain),
-        labeller = ggplot2::as_labeller(function(x) paste("Chain", x)))
+        labeller = ggplot2::as_labeller(function(x) paste("Chain", x))
+      )
   }
 
   return(p)
@@ -163,10 +165,12 @@ trace_rtilde <- function(model_fit, items, assessors, ...) {
 
   df$assessor <- as.factor(df$assessor)
   levels(df$assessor) <- paste("Assessor", levels(df$assessor))
+  df$chain <- as.factor(df$chain)
+  levels(df$chain) <- paste("Chain", levels(df$chain))
 
   ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
     ggplot2::geom_line() +
-    ggplot2::facet_wrap(ggplot2::vars(.data$assessor)) +
+    ggplot2::facet_wrap(ggplot2::vars(.data$assessor, .data$chain)) +
     ggplot2::theme(legend.title = ggplot2::element_blank()) +
     ggplot2::xlab("Iteration") +
     ggplot2::ylab("Rtilde")

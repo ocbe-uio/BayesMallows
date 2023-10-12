@@ -67,6 +67,7 @@ compute_posterior_intervals.BayesMallows <- function(
   stopifnot(level > 0 && level < 1)
 
   df <- model_fit[[parameter]][model_fit[[parameter]]$iteration > burnin, , drop = FALSE]
+  df$chain <- NULL
 
   if (parameter == "alpha" || parameter == "cluster_probs") {
     df <- .compute_posterior_intervals(split(df, f = df$cluster), parameter, level, decimals)

@@ -66,12 +66,16 @@ test_that("compute_mallows with single missing value works", {
   expect_equal(
     m$alpha,
     structure(list(
-      cluster = structure(c(1L, 1L, 1L, 1L), .Label = "Cluster 1", class = "factor"),
+      chain = structure(c(1L, 1L, 1L, 1L), levels = "1", class = "factor"),
+      cluster = structure(c(1L, 1L, 1L, 1L), levels = "Cluster 1", class = "factor"),
       iteration = c(1, 2, 3, 4), value = c(
         1, 0.986228529947352,
         0.834184330130122, 0.81366346172066
       )
-    ), class = "data.frame", row.names = c(NA, -4L))
+    ), row.names = c(
+      NA,
+      -4L
+    ), class = "data.frame")
   )
 })
 
