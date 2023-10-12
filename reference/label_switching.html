@@ -34,7 +34,7 @@ determine the directory and filenames of the csv files."><!-- mathjax --><script
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9003</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,6 +52,7 @@ determine the directory and filenames of the csv files."><!-- mathjax --><script
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Inference with the Mallows Model</a>
+    <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
   </div>
 </li>
 <li class="nav-item">
@@ -128,12 +129,12 @@ ISSN 1548-7660, <a href="https://doi.org/10.18637/jss.v069.c01" class="external-
 <span class="r-in"><span>  <span class="co"># probabilities The purpose of this is to assess the time it takes to save</span></span></span>
 <span class="r-in"><span>  <span class="co"># the cluster probabilites</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">sushi_rankings</span>,</span></span>
-<span class="r-in"><span>                                   n_clusters <span class="op">=</span> <span class="fl">6</span>, nmc <span class="op">=</span> <span class="fl">2000</span>, save_clus <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                                   n_clusters <span class="op">=</span> <span class="fl">6</span>, nmc <span class="op">=</span> <span class="fl">2000</span>,</span></span>
 <span class="r-in"><span>                                   save_ind_clus <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># With this options, compute_mallows will save cluster_probs2.csv,</span></span></span>
 <span class="r-in"><span>  <span class="co"># cluster_probs3.csv, ..., cluster_probs[nmc].csv.</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">sushi_rankings</span>, n_clusters <span class="op">=</span> <span class="fl">6</span>,</span></span>
-<span class="r-in"><span>                                   nmc <span class="op">=</span> <span class="fl">2000</span>, save_clus <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                                   nmc <span class="op">=</span> <span class="fl">2000</span>,</span></span>
 <span class="r-in"><span>                                   save_ind_clus <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># Next, we check convergence of alpha</span></span></span>

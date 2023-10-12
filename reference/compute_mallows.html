@@ -54,7 +54,7 @@ compute_mallows always returns posterior distributions of the latent
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9003</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,6 +72,7 @@ compute_mallows always returns posterior distributions of the latent
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Inference with the Mallows Model</a>
+    <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
   </div>
 </li>
 <li class="nav-item">
@@ -133,7 +134,6 @@ compute_mallows always returns posterior distributions of the latent
 <span>  metric <span class="op">=</span> <span class="st">"footrule"</span>,</span>
 <span>  error_model <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_clusters <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  save_clus <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  clus_thin <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  nmc <span class="op">=</span> <span class="fl">2000L</span>,</span>
 <span>  leap_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">n_items</span><span class="op">/</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -155,7 +155,8 @@ compute_mallows always returns posterior distributions of the latent
 <span>  na_action <span class="op">=</span> <span class="st">"augment"</span>,</span>
 <span>  constraints <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  save_ind_clus <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  seed <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cl <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -185,14 +186,14 @@ the pairwise preferences are assumed to be mutually compatible.</p></dd>
 
 
 <dt>obs_freq</dt>
-<dd><p>A vector of observation frequencies (weights) to apply do each row in <code>rankings</code>.
-This can speed up computation if a large number of assessors share the same
-rank pattern. Defaults to <code>NULL</code>, which means that each row of
-<code>rankings</code> is multiplied by 1. If provided, <code>obs_freq</code> must have
-the same number of elements as there are rows in <code>rankings</code>, and
-<code>rankings</code> cannot be <code>NULL</code>. See <code><a href="obs_freq.html">obs_freq</a></code> for
-more information and <code><a href="rank_freq_distr.html">rank_freq_distr</a></code> for a convenience function
-for computing it.</p></dd>
+<dd><p>A vector of observation frequencies (weights) to apply do
+each row in <code>rankings</code>. This can speed up computation if a large
+number of assessors share the same rank pattern. Defaults to <code>NULL</code>,
+which means that each row of <code>rankings</code> is multiplied by 1. If
+provided, <code>obs_freq</code> must have the same number of elements as there
+are rows in <code>rankings</code>, and <code>rankings</code> cannot be <code>NULL</code>. See
+<code><a href="obs_freq.html">obs_freq</a></code> for more information and
+<code><a href="rank_freq_distr.html">rank_freq_distr</a></code> for a convenience function for computing it.</p></dd>
 
 
 <dt>metric</dt>
@@ -219,11 +220,6 @@ of mixture components to use. Defaults to <code>1L</code>, which means no
 clustering is performed. See <code><a href="compute_mallows_mixtures.html">compute_mallows_mixtures</a></code> for a
 convenience function for computing several models with varying numbers of
 mixtures.</p></dd>
-
-
-<dt>save_clus</dt>
-<dd><p>Logical specifying whether or not to save cluster
-assignments. Defaults to <code>FALSE</code>.</p></dd>
 
 
 <dt>clus_thin</dt>
@@ -272,7 +268,10 @@ Metropolis-Hastings algorithm. Defaults to <code>0.1</code>.</p></dd>
 <dt>alpha_init</dt>
 <dd><p>Numeric value specifying the initial value of the scale
 parameter \(\alpha\). Defaults to <code>1</code>. When <code>n_clusters &gt; 1</code>,
-each mixture component \(\alpha_{c}\) gets the same initial value.</p></dd>
+each mixture component \(\alpha_{c}\) gets the same initial value. When
+chains are run in parallel, by providing an argument <code>cl = cl</code>, then
+<code>alpha_init</code> can be a vector of of length <code>length(cl)</code>, each
+element of which becomes an initial value for the given chain.</p></dd>
 
 
 <dt>alpha_jump</dt>
@@ -356,14 +355,14 @@ number of items or assessors.</p></dd>
 
 <dt>na_action</dt>
 <dd><p>Character specifying how to deal with <code>NA</code> values in
-the <code>rankings</code> matrix, if provided. Defaults to <code>"augment"</code>, which
-means that missing values are automatically filled in using the Bayesian
-data augmentation scheme described in Vitelli et al. (2018)
-.
-The other options for this argument are <code>"fail"</code>, which means that an error
-message is printed and the algorithm stops if there are <code>NA</code>s in
-<code>rankings</code>, and <code>"omit"</code> which simply deletes rows with <code>NA</code>s
-in them.</p></dd>
+the <code>rankings</code> matrix, if provided. Defaults to <code>"augment"</code>,
+which means that missing values are automatically filled in using the
+Bayesian data augmentation scheme described in
+Vitelli et al. (2018)
+. The other options for this
+argument are <code>"fail"</code>, which means that an error message is printed
+and the algorithm stops if there are <code>NA</code>s in <code>rankings</code>, and
+<code>"omit"</code> which simply deletes rows with <code>NA</code>s in them.</p></dd>
 
 
 <dt>constraints</dt>
@@ -386,6 +385,10 @@ is necessary for detecting label switching using Stephen's algorithm. See
 
 <dt>seed</dt>
 <dd><p>Optional integer to be used as random number seed.</p></dd>
+
+
+<dt>cl</dt>
+<dd><p>Optional cluster.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -444,20 +447,20 @@ is necessary for detecting label switching using Stephen's algorithm. See
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1        1  P12   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2        2  P13   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3        3   P9   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        4  P10   0.879</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        5  P17   0.949</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        6   P7   0.940</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        4  P10   0.816</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        5  P17   0.898</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        6   P7   0.740</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7        7  P14   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8        8  P16   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9        9   P1   0.447</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10      10   P5   0.641</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11      11  P11   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9        9   P5   0.429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      10   P1   0.829</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11      11  P11   0.965</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12      12  P19   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13      13  P20   0.648</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14      14  P18   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15      15   P6   0.980</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16      16   P4   0.619</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17      17   P2   0.660</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13      13  P18   0.574</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14      14  P20   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15      15   P6   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16      16   P4   0.925</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17      17   P2   0.866</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 18      18  P15   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19      19   P3   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 20      20   P8   1.000</span>
@@ -466,7 +469,7 @@ is necessary for detecting label switching using Stephen's algorithm. See
 <span class="r-in"><span><span class="co"># First we compute the interval for alpha</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   parameter   mean median conf_level           hpdi central_interval</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     alpha 10.888 10.836       95 % [9.599,12.401]   [9.487,12.388]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     alpha 10.793 10.803       95 % [9.274,12.151]   [9.217,12.123]</span>
 <span class="r-in"><span><span class="co"># Then we compute the interval for all the items</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="fu"><a href="compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -510,10 +513,9 @@ is necessary for detecting label switching using Stephen's algorithm. See
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="co"># The example dataset sushi_rankings contains 5000 complete</span></span></span>
 <span class="r-in"><span>  <span class="co"># rankings of 10 types of sushi</span></span></span>
-<span class="r-in"><span>  <span class="co"># We start with computing a 3-cluster solution, and save</span></span></span>
-<span class="r-in"><span>  <span class="co"># cluster assignments by setting save_clus = TRUE</span></span></span>
+<span class="r-in"><span>  <span class="co"># We start with computing a 3-cluster solution</span></span></span>
 <span class="r-in"><span>  <span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu">compute_mallows</span><span class="op">(</span><span class="va">sushi_rankings</span>, n_clusters <span class="op">=</span> <span class="fl">3</span>,</span></span>
-<span class="r-in"><span>                               nmc <span class="op">=</span> <span class="fl">10000</span>, save_clus <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                               nmc <span class="op">=</span> <span class="fl">10000</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># We then assess convergence of the scale parameter alpha</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># Next, we assess convergence of the cluster probabilities</span></span></span>

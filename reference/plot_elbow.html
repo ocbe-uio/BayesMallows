@@ -14,7 +14,7 @@ selecting the number of mixture."><!-- mathjax --><script src="https://cdnjs.clo
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9003</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,6 +32,7 @@ selecting the number of mixture."><!-- mathjax --><script src="https://cdnjs.clo
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Inference with the Mallows Model</a>
+    <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
   </div>
 </li>
 <li class="nav-item">
@@ -130,9 +131,9 @@ with-cluster sum of distances on the vertical axis.</p>
 <span class="r-in"><span>  <span class="co"># an "elbow", e.g., n_clusters = 5.</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># Having chosen the number of clusters, we can now study the final model</span></span></span>
-<span class="r-in"><span>  <span class="co"># Rerun with 5 clusters, now setting save_clus = TRUE to get cluster assignments</span></span></span>
+<span class="r-in"><span>  <span class="co"># Rerun with 5 clusters</span></span></span>
 <span class="r-in"><span>  <span class="va">mixture_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">sushi_rankings</span>, n_clusters <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>                                   include_wcd <span class="op">=</span> <span class="cn">TRUE</span>, save_clus <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                   include_wcd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># Delete the models object to free some memory</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">models</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># Set the burnin</span></span></span>

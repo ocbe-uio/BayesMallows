@@ -4,5 +4,6 @@ pkgdown_sha: ~
 articles:
   BayesMallows: BayesMallows.html
   SMC-Mallows: SMC-Mallows.html
-last_built: 2023-10-05T14:58Z
+  parallel_chains: parallel_chains.html
+last_built: 2023-10-12T14:10Z
 
