@@ -26,9 +26,6 @@ To install the current development version, use
 ``` r
 # install.packages("remotes")
 remotes::install_github("ocbe-uio/BayesMallows")
-
-# Set build_vignettes to TRUE to also get the package vignettes
-remotes::install_github("ocbe-uio/BayesMallows", build_vignettes = TRUE)
 ```
 
 ## Basic Usage Example
@@ -68,13 +65,11 @@ plot(fit, burnin = 500)
 
 ![](man/figures/README-unnamed-chunk-6-1.png)<!-- -->
 
-For more examples, please see the vignette, which is based on Sørensen
-et al. ([2020](#ref-sorensen2020)), and the function documentation. The
-vignette can be opened by issuing the following command.
-
-``` r
-vignette("BayesMallows")
-```
+For more examples, please our [R Journal
+paper](https://journal.r-project.org/archive/2020/RJ-2020-026/index.html),
+and the function documentation. The use of parallel chains are described
+in [this
+vignette](https://ocbe-uio.github.io/BayesMallows/articles/parallel_chains.html).
 
 ## The Bayesian Mallows Model
 
@@ -95,14 +90,11 @@ Antoniano-Villalobos ([2022](#ref-crispino2022)) outlines how
 informative priors can be used within the model.
 
 Updating of the posterior distribution based on new data, using
-sequential Monte Carlo methods, is implemented and described in a
-separate vignette which can be shown with the following command. The
-computational algorithms are described in further detail in Stein
+sequential Monte Carlo methods, is implemented and described in [a
+separate
+vignette](https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html).
+The computational algorithms are described in further detail in Stein
 ([2023](#ref-steinSequentialInferenceMallows2023)).
-
-``` r
-vignette("SMC-Mallows")
-```
 
 ### Applications
 

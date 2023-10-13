@@ -31,6 +31,7 @@ This vignette describes how to run Markov chain Monte Carlo with parallel chains
 Modern computers have multiple cores, and on computing clusters one can get access to hundreds of cores easily. By running Markov Chains in parallel on $K$ cores, ideally from different starting points, we achieve at least the following:
 
 1. The time you have to wait to get the required number of post-burnin samples scales like $1/K$.
+
 2. You can check convergence by comparing chains.
 
 
@@ -84,9 +85,11 @@ plot(fit, parameter = "rho", items = 4:7)
 
 ## Parallel Chains with Pairwise Preferences
 
+
 A case where parallel chains might be more strongly needed is with incomplete data, e.g., arising from pairwise preferences. In this case the MCMC algorithm needs to perform data augmentation, which tends to be both slow and sticky. We illustrate this with the beach preference data, again referring to @sorensen2020 for a more thorough introduction to the aspects not directly related to parallelism.
 
 We start by generating the transitive closure:
+
 
 ```{r}
 beach_tc <- generate_transitive_closure(beach_preferences)
