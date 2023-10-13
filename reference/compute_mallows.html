@@ -447,20 +447,20 @@ is necessary for detecting label switching using Stephen's algorithm. See
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1        1  P12   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2        2  P13   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3        3   P9   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        4  P10   0.816</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        5  P17   0.898</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        6   P7   0.740</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        4  P10   0.902</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        5  P17   0.952</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        6   P7   0.944</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7        7  P14   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8        8  P16   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9        9   P5   0.429</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10      10   P1   0.829</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11      11  P11   0.965</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9        9   P5   0.459</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      10   P1   0.726</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11      11  P11   0.927</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12      12  P19   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13      13  P18   0.574</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13      13  P18   0.667</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14      14  P20   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 15      15   P6   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16      16   P4   0.925</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17      17   P2   0.866</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16      16   P4   0.756</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17      17   P2   0.741</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 18      18  P15   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19      19   P3   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 20      20   P8   1.000</span>
@@ -469,7 +469,7 @@ is necessary for detecting label switching using Stephen's algorithm. See
 <span class="r-in"><span><span class="co"># First we compute the interval for alpha</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   parameter   mean median conf_level           hpdi central_interval</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     alpha 10.793 10.803       95 % [9.274,12.151]   [9.217,12.123]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     alpha 10.829 10.836       95 % [9.206,12.293]   [9.206,12.354]</span>
 <span class="r-in"><span><span class="co"># Then we compute the interval for all the items</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="fu"><a href="compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

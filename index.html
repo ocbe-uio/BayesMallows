@@ -108,10 +108,7 @@
 <p>To install the current development version, use</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ocbe-uio/BayesMallows"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Set build_vignettes to TRUE to also get the package vignettes</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ocbe-uio/BayesMallows"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ocbe-uio/BayesMallows"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="basic-usage-example">Basic Usage Example<a class="anchor" aria-label="anchor" href="#basic-usage-example"></a>
@@ -130,9 +127,7 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, burnin <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-6-1.png"><!-- --></p>
-<p>For more examples, please see the vignette, which is based on Sørensen et al. (<a href="#ref-sorensen2020">2020</a>), and the function documentation. The vignette can be opened by issuing the following command.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"BayesMallows"</span><span class="op">)</span></span></code></pre></div>
+<p>For more examples, please our <a href="https://journal.r-project.org/archive/2020/RJ-2020-026/index.html" class="external-link">R Journal paper</a>, and the function documentation. The use of parallel chains are described in <a href="https://ocbe-uio.github.io/BayesMallows/articles/parallel_chains.html" class="external-link">this vignette</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="the-bayesian-mallows-model">The Bayesian Mallows Model<a class="anchor" aria-label="anchor" href="#the-bayesian-mallows-model"></a>
@@ -141,9 +136,7 @@
 <h3 id="methodology">Methodology<a class="anchor" aria-label="anchor" href="#methodology"></a>
 </h3>
 <p>The BayesMallows package currently implements the complete model described in Vitelli et al. (<a href="#ref-vitelli2018">2018</a>), which includes a large number of distance metrics, handling of missing ranks and pairwise comparisons, and clustering of users with similar preferences. The extension to non-transitive pairwise comparisons by Crispino et al. (<a href="#ref-crispino2019">2019</a>) is also implemented. In addition, the partition function of the Mallows model can be estimated using the importance sampling algorithm of Vitelli et al. (<a href="#ref-vitelli2018">2018</a>) and the asymptotic approximation of Mukherjee (<a href="#ref-mukherjee2016">2016</a>). For a review of ranking models in general, see Liu, Crispino, et al. (<a href="#ref-liu2019">2019</a>). Crispino and Antoniano-Villalobos (<a href="#ref-crispino2022">2022</a>) outlines how informative priors can be used within the model.</p>
-<p>Updating of the posterior distribution based on new data, using sequential Monte Carlo methods, is implemented and described in a separate vignette which can be shown with the following command. The computational algorithms are described in further detail in Stein (<a href="#ref-steinSequentialInferenceMallows2023">2023</a>).</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"SMC-Mallows"</span><span class="op">)</span></span></code></pre></div>
+<p>Updating of the posterior distribution based on new data, using sequential Monte Carlo methods, is implemented and described in <a href="https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html" class="external-link">a separate vignette</a>. The computational algorithms are described in further detail in Stein (<a href="#ref-steinSequentialInferenceMallows2023">2023</a>).</p>
 </div>
 <div class="section level3">
 <h3 id="applications">Applications<a class="anchor" aria-label="anchor" href="#applications"></a>
@@ -160,7 +153,7 @@
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If using the BayesMallows package in academic work, please cite Sørensen et al. (<a href="#ref-sorensen2020">2020</a>), in addition to the relevant methodological papers.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"BayesMallows"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'BayesMallows' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
