@@ -6,7 +6,7 @@
 \usage{
 smc_mallows_new_users(
   R_obs,
-  type,
+  type = c("complete", "partial", "partial_alpha_fixed"),
   n_items,
   N,
   Time,
@@ -17,8 +17,7 @@ smc_mallows_new_users(
   alpha_max = 1e+06,
   alpha = 0,
   aug_method = "random",
-  logz_estimate = R_NilValue,
-  cardinalities = R_NilValue,
+  logz_estimate = NULL,
   verbose = FALSE,
   metric = "footrule",
   leap_size = 1
@@ -37,11 +36,11 @@ n_assessors by n_items}
 
 \item{Time}{Integer specifying the number of time steps in the SMC algorithm}
 
-\item{mcmc_kernel_app}{Integer value for the number of applications we
-apply the MCMC move kernel}
+\item{mcmc_kernel_app}{Integer value for the number of applications we apply
+the MCMC move kernel}
 
-\item{num_new_obs}{Integer value for the number of new observations
-(complete rankings) for each time step}
+\item{num_new_obs}{Integer value for the number of new observations (complete
+rankings) for each time step}
 
 \item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
 lognormal proposal distribution used for \eqn{\alpha} in the
@@ -57,20 +56,27 @@ prior distribution.}
 
 \item{alpha}{A numeric value of the scale parameter which is known and fixed.}
 
-\item{aug_method}{A character string specifying the approach for filling
-in the missing data, options are "pseudolikelihood" or "random".}
+\item{aug_method}{A character string specifying the approach for filling in
+the missing data, options are "pseudolikelihood" or "random".}
 
 \item{logz_estimate}{Estimate of the partition function, computed with
-\code{\link{estimate_partition_function}}.}
-
-\item{cardinalities}{Cardinalities for exact evaluation of partition function,
-returned from \code{\link{prepare_partition_function}}.}
+\code{\link{estimate_partition_function}}. Be aware that when using an
+estimated partition function when \code{n_clusters > 1}, the partition
+function should be estimated over the whole range of \eqn{\alpha} values
+covered by the prior distribution for \eqn{\alpha} with high probability.
+In the case that a cluster \eqn{\alpha_c} becomes empty during the
+Metropolis-Hastings algorithm, the posterior of \eqn{\alpha_c} equals its
+prior. For example, if the rate parameter of the exponential prior equals,
+say \eqn{\lambda = 0.001}, there is about 37 \% (or exactly: \code{1 -
+pexp(1000, 0.001)}) prior probability that \eqn{\alpha_c > 1000}. Hence
+when \code{n_clusters > 1}, the estimated partition function should cover
+this range, or \eqn{\lambda} should be increased.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 SMC-Mallows algorithm. Defaults to \code{FALSE}.}
 
-\item{metric}{A character string specifying the distance metric to use
-in the Bayesian Mallows Model. Available options are \code{"footrule"},
+\item{metric}{A character string specifying the distance metric to use in the
+Bayesian Mallows Model. Available options are \code{"footrule"},
 \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 \code{"ulam"}.}
 
@@ -78,12 +84,18 @@ in the Bayesian Mallows Model. Available options are \code{"footrule"},
 leap-and-shift proposal distribution}
 }
 \value{
-a set of particles each containing a value of rho and alpha
+An object of class \code{"SMCMallows"} containing the following elements:
+\itemize{
+\item{"rho_samples"}{An array of samples of the consensus ranking \eqn{\rho}.}
+\item{"alpha_samples"}{A matrix with samples of \eqn{\alpha}. Empty when \code{alpha_fixed = TRUE}.}
+\item{"augmented_rankings"}{Array of augmented rankings.}
+\item{"ESS"}{Vector of effective sample sizes at each timepoint.}
+}
 }
 \description{
-Function to perform resample-move SMC algorithm where we
-receive new users with complete rankings at each time step. See Chapter 4
-of \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
+Function to perform resample-move SMC algorithm where we receive
+  new users with complete rankings at each time step. See Chapter 4 of
+  \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
 }
 \examples{
 # Generate basic elements
@@ -92,15 +104,11 @@ n_items <- ncol(sushi_rankings)
 metric <- "footrule"
 num_new_obs <- 10
 
-# Prepare exact partition function
-cardinalities <- prepare_partition_function(metric = metric,
-                                            n_items = n_items)$cardinalities
-
 # Calculating rho and alpha samples
 samples <- smc_mallows_new_users(
   R_obs = data, type = "complete", n_items = n_items, metric = metric,
   leap_size = floor(n_items / 5), N = 100, Time = nrow(data) / num_new_obs,
-  mcmc_kernel_app = 5, cardinalities = cardinalities,
+  mcmc_kernel_app = 5,
   alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
   num_new_obs = num_new_obs, verbose = TRUE
 )

@@ -397,12 +397,12 @@ leap_and_shift_probs <- function(rho, n_items, leap_size = 1L) {
 #'
 #' @return a 3d matrix containing: the samples of: rho, alpha and the augmented rankings, and the effective sample size at each iteration of the SMC algorithm.
 #'
-#' @export
+#' @noRd
 #'
 #' @family modeling
 #'
-smc_mallows_new_item_rank <- function(n_items, R_obs, N, Time, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
-    .Call(`_BayesMallows_smc_mallows_new_item_rank`, n_items, R_obs, N, Time, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
+smc_mallows_new_item_rank_cpp <- function(n_items, R_obs, N, Time, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank_cpp`, n_items, R_obs, N, Time, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
 }
 
 #' @title SMC-Mallows New Users
@@ -508,7 +508,7 @@ metropolis_hastings_alpha <- function(alpha, n_items, rankings, rho, logz_estima
 #' @param pseudo Boolean specifying whether to use pseudo proposal or not.s
 #' @return R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
 #' @noRd
-metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking, current_ranking, pseudo, metric = "footnote") {
+metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking, current_ranking, pseudo, metric = "footrule") {
     .Call(`_BayesMallows_metropolis_hastings_aug_ranking`, alpha, rho, n_items, partial_ranking, current_ranking, pseudo, metric)
 }
 

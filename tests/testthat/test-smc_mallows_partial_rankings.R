@@ -85,7 +85,6 @@ test_that("Produces the wrong metric and aug_method error", {
       leap_size       = leap_size,
       N               = N,
       Time            = Time,
-      logz_estimate   = logz_estimate,
       mcmc_kernel_app = mcmc_times,
       num_new_obs     = num_new_obs,
       aug_method      = "pseudolikelihood"
@@ -100,7 +99,6 @@ test_that("Produces the wrong metric and aug_method error", {
       leap_size       = leap_size,
       N               = N,
       Time            = Time,
-      logz_estimate   = logz_estimate,
       mcmc_kernel_app = mcmc_times,
       num_new_obs     = num_new_obs,
       alpha_prop_sd   = alpha_prop_sd,
@@ -121,7 +119,6 @@ test_that("Runs with unif kernel", {
     leap_size       = leap_size,
     N               = N,
     Time            = Time,
-    logz_estimate   = logz_estimate,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
     aug_method      = "random"
@@ -137,7 +134,6 @@ test_that("Runs with unif kernel", {
     leap_size       = leap_size,
     N               = N,
     Time            = Time,
-    logz_estimate   = logz_estimate,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
     alpha_prop_sd   = alpha_prop_sd,
@@ -166,7 +162,6 @@ test_that("Runs with pseudo kernel", {
     leap_size       = leap_size,
     N               = N,
     Time            = Time,
-    logz_estimate   = logz_estimate,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
     aug_method      = "pseudolikelihood"
@@ -182,7 +177,6 @@ test_that("Runs with pseudo kernel", {
     leap_size       = leap_size,
     N               = N,
     Time            = Time,
-    logz_estimate   = logz_estimate,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
     alpha_prop_sd   = alpha_prop_sd,
@@ -211,13 +205,13 @@ test_that("Specific example results are OK", {
     leap_size       = leap_size,
     N               = N,
     Time            = Time,
-    logz_estimate   = logz_estimate,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
     alpha_prop_sd   = alpha_prop_sd,
     lambda          = lambda,
     alpha_max       = alpha_max,
-    aug_method      = aug_method
+    aug_method      = aug_method,
+    logz_estimate   = logz_estimate
   )
 
   expect_equivalent(
@@ -259,10 +253,10 @@ test_that("Specific example results are OK", {
     leap_size       = leap_size,
     N               = N,
     Time            = Time,
-    logz_estimate   = logz_estimate,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
     aug_method      = aug_method,
+    logz_estimate   = logz_estimate,
     alpha           = alpha_0
   )
   rho_cp_fixed <- compute_consensus(test_fixed)

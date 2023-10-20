@@ -1,13 +1,11 @@
-#' @title SMC-Mallows New Users
+#' @title SMC-Mallows new item rank
 #' @description Function to perform resample-move SMC algorithm where we receive
-#'   new users with complete rankings at each time step. See Chapter 4 of
-#'   \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
-#'
-#' @param R_obs Matrix containing the full set of observed rankings of size
-#'   n_assessors by n_items
-#' @param type One of \code{"complete"}, \code{"partial"}, or
-#'   \code{"partial_alpha_fixed"}.
+#'   a new item ranks from an existing user at each time step. Each correction
+#'   and augmentation is done by filling in the missing item ranks using
+#'   pseudolikelihood augmentation.
 #' @param n_items Integer is the number of items in a ranking
+#' @param R_obs 3D array of size n_assessors by n_items by Time containing a
+#'   set of observed rankings of Time time steps
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
 #'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
@@ -30,22 +28,21 @@
 #'   this range, or \eqn{\lambda} should be increased.
 #' @param mcmc_kernel_app Integer value for the number of applications we apply
 #'   the MCMC move kernel
-#' @param num_new_obs Integer value for the number of new observations (complete
-#'   rankings) for each time step
-#' @param alpha_prop_sd Numeric value specifying the standard deviation of the
-#'   lognormal proposal distribution used for \eqn{\alpha} in the
-#'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
+#' @param alpha_prop_sd Numeric value of the standard deviation of the prior
+#'   distribution for alpha
 #' @param lambda Strictly positive numeric value specifying the rate parameter
-#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
-#'   to \code{0.1}. When \code{n_cluster > 1}, each mixture component
-#'   \eqn{\alpha_{c}} has the same prior distribution.
-#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
-#'   prior distribution.
-#' @param alpha A numeric value of the scale parameter which is known and fixed.
+#'   of the truncated exponential prior distribution of alpha.
+#' @param alpha_max  Maximum value of alpha in the truncated exponential prior
+#'   distribution.
 #' @param aug_method A character string specifying the approach for filling in
-#'   the missing data, options are "pseudolikelihood" or "random".
+#'   the missing data, options are "pseudolikelihood" or "random"
 #' @param verbose Logical specifying whether to print out the progress of the
 #'   SMC-Mallows algorithm. Defaults to \code{FALSE}.
+#' @param alpha_fixed Logical indicating whether to sample \code{alpha} or not.
+#' @param alpha numeric value of the scale parameter.
+#' @param aug_rankings_init Initial values for augmented rankings.
+#' @param rho_samples_init Initial values for rho samples.
+#' @param alpha_samples_init Initial values for alpha samples.
 #'
 #' @return
 #' An object of class \code{"SMCMallows"} containing the following elements:
@@ -58,51 +55,53 @@
 #'
 #' @export
 #'
-#' @example inst/examples/smc_mallows_new_users_complete_example.R
-#'
 #' @family modeling
 #'
 #'
-smc_mallows_new_users <- function(
-  R_obs,
-  type = c("complete", "partial", "partial_alpha_fixed"),
-  n_items,
-  N,
-  Time,
-  mcmc_kernel_app,
-  num_new_obs,
-  alpha_prop_sd = 0.5,
-  lambda = 0.1,
-  alpha_max = 1e6,
-  alpha = 0,
-  aug_method = "random",
-  logz_estimate = NULL,
-  verbose = FALSE,
-  metric = "footrule",
-  leap_size = 1
+smc_mallows_new_item_rank <- function(
+    n_items,
+    R_obs,
+    N,
+    Time,
+    logz_estimate = NULL,
+    mcmc_kernel_app,
+    aug_rankings_init = NULL,
+    rho_samples_init = NULL,
+    alpha_samples_init = 0,
+    alpha = 0,
+    alpha_prop_sd = 0.5,
+    lambda = 0.1,
+    alpha_max = 1e6,
+    aug_method = "random",
+    verbose = FALSE,
+    alpha_fixed = FALSE,
+    metric = "footrule",
+    leap_size = 1
 ) {
 
   metric <- match.arg(metric, c("footrule", "spearman", "cayley", "hamming",
                                 "kendall", "ulam"))
-  type <- match.arg(type, c("complete", "partial", "partial_alpha_fixed"))
+
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
 
-  smc_mallows_new_users_cpp(
-    R_obs,
-    type,
+  smc_mallows_new_item_rank_cpp(
     n_items,
+    R_obs,
     N,
     Time,
+    logz_estimate = logz_list$logz_estimate,
+    cardinalities = logz_list$cardinalities,
     mcmc_kernel_app,
-    num_new_obs,
+    aug_rankings_init,
+    rho_samples_init,
+    alpha_samples_init,
+    alpha,
     alpha_prop_sd,
     lambda,
     alpha_max,
-    alpha,
     aug_method,
-    logz_estimate = logz_list$logz_estimate,
-    cardinalities = logz_list$cardinalities,
     verbose,
+    alpha_fixed,
     metric,
     leap_size
   )

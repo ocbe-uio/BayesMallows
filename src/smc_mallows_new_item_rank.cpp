@@ -153,12 +153,12 @@ arma::cube augment_rankings(
 //'
 //' @return a 3d matrix containing: the samples of: rho, alpha and the augmented rankings, and the effective sample size at each iteration of the SMC algorithm.
 //'
-//' @export
+//' @noRd
 //'
 //' @family modeling
 //'
 // [[Rcpp::export]]
-Rcpp::List smc_mallows_new_item_rank(
+Rcpp::List smc_mallows_new_item_rank_cpp(
   const unsigned int& n_items,
   arma::cube& R_obs,
   const unsigned int& N,

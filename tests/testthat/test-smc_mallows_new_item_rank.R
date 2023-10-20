@@ -25,7 +25,7 @@ test_that("Produces the wrong metric and aug_method error", {
     smc_mallows_new_item_rank(
       alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
       metric = "cayley", leap_size = leap_size, N = N, Time = Time,
-      logz_estimate = NULL, cardinalities = cardinalities, mcmc_kernel_app = mcmc_kernel_app,
+      mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "pseudolikelihood",
       alpha_fixed = TRUE
@@ -36,7 +36,7 @@ test_that("Produces the wrong metric and aug_method error", {
     smc_mallows_new_item_rank(
       n_items = n_items, R_obs = sample_dataset,
       metric = "cayley", leap_size = leap_size, N = N, Time = Time,
-      logz_estimate = NULL, cardinalities = cardinalities, mcmc_kernel_app = mcmc_kernel_app,
+      mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "pseudolikelihood"
     ),
@@ -50,7 +50,7 @@ test_that("Runs with unif kernel", {
     smc_mallows_new_item_rank(
       alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
       metric = "footrule", leap_size = leap_size, N = N, Time = Time,
-      logz_estimate = NULL, cardinalities = cardinalities, mcmc_kernel_app = mcmc_kernel_app,
+      mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "random", alpha_fixed = TRUE
     )
@@ -67,7 +67,7 @@ test_that("Runs with unif kernel", {
     smc_mallows_new_item_rank(
       n_items = n_items, R_obs = sample_dataset,
       metric = "footrule", leap_size = leap_size, N = N, Time = Time,
-      logz_estimate = NULL, cardinalities = cardinalities, mcmc_kernel_app = mcmc_kernel_app,
+      mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "random"
     )
@@ -83,7 +83,7 @@ test_that("Runs with pseudo kernel", {
     smc_mallows_new_item_rank(
       alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
       metric = "footrule", leap_size = leap_size, N = N, Time = Time,
-      logz_estimate = NULL, cardinalities = cardinalities, mcmc_kernel_app = mcmc_kernel_app,
+      mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "pseudolikelihood",
       alpha_fixed = TRUE
@@ -98,7 +98,7 @@ test_that("Runs with pseudo kernel", {
     smc_mallows_new_item_rank(
       n_items = n_items, R_obs = sample_dataset,
       metric = "footrule", leap_size = leap_size, N = N, Time = Time,
-      logz_estimate = NULL, cardinalities = cardinalities, mcmc_kernel_app = mcmc_kernel_app,
+      mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "pseudolikelihood"
     )

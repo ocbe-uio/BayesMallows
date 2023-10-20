@@ -232,6 +232,6 @@ Rcpp::List smc_mallows_new_users_cpp(
     Rcpp::Named("augmented_rankings") = aug_rankings,
     Rcpp::Named("ESS") = ESS_vec
   );
-  particle_history.attr("class") = "SMCMallows"; // TODO: add List
+  particle_history.attr("class") = "SMCMallows";
   return particle_history;
 }

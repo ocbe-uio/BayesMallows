@@ -24,7 +24,6 @@ smc_test <- smc_mallows_new_users(
   R_obs = data, type = "complete", n_items = n_items,
   metric = metric, leap_size = leap_size,
   N = N, Time = Time,
-  logz_estimate = logz_estimate,
   mcmc_kernel_app = 5,
   num_new_obs = 5,
   alpha_prop_sd = 0.5,

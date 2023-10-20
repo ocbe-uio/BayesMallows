@@ -44,13 +44,9 @@ num_new_obs <- 10
 Time <- dim(data)[1] / num_new_obs
 N <- 100
 
-cardinalities <- prepare_partition_function(metric = metric, n_items = n_items)$cardinalities
-
 test <- smc_mallows_new_users(
   R_obs = data, type = "complete", n_items = n_items, metric = metric,
   leap_size = leap_size, N = N, Time = Time,
-  logz_estimate = NULL,
-  cardinalities = cardinalities,
   mcmc_kernel_app = mcmc_times,
   alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
   num_new_obs = num_new_obs, verbose = FALSE
