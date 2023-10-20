@@ -52,14 +52,14 @@ using namespace arma;
 //'
 //' @return a set of particles each containing a value of rho and alpha
 //'
-//' @export
+//' @noRd
 //'
 //' @example inst/examples/smc_mallows_new_users_complete_example.R
 //'
 //' @family modeling
 //'
 // [[Rcpp::export]]
-Rcpp::List smc_mallows_new_users(
+Rcpp::List smc_mallows_new_users_cpp(
   const arma::mat& R_obs,
   const std::string& type,
   const int& n_items,
@@ -75,7 +75,7 @@ Rcpp::List smc_mallows_new_users(
   const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
   const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue,
   const bool verbose = false,
-  const std::string& metric = "footnote",
+  const std::string& metric = "footrule",
   const int& leap_size = 1
 ) {
   /* ====================================================== */

@@ -448,14 +448,14 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, N, Time, logz_estimate, ca
 #'
 #' @return a set of particles each containing a value of rho and alpha
 #'
-#' @export
+#' @noRd
 #'
 #' @example inst/examples/smc_mallows_new_users_complete_example.R
 #'
 #' @family modeling
 #'
-smc_mallows_new_users <- function(R_obs, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footnote", leap_size = 1L) {
-    .Call(`_BayesMallows_smc_mallows_new_users`, R_obs, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size)
+smc_mallows_new_users_cpp <- function(R_obs, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L) {
+    .Call(`_BayesMallows_smc_mallows_new_users_cpp`, R_obs, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size)
 }
 
 #' @title Metropolis-Hastings Alpha
