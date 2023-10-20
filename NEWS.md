@@ -11,6 +11,8 @@
   parameter = "alpha".
 * Documentation of functions are now grouped in families.
 * lik_db_mix() is now deprecated in favor of get_mallows_loglik()
+* Unusued argument removed from internal function augment_pairwise(). Thanks to
+  Lorenzo Zuccato for making us aware of this.
 
 # BayesMallows 1.4.0
 
