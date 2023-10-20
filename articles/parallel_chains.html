@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9004</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -217,62 +217,62 @@ reduce the run time.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">fit</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   parameter  mean median conf_level          hpdi central_interval</span></span>
-<span><span class="co">#&gt; 1     alpha 4.795  4.792       95 % [4.297,5.346]    [4.276,5.333]</span></span></code></pre></div>
+<span><span class="co">#&gt; 1     alpha 4.856  4.845       95 % [4.335,5.416]    [4.340,5.427]</span></span></code></pre></div>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       item parameter mean median conf_level    hpdi central_interval</span></span>
-<span><span class="co">#&gt; 1   Item 1       rho    7      7       95 %   [6,7]            [6,7]</span></span>
+<span><span class="co">#&gt; 1   Item 1       rho    7      7       95 %     [7]            [6,7]</span></span>
 <span><span class="co">#&gt; 2   Item 2       rho   15     15       95 %    [15]             [15]</span></span>
 <span><span class="co">#&gt; 3   Item 3       rho    3      3       95 %   [3,4]            [3,4]</span></span>
-<span><span class="co">#&gt; 4   Item 4       rho   11     11       95 % [11,12]          [11,12]</span></span>
+<span><span class="co">#&gt; 4   Item 4       rho   11     11       95 % [11,13]          [11,13]</span></span>
 <span><span class="co">#&gt; 5   Item 5       rho    9      9       95 %  [8,10]           [8,10]</span></span>
 <span><span class="co">#&gt; 6   Item 6       rho    2      2       95 %   [1,2]            [1,2]</span></span>
-<span><span class="co">#&gt; 7   Item 7       rho    8      8       95 %   [8,9]           [8,10]</span></span>
-<span><span class="co">#&gt; 8   Item 8       rho   12     12       95 % [11,14]          [11,14]</span></span>
+<span><span class="co">#&gt; 7   Item 7       rho    8      8       95 %  [8,10]           [8,10]</span></span>
+<span><span class="co">#&gt; 8   Item 8       rho   12     12       95 % [11,13]          [11,14]</span></span>
 <span><span class="co">#&gt; 9   Item 9       rho    1      1       95 %   [1,2]            [1,2]</span></span>
-<span><span class="co">#&gt; 10 Item 10       rho    6      6       95 %   [5,7]            [5,7]</span></span>
-<span><span class="co">#&gt; 11 Item 11       rho    4      4       95 %   [3,5]            [3,5]</span></span>
-<span><span class="co">#&gt; 12 Item 12       rho   13     14       95 % [12,14]          [12,14]</span></span>
-<span><span class="co">#&gt; 13 Item 13       rho   10     10       95 %  [9,10]           [9,10]</span></span>
-<span><span class="co">#&gt; 14 Item 14       rho   13     13       95 % [11,14]          [11,14]</span></span>
-<span><span class="co">#&gt; 15 Item 15       rho    5      5       95 %   [4,6]            [4,6]</span></span></code></pre></div>
+<span><span class="co">#&gt; 10 Item 10       rho    6      6       95 %     [6]            [6,7]</span></span>
+<span><span class="co">#&gt; 11 Item 11       rho    4      4       95 %   [3,4]            [3,5]</span></span>
+<span><span class="co">#&gt; 12 Item 12       rho   13     13       95 % [13,14]          [13,14]</span></span>
+<span><span class="co">#&gt; 13 Item 13       rho   10     10       95 %  [8,10]           [8,10]</span></span>
+<span><span class="co">#&gt; 14 Item 14       rho   13     14       95 % [12,14]          [11,14]</span></span>
+<span><span class="co">#&gt; 15 Item 15       rho    5      5       95 %   [4,5]            [4,5]</span></span></code></pre></div>
 <p>And we can compute the consensus ranking:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_consensus.html">compute_consensus</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    ranking    item   cumprob</span></span>
-<span><span class="co">#&gt; 1        1  Item 9 0.9181818</span></span>
+<span><span class="co">#&gt; 1        1  Item 9 0.9025758</span></span>
 <span><span class="co">#&gt; 2        2  Item 6 1.0000000</span></span>
-<span><span class="co">#&gt; 3        3  Item 3 0.7363636</span></span>
-<span><span class="co">#&gt; 4        4 Item 11 0.9206061</span></span>
-<span><span class="co">#&gt; 5        5 Item 15 0.9228788</span></span>
-<span><span class="co">#&gt; 6        6 Item 10 0.9360606</span></span>
+<span><span class="co">#&gt; 3        3  Item 3 0.7880303</span></span>
+<span><span class="co">#&gt; 4        4 Item 11 0.9627273</span></span>
+<span><span class="co">#&gt; 5        5 Item 15 0.9787879</span></span>
+<span><span class="co">#&gt; 6        6 Item 10 0.9733333</span></span>
 <span><span class="co">#&gt; 7        7  Item 1 1.0000000</span></span>
-<span><span class="co">#&gt; 8        8  Item 7 0.6048485</span></span>
-<span><span class="co">#&gt; 9        9  Item 5 0.9424242</span></span>
+<span><span class="co">#&gt; 8        8  Item 7 0.6115152</span></span>
+<span><span class="co">#&gt; 9        9  Item 5 0.8851515</span></span>
 <span><span class="co">#&gt; 10      10 Item 13 1.0000000</span></span>
-<span><span class="co">#&gt; 11      11  Item 4 0.7519697</span></span>
-<span><span class="co">#&gt; 12      12  Item 8 0.5643939</span></span>
-<span><span class="co">#&gt; 13      13 Item 14 0.6442424</span></span>
-<span><span class="co">#&gt; 14      14 Item 12 0.9846970</span></span>
+<span><span class="co">#&gt; 11      11  Item 4 0.6078788</span></span>
+<span><span class="co">#&gt; 12      12  Item 8 0.8760606</span></span>
+<span><span class="co">#&gt; 13      13 Item 12 0.6504545</span></span>
+<span><span class="co">#&gt; 14      14 Item 14 0.9998485</span></span>
 <span><span class="co">#&gt; 15      15  Item 2 1.0000000</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_consensus.html">compute_consensus</a></span><span class="op">(</span><span class="va">fit</span>, type <span class="op">=</span> <span class="st">"MAP"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    map_ranking    item probability</span></span>
-<span><span class="co">#&gt; 1            1  Item 9   0.1636364</span></span>
-<span><span class="co">#&gt; 2            2  Item 6   0.1636364</span></span>
-<span><span class="co">#&gt; 3            3  Item 3   0.1636364</span></span>
-<span><span class="co">#&gt; 4            4 Item 11   0.1636364</span></span>
-<span><span class="co">#&gt; 5            5 Item 15   0.1636364</span></span>
-<span><span class="co">#&gt; 6            6 Item 10   0.1636364</span></span>
-<span><span class="co">#&gt; 7            7  Item 1   0.1636364</span></span>
-<span><span class="co">#&gt; 8            8  Item 5   0.1636364</span></span>
-<span><span class="co">#&gt; 9            9  Item 7   0.1636364</span></span>
-<span><span class="co">#&gt; 10          10 Item 13   0.1636364</span></span>
-<span><span class="co">#&gt; 11          11  Item 4   0.1636364</span></span>
-<span><span class="co">#&gt; 12          12  Item 8   0.1636364</span></span>
-<span><span class="co">#&gt; 13          13 Item 14   0.1636364</span></span>
-<span><span class="co">#&gt; 14          14 Item 12   0.1636364</span></span>
-<span><span class="co">#&gt; 15          15  Item 2   0.1636364</span></span></code></pre></div>
+<span><span class="co">#&gt; 1            1  Item 9   0.2784848</span></span>
+<span><span class="co">#&gt; 2            2  Item 6   0.2784848</span></span>
+<span><span class="co">#&gt; 3            3  Item 3   0.2784848</span></span>
+<span><span class="co">#&gt; 4            4 Item 11   0.2784848</span></span>
+<span><span class="co">#&gt; 5            5 Item 15   0.2784848</span></span>
+<span><span class="co">#&gt; 6            6 Item 10   0.2784848</span></span>
+<span><span class="co">#&gt; 7            7  Item 1   0.2784848</span></span>
+<span><span class="co">#&gt; 8            8  Item 7   0.2784848</span></span>
+<span><span class="co">#&gt; 9            9  Item 5   0.2784848</span></span>
+<span><span class="co">#&gt; 10          10 Item 13   0.2784848</span></span>
+<span><span class="co">#&gt; 11          11  Item 4   0.2784848</span></span>
+<span><span class="co">#&gt; 12          12  Item 8   0.2784848</span></span>
+<span><span class="co">#&gt; 13          13 Item 12   0.2784848</span></span>
+<span><span class="co">#&gt; 14          14 Item 14   0.2784848</span></span>
+<span><span class="co">#&gt; 15          15  Item 2   0.2784848</span></span></code></pre></div>
 <p>We can compute the probability of being top-<span class="math inline">\(k\)</span>, here for <span class="math inline">\(k=4\)</span>:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_top_k.html">plot_top_k</a></span><span class="op">(</span><span class="va">fit</span>, k <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
