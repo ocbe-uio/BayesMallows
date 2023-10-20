@@ -1,5 +1,12 @@
 # BayesMallows (development versions)
 
+* BREAKING CHANGES: Functions smc_mallows_new_users() and 
+  smc_mallows_new_item_rank() are now wrappers in R, which call the underlying 
+  C++ functions. These functions are now able to compute the partition function
+  automatically, not requiring the user to do this manually. As a consequence,
+  the argument "cardinalities" has been removed, and the argument 
+  "logz_estimate" has changed its expectation, to be consistent with the use
+  in compute_mallows().
 * Argument save_clus to compute_mallows() has been removed, as it was not used.
 * compute_mallows() now supports parallel chains, by providing a 'cl' argument.
   See vignette "MCMC with Parallel Chains" for a tutorial.
