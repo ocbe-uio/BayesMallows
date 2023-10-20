@@ -143,7 +143,6 @@ void augment_pairwise(
     const std::string& metric,
     const Rcpp::List& constraints,
     vec& aug_acceptance,
-    const bool& clustering,
     const std::string& error_model,
     const int& Lswap
 ){
