@@ -64,26 +64,26 @@
 #'
 #'
 smc_mallows_new_users <- function(
-  R_obs,
-  type = c("complete", "partial", "partial_alpha_fixed"),
-  n_items,
-  N,
-  Time,
-  mcmc_kernel_app,
-  num_new_obs,
-  alpha_prop_sd = 0.5,
-  lambda = 0.1,
-  alpha_max = 1e6,
-  alpha = 0,
-  aug_method = "random",
-  logz_estimate = NULL,
-  verbose = FALSE,
-  metric = "footrule",
-  leap_size = 1
-) {
-
-  metric <- match.arg(metric, c("footrule", "spearman", "cayley", "hamming",
-                                "kendall", "ulam"))
+    R_obs,
+    type = c("complete", "partial", "partial_alpha_fixed"),
+    n_items,
+    N,
+    Time,
+    mcmc_kernel_app,
+    num_new_obs,
+    alpha_prop_sd = 0.5,
+    lambda = 0.1,
+    alpha_max = 1e6,
+    alpha = 0,
+    aug_method = "random",
+    logz_estimate = NULL,
+    verbose = FALSE,
+    metric = "footrule",
+    leap_size = 1) {
+  metric <- match.arg(metric, c(
+    "footrule", "spearman", "cayley", "hamming",
+    "kendall", "ulam"
+  ))
   type <- match.arg(type, c("complete", "partial", "partial_alpha_fixed"))
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
 

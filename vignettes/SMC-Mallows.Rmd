@@ -111,7 +111,7 @@ data <- sushi_rankings[1:100, ]
 N <- 1000
 Time <- 20
 smc_test <- smc_mallows_new_users(
-  R_obs = data, 
+  R_obs = data,
   n_items = ncol(data),
   N = N,
   Time = Time,
