@@ -312,13 +312,10 @@ set.seed(995)
 
 
 ```{r new_item_rank_example, message=FALSE, warning=FALSE}
-n_particles <- 1000
-
 smc_partial <- smc_mallows_new_item_rank(
   rankings = potato_partial,
-  n_particles = n_particles,
+  n_particles = 1000,
   mcmc_kernel_app = 5,
-  lambda = 0.15,
   aug_method = "pseudolikelihood"
 )
 ```
@@ -329,5 +326,47 @@ Unlike the two previous demonstrations, the final slice of the output occurs at 
 plot(smc_partial, parameter = "rho", items = c(4, 6, 7))
 plot(smc_partial, parameter = "alpha")
 ```
+
+
+#### Updating models
+
+A more realistic use case is when the partial rankings arrive sequentially. This is also a case where sequential Monte Carlo is likely to be useful. Let's assume that we first observe the dataset at the first timepoint:
+
+```{r}
+smc_partial <- smc_mallows_new_item_rank(
+  rankings = potato_partial[,, 1, drop = FALSE],
+  n_particles = 1000,
+  mcmc_kernel_app = 5,
+  aug_method = "pseudolikelihood",
+  verbose = TRUE
+)
+```
+
+We can now gradually update the models, using `smc_mallows_update()`, and keep track of the consensus probabilities, to see how they get updated.
+
+```{r}
+mod_list <- vector(mode = "list", length = dim(potato_partial)[[3]])
+mod_list[[1]] <- smc_partial
+for(i in seq(from = 2, to = length(mod_list))) {
+  mod_list[[i]] <- smc_mallows_update(
+    model = mod_list[[i - 1]], 
+    rankings = potato_partial[,, i, drop = FALSE], 
+    verbose = TRUE)
+}
+```
+
+
+```{r}
+consensus_over_time <- do.call(rbind, lapply(seq_along(mod_list), function(i) {
+  cc <- compute_consensus(mod_list[[i]])
+  cbind(step = i, cc)
+}))
+```
+
+
+```{r}
+subset(consensus_over_time, item == "Item 6")
+```
+
 
 ## References

@@ -2,6 +2,9 @@
 
 ## Changes to sequential Monte Carlo methods
 
+* BREAKING CHANGE: argument "nmc" to plot.SMCMallows has been removed because it
+  is now a part of the objects of class "SMCMallows", and hence does not need to
+  be explicitly provided.
 * BREAKING CHANGE: argument "burnin" to plot.SMCMallows has been removed because
   burnin is not relevant with sequential Monte Carlo.
 * BREAKING CHANGE: arguments "timesteps" and "n_items" to 

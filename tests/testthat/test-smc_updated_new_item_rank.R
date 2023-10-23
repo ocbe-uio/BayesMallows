@@ -76,8 +76,7 @@ smc_test_partial_unif2 <- smc_mallows_new_item_rank(
   aug_rankings_init = smc_test_new_user_unif$augmented_rankings
 )
 test_that("Updated item rank output (alpha variable) is OK", {
-  expect_is(smc_test_partial_unif2, "SMCMallows")
-  expect_length(smc_test_partial_unif2, 4)
+  expect_s3_class(smc_test_partial_unif2, c("SMCMallowsUpdatedPartial", "SMCMallows"))
   expect_equal(dim(smc_test_partial_unif2$rho_samples), c(n_particles, n_items, 6))
   expect_length(smc_test_partial_unif2$ESS, timesteps2)
   expect_equal(dim(smc_test_partial_unif2$augmented_rankings), c(n_users, n_items, n_particles))
@@ -121,8 +120,7 @@ smc_test_partial_pseudo2 <- smc_mallows_new_item_rank(
   aug_rankings_init = smc_test_new_user_unif$augmented_rankings
 )
 test_that("Updated item rank output (variable alpha) is OK", {
-  expect_is(smc_test_partial_pseudo2, "SMCMallows")
-  expect_length(smc_test_partial_pseudo2, 4)
+  expect_s3_class(smc_test_partial_pseudo2, c("SMCMallowsUpdatedPartial", "SMCMallows"))
   expect_equal(dim(smc_test_partial_pseudo2$rho_samples), c(n_particles, n_items, 6))
   expect_length(smc_test_partial_pseudo2$ESS, timesteps2)
   expect_equal(dim(smc_test_partial_pseudo2$augmented_rankings), c(n_users, n_items, n_particles))

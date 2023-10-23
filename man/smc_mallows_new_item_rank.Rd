@@ -99,6 +99,7 @@ Other modeling:
 \code{\link{compute_mallows_mixtures}()},
 \code{\link{compute_mallows}()},
 \code{\link{smc_mallows_new_users}()},
-\code{\link{smc_mallows_update.SMCMallowsNewUsers}()}
+\code{\link{smc_mallows_update.SMCMallowsNewUsers}()},
+\code{\link{smc_mallows_update.SMCMallowsUpdatedPartial}()}
 }
 \concept{modeling}

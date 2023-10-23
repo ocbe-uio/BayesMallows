@@ -104,6 +104,20 @@ smc_mallows_new_item_rank <- function(
     metric,
     leap_size
   )
+  ret$n_particles <- n_particles
+  ret$metric <- metric
+  ret$logz_list <- logz_list
+  ret$n_items <- n_items
+  ret$mcmc_kernel_app <- mcmc_kernel_app
+  ret$alpha_prop_sd <- alpha_prop_sd
+  ret$lambda <- lambda
+  ret$alpha_max <- alpha_max
+  ret$alpha <- alpha
+  ret$alpha_fixed <- alpha_fixed
+  ret$aug_method <- aug_method
+  ret$leap_size <- leap_size
+  ret$num_obs <- dim(rankings)[[1]]
+  ret$rankings <- rankings
   class(ret) <- c("SMCMallowsUpdatedPartial", "SMCMallows")
   ret
 }

@@ -1,16 +1,16 @@
 #' @title Plot SMC Posterior Distributions
 #' @description Plot posterior distributions of SMC-Mallow parameters.
 #' @param x An object of type \code{SMC-Mallows}, returned for example from
-#' \code{\link{smc_mallows_new_users}}.
-#' @param nmc Number of Monte Carlo samples
+#'   \code{\link{smc_mallows_new_users}}.
 #' @param parameter Character string defining the parameter to plot. Available
-#' options are \code{"alpha"} and \code{"rho"}.
-#' @param time Integer determining the update slice to plot
+#'   options are \code{"alpha"} and \code{"rho"}.
+#' @param time Integer determining the update slice to plot. Defaults to
+#'   \code{NULL}, which means that the last timestep is used.
 #' @param C Number of cluster
 #' @param colnames A vector of item names. If NULL, generic names are generated
-#' for the items in the ranking.
+#'   for the items in the ranking.
 #' @param items Either a vector of item names, or a vector of indices. If NULL,
-#' five items are selected randomly.
+#'   five items are selected randomly.
 #' @param ... Other arguments passed to \code{\link[base]{plot}} (not used).
 #' @return A plot of the posterior distributions
 #' @author Waldir Leoncio
@@ -18,15 +18,20 @@
 #' @example /inst/examples/plot.SMCMallows_example.R
 #' @family posterior quantities
 plot.SMCMallows <- function(
-    x, nmc = nrow(x$rho_samples[, 1, ]),
-    parameter = "alpha", time = ncol(x$rho_samples[, 1, ]), C = 1,
+    x,
+    parameter = "alpha", time = NULL, C = 1,
     colnames = NULL, items = NULL, ...) {
+
+  if(is.null(time)) {
+    time <- dim(x$rho_samples)[[3]]
+  }
+
   if (parameter == "alpha") {
     output <- x$alpha_samples[, time]
-    plot_alpha_smc(output, nmc)
+    plot_alpha_smc(output, x$n_particles)
   } else if (parameter == "rho") {
     output <- x$rho_samples[, , time]
-    plot_rho_smc(output, nmc, C, colnames, items)
+    plot_rho_smc(output, x$n_particles, C, colnames, items)
   } else {
     stop("parameter must be either 'alpha' or 'rho'.")
   }

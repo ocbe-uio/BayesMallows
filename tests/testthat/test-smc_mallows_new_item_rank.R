@@ -72,7 +72,6 @@ test_that("Runs with unif kernel", {
     )
   )
   expect_is(smc_unif, "SMCMallows")
-  expect_length(smc_unif, 4)
   expect_equal(dim(smc_unif$rho_samples), c(n_particles, 6, 31))
   expect_equal(dim(smc_unif$alpha_samples), c(n_particles, 31))
 })
@@ -88,7 +87,7 @@ test_that("Runs with pseudo kernel", {
       alpha_fixed = TRUE
     )
   )
-  expect_is(smc_unif_alpha_fixed_unif, "SMCMallows")
+  expect_s3_class(smc_unif_alpha_fixed_unif, c("SMCMallowsUpdatedPartial", "SMCMallows"))
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(n_particles, 6, 31))
 
   set.seed(1)
@@ -101,8 +100,7 @@ test_that("Runs with pseudo kernel", {
       alpha_max = alpha_max, aug_method = "pseudolikelihood"
     )
   )
-  expect_is(smc_unif, "SMCMallows")
-  expect_length(smc_unif, 4)
+  expect_s3_class(smc_unif, c("SMCMallowsUpdatedPartial", "SMCMallows"))
   expect_equal(dim(smc_unif$rho_samples), c(n_particles, 6, 31))
   expect_equal(dim(smc_unif$alpha_samples), c(n_particles, 31))
   expect_equal(

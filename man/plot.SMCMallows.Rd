@@ -6,9 +6,8 @@
 \usage{
 \method{plot}{SMCMallows}(
   x,
-  nmc = nrow(x$rho_samples[, 1, ]),
   parameter = "alpha",
-  time = ncol(x$rho_samples[, 1, ]),
+  time = NULL,
   C = 1,
   colnames = NULL,
   items = NULL,
@@ -19,12 +18,11 @@
 \item{x}{An object of type \code{SMC-Mallows}, returned for example from
 \code{\link{smc_mallows_new_users}}.}
 
-\item{nmc}{Number of Monte Carlo samples}
-
 \item{parameter}{Character string defining the parameter to plot. Available
 options are \code{"alpha"} and \code{"rho"}.}
 
-\item{time}{Integer determining the update slice to plot}
+\item{time}{Integer determining the update slice to plot. Defaults to
+\code{NULL}, which means that the last timestep is used.}
 
 \item{C}{Number of cluster}
 
