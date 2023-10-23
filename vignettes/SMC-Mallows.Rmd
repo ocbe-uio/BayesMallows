@@ -108,11 +108,11 @@ set.seed(994)
 
 ```{r smc_complete_set_up}
 data <- sushi_rankings[1:100, ]
-N <- 1000
+n_particles <- 1000
 timesteps <- 20
 smc_test <- smc_mallows_new_users(
   rankings = data,
-  N = N,
+  n_particles = n_particles,
   timesteps = timesteps,
   mcmc_kernel_app = 5,
   num_new_obs = 5,
@@ -120,7 +120,7 @@ smc_test <- smc_mallows_new_users(
 )
 ```
 
-The example `smc_test` returns a list variable of the particles values for $\boldsymbol{\rho}$ and $\alpha$ at each time step, so we can observe the posterior as it evolves. Specifically the list contains a three dimensional matrix of size `N` by `n_items` by `timesteps+1`, named `rho_samples`,  and an `N` by `timesteps+1` matrix called `alpha_samples`. These matrices can be studied using some post-processing functions for visualising and analysing the posterior. It is also possible to make comparative results using the MCMC algorithm and the SMC algorithm. Unlike MCMC we cannot observe the trace plots and we do not need to specify a non-zero value for the burn-in. The indexing in R means that we have to view the `timesteps+1` slice of the output in order to view the posterior once all 100 rankings have been observed.
+The example `smc_test` returns a list variable of the particles values for $\boldsymbol{\rho}$ and $\alpha$ at each time step, so we can observe the posterior as it evolves. Specifically the list contains a three dimensional matrix of size `n_particles` by `n_items` by `timesteps+1`, named `rho_samples`,  and an `n_particles` by `timesteps+1` matrix called `alpha_samples`. These matrices can be studied using some post-processing functions for visualising and analysing the posterior. It is also possible to make comparative results using the MCMC algorithm and the SMC algorithm. Unlike MCMC we cannot observe the trace plots and we do not need to specify a non-zero value for the burn-in. The indexing in R means that we have to view the `timesteps+1` slice of the output in order to view the posterior once all 100 rankings have been observed.
 
 Here, we can observe the posterior probabilities of $\boldsymbol{\rho}$ for a selection of items can be observed by calling the function `plot()`.
 
@@ -143,7 +143,7 @@ compute_consensus(smc_test)
 Similarly, we can observe the posterior density and the posterior intervals for the scale parameter using the functions `plot()` and `compute_posterior_intervals`.
 
 ```{r smc_complete_alpha_analysis, message=FALSE, warning=FALSE}
-plot(smc_test, nmc = N, burnin = 0, parameter = "alpha")
+plot(smc_test, nmc = n_particles, burnin = 0, parameter = "alpha")
 compute_posterior_intervals(smc_test, parameter = "alpha")
 ```
 
@@ -184,7 +184,7 @@ smc_partial_test <- smc_mallows_new_users(
   rankings = data_partial,
   type = "partial",
   metric = "cayley",
-  N = N,
+  n_particles = n_particles,
   timesteps = timesteps,
   mcmc_kernel_app = 5,
   num_new_obs = 5,
@@ -204,7 +204,7 @@ set.seed(994)
 smc_partial_test <- smc_mallows_new_users(
   rankings = data_partial,
   type = "partial",
-  N = N,
+  n_particles = n_particles,
   timesteps = timesteps,
   mcmc_kernel_app = 5,
   num_new_obs = 5,
@@ -213,12 +213,12 @@ smc_partial_test <- smc_mallows_new_users(
 ```
 
 
-The variable `smc_test_partial` contains a list with three dimensional matrix of size `N` by `n_items` by `timesteps+1`, named `rho_samples`,  and a `N` by `timesteps+1` matrix called `alpha_samples`. The analysis performed in the previous demonstration can be applied to this scenario. Here, we can observe the posterior probabilities for a selection of items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ as part of this demonstration, but we can use other post processing functions to analyse the output.
+The variable `smc_test_partial` contains a list with three dimensional matrix of size `n_particles` by `n_items` by `timesteps+1`, named `rho_samples`,  and a `n_particles` by `timesteps+1` matrix called `alpha_samples`. The analysis performed in the previous demonstration can be applied to this scenario. Here, we can observe the posterior probabilities for a selection of items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ as part of this demonstration, but we can use other post processing functions to analyse the output.
 
 
 ```{r smc_partial_analysis, message=FALSE, warning=FALSE}
 plot(smc_partial_test, colnames = colnames(sushi_rankings), parameter = "rho")
-plot(smc_partial_test, nmc = N, burnin = 0, parameter = "alpha")
+plot(smc_partial_test, nmc = n_particles, burnin = 0, parameter = "alpha")
 ```
 
 
@@ -266,12 +266,12 @@ set.seed(995)
 
 ```{r new_item_rank_example, message=FALSE, warning=FALSE}
 timesteps <- dim(test_dataset)[3]
-N <- 1000
+n_particles <- 1000
 
 smc_test_updated_partial <- smc_mallows_new_item_rank(
   n_items = n_items,
   rankings = test_dataset,
-  N = N,
+  n_particles = n_particles,
   timesteps = timesteps,
   mcmc_kernel_app = 5,
   lambda = 0.15,
