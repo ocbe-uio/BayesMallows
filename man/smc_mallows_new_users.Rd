@@ -103,10 +103,10 @@ data_batch1 <- sushi_rankings[1:100, ]
 # Calculating rho and alpha samples
 mod1 <- smc_mallows_new_users(
   rankings = data_batch1,
-  n_particles = 1000,
-  timesteps = 1,
+  n_particles = 100,
+  timesteps = 10,
   mcmc_kernel_app = 10,
-  num_new_obs = 100
+  num_new_obs = 10
 )
 
 # We can plot the posterior of alpha

@@ -11,7 +11,6 @@
   num_new_obs = nrow(rankings),
   n_particles = model$n_particles,
   verbose = FALSE,
-  type = model$type,
   ...
 )
 }
@@ -33,9 +32,6 @@ the number of particles used when computing \code{model}.}
 \item{verbose}{Logical specifying whether to print out the progress of the
 SMC-Mallows algorithm. Defaults to \code{FALSE}.}
 
-\item{type}{One of \code{"complete"}, \code{"partial"}, or
-\code{"partial_alpha_fixed"}. Defaults to \code{model$type}.}
-
 \item{...}{Optional additional arguments. Currently not used.}
 }
 \value{
@@ -52,10 +48,10 @@ data_batch1 <- sushi_rankings[1:100, ]
 # Calculating rho and alpha samples
 mod1 <- smc_mallows_new_users(
   rankings = data_batch1,
-  n_particles = 1000,
-  timesteps = 1,
+  n_particles = 100,
+  timesteps = 10,
   mcmc_kernel_app = 10,
-  num_new_obs = 100
+  num_new_obs = 10
 )
 
 # We can plot the posterior of alpha
