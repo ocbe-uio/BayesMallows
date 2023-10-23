@@ -76,11 +76,11 @@ smc_mallows_new_item_rank <- function(
     verbose = FALSE,
     alpha_fixed = FALSE,
     metric = "footrule",
-    leap_size = 1
-) {
-
-  metric <- match.arg(metric, c("footrule", "spearman", "cayley", "hamming",
-                                "kendall", "ulam"))
+    leap_size = 1) {
+  metric <- match.arg(metric, c(
+    "footrule", "spearman", "cayley", "hamming",
+    "kendall", "ulam"
+  ))
 
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
 
