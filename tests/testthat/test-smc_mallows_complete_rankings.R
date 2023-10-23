@@ -54,9 +54,7 @@ test <- smc_mallows_new_users(
 
 
 test_that("Output of smc_mallows_new_users_complete is OK", {
-  expect_s3_class(test, "SMCMallows")
-  expect_length(test, 4)
-  expect_named(test, c("rho_samples", "alpha_samples", "augmented_rankings", "ESS"))
+  expect_s3_class(test, c("SMCMallowsNewUsers", "SMCMallows"))
   expect_equal(dim(test$rho_samples), c(100, 10, 11))
   expect_equal(dim(test$alpha_samples), c(100, 11))
   expect_equal(length(test$ESS), 10)

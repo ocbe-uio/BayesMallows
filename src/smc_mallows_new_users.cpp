@@ -89,7 +89,11 @@ Rcpp::List smc_mallows_new_users_cpp(
 
   /* generate rho samples using uniform prior ------------- */
   cube rho_samples(n_particles, n_items, timesteps + 1);
-  rho_samples.slice(0) = initialize_rho(n_items, n_particles, rho_init).t();
+  if(rho_init.isNull()) {
+    rho_samples.slice(0) = initialize_rho(n_items, n_particles).t();
+  } else {
+    rho_samples.slice(0) = Rcpp::as<mat>(rho_init);
+  }
 
   /* generate alpha samples using exponential prior ------- */
   mat alpha_samples;
@@ -228,6 +232,6 @@ Rcpp::List smc_mallows_new_users_cpp(
     Rcpp::Named("augmented_rankings") = aug_rankings,
     Rcpp::Named("ESS") = ESS_vec
   );
-  particle_history.attr("class") = "SMCMallows";
+
   return particle_history;
 }

@@ -7,7 +7,7 @@
 smc_mallows_new_item_rank(
   n_items,
   rankings,
-  N,
+  n_particles,
   timesteps,
   logz_estimate = NULL,
   mcmc_kernel_app,
@@ -31,7 +31,7 @@ smc_mallows_new_item_rank(
 \item{rankings}{3D array of size n_assessors by n_items by timesteps containing a
 set of observed rankings of timesteps time steps}
 
-\item{N}{Integer specifying the number of particles}
+\item{n_particles}{Integer specifying the number of particles}
 
 \item{timesteps}{Integer specifying the number of time steps in the SMC algorithm}
 
@@ -103,6 +103,7 @@ Function to perform resample-move SMC algorithm where we receive
 Other modeling: 
 \code{\link{compute_mallows_mixtures}()},
 \code{\link{compute_mallows}()},
-\code{\link{smc_mallows_new_users}()}
+\code{\link{smc_mallows_new_users}()},
+\code{\link{smc_mallows_update.SMCMallowsNewUsers}()}
 }
 \concept{modeling}

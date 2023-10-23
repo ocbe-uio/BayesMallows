@@ -1,5 +1,8 @@
 # BayesMallows (development versions)
 
+## Changes to sequential Monte Carlo methods
+* function smc_mallows_update() has been added, which allows updating existing
+  models as new data arrive.
 * BREAKING CHANGE: Argument "N" in SMC Mallows functions has been change to 
   "n_particles".
 * BREAKING CHANGE: Argument "Time" in SMC Mallows functions has been changed to
@@ -13,8 +16,6 @@
   the argument "cardinalities" has been removed, and the argument 
   "logz_estimate" has changed its expectation, to be consistent with the use
   in compute_mallows().
-* Argument save_clus to compute_mallows() has been removed, as it was not used.
-* compute_mallows() now supports parallel chains, by providing a 'cl' argument.
   See vignette "MCMC with Parallel Chains" for a tutorial.
 * compute_rho_consensus() for SMC Mallows has been deprecated in favor of 
   compute_consensus().
@@ -22,6 +23,11 @@
   for SMC Mallows have been deprecated in factor of 
   compute_posterior_intervals() with argument parameter = "rho" and
   parameter = "alpha".
+
+## Other changes
+
+* Argument save_clus to compute_mallows() has been removed, as it was not used.
+* compute_mallows() now supports parallel chains, by providing a 'cl' argument.
 * Documentation of functions are now grouped in families.
 * lik_db_mix() is now deprecated in favor of get_mallows_loglik()
 * Unusued argument removed from internal function augment_pairwise(). Thanks to

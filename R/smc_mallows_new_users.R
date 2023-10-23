@@ -14,7 +14,8 @@
 #' @param leap_size leap_size Integer specifying the step size of the
 #'   leap-and-shift proposal distribution
 #' @param n_particles Integer specifying the number of particles
-#' @param timesteps Integer specifying the number of time steps in the SMC algorithm
+#' @param timesteps Integer specifying the number of time steps in the SMC
+#'   algorithm
 #' @param logz_estimate Estimate of the partition function, computed with
 #'   \code{\link{estimate_partition_function}}. Be aware that when using an
 #'   estimated partition function when \code{n_clusters > 1}, the partition
@@ -46,8 +47,8 @@
 #' @param verbose Logical specifying whether to print out the progress of the
 #'   SMC-Mallows algorithm. Defaults to \code{FALSE}.
 #'
-#' @return
-#' An object of class \code{"SMCMallows"} containing the following elements:
+#' @return An object of class \code{c("SMCMallowsNewUsers","SMCMallows")}
+#' containing the following elements:
 #' \itemize{
 #' \item{"rho_samples"}{An array of samples of the consensus ranking \eqn{\rho}.}
 #' \item{"alpha_samples"}{A matrix with samples of \eqn{\alpha}. Empty when \code{alpha_fixed = TRUE}.}
@@ -92,7 +93,7 @@ smc_mallows_new_users <- function(
     stop("timesteps should not exceed n_users / num_new_obs.")
   }
 
-  smc_mallows_new_users_cpp(
+  ret <- smc_mallows_new_users_cpp(
     rankings = rankings,
     type = type,
     n_items = n_items,
@@ -112,4 +113,20 @@ smc_mallows_new_users <- function(
     metric,
     leap_size
   )
+
+  ret$metric <- metric
+  ret$type <- type
+  ret$logz_list <- logz_list
+  ret$n_items <- n_items
+  ret$n_particles <- n_particles
+  ret$mcmc_kernel_app <- mcmc_kernel_app
+  ret$alpha_prop_sd <- alpha_prop_sd
+  ret$lambda <- lambda
+  ret$alpha_max <- alpha_max
+  ret$alpha <- alpha
+  ret$aug_method <- aug_method
+  ret$leap_size <- leap_size
+  class(ret) <- c("SMCMallowsNewUsers","SMCMallows")
+
+  ret
 }

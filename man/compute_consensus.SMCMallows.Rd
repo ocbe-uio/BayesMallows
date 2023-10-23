@@ -28,13 +28,13 @@ n_items <- ncol(data)
 leap_size <- floor(n_items / 5)
 metric <- "footrule"
 timesteps <- 20
-N <- 100
+n_particles <- 100
 
 # Performing SMC
 smc_test <- smc_mallows_new_users(
   rankings = data, type = "complete",
   metric = metric, leap_size = leap_size,
-  N = N, timesteps = timesteps,
+  n_particles = n_particles, timesteps = timesteps,
   mcmc_kernel_app = 5,
   num_new_obs = 5,
   alpha_prop_sd = 0.5,

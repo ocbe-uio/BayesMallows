@@ -7,7 +7,7 @@
 smc_mallows_new_users(
   rankings,
   type = c("complete", "partial", "partial_alpha_fixed"),
-  N,
+  n_particles,
   timesteps,
   mcmc_kernel_app,
   num_new_obs,
@@ -29,9 +29,10 @@ n_assessors by n_items.}
 \item{type}{One of \code{"complete"}, \code{"partial"}, or
 \code{"partial_alpha_fixed"}.}
 
-\item{N}{Integer specifying the number of particles}
+\item{n_particles}{Integer specifying the number of particles}
 
-\item{timesteps}{Integer specifying the number of time steps in the SMC algorithm}
+\item{timesteps}{Integer specifying the number of time steps in the SMC
+algorithm}
 
 \item{mcmc_kernel_app}{Integer value for the number of applications we apply
 the MCMC move kernel}
@@ -81,7 +82,8 @@ Bayesian Mallows Model. Available options are \code{"footrule"},
 leap-and-shift proposal distribution}
 }
 \value{
-An object of class \code{"SMCMallows"} containing the following elements:
+An object of class \code{c("SMCMallowsNewUsers","SMCMallows")}
+containing the following elements:
 \itemize{
 \item{"rho_samples"}{An array of samples of the consensus ranking \eqn{\rho}.}
 \item{"alpha_samples"}{A matrix with samples of \eqn{\alpha}. Empty when \code{alpha_fixed = TRUE}.}
@@ -95,29 +97,38 @@ Function to perform resample-move SMC algorithm where we receive
   \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
 }
 \examples{
-# Assume our first dataset contains 1000 preferences, observed in 10 batches
-data_batch1 <- sushi_rankings[1:1000, ]
-num_new_obs <- 100
+# Assume our first dataset contains 100 preferences, observed in 10 batches
+data_batch1 <- sushi_rankings[1:100, ]
 
 # Calculating rho and alpha samples
-samples <- smc_mallows_new_users(
-  rankings = data,
-  N = 1000,
-  timesteps = 10,
+mod1 <- smc_mallows_new_users(
+  rankings = data_batch1,
+  n_particles = 1000,
+  timesteps = 1,
   mcmc_kernel_app = 10,
-  num_new_obs = num_new_obs,
-  verbose = TRUE
+  num_new_obs = 100
 )
 
-# Studying the structure of the output
-plot(samples)
+# We can plot the posterior of alpha
+plot(mod1)
 
+# Next, assume a new batch arrives, with 100 new preferences
+data_batch2 <- sushi_rankings[101:200, ]
 
+# We update the model in a single timestep. By default, the settings from the
+# call to smc_mallows_new_users() is retained.
+mod2 <- smc_mallows_update(
+  model = mod1,
+  rankings = data_batch2
+)
+
+plot(mod2)
 }
 \seealso{
 Other modeling: 
 \code{\link{compute_mallows_mixtures}()},
 \code{\link{compute_mallows}()},
-\code{\link{smc_mallows_new_item_rank}()}
+\code{\link{smc_mallows_new_item_rank}()},
+\code{\link{smc_mallows_update.SMCMallowsNewUsers}()}
 }
 \concept{modeling}

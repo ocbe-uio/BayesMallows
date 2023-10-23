@@ -121,7 +121,8 @@ test_that("Runs with unif kernel", {
     aug_method      = "random"
   )
   expect_is(smc_unif_alpha_fixed_unif, "SMCMallows")
-  expect_equal(length(smc_unif_alpha_fixed_unif), 4)
+  expect_s3_class(smc_unif_alpha_fixed_unif,
+                  c("SMCMallowsNewUsers", "SMCMallows"))
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(n_particles, 10, 21))
   smc_unif <- smc_mallows_new_users(
     rankings           = samples,
@@ -137,8 +138,9 @@ test_that("Runs with unif kernel", {
     alpha_max       = alpha_max,
     aug_method      = "random"
   )
-  expect_is(smc_unif, "SMCMallows")
-  expect_equal(length(smc_unif), 4)
+  expect_s3_class(
+    smc_unif,
+    c("SMCMallowsNewUsers", "SMCMallows"))
   expect_equal(dim(smc_unif$rho_samples), c(n_particles, 10, 21))
   expect_equal(dim(smc_unif$alpha_samples), c(n_particles, 21))
 
@@ -161,8 +163,10 @@ test_that("Runs with pseudo kernel", {
     num_new_obs     = num_new_obs,
     aug_method      = "pseudolikelihood"
   )
-  expect_is(smc_unif_alpha_fixed_pseudo, "SMCMallows")
-  expect_equal(length(smc_unif_alpha_fixed_pseudo), 4)
+  expect_s3_class(
+    smc_unif_alpha_fixed_pseudo,
+    c("SMCMallowsNewUsers", "SMCMallows"))
+
   expect_equal(dim(smc_unif_alpha_fixed_pseudo$rho_samples), c(n_particles, 10, 21))
   smc_pseudo <- smc_mallows_new_users(
     rankings           = samples,
@@ -178,8 +182,9 @@ test_that("Runs with pseudo kernel", {
     alpha_max       = alpha_max,
     aug_method      = "pseudolikelihood"
   )
-  expect_is(smc_pseudo, "SMCMallows")
-  expect_equal(length(smc_pseudo), 4)
+  expect_s3_class(
+    smc_pseudo,
+    c("SMCMallowsNewUsers", "SMCMallows"))
   expect_equal(dim(smc_pseudo$rho_samples), c(n_particles, 10, 21))
   expect_equal(dim(smc_pseudo$alpha_samples), c(n_particles, 21))
 })
