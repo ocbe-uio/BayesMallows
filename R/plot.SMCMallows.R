@@ -3,10 +3,6 @@
 #' @param x An object of type \code{SMC-Mallows}, returned for example from
 #' \code{\link{smc_mallows_new_users}}.
 #' @param nmc Number of Monte Carlo samples
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-#' provided if \code{model_fit$burnin} does not exist. See
-#' \code{\link{assess_convergence}}.
 #' @param parameter Character string defining the parameter to plot. Available
 #' options are \code{"alpha"} and \code{"rho"}.
 #' @param time Integer determining the update slice to plot
@@ -22,21 +18,21 @@
 #' @example /inst/examples/plot.SMCMallows_example.R
 #' @family posterior quantities
 plot.SMCMallows <- function(
-    x, nmc = nrow(x$rho_samples[, 1, ]), burnin = 0,
+    x, nmc = nrow(x$rho_samples[, 1, ]),
     parameter = "alpha", time = ncol(x$rho_samples[, 1, ]), C = 1,
     colnames = NULL, items = NULL, ...) {
   if (parameter == "alpha") {
     output <- x$alpha_samples[, time]
-    plot_alpha_smc(output, nmc, burnin)
+    plot_alpha_smc(output, nmc)
   } else if (parameter == "rho") {
     output <- x$rho_samples[, , time]
-    plot_rho_smc(output, nmc, burnin, C, colnames, items)
+    plot_rho_smc(output, nmc, C, colnames, items)
   } else {
     stop("parameter must be either 'alpha' or 'rho'.")
   }
 }
 
-plot_alpha_smc <- function(output, nmc, burnin) {
+plot_alpha_smc <- function(output, nmc) {
   alpha_samples_table <- data.frame(iteration = 1:nmc, value = output)
 
   ggplot2::ggplot(alpha_samples_table, ggplot2::aes(x = .data$value)) +
@@ -46,7 +42,7 @@ plot_alpha_smc <- function(output, nmc, burnin) {
     ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 }
 
-plot_rho_smc <- function(output, nmc, burnin, C, colnames = NULL, items = NULL) {
+plot_rho_smc <- function(output, nmc, C, colnames = NULL, items = NULL) {
   n_items <- dim(output)[2]
 
   if (is.null(items) && n_items > 5) {
@@ -72,7 +68,7 @@ plot_rho_smc <- function(output, nmc, burnin, C, colnames = NULL, items = NULL) 
     df <- cbind(cluster = "Cluster 1", df)
   }
 
-  df <- df[df$iteration > burnin & df$item %in% items, , drop = FALSE]
+  df <- df[df$item %in% items, , drop = FALSE]
 
   # Compute the density, rather than the count, since the latter
   # depends on the number of Monte Carlo samples

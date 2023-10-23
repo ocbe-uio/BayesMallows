@@ -2,6 +2,8 @@
 
 ## Changes to sequential Monte Carlo methods
 
+* BREAKING CHANGE: argument "burnin" to plot.SMCMallows has been removed because
+  burnin is not relevant with sequential Monte Carlo.
 * BREAKING CHANGE: arguments "timesteps" and "n_items" to 
   smc_mallows_new_item_rank() have been removed, since they are given by the 
   dimension of the rankings argument.

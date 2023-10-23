@@ -7,7 +7,6 @@
 \method{plot}{SMCMallows}(
   x,
   nmc = nrow(x$rho_samples[, 1, ]),
-  burnin = 0,
   parameter = "alpha",
   time = ncol(x$rho_samples[, 1, ]),
   C = 1,
@@ -21,11 +20,6 @@
 \code{\link{smc_mallows_new_users}}.}
 
 \item{nmc}{Number of Monte Carlo samples}
-
-\item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-provided if \code{model_fit$burnin} does not exist. See
-\code{\link{assess_convergence}}.}
 
 \item{parameter}{Character string defining the parameter to plot. Available
 options are \code{"alpha"} and \code{"rho"}.}
