@@ -3,8 +3,8 @@
 #'   a new item ranks from an existing user at each time step. Each correction
 #'   and augmentation is done by filling in the missing item ranks using
 #'   pseudolikelihood augmentation.
-#' @param rankings 3D array of size n_assessors by n_items by timesteps containing a
-#'   set of observed rankings of timesteps time steps
+#' @param rankings 3D array of size n_assessors by n_items by timesteps
+#'   containing a set of observed rankings of timesteps time steps
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
 #'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
@@ -42,8 +42,8 @@
 #' @param rho_samples_init Initial values for rho samples.
 #' @param alpha_samples_init Initial values for alpha samples.
 #'
-#' @return
-#' An object of class \code{"SMCMallows"} containing the following elements:
+#' @return An object of class \code{c("SMCMallowsUpdatedPartial", "SMCMallows")}
+#' containing the following elements:
 #' \itemize{
 #' \item{"rho_samples"}{An array of samples of the consensus ranking \eqn{\rho}.}
 #' \item{"alpha_samples"}{A matrix with samples of \eqn{\alpha}. Empty when \code{alpha_fixed = TRUE}.}
@@ -104,6 +104,6 @@ smc_mallows_new_item_rank <- function(
     metric,
     leap_size
   )
-  class(ret) <- "SMCMallows"
+  class(ret) <- c("SMCMallowsUpdatedPartial", "SMCMallows")
   ret
 }

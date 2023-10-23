@@ -24,8 +24,8 @@ smc_mallows_new_item_rank(
 )
 }
 \arguments{
-\item{rankings}{3D array of size n_assessors by n_items by timesteps containing a
-set of observed rankings of timesteps time steps}
+\item{rankings}{3D array of size n_assessors by n_items by timesteps
+containing a set of observed rankings of timesteps time steps}
 
 \item{n_particles}{Integer specifying the number of particles}
 
@@ -79,7 +79,8 @@ Bayesian Mallows Model. Available options are \code{"footrule"},
 leap-and-shift proposal distribution}
 }
 \value{
-An object of class \code{"SMCMallows"} containing the following elements:
+An object of class \code{c("SMCMallowsUpdatedPartial", "SMCMallows")}
+containing the following elements:
 \itemize{
 \item{"rho_samples"}{An array of samples of the consensus ranking \eqn{\rho}.}
 \item{"alpha_samples"}{A matrix with samples of \eqn{\alpha}. Empty when \code{alpha_fixed = TRUE}.}
