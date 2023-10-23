@@ -3,7 +3,7 @@
 #'   new users with complete rankings at each time step. See Chapter 4 of
 #'   \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
 #'
-#' @param R_obs Matrix containing the full set of observed rankings of size
+#' @param rankings Matrix containing the full set of observed rankings of size
 #'   n_assessors by n_items
 #' @param type One of \code{"complete"}, \code{"partial"}, or
 #'   \code{"partial_alpha_fixed"}.
@@ -64,7 +64,7 @@
 #'
 #'
 smc_mallows_new_users <- function(
-    R_obs,
+    rankings,
     type = c("complete", "partial", "partial_alpha_fixed"),
     n_items,
     N,
@@ -88,7 +88,7 @@ smc_mallows_new_users <- function(
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
 
   smc_mallows_new_users_cpp(
-    R_obs,
+    rankings,
     type,
     n_items,
     N,

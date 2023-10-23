@@ -6,7 +6,7 @@
 \usage{
 smc_mallows_new_item_rank(
   n_items,
-  R_obs,
+  rankings,
   N,
   Time,
   logz_estimate = NULL,
@@ -28,7 +28,7 @@ smc_mallows_new_item_rank(
 \arguments{
 \item{n_items}{Integer is the number of items in a ranking}
 
-\item{R_obs}{3D array of size n_assessors by n_items by Time containing a
+\item{rankings}{3D array of size n_assessors by n_items by Time containing a
 set of observed rankings of Time time steps}
 
 \item{N}{Integer specifying the number of particles}

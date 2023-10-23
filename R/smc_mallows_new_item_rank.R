@@ -4,7 +4,7 @@
 #'   and augmentation is done by filling in the missing item ranks using
 #'   pseudolikelihood augmentation.
 #' @param n_items Integer is the number of items in a ranking
-#' @param R_obs 3D array of size n_assessors by n_items by Time containing a
+#' @param rankings 3D array of size n_assessors by n_items by Time containing a
 #'   set of observed rankings of Time time steps
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
@@ -60,7 +60,7 @@
 #'
 smc_mallows_new_item_rank <- function(
     n_items,
-    R_obs,
+    rankings,
     N,
     Time,
     logz_estimate = NULL,
@@ -86,7 +86,7 @@ smc_mallows_new_item_rank <- function(
 
   smc_mallows_new_item_rank_cpp(
     n_items,
-    R_obs,
+    rankings,
     N,
     Time,
     logz_estimate = logz_list$logz_estimate,

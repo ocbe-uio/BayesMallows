@@ -100,7 +100,7 @@ We are interested in updating the parameter estimates of the Bayesian Mallows mo
 head(sushi_rankings)
 ```
 
-The function `smc_mallows_new_users` with `type = "complete"` (default argument, so not explicitly provided) shows the simplest version of the SMC algorithm in action. Many of the input variables, that the function requires, are also used in some of the existing functions in the `BayesMallows` R package. However, we will discuss what the new variables refer to in the algorithm. The variable `R_obs` in this instance is a 2D dataset with the number of columns as `n_items` and the number of rows, $M$, represents the number of individuals in the dataset. We begin the algorithm with no observations and in each artificial time step we introduce a batch number of observations, this is controlled by the variable `num_new_obs` to control the size of the bath, and `Time` to specify the number of updates we will perform. There is a limit on the value for `Time`, and this depends on the number of individuals in the dataset and the value of `num_new_obs`. In the move stage we can apply an MCMC kernel as many times as we would like using the variable `mcmc_kernel_app` to specify the value.
+The function `smc_mallows_new_users` with `type = "complete"` (default argument, so not explicitly provided) shows the simplest version of the SMC algorithm in action. Many of the input variables, that the function requires, are also used in some of the existing functions in the `BayesMallows` R package. However, we will discuss what the new variables refer to in the algorithm. The variable `rankings` in this instance is a 2D dataset with the number of columns as `n_items` and the number of rows, $M$, represents the number of individuals in the dataset. We begin the algorithm with no observations and in each artificial time step we introduce a batch number of observations, this is controlled by the variable `num_new_obs` to control the size of the bath, and `Time` to specify the number of updates we will perform. There is a limit on the value for `Time`, and this depends on the number of individuals in the dataset and the value of `num_new_obs`. In the move stage we can apply an MCMC kernel as many times as we would like using the variable `mcmc_kernel_app` to specify the value.
 
 ```{r set_seed, message=FALSE, warning=FALSE, include=FALSE}
 set.seed(994)
@@ -111,7 +111,7 @@ data <- sushi_rankings[1:100, ]
 N <- 1000
 Time <- 20
 smc_test <- smc_mallows_new_users(
-  R_obs = data,
+  rankings = data,
   n_items = ncol(data),
   N = N,
   Time = Time,
@@ -182,7 +182,7 @@ We can call the function `smc_mallows_new_users` with `type = "partial"` to run 
 ```{r smc_partial_error, eval=FALSE, error=TRUE}
 # example of selecting the incorrect combination of metric and aug_method
 smc_partial_test <- smc_mallows_new_users(
-  R_obs = data_partial,
+  rankings = data_partial,
   type = "partial",
   n_items = ncol(data_partial),
   metric = "cayley",
@@ -204,7 +204,7 @@ set.seed(994)
 
 ```{r smc_partial_test}
 smc_partial_test <- smc_mallows_new_users(
-  R_obs = data_partial,
+  rankings = data_partial,
   type = "partial",
   n_items = ncol(data_partial),
   N = N,
@@ -273,7 +273,7 @@ N <- 1000
 
 smc_test_updated_partial <- smc_mallows_new_item_rank(
   n_items = n_items,
-  R_obs = test_dataset,
+  rankings = test_dataset,
   N = N,
   Time = Time,
   mcmc_kernel_app = 5,

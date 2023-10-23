@@ -19,7 +19,7 @@ using namespace arma;
 //'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 //'   \code{"ulam"}.
 //' @param pseudo Boolean specifying whether to use pseudo proposal or not.s
-//' @return R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
+//' @return R_curr or rankings A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
 //' @noRd
 // [[Rcpp::export]]
 arma::vec metropolis_hastings_aug_ranking(

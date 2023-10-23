@@ -263,8 +263,8 @@ correction_kernel <- function(observed_ranking, current_ranking, n_items) {
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
 #'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 #'   \code{"ulam"}.
-#' @return list containing R_obs, the proposed 'corrected' augmented ranking that is compatible with the new observed ranking for a user, and
-#'         forward_auxiliary_ranking_probability, a numerical value for the probability of correcting the ranking to be compatible with R_obs.
+#' @return list containing rankings, the proposed 'corrected' augmented ranking that is compatible with the new observed ranking for a user, and
+#'         forward_auxiliary_ranking_probability, a numerical value for the probability of correcting the ranking to be compatible with rankings.
 #' @keywords internal
 correction_kernel_pseudo <- function(current_ranking, observed_ranking, rho, alpha, n_items, metric = "footrule") {
     .Call(`_BayesMallows_correction_kernel_pseudo`, current_ranking, observed_ranking, rho, alpha, n_items, metric)
@@ -367,7 +367,7 @@ leap_and_shift_probs <- function(rho, n_items, leap_size = 1L) {
 #' @description Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user
 #' at each time step. Each correction and augmentation is done by filling in the missing item ranks using pseudolikelihood augmentation.
 #' @param n_items Integer is the number of items in a ranking
-#' @param R_obs 3D matrix of size n_assessors by n_items by Time containing a set of observed rankings of Time time steps
+#' @param rankings 3D matrix of size n_assessors by n_items by Time containing a set of observed rankings of Time time steps
 #' @param metric A character string specifying the distance metric to use in the
 #' Bayesian Mallows Model. Available options are \code{"footrule"},
 #' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
@@ -401,8 +401,8 @@ leap_and_shift_probs <- function(rho, n_items, leap_size = 1L) {
 #'
 #' @family modeling
 #'
-smc_mallows_new_item_rank_cpp <- function(n_items, R_obs, N, Time, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
-    .Call(`_BayesMallows_smc_mallows_new_item_rank_cpp`, n_items, R_obs, N, Time, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
+smc_mallows_new_item_rank_cpp <- function(n_items, rankings, N, Time, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank_cpp`, n_items, rankings, N, Time, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
 }
 
 #' @title SMC-Mallows New Users
@@ -410,7 +410,7 @@ smc_mallows_new_item_rank_cpp <- function(n_items, R_obs, N, Time, logz_estimate
 #' receive new users with complete rankings at each time step. See Chapter 4
 #' of \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
 #'
-#' @param R_obs Matrix containing the full set of observed rankings of size
+#' @param rankings Matrix containing the full set of observed rankings of size
 #' n_assessors by n_items
 #' @param type One of \code{"complete"}, \code{"partial"}, or
 #' \code{"partial_alpha_fixed"}.
@@ -454,8 +454,8 @@ smc_mallows_new_item_rank_cpp <- function(n_items, R_obs, N, Time, logz_estimate
 #'
 #' @family modeling
 #'
-smc_mallows_new_users_cpp <- function(R_obs, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L) {
-    .Call(`_BayesMallows_smc_mallows_new_users_cpp`, R_obs, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size)
+smc_mallows_new_users_cpp <- function(rankings, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L) {
+    .Call(`_BayesMallows_smc_mallows_new_users_cpp`, rankings, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size)
 }
 
 #' @title Metropolis-Hastings Alpha
@@ -506,7 +506,7 @@ metropolis_hastings_alpha <- function(alpha, n_items, rankings, rho, logz_estima
 #'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 #'   \code{"ulam"}.
 #' @param pseudo Boolean specifying whether to use pseudo proposal or not.s
-#' @return R_curr or R_obs A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
+#' @return R_curr or rankings A ranking sequence vector representing proposed augmented ranking for next iteration of MCMC chain
 #' @noRd
 metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking, current_ranking, pseudo, metric = "footrule") {
     .Call(`_BayesMallows_metropolis_hastings_aug_ranking`, alpha, rho, n_items, partial_ranking, current_ranking, pseudo, metric)

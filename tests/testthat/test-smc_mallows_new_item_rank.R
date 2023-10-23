@@ -23,7 +23,7 @@ alpha_max <- 1e6
 test_that("Produces the wrong metric and aug_method error", {
   expect_error(
     smc_mallows_new_item_rank(
-      alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
+      alpha = alpha_0, n_items = n_items, rankings = sample_dataset,
       metric = "cayley", leap_size = leap_size, N = N, Time = Time,
       mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
@@ -34,7 +34,7 @@ test_that("Produces the wrong metric and aug_method error", {
   )
   expect_error(
     smc_mallows_new_item_rank(
-      n_items = n_items, R_obs = sample_dataset,
+      n_items = n_items, rankings = sample_dataset,
       metric = "cayley", leap_size = leap_size, N = N, Time = Time,
       mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
@@ -48,7 +48,7 @@ test_that("Runs with unif kernel", {
   set.seed(0)
   smc_unif_alpha_fixed_unif <- suppressMessages(
     smc_mallows_new_item_rank(
-      alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
+      alpha = alpha_0, n_items = n_items, rankings = sample_dataset,
       metric = "footrule", leap_size = leap_size, N = N, Time = Time,
       mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
@@ -65,7 +65,7 @@ test_that("Runs with unif kernel", {
   set.seed(2)
   smc_unif <- suppressMessages(
     smc_mallows_new_item_rank(
-      n_items = n_items, R_obs = sample_dataset,
+      n_items = n_items, rankings = sample_dataset,
       metric = "footrule", leap_size = leap_size, N = N, Time = Time,
       mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
@@ -81,7 +81,7 @@ test_that("Runs with unif kernel", {
 test_that("Runs with pseudo kernel", {
   smc_unif_alpha_fixed_unif <- suppressMessages(
     smc_mallows_new_item_rank(
-      alpha = alpha_0, n_items = n_items, R_obs = sample_dataset,
+      alpha = alpha_0, n_items = n_items, rankings = sample_dataset,
       metric = "footrule", leap_size = leap_size, N = N, Time = Time,
       mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
@@ -96,7 +96,7 @@ test_that("Runs with pseudo kernel", {
   set.seed(1)
   smc_unif <- suppressMessages(
     smc_mallows_new_item_rank(
-      n_items = n_items, R_obs = sample_dataset,
+      n_items = n_items, rankings = sample_dataset,
       metric = "footrule", leap_size = leap_size, N = N, Time = Time,
       mcmc_kernel_app = mcmc_kernel_app,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,

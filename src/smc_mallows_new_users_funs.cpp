@@ -16,7 +16,7 @@ void smc_mallows_new_users_augment_partial(
     const arma::mat& alpha_samples,
     const int& num_obs,
     const int& num_new_obs,
-    const arma::mat& R_obs,
+    const arma::mat& rankings,
     const std::string& aug_method,
     const int& tt,
     const double& alpha,
@@ -28,7 +28,7 @@ void smc_mallows_new_users_augment_partial(
   ivec ranks = regspace<ivec>(1, n_items);
   for (int ii{}; ii < N; ++ii) {
     for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
-      vec partial_ranking = R_obs.row(jj).t();
+      vec partial_ranking = rankings.row(jj).t();
 
       // find items missing from original observed ranking
       const uvec& unranked_items = find_nonfinite(partial_ranking);

@@ -24,7 +24,7 @@ N <- 100
 Time <- 20
 
 model_fit <- smc_mallows_new_users(
-  R_obs = data, "complete", n_items = n_items,
+  rankings = data, "complete", n_items = n_items,
   metric = metric, leap_size = leap_size,
   N = N, Time = Time,
   mcmc_kernel_app = 5,

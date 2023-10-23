@@ -34,7 +34,7 @@ sample_dataset <- example_dataset
 # run smc new user with uniform
 set.seed(994)
 smc_test_new_user_unif <- smc_mallows_new_users(
-  R_obs = sample_dataset,
+  rankings = sample_dataset,
   type = "partial",
   n_items = n_items,
   metric = metric,
@@ -52,7 +52,7 @@ smc_test_new_user_unif <- smc_mallows_new_users(
 # run smc updated rankings with alpha unknown
 smc_test_partial_unif1 <- smc_mallows_new_item_rank(
   alpha = 2, n_items = n_items,
-  R_obs = test_dataset, metric = metric, leap_size = leap_size,
+  rankings = test_dataset, metric = metric, leap_size = leap_size,
   N = N, Time = Time2,
   mcmc_kernel_app = mcmc_kernel_app, aug_method = "random",
   rho_samples_init = smc_test_new_user_unif$rho_samples[, , Time + 1],
@@ -70,7 +70,7 @@ test_that("Updated item rank output is OK", {
 # run smc updated rankings with alpha unknown
 smc_test_partial_unif2 <- smc_mallows_new_item_rank(
   n_items = n_items,
-  R_obs = test_dataset, metric = metric, leap_size = leap_size,
+  rankings = test_dataset, metric = metric, leap_size = leap_size,
   N = N, Time = Time2,
   mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
   lambda = 0.1, alpha_max = 20, aug_method = "random",
@@ -90,7 +90,7 @@ test_that("Updated item rank output (alpha variable) is OK", {
 # test with pseudolikelihood
 
 smc_test_new_user_pseudo <- smc_mallows_new_users(
-  R_obs = example_dataset, n_items = n_items, metric = metric,
+  rankings = example_dataset, n_items = n_items, metric = metric,
   leap_size = leap_size,
   N = N, Time = Time,
   mcmc_kernel_app = mcmc_kernel_app, num_new_obs = num_new_obs,
@@ -100,7 +100,7 @@ smc_test_new_user_pseudo <- smc_mallows_new_users(
 
 smc_test_partial_pseudo1 <- smc_mallows_new_item_rank(
   alpha = 2, n_items = n_items,
-  R_obs = test_dataset, metric = metric, leap_size = leap_size,
+  rankings = test_dataset, metric = metric, leap_size = leap_size,
   N = N, Time = Time2,
   mcmc_kernel_app = mcmc_kernel_app, aug_method = "pseudolikelihood",
   rho_samples_init = smc_test_new_user_pseudo$rho_samples[, , Time + 1],
@@ -117,7 +117,7 @@ test_that("Updated item rank output is OK", {
 
 smc_test_partial_pseudo2 <- smc_mallows_new_item_rank(
   n_items = n_items,
-  R_obs = test_dataset, metric = metric, leap_size = leap_size,
+  rankings = test_dataset, metric = metric, leap_size = leap_size,
   N = N, Time = Time2,
   mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
   lambda = 0.1, alpha_max = 20, aug_method = "pseudolikelihood",
@@ -139,7 +139,7 @@ test_that("metric and aug_method must match", {
   expect_error(
     smc_mallows_new_item_rank(
       alpha = 2, n_items = n_items,
-      R_obs = test_dataset, metric = "cayley", leap_size = leap_size,
+      rankings = test_dataset, metric = "cayley", leap_size = leap_size,
       N = N, Time = Time2,
       mcmc_kernel_app = mcmc_kernel_app, aug_method = "pseudolikelihood",
       alpha_fixed = TRUE

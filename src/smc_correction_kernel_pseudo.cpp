@@ -20,13 +20,13 @@ using namespace arma;
 //'   Bayesian Mallows Model. Available options are \code{"footrule"},
 //'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
 //'   \code{"ulam"}.
-//' @return list containing R_obs, the proposed 'corrected' augmented ranking that is compatible with the new observed ranking for a user, and
-//'         forward_auxiliary_ranking_probability, a numerical value for the probability of correcting the ranking to be compatible with R_obs.
+//' @return list containing rankings, the proposed 'corrected' augmented ranking that is compatible with the new observed ranking for a user, and
+//'         forward_auxiliary_ranking_probability, a numerical value for the probability of correcting the ranking to be compatible with rankings.
 //' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List correction_kernel_pseudo(
     const arma::vec current_ranking,  //R_curr
-    arma::vec observed_ranking, //R_obs
+    arma::vec observed_ranking, //rankings
     const arma::vec rho,
     const double alpha,
     const int n_items,

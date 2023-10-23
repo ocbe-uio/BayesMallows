@@ -14,7 +14,7 @@ using namespace arma;
 //' receive new users with complete rankings at each time step. See Chapter 4
 //' of \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
 //'
-//' @param R_obs Matrix containing the full set of observed rankings of size
+//' @param rankings Matrix containing the full set of observed rankings of size
 //' n_assessors by n_items
 //' @param type One of \code{"complete"}, \code{"partial"}, or
 //' \code{"partial_alpha_fixed"}.
@@ -60,7 +60,7 @@ using namespace arma;
 //'
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users_cpp(
-  const arma::mat& R_obs,
+  const arma::mat& rankings,
   const std::string& type,
   const int& n_items,
   const int& N,
@@ -81,7 +81,7 @@ Rcpp::List smc_mallows_new_users_cpp(
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
-  int n_users = R_obs.n_rows; // total number of users
+  int n_users = rankings.n_rows; // total number of users
   if(type == "complete"){
     if (Time > n_users / num_new_obs) {
       Rcpp::warning(                                                  \
@@ -131,8 +131,8 @@ Rcpp::List smc_mallows_new_users_cpp(
     mat new_observed_rankings, all_observed_rankings;
     if(type == "complete"){
       row_start = num_obs - num_new_obs;
-      new_observed_rankings = R_obs.submat(row_start, 0, num_obs - 1, R_obs.n_cols - 1);
-      all_observed_rankings = R_obs.submat(0, 0, num_obs - 1, R_obs.n_cols - 1);
+      new_observed_rankings = rankings.submat(row_start, 0, num_obs - 1, rankings.n_cols - 1);
+      all_observed_rankings = rankings.submat(0, 0, num_obs - 1, rankings.n_cols - 1);
     }
 
     // propagate particles onto the next time step
@@ -148,7 +148,7 @@ Rcpp::List smc_mallows_new_users_cpp(
     if(type == "partial" || type == "partial_alpha_fixed"){
       smc_mallows_new_users_augment_partial(
         aug_rankings, aug_prob, rho_samples, alpha_samples, num_obs, num_new_obs,
-        R_obs, aug_method, tt, alpha, type != "partial_alpha_fixed", metric);
+        rankings, aug_method, tt, alpha, type != "partial_alpha_fixed", metric);
     }
 
     /* ====================================================== */
@@ -216,7 +216,7 @@ Rcpp::List smc_mallows_new_users_cpp(
               ar = aug_rankings(span(jj), span::all, span(ii));
               vec mh_aug_result;
               mh_aug_result = metropolis_hastings_aug_ranking(
-                as, rs.t(), n_items, R_obs.row(jj).t(), ar.t(),
+                as, rs.t(), n_items, rankings.row(jj).t(), ar.t(),
                 is_pseudo(aug_method, metric), metric
               );
               aug_rankings(span(jj), span::all, span(ii)) = mh_aug_result;

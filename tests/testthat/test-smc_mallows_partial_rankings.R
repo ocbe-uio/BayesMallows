@@ -79,7 +79,7 @@ test_that("Produces the wrong metric and aug_method error", {
     smc_mallows_new_users(
       alpha           = alpha_0,
       type            = "partial_alpha_fixed",
-      R_obs           = samples,
+      rankings           = samples,
       n_items         = n_items,
       metric          = "cayley",
       leap_size       = leap_size,
@@ -92,7 +92,7 @@ test_that("Produces the wrong metric and aug_method error", {
   )
   expect_error(
     smc_mallows_new_users(
-      R_obs           = samples,
+      rankings           = samples,
       type            = "partial",
       n_items         = n_items,
       metric          = "cayley",
@@ -113,7 +113,7 @@ test_that("Runs with unif kernel", {
   smc_unif_alpha_fixed_unif <- smc_mallows_new_users(
     alpha           = alpha_0,
     type            = "partial_alpha_fixed",
-    R_obs           = samples,
+    rankings           = samples,
     n_items         = n_items,
     metric          = "footrule",
     leap_size       = leap_size,
@@ -127,7 +127,7 @@ test_that("Runs with unif kernel", {
   expect_equal(length(smc_unif_alpha_fixed_unif), 4)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 10, 21))
   smc_unif <- smc_mallows_new_users(
-    R_obs           = samples,
+    rankings           = samples,
     type            = "partial",
     n_items         = n_items,
     metric          = "footrule",
@@ -156,7 +156,7 @@ test_that("Runs with pseudo kernel", {
   smc_unif_alpha_fixed_pseudo <- smc_mallows_new_users(
     alpha           = alpha_0,
     type            = "partial_alpha_fixed",
-    R_obs           = samples,
+    rankings           = samples,
     n_items         = n_items,
     metric          = "footrule",
     leap_size       = leap_size,
@@ -170,7 +170,7 @@ test_that("Runs with pseudo kernel", {
   expect_equal(length(smc_unif_alpha_fixed_pseudo), 4)
   expect_equal(dim(smc_unif_alpha_fixed_pseudo$rho_samples), c(N, 10, 21))
   smc_pseudo <- smc_mallows_new_users(
-    R_obs           = samples,
+    rankings           = samples,
     type            = "partial",
     n_items         = n_items,
     metric          = "footrule",
@@ -198,7 +198,7 @@ test_that("Specific example results are OK", {
   set.seed(5482) # necessary for reproducibility of the random aug_method
 
   test <- smc_mallows_new_users(
-    R_obs           = samples,
+    rankings           = samples,
     type            = "partial",
     n_items         = n_items,
     metric          = metric,
@@ -246,7 +246,7 @@ test_that("Specific example results are OK", {
   expect_equal(dim(post_alpha), c(1, 6))
 
   test_fixed <- smc_mallows_new_users(
-    R_obs           = samples,
+    rankings           = samples,
     type            = "partial_alpha_fixed",
     n_items         = n_items,
     metric          = metric,

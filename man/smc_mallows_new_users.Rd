@@ -5,7 +5,7 @@
 \title{SMC-Mallows New Users}
 \usage{
 smc_mallows_new_users(
-  R_obs,
+  rankings,
   type = c("complete", "partial", "partial_alpha_fixed"),
   n_items,
   N,
@@ -24,7 +24,7 @@ smc_mallows_new_users(
 )
 }
 \arguments{
-\item{R_obs}{Matrix containing the full set of observed rankings of size
+\item{rankings}{Matrix containing the full set of observed rankings of size
 n_assessors by n_items}
 
 \item{type}{One of \code{"complete"}, \code{"partial"}, or
@@ -106,7 +106,7 @@ num_new_obs <- 10
 
 # Calculating rho and alpha samples
 samples <- smc_mallows_new_users(
-  R_obs = data, type = "complete", n_items = n_items, metric = metric,
+  rankings = data, type = "complete", n_items = n_items, metric = metric,
   leap_size = floor(n_items / 5), N = 100, Time = nrow(data) / num_new_obs,
   mcmc_kernel_app = 5,
   alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,

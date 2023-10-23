@@ -21,8 +21,8 @@
 //' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List correction_kernel(
-  const arma::vec observed_ranking, //R_obs
-  const arma::vec current_ranking,  // R_curr
+  const arma::vec observed_ranking,
+  const arma::vec current_ranking,
   const int n_items
 ) {
   // check if new information means 'mistakes' made with augmented rankings

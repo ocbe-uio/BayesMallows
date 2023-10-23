@@ -79,25 +79,25 @@ n_items <- 6
 
 test_that("M-H aug ranking pseudo works", {
   R_curr <- c(1, 2, 3, 4, 5, 6)
-  R_obs <- c(1, 2, 3, 4, 5, 6)
+  rankings <- c(1, 2, 3, 4, 5, 6)
   test_1 <- metropolis_hastings_aug_ranking(
-    alpha, rho, n_items, R_obs, R_curr, TRUE, metric
+    alpha, rho, n_items, rankings, R_curr, TRUE, metric
   )
   expect_equal(test_1, matrix(c(1, 2, 3, 4, 5, 6)))
   expect_equal(all(test_1 == R_curr), TRUE)
-  R_obs <- c(1, 2, 3, NA, NA, NA)
+  rankings <- c(1, 2, 3, NA, NA, NA)
   set.seed(6220)
   test_2 <- metropolis_hastings_aug_ranking(
-    alpha, rho, n_items, R_obs, R_curr, TRUE, metric
+    alpha, rho, n_items, rankings, R_curr, TRUE, metric
   )
   expect_equal(test_2, matrix(c(1, 2, 3, 5, 6, 4)))
   expect_equal(all(test_2 == R_curr), FALSE)
   R_curr <- c(1, 2, 6, 5, 4, 3)
-  R_obs <- c(1, 2, NA, NA, NA, NA)
+  rankings <- c(1, 2, NA, NA, NA, NA)
   set.seed(8286)
   test_3 <- metropolis_hastings_aug_ranking(
     alpha, rho, n_items,
-    partial_ranking = R_obs, current_ranking = R_curr,
+    partial_ranking = rankings, current_ranking = R_curr,
     TRUE, metric
   )
   expect_equal(test_3, matrix(c(1, 2, 4, 3, 5, 6)))
@@ -117,24 +117,24 @@ n_items <- 6
 test_that("correction_kernel works", {
   # Three missing ------------------------------------------ #
   R_curr <- c(1, 2, 3, 4, 5, 6)
-  R_obs <- c(1, 2, 3, NA, NA, NA)
-  test_1 <- correction_kernel_pseudo(R_curr, R_obs, rho, alpha, n_items, metric)
+  rankings <- c(1, 2, 3, NA, NA, NA)
+  test_1 <- correction_kernel_pseudo(R_curr, rankings, rho, alpha, n_items, metric)
   expect_equal(test_1$ranking, as.matrix(c(1, 2, 3, 5, 4, 6)))
   expect_equivalent(test_1$correction_prob, 0.172, tol = 1e-2)
   expect_equal(all(test_1$ranking == R_curr), FALSE)
 
   # Two missing -------------------------------------------- #
   R_curr <- c(1, 2, 3, 4, 5, 6)
-  R_obs <- c(1, 2, 3, 5, NA, NA)
-  test_2 <- correction_kernel_pseudo(R_curr, R_obs, rho, alpha, n_items, metric)
+  rankings <- c(1, 2, 3, 5, NA, NA)
+  test_2 <- correction_kernel_pseudo(R_curr, rankings, rho, alpha, n_items, metric)
   expect_equal(test_2$ranking, as.matrix(c(1, 2, 3, 5, 4, 6)))
   expect_equal(test_2$correction_prob, 0.5)
   expect_equal(all(test_2$ranking == R_curr), FALSE)
 
   # No missing --------------------------------------------- #
   R_curr <- c(1, 2, 3, 4, 5, 6)
-  R_obs <- c(1, 2, 3, 4, 5, 6)
-  test_3 <- correction_kernel_pseudo(R_curr, R_obs, rho, alpha, n_items, metric)
+  rankings <- c(1, 2, 3, 4, 5, 6)
+  test_3 <- correction_kernel_pseudo(R_curr, rankings, rho, alpha, n_items, metric)
   expect_equal(test_3$ranking, as.matrix(c(1, 2, 3, 4, 5, 6)))
   expect_equal(test_3$correction_prob, 1)
   expect_equal(all(test_3$ranking == R_curr), TRUE)
