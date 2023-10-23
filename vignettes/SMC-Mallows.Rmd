@@ -263,6 +263,8 @@ plot(partial_mod2, colnames = colnames(sushi_rankings),
 plot(partial_mod2, parameter = "alpha")
 ```
 
+#### New complete rankings
+
 We can also update the model with complete data, which is demonstrated here:
 
 ```{r}
