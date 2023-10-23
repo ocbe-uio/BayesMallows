@@ -256,6 +256,7 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
       // make the correction
       for (uword jj = 0; jj < num_ranks; ++jj) {
         Rcpp::List check_correction;
+
         if (!pseudo) {
           check_correction = correction_kernel(
             rankings.slice(tt + 1).row(jj).t(), aug_rankings.slice(ii).row(jj).t(),
@@ -268,6 +269,7 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
             alpha_fixed ? alpha : alpha_samples(ii, tt + 1), n_items, metric
           );
         }
+
         const vec& c_rank = check_correction["ranking"];
         aug_rankings(span(jj), span::all, span(ii)) = c_rank;
         const double& c_prob = check_correction["correction_prob"];

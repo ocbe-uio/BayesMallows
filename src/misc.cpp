@@ -51,7 +51,7 @@ double divide_by_fact(double prob, int set_length) {
 }
 
 bool is_pseudo(const std::string aug_method, const std::string metric) {
-  // Checks for valid combinaions of the inputs, stops if invalid
+  // Checks for valid combinations of the inputs, stops if invalid
   if (aug_method == "random") {
     return(false);
   } else if (aug_method == "pseudolikelihood") {

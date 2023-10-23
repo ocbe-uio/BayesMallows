@@ -110,7 +110,7 @@ smc_mallows_update.SMCMallowsUpdatedPartial <- function(
 ) {
 
   n_items <- dim(rankings)[[2]]
-  timesteps <- dim(rankings)[[3]] + 1
+  timesteps <- dim(rankings)[[3]]
 
   ret <- smc_mallows_new_item_rank_cpp(
     n_items,
@@ -133,7 +133,6 @@ smc_mallows_update.SMCMallowsUpdatedPartial <- function(
     metric = model$metric,
     leap_size = model$leap_size
   )
-
 
   ret$n_particles <- n_particles
 
