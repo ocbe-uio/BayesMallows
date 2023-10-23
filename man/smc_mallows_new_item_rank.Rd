@@ -8,7 +8,7 @@ smc_mallows_new_item_rank(
   n_items,
   rankings,
   N,
-  Time,
+  timesteps,
   logz_estimate = NULL,
   mcmc_kernel_app,
   aug_rankings_init = NULL,
@@ -28,12 +28,12 @@ smc_mallows_new_item_rank(
 \arguments{
 \item{n_items}{Integer is the number of items in a ranking}
 
-\item{rankings}{3D array of size n_assessors by n_items by Time containing a
-set of observed rankings of Time time steps}
+\item{rankings}{3D array of size n_assessors by n_items by timesteps containing a
+set of observed rankings of timesteps time steps}
 
 \item{N}{Integer specifying the number of particles}
 
-\item{Time}{Integer specifying the number of time steps in the SMC algorithm}
+\item{timesteps}{Integer specifying the number of time steps in the SMC algorithm}
 
 \item{logz_estimate}{Estimate of the partition function, computed with
 \code{\link{estimate_partition_function}}. Be aware that when using an

@@ -8,7 +8,7 @@ smc_mallows_new_users(
   rankings,
   type = c("complete", "partial", "partial_alpha_fixed"),
   N,
-  Time,
+  timesteps,
   mcmc_kernel_app,
   num_new_obs,
   alpha_prop_sd = 0.5,
@@ -31,7 +31,7 @@ n_assessors by n_items.}
 
 \item{N}{Integer specifying the number of particles}
 
-\item{Time}{Integer specifying the number of time steps in the SMC algorithm}
+\item{timesteps}{Integer specifying the number of time steps in the SMC algorithm}
 
 \item{mcmc_kernel_app}{Integer value for the number of applications we apply
 the MCMC move kernel}
@@ -95,23 +95,24 @@ Function to perform resample-move SMC algorithm where we receive
   \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
 }
 \examples{
-# Generate basic elements
-data <- sushi_rankings[1:100, ]
-n_items <- ncol(sushi_rankings)
-metric <- "footrule"
-num_new_obs <- 10
+# Assume our first dataset contains 1000 preferences, observed in 10 batches
+data_batch1 <- sushi_rankings[1:1000, ]
+num_new_obs <- 100
 
 # Calculating rho and alpha samples
 samples <- smc_mallows_new_users(
-  rankings = data, type = "complete", metric = metric,
-  leap_size = floor(n_items / 5), N = 100, Time = nrow(data) / num_new_obs,
-  mcmc_kernel_app = 5,
-  alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
-  num_new_obs = num_new_obs, verbose = TRUE
+  rankings = data,
+  N = 1000,
+  timesteps = 10,
+  mcmc_kernel_app = 10,
+  num_new_obs = num_new_obs,
+  verbose = TRUE
 )
 
 # Studying the structure of the output
-str(samples)
+plot(samples)
+
+
 }
 \seealso{
 Other modeling: 

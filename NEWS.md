@@ -1,5 +1,7 @@
 # BayesMallows (development versions)
 
+* BREAKING CHANGE: Argument "Time" in SMC Mallows functions has been changed to
+  "timesteps", to better describe what it means.
 * BREAKING CHANGE: smc_mallows_new_users() no longer takes the argument 
   "n_items", as it is given by the number of columns in its "rankings" argument.
 * BREAKING CHANGE: Functions smc_mallows_new_users() and 

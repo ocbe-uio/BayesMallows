@@ -1,17 +1,18 @@
-# Generate basic elements
-data <- sushi_rankings[1:100, ]
-n_items <- ncol(sushi_rankings)
-metric <- "footrule"
-num_new_obs <- 10
+# Assume our first dataset contains 1000 preferences, observed in 10 batches
+data_batch1 <- sushi_rankings[1:1000, ]
+num_new_obs <- 100
 
 # Calculating rho and alpha samples
 samples <- smc_mallows_new_users(
-  rankings = data, type = "complete", metric = metric,
-  leap_size = floor(n_items / 5), N = 100, Time = nrow(data) / num_new_obs,
-  mcmc_kernel_app = 5,
-  alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
-  num_new_obs = num_new_obs, verbose = TRUE
+  rankings = data,
+  N = 1000,
+  timesteps = 10,
+  mcmc_kernel_app = 10,
+  num_new_obs = num_new_obs,
+  verbose = TRUE
 )
 
 # Studying the structure of the output
-str(samples)
+plot(samples)
+
+

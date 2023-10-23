@@ -9,7 +9,7 @@ alpha_vector <- seq(from = 0, to = 15, by = 0.1)
 iter <- 100
 degree <- 10
 N <- 100
-Time <- 20
+timesteps <- 20
 
 # Estimating the logarithm of the partition function of the Mallows rank model
 logz_estimate <- estimate_partition_function(
@@ -23,7 +23,7 @@ logz_estimate <- estimate_partition_function(
 smc_test <- smc_mallows_new_users(
   rankings = data, type = "complete",
   metric = metric, leap_size = leap_size,
-  N = N, Time = Time,
+  N = N, timesteps = timesteps,
   mcmc_kernel_app = 5,
   num_new_obs = 5,
   alpha_prop_sd = 0.5,

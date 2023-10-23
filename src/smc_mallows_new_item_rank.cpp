@@ -123,7 +123,7 @@ arma::cube augment_rankings(
 //' @description Function to perform resample-move SMC algorithm where we receive a new item ranks from an existing user
 //' at each time step. Each correction and augmentation is done by filling in the missing item ranks using pseudolikelihood augmentation.
 //' @param n_items Integer is the number of items in a ranking
-//' @param rankings 3D matrix of size n_assessors by n_items by Time containing a set of observed rankings of Time time steps
+//' @param rankings 3D matrix of size n_assessors by n_items by timesteps containing a set of observed rankings of timesteps time steps
 //' @param metric A character string specifying the distance metric to use in the
 //' Bayesian Mallows Model. Available options are \code{"footrule"},
 //' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
@@ -131,7 +131,7 @@ arma::cube augment_rankings(
 //' @param leap_size leap_size Integer specifying the step size of the leap-and-shift
 //' proposal distribution
 //' @param N Integer specifying the number of particles
-//' @param Time Integer specifying the number of time steps in the SMC algorithm
+//' @param timesteps Integer specifying the number of time steps in the SMC algorithm
 //' @param logz_estimate Estimate of the partition function, computed with
 //' \code{\link{estimate_partition_function}}.
 //' @param cardinalities Cardinalities for exact computation of partition function,
@@ -162,7 +162,7 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
   const unsigned int& n_items,
   arma::cube& rankings,
   const unsigned int& N,
-  const unsigned int Time,
+  const unsigned int timesteps,
   const Rcpp::Nullable<arma::vec> logz_estimate,
   const Rcpp::Nullable<arma::vec> cardinalities,
   const int& mcmc_kernel_app,
@@ -184,7 +184,7 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
   /* ====================================================== */
 
   // Generate N initial samples of rho using the uniform prior
-  cube rho_samples(N, n_items, Time);
+  cube rho_samples(N, n_items, timesteps);
   if (rho_samples_init.isNotNull()) {
     rho_samples.slice(0) = Rcpp::as<arma::mat>(rho_samples_init);
   } else {
@@ -195,7 +195,7 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
   if(!alpha_fixed){
     // If alpha_fixed = false, alpha_samples needs to be generated from
     // alpha_samples_init
-    alpha_samples = zeros(N, Time);
+    alpha_samples = zeros(N, timesteps);
     if (alpha_samples_init.n_elem != N) {
       alpha_samples_init = initialize_alpha(N);
     }
@@ -203,7 +203,7 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
   }
 
   /* generate vector to store ESS */
-  rowvec ESS_vec(Time);
+  rowvec ESS_vec(timesteps);
   ESS_vec(0) = 1;
 
   /* ====================================================== */
@@ -233,12 +233,12 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
   prev_aug_rankings = aug_rankings;
 
   /* ====================================================== */
-  /* Loop for t=1,...,Time                                  */
+  /* Loop for t=1,...,timesteps                                  */
   /* ====================================================== */
   // Here, we attempt the SMC sampler
   const bool pseudo = is_pseudo(aug_method, metric);
-  for (uword tt = 0; tt < Time - 1; ++tt) {
-    if (verbose) REprintf("iteration %i out of %i \n", tt + 1, Time - 1);
+  for (uword tt = 0; tt < timesteps - 1; ++tt) {
+    if (verbose) REprintf("iteration %i out of %i \n", tt + 1, timesteps - 1);
     /* New Information -------------------------------------- */
     // new observed item ranks from each user, need to update augmented rankings
     rho_samples.slice(tt + 1) = rho_samples.slice(tt);

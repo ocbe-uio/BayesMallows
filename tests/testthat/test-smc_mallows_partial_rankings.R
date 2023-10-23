@@ -68,7 +68,7 @@ test_that("BayesMallows MCMC Results are OK", {
 
 mcmc_times <- 5
 num_new_obs <- 5
-Time <- dim(samples)[1] / num_new_obs
+timesteps <- dim(samples)[1] / num_new_obs
 alpha_prop_sd <- 0.5
 lambda <- 0.15
 alpha_max <- 1e0
@@ -83,7 +83,7 @@ test_that("Produces the wrong metric and aug_method error", {
       metric          = "cayley",
       leap_size       = leap_size,
       N               = N,
-      Time            = Time,
+      timesteps            = timesteps,
       mcmc_kernel_app = mcmc_times,
       num_new_obs     = num_new_obs,
       aug_method      = "pseudolikelihood"
@@ -96,7 +96,7 @@ test_that("Produces the wrong metric and aug_method error", {
       metric          = "cayley",
       leap_size       = leap_size,
       N               = N,
-      Time            = Time,
+      timesteps            = timesteps,
       mcmc_kernel_app = mcmc_times,
       num_new_obs     = num_new_obs,
       alpha_prop_sd   = alpha_prop_sd,
@@ -115,7 +115,7 @@ test_that("Runs with unif kernel", {
     metric          = "footrule",
     leap_size       = leap_size,
     N               = N,
-    Time            = Time,
+    timesteps            = timesteps,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
     aug_method      = "random"
@@ -129,7 +129,7 @@ test_that("Runs with unif kernel", {
     metric          = "footrule",
     leap_size       = leap_size,
     N               = N,
-    Time            = Time,
+    timesteps            = timesteps,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
     alpha_prop_sd   = alpha_prop_sd,
@@ -156,7 +156,7 @@ test_that("Runs with pseudo kernel", {
     metric          = "footrule",
     leap_size       = leap_size,
     N               = N,
-    Time            = Time,
+    timesteps            = timesteps,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
     aug_method      = "pseudolikelihood"
@@ -170,7 +170,7 @@ test_that("Runs with pseudo kernel", {
     metric          = "footrule",
     leap_size       = leap_size,
     N               = N,
-    Time            = Time,
+    timesteps            = timesteps,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
     alpha_prop_sd   = alpha_prop_sd,
@@ -197,7 +197,7 @@ test_that("Specific example results are OK", {
     metric          = metric,
     leap_size       = leap_size,
     N               = N,
-    Time            = Time,
+    timesteps            = timesteps,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
     alpha_prop_sd   = alpha_prop_sd,
@@ -220,7 +220,7 @@ test_that("Specific example results are OK", {
 
   expect_warning(
     compute_rho_consensus(
-      output = test$rho_samples[, , Time + 1], nmc = N, burnin = NULL, C = 1,
+      output = test$rho_samples[, , timesteps + 1], nmc = N, burnin = NULL, C = 1,
       type = "CP"
     ),
     "deprecated"
@@ -244,7 +244,7 @@ test_that("Specific example results are OK", {
     metric          = metric,
     leap_size       = leap_size,
     N               = N,
-    Time            = Time,
+    timesteps            = timesteps,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
     aug_method      = aug_method,

@@ -37,7 +37,7 @@
 
 #' A synthetic 3D matrix generated using the sample_mallows function
 #'
-#' A synthetic 3D matrix (\code{n_users}, \code{n_items}, \code{Time}) generated
+#' A synthetic 3D matrix (\code{n_users}, \code{n_items}, \code{timesteps}) generated
 #' using the sample_mallows function. These are test datasets used to run
 #' the SMC-Mallows framework for the cases where we know all of the users
 #' in our system and their original ranking information are partial rankings.
@@ -48,7 +48,7 @@
 #' items from each user, where \code{m} is the number of items in a ranking.
 #' Then, as we increase the time, we observe the next top ranked item from
 #' one user at a time, then the next top ranked item, and so on until we have
-#' a complete dataset at \code{sample_dataset[, , Time]}.
+#' a complete dataset at \code{sample_dataset[, , timesteps]}.
 #'
 #' @family datasets
 #' @references https://github.com/anjastein/SMC-Mallows/tree/main/data

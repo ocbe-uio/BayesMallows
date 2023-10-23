@@ -4,8 +4,8 @@
 #'   and augmentation is done by filling in the missing item ranks using
 #'   pseudolikelihood augmentation.
 #' @param n_items Integer is the number of items in a ranking
-#' @param rankings 3D array of size n_assessors by n_items by Time containing a
-#'   set of observed rankings of Time time steps
+#' @param rankings 3D array of size n_assessors by n_items by timesteps containing a
+#'   set of observed rankings of timesteps time steps
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
 #'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
@@ -13,7 +13,7 @@
 #' @param leap_size leap_size Integer specifying the step size of the
 #'   leap-and-shift proposal distribution
 #' @param N Integer specifying the number of particles
-#' @param Time Integer specifying the number of time steps in the SMC algorithm
+#' @param timesteps Integer specifying the number of time steps in the SMC algorithm
 #' @param logz_estimate Estimate of the partition function, computed with
 #'   \code{\link{estimate_partition_function}}. Be aware that when using an
 #'   estimated partition function when \code{n_clusters > 1}, the partition
@@ -62,7 +62,7 @@ smc_mallows_new_item_rank <- function(
     n_items,
     rankings,
     N,
-    Time,
+    timesteps,
     logz_estimate = NULL,
     mcmc_kernel_app,
     aug_rankings_init = NULL,
@@ -88,7 +88,7 @@ smc_mallows_new_item_rank <- function(
     n_items,
     rankings,
     N,
-    Time,
+    timesteps,
     logz_estimate = logz_list$logz_estimate,
     cardinalities = logz_list$cardinalities,
     mcmc_kernel_app,

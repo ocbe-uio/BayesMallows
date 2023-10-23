@@ -41,12 +41,12 @@ mcmc_rho_matrix <- matrix(model_fit$rho$value, ncol = n_items, nrow = nmc, byrow
 # ###################################################################
 mcmc_times <- 5
 num_new_obs <- 10
-Time <- dim(data)[1] / num_new_obs
+timesteps <- dim(data)[1] / num_new_obs
 N <- 100
 
 test <- smc_mallows_new_users(
   rankings = data, type = "complete", metric = metric,
-  leap_size = leap_size, N = N, Time = Time,
+  leap_size = leap_size, N = N, timesteps = timesteps,
   mcmc_kernel_app = mcmc_times,
   alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
   num_new_obs = num_new_obs, verbose = FALSE
@@ -88,7 +88,7 @@ test_that("Output of compute_posterior_intervals_rho is OK", {
 
 # posterior for alpha
 alpha_samples_table <- data.frame(
-  iteration = 1:N, value = test$alpha_samples[, Time + 1]
+  iteration = 1:N, value = test$alpha_samples[, timesteps + 1]
 )
 # posterior confidence intervals
 alpha_posterior_intervals <- compute_posterior_intervals(
@@ -120,21 +120,21 @@ test_that("get_exponent_sum() in smc_mallows_new_users_complete() works", {
   data <- sushi_rankings[1:100, ]
   n_users <- nrow(data)
   n_items <- ncol(sushi_rankings)
-  Time <- nrow(data) / num_new_obs
+  timesteps <- nrow(data) / num_new_obs
   num_new_obs <- 10
   N <- 100
 
   # rho_samples and alpha_samples -------------------------- #
-  rho_samples <- array(data = 0, dim = c(N, n_items, (n_users + Time + 1)))
+  rho_samples <- array(data = 0, dim = c(N, n_items, (n_users + timesteps + 1)))
   for (ii in seq_len(N)) {
     rho_samples[ii, , 1] <- sample(seq_len(n_items), n_items, replace = FALSE)
   }
-  alpha_samples <- matrix(nrow = N, ncol = (n_items + Time + 1))
+  alpha_samples <- matrix(nrow = N, ncol = (n_items + timesteps + 1))
   alpha_samples[, 1] <- rexp(N, rate = 1)
 
   num_obs <- 0
-  out_loglik <- vector(mode = "numeric", length = Time)
-  for (tt in seq_len(Time)) {
+  out_loglik <- vector(mode = "numeric", length = timesteps)
+  for (tt in seq_len(timesteps)) {
     num_obs <- num_obs + num_new_obs
     new_observed_rankings <- data[(num_obs - num_new_obs + 1):num_obs, ]
     rho_samples[, , tt + 1] <- rho_samples[, , tt]

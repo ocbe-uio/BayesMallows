@@ -14,7 +14,7 @@
 #' @param leap_size leap_size Integer specifying the step size of the
 #'   leap-and-shift proposal distribution
 #' @param N Integer specifying the number of particles
-#' @param Time Integer specifying the number of time steps in the SMC algorithm
+#' @param timesteps Integer specifying the number of time steps in the SMC algorithm
 #' @param logz_estimate Estimate of the partition function, computed with
 #'   \code{\link{estimate_partition_function}}. Be aware that when using an
 #'   estimated partition function when \code{n_clusters > 1}, the partition
@@ -66,7 +66,7 @@ smc_mallows_new_users <- function(
     rankings,
     type = c("complete", "partial", "partial_alpha_fixed"),
     N,
-    Time,
+    timesteps,
     mcmc_kernel_app,
     num_new_obs,
     alpha_prop_sd = 0.5,
@@ -88,8 +88,8 @@ smc_mallows_new_users <- function(
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
   n_users <- nrow(rankings)
 
-  if (type == "complete" && (Time > n_users / num_new_obs)) {
-    stop("Time should not exceed n_users / num_new_obs.")
+  if (type == "complete" && (timesteps > n_users / num_new_obs)) {
+    stop("timesteps should not exceed n_users / num_new_obs.")
   }
 
   smc_mallows_new_users_cpp(
@@ -98,7 +98,7 @@ smc_mallows_new_users <- function(
     n_items = n_items,
     n_users = n_users,
     N,
-    Time,
+    timesteps,
     mcmc_kernel_app,
     num_new_obs,
     alpha_prop_sd,

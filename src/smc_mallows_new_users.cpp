@@ -27,7 +27,7 @@ using namespace arma;
 //' @param leap_size leap_size Integer specifying the step size of the
 //' leap-and-shift proposal distribution
 //' @param N Integer specifying the number of particles
-//' @param Time Integer specifying the number of time steps in the SMC algorithm
+//' @param timesteps Integer specifying the number of time steps in the SMC algorithm
 //' @param logz_estimate Estimate of the partition function, computed with
 //' \code{\link{estimate_partition_function}}.
 //' @param cardinalities Cardinalities for exact evaluation of partition function,
@@ -67,7 +67,7 @@ Rcpp::List smc_mallows_new_users_cpp(
   const int& n_items,
   const int& n_users,
   const int& N,
-  int Time,
+  int timesteps,
   const int& mcmc_kernel_app,
   const int& num_new_obs,
   const double alpha_prop_sd = 0.5,
@@ -88,18 +88,18 @@ Rcpp::List smc_mallows_new_users_cpp(
   /* ====================================================== */
 
   /* generate rho samples using uniform prior ------------- */
-  cube rho_samples(N, n_items, Time + 1);
+  cube rho_samples(N, n_items, timesteps + 1);
   rho_samples.slice(0) = initialize_rho(n_items, N, rho_init).t();
 
   /* generate alpha samples using exponential prior ------- */
   mat alpha_samples;
   if(type != "partial_alpha_fixed") {
-    alpha_samples = zeros(N, Time + 1);
+    alpha_samples = zeros(N, timesteps + 1);
     alpha_samples.col(0) = initialize_alpha(N, alpha_init);
   }
 
   /* generate vector to store ESS */
-  rowvec ESS_vec(Time);
+  rowvec ESS_vec(timesteps);
 
   // this is to store the augmentations of the observed rankings for each particle
   cube aug_rankings; // no. users by items by particles
@@ -112,8 +112,8 @@ Rcpp::List smc_mallows_new_users_cpp(
   /* ====================================================== */
   int num_obs = 0;
 
-  for (int tt{}; tt < Time; ++tt) {
-    if (verbose) REprintf("observe %i out of %i \n", tt + 1, Time);
+  for (int tt{}; tt < timesteps; ++tt) {
+    if (verbose) REprintf("observe %i out of %i \n", tt + 1, timesteps);
 
     // keep tally of how many ranking observations we have so far
     num_obs += num_new_obs;
