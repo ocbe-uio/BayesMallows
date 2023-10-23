@@ -24,8 +24,6 @@ smc_mallows_update <- function(model, rankings, ...) {
 #'   Defaults to \code{nrow(rankings)}.
 #' @param verbose Logical specifying whether to print out the progress of the
 #'   SMC-Mallows algorithm. Defaults to \code{FALSE}.
-#' @param type One of \code{"complete"}, \code{"partial"}, or
-#'   \code{"partial_alpha_fixed"}. Defaults to \code{model$type}.
 #' @param ... Optional additional arguments. Currently not used.
 #'
 #' @return An updated model, of class
@@ -42,20 +40,17 @@ smc_mallows_update.SMCMallowsNewUsers <- function(
     num_new_obs = nrow(rankings),
     n_particles = model$n_particles,
     verbose = FALSE,
-    type = model$type,
     ...
     ) {
-
-  type <- match.arg(type, c("complete", "partial", "partial_alpha_fixed"))
 
   stopifnot(is.matrix(rankings))
   n_users <- nrow(rankings)
 
   ret <- smc_mallows_new_users_cpp(
-    rankings = rankings,
-    type = type,
+    rankings = rbind(rankings, model$rankings),
+    type = model$type,
     n_items = model$n_items,
-    n_users = n_users,
+    n_users = model$num_obs + n_users,
     n_particles = model$n_particles,
     timesteps = timesteps,
     mcmc_kernel_app = model$mcmc_kernel_app,
@@ -71,8 +66,17 @@ smc_mallows_update.SMCMallowsNewUsers <- function(
     metric = model$metric,
     leap_size = model$leap_size,
     rho_init = model$rho_samples[, , dim(model$rho_samples)[[3]]],
-    alpha_init = model$alpha_samples[, dim(model$alpha_samples)[[2]]]
+    alpha_init = model$alpha_samples[, dim(model$alpha_samples)[[2]]],
+    num_obs = model$num_obs
   )
+
+  carry_over <- c("metric", "type", "logz_list", "n_items", "n_particles",
+                  "mcmc_kernel_app", "alpha_prop_sd", "lambda", "alpha_max",
+                  "alpha", "aug_method", "leap_size", "num_obs", "rankings")
+
+  for(nm in carry_over) {
+    eval(parse(text = paste0("ret$", nm, "<-model$", nm)))
+  }
 
   class(ret) <- c("SMCMallowsNewUsers","SMCMallows")
   ret
