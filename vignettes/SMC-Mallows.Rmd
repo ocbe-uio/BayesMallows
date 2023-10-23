@@ -27,7 +27,7 @@ For an in-depth treatment of the implemented methodology, see @steinSequentialIn
 |:-----------------------------|:--------------------------------------------|
 | `smc_mallows_new_users` |  Runs the SMC algorithm for case where we observe full rankings as new observational data. |
 | `smc_mallows_new_item_rank` | Runs the SMC algorithm for case where we observe updated partial rankings as from existing users. |
-| `smc_mallows_update()` | Update existing models when new data arrive. |
+| `smc_mallows_update` | Update existing models when new data arrive. |
 | `plot`| Plots posterior density of $\boldsymbol{\rho}$ or $\alpha$ for a selection of items. |
 | `compute_consensus`| Computes the CP estimate or MAP estimate of the latent ranks. |
 | `compute_posterior_intervals` | Computes the Bayesian posterior intervals for $\alpha$ and $\boldsymbol{\rho}$.|
