@@ -80,7 +80,6 @@ test_that("Produces the wrong metric and aug_method error", {
       alpha           = alpha_0,
       type            = "partial_alpha_fixed",
       rankings           = samples,
-      n_items         = n_items,
       metric          = "cayley",
       leap_size       = leap_size,
       N               = N,
@@ -94,7 +93,6 @@ test_that("Produces the wrong metric and aug_method error", {
     smc_mallows_new_users(
       rankings           = samples,
       type            = "partial",
-      n_items         = n_items,
       metric          = "cayley",
       leap_size       = leap_size,
       N               = N,
@@ -114,7 +112,6 @@ test_that("Runs with unif kernel", {
     alpha           = alpha_0,
     type            = "partial_alpha_fixed",
     rankings           = samples,
-    n_items         = n_items,
     metric          = "footrule",
     leap_size       = leap_size,
     N               = N,
@@ -129,7 +126,6 @@ test_that("Runs with unif kernel", {
   smc_unif <- smc_mallows_new_users(
     rankings           = samples,
     type            = "partial",
-    n_items         = n_items,
     metric          = "footrule",
     leap_size       = leap_size,
     N               = N,
@@ -157,7 +153,6 @@ test_that("Runs with pseudo kernel", {
     alpha           = alpha_0,
     type            = "partial_alpha_fixed",
     rankings           = samples,
-    n_items         = n_items,
     metric          = "footrule",
     leap_size       = leap_size,
     N               = N,
@@ -172,7 +167,6 @@ test_that("Runs with pseudo kernel", {
   smc_pseudo <- smc_mallows_new_users(
     rankings           = samples,
     type            = "partial",
-    n_items         = n_items,
     metric          = "footrule",
     leap_size       = leap_size,
     N               = N,
@@ -200,7 +194,6 @@ test_that("Specific example results are OK", {
   test <- smc_mallows_new_users(
     rankings           = samples,
     type            = "partial",
-    n_items         = n_items,
     metric          = metric,
     leap_size       = leap_size,
     N               = N,
@@ -248,7 +241,6 @@ test_that("Specific example results are OK", {
   test_fixed <- smc_mallows_new_users(
     rankings           = samples,
     type            = "partial_alpha_fixed",
-    n_items         = n_items,
     metric          = metric,
     leap_size       = leap_size,
     N               = N,

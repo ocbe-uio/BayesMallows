@@ -45,7 +45,7 @@ Time <- dim(data)[1] / num_new_obs
 N <- 100
 
 test <- smc_mallows_new_users(
-  rankings = data, type = "complete", n_items = n_items, metric = metric,
+  rankings = data, type = "complete", metric = metric,
   leap_size = leap_size, N = N, Time = Time,
   mcmc_kernel_app = mcmc_times,
   alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,

@@ -4,10 +4,9 @@
 #'   \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
 #'
 #' @param rankings Matrix containing the full set of observed rankings of size
-#'   n_assessors by n_items
+#'   n_assessors by n_items.
 #' @param type One of \code{"complete"}, \code{"partial"}, or
 #'   \code{"partial_alpha_fixed"}.
-#' @param n_items Integer is the number of items in a ranking
 #' @param metric A character string specifying the distance metric to use in the
 #'   Bayesian Mallows Model. Available options are \code{"footrule"},
 #'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
@@ -66,7 +65,6 @@
 smc_mallows_new_users <- function(
     rankings,
     type = c("complete", "partial", "partial_alpha_fixed"),
-    n_items,
     N,
     Time,
     mcmc_kernel_app,
@@ -86,6 +84,7 @@ smc_mallows_new_users <- function(
   ))
   stopifnot(is.matrix(rankings))
   type <- match.arg(type, c("complete", "partial", "partial_alpha_fixed"))
+  n_items <- ncol(rankings)
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
   n_users <- nrow(rankings)
 

@@ -1,6 +1,8 @@
 # BayesMallows (development versions)
 
-* BREAKING CHANGES: Functions smc_mallows_new_users() and 
+* BREAKING CHANGE: smc_mallows_new_users() no longer takes the argument 
+  "n_items", as it is given by the number of columns in its "rankings" argument.
+* BREAKING CHANGE: Functions smc_mallows_new_users() and 
   smc_mallows_new_item_rank() are now wrappers in R, which call the underlying 
   C++ functions. These functions are now able to compute the partition function
   automatically, not requiring the user to do this manually. As a consequence,

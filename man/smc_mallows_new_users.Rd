@@ -7,7 +7,6 @@
 smc_mallows_new_users(
   rankings,
   type = c("complete", "partial", "partial_alpha_fixed"),
-  n_items,
   N,
   Time,
   mcmc_kernel_app,
@@ -25,12 +24,10 @@ smc_mallows_new_users(
 }
 \arguments{
 \item{rankings}{Matrix containing the full set of observed rankings of size
-n_assessors by n_items}
+n_assessors by n_items.}
 
 \item{type}{One of \code{"complete"}, \code{"partial"}, or
 \code{"partial_alpha_fixed"}.}
-
-\item{n_items}{Integer is the number of items in a ranking}
 
 \item{N}{Integer specifying the number of particles}
 
@@ -106,7 +103,7 @@ num_new_obs <- 10
 
 # Calculating rho and alpha samples
 samples <- smc_mallows_new_users(
-  rankings = data, type = "complete", n_items = n_items, metric = metric,
+  rankings = data, type = "complete", metric = metric,
   leap_size = floor(n_items / 5), N = 100, Time = nrow(data) / num_new_obs,
   mcmc_kernel_app = 5,
   alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,

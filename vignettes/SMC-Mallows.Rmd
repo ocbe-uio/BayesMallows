@@ -112,7 +112,6 @@ N <- 1000
 Time <- 20
 smc_test <- smc_mallows_new_users(
   rankings = data,
-  n_items = ncol(data),
   N = N,
   Time = Time,
   mcmc_kernel_app = 5,
@@ -184,7 +183,6 @@ We can call the function `smc_mallows_new_users` with `type = "partial"` to run 
 smc_partial_test <- smc_mallows_new_users(
   rankings = data_partial,
   type = "partial",
-  n_items = ncol(data_partial),
   metric = "cayley",
   N = N,
   Time = Time,
@@ -206,7 +204,6 @@ set.seed(994)
 smc_partial_test <- smc_mallows_new_users(
   rankings = data_partial,
   type = "partial",
-  n_items = ncol(data_partial),
   N = N,
   Time = Time,
   mcmc_kernel_app = 5,

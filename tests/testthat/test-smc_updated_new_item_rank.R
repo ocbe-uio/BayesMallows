@@ -36,7 +36,6 @@ set.seed(994)
 smc_test_new_user_unif <- smc_mallows_new_users(
   rankings = sample_dataset,
   type = "partial",
-  n_items = n_items,
   metric = metric,
   leap_size = leap_size,
   N = N,
@@ -90,7 +89,7 @@ test_that("Updated item rank output (alpha variable) is OK", {
 # test with pseudolikelihood
 
 smc_test_new_user_pseudo <- smc_mallows_new_users(
-  rankings = example_dataset, n_items = n_items, metric = metric,
+  rankings = example_dataset, metric = metric,
   leap_size = leap_size,
   N = N, Time = Time,
   mcmc_kernel_app = mcmc_kernel_app, num_new_obs = num_new_obs,

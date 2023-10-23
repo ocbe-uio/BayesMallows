@@ -43,7 +43,7 @@ N <- 100
 
 # Performing SMC
 smc_test <- smc_mallows_new_users(
-  rankings = data, type = "complete", n_items = n_items,
+  rankings = data, type = "complete",
   metric = metric, leap_size = leap_size,
   N = N, Time = Time,
   mcmc_kernel_app = 5,
