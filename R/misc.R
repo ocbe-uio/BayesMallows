@@ -136,3 +136,24 @@ permutations <- function(n) {
     return(A)
   }
 }
+
+
+#' Skip an extended test, depending on value of environmental variable
+#' BAYESMALLOWS_EXTENDED_TESTS
+#'
+#' @return Invisibly return TRUE if environmental variable
+#'   BAYESMALLOWS_EXTENDED_TESTS is 'true' (test not skipped); otherwise, returns
+#'   `testthat::skip()`
+#' @noRd
+#'
+#'
+#' @author This function comes from the canaper package, written by Joel Nitta.
+#'
+skip_extended <- function() {
+  if (identical(Sys.getenv("BAYESMALLOWS_EXTENDED_TESTS"), "true")) {
+    return(invisible(TRUE)) # don't skip if BAYESMALLOWS_EXTENDED_TESTS is 'true'
+  }
+  testthat::skip(
+    "Skipping extended tests"
+  )
+}

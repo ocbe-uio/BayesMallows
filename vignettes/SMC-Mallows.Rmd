@@ -45,7 +45,9 @@ We have set of $m$ distinct items, labelled $\mathcal{A} = \{A_1, \dots, A_m		\}
 
 The Mallows model [@mallows1957] is a probability distribution for ranking data. The probability of observing a ranking $\boldsymbol{R}$ is defined as
 
-$$p(\boldsymbol{R}) = p(\boldsymbol{R}|\boldsymbol{\rho},\alpha) =\frac{1}{Z_m(\alpha)} \exp \lefts\{ -\frac{\alpha}{m} { d(\boldsymbol{R}, \boldsymbol{\rho})} \right\},$$
+$$
+p(\boldsymbol{R}) = p(\boldsymbol{R}|\boldsymbol{\rho},\alpha) =\frac{1}{Z_m(\alpha)} \exp \lefts\{ -\frac{\alpha}{m} { d(\boldsymbol{R}, \boldsymbol{\rho})} \right\},
+$$
 
 where: $\boldsymbol{\rho} \in \mathcal{P}_m$ is the consensus ranking; $\alpha > 0$ is the scale parameter which represents the variability in rankings within the group of individuals around the consensus ranking; and $Z_m(\alpha)$ is the normalisation constant. The distance function, $d(\cdot,\cdot) : \mathcal{P}_m \times \mathcal{P}_m \rightarrow [0,\infty)$, measures the ''closeness'' of a ranking to the consensus ranking. The Mallows literature discusses the use of a right-invariant distance function, which means that the distance between two items is unaffected by relabelling of items [@diaconis1988]. The distance metrics that the `BayesMallows` R package currently uses are: footrule, Spearman, Cayley, Kendall and Hamming. This also means that the normalisation constant is independent of the consensus ranking.
 
@@ -208,22 +210,6 @@ head(data_partial)
 We can call the function `smc_mallows_new_users` with `type = "partial"` to run the SMC algorithm for partial ranking data. The variable `aug_method` allows you to choose which data augmentation method to use on the partial ranking data. The option `"pseudolikelihood"` is only compatible with when selecting the distance metric as either `"footrule"` or `"spearman"`.
 
 
-```{r smc_partial_error, eval=FALSE, error=TRUE}
-# example of selecting the incorrect combination of metric and aug_method
-partial_mod1 <- smc_mallows_new_users(
-  rankings = data_partial,
-  type = "partial",
-  metric = "cayley",
-  n_particles = 1000,
-  timesteps = 20,
-  mcmc_kernel_app = 5,
-  num_new_obs = 5,
-  aug_method = "pseudolikelihood"
-)
-```
-
-This time we call the function again but this time we provide a valid combination of the augmentation method and the distance metric.
-
 ```{r set_seed2, message=FALSE, warning=FALSE, include=FALSE}
 set.seed(994)
 ```
@@ -242,7 +228,7 @@ partial_mod1 <- smc_mallows_new_users(
 ```
 
 
-The variable `smc_test_partial` contains a list with three dimensional matrix of size `n_particles` by `n_items` by `timesteps+1`, named `rho_samples`,  and a `n_particles` by `timesteps+1` matrix called `alpha_samples`. The analysis performed in the previous demonstration can be applied to this scenario. Here, we can observe the posterior probabilities for a selection of items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ as part of this demonstration, but we can use other post processing functions to analyse the output.
+The analysis performed in the previous demonstration can be applied to this scenario. Here, we can observe the posterior probabilities for a selection of items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ as part of this demonstration, but we can use other post processing functions to analyse the output.
 
 
 ```{r smc_partial_analysis, message=FALSE, warning=FALSE}

@@ -111,7 +111,8 @@ smc_mallows_new_users <- function(
     cardinalities = logz_list$cardinalities,
     verbose,
     metric,
-    leap_size
+    leap_size,
+    num_obs = 0L
   )
 
   ret$metric <- metric
@@ -126,6 +127,8 @@ smc_mallows_new_users <- function(
   ret$alpha <- alpha
   ret$aug_method <- aug_method
   ret$leap_size <- leap_size
+  ret$num_obs <- nrow(rankings)
+  ret$rankings <- rankings
   class(ret) <- c("SMCMallowsNewUsers","SMCMallows")
 
   ret

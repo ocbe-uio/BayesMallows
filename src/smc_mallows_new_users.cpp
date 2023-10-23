@@ -81,7 +81,8 @@ Rcpp::List smc_mallows_new_users_cpp(
   const std::string& metric = "footrule",
   const int& leap_size = 1,
   Rcpp::Nullable<arma::mat> rho_init = R_NilValue,
-  Rcpp::Nullable<arma::vec> alpha_init = R_NilValue
+  Rcpp::Nullable<arma::vec> alpha_init = R_NilValue,
+  int num_obs = 0
 ) {
   /* ====================================================== */
   /* Initialise Phase                                       */
@@ -114,7 +115,6 @@ Rcpp::List smc_mallows_new_users_cpp(
   /* ====================================================== */
   /* New user situation                                     */
   /* ====================================================== */
-  int num_obs = 0;
 
   for (int tt{}; tt < timesteps; ++tt) {
     if (verbose) REprintf("observe %i out of %i \n", tt + 1, timesteps);
