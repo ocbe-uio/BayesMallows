@@ -84,13 +84,16 @@ smc_mallows_new_users <- function(
     "footrule", "spearman", "cayley", "hamming",
     "kendall", "ulam"
   ))
+  stopifnot(is.matrix(rankings))
   type <- match.arg(type, c("complete", "partial", "partial_alpha_fixed"))
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
+  n_users <- nrow(rankings)
 
   smc_mallows_new_users_cpp(
-    rankings,
-    type,
-    n_items,
+    rankings = rankings,
+    type = type,
+    n_items = n_items,
+    n_users = n_users,
     N,
     Time,
     mcmc_kernel_app,

@@ -19,6 +19,7 @@ using namespace arma;
 //' @param type One of \code{"complete"}, \code{"partial"}, or
 //' \code{"partial_alpha_fixed"}.
 //' @param n_items Integer is the number of items in a ranking
+//' @param n_users number of users
 //' @param metric A character string specifying the distance metric to use
 //' in the Bayesian Mallows Model. Available options are \code{"footrule"},
 //' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
@@ -63,6 +64,7 @@ Rcpp::List smc_mallows_new_users_cpp(
   const arma::mat& rankings,
   const std::string& type,
   const int& n_items,
+  const int& n_users,
   const int& N,
   int Time,
   const int& mcmc_kernel_app,
@@ -81,7 +83,7 @@ Rcpp::List smc_mallows_new_users_cpp(
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
-  int n_users = rankings.n_rows; // total number of users
+
   if(type == "complete"){
     if (Time > n_users / num_new_obs) {
       Rcpp::warning(                                                  \

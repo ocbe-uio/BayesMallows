@@ -415,6 +415,7 @@ smc_mallows_new_item_rank_cpp <- function(n_items, rankings, N, Time, logz_estim
 #' @param type One of \code{"complete"}, \code{"partial"}, or
 #' \code{"partial_alpha_fixed"}.
 #' @param n_items Integer is the number of items in a ranking
+#' @param n_users number of users
 #' @param metric A character string specifying the distance metric to use
 #' in the Bayesian Mallows Model. Available options are \code{"footrule"},
 #' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
@@ -454,8 +455,8 @@ smc_mallows_new_item_rank_cpp <- function(n_items, rankings, N, Time, logz_estim
 #'
 #' @family modeling
 #'
-smc_mallows_new_users_cpp <- function(rankings, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L) {
-    .Call(`_BayesMallows_smc_mallows_new_users_cpp`, rankings, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size)
+smc_mallows_new_users_cpp <- function(rankings, type, n_items, n_users, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L) {
+    .Call(`_BayesMallows_smc_mallows_new_users_cpp`, rankings, type, n_items, n_users, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size)
 }
 
 #' @title Metropolis-Hastings Alpha

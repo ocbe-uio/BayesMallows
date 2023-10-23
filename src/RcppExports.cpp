@@ -303,14 +303,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // smc_mallows_new_users_cpp
-Rcpp::List smc_mallows_new_users_cpp(const arma::mat& rankings, const std::string& type, const int& n_items, const int& N, int Time, const int& mcmc_kernel_app, const int& num_new_obs, const double alpha_prop_sd, const double lambda, const double alpha_max, const double alpha, const std::string& aug_method, const Rcpp::Nullable<arma::vec>& logz_estimate, const Rcpp::Nullable<arma::vec>& cardinalities, const bool verbose, const std::string& metric, const int& leap_size);
-RcppExport SEXP _BayesMallows_smc_mallows_new_users_cpp(SEXP rankingsSEXP, SEXP typeSEXP, SEXP n_itemsSEXP, SEXP NSEXP, SEXP TimeSEXP, SEXP mcmc_kernel_appSEXP, SEXP num_new_obsSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP, SEXP alphaSEXP, SEXP aug_methodSEXP, SEXP logz_estimateSEXP, SEXP cardinalitiesSEXP, SEXP verboseSEXP, SEXP metricSEXP, SEXP leap_sizeSEXP) {
+Rcpp::List smc_mallows_new_users_cpp(const arma::mat& rankings, const std::string& type, const int& n_items, const int& n_users, const int& N, int Time, const int& mcmc_kernel_app, const int& num_new_obs, const double alpha_prop_sd, const double lambda, const double alpha_max, const double alpha, const std::string& aug_method, const Rcpp::Nullable<arma::vec>& logz_estimate, const Rcpp::Nullable<arma::vec>& cardinalities, const bool verbose, const std::string& metric, const int& leap_size);
+RcppExport SEXP _BayesMallows_smc_mallows_new_users_cpp(SEXP rankingsSEXP, SEXP typeSEXP, SEXP n_itemsSEXP, SEXP n_usersSEXP, SEXP NSEXP, SEXP TimeSEXP, SEXP mcmc_kernel_appSEXP, SEXP num_new_obsSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP, SEXP alphaSEXP, SEXP aug_methodSEXP, SEXP logz_estimateSEXP, SEXP cardinalitiesSEXP, SEXP verboseSEXP, SEXP metricSEXP, SEXP leap_sizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type rankings(rankingsSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type type(typeSEXP);
     Rcpp::traits::input_parameter< const int& >::type n_items(n_itemsSEXP);
+    Rcpp::traits::input_parameter< const int& >::type n_users(n_usersSEXP);
     Rcpp::traits::input_parameter< const int& >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type Time(TimeSEXP);
     Rcpp::traits::input_parameter< const int& >::type mcmc_kernel_app(mcmc_kernel_appSEXP);
@@ -325,7 +326,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< const int& >::type leap_size(leap_sizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_users_cpp(rankings, type, n_items, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size));
+    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_users_cpp(rankings, type, n_items, n_users, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -403,7 +404,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_sample_probabilities", (DL_FUNC) &_BayesMallows_get_sample_probabilities, 5},
     {"_BayesMallows_leap_and_shift_probs", (DL_FUNC) &_BayesMallows_leap_and_shift_probs, 3},
     {"_BayesMallows_smc_mallows_new_item_rank_cpp", (DL_FUNC) &_BayesMallows_smc_mallows_new_item_rank_cpp, 19},
-    {"_BayesMallows_smc_mallows_new_users_cpp", (DL_FUNC) &_BayesMallows_smc_mallows_new_users_cpp, 17},
+    {"_BayesMallows_smc_mallows_new_users_cpp", (DL_FUNC) &_BayesMallows_smc_mallows_new_users_cpp, 18},
     {"_BayesMallows_metropolis_hastings_alpha", (DL_FUNC) &_BayesMallows_metropolis_hastings_alpha, 10},
     {"_BayesMallows_metropolis_hastings_aug_ranking", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking, 7},
     {"_BayesMallows_metropolis_hastings_rho", (DL_FUNC) &_BayesMallows_metropolis_hastings_rho, 6},
