@@ -27,9 +27,9 @@ void new_items_move_step(
     const double& lambda = 0.1
 ){
   const uword num_ranks = rankings.n_rows;
-  const uword N = rho_samples.n_rows;
+  const uword n_particles = rho_samples.n_rows;
   int n_items = rho_samples.n_cols;
-  for (uword ii = 0; ii < N; ++ii) {
+  for (uword ii = 0; ii < n_particles; ++ii) {
     rho_samples.slice(ttplus1).row(ii) = metropolis_hastings_rho(
       alpha_fixed ? alpha : alpha_samples(ii, ttplus1), n_items, aug_rankings.slice(ii),
       rho_samples.slice(ttplus1).row(ii).t(), metric, leap_size
@@ -59,7 +59,7 @@ void new_items_move_step(
 arma::cube augment_rankings(
   const unsigned int& n_items,
   arma::cube& rankings,
-  const unsigned int& N,
+  const unsigned int& n_particles,
   arma::cube rho_samples,
   arma::mat alpha_samples,
   const double alpha = 0,
@@ -73,18 +73,18 @@ arma::cube augment_rankings(
   const unsigned int& num_ranks = rankings.n_rows;
 
   // each particle has its own set of augmented rankings
-  cube aug_rankings(num_ranks, n_items, N, fill::zeros);
-  cube prev_aug_rankings(num_ranks, n_items, N, fill::zeros);
+  cube aug_rankings(num_ranks, n_items, n_particles, fill::zeros);
+  cube prev_aug_rankings(num_ranks, n_items, n_particles, fill::zeros);
 
   // augment incomplete ranks to initialise
   const ivec ranks = regspace<ivec>(1, n_items);
 
   // total correction prob
-  vec total_correction_prob = ones(N);
+  vec total_correction_prob = ones(n_particles);
 
   // iterate through each observed ranking and create new "corrected" augmented
   // rankings
-  for (uword ii = 0; ii < N; ++ii) {
+  for (uword ii = 0; ii < n_particles; ++ii) {
     // set t-1 generation to old as we sample for t new
     prev_aug_rankings.slice(ii) = aug_rankings.slice(ii);
 
@@ -130,7 +130,7 @@ arma::cube augment_rankings(
 //' \code{"ulam"}.
 //' @param leap_size leap_size Integer specifying the step size of the leap-and-shift
 //' proposal distribution
-//' @param N Integer specifying the number of particles
+//' @param n_particles Integer specifying the number of particles
 //' @param timesteps Integer specifying the number of time steps in the SMC algorithm
 //' @param logz_estimate Estimate of the partition function, computed with
 //' \code{\link{estimate_partition_function}}.
@@ -161,7 +161,7 @@ arma::cube augment_rankings(
 Rcpp::List smc_mallows_new_item_rank_cpp(
   const unsigned int& n_items,
   arma::cube& rankings,
-  const unsigned int& N,
+  const unsigned int& n_particles,
   const unsigned int timesteps,
   const Rcpp::Nullable<arma::vec> logz_estimate,
   const Rcpp::Nullable<arma::vec> cardinalities,
@@ -183,21 +183,21 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
   /* Initialise Phase                                       */
   /* ====================================================== */
 
-  // Generate N initial samples of rho using the uniform prior
-  cube rho_samples(N, n_items, timesteps);
+  // Generate n_particles initial samples of rho using the uniform prior
+  cube rho_samples(n_particles, n_items, timesteps);
   if (rho_samples_init.isNotNull()) {
     rho_samples.slice(0) = Rcpp::as<arma::mat>(rho_samples_init);
   } else {
-    rho_samples.slice(0) = initialize_rho(n_items, N).t();
+    rho_samples.slice(0) = initialize_rho(n_items, n_particles).t();
   }
 
   mat alpha_samples;
   if(!alpha_fixed){
     // If alpha_fixed = false, alpha_samples needs to be generated from
     // alpha_samples_init
-    alpha_samples = zeros(N, timesteps);
-    if (alpha_samples_init.n_elem != N) {
-      alpha_samples_init = initialize_alpha(N);
+    alpha_samples = zeros(n_particles, timesteps);
+    if (alpha_samples_init.n_elem != n_particles) {
+      alpha_samples_init = initialize_alpha(n_particles);
     }
     alpha_samples.col(0) = alpha_samples_init;
   }
@@ -212,8 +212,8 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
   const unsigned int& num_ranks = rankings.n_rows;
 
   // each particle has its own set of augmented rankings
-  cube aug_rankings(num_ranks, n_items, N, fill::zeros);
-  cube prev_aug_rankings(num_ranks, n_items, N, fill::zeros);
+  cube aug_rankings(num_ranks, n_items, n_particles, fill::zeros);
+  cube prev_aug_rankings(num_ranks, n_items, n_particles, fill::zeros);
 
   // augment incomplete ranks to initialise
   const ivec ranks = regspace<ivec>(1, n_items);
@@ -222,7 +222,7 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
   arma::cube aug_rankings_init_2 = aug_rankings_init.isNotNull() ? Rcpp::as<arma::cube>(aug_rankings_init) : arma::cube(0,0,0);
   if (aug_rankings_init_2.size() == 0) {
     aug_rankings = augment_rankings(
-      n_items, rankings, N, rho_samples, alpha_samples, alpha, aug_method,
+      n_items, rankings, n_particles, rho_samples, alpha_samples, alpha, aug_method,
       alpha_fixed, metric
     );
   } else {
@@ -245,11 +245,11 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
     if(!alpha_fixed) alpha_samples.col(tt + 1) = alpha_samples.col(tt);
 
     // total correction prob
-    vec particle_correction_prob = ones(N);
+    vec particle_correction_prob = ones(n_particles);
 
     // iterate through each observed ranking and create new "corrected"
     // augmented rankings
-    for (uword ii = 0; ii < N; ++ii) {
+    for (uword ii = 0; ii < n_particles; ++ii) {
       // set t-1 generation to old as we sample for t new
       prev_aug_rankings.slice(ii) = aug_rankings.slice(ii);
 
@@ -279,9 +279,9 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
     /* ====================================================== */
 
     // incremental weight for each particle, based on new observed rankings
-    vec log_inc_wgt(N, fill::zeros);
+    vec log_inc_wgt(n_particles, fill::zeros);
 
-    for (uword ii = 0; ii < N; ++ii) {
+    for (uword ii = 0; ii < n_particles; ++ii) {
       // evaluate the log estimate of the partition function for a particular
       // value of alpha
 
@@ -310,7 +310,7 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
     /* Resample                                               */
     /* ====================================================== */
     /* Resample particles using multinomial resampling ------ */
-    uvec index = sample(regspace<uvec>(0, N - 1), N, true, norm_wgt);
+    uvec index = sample(regspace<uvec>(0, n_particles - 1), n_particles, true, norm_wgt);
     rho_samples.slice(tt + 1) = rho_samples.slice(tt + 1).rows(index);
     if(!alpha_fixed){
       const vec& asc = alpha_samples.col(tt + 1);

@@ -13,7 +13,7 @@ using namespace arma;
 //' @param rankings the observed rankings, i.e, preference data
 //' @details \code{rankings} is a matrix of size
 //'   \eqn{N }\eqn{\times}{x}\eqn{ n_items} of rankings in each row.
-//'   Alternatively, if \eqn{N} equals 1, \code{rankings} can be a vector.
+//'   Alternatively, if \code{N} equals 1, \code{rankings} can be a vector.
 //' @param metric A character string specifying the distance metric to use
 //'   in the Bayesian Mallows Model. Available options are \code{"footrule"},
 //'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},

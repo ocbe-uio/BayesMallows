@@ -23,10 +23,10 @@ void smc_mallows_new_users_augment_partial(
     const bool& augment_alpha,
     const std::string& metric = "footrule"
 ){
-  int N = rho_samples.n_rows;
+  int n_particles = rho_samples.n_rows;
   int n_items = rho_samples.n_cols;
   ivec ranks = regspace<ivec>(1, n_items);
-  for (int ii{}; ii < N; ++ii) {
+  for (int ii{}; ii < n_particles; ++ii) {
     for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
       vec partial_ranking = rankings.row(jj).t();
 
@@ -64,12 +64,12 @@ void smc_mallows_new_users_augment_partial(
 }
 
 vec initialize_alpha(
-    const int& N,
+    const int& n_particles,
     const Rcpp::Nullable<vec>& alpha_init){
   if(alpha_init.isNotNull()) {
     return Rcpp::as<vec>(alpha_init);
   } else {
-    return Rcpp::rexp(N, 1);
+    return Rcpp::rexp(n_particles, 1);
   }
 
 }
@@ -79,9 +79,9 @@ void smc_mallows_new_users_resample(
     const vec& norm_wgt, const int& tt, const int& num_obs,
     const bool& augment_alpha, const bool& partial
 ){
-  int N = rho_samples.n_rows;
+  int n_particles = rho_samples.n_rows;
   /* Resample particles using multinomial resampling ------ */
-  uvec index = sample(regspace<uvec>(0, N - 1), N, true, norm_wgt);
+  uvec index = sample(regspace<uvec>(0, n_particles - 1), n_particles, true, norm_wgt);
   uvec tt_vec;
   tt_vec = tt;
 
@@ -120,9 +120,9 @@ void smc_mallows_new_users_reweight(
     const bool& partial,
     const std::string& metric = "footrule"
 ){
-  int N = rho_samples.n_rows;
+  int n_particles = rho_samples.n_rows;
   int n_items = rho_samples.n_cols;
-  for (int ii{}; ii < N; ++ii) {
+  for (int ii{}; ii < n_particles; ++ii) {
     rowvec rho_samples_ii = \
       rho_samples(span(ii), span::all, span(tt + 1));
 

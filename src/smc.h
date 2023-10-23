@@ -4,7 +4,7 @@
 #include "RcppArmadillo.h"
 
 arma::vec normalize_weights(const arma::vec& log_inc_wgt);
-arma::vec initialize_alpha(const int& N, const Rcpp::Nullable<arma::vec>& alpha_init = R_NilValue);
+arma::vec initialize_alpha(const int& n_particles, const Rcpp::Nullable<arma::vec>& alpha_init = R_NilValue);
 double get_exponent_sum(double, arma::vec, int, arma::mat, std::string);
 arma::vec metropolis_hastings_rho(double, int, arma::mat, arma::vec, std::string, int);
 double metropolis_hastings_alpha(double, int, arma::mat, arma::vec, const Rcpp::Nullable<arma::vec>, const Rcpp::Nullable<arma::vec>, std::string, double, double, double);

@@ -1,5 +1,7 @@
 # BayesMallows (development versions)
 
+* BREAKING CHANGE: Argument "N" in SMC Mallows functions has been change to 
+  "n_particles".
 * BREAKING CHANGE: Argument "Time" in SMC Mallows functions has been changed to
   "timesteps", to better describe what it means.
 * BREAKING CHANGE: smc_mallows_new_users() no longer takes the argument 

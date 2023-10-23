@@ -13,7 +13,7 @@
 #'   \code{"ulam"}.
 #' @param leap_size leap_size Integer specifying the step size of the
 #'   leap-and-shift proposal distribution
-#' @param N Integer specifying the number of particles
+#' @param n_particles Integer specifying the number of particles
 #' @param timesteps Integer specifying the number of time steps in the SMC algorithm
 #' @param logz_estimate Estimate of the partition function, computed with
 #'   \code{\link{estimate_partition_function}}. Be aware that when using an
@@ -65,7 +65,7 @@
 smc_mallows_new_users <- function(
     rankings,
     type = c("complete", "partial", "partial_alpha_fixed"),
-    N,
+    n_particles,
     timesteps,
     mcmc_kernel_app,
     num_new_obs,
@@ -97,7 +97,7 @@ smc_mallows_new_users <- function(
     type = type,
     n_items = n_items,
     n_users = n_users,
-    N,
+    n_particles,
     timesteps,
     mcmc_kernel_app,
     num_new_obs,

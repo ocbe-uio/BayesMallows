@@ -26,7 +26,7 @@ using namespace arma;
 //' \code{"ulam"}.
 //' @param leap_size leap_size Integer specifying the step size of the
 //' leap-and-shift proposal distribution
-//' @param N Integer specifying the number of particles
+//' @param n_particles Integer specifying the number of particles
 //' @param timesteps Integer specifying the number of time steps in the SMC algorithm
 //' @param logz_estimate Estimate of the partition function, computed with
 //' \code{\link{estimate_partition_function}}.
@@ -66,7 +66,7 @@ Rcpp::List smc_mallows_new_users_cpp(
   const std::string& type,
   const int& n_items,
   const int& n_users,
-  const int& N,
+  const int& n_particles,
   int timesteps,
   const int& mcmc_kernel_app,
   const int& num_new_obs,
@@ -88,14 +88,14 @@ Rcpp::List smc_mallows_new_users_cpp(
   /* ====================================================== */
 
   /* generate rho samples using uniform prior ------------- */
-  cube rho_samples(N, n_items, timesteps + 1);
-  rho_samples.slice(0) = initialize_rho(n_items, N, rho_init).t();
+  cube rho_samples(n_particles, n_items, timesteps + 1);
+  rho_samples.slice(0) = initialize_rho(n_items, n_particles, rho_init).t();
 
   /* generate alpha samples using exponential prior ------- */
   mat alpha_samples;
   if(type != "partial_alpha_fixed") {
-    alpha_samples = zeros(N, timesteps + 1);
-    alpha_samples.col(0) = initialize_alpha(N, alpha_init);
+    alpha_samples = zeros(n_particles, timesteps + 1);
+    alpha_samples.col(0) = initialize_alpha(n_particles, alpha_init);
   }
 
   /* generate vector to store ESS */
@@ -104,7 +104,7 @@ Rcpp::List smc_mallows_new_users_cpp(
   // this is to store the augmentations of the observed rankings for each particle
   cube aug_rankings; // no. users by items by particles
   if(type == "partial" || type == "partial_alpha_fixed"){
-    aug_rankings = zeros(n_users, n_items, N);
+    aug_rankings = zeros(n_users, n_items, n_particles);
   }
 
   /* ====================================================== */
@@ -134,13 +134,13 @@ Rcpp::List smc_mallows_new_users_cpp(
     // propagate particles onto the next time step
     rho_samples.slice(tt + 1) = rho_samples.slice(tt);
     if(type != "partial_alpha_fixed") alpha_samples.col(tt + 1) = alpha_samples.col(tt);
-    vec log_inc_wgt(N, fill::zeros);
+    vec log_inc_wgt(n_particles, fill::zeros);
 
     /* ====================================================== */
     /* Augment partial rankings                               */
     /* ====================================================== */
 
-    vec aug_prob = ones(N);
+    vec aug_prob = ones(n_particles);
     if(type == "partial" || type == "partial_alpha_fixed"){
       smc_mallows_new_users_augment_partial(
         aug_rankings, aug_prob, rho_samples, alpha_samples, num_obs, num_new_obs,
@@ -157,7 +157,7 @@ Rcpp::List smc_mallows_new_users_cpp(
     vec norm_wgt;
     smc_mallows_new_users_reweight(
       log_inc_wgt, ESS_vec, norm_wgt, aug_rankings, new_observed_rankings, rho_samples,
-      alpha, alpha_samples, tt, logz_estimate, cardinalities, num_obs, num_new_obs, ones(N),
+      alpha, alpha_samples, tt, logz_estimate, cardinalities, num_obs, num_new_obs, ones(n_particles),
       type != "partial_alpha_fixed", type != "complete", metric);
 
     /* ====================================================== */
@@ -171,7 +171,7 @@ Rcpp::List smc_mallows_new_users_cpp(
     /* ====================================================== */
     /* Move step                                              */
     /* ====================================================== */
-    for (int ii = 0; ii < N; ++ii) {
+    for (int ii = 0; ii < n_particles; ++ii) {
       if(type == "complete"){
         for (int kk = 0; kk < mcmc_kernel_app; ++kk) {
           // move each particle containing sample of rho and alpha by using

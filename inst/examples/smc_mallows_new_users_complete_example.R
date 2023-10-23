@@ -5,7 +5,7 @@ num_new_obs <- 100
 # Calculating rho and alpha samples
 samples <- smc_mallows_new_users(
   rankings = data,
-  N = 1000,
+  n_particles = 1000,
   timesteps = 10,
   mcmc_kernel_app = 10,
   num_new_obs = num_new_obs,

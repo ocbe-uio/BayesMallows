@@ -374,7 +374,7 @@ leap_and_shift_probs <- function(rho, n_items, leap_size = 1L) {
 #' \code{"ulam"}.
 #' @param leap_size leap_size Integer specifying the step size of the leap-and-shift
 #' proposal distribution
-#' @param N Integer specifying the number of particles
+#' @param n_particles Integer specifying the number of particles
 #' @param timesteps Integer specifying the number of time steps in the SMC algorithm
 #' @param logz_estimate Estimate of the partition function, computed with
 #' \code{\link{estimate_partition_function}}.
@@ -401,8 +401,8 @@ leap_and_shift_probs <- function(rho, n_items, leap_size = 1L) {
 #'
 #' @family modeling
 #'
-smc_mallows_new_item_rank_cpp <- function(n_items, rankings, N, timesteps, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
-    .Call(`_BayesMallows_smc_mallows_new_item_rank_cpp`, n_items, rankings, N, timesteps, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
+smc_mallows_new_item_rank_cpp <- function(n_items, rankings, n_particles, timesteps, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank_cpp`, n_items, rankings, n_particles, timesteps, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
 }
 
 #' @title SMC-Mallows New Users
@@ -422,7 +422,7 @@ smc_mallows_new_item_rank_cpp <- function(n_items, rankings, N, timesteps, logz_
 #' \code{"ulam"}.
 #' @param leap_size leap_size Integer specifying the step size of the
 #' leap-and-shift proposal distribution
-#' @param N Integer specifying the number of particles
+#' @param n_particles Integer specifying the number of particles
 #' @param timesteps Integer specifying the number of time steps in the SMC algorithm
 #' @param logz_estimate Estimate of the partition function, computed with
 #' \code{\link{estimate_partition_function}}.
@@ -456,8 +456,8 @@ smc_mallows_new_item_rank_cpp <- function(n_items, rankings, N, timesteps, logz_
 #'
 #' @family modeling
 #'
-smc_mallows_new_users_cpp <- function(rankings, type, n_items, n_users, N, timesteps, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L, rho_init = NULL, alpha_init = NULL) {
-    .Call(`_BayesMallows_smc_mallows_new_users_cpp`, rankings, type, n_items, n_users, N, timesteps, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size, rho_init, alpha_init)
+smc_mallows_new_users_cpp <- function(rankings, type, n_items, n_users, n_particles, timesteps, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L, rho_init = NULL, alpha_init = NULL) {
+    .Call(`_BayesMallows_smc_mallows_new_users_cpp`, rankings, type, n_items, n_users, n_particles, timesteps, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size, rho_init, alpha_init)
 }
 
 #' @title Metropolis-Hastings Alpha
@@ -468,7 +468,7 @@ smc_mallows_new_users_cpp <- function(rankings, type, n_items, n_users, N, times
 #' @param rankings the observed rankings, i.e, preference data
 #' @details \code{rankings} is a matrix of size
 #'   \eqn{N }\eqn{\times}{x}\eqn{ n_items} of rankings in each row.
-#'   Alternatively, if \eqn{N} equals 1, \code{rankings} can be a vector.
+#'   Alternatively, if \code{N} equals 1, \code{rankings} can be a vector.
 #' @param metric A character string specifying the distance metric to use
 #'   in the Bayesian Mallows Model. Available options are \code{"footrule"},
 #'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},

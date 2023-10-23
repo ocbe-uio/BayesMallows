@@ -20,13 +20,13 @@ logz_estimate <- estimate_partition_function(
 
 data <- sushi_rankings[1:100, ]
 leap_size <- floor(n_items / 5)
-N <- 100
+n_particles <- 100
 timesteps <- 20
 
 model_fit <- smc_mallows_new_users(
   rankings = data, "complete",
   metric = metric, leap_size = leap_size,
-  N = N, timesteps = timesteps,
+  n_particles = n_particles, timesteps = timesteps,
   mcmc_kernel_app = 5,
   num_new_obs = 5,
   alpha_prop_sd = 0.5,

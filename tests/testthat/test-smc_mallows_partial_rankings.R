@@ -74,7 +74,7 @@ lambda <- 0.15
 alpha_max <- 1e0
 
 test_that("Produces the wrong metric and aug_method error", {
-  N <- 5
+  n_particles <- 5
   expect_error(
     smc_mallows_new_users(
       alpha           = alpha_0,
@@ -82,7 +82,7 @@ test_that("Produces the wrong metric and aug_method error", {
       rankings           = samples,
       metric          = "cayley",
       leap_size       = leap_size,
-      N               = N,
+      n_particles               = n_particles,
       timesteps            = timesteps,
       mcmc_kernel_app = mcmc_times,
       num_new_obs     = num_new_obs,
@@ -95,7 +95,7 @@ test_that("Produces the wrong metric and aug_method error", {
       type            = "partial",
       metric          = "cayley",
       leap_size       = leap_size,
-      N               = N,
+      n_particles               = n_particles,
       timesteps            = timesteps,
       mcmc_kernel_app = mcmc_times,
       num_new_obs     = num_new_obs,
@@ -107,14 +107,14 @@ test_that("Produces the wrong metric and aug_method error", {
   )
 })
 test_that("Runs with unif kernel", {
-  N <- 5
+  n_particles <- 5
   smc_unif_alpha_fixed_unif <- smc_mallows_new_users(
     alpha           = alpha_0,
     type            = "partial_alpha_fixed",
     rankings           = samples,
     metric          = "footrule",
     leap_size       = leap_size,
-    N               = N,
+    n_particles               = n_particles,
     timesteps            = timesteps,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
@@ -122,13 +122,13 @@ test_that("Runs with unif kernel", {
   )
   expect_is(smc_unif_alpha_fixed_unif, "SMCMallows")
   expect_equal(length(smc_unif_alpha_fixed_unif), 4)
-  expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 10, 21))
+  expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(n_particles, 10, 21))
   smc_unif <- smc_mallows_new_users(
     rankings           = samples,
     type            = "partial",
     metric          = "footrule",
     leap_size       = leap_size,
-    N               = N,
+    n_particles               = n_particles,
     timesteps            = timesteps,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
@@ -139,8 +139,8 @@ test_that("Runs with unif kernel", {
   )
   expect_is(smc_unif, "SMCMallows")
   expect_equal(length(smc_unif), 4)
-  expect_equal(dim(smc_unif$rho_samples), c(N, 10, 21))
-  expect_equal(dim(smc_unif$alpha_samples), c(N, 21))
+  expect_equal(dim(smc_unif$rho_samples), c(n_particles, 10, 21))
+  expect_equal(dim(smc_unif$alpha_samples), c(n_particles, 21))
 
   expect_s3_class(plot(smc_unif, burnin = 2), "ggplot")
   expect_s3_class(plot(smc_unif, parameter = "rho"), "ggplot")
@@ -148,14 +148,14 @@ test_that("Runs with unif kernel", {
 })
 
 test_that("Runs with pseudo kernel", {
-  N <- 5
+  n_particles <- 5
   smc_unif_alpha_fixed_pseudo <- smc_mallows_new_users(
     alpha           = alpha_0,
     type            = "partial_alpha_fixed",
     rankings           = samples,
     metric          = "footrule",
     leap_size       = leap_size,
-    N               = N,
+    n_particles               = n_particles,
     timesteps            = timesteps,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
@@ -163,13 +163,13 @@ test_that("Runs with pseudo kernel", {
   )
   expect_is(smc_unif_alpha_fixed_pseudo, "SMCMallows")
   expect_equal(length(smc_unif_alpha_fixed_pseudo), 4)
-  expect_equal(dim(smc_unif_alpha_fixed_pseudo$rho_samples), c(N, 10, 21))
+  expect_equal(dim(smc_unif_alpha_fixed_pseudo$rho_samples), c(n_particles, 10, 21))
   smc_pseudo <- smc_mallows_new_users(
     rankings           = samples,
     type            = "partial",
     metric          = "footrule",
     leap_size       = leap_size,
-    N               = N,
+    n_particles               = n_particles,
     timesteps            = timesteps,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
@@ -180,14 +180,14 @@ test_that("Runs with pseudo kernel", {
   )
   expect_is(smc_pseudo, "SMCMallows")
   expect_equal(length(smc_pseudo), 4)
-  expect_equal(dim(smc_pseudo$rho_samples), c(N, 10, 21))
-  expect_equal(dim(smc_pseudo$alpha_samples), c(N, 21))
+  expect_equal(dim(smc_pseudo$rho_samples), c(n_particles, 10, 21))
+  expect_equal(dim(smc_pseudo$alpha_samples), c(n_particles, 21))
 })
 
 # Specific example with random aug method ----------------
 
 test_that("Specific example results are OK", {
-  N <- 10
+  n_particles <- 10
   aug_method <- "random"
   set.seed(5482) # necessary for reproducibility of the random aug_method
 
@@ -196,7 +196,7 @@ test_that("Specific example results are OK", {
     type            = "partial",
     metric          = metric,
     leap_size       = leap_size,
-    N               = N,
+    n_particles               = n_particles,
     timesteps            = timesteps,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,
@@ -220,7 +220,7 @@ test_that("Specific example results are OK", {
 
   expect_warning(
     compute_rho_consensus(
-      output = test$rho_samples[, , timesteps + 1], nmc = N, burnin = NULL, C = 1,
+      output = test$rho_samples[, , timesteps + 1], nmc = n_particles, burnin = NULL, C = 1,
       type = "CP"
     ),
     "deprecated"
@@ -243,7 +243,7 @@ test_that("Specific example results are OK", {
     type            = "partial_alpha_fixed",
     metric          = metric,
     leap_size       = leap_size,
-    N               = N,
+    n_particles               = n_particles,
     timesteps            = timesteps,
     mcmc_kernel_app = mcmc_times,
     num_new_obs     = num_new_obs,

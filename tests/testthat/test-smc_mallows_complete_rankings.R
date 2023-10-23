@@ -42,11 +42,11 @@ mcmc_rho_matrix <- matrix(model_fit$rho$value, ncol = n_items, nrow = nmc, byrow
 mcmc_times <- 5
 num_new_obs <- 10
 timesteps <- dim(data)[1] / num_new_obs
-N <- 100
+n_particles <- 100
 
 test <- smc_mallows_new_users(
   rankings = data, type = "complete", metric = metric,
-  leap_size = leap_size, N = N, timesteps = timesteps,
+  leap_size = leap_size, n_particles = n_particles, timesteps = timesteps,
   mcmc_kernel_app = mcmc_times,
   alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
   num_new_obs = num_new_obs, verbose = FALSE
@@ -88,7 +88,7 @@ test_that("Output of compute_posterior_intervals_rho is OK", {
 
 # posterior for alpha
 alpha_samples_table <- data.frame(
-  iteration = 1:N, value = test$alpha_samples[, timesteps + 1]
+  iteration = 1:n_particles, value = test$alpha_samples[, timesteps + 1]
 )
 # posterior confidence intervals
 alpha_posterior_intervals <- compute_posterior_intervals(
@@ -122,15 +122,15 @@ test_that("get_exponent_sum() in smc_mallows_new_users_complete() works", {
   n_items <- ncol(sushi_rankings)
   timesteps <- nrow(data) / num_new_obs
   num_new_obs <- 10
-  N <- 100
+  n_particles <- 100
 
   # rho_samples and alpha_samples -------------------------- #
-  rho_samples <- array(data = 0, dim = c(N, n_items, (n_users + timesteps + 1)))
-  for (ii in seq_len(N)) {
+  rho_samples <- array(data = 0, dim = c(n_particles, n_items, (n_users + timesteps + 1)))
+  for (ii in seq_len(n_particles)) {
     rho_samples[ii, , 1] <- sample(seq_len(n_items), n_items, replace = FALSE)
   }
-  alpha_samples <- matrix(nrow = N, ncol = (n_items + timesteps + 1))
-  alpha_samples[, 1] <- rexp(N, rate = 1)
+  alpha_samples <- matrix(nrow = n_particles, ncol = (n_items + timesteps + 1))
+  alpha_samples[, 1] <- rexp(n_particles, rate = 1)
 
   num_obs <- 0
   out_loglik <- vector(mode = "numeric", length = timesteps)
@@ -141,7 +141,7 @@ test_that("get_exponent_sum() in smc_mallows_new_users_complete() works", {
     alpha_samples[, tt + 1] <- alpha_samples[, tt]
     alpha_samples_ii <- alpha_samples[ii, tt + 1]
     rho_samples_ii <- rho_samples[ii, , tt + 1]
-    for (ii in seq_len(N)) {
+    for (ii in seq_len(n_particles)) {
       log_likelihood <- get_exponent_sum(
         alpha_samples_ii, t(rho_samples_ii), n_items,
         new_observed_rankings, metric

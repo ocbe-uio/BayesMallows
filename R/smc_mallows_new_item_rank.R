@@ -12,7 +12,7 @@
 #'   \code{"ulam"}.
 #' @param leap_size leap_size Integer specifying the step size of the
 #'   leap-and-shift proposal distribution
-#' @param N Integer specifying the number of particles
+#' @param n_particles Integer specifying the number of particles
 #' @param timesteps Integer specifying the number of time steps in the SMC algorithm
 #' @param logz_estimate Estimate of the partition function, computed with
 #'   \code{\link{estimate_partition_function}}. Be aware that when using an
@@ -61,7 +61,7 @@
 smc_mallows_new_item_rank <- function(
     n_items,
     rankings,
-    N,
+    n_particles,
     timesteps,
     logz_estimate = NULL,
     mcmc_kernel_app,
@@ -87,7 +87,7 @@ smc_mallows_new_item_rank <- function(
   smc_mallows_new_item_rank_cpp(
     n_items,
     rankings,
-    N,
+    n_particles,
     timesteps,
     logz_estimate = logz_list$logz_estimate,
     cardinalities = logz_list$cardinalities,

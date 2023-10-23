@@ -24,7 +24,7 @@ leap_size <- floor(n_items / 5)
 cardinalities <- prepare_partition_function(metric = metric, n_items = n_items)$cardinalities
 
 # test with random sampler
-N <- 2
+n_particles <- 2
 mcmc_kernel_app <- 5
 num_new_obs <- 10
 timesteps <- n_users / num_new_obs
@@ -38,7 +38,7 @@ smc_test_new_user_unif <- smc_mallows_new_users(
   type = "partial",
   metric = metric,
   leap_size = leap_size,
-  N = N,
+  n_particles = n_particles,
   timesteps = timesteps,
   mcmc_kernel_app = mcmc_kernel_app,
   num_new_obs = num_new_obs,
@@ -52,7 +52,7 @@ smc_test_new_user_unif <- smc_mallows_new_users(
 smc_test_partial_unif1 <- smc_mallows_new_item_rank(
   alpha = 2, n_items = n_items,
   rankings = test_dataset, metric = metric, leap_size = leap_size,
-  N = N, timesteps = timesteps2,
+  n_particles = n_particles, timesteps = timesteps2,
   mcmc_kernel_app = mcmc_kernel_app, aug_method = "random",
   rho_samples_init = smc_test_new_user_unif$rho_samples[, , timesteps + 1],
   aug_rankings_init = smc_test_new_user_unif$augmented_rankings,
@@ -61,16 +61,16 @@ smc_test_partial_unif1 <- smc_mallows_new_item_rank(
 test_that("Updated item rank output is OK", {
   expect_is(smc_test_partial_unif1, "SMCMallows")
   expect_length(smc_test_partial_unif1, 3)
-  expect_equal(dim(smc_test_partial_unif1$rho_samples), c(N, n_items, 6))
+  expect_equal(dim(smc_test_partial_unif1$rho_samples), c(n_particles, n_items, 6))
   expect_length(smc_test_partial_unif1$ESS, timesteps2)
-  expect_equal(dim(smc_test_partial_unif1$augmented_rankings), c(n_users, n_items, N))
+  expect_equal(dim(smc_test_partial_unif1$augmented_rankings), c(n_users, n_items, n_particles))
 })
 
 # run smc updated rankings with alpha unknown
 smc_test_partial_unif2 <- smc_mallows_new_item_rank(
   n_items = n_items,
   rankings = test_dataset, metric = metric, leap_size = leap_size,
-  N = N, timesteps = timesteps2,
+  n_particles = n_particles, timesteps = timesteps2,
   mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
   lambda = 0.1, alpha_max = 20, aug_method = "random",
   alpha_samples_init = smc_test_new_user_unif$alpha_samples[, timesteps + 1],
@@ -80,10 +80,10 @@ smc_test_partial_unif2 <- smc_mallows_new_item_rank(
 test_that("Updated item rank output (alpha variable) is OK", {
   expect_is(smc_test_partial_unif2, "SMCMallows")
   expect_length(smc_test_partial_unif2, 4)
-  expect_equal(dim(smc_test_partial_unif2$rho_samples), c(N, n_items, 6))
+  expect_equal(dim(smc_test_partial_unif2$rho_samples), c(n_particles, n_items, 6))
   expect_length(smc_test_partial_unif2$ESS, timesteps2)
-  expect_equal(dim(smc_test_partial_unif2$augmented_rankings), c(n_users, n_items, N))
-  expect_equal(dim(smc_test_partial_unif2$alpha_samples), c(N, 6))
+  expect_equal(dim(smc_test_partial_unif2$augmented_rankings), c(n_users, n_items, n_particles))
+  expect_equal(dim(smc_test_partial_unif2$alpha_samples), c(n_particles, 6))
 })
 
 # test with pseudolikelihood
@@ -91,7 +91,7 @@ test_that("Updated item rank output (alpha variable) is OK", {
 smc_test_new_user_pseudo <- smc_mallows_new_users(
   rankings = example_dataset, metric = metric,
   leap_size = leap_size,
-  N = N, timesteps = timesteps,
+  n_particles = n_particles, timesteps = timesteps,
   mcmc_kernel_app = mcmc_kernel_app, num_new_obs = num_new_obs,
   alpha_prop_sd = 0.5, lambda = 0.1,
   alpha_max = 20, type = "partial", aug_method = "pseudolikelihood"
@@ -100,7 +100,7 @@ smc_test_new_user_pseudo <- smc_mallows_new_users(
 smc_test_partial_pseudo1 <- smc_mallows_new_item_rank(
   alpha = 2, n_items = n_items,
   rankings = test_dataset, metric = metric, leap_size = leap_size,
-  N = N, timesteps = timesteps2,
+  n_particles = n_particles, timesteps = timesteps2,
   mcmc_kernel_app = mcmc_kernel_app, aug_method = "pseudolikelihood",
   rho_samples_init = smc_test_new_user_pseudo$rho_samples[, , timesteps + 1],
   aug_rankings_init = smc_test_new_user_pseudo$augmented_rankings,
@@ -109,15 +109,15 @@ smc_test_partial_pseudo1 <- smc_mallows_new_item_rank(
 test_that("Updated item rank output is OK", {
   expect_is(smc_test_partial_pseudo1, "SMCMallows")
   expect_length(smc_test_partial_pseudo1, 3)
-  expect_equal(dim(smc_test_partial_pseudo1$rho_samples), c(N, n_items, 6))
+  expect_equal(dim(smc_test_partial_pseudo1$rho_samples), c(n_particles, n_items, 6))
   expect_length(smc_test_partial_pseudo1$ESS, timesteps2)
-  expect_equal(dim(smc_test_partial_pseudo1$augmented_rankings), c(n_users, n_items, N))
+  expect_equal(dim(smc_test_partial_pseudo1$augmented_rankings), c(n_users, n_items, n_particles))
 })
 
 smc_test_partial_pseudo2 <- smc_mallows_new_item_rank(
   n_items = n_items,
   rankings = test_dataset, metric = metric, leap_size = leap_size,
-  N = N, timesteps = timesteps2,
+  n_particles = n_particles, timesteps = timesteps2,
   mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
   lambda = 0.1, alpha_max = 20, aug_method = "pseudolikelihood",
   alpha_samples_init = smc_test_new_user_unif$alpha_samples[, timesteps + 1],
@@ -127,10 +127,10 @@ smc_test_partial_pseudo2 <- smc_mallows_new_item_rank(
 test_that("Updated item rank output (variable alpha) is OK", {
   expect_is(smc_test_partial_pseudo2, "SMCMallows")
   expect_length(smc_test_partial_pseudo2, 4)
-  expect_equal(dim(smc_test_partial_pseudo2$rho_samples), c(N, n_items, 6))
+  expect_equal(dim(smc_test_partial_pseudo2$rho_samples), c(n_particles, n_items, 6))
   expect_length(smc_test_partial_pseudo2$ESS, timesteps2)
-  expect_equal(dim(smc_test_partial_pseudo2$augmented_rankings), c(n_users, n_items, N))
-  expect_equal(dim(smc_test_partial_pseudo2$alpha_samples), c(N, 6))
+  expect_equal(dim(smc_test_partial_pseudo2$augmented_rankings), c(n_users, n_items, n_particles))
+  expect_equal(dim(smc_test_partial_pseudo2$alpha_samples), c(n_particles, 6))
 })
 
 # check metric and aug_method error
@@ -139,7 +139,7 @@ test_that("metric and aug_method must match", {
     smc_mallows_new_item_rank(
       alpha = 2, n_items = n_items,
       rankings = test_dataset, metric = "cayley", leap_size = leap_size,
-      N = N, timesteps = timesteps2,
+      n_particles = n_particles, timesteps = timesteps2,
       mcmc_kernel_app = mcmc_kernel_app, aug_method = "pseudolikelihood",
       alpha_fixed = TRUE
     ),
