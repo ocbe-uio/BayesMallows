@@ -83,7 +83,7 @@ smc_mallows_new_item_rank <- function(
 
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
 
-  smc_mallows_new_item_rank_cpp(
+  ret <- smc_mallows_new_item_rank_cpp(
     n_items,
     rankings,
     n_particles,
@@ -104,4 +104,6 @@ smc_mallows_new_item_rank <- function(
     metric,
     leap_size
   )
+  class(ret) <- "SMCMallows"
+  ret
 }

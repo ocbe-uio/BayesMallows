@@ -56,7 +56,6 @@ test_that("Runs with unif kernel", {
     )
   )
   expect_is(smc_unif_alpha_fixed_unif, "SMCMallows")
-  expect_length(smc_unif_alpha_fixed_unif, 3)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(n_particles, 6, 31))
   expect_equal(
     smc_unif_alpha_fixed_unif$augmented_rankings[c(4, 7), 5, c(13, 19)],
@@ -90,7 +89,6 @@ test_that("Runs with pseudo kernel", {
     )
   )
   expect_is(smc_unif_alpha_fixed_unif, "SMCMallows")
-  expect_length(smc_unif_alpha_fixed_unif, 3)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(n_particles, 6, 31))
 
   set.seed(1)

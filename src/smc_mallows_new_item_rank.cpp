@@ -331,22 +331,13 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
   /* ====================================================== */
   /* Post Processing                                        */
   /* ====================================================== */
-  if (alpha_fixed) {
-    Rcpp::List particle_history = Rcpp::List::create(
-      Rcpp::Named("rho_samples") = rho_samples,
-      Rcpp::Named("augmented_rankings") = aug_rankings,
-      Rcpp::Named("ESS") = ESS_vec
-    );
-    particle_history.attr("class") = "SMCMallows";
-    return particle_history;
-  } else {
-    Rcpp::List particle_history = Rcpp::List::create(
-      Rcpp::Named("rho_samples") = rho_samples,
-      Rcpp::Named("alpha_samples") = alpha_samples,
-      Rcpp::Named("augmented_rankings") = aug_rankings,
-      Rcpp::Named("ESS") = ESS_vec
-    );
-    particle_history.attr("class") = "SMCMallows";
-    return particle_history;
-  }
+
+  return Rcpp::List::create(
+    Rcpp::Named("rho_samples") = rho_samples,
+    Rcpp::Named("alpha_samples") = alpha_samples,
+    Rcpp::Named("augmented_rankings") = aug_rankings,
+    Rcpp::Named("ESS") = ESS_vec
+  );
+
+
 }
