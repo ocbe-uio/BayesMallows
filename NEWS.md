@@ -2,6 +2,9 @@
 
 ## Changes to sequential Monte Carlo methods
 
+* BREAKING CHANGE: arguments "timesteps" and "n_items" to 
+  smc_mallows_new_item_rank() have been removed, since they are given by the 
+  dimension of the rankings argument.
 * function smc_mallows_update() has been added, which allows updating existing
   models as new data arrive.
 * BREAKING CHANGE: Argument "N" in SMC Mallows functions has been change to 

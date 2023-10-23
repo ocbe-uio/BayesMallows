@@ -289,34 +289,21 @@ We can view this scenario as a observing an updated partial ranking from an know
 
 #### Demonstration
 
-To illustrate how to perform SMC for updated partial rankings, we will modify a much smaller dataset called `potato_visual`. This dataset, which is described in @liu2019 and is provided in the `BayesMallows` R package, represents the rankings given by 12 assessors on 20 potatoes based on how heavy each potato appeared to be given their visual appearance.  We create several partial subsets of the complete dataset by removing the lowest ranked item from each assessor from each previous subset, so that we achieve several partial datasets which view the top 10, top 11,... top 19 highest ranked items as well as the complete set of rankings.
+To illustrate how to perform SMC for updated partial rankings, we use the `potato_partial` dataset, which consists of several partial subsets of `potato_visual`, such that the number of ranked items increases with time.
 
 ```{r smc_item_rank_set_up, message=FALSE, warning=FALSE}
-example_dataset <- potato_visual
-n_users <- 12
-n_items <- 20
-test_dataset <- array(0, c(n_users, n_items, (n_items / 2 + 1)))
-test_dataset[, , (n_items / 2 + 1)] <- potato_visual
-tt <- 0
-for (ii in (n_items - 1):(n_items / 2)) {
-  tt <- tt + 1
-
-  # set n_users line with one more NA
-  example_dataset[example_dataset > ii] <- NA
-
-  # set as new time stamp
-  test_dataset[, , ((n_items / 2 + 1) - tt)] <- example_dataset
-}
+dim(potato_partial)
+apply(potato_partial, 3, function(x) mean(is.na(x)))
 ```
 
 This means that we now have a 3D array containing 10 partial datasets and the one complete dataset. The third dimension of the array represents artificial time. We can view the updated partial rankings scenario as viewing several 2D slices of the observed dataset sequentially. So you can see, for example, that at the 5th time point, we observe the top-14 items from `potato_visual`.
 
-```{r test_dataset_example, message=FALSE, warning=FALSE}
-test_dataset[, , 5]
+```{r potato_partial_example, message=FALSE, warning=FALSE}
+potato_partial[, , 5]
 ```
 
 
-We can now run an experiment with the altered `potato_visual` dataset by calling the function `smc_mallows_new_item_rank`.
+We can now run an experiment with `potato_partial` by calling the function `smc_mallows_new_item_rank`.
 
 ```{r set_seed3, message=FALSE, warning=FALSE, include=FALSE}
 set.seed(995)
@@ -325,25 +312,22 @@ set.seed(995)
 
 
 ```{r new_item_rank_example, message=FALSE, warning=FALSE}
-timesteps <- dim(test_dataset)[3]
 n_particles <- 1000
 
-smc_test_updated_partial <- smc_mallows_new_item_rank(
-  n_items = n_items,
-  rankings = test_dataset,
+smc_partial <- smc_mallows_new_item_rank(
+  rankings = potato_partial,
   n_particles = n_particles,
-  timesteps = timesteps,
   mcmc_kernel_app = 5,
   lambda = 0.15,
   aug_method = "pseudolikelihood"
 )
 ```
 
-Unlike the two previous demonstrations, the final slice of the output occurs at `timesteps` instead of `timesteps+1`. This is because we initialised the algorithm with the first slice of the `test_dataset` rather than initialising with no observed data. We observe the posterior probabilities for items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ by using the same post-processing functions as before.
+Unlike the two previous demonstrations, the final slice of the output occurs at `timesteps` instead of `timesteps+1`. This is because we initialised the algorithm with the first slice of the `potato_partial` rather than initialising with no observed data. We observe the posterior probabilities for items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ by using the same post-processing functions as before.
 
 ```{r smc_updated_partial_analysis, message=FALSE, warning=FALSE}
-plot(smc_test_updated_partial, parameter = "rho", items = c(4, 6, 7))
-plot(smc_test_updated_partial, parameter = "alpha")
+plot(smc_partial, parameter = "rho", items = c(4, 6, 7))
+plot(smc_partial, parameter = "alpha")
 ```
 
 ## References
