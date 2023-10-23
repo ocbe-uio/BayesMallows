@@ -1,6 +1,7 @@
 # BayesMallows (development versions)
 
 ## Changes to sequential Monte Carlo methods
+
 * function smc_mallows_update() has been added, which allows updating existing
   models as new data arrive.
 * BREAKING CHANGE: Argument "N" in SMC Mallows functions has been change to 
@@ -23,6 +24,8 @@
   for SMC Mallows have been deprecated in factor of 
   compute_posterior_intervals() with argument parameter = "rho" and
   parameter = "alpha".
+* Plot title "Implemented SMC scheme" removed from plot.SMCMallows() with 
+  argument parameter = "alpha".
 
 ## Other changes
 

@@ -11,6 +11,7 @@
   num_new_obs = nrow(rankings),
   n_particles = model$n_particles,
   verbose = FALSE,
+  type = model$type,
   ...
 )
 }
@@ -31,6 +32,9 @@ the number of particles used when computing \code{model}.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 SMC-Mallows algorithm. Defaults to \code{FALSE}.}
+
+\item{type}{One of \code{"complete"}, \code{"partial"}, or
+\code{"partial_alpha_fixed"}. Defaults to \code{model$type}.}
 
 \item{...}{Optional additional arguments. Currently not used.}
 }

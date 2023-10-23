@@ -1,3 +1,12 @@
+#' Generic function for updating SMC Mallows models
+#'
+#' @param model A model object.
+#' @param rankings A matrix with rankings.
+#' @param ... Other optional arguments.
+#'
+#' @return An updated model.
+#' @export
+#'
 smc_mallows_update <- function(model, rankings, ...) {
   UseMethod("smc_mallows_update")
 }
@@ -15,6 +24,8 @@ smc_mallows_update <- function(model, rankings, ...) {
 #'   Defaults to \code{nrow(rankings)}.
 #' @param verbose Logical specifying whether to print out the progress of the
 #'   SMC-Mallows algorithm. Defaults to \code{FALSE}.
+#' @param type One of \code{"complete"}, \code{"partial"}, or
+#'   \code{"partial_alpha_fixed"}. Defaults to \code{model$type}.
 #' @param ... Optional additional arguments. Currently not used.
 #'
 #' @return An updated model, of class
@@ -31,19 +42,18 @@ smc_mallows_update.SMCMallowsNewUsers <- function(
     num_new_obs = nrow(rankings),
     n_particles = model$n_particles,
     verbose = FALSE,
+    type = model$type,
     ...
     ) {
+
+  type <- match.arg(type, c("complete", "partial", "partial_alpha_fixed"))
 
   stopifnot(is.matrix(rankings))
   n_users <- nrow(rankings)
 
-  if (type == "complete" && (timesteps > n_users / num_new_obs)) {
-    stop("timesteps should not exceed n_users / num_new_obs.")
-  }
-
   ret <- smc_mallows_new_users_cpp(
     rankings = rankings,
-    type = model$type,
+    type = type,
     n_items = model$n_items,
     n_users = n_users,
     n_particles = model$n_particles,

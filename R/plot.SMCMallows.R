@@ -43,7 +43,6 @@ plot_alpha_smc <- function(output, nmc, burnin) {
     ggplot2::geom_density() +
     ggplot2::xlab(expression(alpha)) +
     ggplot2::ylab("Posterior density") +
-    ggplot2::ggtitle(label = "Implemented SMC scheme") +
     ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))
 }
 
