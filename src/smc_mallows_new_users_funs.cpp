@@ -63,8 +63,15 @@ void smc_mallows_new_users_augment_partial(
   }
 }
 
-vec initialize_alpha(const int& N){
-  return Rcpp::rexp(N, 1);
+vec initialize_alpha(
+    const int& N,
+    const Rcpp::Nullable<vec>& alpha_init){
+  if(alpha_init.isNotNull()) {
+    return Rcpp::as<vec>(alpha_init);
+  } else {
+    return Rcpp::rexp(N, 1);
+  }
+
 }
 
 void smc_mallows_new_users_resample(

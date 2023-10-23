@@ -80,7 +80,8 @@ Rcpp::List smc_mallows_new_users_cpp(
   const bool verbose = false,
   const std::string& metric = "footrule",
   const int& leap_size = 1,
-  Rcpp::Nullable<arma::mat> rho_init = R_NilValue
+  Rcpp::Nullable<arma::mat> rho_init = R_NilValue,
+  Rcpp::Nullable<arma::vec> alpha_init = R_NilValue
 ) {
   /* ====================================================== */
   /* Initialise Phase                                       */
@@ -94,7 +95,7 @@ Rcpp::List smc_mallows_new_users_cpp(
   mat alpha_samples;
   if(type != "partial_alpha_fixed") {
     alpha_samples = zeros(N, Time + 1);
-    alpha_samples.col(0) = initialize_alpha(N);
+    alpha_samples.col(0) = initialize_alpha(N, alpha_init);
   }
 
   /* generate vector to store ESS */
