@@ -89,6 +89,10 @@ smc_mallows_new_users <- function(
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
   n_users <- nrow(rankings)
 
+  if (type == "complete" && (Time > n_users / num_new_obs)) {
+    stop("Time should not exceed n_users / num_new_obs.")
+  }
+
   smc_mallows_new_users_cpp(
     rankings = rankings,
     type = type,

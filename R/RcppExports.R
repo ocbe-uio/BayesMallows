@@ -446,6 +446,7 @@ smc_mallows_new_item_rank_cpp <- function(n_items, rankings, N, Time, logz_estim
 #' in the missing data, options are "pseudolikelihood" or "random".
 #' @param verbose Logical specifying whether to print out the progress of the
 #' SMC-Mallows algorithm. Defaults to \code{FALSE}.
+#' @param rho_init Initial value of \code{rho}.
 #'
 #' @return a set of particles each containing a value of rho and alpha
 #'
@@ -455,8 +456,8 @@ smc_mallows_new_item_rank_cpp <- function(n_items, rankings, N, Time, logz_estim
 #'
 #' @family modeling
 #'
-smc_mallows_new_users_cpp <- function(rankings, type, n_items, n_users, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L) {
-    .Call(`_BayesMallows_smc_mallows_new_users_cpp`, rankings, type, n_items, n_users, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size)
+smc_mallows_new_users_cpp <- function(rankings, type, n_items, n_users, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L, rho_init = NULL) {
+    .Call(`_BayesMallows_smc_mallows_new_users_cpp`, rankings, type, n_items, n_users, N, Time, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size, rho_init)
 }
 
 #' @title Metropolis-Hastings Alpha

@@ -50,6 +50,7 @@ using namespace arma;
 //' in the missing data, options are "pseudolikelihood" or "random".
 //' @param verbose Logical specifying whether to print out the progress of the
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
+//' @param rho_init Initial value of \code{rho}.
 //'
 //' @return a set of particles each containing a value of rho and alpha
 //'
@@ -78,24 +79,16 @@ Rcpp::List smc_mallows_new_users_cpp(
   const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue,
   const bool verbose = false,
   const std::string& metric = "footrule",
-  const int& leap_size = 1
+  const int& leap_size = 1,
+  Rcpp::Nullable<arma::mat> rho_init = R_NilValue
 ) {
   /* ====================================================== */
   /* Initialise Phase                                       */
   /* ====================================================== */
 
-  if(type == "complete"){
-    if (Time > n_users / num_new_obs) {
-      Rcpp::warning(                                                  \
-        "Time should not exceed n_users / num_new_obs. Recalculating."\
-      );
-      Time = n_users / num_new_obs;
-    }
-  }
-
   /* generate rho samples using uniform prior ------------- */
   cube rho_samples(N, n_items, Time + 1);
-  rho_samples.slice(0) = initialize_rho(n_items, N).t();
+  rho_samples.slice(0) = initialize_rho(n_items, N, rho_init).t();
 
   /* generate alpha samples using exponential prior ------- */
   mat alpha_samples;
