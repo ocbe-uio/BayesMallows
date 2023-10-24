@@ -1,3 +1,8 @@
+consensus_unwrapper <- function(x) {
+  x <- compute_consensus(x)
+  as.numeric(unlist(regmatches(x$item, gregexpr("[0-9]+", x$item))))
+}
+
 
 test_that("skip_extended works", {
   Sys.setenv(BAYESMALLOWS_EXTENDED_TESTS = "true")
@@ -7,7 +12,7 @@ test_that("skip_extended works", {
 })
 
 
-test_that("smc_mallows_update is correct", {
+test_that("smc_mallows_update is correct for new rankings", {
   skip_extended()
   set.seed(123)
   # Metropolis-Hastings
@@ -48,13 +53,9 @@ test_that("smc_mallows_update is correct", {
   expect_equal(sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]), 0.77, tolerance = 1e-2)
 
   # Is there any disagreement between the methods about the ranking of the items?
-  fff <- function(x) {
-    x <- compute_consensus(x)
-    as.numeric(unlist(regmatches(x$item, gregexpr("[0-9]+", x$item))))
-  }
-  bmm_consensus <- fff(mod_bmm)
-  ref_consensus <- fff(mod_ref)
-  smc_consensus <- fff(mod_smc)
+  bmm_consensus <- consensus_unwrapper(mod_bmm)
+  ref_consensus <- consensus_unwrapper(mod_ref)
+  smc_consensus <- consensus_unwrapper(mod_smc)
 
   # How many items are in disagreement
   expect_equal(
@@ -66,4 +67,24 @@ test_that("smc_mallows_update is correct", {
                   smc_consensus, metric = "ulam"),
     1)
 
+})
+
+
+test_that("smc_mallows_update is corrected for updated partial ranks", {
+  skip_extended()
+
+  set.seed(81549300)
+
+  bmm <- compute_mallows(rankings = potato_visual, nmc = 10000)
+  bmm$burnin <- 1000
+
+  smc_ref <- smc_mallows_new_item_rank(
+    rankings = potato_partial,
+    n_particles = 5000,
+    mcmc_kernel_app = 20,
+    aug_method = "pseudolikelihood"
+  )
+
+  mean(bmm$alpha$value[bmm$alpha$iteration > 1000])
+  mean(smc_ref$alpha_samples[, 11])
 })
