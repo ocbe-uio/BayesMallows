@@ -10,38 +10,60 @@ test_that("skip_extended works", {
 test_that("smc_mallows_update is correct", {
   skip_extended()
   set.seed(123)
-  mod_ref <- compute_mallows(potato_visual, nmc = 5000)
-  mod_ref$burnin <- 1000
+  # Metropolis-Hastings
+  mod_bmm <- compute_mallows(rankings = potato_visual, nmc = 10000)
+  mod_bmm$burnin <- 1000
 
+  # Single function call, taking one observation at a time
+  mod_ref <- smc_mallows_new_users(
+    rankings = potato_visual,
+    n_particles = 1000,
+    timesteps = nrow(potato_visual),
+    num_new_obs = 1,
+    mcmc_kernel_app = 50
+  )
+
+  # Sequentially, using update function
   mod_smc <- smc_mallows_new_users(
     potato_visual[1, , drop = FALSE],
     timesteps = 1,
     num_new_obs = 1,
-    n_particles = 10000,
-    mcmc_kernel_app = 10
+    n_particles = 1000,
+    mcmc_kernel_app = 50
   )
 
   for(i in seq(from = 2, to = nrow(potato_visual))) {
-    mod_smc <- smc_mallows_update(mod_smc, potato_visual[i, , drop = FALSE])
+    mod_smc <- smc_mallows_update(model = mod_smc,
+                                  rankings = potato_visual[i, , drop = FALSE])
   }
 
-  c1 <- compute_consensus(mod_ref)
-  c2 <- compute_consensus(mod_smc)
+  # Poterior mean of alpha should be the same in both SMC methods, and close to BMM
+  expect_equal(mean(mod_smc$alpha_samples[, 2]), 10.8, tolerance = 1e-2)
+  expect_equal(mean(mod_ref$alpha_samples[, 13]), 10.8, tolerance = 1e-2)
+  expect_equal(mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]), 10.86, tolerance = 1e-2)
+
+  # Same test for posterior standard deviation
+  expect_equal(sd(mod_smc$alpha_samples[, 2]), 0.73, tolerance = 1e-2)
+  expect_equal(sd(mod_ref$alpha_samples[, 13]), 0.73, tolerance = 1e-2)
+  expect_equal(sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]), 0.77, tolerance = 1e-2)
 
   # Is there any disagreement between the methods about the ranking of the items?
-  bmm_consensus <- unlist(regmatches(c1$item, gregexpr("[0-9]+", c1$item)))
-  smc_consensus <- unlist(regmatches(c2$item, gregexpr("[0-9]+", c2$item)))
+  fff <- function(x) {
+    x <- compute_consensus(x)
+    as.numeric(unlist(regmatches(x$item, gregexpr("[0-9]+", x$item))))
+  }
+  bmm_consensus <- fff(mod_bmm)
+  ref_consensus <- fff(mod_ref)
+  smc_consensus <- fff(mod_smc)
+
+  # How many items are in disagreement
   expect_equal(
-    bmm_consensus[1:3], smc_consensus[1:3]
-  )
-
-  # How many ranks are in disagreement
-  # The results, 6, is much less than expected by chance
+    rank_distance(matrix(ref_consensus, nrow = 1),
+                  bmm_consensus, metric = "ulam"),
+    0)
   expect_equal(
-    rank_distance(matrix(as.numeric(bmm_consensus), nrow = 1),
-                  as.numeric(smc_consensus),
-                  metric = "ulam"), 6)
-
-
+    rank_distance(matrix(ref_consensus, nrow = 1),
+                  smc_consensus, metric = "ulam"),
+    1)
 
 })

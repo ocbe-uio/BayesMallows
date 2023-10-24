@@ -44,13 +44,15 @@ smc_mallows_update.SMCMallowsNewUsers <- function(
     ) {
 
   stopifnot(is.matrix(rankings))
-  n_users <- nrow(rankings)
+  num_new_obs <- num_new_obs # fighting lazy evalution
+  n_users <- model$num_obs + nrow(rankings)
+  rankings <- rbind(rankings, model$rankings)
 
   ret <- smc_mallows_new_users_cpp(
-    rankings = rbind(rankings, model$rankings),
+    rankings = rankings,
     type = model$type,
     n_items = model$n_items,
-    n_users = model$num_obs + n_users,
+    n_users = n_users,
     n_particles = model$n_particles,
     timesteps = timesteps,
     mcmc_kernel_app = model$mcmc_kernel_app,
@@ -72,12 +74,13 @@ smc_mallows_update.SMCMallowsNewUsers <- function(
 
   carry_over <- c("metric", "type", "logz_list", "n_items", "n_particles",
                   "mcmc_kernel_app", "alpha_prop_sd", "lambda", "alpha_max",
-                  "alpha", "aug_method", "leap_size", "num_obs", "rankings")
+                  "alpha", "aug_method", "leap_size")
 
   for(nm in carry_over) {
     eval(parse(text = paste0("ret$", nm, "<-model$", nm)))
   }
-
+  ret$rankings <- rankings
+  ret$num_obs <- nrow(rankings)
   class(ret) <- c("SMCMallowsNewUsers","SMCMallows")
   ret
 }
