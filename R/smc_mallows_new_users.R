@@ -129,6 +129,7 @@ smc_mallows_new_users <- function(
   ret$leap_size <- leap_size
   ret$num_obs <- nrow(rankings)
   ret$rankings <- rankings
+  ret$verbose <- verbose
   class(ret) <- c("SMCMallowsNewUsers","SMCMallows")
 
   ret

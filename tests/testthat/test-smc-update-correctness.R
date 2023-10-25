@@ -73,59 +73,62 @@ test_that("smc_mallows_update is correct for new rankings", {
 
 test_that("smc_mallows_new_users is correct for new partial rankings", {
   skip_extended()
-  # Introduce missingness in potato_visual
   set.seed(123)
-  dat <- potato_visual
-  dat[dat > 15] <- NA
 
-  # Metropolis-Hastings
-  mod_bmm <- compute_mallows(rankings = dat, nmc = 10000)
-  mod_bmm$burnin <- 1000
+  rankings <- matrix(rep(c(
+    1, 2, 3,
+    1, 3, 2,
+    1, 2, 3,
+    1, 2, 3,
+    2, 1, 3), times = 10), ncol = 3, byrow = TRUE)
 
-  # Single function call, taking one observation at a time
-  mod_ref <- smc_mallows_new_users(
-    rankings = dat,
+  rankings[sample(seq_along(rankings), 10)] <- NA
+
+  bmm_mod <- compute_mallows(rankings = rankings)
+  bmm_mod$burnin <- 100
+
+  smc_onego <- smc_mallows_new_users(
+    rankings = rankings,
     type = "partial",
-    n_particles = 2000,
-    timesteps = nrow(dat),
-    num_new_obs = 1,
-    mcmc_kernel_app = 50,
-    aug_method = "pseudolikelihood"
-  )
-  mod_ref_uniform <- smc_mallows_new_users(
-    rankings = dat,
-    type = "partial",
-    n_particles = 2000,
-    timesteps = nrow(dat),
-    num_new_obs = 1,
-    mcmc_kernel_app = 50,
-    aug_method = "random"
+    n_particles = 1000,
+    timesteps = 10,
+    mcmc_kernel_app = 10,
+    num_new_obs = 5,
+    verbose = TRUE
   )
 
-  # Poterior mean of alpha should be the same in both SMC methods, and close to BMM
-  expect_equal(mean(mod_ref$alpha_samples[, 13]), 10.6, tolerance = 0.01)
-  expect_equal(mean(mod_ref_uniform$alpha_samples[, 13]), 10.4, tolerance = 0.01)
-  expect_equal(mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]), 10.8, tolerance = 0.01)
+  inds <- rep(1:10, each = 5)
+  smc_init <- smc_mallows_new_users(
+    rankings = rankings[inds == 1, ],
+    type = "partial",
+    n_particles = 1000,
+    timesteps = 1,
+    mcmc_kernel_app = 10,
+    num_new_obs = 5,
+    verbose = TRUE
+  )
 
-  # Same test for posterior standard deviation
-  expect_equal(sd(mod_ref$alpha_samples[, 13]), 0.73, tolerance = 0.1)
-  expect_equal(sd(mod_ref_uniform$alpha_samples[, 13]), 0.74, tolerance = 0.1)
-  expect_equal(sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]), 0.77, tolerance = 0.1)
+  smc_update <- smc_init
+  for(i in 2:10) {
+    smc_update <- smc_mallows_update(
+      model = smc_update, rankings = rankings[inds == i, ],
+      verbose = TRUE
+    )
+  }
 
-  # Is there any disagreement between the methods about the ranking of the items?
-  bmm_consensus <- consensus_unwrapper(mod_bmm)
-  ref_consensus <- consensus_unwrapper(mod_ref)
-  ref_uniform_consensus <- consensus_unwrapper(mod_ref_uniform)
+  expect_equal(mean(smc_update$alpha_samples[, 2]), 2.51, tolerance = .01)
+  expect_equal(mean(smc_onego$alpha_samples[, 11]), 2.50, tolerance = .01)
+  expect_equal(mean(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 100]), 2.48,
+               tolerance = .01)
 
-  # How many items are in disagreement
-  expect_equal(
-    rank_distance(matrix(ref_consensus, nrow = 1),
-                  bmm_consensus, metric = "ulam"),
-    5)
-  expect_equal(
-    rank_distance(matrix(ref_uniform_consensus, nrow = 1),
-                  bmm_consensus, metric = "ulam"),
-    3)
+  expect_equal(sd(smc_update$alpha_samples[, 2]), .34, tolerance = .01)
+  expect_equal(sd(smc_onego$alpha_samples[, 11]), .35, tolerance = .01)
+  expect_equal(sd(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 100]), 0.34,
+               tolerance = .01)
+
+  expect_equal(consensus_unwrapper(smc_update), 1:3)
+  expect_equal(consensus_unwrapper(smc_onego), 1:3)
+  expect_equal(consensus_unwrapper(bmm_mod), 1:3)
 
 })
 

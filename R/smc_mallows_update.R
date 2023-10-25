@@ -39,13 +39,9 @@ smc_mallows_update.SMCMallowsNewUsers <- function(
     timesteps = 1,
     num_new_obs = nrow(rankings),
     n_particles = model$n_particles,
-    verbose = FALSE,
+    verbose = model$verbose,
     ...
     ) {
-
-  if(model$type != "complete") {
-    stop("smc_mallows_update currently only implemented for complete data")
-  }
 
   stopifnot(is.matrix(rankings))
   num_new_obs <- num_new_obs # fighting lazy evalution
@@ -73,6 +69,7 @@ smc_mallows_update.SMCMallowsNewUsers <- function(
     leap_size = model$leap_size,
     rho_init = model$rho_samples[, , dim(model$rho_samples)[[3]]],
     alpha_init = model$alpha_samples[, dim(model$alpha_samples)[[2]]],
+    aug_init = model$augmented_rankings,
     num_obs = model$num_obs
   )
 

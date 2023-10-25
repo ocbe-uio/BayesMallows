@@ -1,5 +1,4 @@
-rm(list=ls())
-devtools::load_all()
+set.seed(123)
 
 rankings <- matrix(rep(c(
   1, 2, 3,
@@ -12,7 +11,6 @@ rankings[sample(seq_along(rankings), 10)] <- NA
 
 bmm_mod <- compute_mallows(rankings = rankings)
 bmm_mod$burnin <- 100
-
 
 smc_onego <- smc_mallows_new_users(
   rankings = rankings,
@@ -38,14 +36,18 @@ smc_init <- smc_mallows_new_users(
 smc_update <- smc_init
 for(i in 2:10) {
   smc_update <- smc_mallows_update(
-    model = smc_update, rankings = rankings[inds == i, ]
+    model = smc_update, rankings = rankings[inds == i, ],
+    verbose = TRUE
     )
 }
 
-mean(smc_onego$alpha_samples[, 11])
-mean(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 100])
+expect_equal(mean(smc_update$alpha_samples[, 2]), 2.51, tolerance = .01)
+expect_equal(mean(smc_onego$alpha_samples[, 11]), 2.50, tolerance = .01)
+expect_equal(mean(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 100]), 2.48,
+             tolerance = .01)
 
+expect_equal(sd(smc_update$alpha_samples[, 2]), .34, tolerance = .01)
+expect_equal(sd(smc_onego$alpha_samples[, 11]), .35, tolerance = .01)
+expect_equal(sd(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 100]), 0.34,
+             tolerance = .01)
 
-
-
-apply(smc_mod$alpha_samples, 2, mean)
