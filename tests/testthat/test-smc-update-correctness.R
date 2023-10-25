@@ -37,9 +37,11 @@ test_that("smc_mallows_update is correct for new rankings", {
     mcmc_kernel_app = 50
   )
 
-  for(i in seq(from = 2, to = nrow(potato_visual))) {
-    mod_smc <- smc_mallows_update(model = mod_smc,
-                                  rankings = potato_visual[i, , drop = FALSE])
+  for (i in seq(from = 2, to = nrow(potato_visual))) {
+    mod_smc <- smc_mallows_update(
+      model = mod_smc,
+      rankings = potato_visual[i, , drop = FALSE]
+    )
   }
 
   # Poterior mean of alpha should be the same in both SMC methods, and close to BMM
@@ -60,15 +62,18 @@ test_that("smc_mallows_update is correct for new rankings", {
   # How many items are in disagreement
   expect_equal(
     rank_distance(matrix(ref_consensus, nrow = 1),
-                  bmm_consensus, metric = "ulam"),
-    0)
+      bmm_consensus,
+      metric = "ulam"
+    ),
+    0
+  )
   expect_equal(
     rank_distance(matrix(ref_consensus, nrow = 1),
-                  smc_consensus, metric = "ulam"),
-    1)
-
-
-
+      smc_consensus,
+      metric = "ulam"
+    ),
+    1
+  )
 })
 
 test_that("smc_mallows_new_users is correct for new partial rankings", {
@@ -82,7 +87,8 @@ test_that("smc_mallows_new_users is correct for new partial rankings", {
     1, 3, 2,
     1, 2, 3,
     1, 2, 3,
-    2, 1, 3), times = 10), ncol = 3, byrow = TRUE)
+    2, 1, 3
+  ), times = 10), ncol = 3, byrow = TRUE)
 
   rankings[sample(seq_along(rankings), 10)] <- NA
 
@@ -111,7 +117,7 @@ test_that("smc_mallows_new_users is correct for new partial rankings", {
   )
 
   smc_update <- smc_init
-  for(i in 2:10) {
+  for (i in 2:10) {
     smc_update <- smc_mallows_update(
       model = smc_update, rankings = rankings[inds == i, ],
       verbose = TRUE
@@ -121,12 +127,14 @@ test_that("smc_mallows_new_users is correct for new partial rankings", {
   expect_equal(mean(smc_update$alpha_samples[, 2]), 2.51, tolerance = .01)
   expect_equal(mean(smc_onego$alpha_samples[, 11]), 2.50, tolerance = .01)
   expect_equal(mean(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 100]), 2.48,
-               tolerance = .01)
+    tolerance = .01
+  )
 
   expect_equal(sd(smc_update$alpha_samples[, 2]), .34, tolerance = .01)
   expect_equal(sd(smc_onego$alpha_samples[, 11]), .35, tolerance = .01)
   expect_equal(sd(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 100]), 0.34,
-               tolerance = .01)
+    tolerance = .01
+  )
 
   expect_equal(consensus_unwrapper(smc_update), 1:3)
   expect_equal(consensus_unwrapper(smc_onego), 1:3)
@@ -149,27 +157,33 @@ test_that("smc_mallows_new_users is correct for new partial rankings", {
 
   smc_sushi_update <- smc_sushi_init
   inds <- rep(1:5, each = 1000)
-  for(i in 2:5) {
+  for (i in 2:5) {
     smc_sushi_update <- smc_mallows_update(
       model = smc_sushi_update, rankings = dat[inds == i, ]
     )
   }
 
   expect_equal(mean(bmm_sushi$alpha$value[bmm_sushi$alpha$iteration > 300]),
-               1.69, tolerance = .01)
-  expect_equal(mean(smc_sushi_update$alpha_samples[,1]),
-               1.73, tolerance = .01)
+    1.69,
+    tolerance = .01
+  )
+  expect_equal(mean(smc_sushi_update$alpha_samples[, 1]),
+    1.73,
+    tolerance = .01
+  )
 
   smc_consensus <- compute_consensus(smc_sushi_update)
   smc_consensus$item <- unlist(
-    regmatches(smc_consensus$item,
-               gregexpr("[0-9]+", smc_consensus$item))
+    regmatches(
+      smc_consensus$item,
+      gregexpr("[0-9]+", smc_consensus$item)
+    )
   )
   smc_consensus$item <- colnames(sushi_rankings)[as.integer(smc_consensus$item)]
   bmm_consensus <- compute_consensus(bmm_sushi)
 
   expect_equal(
     bmm_consensus$ranking,
-    smc_consensus$ranking)
+    smc_consensus$ranking
+  )
 })
-

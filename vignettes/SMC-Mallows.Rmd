@@ -128,8 +128,10 @@ The example `model1` returns a list variable of the particles values for $\bolds
 Here, we can observe the posterior probabilities of $\boldsymbol{\rho}$ for a selection of items can be observed by calling the function `plot()`.
 
 ```{r smc_complete_analysis_heatplot, message=FALSE, warning=FALSE}
-plot(model1, colnames = colnames(sushi_rankings), 
-     items = 1:6, parameter = "rho")
+plot(model1,
+  colnames = colnames(sushi_rankings),
+  items = 1:6, parameter = "rho"
+)
 ```
 
 The posterior distributions of $\boldsymbol{\rho}$ and $\alpha$ can be studied with some of the the analysis tools provided by `SMC-Mallows`. The posterior intervals for the consensus ranking of each sushi item are obtained by calling `compute_posterior_intervals`.
@@ -168,8 +170,10 @@ model2 <- smc_mallows_update(model = model1, rankings = data_batch2)
 The returned object `model2`, can be treated exactly the same way as the initial `model1`. For example, we can plot posterior quantities:
 
 ```{r}
-plot(model2, colnames = colnames(sushi_rankings), 
-     items = 1:6, parameter = "rho")
+plot(model2,
+  colnames = colnames(sushi_rankings),
+  items = 1:6, parameter = "rho"
+)
 ```
 
 And we can compute posterior intervals:
@@ -240,8 +244,10 @@ The analysis performed in the previous demonstration can be applied to this scen
 
 
 ```{r smc_partial_analysis, message=FALSE, warning=FALSE}
-plot(partial_mod1, colnames = colnames(sushi_rankings), 
-     items = 1:6, parameter = "rho")
+plot(partial_mod1,
+  colnames = colnames(sushi_rankings),
+  items = 1:6, parameter = "rho"
+)
 plot(partial_mod1, parameter = "alpha")
 ```
 

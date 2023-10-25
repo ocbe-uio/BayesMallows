@@ -130,7 +130,7 @@ smc_mallows_new_users <- function(
   ret$num_obs <- nrow(rankings)
   ret$rankings <- rankings
   ret$verbose <- verbose
-  class(ret) <- c("SMCMallowsNewUsers","SMCMallows")
+  class(ret) <- c("SMCMallowsNewUsers", "SMCMallows")
 
   ret
 }

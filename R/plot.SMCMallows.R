@@ -21,8 +21,7 @@ plot.SMCMallows <- function(
     x,
     parameter = "alpha", time = NULL, C = 1,
     colnames = NULL, items = NULL, ...) {
-
-  if(is.null(time)) {
+  if (is.null(time)) {
     time <- dim(x$rho_samples)[[3]]
   }
 
