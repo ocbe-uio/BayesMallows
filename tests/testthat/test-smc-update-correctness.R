@@ -73,6 +73,8 @@ test_that("smc_mallows_update is correct for new rankings", {
 
 test_that("smc_mallows_new_users is correct for new partial rankings", {
   skip_extended()
+
+  # Small dummy data ----
   set.seed(123)
 
   rankings <- matrix(rep(c(
@@ -130,5 +132,44 @@ test_that("smc_mallows_new_users is correct for new partial rankings", {
   expect_equal(consensus_unwrapper(smc_onego), 1:3)
   expect_equal(consensus_unwrapper(bmm_mod), 1:3)
 
+  # Sushi data with missingness ----
+  dat <- sushi_rankings
+  dat[dat > 8] <- NA
+  bmm_sushi <- compute_mallows(rankings = dat)
+  bmm_sushi$burnin <- 300
+
+  smc_sushi_init <- smc_mallows_new_users(
+    rankings = dat[1:1000, ],
+    type = "partial",
+    n_particles = 1000,
+    timesteps = 1,
+    num_new_obs = 1000,
+    mcmc_kernel_app = 5
+  )
+
+  smc_sushi_update <- smc_sushi_init
+  inds <- rep(1:5, each = 1000)
+  for(i in 2:5) {
+    smc_sushi_update <- smc_mallows_update(
+      model = smc_sushi_update, rankings = dat[inds == i, ]
+    )
+  }
+
+  expect_equal(mean(bmm_sushi$alpha$value[bmm_sushi$alpha$iteration > 300]),
+               1.69, tolerance = .01)
+  expect_equal(mean(smc_sushi_update$alpha_samples[,1]),
+               1.73, tolerance = .01)
+
+  smc_consensus <- compute_consensus(smc_sushi_update)
+  smc_consensus$item <- unlist(
+    regmatches(smc_consensus$item,
+               gregexpr("[0-9]+", smc_consensus$item))
+  )
+  smc_consensus$item <- colnames(sushi_rankings)[as.integer(smc_consensus$item)]
+  bmm_consensus <- compute_consensus(bmm_sushi)
+
+  expect_equal(
+    bmm_consensus$ranking,
+    smc_consensus$ranking)
 })
 

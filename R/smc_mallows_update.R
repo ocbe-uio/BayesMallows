@@ -75,7 +75,7 @@ smc_mallows_update.SMCMallowsNewUsers <- function(
 
   carry_over <- c("metric", "type", "logz_list", "n_items", "n_particles",
                   "mcmc_kernel_app", "alpha_prop_sd", "lambda", "alpha_max",
-                  "alpha", "aug_method", "leap_size")
+                  "alpha", "aug_method", "leap_size", "verbose")
 
   for(nm in carry_over) {
     eval(parse(text = paste0("ret$", nm, "<-model$", nm)))

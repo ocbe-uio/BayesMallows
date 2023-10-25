@@ -104,7 +104,7 @@ We are interested in updating the parameter estimates of the Bayesian Mallows mo
 head(sushi_rankings)
 ```
 
-The function `smc_mallows_new_users` with `type = "complete"` (default argument, so not explicitly provided) shows the simplest version of the SMC algorithm in action. Many of the input variables, that the function requires, are also used in some of the existing functions in the `BayesMallows` R package. However, we will discuss what the new variables refer to in the algorithm. The variable `rankings` in this instance is a 2D dataset with the number of columns as `n_items` and the number of rows, $M$, represents the number of individuals in the dataset. We begin the algorithm with no observations and in each artificial time step we introduce a batch number of observations, this is controlled by the variable `num_new_obs` to control the size of the bath, and `timesteps` to specify the number of updates we will perform. There is a limit on the value for `timesteps`, and this depends on the number of individuals in the dataset and the value of `num_new_obs`. In the move stage we can apply an MCMC kernel as many times as we would like using the variable `mcmc_kernel_app` to specify the value.
+The function `smc_mallows_new_users` with `type = "complete"` (default argument, so not explicitly provided) shows the simplest version of the SMC algorithm in action. The variable `rankings` in this instance is a matrix whose number of columns as `n_items` and the number of rows, $M$, represents the number of individuals in the dataset. We begin the algorithm with no observations and in each artificial time step we introduce a batch number of observations, this is controlled by the variable `num_new_obs` to control the size of the bath, and `timesteps` to specify the number of updates we will perform. There is a limit on the value for `timesteps`, and this depends on the number of individuals in the dataset and the value of `num_new_obs`. In the move stage we can apply an MCMC kernel as many times as we would like using the variable `mcmc_kernel_app` to specify the value.
 
 ```{r set_seed, message=FALSE, warning=FALSE, include=FALSE}
 set.seed(994)
@@ -210,8 +210,8 @@ where $\alpha^{(i)}_{t-1}$ and $\boldsymbol{\rho}^{(i)}_{t-1}, \ i=1,\dots,N$ ar
 For this demonstration we shall assume that we can only observe the top-5 ranked items from each user in the first 100 rows of the `sushi_rankings` dataset.
 
 ```{r smc_partial_set_up}
-data_partial <- sushi_rankings[1:100, ]
-data_partial[data_partial > 5] <- NA
+data_partial <- sushi_rankings[1:1000, ]
+data_partial[data_partial > 8] <- NA
 head(data_partial)
 ```
 
@@ -246,6 +246,29 @@ plot(partial_mod1, parameter = "alpha")
 ```
 
 
+#### New users with partial rankings
+
+If a new user arrives, again with partial rankings, we can use the `smc_mallows_update()` function as we did for complete data.
+
+Assume a new batch of 100 sushi preferences arrives, again with top-5 rankings:
+
+```{r}
+data_partial <- sushi_rankings[1001:2000, ]
+data_partial[data_partial > 8] <- NA
+```
+
+
+```{r}
+mod_updated <- smc_mallows_update(
+  model = partial_mod1,
+  rankings = data_partial
+)
+```
+
+
+```{r}
+plot(mod_updated)
+```
 
 
 ### Updated partial rankings
