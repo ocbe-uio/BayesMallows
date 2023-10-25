@@ -10,7 +10,7 @@
   timesteps = 1,
   num_new_obs = nrow(rankings),
   n_particles = model$n_particles,
-  verbose = FALSE,
+  verbose = model$verbose,
   ...
 )
 }
