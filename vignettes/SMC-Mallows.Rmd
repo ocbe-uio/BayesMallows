@@ -281,7 +281,7 @@ set.seed(995)
 smc_partial <- smc_mallows_new_item_rank(
   rankings = potato_partial,
   n_particles = 1000,
-  mcmc_kernel_app = 5,
+  mcmc_kernel_app = 10,
   aug_method = "pseudolikelihood"
 )
 ```
@@ -294,85 +294,6 @@ plot(smc_partial, parameter = "alpha")
 ```
 
 
-#### Updating models
-
-A more realistic use case is when the partial rankings arrive sequentially. This is also a case where sequential Monte Carlo is likely to be useful. Let's assume that we first observe the dataset at the first timepoint:
-
-```{r}
-smc_partial <- smc_mallows_new_item_rank(
-  rankings = potato_partial[,, 1, drop = FALSE],
-  n_particles = 500,
-  mcmc_kernel_app = 5,
-  aug_method = "pseudolikelihood",
-  verbose = TRUE
-)
-```
-
-We can now gradually update the models, using `smc_mallows_update()`. This is done in the loop below. Note that in a realistic setting, we would instead have saved the previous model, and then updated it as new data comes along. The loop thus mimics the arrival of ten new datasets. Also note that because of the way it is implemented, we provide both the data at the previous timepoint as well as the data at the current timepoint, even though the rankings at the previous timepoint are not used. We will have to change this, but not tonight.
-
-```{r}
-mod_list <- vector(mode = "list", length = dim(potato_partial)[[3]])
-mod_list[[1]] <- smc_partial
-for(i in seq(from = 2, to = length(mod_list))) {
-  mod_list[[i]] <- smc_mallows_update(
-    model = mod_list[[i - 1]], 
-    rankings = potato_partial[,, (i - 1):i, drop = FALSE])
-}
-```
-
-
-Below, we gather the psoterior intervals of latent rankings for each timestep. Needless to say, if we hadn't been concerned about the number of dependencies of the package, we would have done the step below using [tidyverse](https://www.tidyverse.org/).
-
-
-```{r}
-ints_smc <- do.call(rbind, lapply(seq_along(mod_list), function(i) {
-  ints <- compute_posterior_intervals(mod_list[[i]], parameter = "rho")
-  cbind(step = i, ints)
-}))
-```
-
-For comparison with Metropolis-Hastings, we fit the same model with complete data below. The dataset `potato_visual` is identical to the data in the eleventh step of SMC, `potato_partial[,, 11]`.
-
-
-```{r}
-colnames(potato_visual) <- paste("Item", seq_len(ncol(potato_visual)))
-bmm <- compute_mallows(potato_visual)
-bmm$burnin <- 500
-ints_bmm <- compute_posterior_intervals(bmm, parameter = "rho")
-```
-
-Next, we merge the two datasets.
-
-```{r}
-plot_dat <- merge(
-  subset(ints_smc, step == 11),
-  ints_bmm,
-  by = "item",
-  suffixes = c(".smc", ".bmm")
-)
-```
-
-We can compare the posterior ranks at the last timepoints of SMC with the posteriors obtained using Metropolis-Hastings. Even with this low number of particles, they are in good agreement.
-
-```{r}
-ggplot(plot_dat, aes(x = mean.bmm, y = mean.smc)) +
-  geom_point() + 
-  ggtitle("Mean posterior ranks per item") + 
-  xlab("Metropolis-Hastings") + 
-  ylab("Sequential Monte Carlo") + 
-  geom_smooth(method = "lm")
-```
-
-We can also study how the posterior ranks develop over time. As less ranks are missing, the more certain the algorithm becomes.
-
-```{r}
-ggplot(ints_smc, aes(x = step, y = mean, group = item)) + 
-  geom_line(alpha = .3) + 
-  geom_point(size = .1) +
-  ggtitle("Development of ranks over 11 SMC steps") + 
-  xlab("Timestep") + 
-  ylab("Mean posterior rank for item")
-```
 
 
 ## References
