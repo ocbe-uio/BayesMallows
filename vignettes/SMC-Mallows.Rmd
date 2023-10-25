@@ -210,8 +210,8 @@ where $\alpha^{(i)}_{t-1}$ and $\boldsymbol{\rho}^{(i)}_{t-1}, \ i=1,\dots,N$ ar
 For this demonstration we shall assume that we can only observe the top-5 ranked items from each user in the first 100 rows of the `sushi_rankings` dataset.
 
 ```{r smc_partial_set_up}
-data_partial <- sushi_rankings[1:1000, ]
-data_partial[data_partial > 8] <- NA
+data_partial <- sushi_rankings[sample(nrow(sushi_rankings), 100), ]
+data_partial[data_partial > 5] <- NA
 head(data_partial)
 ```
 
@@ -253,8 +253,8 @@ If a new user arrives, again with partial rankings, we can use the `smc_mallows_
 Assume a new batch of 100 sushi preferences arrives, again with top-5 rankings:
 
 ```{r}
-data_partial <- sushi_rankings[1001:2000, ]
-data_partial[data_partial > 8] <- NA
+data_partial <- sushi_rankings[sample(nrow(sushi_rankings), 100), ]
+data_partial[data_partial > 5] <- NA
 ```
 
 
@@ -265,11 +265,13 @@ mod_updated <- smc_mallows_update(
 )
 ```
 
+Again we can plot the posterior density of $\alpha$, which now is based on both the new data and on the old data. 
 
 ```{r}
 plot(mod_updated)
 ```
 
+In this example, the data is rather noisy because of the high amount of missingness and the low number of observations. On [this link](https://github.com/ocbe-uio/BayesMallows/blob/smc-issue-306/tests/testthat/test-smc_updated_new_item_rank.R) you can find long-running tests which confirm the correctness of the implementation, by comparing the results on the full sushi data with the results obtained by analyzing the whole data jointly using the Metropolis-Hastings in the `compute_mallows()` function.
 
 ### Updated partial rankings
 
