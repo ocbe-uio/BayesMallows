@@ -112,9 +112,7 @@ Rcpp::List smc_mallows_new_users_cpp(
   if(type == "partial" || type == "partial_alpha_fixed"){
     aug_rankings = zeros(n_users, n_items, n_particles);
     if(aug_init.isNotNull()) {
-      cube tmp = Rcpp::as<cube>(aug_init);
-      aug_rankings.rows(0, tmp.n_rows - 1) = tmp;
-      Rcpp::Rcout << "aug_rankings = " << aug_rankings << std::endl;
+      aug_rankings = Rcpp::as<cube>(aug_init);
     }
   }
 

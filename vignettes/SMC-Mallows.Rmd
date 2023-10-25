@@ -178,6 +178,13 @@ And we can compute posterior intervals:
 compute_posterior_intervals(model2, parameter = "rho")
 ```
 
+We can also plot the posterior density of $\alpha$:
+
+```{r}
+plot(model2)
+```
+
+
 We can also update `model2` again, if new data arrives.
 
 ### Partial Rankings
@@ -239,48 +246,6 @@ plot(partial_mod1, parameter = "alpha")
 ```
 
 
-#### New partial rankings
-
-As with the complete rankings, we can update the model for partial data when new rankings arrive. The new rankings can be both partial and complete. We illustrate first for new partial data.
-
-```{r}
-data_partial_new <- sushi_rankings[101:200, ]
-data_partial_new[data_partial_new > 8] <- NA
-head(data_partial_new)
-```
-
-We update the model as follows. The `type` argument is by default the same as was given to `smc_mallows_new_users()`, so we do not need to specify it.
-
-```{r}
-partial_mod2 <- smc_mallows_update(
-  model = partial_mod1, rankings = data_partial_new)
-```
-
-We can do all the same posterior inferences as before.
-
-```{r}
-plot(partial_mod2, colnames = colnames(sushi_rankings), 
-     items = 1:6, parameter = "rho")
-plot(partial_mod2, parameter = "alpha")
-```
-
-#### New complete rankings
-
-We can also update the model with complete data, which is demonstrated here:
-
-```{r}
-data_complete <- sushi_rankings[101:200, ]
-partial_mod2b <- smc_mallows_update(
-  model = partial_mod1, rankings = data_complete, 
-  type = "complete"
-  )
-```
-
-Again we can plot the posterior quantities as before.
-
-```{r}
-plot(partial_mod2b, parameter = "alpha")
-```
 
 
 ### Updated partial rankings
