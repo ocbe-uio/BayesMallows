@@ -281,7 +281,7 @@ set.seed(995)
 smc_partial <- smc_mallows_new_item_rank(
   rankings = potato_partial,
   n_particles = 1000,
-  mcmc_kernel_app = 10,
+  mcmc_kernel_app = 20,
   aug_method = "pseudolikelihood"
 )
 ```
