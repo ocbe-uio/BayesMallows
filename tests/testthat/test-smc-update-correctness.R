@@ -67,24 +67,83 @@ test_that("smc_mallows_update is correct for new rankings", {
                   smc_consensus, metric = "ulam"),
     1)
 
+
+
 })
 
+test_that("smc_mallows_update is correct for new partial rankings", {
+  # Introduce missingness in potato_visual
+  set.seed(123)
+  dat <- potato_visual
+  dat[dat > 15] <- NA
 
-test_that("smc_mallows_update is corrected for updated partial ranks", {
-  skip_extended()
+  # Metropolis-Hastings
+  mod_bmm <- compute_mallows(rankings = dat, nmc = 10000)
+  mod_bmm$burnin <- 1000
 
-  set.seed(81549300)
-
-  bmm <- compute_mallows(rankings = potato_visual, nmc = 10000)
-  bmm$burnin <- 1000
-
-  smc_ref <- smc_mallows_new_item_rank(
-    rankings = potato_partial,
-    n_particles = 5000,
-    mcmc_kernel_app = 20,
+  # Single function call, taking one observation at a time
+  mod_ref <- smc_mallows_new_users(
+    rankings = dat,
+    type = "partial",
+    n_particles = 2000,
+    timesteps = nrow(dat),
+    num_new_obs = 1,
+    mcmc_kernel_app = 50,
     aug_method = "pseudolikelihood"
   )
+  mod_ref_uniform <- smc_mallows_new_users(
+    rankings = dat,
+    type = "partial",
+    n_particles = 2000,
+    timesteps = nrow(dat),
+    num_new_obs = 1,
+    mcmc_kernel_app = 50,
+    aug_method = "random"
+  )
 
-  mean(bmm$alpha$value[bmm$alpha$iteration > 1000])
-  mean(smc_ref$alpha_samples[, 11])
+  # Sequentially, using update function
+  # mod_smc <- smc_mallows_new_users(
+  #   rankings = dat[1, , drop = FALSE],
+  #   type = "partial",
+  #   timesteps = 1,
+  #   num_new_obs = 1,
+  #   n_particles = 3,
+  #   mcmc_kernel_app = 10,
+  #   aug_method = "pseudolikelihood"
+  # )
+  #
+  # for(i in seq(from = 2, to = nrow(dat))) {
+  #   mod_smc <- smc_mallows_update(model = mod_smc,
+  #                                 rankings = dat[i, , drop = FALSE])
+  # }
+
+  # Poterior mean of alpha should be the same in both SMC methods, and close to BMM
+  #expect_equal(mean(mod_smc$alpha_samples[, 2]), 10.8, tolerance = 1e-2)
+  expect_equal(mean(mod_ref$alpha_samples[, 13]), 10.6, tolerance = 0.01)
+  expect_equal(mean(mod_ref_uniform$alpha_samples[, 13]), 10.4, tolerance = 0.01)
+  expect_equal(mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]), 10.8, tolerance = 0.01)
+
+  # Same test for posterior standard deviation
+  #expect_equal(sd(mod_smc$alpha_samples[, 2]), 0.73, tolerance = 1e-2)
+  expect_equal(sd(mod_ref$alpha_samples[, 13]), 0.73, tolerance = 0.1)
+  expect_equal(sd(mod_ref_uniform$alpha_samples[, 13]), 0.74, tolerance = 0.1)
+  expect_equal(sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]), 0.77, tolerance = 0.1)
+
+  # Is there any disagreement between the methods about the ranking of the items?
+  bmm_consensus <- consensus_unwrapper(mod_bmm)
+  ref_consensus <- consensus_unwrapper(mod_ref)
+  ref_uniform_consensus <- consensus_unwrapper(mod_ref_uniform)
+  #smc_consensus <- consensus_unwrapper(mod_smc)
+
+  # How many items are in disagreement
+  expect_equal(
+    rank_distance(matrix(ref_consensus, nrow = 1),
+                  bmm_consensus, metric = "ulam"),
+    5)
+  expect_equal(
+    rank_distance(matrix(ref_uniform_consensus, nrow = 1),
+                  bmm_consensus, metric = "ulam"),
+    3)
+
 })
+

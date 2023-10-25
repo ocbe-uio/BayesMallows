@@ -82,6 +82,7 @@ Rcpp::List smc_mallows_new_users_cpp(
   const int& leap_size = 1,
   Rcpp::Nullable<arma::mat> rho_init = R_NilValue,
   Rcpp::Nullable<arma::vec> alpha_init = R_NilValue,
+  Rcpp::Nullable<arma::cube> aug_init = R_NilValue,
   int num_obs = 0
 ) {
   /* ====================================================== */
@@ -110,6 +111,11 @@ Rcpp::List smc_mallows_new_users_cpp(
   cube aug_rankings; // no. users by items by particles
   if(type == "partial" || type == "partial_alpha_fixed"){
     aug_rankings = zeros(n_users, n_items, n_particles);
+    if(aug_init.isNotNull()) {
+      cube tmp = Rcpp::as<cube>(aug_init);
+      aug_rankings.rows(0, tmp.n_rows - 1) = tmp;
+      Rcpp::Rcout << "aug_rankings = " << aug_rankings << std::endl;
+    }
   }
 
   /* ====================================================== */

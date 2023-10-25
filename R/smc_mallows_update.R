@@ -69,6 +69,7 @@ smc_mallows_update.SMCMallowsNewUsers <- function(
     leap_size = model$leap_size,
     rho_init = model$rho_samples[, , dim(model$rho_samples)[[3]]],
     alpha_init = model$alpha_samples[, dim(model$alpha_samples)[[2]]],
+    aug_init = model$augmented_rankings,
     num_obs = model$num_obs
   )
 
@@ -81,6 +82,7 @@ smc_mallows_update.SMCMallowsNewUsers <- function(
   }
   ret$rankings <- rankings
   ret$num_obs <- nrow(rankings)
+
   class(ret) <- c("SMCMallowsNewUsers","SMCMallows")
   ret
 }
