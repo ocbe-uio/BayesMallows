@@ -71,7 +71,7 @@ test_that("smc_mallows_update is correct for new rankings", {
 
 })
 
-test_that("smc_mallows_update is correct for new partial rankings", {
+test_that("smc_mallows_new_users is correct for new partial rankings", {
   skip_extended()
   # Introduce missingness in potato_visual
   set.seed(123)
