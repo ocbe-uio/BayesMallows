@@ -112,20 +112,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // rmallows
-arma::mat rmallows(arma::vec rho0, arma::vec obs_freq, double alpha0, int n_samples, int burnin, int thinning, int leap_size, std::string metric);
-RcppExport SEXP _BayesMallows_rmallows(SEXP rho0SEXP, SEXP obs_freqSEXP, SEXP alpha0SEXP, SEXP n_samplesSEXP, SEXP burninSEXP, SEXP thinningSEXP, SEXP leap_sizeSEXP, SEXP metricSEXP) {
+arma::mat rmallows(arma::vec rho0, double alpha0, int n_samples, int burnin, int thinning, int leap_size, std::string metric);
+RcppExport SEXP _BayesMallows_rmallows(SEXP rho0SEXP, SEXP alpha0SEXP, SEXP n_samplesSEXP, SEXP burninSEXP, SEXP thinningSEXP, SEXP leap_sizeSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type rho0(rho0SEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type obs_freq(obs_freqSEXP);
     Rcpp::traits::input_parameter< double >::type alpha0(alpha0SEXP);
     Rcpp::traits::input_parameter< int >::type n_samples(n_samplesSEXP);
     Rcpp::traits::input_parameter< int >::type burnin(burninSEXP);
     Rcpp::traits::input_parameter< int >::type thinning(thinningSEXP);
     Rcpp::traits::input_parameter< int >::type leap_size(leap_sizeSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
-    rcpp_result_gen = Rcpp::wrap(rmallows(rho0, obs_freq, alpha0, n_samples, burnin, thinning, leap_size, metric));
+    rcpp_result_gen = Rcpp::wrap(rmallows(rho0, alpha0, n_samples, burnin, thinning, leap_size, metric));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -393,7 +392,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_log_expected_dist", (DL_FUNC) &_BayesMallows_log_expected_dist, 4},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
-    {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 8},
+    {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 27},
     {"_BayesMallows_calculate_backward_probability", (DL_FUNC) &_BayesMallows_calculate_backward_probability, 8},
     {"_BayesMallows_calculate_forward_probability", (DL_FUNC) &_BayesMallows_calculate_forward_probability, 7},

@@ -1,5 +1,8 @@
 # BayesMallows (development versions)
 
+* Argument obs_freq to internal function rmallows() is removed, as it is not 
+  being used. Thanks to Lorenzo Zuccato for pointing this our 
+  (https://github.com/ocbe-uio/BayesMallows/issues/337).
 * Argument save_clus to compute_mallows() has been removed, as it was not used.
 * compute_mallows() now supports parallel chains, by providing a 'cl' argument.
   See vignette "MCMC with Parallel Chains" for a tutorial.
@@ -12,7 +15,8 @@
 * Documentation of functions are now grouped in families.
 * lik_db_mix() is now deprecated in favor of get_mallows_loglik()
 * Unusued argument removed from internal function augment_pairwise(). Thanks to
-  Lorenzo Zuccato for making us aware of this.
+  Lorenzo Zuccato for making us aware of this 
+  (https://github.com/ocbe-uio/BayesMallows/issues/313).
 
 # BayesMallows 1.4.0
 
