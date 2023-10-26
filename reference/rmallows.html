@@ -12,7 +12,7 @@ a Metropolis-Hastings algorithm."><!-- mathjax --><script src="https://cdnjs.clo
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9005</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,6 @@ a Metropolis-Hastings algorithm.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rmallows</span><span class="op">(</span></span>
 <span>  <span class="va">rho0</span>,</span>
-<span>  <span class="va">obs_freq</span>,</span>
 <span>  <span class="va">alpha0</span>,</span>
 <span>  <span class="va">n_samples</span>,</span>
 <span>  <span class="va">burnin</span>,</span>
@@ -80,10 +79,6 @@ a Metropolis-Hastings algorithm.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>rho0</dt>
 <dd><p>Vector specifying the latent consensus ranking.</p></dd>
-
-
-<dt>obs_freq</dt>
-<dd><p>Vector of observation frequencies (weights) to apply to each sample.</p></dd>
 
 
 <dt>alpha0</dt>
@@ -110,19 +105,12 @@ between each time a random rank vector is sampled.</p></dd>
 <dt>metric</dt>
 <dd><p>Character string specifying the distance measure to use. Available
 options are <code>"footrule"</code> (default), <code>"spearman"</code>, <code>"cayley"</code>, <code>"hamming"</code>,
-<code>"kendall"</code>, and <code>"ulam"</code>. For sampling from the Mallows model with Cayley, Hamming, Kendall,
-and Ulam distances
-the <code>PerMallows</code> package (Irurozki et al. 2016)
- can also be used.</p></dd>
+<code>"kendall"</code>, and <code>"ulam"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Irurozki E, Calvo B, Lozano JA (2016).
-“PerMallows: An R Package for Mallows and Generalized Mallows Models.”
-<em>Journal of Statistical Software</em>, <b>71</b>(12), 1--30.
-<a href="https://doi.org/10.18637/jss.v071.i12" class="external-link">doi:10.18637/jss.v071.i12</a>
-.</p>
+    <p>There are no references for Rd macro <code>\insertAllCites</code> on this help page.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
