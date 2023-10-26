@@ -6,7 +6,6 @@
 \usage{
 rmallows(
   rho0,
-  obs_freq,
   alpha0,
   n_samples,
   burnin,
@@ -17,8 +16,6 @@ rmallows(
 }
 \arguments{
 \item{rho0}{Vector specifying the latent consensus ranking.}
-
-\item{obs_freq}{Vector of observation frequencies (weights) to apply to each sample.}
 
 \item{alpha0}{Scalar specifying the scale parameter.}
 
@@ -33,9 +30,7 @@ between each time a random rank vector is sampled.}
 
 \item{metric}{Character string specifying the distance measure to use. Available
 options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, \code{"hamming"},
-\code{"kendall"}, and \code{"ulam"}. For sampling from the Mallows model with Cayley, Hamming, Kendall,
-and Ulam distances
-the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.}
+\code{"kendall"}, and \code{"ulam"}.}
 }
 \description{
 Sample from the Mallows distribution with arbitrary distance metric using

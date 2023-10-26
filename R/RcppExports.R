@@ -107,7 +107,6 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
 #' a Metropolis-Hastings algorithm.
 #'
 #' @param rho0 Vector specifying the latent consensus ranking.
-#' @param obs_freq Vector of observation frequencies (weights) to apply to each sample.
 #' @param alpha0 Scalar specifying the scale parameter.
 #' @param n_samples Integer specifying the number of random samples to generate.
 #' @param burnin Integer specifying the number of iterations to discard as burn-in.
@@ -116,16 +115,14 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
 #' @param leap_size Integer specifying the step size of the leap-and-shift proposal distribution.
 #' @param metric Character string specifying the distance measure to use. Available
 #' options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, \code{"hamming"},
-#' \code{"kendall"}, and \code{"ulam"}. For sampling from the Mallows model with Cayley, Hamming, Kendall,
-#' and Ulam distances
-#' the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.
+#' \code{"kendall"}, and \code{"ulam"}.
 #'
 #' @keywords internal
 #'
 #' @references \insertAllCited{}
 #'
-rmallows <- function(rho0, obs_freq, alpha0, n_samples, burnin, thinning, leap_size = 1L, metric = "footrule") {
-    .Call(`_BayesMallows_rmallows`, rho0, obs_freq, alpha0, n_samples, burnin, thinning, leap_size, metric)
+rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, metric = "footrule") {
+    .Call(`_BayesMallows_rmallows`, rho0, alpha0, n_samples, burnin, thinning, leap_size, metric)
 }
 
 #' Worker function for computing the posterior distribution.
