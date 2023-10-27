@@ -167,6 +167,9 @@ compute_consensus(model3)
 compute_consensus(model3, type = "MAP")
 ```
 
+```{r}
+rm(data_batch1, data_batch2, data_batch3)
+```
 
 
 ### Partial Rankings
@@ -189,73 +192,67 @@ where $\alpha^{(i)}_{t-1}$ and $\boldsymbol{\rho}^{(i)}_{t-1}, \ i=1,\dots,N$ ar
 
 #### Demonstration
 
-For this demonstration we shall assume that we can only observe the top-5 ranked items from each user in the first 100 rows of the `sushi_rankings` dataset.
+For this demonstration we shall assume that we can only observe the top-5 ranked items from each user in the `sushi_rankings` dataset.
 
 ```{r smc_partial_set_up}
-data_partial <- sushi_rankings[sample(nrow(sushi_rankings), 100), ]
+data_partial <- sushi_rankings
 data_partial[data_partial > 5] <- NA
 head(data_partial)
 ```
 
-We can call the function `smc_mallows_new_users` with `type = "partial"` to run the SMC algorithm for partial ranking data. The variable `aug_method` allows you to choose which data augmentation method to use on the partial ranking data. The option `"pseudolikelihood"` is only compatible with when selecting the distance metric as either `"footrule"` or `"spearman"`.
-
-
-```{r set_seed2, message=FALSE, warning=FALSE, include=FALSE}
-set.seed(994)
-```
-
-
-```{r partial_mod1}
-partial_mod1 <- smc_mallows_new_users(
-  rankings = data_partial,
-  type = "partial",
-  n_particles = 100,
-  timesteps = 20,
-  mcmc_steps = 5,
-  num_new_obs = 5,
-  aug_method = "pseudolikelihood"
-)
-```
-
-
-The analysis performed in the previous demonstration can be applied to this scenario. Here, we can observe the posterior probabilities for a selection of items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ as part of this demonstration, but we can use other post processing functions to analyse the output.
-
-
-```{r smc_partial_analysis, message=FALSE, warning=FALSE}
-plot(partial_mod1,
-  colnames = colnames(sushi_rankings),
-  items = 1:6, parameter = "rho"
-)
-plot(partial_mod1, parameter = "alpha")
-```
-
-
-#### New users with partial rankings
-
-If a new user arrives, again with partial rankings, we can use the `smc_mallows_update()` function as we did for complete data.
-
-Assume a new batch of 100 sushi preferences arrives, again with top-5 rankings:
+Again, assume we start out with a batch of data, this time with 100 rankings:
 
 ```{r}
-data_partial <- sushi_rankings[sample(nrow(sushi_rankings), 100), ]
-data_partial[data_partial > 5] <- NA
+data_batch1 <- data_partial[1:100, ]
 ```
 
+We then estimate this model using `compute_mallows()`. Since there are `NA`s in the data, `compute_mallows()` will run imputation over the missing ranks.
 
 ```{r}
-mod_updated <- smc_mallows_update(
-  model = partial_mod1,
-  rankings = data_partial
-)
+model1 <- compute_mallows(data_batch1)
 ```
-
-Again we can plot the posterior density of $\alpha$, which now is based on both the new data and on the old data. 
 
 ```{r}
-plot(mod_updated)
+assess_convergence(model1)
+model1$burnin <- 300
 ```
 
-In this example, the data is rather noisy because of the high amount of missingness and the low number of observations. On [this link](https://github.com/ocbe-uio/BayesMallows/blob/smc-issue-306/tests/testthat/test-smc_updated_new_item_rank.R) you can find long-running tests which confirm the correctness of the implementation, by comparing the results on the full sushi data with the results obtained by analyzing the whole data jointly using the Metropolis-Hastings in the `compute_mallows()` function.
+Next, assume we receive 100 more top-5 rankings:
+
+```{r}
+data_batch2 <- data_partial[101:200, ]
+```
+
+We can now update the initial model, using sequential Monte Carlo:
+
+```{r}
+model2 <- update_mallows(model1, new_rankings = data_batch2, n_particles = 1000)
+```
+
+We can study model output as before:
+
+```{r}
+plot(model1)
+plot(model2)
+```
+
+
+When even more data arrives, we can update the model again. For example, assume we now get a set of complete rankings:
+
+```{r}
+data_batch3 <- sushi_rankings[201:300, ]
+```
+
+```{r}
+model3 <- update_mallows(model2, new_rankings = data_batch3)
+```
+
+```{r}
+plot(model3)
+```
+
+
+
 
 ### Updated partial rankings
 
@@ -264,44 +261,7 @@ We can view this scenario as a observing an updated partial ranking from an know
 
 #### Demonstration
 
-To illustrate how to perform SMC for updated partial rankings, we use the `potato_partial` dataset, which consists of several partial subsets of `potato_visual`, such that the number of ranked items increases with time.
-
-```{r smc_item_rank_set_up, message=FALSE, warning=FALSE}
-dim(potato_partial)
-apply(potato_partial, 3, function(x) mean(is.na(x)))
-```
-
-This means that we now have a 3D array containing 10 partial datasets and the one complete dataset. The third dimension of the array represents artificial time. We can view the updated partial rankings scenario as viewing several 2D slices of the observed dataset sequentially. So you can see, for example, that at the 5th time point, we observe the top-14 items from `potato_visual`.
-
-```{r potato_partial_example, message=FALSE, warning=FALSE}
-potato_partial[, , 5]
-```
-
-
-We can now run an experiment with `potato_partial` by calling the function `smc_mallows_new_item_rank`.
-
-```{r set_seed3, message=FALSE, warning=FALSE, include=FALSE}
-set.seed(995)
-```
-
-
-
-```{r new_item_rank_example, message=FALSE, warning=FALSE}
-smc_partial <- smc_mallows_new_item_rank(
-  rankings = potato_partial,
-  n_particles = 1000,
-  mcmc_steps = 20,
-  aug_method = "pseudolikelihood"
-)
-```
-
-Unlike the two previous demonstrations, the final slice of the output occurs at `timesteps` instead of `timesteps+1`. This is because we initialised the algorithm with the first slice of the `potato_partial` rather than initialising with no observed data. We observe the posterior probabilities for items in $\boldsymbol{\rho}$ and posterior density for $\alpha$ by using the same post-processing functions as before.
-
-```{r smc_updated_partial_analysis, message=FALSE, warning=FALSE}
-plot(smc_partial, parameter = "rho", items = c(4, 6, 7))
-plot(smc_partial, parameter = "alpha")
-```
-
+Will update this after completing tests which confirm the correctness of the implementation.
 
 
 
