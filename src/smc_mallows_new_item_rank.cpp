@@ -136,7 +136,7 @@ arma::cube augment_rankings(
 //' \code{\link{estimate_partition_function}}.
 //' @param cardinalities Cardinalities for exact computation of partition function,
 //' returned from \code{\link{prepare_partition_function}}.
-//' @param mcmc_kernel_app Integer value for the number of applications we apply the MCMC move kernel
+//' @param mcmc_steps Integer value for the number of applications we apply the MCMC move kernel
 //' @param alpha_prop_sd Numeric value of the standard deviation of the prior distribution for alpha
 //' @param lambda Strictly positive numeric value specifying the rate parameter
 //' of the truncated exponential prior distribution of alpha.
@@ -165,7 +165,7 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
   const unsigned int timesteps,
   const Rcpp::Nullable<arma::vec> logz_estimate,
   const Rcpp::Nullable<arma::vec> cardinalities,
-  const int& mcmc_kernel_app,
+  const int& mcmc_steps,
   Rcpp::Nullable<arma::cube> aug_rankings_init = R_NilValue,
   Rcpp::Nullable<arma::mat> rho_samples_init = R_NilValue,
   arma::vec alpha_samples_init = 0,

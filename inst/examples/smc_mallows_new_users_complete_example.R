@@ -6,7 +6,7 @@ mod1 <- smc_mallows_new_users(
   rankings = data_batch1,
   n_particles = 100,
   timesteps = 10,
-  mcmc_kernel_app = 10,
+  mcmc_steps = 10,
   num_new_obs = 10
 )
 

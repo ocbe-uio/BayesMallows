@@ -25,7 +25,7 @@ test_that("smc_mallows_update is correct for new rankings", {
     n_particles = 1000,
     timesteps = nrow(potato_visual),
     num_new_obs = 1,
-    mcmc_kernel_app = 50
+    mcmc_steps = 50
   )
 
   # Sequentially, using update function
@@ -34,7 +34,7 @@ test_that("smc_mallows_update is correct for new rankings", {
     timesteps = 1,
     num_new_obs = 1,
     n_particles = 1000,
-    mcmc_kernel_app = 50
+    mcmc_steps = 50
   )
 
   for (i in seq(from = 2, to = nrow(potato_visual))) {
@@ -100,7 +100,7 @@ test_that("smc_mallows_new_users is correct for new partial rankings", {
     type = "partial",
     n_particles = 1000,
     timesteps = 10,
-    mcmc_kernel_app = 10,
+    mcmc_steps = 10,
     num_new_obs = 5,
     verbose = TRUE
   )
@@ -111,7 +111,7 @@ test_that("smc_mallows_new_users is correct for new partial rankings", {
     type = "partial",
     n_particles = 1000,
     timesteps = 1,
-    mcmc_kernel_app = 10,
+    mcmc_steps = 10,
     num_new_obs = 5,
     verbose = TRUE
   )
@@ -152,7 +152,7 @@ test_that("smc_mallows_new_users is correct for new partial rankings", {
     n_particles = 1000,
     timesteps = 1,
     num_new_obs = 1000,
-    mcmc_kernel_app = 5
+    mcmc_steps = 5
   )
 
   smc_sushi_update <- smc_sushi_init

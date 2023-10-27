@@ -25,7 +25,7 @@ cardinalities <- prepare_partition_function(metric = metric, n_items = n_items)$
 
 # test with random sampler
 n_particles <- 2
-mcmc_kernel_app <- 5
+mcmc_steps <- 5
 num_new_obs <- 10
 timesteps <- n_users / num_new_obs
 timesteps2 <- dim(test_dataset)[3]
@@ -40,7 +40,7 @@ smc_test_new_user_unif <- smc_mallows_new_users(
   leap_size = leap_size,
   n_particles = n_particles,
   timesteps = timesteps,
-  mcmc_kernel_app = mcmc_kernel_app,
+  mcmc_steps = mcmc_steps,
   num_new_obs = num_new_obs,
   alpha_prop_sd = 0.5,
   lambda = 0.1,
@@ -53,7 +53,7 @@ smc_test_partial_unif1 <- smc_mallows_new_item_rank(
   alpha = 2,
   rankings = test_dataset, metric = metric, leap_size = leap_size,
   n_particles = n_particles,
-  mcmc_kernel_app = mcmc_kernel_app, aug_method = "random",
+  mcmc_steps = mcmc_steps, aug_method = "random",
   rho_samples_init = smc_test_new_user_unif$rho_samples[, , timesteps + 1],
   aug_rankings_init = smc_test_new_user_unif$augmented_rankings,
   alpha_fixed = TRUE
@@ -69,7 +69,7 @@ test_that("Updated item rank output is OK", {
 smc_test_partial_unif2 <- smc_mallows_new_item_rank(
   rankings = test_dataset, metric = metric, leap_size = leap_size,
   n_particles = n_particles,
-  mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
+  mcmc_steps = mcmc_steps, alpha_prop_sd = 0.5,
   lambda = 0.1, alpha_max = 20, aug_method = "random",
   alpha_samples_init = smc_test_new_user_unif$alpha_samples[, timesteps + 1],
   rho_samples_init = smc_test_new_user_unif$rho_samples[, , timesteps + 1],
@@ -89,7 +89,7 @@ smc_test_new_user_pseudo <- smc_mallows_new_users(
   rankings = example_dataset, metric = metric,
   leap_size = leap_size,
   n_particles = n_particles, timesteps = timesteps,
-  mcmc_kernel_app = mcmc_kernel_app, num_new_obs = num_new_obs,
+  mcmc_steps = mcmc_steps, num_new_obs = num_new_obs,
   alpha_prop_sd = 0.5, lambda = 0.1,
   alpha_max = 20, type = "partial", aug_method = "pseudolikelihood"
 )
@@ -98,7 +98,7 @@ smc_test_partial_pseudo1 <- smc_mallows_new_item_rank(
   alpha = 2,
   rankings = test_dataset, metric = metric, leap_size = leap_size,
   n_particles = n_particles,
-  mcmc_kernel_app = mcmc_kernel_app, aug_method = "pseudolikelihood",
+  mcmc_steps = mcmc_steps, aug_method = "pseudolikelihood",
   rho_samples_init = smc_test_new_user_pseudo$rho_samples[, , timesteps + 1],
   aug_rankings_init = smc_test_new_user_pseudo$augmented_rankings,
   alpha_fixed = TRUE
@@ -113,7 +113,7 @@ test_that("Updated item rank output is OK", {
 smc_test_partial_pseudo2 <- smc_mallows_new_item_rank(
   rankings = test_dataset, metric = metric, leap_size = leap_size,
   n_particles = n_particles,
-  mcmc_kernel_app = mcmc_kernel_app, alpha_prop_sd = 0.5,
+  mcmc_steps = mcmc_steps, alpha_prop_sd = 0.5,
   lambda = 0.1, alpha_max = 20, aug_method = "pseudolikelihood",
   alpha_samples_init = smc_test_new_user_unif$alpha_samples[, timesteps + 1],
   rho_samples_init = smc_test_new_user_unif$rho_samples[, , timesteps + 1],
@@ -134,7 +134,7 @@ test_that("metric and aug_method must match", {
       alpha = 2,
       rankings = test_dataset, metric = "cayley", leap_size = leap_size,
       n_particles = n_particles,
-      mcmc_kernel_app = mcmc_kernel_app, aug_method = "pseudolikelihood",
+      mcmc_steps = mcmc_steps, aug_method = "pseudolikelihood",
       alpha_fixed = TRUE
     ),
     "Pseudolikelihood only supports footrule and spearman metrics"

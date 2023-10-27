@@ -32,7 +32,7 @@ using namespace arma;
 //' \code{\link{estimate_partition_function}}.
 //' @param cardinalities Cardinalities for exact evaluation of partition function,
 //' returned from \code{\link{prepare_partition_function}}.
-//' @param mcmc_kernel_app Integer value for the number of applications we
+//' @param mcmc_steps Integer value for the number of applications we
 //' apply the MCMC move kernel
 //' @param num_new_obs Integer value for the number of new observations
 //' (complete rankings) for each time step
@@ -61,14 +61,11 @@ using namespace arma;
 //' @family modeling
 //'
 // [[Rcpp::export]]
-Rcpp::List smc_mallows_new_users_cpp(
+Rcpp::List smc_mallows_new_users(
   const arma::mat& rankings,
   const std::string& type,
-  const int& n_items,
-  const int& n_users,
   const int& n_particles,
-  int timesteps,
-  const int& mcmc_kernel_app,
+  const int& mcmc_steps,
   const int& num_new_obs,
   const double alpha_prop_sd = 0.5,
   const double lambda = 0.1,
@@ -89,8 +86,11 @@ Rcpp::List smc_mallows_new_users_cpp(
   /* Initialise Phase                                       */
   /* ====================================================== */
 
+  int n_users = rankings.n_rows;
+  int n_items = rankings.n_cols;
+
   /* generate rho samples using uniform prior ------------- */
-  cube rho_samples(n_particles, n_items, timesteps + 1);
+  cube rho_samples(n_particles, n_items, 1 + 1);
   if(rho_init.isNull()) {
     rho_samples.slice(0) = initialize_rho(n_items, n_particles).t();
   } else {
@@ -100,12 +100,12 @@ Rcpp::List smc_mallows_new_users_cpp(
   /* generate alpha samples using exponential prior ------- */
   mat alpha_samples;
   if(type != "partial_alpha_fixed") {
-    alpha_samples = zeros(n_particles, timesteps + 1);
+    alpha_samples = zeros(n_particles, 1 + 1);
     alpha_samples.col(0) = initialize_alpha(n_particles, alpha_init);
   }
 
   /* generate vector to store ESS */
-  rowvec ESS_vec(timesteps);
+  rowvec ESS_vec(1);
 
   // this is to store the augmentations of the observed rankings for each particle
   cube aug_rankings; // no. users by items by particles
@@ -121,8 +121,8 @@ Rcpp::List smc_mallows_new_users_cpp(
   /* New user situation                                     */
   /* ====================================================== */
 
-  for (int tt{}; tt < timesteps; ++tt) {
-    if (verbose) REprintf("observe %i out of %i \n", tt + 1, timesteps);
+  for (int tt{}; tt < 1; ++tt) {
+    if (verbose) REprintf("observe %i out of %i \n", tt + 1, 1);
 
     // keep tally of how many ranking observations we have so far
     num_obs += num_new_obs;
@@ -182,7 +182,7 @@ Rcpp::List smc_mallows_new_users_cpp(
     /* ====================================================== */
     for (int ii = 0; ii < n_particles; ++ii) {
       if(type == "complete"){
-        for (int kk = 0; kk < mcmc_kernel_app; ++kk) {
+        for (int kk = 0; kk < mcmc_steps; ++kk) {
           // move each particle containing sample of rho and alpha by using
           // the MCMC kernels
           const double& as = alpha_samples(ii, tt + 1);
@@ -198,7 +198,7 @@ Rcpp::List smc_mallows_new_users_cpp(
           );
         }
       } else if(type == "partial" || type == "partial_alpha_fixed"){
-          for (int kk = 0; kk < mcmc_kernel_app; ++kk) {
+          for (int kk = 0; kk < mcmc_steps; ++kk) {
             double as = (type == "partial" ? alpha_samples(ii, tt + 1) : alpha);
             mat all_observed_rankings;
             all_observed_rankings = aug_rankings(span(0, num_obs - 1), span::all, span(ii));

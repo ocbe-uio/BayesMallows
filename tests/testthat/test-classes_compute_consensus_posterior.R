@@ -28,7 +28,7 @@ nmc <- n_particles <- 1000
 timesteps <- 20
 fit_smc <- smc_mallows_new_users(
   rankings = data, type = "complete", metric = metric, leap_size = leap_size,
-  n_particles = n_particles, timesteps = timesteps, mcmc_kernel_app = 5,
+  n_particles = n_particles, timesteps = timesteps, mcmc_steps = 5,
   num_new_obs = 5, alpha_prop_sd = 0.5, lambda = 0.15, alpha_max = 1e6
 )
 fit_smc_alpha <- fit_smc$alpha_samples[, timesteps + 1]

@@ -14,7 +14,7 @@ metric <- "footrule"
 # Exaxt log(Z)
 cardinalities <- prepare_partition_function(metric = metric, n_items = n_items)$cardinalities
 
-mcmc_kernel_app <- 5
+mcmc_steps <- 5
 n_particles <- 20
 alpha_prop_sd <- 0.5
 lambda <- 0.15
@@ -25,7 +25,7 @@ test_that("Produces the wrong metric and aug_method error", {
     smc_mallows_new_item_rank(
       alpha = alpha_0, rankings = sample_dataset,
       metric = "cayley", leap_size = leap_size, n_particles = n_particles,
-      mcmc_kernel_app = mcmc_kernel_app,
+      mcmc_steps = mcmc_steps,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "pseudolikelihood",
       alpha_fixed = TRUE
@@ -36,7 +36,7 @@ test_that("Produces the wrong metric and aug_method error", {
     smc_mallows_new_item_rank(
       rankings = sample_dataset,
       metric = "cayley", leap_size = leap_size, n_particles = n_particles,
-      mcmc_kernel_app = mcmc_kernel_app,
+      mcmc_steps = mcmc_steps,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "pseudolikelihood"
     ),
@@ -50,7 +50,7 @@ test_that("Runs with unif kernel", {
     smc_mallows_new_item_rank(
       alpha = alpha_0, rankings = sample_dataset,
       metric = "footrule", leap_size = leap_size, n_particles = n_particles,
-      mcmc_kernel_app = mcmc_kernel_app,
+      mcmc_steps = mcmc_steps,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "random", alpha_fixed = TRUE
     )
@@ -66,7 +66,7 @@ test_that("Runs with unif kernel", {
     smc_mallows_new_item_rank(
       rankings = sample_dataset,
       metric = "footrule", leap_size = leap_size, n_particles = n_particles,
-      mcmc_kernel_app = mcmc_kernel_app,
+      mcmc_steps = mcmc_steps,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "random"
     )
@@ -81,7 +81,7 @@ test_that("Runs with pseudo kernel", {
     smc_mallows_new_item_rank(
       alpha = alpha_0, rankings = sample_dataset,
       metric = "footrule", leap_size = leap_size, n_particles = n_particles,
-      mcmc_kernel_app = mcmc_kernel_app,
+      mcmc_steps = mcmc_steps,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "pseudolikelihood",
       alpha_fixed = TRUE
@@ -95,7 +95,7 @@ test_that("Runs with pseudo kernel", {
     smc_mallows_new_item_rank(
       rankings = sample_dataset,
       metric = "footrule", leap_size = leap_size, n_particles = n_particles,
-      mcmc_kernel_app = mcmc_kernel_app,
+      mcmc_steps = mcmc_steps,
       alpha_prop_sd = alpha_prop_sd, lambda = lambda,
       alpha_max = alpha_max, aug_method = "pseudolikelihood"
     )

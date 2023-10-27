@@ -107,7 +107,6 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
 #' a Metropolis-Hastings algorithm.
 #'
 #' @param rho0 Vector specifying the latent consensus ranking.
-#' @param obs_freq Vector of observation frequencies (weights) to apply to each sample.
 #' @param alpha0 Scalar specifying the scale parameter.
 #' @param n_samples Integer specifying the number of random samples to generate.
 #' @param burnin Integer specifying the number of iterations to discard as burn-in.
@@ -116,16 +115,14 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
 #' @param leap_size Integer specifying the step size of the leap-and-shift proposal distribution.
 #' @param metric Character string specifying the distance measure to use. Available
 #' options are \code{"footrule"} (default), \code{"spearman"}, \code{"cayley"}, \code{"hamming"},
-#' \code{"kendall"}, and \code{"ulam"}. For sampling from the Mallows model with Cayley, Hamming, Kendall,
-#' and Ulam distances
-#' the \code{PerMallows} package \insertCite{irurozki2016}{BayesMallows} can also be used.
+#' \code{"kendall"}, and \code{"ulam"}.
 #'
 #' @keywords internal
 #'
 #' @references \insertAllCited{}
 #'
-rmallows <- function(rho0, obs_freq, alpha0, n_samples, burnin, thinning, leap_size = 1L, metric = "footrule") {
-    .Call(`_BayesMallows_rmallows`, rho0, obs_freq, alpha0, n_samples, burnin, thinning, leap_size, metric)
+rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, metric = "footrule") {
+    .Call(`_BayesMallows_rmallows`, rho0, alpha0, n_samples, burnin, thinning, leap_size, metric)
 }
 
 #' Worker function for computing the posterior distribution.
@@ -380,7 +377,7 @@ leap_and_shift_probs <- function(rho, n_items, leap_size = 1L) {
 #' \code{\link{estimate_partition_function}}.
 #' @param cardinalities Cardinalities for exact computation of partition function,
 #' returned from \code{\link{prepare_partition_function}}.
-#' @param mcmc_kernel_app Integer value for the number of applications we apply the MCMC move kernel
+#' @param mcmc_steps Integer value for the number of applications we apply the MCMC move kernel
 #' @param alpha_prop_sd Numeric value of the standard deviation of the prior distribution for alpha
 #' @param lambda Strictly positive numeric value specifying the rate parameter
 #' of the truncated exponential prior distribution of alpha.
@@ -401,8 +398,8 @@ leap_and_shift_probs <- function(rho, n_items, leap_size = 1L) {
 #'
 #' @family modeling
 #'
-smc_mallows_new_item_rank_cpp <- function(n_items, rankings, n_particles, timesteps, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
-    .Call(`_BayesMallows_smc_mallows_new_item_rank_cpp`, n_items, rankings, n_particles, timesteps, logz_estimate, cardinalities, mcmc_kernel_app, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
+smc_mallows_new_item_rank_cpp <- function(n_items, rankings, n_particles, timesteps, logz_estimate, cardinalities, mcmc_steps, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
+    .Call(`_BayesMallows_smc_mallows_new_item_rank_cpp`, n_items, rankings, n_particles, timesteps, logz_estimate, cardinalities, mcmc_steps, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
 }
 
 #' @title SMC-Mallows New Users
@@ -428,7 +425,7 @@ smc_mallows_new_item_rank_cpp <- function(n_items, rankings, n_particles, timest
 #' \code{\link{estimate_partition_function}}.
 #' @param cardinalities Cardinalities for exact evaluation of partition function,
 #' returned from \code{\link{prepare_partition_function}}.
-#' @param mcmc_kernel_app Integer value for the number of applications we
+#' @param mcmc_steps Integer value for the number of applications we
 #' apply the MCMC move kernel
 #' @param num_new_obs Integer value for the number of new observations
 #' (complete rankings) for each time step
@@ -456,8 +453,8 @@ smc_mallows_new_item_rank_cpp <- function(n_items, rankings, n_particles, timest
 #'
 #' @family modeling
 #'
-smc_mallows_new_users_cpp <- function(rankings, type, n_items, n_users, n_particles, timesteps, mcmc_kernel_app, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L, rho_init = NULL, alpha_init = NULL, aug_init = NULL, num_obs = 0L) {
-    .Call(`_BayesMallows_smc_mallows_new_users_cpp`, rankings, type, n_items, n_users, n_particles, timesteps, mcmc_kernel_app, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size, rho_init, alpha_init, aug_init, num_obs)
+smc_mallows_new_users <- function(rankings, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L, rho_init = NULL, alpha_init = NULL, aug_init = NULL, num_obs = 0L) {
+    .Call(`_BayesMallows_smc_mallows_new_users`, rankings, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size, rho_init, alpha_init, aug_init, num_obs)
 }
 
 #' @title Metropolis-Hastings Alpha

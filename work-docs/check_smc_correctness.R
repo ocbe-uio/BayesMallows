@@ -7,7 +7,7 @@ mod_smc <- smc_mallows_new_users(
   timesteps = 1,
   num_new_obs = 1,
   n_particles = 5000,
-  mcmc_kernel_app = 10
+  mcmc_steps = 10
   )
 
 for(i in seq(from = 2, to = nrow(potato_visual))) {

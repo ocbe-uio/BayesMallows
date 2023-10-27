@@ -42,7 +42,7 @@ smc_test_updated_partial <- smc_mallows_new_item_rank(
   leap_size = leap_size, N = N,
   Time = Time,
   logz_estimate = logz_estimate,
-  mcmc_kernel_app = 20,
+  mcmc_steps = 20,
   alpha_prop_sd = 0.5,
   lambda = 0.15,
   alpha_max = 1e6,

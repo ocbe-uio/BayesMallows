@@ -27,7 +27,7 @@ model_fit <- smc_mallows_new_users(
   rankings = data, "complete",
   metric = metric, leap_size = leap_size,
   n_particles = n_particles, timesteps = timesteps,
-  mcmc_kernel_app = 5,
+  mcmc_steps = 5,
   num_new_obs = 5,
   alpha_prop_sd = 0.5,
   lambda = 0.15,

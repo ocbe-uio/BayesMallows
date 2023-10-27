@@ -3,7 +3,7 @@
 updated_partial_mod <- smc_mallows_new_item_rank(
   rankings = potato_partial,
   n_particles = 100,
-  mcmc_kernel_app = 10,
+  mcmc_steps = 10,
   aug_method = "pseudolikelihood"
 )
 

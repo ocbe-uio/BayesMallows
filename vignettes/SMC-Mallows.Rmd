@@ -1,5 +1,5 @@
 ---
-title: "Sequential Inference with the Mallows Model"
+title: "Online Learning: Sequential Monte Carlo for the Bayesian Mallows model"
 output: 
   rmarkdown::html_vignette:
     fig_width: 6
@@ -7,7 +7,7 @@ output:
 bibliography: ../inst/REFERENCES.bib
 link-citations: yes
 vignette: >
-  %\VignetteIndexEntry{Sequential Inference with the Mallows Model}
+  %\VignetteIndexEntry{Online Learning: Sequential Monte Carlo for the Bayesian Mallows model}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,25 +18,20 @@ library(BayesMallows)
 library(ggplot2)
 ```
 
-This vignette describes the `SMC-Mallows` functions of the package. These use Sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. We use an alternative data augmentation method, called the pseudolikelihood approach, when we are using the footrule and Spearman distance functions instead of using an independent sampler. `SMC-Mallow` uses functions similar to their base MCMC counterparts in the `BayesMallows` package, to visualise and analyse the posterior distributions.
+This vignette describes the `SMC-Mallows` functions of the package. These use Sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. We use an alternative data augmentation method, called the pseudolikelihood approach, when we are using the footrule and Spearman distance functions instead of using an independent sampler. For an in-depth treatment of the implemented methodology, see @steinSequentialInferenceMallows2023. 
 
-For an in-depth treatment of the implemented methodology, see @steinSequentialInferenceMallows2023. 
-
-### SMC-Mallows functions
+The main functions for estimating Bayesian Mallows models using SMC are listed below:
 
 | Function Name                | Description |
 |:-----------------------------|:--------------------------------------------|
 | `smc_mallows_new_users` |  Runs the SMC algorithm for case where we observe full rankings as new observational data. |
 | `smc_mallows_new_item_rank` | Runs the SMC algorithm for case where we observe updated partial rankings as from existing users. |
 | `smc_mallows_update` | Update existing models when new data arrive. |
-| `plot`| Plots posterior density of $\boldsymbol{\rho}$ or $\alpha$ for a selection of items. |
-| `compute_consensus`| Computes the CP estimate or MAP estimate of the latent ranks. |
-| `compute_posterior_intervals` | Computes the Bayesian posterior intervals for $\alpha$ and $\boldsymbol{\rho}$.|
 
 
-## Introduction
+## Methodology
 
-We provide a summary on the Bayesian Mallows model and the proposed Sequential Monte Carlo framework which updates the parameter estimates of the posterior each time we receive new observations for a fixed computational cost. More information on the Bayesian Mallows model can found in @vitelli2018 and @liu2019, and a vignette on the `BayesMallows` R package can be found in @sorensen2020. A general discussion on SMC can be found in @del2006sequential and @doucet2009tutorial.
+We provide a summary on the Bayesian Mallows model and the proposed Sequential Monte Carlo framework which updates the parameter estimates of the posterior each time we receive new observations for a fixed computational cost. A general discussion on SMC can be found in @del2006sequential and @doucet2009tutorial.
 
 ### Notation
 
@@ -47,7 +42,7 @@ We have set of $m$ distinct items, labelled $\mathcal{A} = \{A_1, \dots, A_m		\}
 The Mallows model [@mallows1957] is a probability distribution for ranking data. The probability of observing a ranking $\boldsymbol{R}$ is defined as
 
 $$
-p(\boldsymbol{R}) = p(\boldsymbol{R}|\boldsymbol{\rho},\alpha) =\frac{1}{Z_m(\alpha)} \exp \lefts\{ -\frac{\alpha}{m} { d(\boldsymbol{R}, \boldsymbol{\rho})} \right\},
+p(\mathbf{R}) = p(\mathbf{R}|\boldsymbol{\rho},\alpha) =\frac{1}{Z_m(\alpha)} \exp \lefts\{ -\frac{\alpha}{m} { d(\mathbf{R}, \boldsymbol{\rho})} \right\},
 $$
 
 where: $\boldsymbol{\rho} \in \mathcal{P}_m$ is the consensus ranking; $\alpha > 0$ is the scale parameter which represents the variability in rankings within the group of individuals around the consensus ranking; and $Z_m(\alpha)$ is the normalisation constant. The distance function, $d(\cdot,\cdot) : \mathcal{P}_m \times \mathcal{P}_m \rightarrow [0,\infty)$, measures the ''closeness'' of a ranking to the consensus ranking. The Mallows literature discusses the use of a right-invariant distance function, which means that the distance between two items is unaffected by relabelling of items [@diaconis1988]. The distance metrics that the `BayesMallows` R package currently uses are: footrule, Spearman, Cayley, Kendall and Hamming. This also means that the normalisation constant is independent of the consensus ranking.
@@ -58,8 +53,7 @@ $$ \pi(\boldsymbol\rho, \alpha | \boldsymbol{R}_1, \dots, \boldsymbol{R}_M) \pro
 
 Any posterior estimates of interest, such as the marginal posterior for $\boldsymbol{\rho}$, are obtained through the use of Metropolis-Hastings based Markov Chain Monte Carlo (MCMC) algorithm. Full details of the algorithm can be found in @vitelli2018. In each iteration of the algorithm, a new consensus ranking $\boldsymbol{\rho}'$ is proposed to update $\boldsymbol{\rho}$ according to a distribution which is centered around the current rank $\boldsymbol{\rho}$. The proposal step for $\boldsymbol{\rho}$ is done using the leap-and-shift proposal algorithm of @vitelli2018 and a new value $\alpha'$ is sampled from the log-normal distribution to update the current value of $\alpha$.
 
-Inference on the Bayesian Mallows model can sample the posterior distribution of the unknown consensus ranking and scale parameter using a variety of observed data including: full rankings, incomplete rankings (e.g. top-$k$ rankings and ranks missing at random), and implicit data such as pairwise comparisons. For example, in the case of partial rankings, we can create augmented full ranking $\tilde{R}_1, \dots, \tilde{R}_M$ by using an independent sampler for each assessor containing the set of rankings not already chosen. The MCMC algorithm alternates between sampling a new value of $\boldsymbol{\rho}$ and $\alpha$ given the current $\tilde{R}_1, \dots, \tilde{R}_M$ and sampling $\tilde{R}_1, \dots, \tilde{R}_M$ given the current values of $\boldsymbol{\rho}$ and $\alpha$.  The existing methods are discussed in @vitelli2018 and are provided in the `BayesMallows` R package [@sorensen2020].
-
+Inference on the Bayesian Mallows model can sample the posterior distribution of the unknown consensus ranking and scale parameter using a variety of observed data including: full rankings, incomplete rankings (e.g. top-$k$ rankings and ranks missing at random), and implicit data such as pairwise comparisons. For example, in the case of partial rankings, we can create augmented full ranking $\tilde{R}_1, \dots, \tilde{R}_M$ by using an independent sampler for each assessor containing the set of rankings not already chosen. The MCMC algorithm alternates between sampling a new value of $\boldsymbol{\rho}$ and $\alpha$ given the current $\tilde{R}_1, \dots, \tilde{R}_M$ and sampling $\tilde{R}_1, \dots, \tilde{R}_M$ given the current values of $\boldsymbol{\rho}$ and $\alpha$.
 
 ### Sequential Monte Carlo
 
@@ -80,7 +74,7 @@ In the final stage, we move the particles using an MCMC kernel within SMC after 
 
 ## SMC-Mallows User Guide
 
-The `SMC-Mallows` functions contain algorithms to perform the Resample-Move SMC framework of @berzuini2001resample using a single Mallows model. Each algorithm begins by drawing $N$ particles using the priors for $\boldsymbol{\rho}$ and $\alpha$ or by using specified initial values. Each particle is also assigned equal weight so at the start of the SMC algorithm we have $\{\boldsymbol{\theta}^{(i)}_0 = (\boldsymbol{\rho}_0^{(i)}, \alpha_0^{(i)}), w^{(i)} \}_{i=1}^{N}$ as the set of particles. Next, we observe some ranking data, $D_t$, and we calculate the updated weights of the particles with respect to the new observations and their contribution to the current estimated posterior distribution before reweighting and multinomial resampling. Finally, we perturb the particles using the Metropolis-Hastings based MCMC kernel and we use the proposal distributions described in @vitelli2018 for sampling values of $\boldsymbol{\rho}$ and $\alpha$.
+The SMC functions contain algorithms to perform the Resample-Move SMC framework of @berzuini2001resample using a single Mallows model. Each algorithm begins by drawing $N$ particles using the priors for $\boldsymbol{\rho}$ and $\alpha$ or by using specified initial values. Each particle is also assigned equal weight so at the start of the SMC algorithm we have $\{\boldsymbol{\theta}^{(i)}_0 = (\boldsymbol{\rho}_0^{(i)}, \alpha_0^{(i)}), w^{(i)} \}_{i=1}^{N}$ as the set of particles. Next, we observe some ranking data, $D_t$, and we calculate the updated weights of the particles with respect to the new observations and their contribution to the current estimated posterior distribution before reweighting and multinomial resampling. Finally, we perturb the particles using the Metropolis-Hastings based MCMC kernel and we use the proposal distributions described in @vitelli2018 for sampling values of $\boldsymbol{\rho}$ and $\alpha$.
 
 
 ### Complete Rankings
@@ -104,32 +98,37 @@ We are interested in updating the parameter estimates of the Bayesian Mallows mo
 head(sushi_rankings)
 ```
 
-The function `smc_mallows_new_users` with `type = "complete"` (default argument, so not explicitly provided) shows the simplest version of the SMC algorithm in action. The variable `rankings` in this instance is a matrix whose number of columns as `n_items` and the number of rows, $M$, represents the number of individuals in the dataset. We begin the algorithm with no observations and in each artificial time step we introduce a batch number of observations, this is controlled by the variable `num_new_obs` to control the size of the bath, and `timesteps` to specify the number of updates we will perform. There is a limit on the value for `timesteps`, and this depends on the number of individuals in the dataset and the value of `num_new_obs`. In the move stage we can apply an MCMC kernel as many times as we would like using the variable `mcmc_kernel_app` to specify the value.
+The function `smc_mallows_new_users()` shows the simplest version of the SMC algorithm in action. The variable `rankings` in this instance is a matrix whose of the same format as used in `compute_mallows()`, i.e., with one column for each item and one row for each user. 
 
-```{r set_seed, message=FALSE, warning=FALSE, include=FALSE}
-set.seed(994)
+```{r}
+data_batch1 <- sushi_rankings[1:300, ]
+model1 <- compute_mallows(rankings = data_batch1)
+#assess_convergence(model1)
+model1$burnin <- 300
 ```
 
-```{r smc_complete_set_up}
-data_batch1 <- sushi_rankings[1:100, ]
 
-model1 <- smc_mallows_new_users(
-  rankings = data_batch1,
-  n_particles = 1000,
-  timesteps = 20,
-  mcmc_kernel_app = 5,
-  num_new_obs = 5,
-  lambda = 0.15
+
+```{r}
+data_batch2 <- sushi_rankings[301:600, ]
+model2 <- update_mallows(model1, new_rankings = data_batch1, n_particles = 1000)
+```
+
+
+```{r}
+data_batch3 <- sushi_rankings[601:900, ]
+model3 <- update_mallows(model2, new_rankings = data_batch2)
+rbind(
+  compute_posterior_intervals(model1),
+  compute_posterior_intervals(model2), 
+  compute_posterior_intervals(model3)
 )
+
 ```
 
-The example `model1` returns a list variable of the particles values for $\boldsymbol{\rho}$ and $\alpha$ at each time step, so we can observe the posterior as it evolves. Specifically the list contains a three dimensional matrix of size `n_particles` by `n_items` by `timesteps+1`, named `rho_samples`,  and an `n_particles` by `timesteps+1` matrix called `alpha_samples`. These matrices can be studied using some post-processing functions for visualising and analysing the posterior. It is also possible to make comparative results using the MCMC algorithm and the SMC algorithm. Unlike MCMC we cannot observe the trace plots and we do not need to specify a non-zero value for the burn-in. The indexing in R means that we have to view the `timesteps+1` slice of the output in order to view the posterior once all 100 rankings have been observed.
-
-Here, we can observe the posterior probabilities of $\boldsymbol{\rho}$ for a selection of items can be observed by calling the function `plot()`.
 
 ```{r smc_complete_analysis_heatplot, message=FALSE, warning=FALSE}
-plot(model1,
-  colnames = colnames(sushi_rankings),
+plot(model3,
   items = 1:6, parameter = "rho"
 )
 ```
@@ -143,7 +142,7 @@ compute_posterior_intervals(model1, parameter = "rho")
 We can also rank the sushi items according to their cumulative probability (CP) consensus and their maximum posterior rankings (MAP). These are calculated by calling the function `compute_consensus_rho`. We demonstrate with the CP consensus, which is the default.
 
 ```{r}
-compute_consensus(model1)
+compute_consensus(model2)
 ```
 
 Similarly, we can observe the posterior density and the posterior intervals for the scale parameter using the functions `plot()` and `compute_posterior_intervals`.
@@ -233,7 +232,7 @@ partial_mod1 <- smc_mallows_new_users(
   type = "partial",
   n_particles = 100,
   timesteps = 20,
-  mcmc_kernel_app = 5,
+  mcmc_steps = 5,
   num_new_obs = 5,
   aug_method = "pseudolikelihood"
 )
@@ -312,7 +311,7 @@ set.seed(995)
 smc_partial <- smc_mallows_new_item_rank(
   rankings = potato_partial,
   n_particles = 1000,
-  mcmc_kernel_app = 20,
+  mcmc_steps = 20,
   aug_method = "pseudolikelihood"
 )
 ```

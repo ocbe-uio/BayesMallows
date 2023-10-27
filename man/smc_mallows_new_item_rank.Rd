@@ -8,7 +8,7 @@ smc_mallows_new_item_rank(
   rankings,
   n_particles,
   logz_estimate = NULL,
-  mcmc_kernel_app,
+  mcmc_steps,
   aug_rankings_init = NULL,
   rho_samples_init = NULL,
   alpha_samples_init = 0,
@@ -42,7 +42,7 @@ pexp(1000, 0.001)}) prior probability that \eqn{\alpha_c > 1000}. Hence
 when \code{n_clusters > 1}, the estimated partition function should cover
 this range, or \eqn{\lambda} should be increased.}
 
-\item{mcmc_kernel_app}{Integer value for the number of applications we apply
+\item{mcmc_steps}{Integer value for the number of applications we apply
 the MCMC move kernel}
 
 \item{aug_rankings_init}{Initial values for augmented rankings.}
@@ -98,7 +98,7 @@ Function to perform resample-move SMC algorithm where we receive
 Other modeling: 
 \code{\link{compute_mallows_mixtures}()},
 \code{\link{compute_mallows}()},
-\code{\link{smc_mallows_new_users}()},
-\code{\link{smc_mallows_update.SMCMallowsNewUsers}()}
+\code{\link{update_mallows.BayesMallows}()},
+\code{\link{update_mallows.SMCMallows}()}
 }
 \concept{modeling}

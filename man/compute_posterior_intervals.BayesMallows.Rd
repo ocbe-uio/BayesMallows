@@ -2,11 +2,20 @@
 % Please edit documentation in R/compute_posterior_intervals.R
 \name{compute_posterior_intervals.BayesMallows}
 \alias{compute_posterior_intervals.BayesMallows}
+\alias{compute_posterior_intervals.SMCMallows}
 \title{Compute posterior intervals}
 \usage{
 \method{compute_posterior_intervals}{BayesMallows}(
   model_fit,
   burnin = model_fit$burnin,
+  parameter = "alpha",
+  level = 0.95,
+  decimals = 3L,
+  ...
+)
+
+\method{compute_posterior_intervals}{SMCMallows}(
+  model_fit,
   parameter = "alpha",
   level = 0.95,
   decimals = 3L,
@@ -43,9 +52,7 @@ assess_convergence
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
 \code{\link{compute_consensus.BayesMallows}()},
-\code{\link{compute_consensus.SMCMallows}()},
 \code{\link{compute_consensus}()},
-\code{\link{compute_posterior_intervals.SMCMallows}()},
 \code{\link{compute_posterior_intervals}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},

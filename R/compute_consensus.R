@@ -112,88 +112,12 @@ compute_consensus.BayesMallows <- function(
   as.data.frame(df)
 }
 
-#' Compute Consensus Ranking
-#'
-#' Compute the consensus ranking using either cumulative probability (CP) or
-#' maximum a posteriori (MAP) consensus \insertCite{vitelli2018}{BayesMallows}.
-#' For mixture models, the consensus is given for each mixture.
-#'
-#' @param model_fit An object of class \code{SMCMallows}, returned from
-#'   \code{\link{smc_mallows_new_item_rank}} or
-#'   \code{\link{smc_mallows_new_users}}.
-#'
-#' @param type Character string specifying which consensus to compute. Either
-#'   \code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.
-#'
-#'
-#' @param ... Other optional arguments passed to methods. Currently not used.
-#'
-#' @export
-#' @family posterior quantities
-#'
-#' @example inst/examples/smc_post_processing_functions_example.R
+#' @rdname compute_consensus.BayesMallows
 compute_consensus.SMCMallows <- function(model_fit, type = "CP", ...) {
-  type <- match.arg(type, c("CP", "MAP"))
 
-  if (type == "CP") {
-    df <- smc_processing(model_fit$rho_samples[, , dim(model_fit$rho_samples)[[3]]])
-    df$cluster <- "Cluster 1"
-    n_rows <- length(unique(interaction(df$item, df$cluster)))
-    df$iteration <- seq_len(nrow(df))
-
-    # Check that there are rows.
-    stopifnot(n_rows > 0)
-
-    df <- aggregate_cp_consensus(df)
-    df <- find_cpc(df)
-    df$cluster <- NULL
-  } else if (type == "MAP") {
-    df <-
-      as.data.frame(model_fit$rho_samples[, , dim(model_fit$rho_samples)[[3]]])
-    colnames(df) <- paste("Item", seq_len(ncol(df)))
-    n_items <- ncol(df)
-    iterations <- seq_len(nrow(df))
-    df <- smc_processing(df)
-    df$iteration <- rep(iterations, n_items)
-
-    df$cluster <- "Cluster 1"
-    n_rows <- length(unique(interaction(df$item, df$cluster)))
-
-    # Check that there are rows.
-    stopifnot(n_rows > 0)
-
-    # Spread to get items along columns
-    df <- stats::reshape(
-      data = as.data.frame(df),
-      direction = "wide",
-      idvar = c("iteration", "cluster"),
-      timevar = "item",
-      varying = list(unique(df$item))
-    )
-    attr(df, "reshapeWide") <- NULL # maintain identity to spread() output
-
-    df <- aggregate_map_consensus(df, max(iterations))
-
-    # Now collect one set of ranks per cluster
-    df <- stats::reshape(
-      as.data.frame(df),
-      direction = "long",
-      varying = setdiff(names(df), c("cluster", "probability")),
-      new.row.names = seq_len(prod(dim(df))),
-      v.names = "map_ranking",
-      timevar = "item",
-      times = setdiff(names(df), c("cluster", "probability"))
-    )
-    df$id <- NULL
-
-    attr(x = df, "reshapeLong") <- NULL # preserves identity to gather() output
-
-    # Sort according to cluster and ranking
-    df <- df[order(df$cluster, df$map_ranking), , drop = FALSE]
-    df$cluster <- NULL
-  }
-  rownames(df) <- NULL
-  df
+  model_fit$burnin <- 0
+  model_fit$nmc <- model_fit$n_particles
+  NextMethod("compute_consensus")
 }
 
 

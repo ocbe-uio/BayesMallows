@@ -363,7 +363,7 @@ help("obs_freq")
 Other modeling: 
 \code{\link{compute_mallows_mixtures}()},
 \code{\link{smc_mallows_new_item_rank}()},
-\code{\link{smc_mallows_new_users}()},
-\code{\link{smc_mallows_update.SMCMallowsNewUsers}()}
+\code{\link{update_mallows.BayesMallows}()},
+\code{\link{update_mallows.SMCMallows}()}
 }
 \concept{modeling}

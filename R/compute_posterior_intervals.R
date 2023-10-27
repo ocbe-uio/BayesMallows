@@ -72,10 +72,9 @@ compute_posterior_intervals.BayesMallows <- function(
   if (parameter == "alpha" || parameter == "cluster_probs") {
     df <- .compute_posterior_intervals(split(df, f = df$cluster), parameter, level, decimals)
   } else if (parameter == "rho") {
-    decimals <- 0
     df <- .compute_posterior_intervals(
       split(df, f = interaction(df$cluster, df$item)),
-      parameter, level, decimals,
+      parameter, level, 0,
       discrete = TRUE
     )
   }
@@ -86,69 +85,12 @@ compute_posterior_intervals.BayesMallows <- function(
   return(df)
 }
 
-#' @title Compute posterior intervals
-#'
-#' @description This function computes posterior intervals based on the set of samples at the
-#' last timepoint of the SMC algorithm.
-#'
-#' @param model_fit An object of class \code{SMCMallows}, returned from
-#'   \code{\link{smc_mallows_new_item_rank}} or
-#'   \code{\link{smc_mallows_new_users}}.
-#' @param parameter Character string defining which parameter to compute
-#'   posterior intervals for. One of \code{"alpha"} or \code{"rho"}.
-#' @param level Decimal number in \eqn{[0,1]} specifying the confidence level.
-#'   Defaults to \code{0.95}.
-#' @param decimals Integer specifying the number of decimals to include in
-#'   posterior intervals and the mean and median. Defaults to \code{3}.
-#' @param ... Other arguments. Currently not used.
-#' @export
-#' @family posterior quantities
-#'
-#' @example inst/examples/smc_post_processing_functions_example.R
+#' @rdname compute_posterior_intervals.BayesMallows
 compute_posterior_intervals.SMCMallows <- function(
     model_fit, parameter = "alpha", level = 0.95,
     decimals = 3L, ...) {
-  if (length(parameter) > 1) stop("Only one parameter allowed.")
-  parameter <- match.arg(
-    parameter, c("alpha", "rho")
-  )
-
-  stopifnot(level > 0 && level < 1)
-
-  if (parameter == "alpha") {
-    tab <- data.frame(
-      value = model_fit$alpha_samples[, ncol(model_fit$alpha_samples), drop = TRUE]
-    )
-    tab$n_clusters <- 1
-    tab$cluster <- "Cluster 1"
-
-    tab <- .compute_posterior_intervals(
-      df = split(tab, f = tab$cluster),
-      parameter = parameter,
-      level = level,
-      decimals = decimals
-    )
-  } else if (parameter == "rho") {
-    tab <- smc_processing(
-      model_fit$rho_samples[, , dim(model_fit$rho_samples)[[3]], drop = TRUE]
-    )
-    tab$n_clusters <- 1
-    tab$cluster <- "Cluster 1"
-
-    tab <- .compute_posterior_intervals(
-      df = split(tab, f = interaction(tab$cluster, tab$item)),
-      parameter = parameter, level = level,
-      decimals = decimals, discrete = TRUE
-    )
-  }
-
-  if (length(unique(tab$cluster)) == 1) {
-    tab$cluster <- NULL
-  }
-
-  rownames(tab) <- NULL
-
-  return(tab)
+  model_fit$burnin <- 0
+  NextMethod("compute_posterior_intervals")
 }
 
 .compute_posterior_intervals <- function(df, parameter, level, decimals, discrete = FALSE, ...) {

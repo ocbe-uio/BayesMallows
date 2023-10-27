@@ -17,7 +17,7 @@ smc_onego <- smc_mallows_new_users(
   type = "partial",
   n_particles = 1000,
   timesteps = 10,
-  mcmc_kernel_app = 10,
+  mcmc_steps = 10,
   num_new_obs = 5,
   verbose = TRUE
 )
@@ -28,7 +28,7 @@ smc_init <- smc_mallows_new_users(
   type = "partial",
   n_particles = 1000,
   timesteps = 1,
-  mcmc_kernel_app = 10,
+  mcmc_steps = 10,
   num_new_obs = 5,
   verbose = TRUE
 )

@@ -84,7 +84,7 @@ test_that("Produces the wrong metric and aug_method error", {
       leap_size = leap_size,
       n_particles = n_particles,
       timesteps = timesteps,
-      mcmc_kernel_app = mcmc_times,
+      mcmc_steps = mcmc_times,
       num_new_obs = num_new_obs,
       aug_method = "pseudolikelihood"
     )
@@ -97,7 +97,7 @@ test_that("Produces the wrong metric and aug_method error", {
       leap_size = leap_size,
       n_particles = n_particles,
       timesteps = timesteps,
-      mcmc_kernel_app = mcmc_times,
+      mcmc_steps = mcmc_times,
       num_new_obs = num_new_obs,
       alpha_prop_sd = alpha_prop_sd,
       lambda = lambda,
@@ -116,7 +116,7 @@ test_that("Runs with unif kernel", {
     leap_size = leap_size,
     n_particles = n_particles,
     timesteps = timesteps,
-    mcmc_kernel_app = mcmc_times,
+    mcmc_steps = mcmc_times,
     num_new_obs = num_new_obs,
     aug_method = "random"
   )
@@ -133,7 +133,7 @@ test_that("Runs with unif kernel", {
     leap_size = leap_size,
     n_particles = n_particles,
     timesteps = timesteps,
-    mcmc_kernel_app = mcmc_times,
+    mcmc_steps = mcmc_times,
     num_new_obs = num_new_obs,
     alpha_prop_sd = alpha_prop_sd,
     lambda = lambda,
@@ -162,7 +162,7 @@ test_that("Runs with pseudo kernel", {
     leap_size = leap_size,
     n_particles = n_particles,
     timesteps = timesteps,
-    mcmc_kernel_app = mcmc_times,
+    mcmc_steps = mcmc_times,
     num_new_obs = num_new_obs,
     aug_method = "pseudolikelihood"
   )
@@ -179,7 +179,7 @@ test_that("Runs with pseudo kernel", {
     leap_size = leap_size,
     n_particles = n_particles,
     timesteps = timesteps,
-    mcmc_kernel_app = mcmc_times,
+    mcmc_steps = mcmc_times,
     num_new_obs = num_new_obs,
     alpha_prop_sd = alpha_prop_sd,
     lambda = lambda,
@@ -208,7 +208,7 @@ test_that("Specific example results are OK", {
     leap_size = leap_size,
     n_particles = n_particles,
     timesteps = timesteps,
-    mcmc_kernel_app = mcmc_times,
+    mcmc_steps = mcmc_times,
     num_new_obs = num_new_obs,
     alpha_prop_sd = alpha_prop_sd,
     lambda = lambda,
@@ -255,7 +255,7 @@ test_that("Specific example results are OK", {
     leap_size = leap_size,
     n_particles = n_particles,
     timesteps = timesteps,
-    mcmc_kernel_app = mcmc_times,
+    mcmc_steps = mcmc_times,
     num_new_obs = num_new_obs,
     aug_method = aug_method,
     logz_estimate = logz_estimate,

@@ -47,7 +47,7 @@ n_particles <- 100
 test <- smc_mallows_new_users(
   rankings = data, type = "complete", metric = metric,
   leap_size = leap_size, n_particles = n_particles, timesteps = timesteps,
-  mcmc_kernel_app = mcmc_times,
+  mcmc_steps = mcmc_times,
   alpha_prop_sd = 0.1, lambda = 0.001, alpha_max = 1e6,
   num_new_obs = num_new_obs, verbose = FALSE
 )

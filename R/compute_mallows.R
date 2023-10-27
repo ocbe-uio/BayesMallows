@@ -430,6 +430,9 @@ compute_mallows <- function(rankings = NULL,
   )
 
   fit$save_aug <- save_aug
+  fit$alpha_prop_sd <- alpha_prop_sd
+  fit$metric <- metric
+  fit$logz_list <- logz_list
 
   # Add class attribute
   class(fit) <- "BayesMallows"

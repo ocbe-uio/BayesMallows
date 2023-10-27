@@ -24,7 +24,7 @@
 #'   pexp(1000, 0.001)}) prior probability that \eqn{\alpha_c > 1000}. Hence
 #'   when \code{n_clusters > 1}, the estimated partition function should cover
 #'   this range, or \eqn{\lambda} should be increased.
-#' @param mcmc_kernel_app Integer value for the number of applications we apply
+#' @param mcmc_steps Integer value for the number of applications we apply
 #'   the MCMC move kernel
 #' @param alpha_prop_sd Numeric value of the standard deviation of the prior
 #'   distribution for alpha
@@ -60,7 +60,7 @@ smc_mallows_new_item_rank <- function(
     rankings,
     n_particles,
     logz_estimate = NULL,
-    mcmc_kernel_app,
+    mcmc_steps,
     aug_rankings_init = NULL,
     rho_samples_init = NULL,
     alpha_samples_init = 0,
@@ -90,7 +90,7 @@ smc_mallows_new_item_rank <- function(
     timesteps,
     logz_estimate = logz_list$logz_estimate,
     cardinalities = logz_list$cardinalities,
-    mcmc_kernel_app,
+    mcmc_steps,
     aug_rankings_init,
     rho_samples_init,
     alpha_samples_init,
@@ -108,7 +108,7 @@ smc_mallows_new_item_rank <- function(
   ret$metric <- metric
   ret$logz_list <- logz_list
   ret$n_items <- n_items
-  ret$mcmc_kernel_app <- mcmc_kernel_app
+  ret$mcmc_steps <- mcmc_steps
   ret$alpha_prop_sd <- alpha_prop_sd
   ret$lambda <- lambda
   ret$alpha_max <- alpha_max
