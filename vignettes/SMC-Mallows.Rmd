@@ -16,6 +16,7 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 library(BayesMallows)
 library(ggplot2)
+library(cowplot)
 ```
 
 This vignette describes the `SMC-Mallows` functions of the package. These use Sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. We use an alternative data augmentation method, called the pseudolikelihood approach, when we are using the footrule and Spearman distance functions instead of using an independent sampler. For an in-depth treatment of the implemented methodology, see @steinSequentialInferenceMallows2023. 
@@ -98,97 +99,75 @@ We are interested in updating the parameter estimates of the Bayesian Mallows mo
 head(sushi_rankings)
 ```
 
-The function `smc_mallows_new_users()` shows the simplest version of the SMC algorithm in action. The variable `rankings` in this instance is a matrix whose of the same format as used in `compute_mallows()`, i.e., with one column for each item and one row for each user. 
+Assume we initially have a set of 300 sushi rankings, in `data_batch1`:
 
 ```{r}
 data_batch1 <- sushi_rankings[1:300, ]
+```
+
+We estimate a model on these data using `compute_mallows()`, which runs a full Metropolis-Hastings algorithm.
+
+```{r}
 model1 <- compute_mallows(rankings = data_batch1)
-#assess_convergence(model1)
+```
+
+We assess convergence, and find that 300 is an appropriate burnin value.
+
+```{r}
+assess_convergence(model1)
 model1$burnin <- 300
 ```
 
 
+Having saved this model, we received another batch of preferences at a later timepoint. 
 
 ```{r}
 data_batch2 <- sushi_rankings[301:600, ]
-model2 <- update_mallows(model1, new_rankings = data_batch1, n_particles = 1000)
 ```
 
 
+We can now update the initial model, without rerunning the full Metropolis-Hastings algorithm, by calling `update_mallows()`. This function uses the sequential Monte Carlo algorithm described above, and extracts a thinned sample of size `n_particles` from `model1` as initial values.
+
 ```{r}
-data_batch3 <- sushi_rankings[601:900, ]
+model2 <- update_mallows(model1, new_rankings = data_batch1, n_particles = 1000)
+```
+
+Next, assume we get yet another set of rankings later, now of size 1000.
+
+```{r}
+data_batch3 <- sushi_rankings[601:1600, ]
+```
+
+We can re-update the model.
+
+```{r}
 model3 <- update_mallows(model2, new_rankings = data_batch2)
+```
+
+Below is a comparison of the posterior intervals of the dispersion parameter for each model. Note how the intervals get increasingly narrower as more data is added.
+
+```{r}
 rbind(
   compute_posterior_intervals(model1),
   compute_posterior_intervals(model2), 
   compute_posterior_intervals(model3)
 )
-
 ```
 
+We can use all the same functions to look at posterior summaries as we do for models computed using Metropolis-Hastings. Here is a plot of the posterior for the dispersion parameter:
 
-```{r smc_complete_analysis_heatplot, message=FALSE, warning=FALSE}
-plot(model3,
-  items = 1:6, parameter = "rho"
-)
+```{r, fig.width="4cm"}
+plot(model3)
 ```
 
-The posterior distributions of $\boldsymbol{\rho}$ and $\alpha$ can be studied with some of the the analysis tools provided by `SMC-Mallows`. The posterior intervals for the consensus ranking of each sushi item are obtained by calling `compute_posterior_intervals`.
+Next are the CP consensus and the MAP consensus [@vitelli2018]:
 
 ```{r posterior_intervals_rho, message=FALSE, warning=FALSE}
-compute_posterior_intervals(model1, parameter = "rho")
-```
-
-We can also rank the sushi items according to their cumulative probability (CP) consensus and their maximum posterior rankings (MAP). These are calculated by calling the function `compute_consensus_rho`. We demonstrate with the CP consensus, which is the default.
-
-```{r}
-compute_consensus(model2)
-```
-
-Similarly, we can observe the posterior density and the posterior intervals for the scale parameter using the functions `plot()` and `compute_posterior_intervals`.
-
-```{r smc_complete_alpha_analysis, message=FALSE, warning=FALSE}
-plot(model1)
-compute_posterior_intervals(model1, parameter = "alpha")
-```
-
-#### Updating Complete Rankings Model with New Data
-
-Assume now that new preference data arrives, in a batch with 100 preferences:
-
-```{r}
-data_batch2 <- sushi_rankings[101:200, ]
-```
-
-We can now update the posterior in the first model, `model1`. Assuming they all arrive at the same time, it makes most sense to use a single timestep, which is the default. We use `smc_mallows_update()` for this:
-
-```{r}
-model2 <- smc_mallows_update(model = model1, rankings = data_batch2)
-```
-
-The returned object `model2`, can be treated exactly the same way as the initial `model1`. For example, we can plot posterior quantities:
-
-```{r}
-plot(model2,
-  colnames = colnames(sushi_rankings),
-  items = 1:6, parameter = "rho"
-)
-```
-
-And we can compute posterior intervals:
-
-```{r}
-compute_posterior_intervals(model2, parameter = "rho")
-```
-
-We can also plot the posterior density of $\alpha$:
-
-```{r}
-plot(model2)
+compute_consensus(model3)
+compute_consensus(model3, type = "MAP")
 ```
 
 
-We can also update `model2` again, if new data arrives.
 
 ### Partial Rankings
 
