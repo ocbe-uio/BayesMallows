@@ -9,6 +9,7 @@
   new_rankings,
   n_particles,
   type = "complete",
+  augmentation = "pseudo",
   mcmc_steps = 5,
   ...
 )
@@ -21,6 +22,8 @@ returned from \code{\link{compute_mallows}}.}
 n_assessors by n_items.}
 
 \item{n_particles}{Integer specifying the number of particles.}
+
+\item{augmentation}{One of "pseudo" and "uniform".}
 
 \item{...}{Optional additional arguments. Currently not used.}
 }

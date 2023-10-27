@@ -18,6 +18,7 @@ update_mallows <- function(model, new_rankings, ...) {
 #' @param new_rankings Matrix containing the new set of observed rankings of size
 #'   n_assessors by n_items.
 #' @param n_particles Integer specifying the number of particles.
+#' @param augmentation One of "pseudo" and "uniform".
 #' @param ... Optional additional arguments. Currently not used.
 #'
 #' @return An updated model, of class "SMCMallows".
@@ -28,9 +29,18 @@ update_mallows <- function(model, new_rankings, ...) {
 #' @family modeling
 #'
 update_mallows.BayesMallows <- function(
-    model, new_rankings, n_particles, type = "complete",
+    model, new_rankings, n_particles,
+    type = "complete", augmentation = "pseudo",
     mcmc_steps = 5, ...) {
+
+  augmentation <- match.arg(augmentation, c("pseudo", "uniform"))
   stopifnot(is.matrix(new_rankings))
+
+  if(any(is.na(new_rankings))) {
+    type <- "partial"
+  } else {
+    type <- "complete"
+  }
 
   alpha_init <- extract_alpha_init(model, n_particles, model$burnin)
   rho_init <- extract_rho_init(model, n_particles, model$burnin)
@@ -41,6 +51,7 @@ update_mallows.BayesMallows <- function(
     n_particles = n_particles,
     mcmc_steps = mcmc_steps,
     num_new_obs = nrow(new_rankings),
+    aug_method = augmentation,
     logz_estimate = model$logz_list$logz_estimate,
     cardinalities = model$logz_list$cardinalities,
     metric = model$metric,

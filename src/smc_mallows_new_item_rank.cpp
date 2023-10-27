@@ -63,7 +63,7 @@ arma::cube augment_rankings(
   arma::cube rho_samples,
   arma::mat alpha_samples,
   const double alpha = 0,
-  const std::string& aug_method = "random",
+  const std::string& aug_method = "uniform",
   const bool alpha_fixed = false,
   const std::string& metric = "footrule"
 ) {
@@ -173,7 +173,7 @@ Rcpp::List smc_mallows_new_item_rank_cpp(
   const double alpha_prop_sd = 0.5,
   const double lambda = 0.1,
   const double alpha_max = 1e6,
-  const std::string& aug_method = "random",
+  const std::string& aug_method = "uniform",
   const bool verbose = false,
   const bool alpha_fixed = false,
   const std::string& metric = "footrule",

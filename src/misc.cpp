@@ -52,9 +52,9 @@ double divide_by_fact(double prob, int set_length) {
 
 bool is_pseudo(const std::string aug_method, const std::string metric) {
   // Checks for valid combinations of the inputs, stops if invalid
-  if (aug_method == "random") {
+  if (aug_method == "uniform") {
     return(false);
-  } else if (aug_method == "pseudolikelihood") {
+  } else if (aug_method == "pseudo") {
     if ((metric == "footrule") || (metric == "spearman")) {
       return(true);
     } else {

@@ -47,7 +47,7 @@ using namespace arma;
 //'   prior distribution.
 //' @param alpha A numeric value of the scale parameter which is known and fixed.
 //' @param aug_method A character string specifying the approach for filling
-//' in the missing data, options are "pseudolikelihood" or "random".
+//' in the missing data, options are "pseudolikelihood" or "uniform".
 //' @param verbose Logical specifying whether to print out the progress of the
 //' SMC-Mallows algorithm. Defaults to \code{FALSE}.
 //' @param rho_init Initial value of \code{rho}.
@@ -71,7 +71,7 @@ Rcpp::List smc_mallows_new_users(
   const double lambda = 0.1,
   const double alpha_max = 1e6,
   const double alpha = 0,
-  const std::string& aug_method = "random",
+  const std::string& aug_method = "uniform",
   const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
   const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue,
   const bool verbose = false,

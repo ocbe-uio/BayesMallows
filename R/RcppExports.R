@@ -398,7 +398,7 @@ leap_and_shift_probs <- function(rho, n_items, leap_size = 1L) {
 #'
 #' @family modeling
 #'
-smc_mallows_new_item_rank_cpp <- function(n_items, rankings, n_particles, timesteps, logz_estimate, cardinalities, mcmc_steps, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, aug_method = "random", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
+smc_mallows_new_item_rank_cpp <- function(n_items, rankings, n_particles, timesteps, logz_estimate, cardinalities, mcmc_steps, aug_rankings_init = NULL, rho_samples_init = NULL, alpha_samples_init = 0L, alpha = 0, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, aug_method = "uniform", verbose = FALSE, alpha_fixed = FALSE, metric = "footrule", leap_size = 1L) {
     .Call(`_BayesMallows_smc_mallows_new_item_rank_cpp`, n_items, rankings, n_particles, timesteps, logz_estimate, cardinalities, mcmc_steps, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
 }
 
@@ -440,7 +440,7 @@ smc_mallows_new_item_rank_cpp <- function(n_items, rankings, n_particles, timest
 #'   prior distribution.
 #' @param alpha A numeric value of the scale parameter which is known and fixed.
 #' @param aug_method A character string specifying the approach for filling
-#' in the missing data, options are "pseudolikelihood" or "random".
+#' in the missing data, options are "pseudolikelihood" or "uniform".
 #' @param verbose Logical specifying whether to print out the progress of the
 #' SMC-Mallows algorithm. Defaults to \code{FALSE}.
 #' @param rho_init Initial value of \code{rho}.
@@ -453,7 +453,7 @@ smc_mallows_new_item_rank_cpp <- function(n_items, rankings, n_particles, timest
 #'
 #' @family modeling
 #'
-smc_mallows_new_users <- function(rankings, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "random", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L, rho_init = NULL, alpha_init = NULL, aug_init = NULL, num_obs = 0L) {
+smc_mallows_new_users <- function(rankings, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "uniform", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L, rho_init = NULL, alpha_init = NULL, aug_init = NULL, num_obs = 0L) {
     .Call(`_BayesMallows_smc_mallows_new_users`, rankings, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size, rho_init, alpha_init, aug_init, num_obs)
 }
 
