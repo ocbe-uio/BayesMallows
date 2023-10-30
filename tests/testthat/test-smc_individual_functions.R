@@ -1,5 +1,3 @@
-context("SMC individual functions")
-
 rho <- c(1, 2, 3, 4, 5, 6)
 alpha <- 2
 metric <- "footrule"
@@ -21,7 +19,7 @@ test_that("get_exponent_sum() works as expected", {
     alpha = alpha, rho = rho, n_items = n_items, rankings = rankings,
     metric = metric
   )
-  expect_equivalent(loglik, -22.6667, tol = 1e-4)
+  expect_equal(loglik, -22.6667, tolerance = 1e-4)
 })
 
 test_that("smc_metropolis_hastings_rho() works as expected", {
@@ -83,8 +81,8 @@ test_that("smc_leap_and_shift_probs() works as expected", {
   # if leap_size = 1, then forwards_prob = backwards_prob
   test_1 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 1)
   expect_equal(test_1$rho_prime, as.matrix(c(1, 3, 2, 4, 5, 6)))
-  expect_equivalent(test_1$forwards_prob, 0.1666667, tol = 1e-6)
-  expect_equivalent(test_1$backwards_prob, 0.1666667, tol = 1e-6)
+  expect_equal(test_1$forwards_prob, 0.1666667, tolerance = 1e-6)
+  expect_equal(test_1$backwards_prob, 0.1666667, tolerance = 1e-6)
 
   # if rho != rho_prime, then it should have a ulam distance of 1
   # if rho == rho_prime, then it should have ulam distance of 0
@@ -93,16 +91,16 @@ test_that("smc_leap_and_shift_probs() works as expected", {
 
   test_2 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 2)
   expect_equal(test_2$rho_prime, as.matrix(c(1, 2, 3, 5, 4, 6)))
-  expect_equivalent(test_2$forwards_prob, 0.09722222, tol = 1e-4)
-  expect_equivalent(test_2$backwards_prob, 0.09722222, tol = 1e-4)
+  expect_equal(test_2$forwards_prob, 0.09722222, tolerance = 1e-4)
+  expect_equal(test_2$backwards_prob, 0.09722222, tolerance = 1e-4)
 
   dist_2 <- get_rank_distance(rho, test_2$rho_prime, metric = "ulam")
   expect_equal(dist_2, 1)
 
   test_3 <- leap_and_shift_probs(rho = rho, n_items = n_items, leap_size = 3)
   expect_equal(test_3$rho_prime, as.matrix(c(1, 3, 2, 4, 5, 6)))
-  expect_equivalent(test_3$forwards_prob, 0.075, tol = 1e-3)
-  expect_equivalent(test_3$backwards_prob, 0.075, tol = 1e-3)
+  expect_equal(test_3$forwards_prob, 0.075, tolerance = 1e-3)
+  expect_equal(test_3$backwards_prob, 0.075, tolerance = 1e-3)
 
   dist_3 <- get_rank_distance(rho, test_3$rho_prime, metric = "ulam")
   expect_equal(dist_3, 1)
@@ -194,12 +192,12 @@ test_4_b <- metropolis_hastings_alpha(
 )
 
 test_that("metropolis_hastings_alpha() works as expected", {
-  expect_equivalent(test_1_a, 1.951095, tol = 1e-5)
-  expect_equivalent(test_1_b, 2.450351, tol = 1e-5)
-  expect_equivalent(test_2_a, 1.951095, tol = 1e-5)
-  expect_equivalent(test_2_b, 2.125639, tol = 1e-5)
-  expect_equivalent(test_3_b, 2)
-  expect_equivalent(test_4_b, 1.904542, tol = 1e-5)
+  expect_equal(test_1_a, 1.951095, tolerance = 1e-5)
+  expect_equal(test_1_b, 2.450351, tolerance = 1e-5)
+  expect_equal(test_2_a, 1.951095, tolerance = 1e-5)
+  expect_equal(test_2_b, 2.125639, tolerance = 1e-5)
+  expect_equal(test_3_b, 2)
+  expect_equal(test_4_b, 1.904542, tolerance = 1e-5)
 })
 
 

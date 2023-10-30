@@ -1,4 +1,4 @@
-tidy_mcmc <- function(fits, rankings, n_clusters, n_items, compute_options) {
+tidy_mcmc <- function(fits, rankings, model, n_items, compute_options) {
   fit <- list()
   fit$save_aug <- compute_options$save_aug
 
@@ -19,12 +19,12 @@ tidy_mcmc <- function(fits, rankings, n_clusters, n_items, compute_options) {
 
   fit$cluster_assignment <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_cluster_assignment(
-      fits[[i]]$cluster_assignment, i, n_clusters, fits[[i]]$n_assessors,
+      fits[[i]]$cluster_assignment, i, model$n_clusters, fits[[i]]$n_assessors,
       compute_options$nmc)
   }))
 
   fit$cluster_probs <- do.call(rbind, lapply(seq_along(fits), function(i) {
-    tidy_cluster_probabilities(fits[[i]]$cluster_probs, i, n_clusters,
+    tidy_cluster_probabilities(fits[[i]]$cluster_probs, i, model$n_clusters,
                                compute_options$nmc)
   }))
 
@@ -47,18 +47,18 @@ tidy_mcmc <- function(fits, rankings, n_clusters, n_items, compute_options) {
     tidy_error_probability(fits[[i]]$theta, i)
   }))
 
-  fit$n_clusters <- n_clusters
+  fit$n_clusters <- model$n_clusters
   fit$items <- items
   fit$n_items <- n_items
   fit$n_assessors <- fits[[1]]$n_assessors
   fit$nmc <- compute_options$nmc
   fit$alpha_acceptance <- rowMeans(matrix(
-    vapply(fits, function(x) x$alpha_acceptance, numeric(n_clusters)),
-    nrow = n_clusters
+    vapply(fits, function(x) x$alpha_acceptance, numeric(model$n_clusters)),
+    nrow = model$n_clusters
   ))
   fit$rho_acceptance <- rowMeans(matrix(
-    vapply(fits, function(x) x$rho_acceptance, numeric(n_clusters)),
-    nrow = n_clusters
+    vapply(fits, function(x) x$rho_acceptance, numeric(model$n_clusters)),
+    nrow = model$n_clusters
   ))
 
   return(fit)

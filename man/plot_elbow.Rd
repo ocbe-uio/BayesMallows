@@ -32,9 +32,9 @@ selecting the number of mixture.
   # Let us look at any number of clusters from 1 to 10
   # We use the convenience function compute_mallows_mixtures
   n_clusters <- seq(from = 1, to = 10)
-  models <- compute_mallows_mixtures(n_clusters = n_clusters,
-                                     rankings = sushi_rankings,
-                                     include_wcd = TRUE)
+  models <- compute_mallows_mixtures(
+    n_clusters = n_clusters, rankings = sushi_rankings,
+    compute_options = set_compute_options(include_wcd = TRUE))
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows
   # We can create an elbow plot
@@ -44,8 +44,10 @@ selecting the number of mixture.
 
   # Having chosen the number of clusters, we can now study the final model
   # Rerun with 5 clusters
-  mixture_model <- compute_mallows(rankings = sushi_rankings, n_clusters = 5,
-                                   include_wcd = TRUE)
+  mixture_model <- compute_mallows(
+    rankings = sushi_rankings,
+    model = set_model_options(n_clusters = 5),
+    compute_options = set_compute_options(include_wcd = TRUE))
   # Delete the models object to free some memory
   rm(models)
   # Set the burnin
@@ -78,9 +80,11 @@ selecting the number of mixture.
   library(parallel)
   cl <- makeCluster(detectCores() - 1)
   n_clusters <- seq(from = 1, to = 10)
-  models <- compute_mallows_mixtures(n_clusters = n_clusters,
-                                     rankings = sushi_rankings,
-                                     include_wcd = TRUE, cl = cl)
+  models <- compute_mallows_mixtures(
+    n_clusters = n_clusters,
+    rankings = sushi_rankings,
+    compute_options = set_compute_options(include_wcd = TRUE),
+    cl = cl)
   stopCluster(cl)
 }
 

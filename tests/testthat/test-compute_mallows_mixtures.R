@@ -1,47 +1,45 @@
 test_that("compute_mallows_mixtures works", {
-  set.seed(1234)
   n_clusters <- c(1, 4, 6)
   models <- compute_mallows_mixtures(
     n_clusters = n_clusters,
     compute_options = set_compute_options(nmc = 20L),
-    rankings = sushi_rankings[1:100, ]
+    rankings = sushi_rankings[1:100, ],
+    seed = 1234
   )
 
   expect_equal(
     round(models[[1]]$alpha$value, 10),
-    c(
-      1, 0.9613263178, 0.9613263178, 0.8831344651, 0.9125035114,
-      0.9125035114, 0.8865988675, 0.8865988675, 0.8865988675, 0.8865988675,
-      0.8205473633, 0.8205473633, 0.6941503586, 0.767450906, 0.7817768491,
-      0.882383532, 0.9845249867, 0.9283154749, 1.1219871023, 1.0797258265
+    c(1, 0.9613263178, 0.9613263178, 0.8831344651, 0.8831344651,
+      0.8831344651, 0.8580635656, 0.8580635656, 0.8580635656, 0.8580635656,
+      0.7941379378, 0.7941379378, 0.6718090374, 0.6718090374, 0.6843496416,
+      0.6843496416, 0.6843496416, 0.645278049, 0.645278049, 0.6209727129
     )
   )
 
   expect_equal(
     models[[2]]$rho$value[12:18],
-    c(6, 2, 5, 10, 3, 8, 1)
+    c(10, 8, 3, 7, 5, 2, 1)
   )
 
   expect_equal(
     models[[3]]$rho_acceptance,
-    c(0.75, 0.8, 0.95, 0.45, 0.9, 0.45)
+    c(1, 0.9, 0.8, 1, 0.55, 0.8)
   )
 
-
-  set.seed(123)
   mixture_model <- compute_mallows(
-    rankings = sushi_rankings[1:100, ], n_clusters = 5,
-    compute_options = set_compute_options(include_wcd = TRUE, nmc = 10)
+    rankings = sushi_rankings[1:100, ],
+    model = set_model_options(n_clusters = 5),
+    compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
+    seed = 123
   )
 
   expect_equal(
     mixture_model$within_cluster_distance$value,
-    c(
-      684, 740, 716, 770, 506, 726, 574, 434, 420, 856, 678, 502,
-      388, 370, 996, 746, 366, 462, 390, 988, 1082, 250, 248, 82, 1170,
-      778, 194, 206, 106, 1444, 492, 60, 270, 342, 1580, 618, 70, 106,
-      432, 1510, 716, 92, 272, 206, 1402, 728, 156, 196, 170, 1532
-    )
+    c(684, 740, 716, 770, 506, 726, 574, 434, 420, 856, 678, 672,
+      370, 244, 996, 662, 462, 450, 294, 1070, 916, 218, 288, 84, 1334,
+      572, 128, 172, 192, 1682, 548, 58, 258, 270, 1564, 632, 184,
+      70, 354, 1506, 652, 152, 174, 266, 1526, 772, 144, 166, 318,
+      1402)
   )
 
   # check that it runs in parallel
@@ -56,18 +54,20 @@ test_that("compute_mallows_mixtures works", {
   expect_s3_class(models, "BayesMallowsMixtures")
 
   # check that psi argument is being used
-  set.seed(123)
   mixture_model1 <- compute_mallows(
-    rankings = sushi_rankings[1:100, ], n_clusters = 5,
+    rankings = sushi_rankings[1:100, ],
+    model = set_model_options(n_clusters = 5),
     compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
-    priors = set_priors(psi = 100)
+    priors = set_priors(psi = 100),
+    seed = 123
   )
 
-  set.seed(123)
   mixture_model2 <- compute_mallows(
-    rankings = sushi_rankings[1:100, ], n_clusters = 5,
+    rankings = sushi_rankings[1:100, ],
+    model = set_model_options(n_clusters = 5),
     compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
-    priors = set_priors(psi = 1)
+    priors = set_priors(psi = 1),
+    seed = 123
   )
 
   expect_lt(

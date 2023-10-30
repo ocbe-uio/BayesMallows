@@ -1,4 +1,3 @@
-context("Testing functions for pairwise preferences")
 
 # Create some test data
 pair_comp <- data.frame(

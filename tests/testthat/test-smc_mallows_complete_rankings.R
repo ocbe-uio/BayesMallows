@@ -1,5 +1,3 @@
-context("SMC complete rankings: sequence")
-
 #########################
 # Generate Dataset
 #########################
@@ -19,9 +17,9 @@ nmc <- 20
 burnin <- 5
 model_fit <- compute_mallows(
   rankings = data,
+  model = set_model_options(metric = metric),
   compute_options = set_compute_options(nmc = nmc, leap_size = leap_size,
-                                        alpha_prop_sd = 0.15),
-  metric = metric
+                                        alpha_prop_sd = 0.15)
 )
 
 model_fit$burnin <- burnin
@@ -80,7 +78,7 @@ rho_cp <- compute_consensus(test)
 rho_map <- compute_consensus(test, type = "MAP")
 
 test_that("Output of compute_posterior_intervals_rho is OK", {
-  expect_is(rho_temp, "data.frame")
+  expect_s3_class(rho_temp, "data.frame")
   expect_length(rho_temp, 7)
   expect_named(
     rho_temp,
@@ -89,7 +87,7 @@ test_that("Output of compute_posterior_intervals_rho is OK", {
       "central_interval"
     )
   )
-  expect_equivalent(vapply(rho_temp, length, numeric(1)), rep(10, 7))
+  expect_equal(vapply(rho_temp, length, numeric(1), USE.NAMES = FALSE), rep(10, 7))
 })
 
 # posterior for alpha
@@ -103,7 +101,7 @@ alpha_posterior_intervals <- compute_posterior_intervals(
 )
 
 test_that("Output of compute_posterior_intervals_alpha is OK", {
-  expect_is(alpha_posterior_intervals, "data.frame")
+  expect_s3_class(alpha_posterior_intervals, "data.frame")
   expect_length(alpha_posterior_intervals, 6)
   expect_named(
     alpha_posterior_intervals,
@@ -112,10 +110,8 @@ test_that("Output of compute_posterior_intervals_alpha is OK", {
       "central_interval"
     )
   )
-  expect_equivalent(vapply(alpha_posterior_intervals, length, numeric(1)), rep(1, 6))
+  expect_equal(vapply(alpha_posterior_intervals, length, numeric(1), USE.NAMES = FALSE), rep(1, 6))
 })
-
-context("SMC complete rankings: breakdown")
 
 test_that("get_exponent_sum() in smc_mallows_new_users_complete() works", {
   # ======================================================== #

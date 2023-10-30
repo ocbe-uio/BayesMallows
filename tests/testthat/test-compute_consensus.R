@@ -1,4 +1,3 @@
-context("Testing compute_consensus")
 
 beach_small <- subset(
   beach_preferences,

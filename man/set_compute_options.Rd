@@ -83,6 +83,7 @@ Specify options for Metropolis-Hastings algorithms
 \seealso{
 Other options: 
 \code{\link{set_initial_values}()},
+\code{\link{set_model_options}()},
 \code{\link{set_priors}()}
 }
 \concept{options}

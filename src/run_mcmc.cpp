@@ -15,26 +15,14 @@ using namespace arma;
 Rcpp::List run_mcmc(arma::mat rankings,
                     arma::vec obs_freq,
                     Rcpp::List constraints,
+                    Rcpp::List model,
                     Rcpp::List compute_options,
                     Rcpp::List priors,
                     Rcpp::List init,
                     Rcpp::Nullable<arma::vec> cardinalities,
                     Rcpp::Nullable<arma::vec> logz_estimate,
-                    std::string metric = "footrule",
-                    std::string error_model = "none",
-                    int n_clusters = 1,
                     bool verbose = false
                       ){
-
-  if(! compute_options.inherits("BayesMallowsComputeOptions")) {
-    Rcpp::stop("compute_options must be of class 'BayesMallowsComputeOptions'.");
-  }
-  if(! priors.inherits("BayesMallowsPriors")) {
-    Rcpp::stop("priors must be of class 'BayesMallowsPriors'.");
-  }
-  if(! init.inherits("BayesMallowsInitialValues")) {
-    Rcpp::stop("init must be of class 'BayesMallowsInitialValues'.");
-  }
 
   // The number of items ranked
   int n_items = rankings.n_rows;
@@ -63,6 +51,7 @@ Rcpp::List run_mcmc(arma::mat rankings,
   // Declare the cube to hold the latent ranks
   int rho_thinning = compute_options["rho_thinning"];
   int nmc = compute_options["nmc"];
+  int n_clusters = model["n_clusters"];
   cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
   Rcpp::Nullable<mat> rho_init = init["rho_init"];
   rho.slice(0) = initialize_rho(n_items, n_clusters, rho_init);
@@ -96,6 +85,7 @@ Rcpp::List run_mcmc(arma::mat rankings,
 
   // Matrix with precomputed distances d(R_j, \rho_j), used to avoid looping during cluster assignment
   mat dist_mat(n_assessors, n_clusters);
+  std::string metric = model["metric"];
   update_dist_mat(dist_mat, rankings, rho_old, metric, obs_freq);
   bool include_wcd = compute_options["include_wcd"];
 
@@ -117,6 +107,7 @@ Rcpp::List run_mcmc(arma::mat rankings,
   int kappa_2 = priors["kappa_2"];
   // Declare vector with Bernoulli parameter for the case of intransitive preferences
   vec theta, shape_1, shape_2;
+  std::string error_model = model["error_model"];
   if(error_model == "bernoulli"){
     theta = zeros<vec>(nmc);
     shape_1 = zeros<vec>(nmc);

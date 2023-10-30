@@ -1,5 +1,3 @@
-context("Testing sample_mallows")
-
 set.seed(1)
 # Number of items
 n_items <- 15
@@ -15,12 +13,17 @@ for (m in c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam")) {
   )
   test_that(
     "sample_mallows returns correct values",
-    expect_true(mean(samples[, 1]) < mean(samples[, n_items]))
+    {
+      expect_true(mean(samples[, 1]) < mean(samples[, n_items]))
+    }
+
   )
 
   test_that(
     "sample_mallows returns matrix",
-    expect_is(samples, "matrix")
+    {
+      expect_true(inherits(samples, "matrix"))
+    }
   )
 }
 

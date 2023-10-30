@@ -1,4 +1,3 @@
-context("SMC bulletproofing")
 
 limit <- sushi_rankings
 n_items <- dim(limit)[2]

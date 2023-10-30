@@ -1,5 +1,3 @@
-context("SMC new users partial rankings")
-
 # Generate Dataset =======================================
 
 # General ------------------------------------------------
@@ -34,9 +32,9 @@ samples[samples > 5] <- NA
 nmc <- 2000
 bm_mcmc <- compute_mallows(
   samples,
-  compute_options = set_compute_options(nmc = nmc, leap_size = leap_size,
-                                        alpha_prop_sd = 0.15),
-  metric        = metric
+  model = set_model_options(metric = metric),
+  compute_options = set_compute_options(
+    nmc = nmc, leap_size = leap_size, alpha_prop_sd = 0.15)
 )
 bm_mcmc$burnin <- 1000
 
@@ -125,7 +123,7 @@ test_that("Runs with unif kernel", {
     num_new_obs     = num_new_obs,
     aug_method      = "random"
   )
-  expect_is(smc_unif_alpha_fixed_unif, "SMCMallows")
+  expect_s3_class(smc_unif_alpha_fixed_unif, "SMCMallows")
   expect_equal(length(smc_unif_alpha_fixed_unif), 4)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 10, 21))
   smc_unif <- smc_mallows_new_users(
@@ -144,7 +142,7 @@ test_that("Runs with unif kernel", {
     alpha_max       = alpha_max,
     aug_method      = "random"
   )
-  expect_is(smc_unif, "SMCMallows")
+  expect_s3_class(smc_unif, "SMCMallows")
   expect_equal(length(smc_unif), 4)
   expect_equal(dim(smc_unif$rho_samples), c(N, 10, 21))
   expect_equal(dim(smc_unif$alpha_samples), c(N, 21))
@@ -170,7 +168,7 @@ test_that("Runs with pseudo kernel", {
     num_new_obs     = num_new_obs,
     aug_method      = "pseudolikelihood"
   )
-  expect_is(smc_unif_alpha_fixed_pseudo, "SMCMallows")
+  expect_s3_class(smc_unif_alpha_fixed_pseudo, "SMCMallows")
   expect_equal(length(smc_unif_alpha_fixed_pseudo), 4)
   expect_equal(dim(smc_unif_alpha_fixed_pseudo$rho_samples), c(N, 10, 21))
   smc_pseudo <- smc_mallows_new_users(
@@ -189,7 +187,7 @@ test_that("Runs with pseudo kernel", {
     alpha_max       = alpha_max,
     aug_method      = "pseudolikelihood"
   )
-  expect_is(smc_pseudo, "SMCMallows")
+  expect_s3_class(smc_pseudo, "SMCMallows")
   expect_equal(length(smc_pseudo), 4)
   expect_equal(dim(smc_pseudo$rho_samples), c(N, 10, 21))
   expect_equal(dim(smc_pseudo$alpha_samples), c(N, 21))
@@ -219,7 +217,7 @@ test_that("Specific example results are OK", {
     aug_method      = aug_method
   )
 
-  expect_equivalent(
+  expect_equal(
     test$alpha_samples[1:3, 1:4],
     structure(c(
       0.127095626667142, 1.01987919207187, 0.359836369752884,

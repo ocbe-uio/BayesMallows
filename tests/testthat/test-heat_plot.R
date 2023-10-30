@@ -1,5 +1,3 @@
-context("Testing heat_plot")
-
 model_fit <- compute_mallows(potato_visual, compute_options = set_compute_options(nmc = 200), seed = 1)
 
 

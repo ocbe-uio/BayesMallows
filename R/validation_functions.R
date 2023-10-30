@@ -1,3 +1,10 @@
+validate_class <- function(argument, class) {
+  if(!inherits(argument, class)) {
+    stop(paste(deparse(substitute(argument)), "must be an object of class",
+               class, "."))
+  }
+}
+
 validate_integer <- function(argument) {
   if(!is.numeric(argument) || argument < 1 || (round(argument) != argument)) {
     stop(paste(deparse(substitute(argument)), "must be a positive integer"))

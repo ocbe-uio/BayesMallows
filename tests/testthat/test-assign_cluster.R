@@ -15,8 +15,9 @@ test_that("assign_cluster works", {
 
   set.seed(123)
   m <- compute_mallows(potato_visual,
-                       compute_options = set_compute_options(nmc = 10),
-                       n_clusters = 3)
+                       model = set_model_options(n_clusters = 3),
+                       compute_options = set_compute_options(nmc = 10)
+                       )
 
   asc <- assign_cluster(m, burnin = 7)
   asc <- asc[order(as.integer(asc$assessor)), ]

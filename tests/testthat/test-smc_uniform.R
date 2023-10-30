@@ -1,4 +1,3 @@
-context("SMC uniform functions")
 
 set.seed(101)
 

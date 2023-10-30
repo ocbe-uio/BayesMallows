@@ -1,5 +1,3 @@
-context("Testing print.BayesMallows and print.BayesMallowsMixtures")
-
 test_that("print.BayesMallows fails when it should", {
   class(mtcars) <- "BayesMallows"
   expect_error(print(mtcars))

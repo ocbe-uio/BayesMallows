@@ -1,5 +1,3 @@
-context("Testing computation of partition functions")
-
 # Brute force formula
 check_log_zn <- function(n, alpha, metric) {
   # Generate all permutations

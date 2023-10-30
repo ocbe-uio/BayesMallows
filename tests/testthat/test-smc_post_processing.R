@@ -1,5 +1,3 @@
-context("SMC post-processing")
-
 # Basic elements
 data <- sushi_rankings[1:100, ]
 n_items <- ncol(data)

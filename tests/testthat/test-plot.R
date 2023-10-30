@@ -1,5 +1,3 @@
-context("Testing plot.BayesMallows")
-
 test_that("plot.BayesMallows fails when it should", {
   class(mtcars) <- "BayesMallows"
   expect_error(plot(mtcars))
@@ -19,13 +17,15 @@ test_that("plot.BayesMallows works", {
   expect_s3_class(plot(m, parameter = "rho", items = 2:3), "ggplot")
 
   m <- compute_mallows(potato_visual,
-                       compute_options = set_compute_options(nmc = 10),
-                       n_clusters = 3)
+                       model = set_model_options(n_clusters = 3),
+                       compute_options = set_compute_options(nmc = 10))
   expect_s3_class(plot(m, burnin = 4, parameter = "cluster_probs"), "ggplot")
   expect_s3_class(plot(m, burnin = 4, parameter = "cluster_assignment"), "ggplot")
 
-  m <- compute_mallows(preferences = beach_preferences[1:100, ],
-                       compute_options = set_compute_options(nmc = 10),
-                       error_model = "bernoulli")
+  m <- compute_mallows(
+    preferences = beach_preferences[1:100, ],
+    model = set_model_options(error_model = "bernoulli"),
+    compute_options = set_compute_options(nmc = 10)
+    )
   expect_s3_class(plot(m, burnin = 3, parameter = "theta"), "ggplot")
 })

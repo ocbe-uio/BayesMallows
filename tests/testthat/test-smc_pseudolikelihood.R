@@ -1,5 +1,3 @@
-context("SMC pseudolikelihood functions")
-
 ################################################################################
 # test for get_sample_probabilities
 ################################################################################
@@ -20,8 +18,12 @@ test_2 <- get_sample_probabilities(
 )
 
 test_that("get_sample_probabilities outputs as expected", {
-  expect_equivalent(test_1, c(0.38493, 0.27581, 0.19763, 0.14161), tol = 1e-4)
-  expect_equivalent(test_2, c(0.24318, 0.33938, 0.24318, 0.17424), tol = 1e-4)
+  expect_equal(test_1,
+               matrix(c(0.38493, 0.27581, 0.19763, 0.14161), ncol = 1),
+               tolerance = 1e-4)
+  expect_equal(test_2,
+               matrix(c(0.24318, 0.33938, 0.24318, 0.17424), ncol = 1),
+               tolerance = 1e-4)
 })
 
 ################################################################################
@@ -61,10 +63,10 @@ test_1_backward_b <- calculate_backward_probability(
 )
 
 test_that("calculations of forward and backward probabilities", {
-  expect_equal(test_1_forward$aug_ranking, matrix(c(1, 2, 3, 6, 5, 4)))
-  expect_equal(test_1_forward$forward_prob, 0.03699547)
-  expect_equal(test_1_backward_a, 0.01360987)
-  expect_equal(test_1_backward_b, test_1_forward$forward_prob)
+  expect_equal(test_1_forward$aug_ranking, matrix(c(1, 2, 3, 6, 5, 4), ncol = 1))
+  expect_equal(test_1_forward$forward_prob, 0.03699547, tolerance = 1e-4)
+  expect_equal(test_1_backward_a, 0.01360987, tolerance = 1e-4)
+  expect_equal(test_1_backward_b, test_1_forward$forward_prob, tolerance = 1e-4)
 })
 
 ############################################
@@ -120,7 +122,7 @@ test_that("correction_kernel works", {
   R_obs <- c(1, 2, 3, NA, NA, NA)
   test_1 <- correction_kernel_pseudo(R_curr, R_obs, rho, alpha, n_items, metric)
   expect_equal(test_1$ranking, as.matrix(c(1, 2, 3, 5, 4, 6)))
-  expect_equivalent(test_1$correction_prob, 0.172, tol = 1e-2)
+  expect_equal(test_1$correction_prob, 0.172, tolerance = 1e-2)
   expect_equal(all(test_1$ranking == R_curr), FALSE)
 
   # Two missing -------------------------------------------- #
@@ -139,3 +141,4 @@ test_that("correction_kernel works", {
   expect_equal(test_3$correction_prob, 1)
   expect_equal(all(test_3$ranking == R_curr), TRUE)
 })
+

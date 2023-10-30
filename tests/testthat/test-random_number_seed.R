@@ -1,5 +1,3 @@
-context("Testing that the random numbers are equal between platforms")
-
 bmm <- compute_mallows_mixtures(
   n_clusters = c(1, 4),
   rankings = sushi_rankings,
@@ -9,20 +7,19 @@ bmm <- compute_mallows_mixtures(
 
 expect_equal(
   bmm[[2]]$cluster_probs$value[20:26],
-  c(
-    0.103780617148549, 0.376634968419074, 0.133399257941488, 0.408615632333589,
-    0.0813501413058496, 0.409409209490965, 0.110568949260592
-  )
+  c(0.109669232480542, 0.364331214168161, 0.152075264807036, 0.39271690112913,
+    0.0908766198956731, 0.380642409337839, 0.134505626724183)
 )
 
 
-m <- compute_mallows(sushi_rankings, n_clusters = 5, seed = 123,
-                     compute_options = set_compute_options(nmc = 20))
+m <- compute_mallows(
+  sushi_rankings,
+  model = set_model_options(n_clusters = 5),
+  seed = 123,
+  compute_options = set_compute_options(nmc = 20))
 
 expect_equal(
   m$cluster_probs$value[30:35],
-  c(
-    0.735384849956839, 0.113779597344025, 0.0230786398725923, 0.022571383303261,
-    0.052670618132848, 0.787899761347273
-  )
+  c(0.747424659240883, 0.100012805539763, 0.0240360776409296, 0.0197784930292096,
+    0.0588434949639344, 0.797329128826163)
 )

@@ -70,3 +70,4 @@ Suggests:
   parallel (>= 3.5.1)
 VignetteBuilder: R.rsp, knitr
 RdMacros: Rdpack
+Config/testthat/edition: 3

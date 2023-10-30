@@ -24,21 +24,43 @@
 #' @example /inst/examples/compute_mallows_mixtures_example.R
 #'
 compute_mallows_mixtures <- function(n_clusters, ..., cl = NULL) {
-  stopifnot(is.numeric(n_clusters))
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
+  call <- match.call()
+  if(is.null(call$model)) call$model <- set_model_options()
+  call[[1]] <- substitute(compute_mallows)
+  call[["n_clusters"]] <- NULL
+
   if (is.null(cl)) {
-    models <- lapply(n_clusters, function(x) {
-      compute_mallows(..., n_clusters = x)
-    })
+    lapplyfun <- lapply
   } else {
-    args <- list(...)
-    parallel::clusterExport(cl = cl, varlist = "args", envir = environment())
-    models <- parallel::parLapply(cl = cl, X = n_clusters, fun = function(x) {
-      args$n_clusters <- x
-      do.call(compute_mallows, args)
-    })
+
+    find_objects_to_export <- function(arg) {
+      if(is.call(arg)) {
+        lapply(arg[-1], find_objects_to_export)
+      } else if(is.name(arg)) {
+        arg
+      } else {
+        character()
+      }
+    }
+
+    call[["cl"]] <- NULL
+    args <- as.list(call[-1])
+
+    varlist <- as.character(unlist(lapply(args, find_objects_to_export)))
+    varlist <- varlist[varlist != ""]
+    parallel::clusterExport(cl = cl, varlist = c("call", varlist),
+                            envir = environment())
+    lapplyfun <- function(X, FUN, ...) {
+      parallel::parLapply(cl = cl, X = X, fun = FUN, ...)
+    }
   }
+
+  models <- lapplyfun(n_clusters, function(x) {
+    call$model$n_clusters <- x
+    eval(call)
+  })
 
   class(models) <- "BayesMallowsMixtures"
   return(models)

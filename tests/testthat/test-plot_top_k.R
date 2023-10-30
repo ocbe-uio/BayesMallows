@@ -1,5 +1,3 @@
-context("Testing plot_top_k and predict_top_k")
-
 beach_small <- subset(
   beach_preferences,
   bottom_item %in% 1:5 & top_item %in% 1:5
@@ -107,8 +105,8 @@ test_that("plot_top_k works", {
 
   bmm <- compute_mallows(
     rankings = beach_init_rank, preferences = beach_tc,
-    compute_options = set_compute_options(nmc = 10, save_aug = TRUE),
-    n_clusters = 2
+    model = set_model_options(n_clusters = 2),
+    compute_options = set_compute_options(nmc = 10, save_aug = TRUE)
   )
   expect_s3_class(plot_top_k(bmm, k = 4, burnin = 5, rel_widths = c(.5, 1)), "ggplot")
 })

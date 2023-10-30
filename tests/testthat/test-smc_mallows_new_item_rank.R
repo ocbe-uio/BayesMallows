@@ -1,5 +1,3 @@
-context("SMC new user and item rank combined")
-
 # a simpler example to test ====================================================
 set.seed(101)
 Time <- dim(sample_dataset)[3]
@@ -55,7 +53,7 @@ test_that("Runs with unif kernel", {
       alpha_max = alpha_max, aug_method = "random", alpha_fixed = TRUE
     )
   )
-  expect_is(smc_unif_alpha_fixed_unif, "SMCMallows")
+  expect_s3_class(smc_unif_alpha_fixed_unif, "SMCMallows")
   expect_length(smc_unif_alpha_fixed_unif, 3)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 6, 31))
   expect_equal(
@@ -72,7 +70,7 @@ test_that("Runs with unif kernel", {
       alpha_max = alpha_max, aug_method = "random"
     )
   )
-  expect_is(smc_unif, "SMCMallows")
+  expect_s3_class(smc_unif, "SMCMallows")
   expect_length(smc_unif, 4)
   expect_equal(dim(smc_unif$rho_samples), c(N, 6, 31))
   expect_equal(dim(smc_unif$alpha_samples), c(N, 31))
@@ -89,7 +87,7 @@ test_that("Runs with pseudo kernel", {
       alpha_fixed = TRUE
     )
   )
-  expect_is(smc_unif_alpha_fixed_unif, "SMCMallows")
+  expect_s3_class(smc_unif_alpha_fixed_unif, "SMCMallows")
   expect_length(smc_unif_alpha_fixed_unif, 3)
   expect_equal(dim(smc_unif_alpha_fixed_unif$rho_samples), c(N, 6, 31))
 
@@ -103,7 +101,7 @@ test_that("Runs with pseudo kernel", {
       alpha_max = alpha_max, aug_method = "pseudolikelihood"
     )
   )
-  expect_is(smc_unif, "SMCMallows")
+  expect_s3_class(smc_unif, "SMCMallows")
   expect_length(smc_unif, 4)
   expect_equal(dim(smc_unif$rho_samples), c(N, 6, 31))
   expect_equal(dim(smc_unif$alpha_samples), c(N, 31))
@@ -149,6 +147,6 @@ test_that("Runs with pseudo kernel", {
       0.261012761393145, 0.199088466556392, 0.362509689038378, 0.662497989121363,
       0.262892580910325
     ),
-    tol = 1e-6
+    tolerance = 1e-6
   )
 })

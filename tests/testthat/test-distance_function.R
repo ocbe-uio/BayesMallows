@@ -1,4 +1,3 @@
-context("Testing computation of distance")
 # Brute force formula
 check_dist <- function(n, fun) {
   # Generate all permutations

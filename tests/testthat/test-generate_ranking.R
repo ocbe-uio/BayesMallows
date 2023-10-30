@@ -1,5 +1,3 @@
-context("Testing generation of initial ranking")
-
 # Create some test data
 pair_comp <- data.frame(
   assessor = c(rep(1, 3), rep(2, 3)),
@@ -12,7 +10,7 @@ beach_tc <- generate_transitive_closure(beach_preferences)
 
 test_that("generate_initial_ranking works", {
   expect_error(generate_initial_ranking(pair_comp))
-  expect_is(generate_initial_ranking(pair_comp_tc), "matrix")
+  expect_type(generate_initial_ranking(pair_comp_tc), "integer")
   expect_true(all(apply(generate_initial_ranking(pair_comp_tc), 1, validate_permutation)))
   expect_error(generate_initial_ranking(beach_tc, n_items = 10))
 })

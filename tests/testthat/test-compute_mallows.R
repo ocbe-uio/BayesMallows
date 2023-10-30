@@ -1,4 +1,3 @@
-context("Testing compute_mallows")
 
 test_that("miscellaneous input validation", {
   namat <- potato_visual
@@ -6,12 +5,14 @@ test_that("miscellaneous input validation", {
   expect_error(compute_mallows(rankings = namat, na_action = "fail"))
   expect_output(
     compute_mallows(rankings = namat,
-                    compute_options = set_compute_options(nmc = 2),
-                    na_action = "omit"),
+                    model = set_model_options(na_action = "omit"),
+                    compute_options = set_compute_options(nmc = 2)
+                    ),
     "Omitting 9 rows from rankings due to NA values"
   )
   expect_s3_class(compute_mallows(
-    rankings = namat, na_action = "augment",
+    rankings = namat,
+    model = set_model_options(na_action = "augment"),
     compute_options = set_compute_options(nmc = 3)), "BayesMallows")
   expect_s3_class(compute_mallows(rankings = namat,
                                   compute_options = set_compute_options(nmc = 3)), "BayesMallows")
@@ -74,7 +75,8 @@ test_that("compute_mallows error model works", {
     compute_mallows(preferences = preferences,
                     compute_options = set_compute_options(nmc = 10)))))
   expect_s3_class(
-    compute_mallows(preferences = preferences, error_model = "bernoulli",
+    compute_mallows(preferences = preferences,
+                    model = set_model_options(error_model = "bernoulli"),
                     compute_options = set_compute_options(nmc = 10)),
     "BayesMallows"
   )
@@ -114,7 +116,8 @@ test_that("compute_mallows with missing data works", {
 test_that("compute_mallows runs with the right distances", {
   for (metric in c("footrule", "spearman", "cayley", "kendall", "ulam", "hamming")) {
     expect_s3_class(
-      compute_mallows(potato_visual, metric = metric,
+      compute_mallows(potato_visual,
+                      model = set_model_options(metric = metric),
                       compute_options = set_compute_options(nmc = 3)), "BayesMallows")
   }
 })
@@ -204,17 +207,15 @@ test_that("compute_mallows treats obs_freq properly", {
 
   expect_equal(
     model_fit_obs_freq$rho$value,
-    c(
-      15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 4, 12,
-      13, 9, 6, 2, 14, 3, 8, 11, 1, 10, 7, 5, 15, 4, 12, 13, 8, 6,
-      2, 14, 3, 9, 11, 1, 10, 7, 5, 15, 4, 12, 13, 9, 6, 2, 14, 3,
-      8, 11, 1, 10, 7, 5, 15, 4, 12, 13, 9, 6, 2, 14, 3, 8, 11, 1,
-      10, 7, 5, 15, 5, 12, 13, 9, 6, 2, 14, 4, 8, 11, 1, 10, 7, 3,
-      15, 5, 12, 13, 9, 6, 2, 14, 4, 8, 10, 1, 11, 7, 3, 15, 4, 12,
-      13, 9, 5, 2, 14, 7, 8, 10, 1, 11, 6, 3, 14, 4, 12, 13, 9, 5,
-      2, 15, 7, 8, 10, 1, 11, 6, 3, 14, 4, 12, 13, 9, 6, 2, 15, 5,
-      8, 10, 1, 11, 7, 3
-    )
+    c(15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 4, 12,
+      13, 8, 6, 2, 14, 3, 10, 11, 1, 9, 7, 5, 15, 4, 12, 13, 7, 6,
+      2, 14, 3, 10, 11, 1, 9, 8, 5, 15, 4, 12, 13, 8, 6, 2, 14, 3,
+      10, 11, 1, 9, 7, 5, 15, 4, 12, 13, 8, 6, 2, 14, 3, 10, 11, 1,
+      9, 7, 5, 15, 5, 12, 13, 8, 6, 2, 14, 3, 10, 11, 1, 9, 7, 4, 15,
+      5, 12, 13, 8, 6, 2, 14, 3, 9, 11, 1, 10, 7, 4, 15, 5, 12, 13,
+      8, 6, 2, 14, 4, 9, 11, 1, 10, 7, 3, 14, 5, 12, 13, 8, 6, 2, 15,
+      4, 9, 11, 1, 10, 7, 3, 14, 5, 12, 13, 8, 6, 2, 15, 3, 9, 11,
+      1, 10, 7, 4)
   )
 
   expect_equal(
@@ -237,17 +238,15 @@ test_that("compute_mallows treats obs_freq properly", {
 
   expect_equal(
     model_fit_rep$rho$value,
-    c(
-      15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 3, 12,
-      13, 8, 6, 4, 14, 2, 11, 10, 1, 9, 7, 5, 15, 3, 12, 13, 8, 6,
-      4, 14, 2, 11, 10, 1, 9, 7, 5, 15, 3, 12, 13, 8, 5, 4, 14, 2,
-      11, 10, 1, 9, 7, 6, 15, 2, 12, 13, 8, 5, 4, 14, 3, 11, 10, 1,
-      9, 7, 6, 12, 2, 13, 14, 8, 5, 4, 15, 3, 11, 10, 1, 9, 7, 6, 11,
-      2, 13, 14, 8, 5, 4, 15, 3, 10, 9, 1, 12, 7, 6, 12, 2, 11, 14,
-      8, 5, 4, 15, 3, 10, 9, 1, 13, 7, 6, 12, 2, 11, 14, 9, 5, 4, 15,
-      3, 10, 8, 1, 13, 7, 6, 12, 2, 11, 14, 9, 5, 4, 15, 3, 10, 8,
-      1, 13, 7, 6
-    )
+    c(15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 4, 12,
+      13, 8, 6, 3, 14, 2, 11, 10, 1, 9, 7, 5, 15, 4, 11, 13, 8, 6,
+      3, 14, 2, 12, 10, 1, 9, 7, 5, 15, 4, 11, 13, 8, 5, 3, 14, 2,
+      12, 10, 1, 9, 7, 6, 15, 4, 11, 13, 8, 5, 3, 14, 1, 12, 10, 2,
+      9, 7, 6, 14, 4, 11, 13, 8, 5, 3, 15, 1, 12, 10, 2, 9, 7, 6, 14,
+      4, 11, 13, 8, 5, 3, 15, 1, 12, 9, 2, 10, 7, 6, 14, 4, 10, 13,
+      8, 5, 3, 15, 1, 12, 9, 2, 11, 7, 6, 14, 4, 10, 13, 9, 5, 3, 15,
+      1, 12, 8, 2, 11, 7, 6, 14, 4, 10, 13, 9, 5, 3, 15, 1, 12, 8,
+      2, 11, 7, 6)
   )
 
   expect_equal(

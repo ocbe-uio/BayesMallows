@@ -2,8 +2,6 @@
 # the fix of issue 80.
 set.seed(6998768)
 
-context("compute_posterior_interval() classes")
-
 # Typical BayesMallows workflow ================================================
 
 fit_bm <- compute_mallows(potato_visual)
@@ -91,7 +89,6 @@ test_that("Classes are correctly attributed", {
   expect_s3_class(fit_smc_post_internal_rho, "data.frame")
 })
 
-context("compute_consensus() classes")
 
 fit_bm_consensus_cp <- compute_consensus(fit_bm, type = "CP")
 fit_bm_consensus_map <- compute_consensus(fit_bm, type = "MAP")

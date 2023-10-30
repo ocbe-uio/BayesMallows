@@ -1,5 +1,3 @@
-context("Testing plot_elbow")
-
 test_that("plot_elbow fails when it should", {
   test <- compute_mallows_mixtures(
     n_clusters = 1:3, rankings = potato_visual,

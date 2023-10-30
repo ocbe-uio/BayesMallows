@@ -1,5 +1,3 @@
-context("Testing rank_conversion")
-
 test_that("create_ranking returns correct values", {
   orderings <- matrix(c(1, 2, 2, 3, 3, 1), ncol = 3)
   rankings <- matrix(c(1, 3, 2, 1, 3, 2), ncol = 3)

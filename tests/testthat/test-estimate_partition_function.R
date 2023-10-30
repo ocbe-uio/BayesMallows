@@ -1,6 +1,3 @@
-context("Testing function estimate_partition_function")
-
-
 test_that(
   "estimate_partition_function fails for wrong asymptotic metrics",
   {
