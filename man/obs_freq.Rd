@@ -29,13 +29,19 @@ potato_repeated <- potato_visual[repeated_indices, ]
 # We now first compute the Mallows model using obs_freq
 # This takes about 0.2 seconds
 system.time({
-  m_obs_freq <- compute_mallows(rankings = potato_visual, obs_freq = obs_freq, nmc = 10000)
+  m_obs_freq <- compute_mallows(
+    rankings = potato_visual,
+    compute_options = set_compute_options(nmc = 10000),
+    obs_freq = obs_freq)
 })
 # Next we use the full ranking matrix
 # This takes about 11.3 seconds, about 50 times longer!
 \dontrun{
 system.time({
-  m_rep <- compute_mallows(rankings = potato_repeated, nmc = 10000)
+  m_rep <- compute_mallows(
+    rankings = potato_repeated,
+    compute_options = set_compute_options(nmc = 10000)
+    )
 })
 
   # We set the burnin to 2000 for both
@@ -81,7 +87,8 @@ nrow(aggr_df[aggr_df$num_assessors > 1, , drop = FALSE])
 # more than one assessor per unique transitive closure. We generate an
 # obs_freq vector such that each unique transitive closure is repeated 1-4 times.
 set.seed(9988)
-obs_freq <- sample(x = 1:4, size = length(unique(beach_preferences$assessor)), replace = TRUE)
+obs_freq <- sample(x = 1:4, size = length(unique(beach_preferences$assessor)),
+                   replace = TRUE)
 
 # Next, we create a new hypthetical beach_preferences dataframe where each
 # assessor is replicated 1-4 times
@@ -115,21 +122,20 @@ beach_rankings_rep <- generate_initial_ranking(beach_tc_rep, n_items = 15)
 # We then run the Bayesian Mallows rank model, first for the
 # unrepeated data with a obs_freq argument. This takes about 1.9 seconds
 system.time({
-  model_fit_obs_freq <- compute_mallows(rankings = beach_rankings,
-                                       preferences = beach_tc,
-                                       obs_freq = obs_freq,
-                                       save_aug = TRUE,
-                                       nmc = 10000)
-
+  model_fit_obs_freq <- compute_mallows(
+    rankings = beach_rankings,
+    preferences = beach_tc,
+    compute_options = set_compute_options(nmc = 10000, save_aug = TRUE),
+    obs_freq = obs_freq
+  )
 })
 
 # Next for the repeated data. This takes about 4.8 seconds.
 system.time({
-  model_fit_rep <- compute_mallows(rankings = beach_rankings_rep,
-                                   preferences = beach_tc_rep,
-                                   save_aug = TRUE,
-                                   nmc = 10000)
-
+  model_fit_rep <- compute_mallows(
+    rankings = beach_rankings_rep,
+    preferences = beach_tc_rep,
+    compute_options = set_compute_options(nmc = 10000, save_aug = TRUE))
 })
 
 # As demonstrated here, using a obs_freq argument to exploit patterns in data

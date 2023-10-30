@@ -193,8 +193,8 @@ subset(beach_tc, assessor \%in\% c(1, 2) &
   # We start with computing a 3-cluster solution
   model_fit <- compute_mallows(
     sushi_rankings,
+    model = set_model_options(n_clusters = 3),
     compute_options = set_compute_options(nmc = 10000),
-    n_clusters = 3,
     verbose = TRUE)
   # We then assess convergence of the scale parameter alpha
   assess_convergence(model_fit)
