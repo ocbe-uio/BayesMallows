@@ -44,7 +44,8 @@ In "BayesMallows" we use the "parallel" package for parallel computation. Parall
 library(parallel)
 cl <- makeCluster(2)
 fit <- compute_mallows(
-  rankings = potato_visual, nmc = 5000,
+  rankings = potato_visual, 
+  compute_options = set_compute_options(nmc = 5000),
   cl = cl
 )
 stopCluster(cl)
@@ -100,9 +101,10 @@ Next we run two parallel chains, letting the package generate random initial ran
 ```{r}
 cl <- makeCluster(2)
 fit <- compute_mallows(
-  preferences = beach_tc, nmc = 4000,
-  alpha_init = runif(2, 1, 4),
-  save_aug = TRUE, cl = cl
+  preferences = beach_tc, 
+  compute_options = set_compute_options(nmc = 4000, save_aug = TRUE),
+  init = set_initial_values(alpha_init = runif(2, 1, 4)),
+  cl = cl
 )
 stopCluster(cl)
 ```
