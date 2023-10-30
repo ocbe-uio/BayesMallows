@@ -167,7 +167,7 @@ compute_consensus(model3)
 compute_consensus(model3, type = "MAP")
 ```
 
-```{r}
+```{r, include=FALSE}
 rm(data_batch1, data_batch2, data_batch3)
 ```
 

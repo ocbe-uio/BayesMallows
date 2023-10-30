@@ -12,7 +12,7 @@ compute_consensus(model, type = "MAP")
 
 new_rankings <- data_partial[301:600, ]
 model2 <- update_mallows(model, new_rankings = new_rankings,
-                         n_particles = 1000, type = "partial")
+                         n_particles = 1000)
 
 compute_consensus(model2)
 compute_consensus(model2, type = "MAP")
