@@ -226,7 +226,7 @@ compute_mallows <- function(rankings = NULL,
   if (compute_options$save_ind_clus) {
     abort <- readline(
       prompt = paste(
-        nmc, "csv files will be saved in your current working directory.",
+        compute_options$nmc, "csv files will be saved in your current working directory.",
         "Proceed? (yes/no): "
       )
     )
