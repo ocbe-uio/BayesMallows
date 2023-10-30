@@ -128,30 +128,28 @@ generate_initial_ranking(tc = small_tc[small_tc$assessor \%in\% c(1, 2), ],
                          n_items = 4, shuffle_unranked = TRUE, random = FALSE)
 
 
-\dontrun{
-  # We now give beach_init and beach_tc to compute_mallows. We tell compute_mallows
-  # to save the augmented data, in order to study the convergence.
-  model_fit <- compute_mallows(rankings = beach_init,
-                               preferences = beach_tc,
-                               nmc = 2000,
-                               save_aug = TRUE)
 
-  # We can study the acceptance rate of the augmented rankings
-  assess_convergence(model_fit, parameter = "Rtilde")
+# We now give beach_init and beach_tc to compute_mallows. We tell compute_mallows
+# to save the augmented data, in order to study the convergence.
+model_fit <- compute_mallows(
+  rankings = beach_init, preferences = beach_tc,
+  compute_options = set_compute_options(nmc = 1000, save_aug = TRUE)
+)
 
-  # We can also study the posterior distribution of the consensus rank of each beach
-  model_fit$burnin <- 500
-  plot(model_fit, parameter = "rho", items = 1:15)
-}
+# We can study the acceptance rate of the augmented rankings
+assess_convergence(model_fit, parameter = "Rtilde")
 
-\dontrun{
-  # The computations can also be done in parallel
-  library(parallel)
-  cl <- makeCluster(detectCores() - 1)
-  beach_tc <- generate_transitive_closure(beach_preferences, cl = cl)
-  beach_init <- generate_initial_ranking(beach_tc, cl = cl)
-  stopCluster(cl)
-}
+# We can also study the posterior distribution of the consensus rank of each beach
+model_fit$burnin <- 500
+plot(model_fit, parameter = "rho", items = 1:15)
+
+# The computations can also be done in parallel
+library(parallel)
+cl <- makeCluster(2)
+beach_tc <- generate_transitive_closure(beach_preferences, cl = cl)
+beach_init <- generate_initial_ranking(beach_tc, cl = cl)
+stopCluster(cl)
+
 }
 \seealso{
 Other preprocessing: 

@@ -10,14 +10,18 @@
   # For comparison, we run compute_mallows with and without saving the cluster
   # probabilities The purpose of this is to assess the time it takes to save
   # the cluster probabilites
-  system.time(m <- compute_mallows(rankings = sushi_rankings,
-                                   n_clusters = 6, nmc = 2000,
-                                   save_ind_clus = FALSE, verbose = TRUE))
+  system.time(m <- compute_mallows(
+    rankings = sushi_rankings,
+    model = set_model_options(n_clusters = 6),
+    compute_options = set_compute_options(nmc = 2000, save_ind_clus = FALSE),
+    verbose = TRUE))
   # With this options, compute_mallows will save cluster_probs2.csv,
   # cluster_probs3.csv, ..., cluster_probs[nmc].csv.
-  system.time(m <- compute_mallows(rankings = sushi_rankings, n_clusters = 6,
-                                   nmc = 2000,
-                                   save_ind_clus = TRUE, verbose = TRUE))
+  system.time(m <- compute_mallows(
+    rankings = sushi_rankings,
+    model = set_model_options(n_clusters = 6),
+    compute_options = set_compute_options(nmc = 2000, save_ind_clus = TRUE),
+    verbose = TRUE))
 
   # Next, we check convergence of alpha
   assess_convergence(m)

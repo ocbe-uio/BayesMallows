@@ -20,7 +20,7 @@ compute_posterior_intervals(model_fit, parameter = "rho")
   # We can run a mixture of Mallows models, using the n_clusters argument
   # We use the sushi example data. See the documentation of compute_mallows for a more elaborate
   # example
-  model_fit <- compute_mallows(sushi_rankings, n_clusters = 5)
+  model_fit <- compute_mallows(sushi_rankings, model = set_model_options(n_clusters = 5))
   # Keeping the burnin at 1000, we can compute the posterior intervals of the cluster probabilities
   compute_posterior_intervals(model_fit, burnin = 1000, parameter = "cluster_probs")
 }

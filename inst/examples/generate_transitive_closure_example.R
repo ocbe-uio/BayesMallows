@@ -25,24 +25,9 @@ pair_comp <- data.frame(
 # For assessor 1, it is implied that 1 is preferred to 3.
 # For assessor 2, it is implied that 4 is preferred to 5.
 
-\dontrun{
-  # If assessor 1 in addition preferred item 3 to item 1,
-  # the preferences would not be consistent. This is not yet supported by compute_mallows,
-  # so it causes an error message. It will be supported in a future release of the package.
-  # First, we add the inconsistent row to pair_comp
-  pair_comp <- rbind(
-    pair_comp,
-    data.frame(assessor = 1, bottom_item = 1, top_item = 3))
+# The computations can also be done in parallel
+library(parallel)
+cl <- makeCluster(2)
+beach_tc <- generate_transitive_closure(beach_preferences, cl = cl)
+stopCluster(cl)
 
-  # This causes an error message and prints out the problematic rankings:
-  (pair_comp_tc <- generate_transitive_closure(pair_comp))
-}
-
-
-\dontrun{
-  # The computations can also be done in parallel
-  library(parallel)
-  cl <- makeCluster(detectCores() - 1)
-  beach_tc <- generate_transitive_closure(beach_preferences, cl = cl)
-  stopCluster(cl)
-}

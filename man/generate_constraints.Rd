@@ -43,13 +43,12 @@ constr <- generate_constraints(beach_tc, n_items = 15)
 model_fit <- compute_mallows(rankings = beach_init_rank,
 preferences = beach_tc, constraints = constr)
 
-\dontrun{
-  # The constraints can also be generated in parallel
-  library(parallel)
-  cl <- makeCluster(detectCores() - 1)
-  constr <- generate_constraints(beach_tc, n_items = 15, cl = cl)
-  stopCluster(cl)
-}
+# The constraints can also be generated in parallel
+library(parallel)
+cl <- makeCluster(2)
+constr <- generate_constraints(beach_tc, n_items = 15, cl = cl)
+stopCluster(cl)
+
 }
 \references{
 \insertAllCited{}
