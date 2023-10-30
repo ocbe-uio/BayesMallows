@@ -80,4 +80,9 @@ An object of class \code{"BayesMallowsComputeOptions"}, to be
 \description{
 Specify options for Metropolis-Hastings algorithms
 }
+\seealso{
+Other options: 
+\code{\link{set_initial_values}()},
+\code{\link{set_priors}()}
+}
 \concept{options}

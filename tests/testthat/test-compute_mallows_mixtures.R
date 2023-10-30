@@ -59,15 +59,15 @@ test_that("compute_mallows_mixtures works", {
   set.seed(123)
   mixture_model1 <- compute_mallows(
     rankings = sushi_rankings[1:100, ], n_clusters = 5,
-    psi = 100,
-    compute_options = set_compute_options(include_wcd = TRUE, nmc = 10)
+    compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
+    priors = set_priors(psi = 100)
   )
 
   set.seed(123)
   mixture_model2 <- compute_mallows(
     rankings = sushi_rankings[1:100, ], n_clusters = 5,
     compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
-    psi = .1
+    priors = set_priors(psi = 1)
   )
 
   expect_lt(

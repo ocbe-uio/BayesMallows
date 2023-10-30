@@ -34,10 +34,9 @@ samples[samples > 5] <- NA
 nmc <- 2000
 bm_mcmc <- compute_mallows(
   samples,
-  nmc           = nmc,
-  leap_size     = leap_size,
-  metric        = metric,
-  alpha_prop_sd = 0.15
+  compute_options = set_compute_options(nmc = nmc, leap_size = leap_size,
+                                        alpha_prop_sd = 0.15),
+  metric        = metric
 )
 bm_mcmc$burnin <- 1000
 

@@ -74,37 +74,6 @@
 #'   convenience function for computing several models with varying numbers of
 #'   mixtures.
 #'
-#'
-#'
-#'
-#' @param rho_init Numeric vector specifying the initial value of the latent
-#'   consensus ranking \eqn{\rho}. Defaults to NULL, which means that the
-#'   initial value is set randomly. If \code{rho_init} is provided when
-#'   \code{n_clusters > 1}, each mixture component \eqn{\rho_{c}} gets the same
-#'   initial value.
-#'
-#'
-#' @param alpha_init Numeric value specifying the initial value of the scale
-#'   parameter \eqn{\alpha}. Defaults to \code{1}. When \code{n_clusters > 1},
-#'   each mixture component \eqn{\alpha_{c}} gets the same initial value. When
-#'   chains are run in parallel, by providing an argument \code{cl = cl}, then
-#'   \code{alpha_init} can be a vector of of length \code{length(cl)}, each
-#'   element of which becomes an initial value for the given chain.
-#'
-#' @param lambda Strictly positive numeric value specifying the rate parameter
-#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
-#'   to \code{0.1}. When \code{n_cluster > 1}, each mixture component
-#'   \eqn{\alpha_{c}} has the same prior distribution.
-#'
-#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
-#'   prior distribution.
-#'
-#' @param psi Integer specifying the concentration parameter \eqn{\psi} of the
-#'   Dirichlet prior distribution used for the cluster probabilities
-#'   \eqn{\tau_{1}, \tau_{2}, \dots, \tau_{C}}, where \eqn{C} is the value of
-#'   \code{n_clusters}. Defaults to \code{10L}. When \code{n_clusters = 1}, this
-#'   argument is not used.
-#'
 #' @param logz_estimate Estimate of the partition function, computed with
 #'   \code{\link{estimate_partition_function}}. Be aware that when using an
 #'   estimated partition function when \code{n_clusters > 1}, the partition
@@ -167,15 +136,12 @@
 compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
                             compute_options = set_compute_options(),
+                            priors = set_priors(),
+                            init = set_initial_values(),
                             obs_freq = NULL,
                             metric = "footrule",
                             error_model = NULL,
                             n_clusters = 1L,
-                            rho_init = NULL,
-                            alpha_init = 1,
-                            lambda = 0.001,
-                            alpha_max = 1e6,
-                            psi = 10L,
                             logz_estimate = NULL,
                             verbose = FALSE,
                             validate_rankings = TRUE,
@@ -189,6 +155,7 @@ compute_mallows <- function(rankings = NULL,
     stop("compute_options must be an object of class",
          "'BayesMallowsComputeOptions returned from set_compute_options().")
   }
+
 
   # Check if there are NAs in rankings, if it is provided
   if (!is.null(rankings)) {
@@ -221,8 +188,6 @@ compute_mallows <- function(rankings = NULL,
       stop("obs_freq must be of same length as the number of rows in rankings")
     }
   }
-
-  if (lambda <= 0) stop("exponential rate parameter lambda must be strictly positive")
 
   # Check that all rows of rankings are proper permutations
   if (!is.null(rankings) && validate_rankings && !all(apply(rankings, 1, validate_permutation))) {
@@ -269,14 +234,7 @@ compute_mallows <- function(rankings = NULL,
     dimnames(rankings) <- dn
   }
 
-  if (!is.null(rho_init)) {
-    if (!validate_permutation(rho_init)) stop("rho_init must be a proper permutation")
-    if (!(sum(is.na(rho_init)) == 0)) stop("rho_init cannot have missing values")
-    if (length(rho_init) != n_items) stop("rho_init must have the same number of items as implied by rankings or preferences")
-    rho_init <- matrix(rho_init, ncol = 1)
-  }
-
-  # Generate the constraint set
+    # Generate the constraint set
   if (!is.null(preferences) && is.null(constraints)) {
     constraints <- generate_constraints(preferences, n_items)
   } else if (is.null(constraints)) {
@@ -304,9 +262,9 @@ compute_mallows <- function(rankings = NULL,
     parallel::clusterExport(
       cl = cl,
       varlist = c(
-        "rankings", "obs_freq", "compute_options", "constraints", "logz_list",
-        "rho_init", "metric", "error_model", "n_clusters", "alpha_init",
-        "lambda", "alpha_max", "psi", "verbose"
+        "rankings", "obs_freq", "compute_options", "priors", "init",
+        "constraints", "logz_list", "metric", "error_model", "n_clusters",
+        "verbose"
       ),
       envir = environment()
     )
@@ -318,27 +276,22 @@ compute_mallows <- function(rankings = NULL,
   }
   # to extract one sample at a time. armadillo is column major, just like rankings
   fits <- lapplyfun(X = chain_seq, FUN = function(i) {
-    if (length(alpha_init) > 1) {
-      alpha_init <- alpha_init[i]
+    if (length(init$alpha_init) > 1) {
+      init$alpha_init <- init$alpha_init[[i]]
     }
     run_mcmc(
       rankings = t(rankings),
       obs_freq = obs_freq,
       constraints = constraints,
       compute_options = compute_options,
+      priors = priors,
+      init = init,
       cardinalities = logz_list$cardinalities,
       logz_estimate = logz_list$logz_estimate,
-      rho_init = rho_init,
       metric = metric,
       error_model = ifelse(is.null(error_model), "none", error_model),
       n_clusters = n_clusters,
-      lambda = lambda,
-      alpha_max = alpha_max,
-      psi = psi,
-      alpha_init = alpha_init,
-      verbose = verbose,
-      kappa_1 = 1.0,
-      kappa_2 = 1.0
+      verbose = verbose
     )
   })
 

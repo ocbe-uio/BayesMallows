@@ -283,7 +283,8 @@ test_that("compute_mallows treats obs_freq properly", {
 test_that("compute_mallows() takes initial alpha", {
   mm <- compute_mallows(potato_visual,
                         compute_options = set_compute_options(nmc = 5),
-                        cl = cl, alpha_init = c(3, 4))
+                        init = set_initial_values(alpha_init = c(3, 4)),
+                        cl = cl)
   expect_s3_class(mm, "BayesMallows")
 })
 

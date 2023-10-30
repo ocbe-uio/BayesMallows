@@ -9,6 +9,7 @@ run_mcmc(
   obs_freq,
   constraints,
   compute_options,
+  priors,
   cardinalities,
   logz_estimate,
   rho_init,
@@ -16,9 +17,6 @@ run_mcmc(
   error_model = "none",
   n_clusters = 1L,
   alpha_init = 5,
-  lambda = 0.1,
-  alpha_max = 1e+06,
-  psi = 10L,
   verbose = FALSE,
   kappa_1 = 1,
   kappa_2 = 1
@@ -51,12 +49,6 @@ returned from \code{\link{set_compute_options}}.}
 
 \item{alpha_init}{Initial value of alpha.}
 
-\item{lambda}{Parameter of the prior distribution.}
-
-\item{alpha_max}{Maximum value of \code{alpha}, used for truncating the exponential prior distribution.}
-
-\item{psi}{Hyperparameter for the Dirichlet prior distribution used in clustering.}
-
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
 1000th iteration.}
@@ -64,6 +56,12 @@ Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
 \item{kappa_1}{Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.}
 
 \item{kappa_2}{Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.}
+
+\item{lambda}{Parameter of the prior distribution.}
+
+\item{alpha_max}{Maximum value of \code{alpha}, used for truncating the exponential prior distribution.}
+
+\item{psi}{Hyperparameter for the Dirichlet prior distribution used in clustering.}
 }
 \description{
 Worker function for computing the posterior distribution.

@@ -129,8 +129,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_mcmc
-Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, Rcpp::List constraints, Rcpp::List compute_options, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> logz_estimate, Rcpp::Nullable<arma::mat> rho_init, std::string metric, std::string error_model, int n_clusters, double alpha_init, double lambda, double alpha_max, int psi, bool verbose, double kappa_1, double kappa_2);
-RcppExport SEXP _BayesMallows_run_mcmc(SEXP rankingsSEXP, SEXP obs_freqSEXP, SEXP constraintsSEXP, SEXP compute_optionsSEXP, SEXP cardinalitiesSEXP, SEXP logz_estimateSEXP, SEXP rho_initSEXP, SEXP metricSEXP, SEXP error_modelSEXP, SEXP n_clustersSEXP, SEXP alpha_initSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP, SEXP psiSEXP, SEXP verboseSEXP, SEXP kappa_1SEXP, SEXP kappa_2SEXP) {
+Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, Rcpp::List constraints, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List init, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> logz_estimate, std::string metric, std::string error_model, int n_clusters, bool verbose);
+RcppExport SEXP _BayesMallows_run_mcmc(SEXP rankingsSEXP, SEXP obs_freqSEXP, SEXP constraintsSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP initSEXP, SEXP cardinalitiesSEXP, SEXP logz_estimateSEXP, SEXP metricSEXP, SEXP error_modelSEXP, SEXP n_clustersSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -138,20 +138,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type obs_freq(obs_freqSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type constraints(constraintsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type compute_options(compute_optionsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type priors(priorsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type init(initSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type cardinalities(cardinalitiesSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type logz_estimate(logz_estimateSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::mat> >::type rho_init(rho_initSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< std::string >::type error_model(error_modelSEXP);
     Rcpp::traits::input_parameter< int >::type n_clusters(n_clustersSEXP);
-    Rcpp::traits::input_parameter< double >::type alpha_init(alpha_initSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< double >::type alpha_max(alpha_maxSEXP);
-    Rcpp::traits::input_parameter< int >::type psi(psiSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    Rcpp::traits::input_parameter< double >::type kappa_1(kappa_1SEXP);
-    Rcpp::traits::input_parameter< double >::type kappa_2(kappa_2SEXP);
-    rcpp_result_gen = Rcpp::wrap(run_mcmc(rankings, obs_freq, constraints, compute_options, cardinalities, logz_estimate, rho_init, metric, error_model, n_clusters, alpha_init, lambda, alpha_max, psi, verbose, kappa_1, kappa_2));
+    rcpp_result_gen = Rcpp::wrap(run_mcmc(rankings, obs_freq, constraints, compute_options, priors, init, cardinalities, logz_estimate, metric, error_model, n_clusters, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -383,7 +378,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},
-    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 17},
+    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 12},
     {"_BayesMallows_calculate_backward_probability", (DL_FUNC) &_BayesMallows_calculate_backward_probability, 8},
     {"_BayesMallows_calculate_forward_probability", (DL_FUNC) &_BayesMallows_calculate_forward_probability, 7},
     {"_BayesMallows_correction_kernel", (DL_FUNC) &_BayesMallows_correction_kernel, 3},

@@ -8,15 +8,12 @@ compute_mallows(
   rankings = NULL,
   preferences = NULL,
   compute_options = set_compute_options(),
+  priors = set_priors(),
+  init = set_initial_values(),
   obs_freq = NULL,
   metric = "footrule",
   error_model = NULL,
   n_clusters = 1L,
-  rho_init = NULL,
-  alpha_init = 1,
-  lambda = 0.001,
-  alpha_max = 1e+06,
-  psi = 10L,
   logz_estimate = NULL,
   verbose = FALSE,
   validate_rankings = TRUE,
@@ -76,33 +73,6 @@ of mixture components to use. Defaults to \code{1L}, which means no
 clustering is performed. See \code{\link{compute_mallows_mixtures}} for a
 convenience function for computing several models with varying numbers of
 mixtures.}
-
-\item{rho_init}{Numeric vector specifying the initial value of the latent
-consensus ranking \eqn{\rho}. Defaults to NULL, which means that the
-initial value is set randomly. If \code{rho_init} is provided when
-\code{n_clusters > 1}, each mixture component \eqn{\rho_{c}} gets the same
-initial value.}
-
-\item{alpha_init}{Numeric value specifying the initial value of the scale
-parameter \eqn{\alpha}. Defaults to \code{1}. When \code{n_clusters > 1},
-each mixture component \eqn{\alpha_{c}} gets the same initial value. When
-chains are run in parallel, by providing an argument \code{cl = cl}, then
-\code{alpha_init} can be a vector of of length \code{length(cl)}, each
-element of which becomes an initial value for the given chain.}
-
-\item{lambda}{Strictly positive numeric value specifying the rate parameter
-of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
-to \code{0.1}. When \code{n_cluster > 1}, each mixture component
-\eqn{\alpha_{c}} has the same prior distribution.}
-
-\item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential
-prior distribution.}
-
-\item{psi}{Integer specifying the concentration parameter \eqn{\psi} of the
-Dirichlet prior distribution used for the cluster probabilities
-\eqn{\tau_{1}, \tau_{2}, \dots, \tau_{C}}, where \eqn{C} is the value of
-\code{n_clusters}. Defaults to \code{10L}. When \code{n_clusters = 1}, this
-argument is not used.}
 
 \item{logz_estimate}{Estimate of the partition function, computed with
 \code{\link{estimate_partition_function}}. Be aware that when using an

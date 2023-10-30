@@ -10,56 +10,30 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-//' Worker function for computing the posterior distribution.
-//'
-//' @param rankings A set of complete rankings, with one sample per column.
-//' With n_assessors samples and n_items items, rankings is n_items x n_assessors.
-//' @param obs_freq  A vector of observation frequencies (weights) to apply to the rankings.
-//' @param constraints List of lists of lists, returned from `generate_constraints`.
-//' @param compute_options An object of class \code{"BayesMallowsComputeOptions"}
-//'   returned from \code{\link{set_compute_options}}.
-//' @param cardinalities Used when metric equals \code{"footrule"} or
-//' \code{"spearman"} for computing the partition function. Defaults to
-//' \code{R_NilValue}.
-//' @param logz_estimate Estimate of the log partition function.
-//' @param metric The distance metric to use. One of \code{"spearman"},
-//' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
-//' \code{"hamming"}.
-//' @param error_model Error model to use.
-//' @param n_clusters Number of clusters. Defaults to 1.
-//' @param alpha_init Initial value of alpha.
-//' @param lambda Parameter of the prior distribution.
-//' @param alpha_max Maximum value of \code{alpha}, used for truncating the exponential prior distribution.
-//' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
-//' @param verbose Logical specifying whether to print out the progress of the
-//' Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
-//' 1000th iteration.
-//' @param kappa_1 Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.
-//' @param kappa_2 Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.
-//' @keywords internal
-//'
+
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(arma::mat rankings,
                     arma::vec obs_freq,
                     Rcpp::List constraints,
                     Rcpp::List compute_options,
+                    Rcpp::List priors,
+                    Rcpp::List init,
                     Rcpp::Nullable<arma::vec> cardinalities,
                     Rcpp::Nullable<arma::vec> logz_estimate,
-                    Rcpp::Nullable<arma::mat> rho_init,
                     std::string metric = "footrule",
                     std::string error_model = "none",
                     int n_clusters = 1,
-                    double alpha_init = 5,
-                    double lambda = 0.1,
-                    double alpha_max = 1e6,
-                    int psi = 10,
-                    bool verbose = false,
-                    double kappa_1 = 1.0,
-                    double kappa_2 = 1.0
+                    bool verbose = false
                       ){
 
   if(! compute_options.inherits("BayesMallowsComputeOptions")) {
     Rcpp::stop("compute_options must be of class 'BayesMallowsComputeOptions'.");
+  }
+  if(! priors.inherits("BayesMallowsPriors")) {
+    Rcpp::stop("priors must be of class 'BayesMallowsPriors'.");
+  }
+  if(! init.inherits("BayesMallowsInitialValues")) {
+    Rcpp::stop("init must be of class 'BayesMallowsInitialValues'.");
   }
 
   // The number of items ranked
@@ -90,12 +64,14 @@ Rcpp::List run_mcmc(arma::mat rankings,
   int rho_thinning = compute_options["rho_thinning"];
   int nmc = compute_options["nmc"];
   cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
+  Rcpp::Nullable<mat> rho_init = init["rho_init"];
   rho.slice(0) = initialize_rho(n_items, n_clusters, rho_init);
   mat rho_old = rho(span::all, span::all, span(0));
 
   // Declare the vector to hold the scaling parameter alpha
   int alpha_jump = compute_options["alpha_jump"];
   mat alpha(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
+  double alpha_init = init["alpha_init"];
   alpha.col(0).fill(alpha_init);
 
   // If the user wants to save augmented data, we need a cube
@@ -137,6 +113,8 @@ Rcpp::List run_mcmc(arma::mat rankings,
     aug_acceptance.reset();
   }
 
+  int kappa_1 = priors["kappa_1"];
+  int kappa_2 = priors["kappa_2"];
   // Declare vector with Bernoulli parameter for the case of intransitive preferences
   vec theta, shape_1, shape_2;
   if(error_model == "bernoulli"){
@@ -186,10 +164,11 @@ Rcpp::List run_mcmc(arma::mat rankings,
                  metric, n_items, t, element_indices, obs_freq);
     }
 
-
     if(t % alpha_jump == 0) {
       ++alpha_index;
       for(int i = 0; i < n_clusters; ++i){
+        double lambda = priors["lambda"];
+        double alpha_max = priors["alpha_max"];
         double alpha_prop_sd = compute_options["alpha_prop_sd"];
         alpha(i, alpha_index) = update_alpha(alpha_acceptance, alpha_old(i),
               clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
@@ -202,6 +181,7 @@ Rcpp::List run_mcmc(arma::mat rankings,
 
   if(clustering){
     bool save_ind_clus = compute_options["save_ind_clus"];
+    int psi = priors["psi"];
     current_cluster_probs = update_cluster_probs(current_cluster_assignment, n_clusters, psi);
 
     current_cluster_assignment = update_cluster_labels(dist_mat, current_cluster_probs,

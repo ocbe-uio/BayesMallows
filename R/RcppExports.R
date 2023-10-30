@@ -125,36 +125,8 @@ rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, 
     .Call(`_BayesMallows_rmallows`, rho0, alpha0, n_samples, burnin, thinning, leap_size, metric)
 }
 
-#' Worker function for computing the posterior distribution.
-#'
-#' @param rankings A set of complete rankings, with one sample per column.
-#' With n_assessors samples and n_items items, rankings is n_items x n_assessors.
-#' @param obs_freq  A vector of observation frequencies (weights) to apply to the rankings.
-#' @param constraints List of lists of lists, returned from `generate_constraints`.
-#' @param compute_options An object of class \code{"BayesMallowsComputeOptions"}
-#'   returned from \code{\link{set_compute_options}}.
-#' @param cardinalities Used when metric equals \code{"footrule"} or
-#' \code{"spearman"} for computing the partition function. Defaults to
-#' \code{R_NilValue}.
-#' @param logz_estimate Estimate of the log partition function.
-#' @param metric The distance metric to use. One of \code{"spearman"},
-#' \code{"footrule"}, \code{"kendall"}, \code{"cayley"}, or
-#' \code{"hamming"}.
-#' @param error_model Error model to use.
-#' @param n_clusters Number of clusters. Defaults to 1.
-#' @param alpha_init Initial value of alpha.
-#' @param lambda Parameter of the prior distribution.
-#' @param alpha_max Maximum value of \code{alpha}, used for truncating the exponential prior distribution.
-#' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
-#' @param verbose Logical specifying whether to print out the progress of the
-#' Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
-#' 1000th iteration.
-#' @param kappa_1 Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.
-#' @param kappa_2 Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.
-#' @keywords internal
-#'
-run_mcmc <- function(rankings, obs_freq, constraints, compute_options, cardinalities, logz_estimate, rho_init, metric = "footrule", error_model = "none", n_clusters = 1L, alpha_init = 5, lambda = 0.1, alpha_max = 1e6, psi = 10L, verbose = FALSE, kappa_1 = 1.0, kappa_2 = 1.0) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, obs_freq, constraints, compute_options, cardinalities, logz_estimate, rho_init, metric, error_model, n_clusters, alpha_init, lambda, alpha_max, psi, verbose, kappa_1, kappa_2)
+run_mcmc <- function(rankings, obs_freq, constraints, compute_options, priors, init, cardinalities, logz_estimate, metric = "footrule", error_model = "none", n_clusters = 1L, verbose = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, rankings, obs_freq, constraints, compute_options, priors, init, cardinalities, logz_estimate, metric, error_model, n_clusters, verbose)
 }
 
 #' @title Calculate Backward Probability
