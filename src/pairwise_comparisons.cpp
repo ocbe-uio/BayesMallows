@@ -96,14 +96,14 @@ vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor
 }
 
 vec propose_swap(const vec& ranking, const Rcpp::List& assessor_constraints,
-                       int& g_diff, const int& Lswap) {
+                       int& g_diff, const int& swap_leap) {
   int n_items = ranking.n_elem;
 
   // Draw a random number, representing an item
-  int u = randi<int>(distr_param(1, n_items - Lswap));
+  int u = randi<int>(distr_param(1, n_items - swap_leap));
 
   int ind1 = as_scalar(find(ranking == u));
-  int ind2 = as_scalar(find(ranking == (u + Lswap)));
+  int ind2 = as_scalar(find(ranking == (u + swap_leap)));
 
   vec proposal = ranking;
   proposal(ind1) = ranking(ind2);
@@ -144,7 +144,7 @@ void augment_pairwise(
     const Rcpp::List& constraints,
     vec& aug_acceptance,
     const std::string& error_model,
-    const int& Lswap
+    const int& swap_leap
 ){
   int n_assessors = rankings.n_cols;
   int n_items = rankings.n_rows;
@@ -158,7 +158,7 @@ void augment_pairwise(
     if(error_model == "none"){
       proposal = propose_pairwise_augmentation(rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]));
     } else if(error_model == "bernoulli"){
-      proposal = propose_swap(rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]), g_diff, Lswap);
+      proposal = propose_swap(rankings.col(i), Rcpp::as<Rcpp::List>(constraints[i]), g_diff, swap_leap);
     } else {
       Rcpp::stop("error_model must be 'none' or 'bernoulli'");
     }

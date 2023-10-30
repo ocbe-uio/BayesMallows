@@ -20,7 +20,7 @@ void augment_pairwise(
     const Rcpp::List& constraints,
     arma::vec& aug_acceptance,
     const std::string& error_model,
-    const int& Lswap
+    const int& swap_leap
 );
 
 

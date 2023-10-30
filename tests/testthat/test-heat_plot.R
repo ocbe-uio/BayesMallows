@@ -1,6 +1,6 @@
 context("Testing heat_plot")
 
-model_fit <- compute_mallows(potato_visual, nmc = 200, seed = 1)
+model_fit <- compute_mallows(potato_visual, compute_options = set_compute_options(nmc = 200), seed = 1)
 
 
 test_that("heat_plot fails when it should", {

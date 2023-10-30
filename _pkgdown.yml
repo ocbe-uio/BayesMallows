@@ -24,6 +24,11 @@ reference:
   contents:
   - has_concept("diagnostics")
 
+- title: Options
+  desc: Functions for setting various advanced options.
+  contents:
+  - has_concept("options")
+
 - title: Rank functions
   desc: Various functions for sampling ranks and working with ranks.
   contents:

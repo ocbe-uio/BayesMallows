@@ -2,7 +2,8 @@ context("Testing MCMC function on potato data")
 
 # Testing with footrule
 set.seed(200)
-model_fit <- compute_mallows(potato_weighing, metric = "footrule", nmc = 1000)
+model_fit <- compute_mallows(potato_weighing, metric = "footrule",
+                             compute_options = set_compute_options(nmc = 1000))
 mean_alpha <- mean(model_fit$alpha$value[501:1000])
 
 test_that(

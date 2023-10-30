@@ -317,7 +317,7 @@ cpm_bm <- function(df) {
   df$id <- NULL
 
   # Sort according to cluster and ranking
-  df <- df[order(df$cluster, df$map_ranking),
+  df[order(df$cluster, df$map_ranking),
     c("cluster", "map_ranking", "item", "probability"),
     drop = FALSE
   ]

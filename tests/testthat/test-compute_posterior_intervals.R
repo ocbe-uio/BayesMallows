@@ -1,6 +1,6 @@
 test_that("compute posterior intervals works", {
   set.seed(3344)
-  m <- compute_mallows(potato_visual, nmc = 10)
+  m <- compute_mallows(potato_visual, compute_options = set_compute_options(nmc = 10))
   expect_error(compute_posterior_intervals(m))
   expect_error(compute_posterior_intervals(m, burnin = 100))
   expect_error(compute_posterior_intervals(m, burnin = 7, parameter = "dsdsd"))
@@ -65,7 +65,7 @@ test_that("compute posterior intervals works", {
   )
 
   set.seed(22)
-  m <- compute_mallows(potato_visual, nmc = 10, n_clusters = 2)
+  m <- compute_mallows(potato_visual, compute_options = set_compute_options(nmc = 10), n_clusters = 2)
   expect_equal(
     compute_posterior_intervals(m, burnin = 8),
     structure(list(cluster = structure(1:2, levels = c(

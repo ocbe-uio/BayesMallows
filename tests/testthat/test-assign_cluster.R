@@ -1,10 +1,12 @@
 test_that("assign_cluster works", {
-  m <- compute_mallows(potato_visual, nmc = 10)
+  m <- compute_mallows(potato_visual,
+                       compute_options = set_compute_options(nmc = 10))
 
   expect_error(assign_cluster(m))
 
   set.seed(123)
-  m <- compute_mallows(potato_visual, nmc = 10)
+  m <- compute_mallows(potato_visual,
+                       compute_options = set_compute_options(nmc = 10))
 
   asc <- assign_cluster(m, burnin = 5)
   expect_equal(unique(asc$cluster), "Cluster 1")
@@ -12,7 +14,9 @@ test_that("assign_cluster works", {
   expect_equal(unique(asc$map_cluster), "Cluster 1")
 
   set.seed(123)
-  m <- compute_mallows(potato_visual, nmc = 10, n_clusters = 3)
+  m <- compute_mallows(potato_visual,
+                       compute_options = set_compute_options(nmc = 10),
+                       n_clusters = 3)
 
   asc <- assign_cluster(m, burnin = 7)
   asc <- asc[order(as.integer(asc$assessor)), ]

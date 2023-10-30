@@ -7,31 +7,21 @@
 run_mcmc(
   rankings,
   obs_freq,
-  nmc,
   constraints,
+  compute_options,
   cardinalities,
   logz_estimate,
   rho_init,
   metric = "footrule",
   error_model = "none",
-  Lswap = 1L,
   n_clusters = 1L,
-  include_wcd = FALSE,
-  leap_size = 1L,
-  alpha_prop_sd = 0.5,
   alpha_init = 5,
-  alpha_jump = 1L,
   lambda = 0.1,
   alpha_max = 1e+06,
   psi = 10L,
-  rho_thinning = 1L,
-  aug_thinning = 1L,
-  clus_thin = 1L,
-  save_aug = FALSE,
   verbose = FALSE,
   kappa_1 = 1,
-  kappa_2 = 1,
-  save_ind_clus = FALSE
+  kappa_2 = 1
 )
 }
 \arguments{
@@ -40,9 +30,10 @@ With n_assessors samples and n_items items, rankings is n_items x n_assessors.}
 
 \item{obs_freq}{A vector of observation frequencies (weights) to apply to the rankings.}
 
-\item{nmc}{Number of Monte Carlo samples.}
-
 \item{constraints}{List of lists of lists, returned from `generate_constraints`.}
+
+\item{compute_options}{An object of class \code{"BayesMallowsComputeOptions"}
+returned from \code{\link{set_compute_options}}.}
 
 \item{cardinalities}{Used when metric equals \code{"footrule"} or
 \code{"spearman"} for computing the partition function. Defaults to
@@ -56,39 +47,15 @@ With n_assessors samples and n_items items, rankings is n_items x n_assessors.}
 
 \item{error_model}{Error model to use.}
 
-\item{Lswap}{Swap parameter used by Swap proposal for proposing rank augmentations in the case of non-transitive pairwise comparisons.}
-
 \item{n_clusters}{Number of clusters. Defaults to 1.}
 
-\item{include_wcd}{Boolean defining whether or
-not to store the within-cluster distance.}
-
-\item{leap_size}{Leap-and-shift step size.}
-
-\item{alpha_prop_sd}{Standard deviation of proposal distribution for alpha.}
-
 \item{alpha_init}{Initial value of alpha.}
-
-\item{alpha_jump}{How many times should we sample \code{rho} between
-each time we sample \code{alpha}. Setting \code{alpha_jump} to a high
-number can significantly speed up computation time, since we then do not
-have to do expensive computation of the partition function.}
 
 \item{lambda}{Parameter of the prior distribution.}
 
 \item{alpha_max}{Maximum value of \code{alpha}, used for truncating the exponential prior distribution.}
 
 \item{psi}{Hyperparameter for the Dirichlet prior distribution used in clustering.}
-
-\item{rho_thinning}{Thinning parameter. Keep only every \code{rho_thinning} rank
-sample from the posterior distribution.}
-
-\item{aug_thinning}{Integer specifying the thinning for data augmentation.}
-
-\item{clus_thin}{Integer specifying the thinning for saving cluster assignments.}
-
-\item{save_aug}{Whether or not to save the augmented data every
-\code{aug_thinning}th iteration.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
@@ -97,11 +64,6 @@ Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed every
 \item{kappa_1}{Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.}
 
 \item{kappa_2}{Hyperparameter for \eqn{theta} in the Bernoulli error model. Defaults to 1.0.}
-
-\item{save_ind_clus}{Whether or not to save the individual cluster probabilities in each step,
-thinned as specified in argument \code{clus_thin}. This results in csv files \code{cluster_probs1.csv},
-\code{cluster_probs2.csv}, ..., being saved in the calling directory. This option may slow down the code
-considerably, but is necessary for detecting label switching using Stephen's algorithm.}
 }
 \description{
 Worker function for computing the posterior distribution.

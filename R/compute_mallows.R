@@ -43,6 +43,9 @@
 #'   on \code{preferences} before computations are done. In the current version,
 #'   the pairwise preferences are assumed to be mutually compatible.
 #'
+#' @param compute_options An object of class \code{"BayesMallowsComputeOptions"}
+#'   returned from \code{\link{set_compute_options}}.
+#'
 #' @param obs_freq A vector of observation frequencies (weights) to apply do
 #'   each row in \code{rankings}. This can speed up computation if a large
 #'   number of assessors share the same rank pattern. Defaults to \code{NULL},
@@ -73,20 +76,6 @@
 #'
 #'
 #'
-#' @param clus_thin Integer specifying the thinning to be applied to cluster
-#'   assignments and cluster probabilities. Defaults to \code{1L}.
-#'
-#' @param nmc Integer specifying the number of iteration of the
-#'   Metropolis-Hastings algorithm to run. Defaults to \code{2000L}. See
-#'   \code{\link{assess_convergence}} for tools to check convergence of the
-#'   Markov chain.
-#'
-#' @param leap_size Integer specifying the step size of the leap-and-shift
-#'   proposal distribution. Defaults \code{floor(n_items / 5)}.
-#'
-#' @param swap_leap Integer specifying the step size of the Swap proposal. Only
-#'   used when \code{error_model} is not \code{NULL}.
-#'
 #'
 #' @param rho_init Numeric vector specifying the initial value of the latent
 #'   consensus ranking \eqn{\rho}. Defaults to NULL, which means that the
@@ -94,14 +83,6 @@
 #'   \code{n_clusters > 1}, each mixture component \eqn{\rho_{c}} gets the same
 #'   initial value.
 #'
-#' @param rho_thinning Integer specifying the thinning of \code{rho} to be
-#'   performed in the Metropolis- Hastings algorithm. Defaults to \code{1L}.
-#'   \code{compute_mallows} save every \code{rho_thinning}th value of
-#'   \eqn{\rho}.
-#'
-#' @param alpha_prop_sd Numeric value specifying the standard deviation of the
-#'   lognormal proposal distribution used for \eqn{\alpha} in the
-#'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
 #'
 #' @param alpha_init Numeric value specifying the initial value of the scale
 #'   parameter \eqn{\alpha}. Defaults to \code{1}. When \code{n_clusters > 1},
@@ -109,14 +90,6 @@
 #'   chains are run in parallel, by providing an argument \code{cl = cl}, then
 #'   \code{alpha_init} can be a vector of of length \code{length(cl)}, each
 #'   element of which becomes an initial value for the given chain.
-#'
-#' @param alpha_jump Integer specifying how many times to sample \eqn{\rho}
-#'   between each sampling of \eqn{\alpha}. In other words, how many times to
-#'   jump over \eqn{\alpha} while sampling \eqn{\rho}, and possibly other
-#'   parameters like augmented ranks \eqn{\tilde{R}} or cluster assignments
-#'   \eqn{z}. Setting \code{alpha_jump} to a high number can speed up
-#'   computation time, by reducing the number of times the partition function
-#'   for the Mallows model needs to be computed. Defaults to \code{1L}.
 #'
 #' @param lambda Strictly positive numeric value specifying the rate parameter
 #'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
@@ -131,21 +104,6 @@
 #'   \eqn{\tau_{1}, \tau_{2}, \dots, \tau_{C}}, where \eqn{C} is the value of
 #'   \code{n_clusters}. Defaults to \code{10L}. When \code{n_clusters = 1}, this
 #'   argument is not used.
-#'
-#' @param include_wcd Logical indicating whether to store the within-cluster
-#'   distances computed during the Metropolis-Hastings algorithm. Defaults to
-#'   \code{TRUE} if \code{n_clusters > 1} and otherwise \code{FALSE}. Setting
-#'   \code{include_wcd = TRUE} is useful when deciding the number of mixture
-#'   components to include, and is required by \code{\link{plot_elbow}}.
-#'
-#' @param save_aug Logical specifying whether or not to save the augmented
-#'   rankings every \code{aug_thinning}th iteration, for the case of missing
-#'   data or pairwise preferences. Defaults to \code{FALSE}. Saving augmented
-#'   data is useful for predicting the rankings each assessor would give to the
-#'   items not yet ranked, and is required by \code{\link{plot_top_k}}.
-#'
-#' @param aug_thinning Integer specifying the thinning for saving augmented
-#'   data. Only used when \code{save_aug = TRUE}. Defaults to \code{1L}.
 #'
 #' @param logz_estimate Estimate of the partition function, computed with
 #'   \code{\link{estimate_partition_function}}. Be aware that when using an
@@ -185,13 +143,6 @@
 #'   set may be time consuming. In this case it can be beneficial to precompute
 #'   it and provide it as a separate argument.
 #'
-#' @param save_ind_clus Whether or not to save the individual cluster
-#'   probabilities in each step. This results in csv files
-#'   \code{cluster_probs1.csv}, \code{cluster_probs2.csv}, ..., being saved in
-#'   the calling directory. This option may slow down the code considerably, but
-#'   is necessary for detecting label switching using Stephen's algorithm. See
-#'   \code{\link{label_switching}} for more information.
-#'
 #' @param seed Optional integer to be used as random number seed.
 #'
 #' @param cl Optional cluster.
@@ -215,34 +166,29 @@
 #'
 compute_mallows <- function(rankings = NULL,
                             preferences = NULL,
+                            compute_options = set_compute_options(),
                             obs_freq = NULL,
                             metric = "footrule",
                             error_model = NULL,
                             n_clusters = 1L,
-                            clus_thin = 1L,
-                            nmc = 2000L,
-                            leap_size = max(1L, floor(n_items / 5)),
-                            swap_leap = 1L,
                             rho_init = NULL,
-                            rho_thinning = 1L,
-                            alpha_prop_sd = 0.1,
                             alpha_init = 1,
-                            alpha_jump = 1L,
                             lambda = 0.001,
                             alpha_max = 1e6,
                             psi = 10L,
-                            include_wcd = (n_clusters > 1),
-                            save_aug = FALSE,
-                            aug_thinning = 1L,
                             logz_estimate = NULL,
                             verbose = FALSE,
                             validate_rankings = TRUE,
                             na_action = "augment",
                             constraints = NULL,
-                            save_ind_clus = FALSE,
                             seed = NULL,
                             cl = NULL) {
+
   if (!is.null(seed)) set.seed(seed)
+  if (!inherits(compute_options, "BayesMallowsComputeOptions")) {
+    stop("compute_options must be an object of class",
+         "'BayesMallowsComputeOptions returned from set_compute_options().")
+  }
 
   # Check if there are NAs in rankings, if it is provided
   if (!is.null(rankings)) {
@@ -276,23 +222,12 @@ compute_mallows <- function(rankings = NULL,
     }
   }
 
-  if (!swap_leap > 0) stop("swap_leap must be strictly positive")
-  if (nmc <= 0) stop("nmc must be strictly positive")
-
-  # Check that we do not jump over all alphas
-  if (alpha_jump >= nmc) stop("alpha_jump must be strictly smaller than nmc")
-
-  # Check that we do not jump over all rhos
-  if (rho_thinning >= nmc) stop("rho_thinning must be strictly smaller than nmc")
-  if (aug_thinning >= nmc) stop("aug_thinning must be strictly smaller than nmc")
-
   if (lambda <= 0) stop("exponential rate parameter lambda must be strictly positive")
 
   # Check that all rows of rankings are proper permutations
   if (!is.null(rankings) && validate_rankings && !all(apply(rankings, 1, validate_permutation))) {
     stop("invalid permutations provided in rankings matrix")
   }
-
 
   # Deal with pairwise comparisons. Generate rankings compatible with them.
   if (!is.null(preferences) && is.null(error_model)) {
@@ -352,7 +287,7 @@ compute_mallows <- function(rankings = NULL,
 
   logz_list <- prepare_partition_function(logz_estimate, metric, n_items)
 
-  if (save_ind_clus) {
+  if (compute_options$save_ind_clus) {
     abort <- readline(
       prompt = paste(
         nmc, "csv files will be saved in your current working directory.",
@@ -369,11 +304,9 @@ compute_mallows <- function(rankings = NULL,
     parallel::clusterExport(
       cl = cl,
       varlist = c(
-        "rankings", "obs_freq", "nmc", "constraints", "logz_list",
-        "rho_init", "metric", "swap_leap", "error_model",
-        "n_clusters", "include_wcd", "leap_size", "alpha_prop_sd", "alpha_init",
-        "alpha_jump", "lambda", "alpha_max", "psi", "rho_thinning", "aug_thinning",
-        "clus_thin", "save_aug", "verbose", "save_ind_clus"
+        "rankings", "obs_freq", "compute_options", "constraints", "logz_list",
+        "rho_init", "metric", "error_model", "n_clusters", "alpha_init",
+        "lambda", "alpha_max", "psi", "verbose"
       ),
       envir = environment()
     )
@@ -391,31 +324,21 @@ compute_mallows <- function(rankings = NULL,
     run_mcmc(
       rankings = t(rankings),
       obs_freq = obs_freq,
-      nmc = nmc,
       constraints = constraints,
+      compute_options = compute_options,
       cardinalities = logz_list$cardinalities,
       logz_estimate = logz_list$logz_estimate,
       rho_init = rho_init,
       metric = metric,
       error_model = ifelse(is.null(error_model), "none", error_model),
-      Lswap = swap_leap,
       n_clusters = n_clusters,
-      include_wcd = include_wcd,
       lambda = lambda,
       alpha_max = alpha_max,
       psi = psi,
-      leap_size = leap_size,
-      alpha_prop_sd = alpha_prop_sd,
       alpha_init = alpha_init,
-      alpha_jump = alpha_jump,
-      rho_thinning = rho_thinning,
-      aug_thinning = aug_thinning,
-      clus_thin = clus_thin,
-      save_aug = save_aug,
       verbose = verbose,
       kappa_1 = 1.0,
-      kappa_2 = 1.0,
-      save_ind_clus = save_ind_clus
+      kappa_2 = 1.0
     )
   })
 
@@ -424,12 +347,7 @@ compute_mallows <- function(rankings = NULL,
     print("Metropolis-Hastings algorithm completed. Post-processing data.")
   }
 
-  fit <- tidy_mcmc(
-    fits, rho_thinning, rankings, alpha_jump,
-    n_clusters, nmc, aug_thinning, n_items
-  )
-
-  fit$save_aug <- save_aug
+  fit <- tidy_mcmc(fits, rankings, n_clusters, n_items, compute_options)
 
   # Add class attribute
   class(fit) <- "BayesMallows"

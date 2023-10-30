@@ -1,0 +1,123 @@
+#' Specify options for Metropolis-Hastings algorithms
+#'
+#' @param nmc Integer specifying the number of iteration of the
+#'   Metropolis-Hastings algorithm to run. Defaults to \code{2000}. See
+#'   \code{\link{assess_convergence}} for tools to check convergence of the
+#'   Markov chain.
+#'
+#' @param alpha_prop_sd Numeric value specifying the standard deviation of the
+#'   lognormal proposal distribution used for \eqn{\alpha} in the
+#'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
+#' @param leap_size Integer specifying the step size of the leap-and-shift
+#'   proposal distribution. Defaults to 1.
+#'
+#' @param swap_leap Integer specifying the step size of the Swap proposal.
+#'   Defaults to 1.
+#'
+#' @param alpha_jump Integer specifying how many times to sample \eqn{\rho}
+#'   between each sampling of \eqn{\alpha}. In other words, how many times to
+#'   jump over \eqn{\alpha} while sampling \eqn{\rho}, and possibly other
+#'   parameters like augmented ranks \eqn{\tilde{R}} or cluster assignments
+#'   \eqn{z}. Setting \code{alpha_jump} to a high number can speed up
+#'   computation time, by reducing the number of times the partition function
+#'   for the Mallows model needs to be computed. Defaults to \code{1}.
+#'
+#' @param aug_thinning Integer specifying the thinning for saving augmented
+#'   data. Only used when \code{save_aug = TRUE}. Defaults to \code{1}.
+#'
+#' @param clus_thinning Integer specifying the thinning to be applied to cluster
+#'   assignments and cluster probabilities. Defaults to \code{1}.
+#'
+#' @param rho_thinning Integer specifying the thinning of \code{rho} to be
+#'   performed in the Metropolis- Hastings algorithm. Defaults to \code{1}.
+#'   \code{compute_mallows} save every \code{rho_thinning}th value of
+#'   \eqn{\rho}.
+#'
+#' @param include_wcd Logical indicating whether to store the within-cluster
+#'   distances computed during the Metropolis-Hastings algorithm. Defaults to
+#'   \code{FALSE}. Setting \code{include_wcd = TRUE} is useful when deciding the
+#'   number of mixture components to include, and is required by
+#'   \code{\link{plot_elbow}}.
+#'
+#' @param save_aug Logical specifying whether or not to save the augmented
+#'   rankings every \code{aug_thinning}th iteration, for the case of missing
+#'   data or pairwise preferences. Defaults to \code{FALSE}. Saving augmented
+#'   data is useful for predicting the rankings each assessor would give to the
+#'   items not yet ranked, and is required by \code{\link{plot_top_k}}.
+#'
+#' @param save_ind_clus Whether or not to save the individual cluster
+#'   probabilities in each step. This results in csv files
+#'   \code{cluster_probs1.csv}, \code{cluster_probs2.csv}, ..., being saved in
+#'   the calling directory. This option may slow down the code considerably, but
+#'   is necessary for detecting label switching using Stephen's algorithm. See
+#'   \code{\link{label_switching}} for more information.
+#'
+#'
+#'
+#' @return An object of class \code{"BayesMallowsComputeOptions"}, to be
+#'   provided in the \code{compute_options} argument to
+#'   \code{\link{compute_mallows}}.
+#' @export
+#'
+#' @family options
+#'
+set_compute_options <- function(
+    nmc = 2000,
+    alpha_prop_sd = 0.1,
+    leap_size = 1,
+    swap_leap = 1,
+    alpha_jump = 1,
+    aug_thinning = 1,
+    clus_thinning = 1,
+    rho_thinning = 1,
+    include_wcd = FALSE,
+    save_aug = FALSE,
+    save_ind_clus = FALSE
+    ) {
+  validate_integer(nmc)
+  validate_positive(alpha_prop_sd)
+  validate_integer(leap_size)
+  validate_integer(swap_leap)
+  validate_integer(alpha_jump)
+  validate_integer(aug_thinning)
+  validate_integer(clus_thinning)
+  validate_integer(rho_thinning)
+  validate_logical(include_wcd)
+  validate_logical(save_aug)
+  validate_logical(save_ind_clus)
+
+  check_larger(nmc, alpha_jump)
+  check_larger(nmc, aug_thinning)
+  check_larger(nmc, clus_thinning)
+  check_larger(nmc, rho_thinning)
+
+  ret <- as.list(environment())
+  class(ret) <- "BayesMallowsComputeOptions"
+  ret
+}
+
+validate_integer <- function(argument) {
+  if(!is.numeric(argument) || argument < 1 || (round(argument) != argument)) {
+    stop(paste(deparse(substitute(argument)), "must be a positive integer"))
+  }
+}
+
+validate_positive <- function(argument) {
+  if(argument <= 0 || !is.numeric(argument)) {
+    stop(paste(deparse(substitute(argument)), "must be a positive number"))
+  }
+}
+
+validate_logical <- function(argument) {
+  if(!is.logical(argument) || length(argument) != 1) {
+    stop(paste(deparse(substitute(argument)),
+               "must be a logical value of length one"))
+  }
+}
+
+check_larger <- function(larger, smaller) {
+  if(larger <= smaller) {
+    stop(paste(deparse(substitute(larger)), "must be strictly larger than",
+               deparse(substitute(smaller))))
+  }
+}

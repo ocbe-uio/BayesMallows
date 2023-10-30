@@ -7,31 +7,21 @@
 compute_mallows(
   rankings = NULL,
   preferences = NULL,
+  compute_options = set_compute_options(),
   obs_freq = NULL,
   metric = "footrule",
   error_model = NULL,
   n_clusters = 1L,
-  clus_thin = 1L,
-  nmc = 2000L,
-  leap_size = max(1L, floor(n_items/5)),
-  swap_leap = 1L,
   rho_init = NULL,
-  rho_thinning = 1L,
-  alpha_prop_sd = 0.1,
   alpha_init = 1,
-  alpha_jump = 1L,
   lambda = 0.001,
   alpha_max = 1e+06,
   psi = 10L,
-  include_wcd = (n_clusters > 1),
-  save_aug = FALSE,
-  aug_thinning = 1L,
   logz_estimate = NULL,
   verbose = FALSE,
   validate_rankings = TRUE,
   na_action = "augment",
   constraints = NULL,
-  save_ind_clus = FALSE,
   seed = NULL,
   cl = NULL
 )
@@ -55,6 +45,9 @@ will give \code{preferences} the class \code{"BayesMallowsTC"}. If
 \code{compute_mallows} will call \code{\link{generate_transitive_closure}}
 on \code{preferences} before computations are done. In the current version,
 the pairwise preferences are assumed to be mutually compatible.}
+
+\item{compute_options}{An object of class \code{"BayesMallowsComputeOptions"}
+returned from \code{\link{set_compute_options}}.}
 
 \item{obs_freq}{A vector of observation frequencies (weights) to apply do
 each row in \code{rankings}. This can speed up computation if a large
@@ -84,34 +77,11 @@ clustering is performed. See \code{\link{compute_mallows_mixtures}} for a
 convenience function for computing several models with varying numbers of
 mixtures.}
 
-\item{clus_thin}{Integer specifying the thinning to be applied to cluster
-assignments and cluster probabilities. Defaults to \code{1L}.}
-
-\item{nmc}{Integer specifying the number of iteration of the
-Metropolis-Hastings algorithm to run. Defaults to \code{2000L}. See
-\code{\link{assess_convergence}} for tools to check convergence of the
-Markov chain.}
-
-\item{leap_size}{Integer specifying the step size of the leap-and-shift
-proposal distribution. Defaults \code{floor(n_items / 5)}.}
-
-\item{swap_leap}{Integer specifying the step size of the Swap proposal. Only
-used when \code{error_model} is not \code{NULL}.}
-
 \item{rho_init}{Numeric vector specifying the initial value of the latent
 consensus ranking \eqn{\rho}. Defaults to NULL, which means that the
 initial value is set randomly. If \code{rho_init} is provided when
 \code{n_clusters > 1}, each mixture component \eqn{\rho_{c}} gets the same
 initial value.}
-
-\item{rho_thinning}{Integer specifying the thinning of \code{rho} to be
-performed in the Metropolis- Hastings algorithm. Defaults to \code{1L}.
-\code{compute_mallows} save every \code{rho_thinning}th value of
-\eqn{\rho}.}
-
-\item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
-lognormal proposal distribution used for \eqn{\alpha} in the
-Metropolis-Hastings algorithm. Defaults to \code{0.1}.}
 
 \item{alpha_init}{Numeric value specifying the initial value of the scale
 parameter \eqn{\alpha}. Defaults to \code{1}. When \code{n_clusters > 1},
@@ -119,14 +89,6 @@ each mixture component \eqn{\alpha_{c}} gets the same initial value. When
 chains are run in parallel, by providing an argument \code{cl = cl}, then
 \code{alpha_init} can be a vector of of length \code{length(cl)}, each
 element of which becomes an initial value for the given chain.}
-
-\item{alpha_jump}{Integer specifying how many times to sample \eqn{\rho}
-between each sampling of \eqn{\alpha}. In other words, how many times to
-jump over \eqn{\alpha} while sampling \eqn{\rho}, and possibly other
-parameters like augmented ranks \eqn{\tilde{R}} or cluster assignments
-\eqn{z}. Setting \code{alpha_jump} to a high number can speed up
-computation time, by reducing the number of times the partition function
-for the Mallows model needs to be computed. Defaults to \code{1L}.}
 
 \item{lambda}{Strictly positive numeric value specifying the rate parameter
 of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
@@ -141,21 +103,6 @@ Dirichlet prior distribution used for the cluster probabilities
 \eqn{\tau_{1}, \tau_{2}, \dots, \tau_{C}}, where \eqn{C} is the value of
 \code{n_clusters}. Defaults to \code{10L}. When \code{n_clusters = 1}, this
 argument is not used.}
-
-\item{include_wcd}{Logical indicating whether to store the within-cluster
-distances computed during the Metropolis-Hastings algorithm. Defaults to
-\code{TRUE} if \code{n_clusters > 1} and otherwise \code{FALSE}. Setting
-\code{include_wcd = TRUE} is useful when deciding the number of mixture
-components to include, and is required by \code{\link{plot_elbow}}.}
-
-\item{save_aug}{Logical specifying whether or not to save the augmented
-rankings every \code{aug_thinning}th iteration, for the case of missing
-data or pairwise preferences. Defaults to \code{FALSE}. Saving augmented
-data is useful for predicting the rankings each assessor would give to the
-items not yet ranked, and is required by \code{\link{plot_top_k}}.}
-
-\item{aug_thinning}{Integer specifying the thinning for saving augmented
-data. Only used when \code{save_aug = TRUE}. Defaults to \code{1L}.}
 
 \item{logz_estimate}{Estimate of the partition function, computed with
 \code{\link{estimate_partition_function}}. Be aware that when using an
@@ -194,13 +141,6 @@ the the constraint set is computed internally. In repeated calls to
 \code{compute_mallows}, with very large datasets, computing the constraint
 set may be time consuming. In this case it can be beneficial to precompute
 it and provide it as a separate argument.}
-
-\item{save_ind_clus}{Whether or not to save the individual cluster
-probabilities in each step. This results in csv files
-\code{cluster_probs1.csv}, \code{cluster_probs2.csv}, ..., being saved in
-the calling directory. This option may slow down the code considerably, but
-is necessary for detecting label switching using Stephen's algorithm. See
-\code{\link{label_switching}} for more information.}
 
 \item{seed}{Optional integer to be used as random number seed.}
 
@@ -243,14 +183,14 @@ model_fit <- compute_mallows(potato_visual)
 
 # We study the trace plot of the parameters
 assess_convergence(model_fit, parameter = "alpha")
-\dontrun{assess_convergence(model_fit, parameter = "rho")}
+assess_convergence(model_fit, parameter = "rho", items = 1:4)
 
 # Based on these plots, we set burnin = 1000.
 model_fit$burnin <- 1000
 # Next, we use the generic plot function to study the posterior distributions
 # of alpha and rho
 plot(model_fit, parameter = "alpha")
-\dontrun{plot(model_fit, parameter = "rho", items = 10:15)}
+plot(model_fit, parameter = "rho", items = 10:15)
 
 # We can also compute the CP consensus posterior ranking
 compute_consensus(model_fit, type = "CP")
@@ -259,51 +199,54 @@ compute_consensus(model_fit, type = "CP")
 # First we compute the interval for alpha
 compute_posterior_intervals(model_fit, parameter = "alpha")
 # Then we compute the interval for all the items
-\dontrun{compute_posterior_intervals(model_fit, parameter = "rho")}
+compute_posterior_intervals(model_fit, parameter = "rho")
 
 # ANALYSIS OF PAIRWISE PREFERENCES
-\dontrun{
-  # The example dataset beach_preferences contains pairwise
-  # preferences between beaches stated by 60 assessors. There
-  # is a total of 15 beaches in the dataset.
-  # In order to use it, we first generate all the orderings
-  # implied by the pairwise preferences.
-  beach_tc <- generate_transitive_closure(beach_preferences)
-  # We also generate an inital rankings
-  beach_rankings <- generate_initial_ranking(beach_tc, n_items = 15)
-  # We then run the Bayesian Mallows rank model
-  # We save the augmented data for diagnostics purposes.
-  model_fit <- compute_mallows(rankings = beach_rankings,
-                               preferences = beach_tc,
-                               save_aug = TRUE,
-                               verbose = TRUE)
-  # We can assess the convergence of the scale parameter
-  assess_convergence(model_fit)
-  # We can assess the convergence of latent rankings. Here we
-  # show beaches 1-5.
-  assess_convergence(model_fit, parameter = "rho", items = 1:5)
-  # We can also look at the convergence of the augmented rankings for
-  # each assessor.
-  assess_convergence(model_fit, parameter = "Rtilde",
-                     items = c(2, 4), assessors = c(1, 2))
-  # Notice how, for assessor 1, the lines cross each other, while
-  # beach 2 consistently has a higher rank value (lower preference) for
-  # assessor 2. We can see why by looking at the implied orderings in
-  # beach_tc
-  subset(beach_tc, assessor \%in\% c(1, 2) &
-           bottom_item \%in\% c(2, 4) & top_item \%in\% c(2, 4))
-  # Assessor 1 has no implied ordering between beach 2 and beach 4,
-  # while assessor 2 has the implied ordering that beach 4 is preferred
-  # to beach 2. This is reflected in the trace plots.
-}
+# The example dataset beach_preferences contains pairwise
+# preferences between beaches stated by 60 assessors. There
+# is a total of 15 beaches in the dataset.
+# In order to use it, we first generate all the orderings
+# implied by the pairwise preferences.
+beach_tc <- generate_transitive_closure(beach_preferences)
+# We also generate an inital rankings
+beach_rankings <- generate_initial_ranking(beach_tc, n_items = 15)
+# We then run the Bayesian Mallows rank model
+# We save the augmented data for diagnostics purposes.
+model_fit <- compute_mallows(
+  rankings = beach_rankings,
+  preferences = beach_tc,
+  compute_options = set_compute_options(save_aug = TRUE),
+  verbose = TRUE)
+# We can assess the convergence of the scale parameter
+assess_convergence(model_fit)
+# We can assess the convergence of latent rankings. Here we
+# show beaches 1-5.
+assess_convergence(model_fit, parameter = "rho", items = 1:5)
+# We can also look at the convergence of the augmented rankings for
+# each assessor.
+assess_convergence(model_fit, parameter = "Rtilde",
+                   items = c(2, 4), assessors = c(1, 2))
+# Notice how, for assessor 1, the lines cross each other, while
+# beach 2 consistently has a higher rank value (lower preference) for
+# assessor 2. We can see why by looking at the implied orderings in
+# beach_tc
+subset(beach_tc, assessor \%in\% c(1, 2) &
+         bottom_item \%in\% c(2, 4) & top_item \%in\% c(2, 4))
+# Assessor 1 has no implied ordering between beach 2 and beach 4,
+# while assessor 2 has the implied ordering that beach 4 is preferred
+# to beach 2. This is reflected in the trace plots.
+
 
 # CLUSTERING OF ASSESSORS WITH SIMILAR PREFERENCES
 \dontrun{
   # The example dataset sushi_rankings contains 5000 complete
   # rankings of 10 types of sushi
   # We start with computing a 3-cluster solution
-  model_fit <- compute_mallows(sushi_rankings, n_clusters = 3,
-                               nmc = 10000, verbose = TRUE)
+  model_fit <- compute_mallows(
+    sushi_rankings,
+    compute_options = set_compute_options(nmc = 10000),
+    n_clusters = 3,
+    verbose = TRUE)
   # We then assess convergence of the scale parameter alpha
   assess_convergence(model_fit)
   # Next, we assess convergence of the cluster probabilities
@@ -328,8 +271,11 @@ compute_posterior_intervals(model_fit, parameter = "alpha")
   # Let us look at any number of clusters from 1 to 10
   # We use the convenience function compute_mallows_mixtures
   n_clusters <- seq(from = 1, to = 10)
-  models <- compute_mallows_mixtures(n_clusters = n_clusters, rankings = sushi_rankings,
-                                     nmc = 6000, alpha_jump = 10, include_wcd = TRUE)
+  models <- compute_mallows_mixtures(
+    n_clusters = n_clusters, rankings = sushi_rankings,
+    compute_options = set_compute_options(
+      nmc = 6000, alpha_jump = 10, include_wcd = TRUE)
+    )
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows
   # We can create an elbow plot

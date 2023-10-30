@@ -7,18 +7,39 @@ test_that("miscellaneous input validation", {
   namat[c(1, 2, 3), c(7, 9)] <- NA_real_
   expect_error(compute_mallows(rankings = namat, na_action = "fail", cl = cl))
   expect_output(
-    compute_mallows(rankings = namat, nmc = 2, na_action = "omit"),
+    compute_mallows(rankings = namat, compute_options = set_compute_options(nmc = 2), na_action = "omit"),
     "Omitting 9 rows from rankings due to NA values"
   )
-  expect_s3_class(compute_mallows(rankings = namat, na_action = "augment", nmc = 3, cl = cl), "BayesMallows")
-  expect_s3_class(compute_mallows(rankings = namat, nmc = 3, cl = cl), "BayesMallows")
-  expect_error(compute_mallows(nmc = 1000, alpha_prop_sd = 1, cl = cl))
-  expect_error(compute_mallows(rankings = potato_visual, nmc = 100, alpha_jump = 102, cl = cl))
-  expect_error(compute_mallows(rankings = potato_visual, lambda = 0, cl = cl))
-  expect_error(compute_mallows(rankings = potato_visual, lambda = -10, cl = cl))
-  expect_error(compute_mallows(rankings = potato_visual, nmc = 100, rho_thinning = 200, cl = cl))
-  expect_error(compute_mallows(rankings = potato_visual, nmc = 100, aug_thinning = 200, cl = cl))
-  expect_error(compute_mallows(rankings = potato_visual, nmc = -100, cl = cl))
+  expect_s3_class(
+    compute_mallows(
+      rankings = namat, na_action = "augment",
+      compute_options = set_compute_options(nmc = 3),
+      cl = cl),
+    "BayesMallows")
+  expect_s3_class(
+    compute_mallows(rankings = namat,
+                    compute_options = set_compute_options(nmc = 3),
+                    cl = cl),
+    "BayesMallows")
+  expect_error(
+    compute_mallows(
+      compute_options = set_compute_options(nmc = 1000, alpha_prop_sd = 1),
+      cl = cl))
+  expect_error(
+    compute_mallows(rankings = potato_visual,
+                    compute_options = set_compute_options(nmc = 100, alpha_jump = 102), cl = cl))
+  expect_error(
+    compute_mallows(rankings = potato_visual, lambda = 0, cl = cl))
+  expect_error(
+    compute_mallows(rankings = potato_visual, lambda = -10, cl = cl))
+  expect_error(compute_mallows(rankings = potato_visual,
+                               compute_options = set_compute_options(nmc = 100, rho_thinning = 200), cl = cl))
+  expect_error(compute_mallows(
+    rankings = potato_visual,
+    compute_options = set_compute_options(nmc = 100, aug_thinning = 200), cl = cl))
+  expect_error(
+    compute_mallows(rankings = potato_visual,
+                    compute_options = set_compute_options(nmc = -100), cl = cl))
 })
 
 test_that("rho_init is properly validated", {
@@ -53,9 +74,14 @@ test_that("compute_mallows error model works", {
     bottom_item = c(1, 2, 1, 2),
     top_item = c(2, 1, 2, 3)
   )
-  expect_error(invisible(capture.output(compute_mallows(preferences = preferences, nmc = 10, cl = cl))))
+  expect_error(invisible(capture.output(
+    compute_mallows(preferences = preferences,
+                    compute_options = set_compute_options(nmc = 10), cl = cl))))
   expect_s3_class(
-    compute_mallows(preferences = preferences, error_model = "bernoulli", nmc = 10),
+    compute_mallows(
+      preferences = preferences,
+      error_model = "bernoulli",
+      compute_options = set_compute_options(nmc = 10)),
     "BayesMallows"
   )
 })
@@ -64,13 +90,15 @@ test_that("compute_mallows with single missing value works", {
   dd <- potato_visual
   dd[1, 1] <- NA
   dd[2, 3] <- NA
-  m <- compute_mallows(dd, nmc = 4, cl = cl)
+  m <- compute_mallows(dd, compute_options = set_compute_options(nmc = 4),
+                       cl = cl)
   expect_gt(mean(m$alpha$value), 0)
 })
 
 test_that("compute_mallows with missing data works", {
   mat <- potato_visual * ifelse(runif(length(potato_visual)) > 0.8, NA_real_, 1)
-  m <- compute_mallows(rankings = mat, nmc = 30, cl = cl)
+  m <- compute_mallows(rankings = mat,
+                       compute_options = set_compute_options(nmc = 30), cl = cl)
   expect_gt(sd(m$rho$value), 0)
   expect_gt(sd(m$alpha$value), 0.001)
   expect_s3_class(m, "BayesMallows")
@@ -79,7 +107,10 @@ test_that("compute_mallows with missing data works", {
 
 test_that("compute_mallows runs with the right distances", {
   for (metric in c("footrule", "spearman", "cayley", "kendall", "ulam", "hamming")) {
-    expect_s3_class(compute_mallows(potato_visual, metric = metric, nmc = 3, cl = cl), "BayesMallows")
+    expect_s3_class(
+      compute_mallows(potato_visual,
+                      metric = metric,
+                      compute_options = set_compute_options(nmc = 3), cl = cl), "BayesMallows")
   }
 })
 
@@ -94,7 +125,10 @@ test_that("compute_mallows handles integer preferences", {
     eval(parse(text = paste("m$", col, "<- as.integer(m$", col, ")")))
   }
 
-  expect_s3_class(compute_mallows(preferences = m, nmc = 20, cl = cl), "BayesMallows")
+  expect_s3_class(
+    compute_mallows(preferences = m,
+                    compute_options = set_compute_options(nmc = 20), cl = cl),
+    "BayesMallows")
 })
 
 test_that("compute_mallows handles data with lots of missings", {
@@ -122,11 +156,11 @@ test_that("compute_mallows handles data with lots of missings", {
 
 test_that("compute_mallows treats obs_freq properly", {
   m1 <- compute_mallows(
-    rankings = potato_visual, nmc = 10,
+    rankings = potato_visual, compute_options = set_compute_options(nmc = 10),
     obs_freq = rep(1, nrow(potato_visual)), seed = 1L, cl = cl
   )
   m2 <- compute_mallows(
-    rankings = potato_visual, nmc = 10,
+    rankings = potato_visual, compute_options = set_compute_options(nmc = 10),
     seed = 1L, cl = cl
   )
   expect_equal(m1, m2)
@@ -165,8 +199,8 @@ test_that("compute_mallows treats obs_freq properly", {
     rankings = beach_rankings,
     preferences = beach_tc,
     obs_freq = obs_freq,
-    save_aug = TRUE,
-    nmc = 10, seed = 3344L, cl = cl
+    compute_options = set_compute_options(nmc = 10, save_aug = TRUE),
+    seed = 3344L, cl = cl
   )
 
   expect_equal(
@@ -206,8 +240,8 @@ test_that("compute_mallows treats obs_freq properly", {
   model_fit_rep <- compute_mallows(
     rankings = beach_rankings_rep,
     preferences = beach_tc_rep,
-    save_aug = TRUE,
-    nmc = 10, seed = 3344L, cl = cl
+    compute_options = set_compute_options(nmc = 10, save_aug = TRUE),
+    seed = 3344L, cl = cl
   )
 
 
@@ -247,7 +281,9 @@ test_that("compute_mallows treats obs_freq properly", {
 })
 
 test_that("compute_mallows() takes initial alpha", {
-  mm <- compute_mallows(potato_visual, nmc = 5, cl = cl, alpha_init = c(3, 4))
+  mm <- compute_mallows(potato_visual,
+                        compute_options = set_compute_options(nmc = 5),
+                        cl = cl, alpha_init = c(3, 4))
   expect_s3_class(mm, "BayesMallows")
 })
 

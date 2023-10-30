@@ -3,7 +3,7 @@ test_that("compute_mallows_mixtures works", {
   n_clusters <- c(1, 4, 6)
   models <- compute_mallows_mixtures(
     n_clusters = n_clusters,
-    nmc = 20L,
+    compute_options = set_compute_options(nmc = 20L),
     rankings = sushi_rankings[1:100, ]
   )
 
@@ -31,7 +31,7 @@ test_that("compute_mallows_mixtures works", {
   set.seed(123)
   mixture_model <- compute_mallows(
     rankings = sushi_rankings[1:100, ], n_clusters = 5,
-    include_wcd = TRUE, nmc = 10
+    compute_options = set_compute_options(include_wcd = TRUE, nmc = 10)
   )
 
   expect_equal(
@@ -48,7 +48,7 @@ test_that("compute_mallows_mixtures works", {
   cl <- parallel::makeCluster(1)
   models <- compute_mallows_mixtures(
     n_clusters = n_clusters,
-    nmc = 20L,
+    compute_options = set_compute_options(nmc = 20L),
     rankings = sushi_rankings[1:100, ],
     cl = cl
   )
@@ -60,13 +60,14 @@ test_that("compute_mallows_mixtures works", {
   mixture_model1 <- compute_mallows(
     rankings = sushi_rankings[1:100, ], n_clusters = 5,
     psi = 100,
-    include_wcd = TRUE, nmc = 10
+    compute_options = set_compute_options(include_wcd = TRUE, nmc = 10)
   )
 
   set.seed(123)
   mixture_model2 <- compute_mallows(
     rankings = sushi_rankings[1:100, ], n_clusters = 5,
-    include_wcd = TRUE, nmc = 10, psi = .1
+    compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
+    psi = .1
   )
 
   expect_lt(
