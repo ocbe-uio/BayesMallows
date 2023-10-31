@@ -12,9 +12,7 @@ using namespace arma;
 
 
 // [[Rcpp::export]]
-Rcpp::List run_mcmc(arma::mat rankings,
-                    arma::vec obs_freq,
-                    Rcpp::List constraints,
+Rcpp::List run_mcmc(Rcpp::List data,
                     Rcpp::List model,
                     Rcpp::List compute_options,
                     Rcpp::List priors,
@@ -25,11 +23,14 @@ Rcpp::List run_mcmc(arma::mat rankings,
                       ){
 
   // The number of items ranked
+  mat rankings = data["rankings"];
+  rankings = rankings.t();
   int n_items = rankings.n_rows;
 
   // The number of assessors
   int n_assessors = rankings.n_cols;
 
+  Rcpp::List constraints = data["constraints"];
   bool augpair = (constraints.length() > 0);
   bool any_missing = !is_finite(rankings);
 
@@ -37,7 +38,6 @@ Rcpp::List run_mcmc(arma::mat rankings,
   uvec assessor_missing;
 
   if(any_missing){
-    // Converting to umat will convert NA to 0, but might cause clang-UBSAN error, so converting explicitly.
     rankings.replace(datum::nan, 0);
     missing_indicator = conv_to<umat>::from(rankings);
     missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
@@ -86,6 +86,7 @@ Rcpp::List run_mcmc(arma::mat rankings,
   // Matrix with precomputed distances d(R_j, \rho_j), used to avoid looping during cluster assignment
   mat dist_mat(n_assessors, n_clusters);
   std::string metric = model["metric"];
+  vec obs_freq = data["obs_freq"];
   update_dist_mat(dist_mat, rankings, rho_old, metric, obs_freq);
   bool include_wcd = compute_options["include_wcd"];
 
@@ -95,6 +96,8 @@ Rcpp::List run_mcmc(arma::mat rankings,
   // Declare indicator vectors to hold acceptance or not
   vec alpha_acceptance = ones(n_clusters);
   vec rho_acceptance = ones(n_clusters);
+
+
 
   vec aug_acceptance;
   if(any_missing | augpair){

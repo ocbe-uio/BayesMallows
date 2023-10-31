@@ -83,7 +83,8 @@ stopCluster(cl)
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
 \code{\link{generate_constraints}()},
-\code{\link{generate_initial_ranking}()},
+\code{\link{generate_initial_ranking.BayesMallowsIntransitive}()},
+\code{\link{generate_initial_ranking.BayesMallowsTC}()},
 \code{\link{obs_freq}},
 \code{\link{prepare_partition_function}()}
 }

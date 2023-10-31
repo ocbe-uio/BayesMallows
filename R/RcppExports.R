@@ -125,8 +125,8 @@ rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, 
     .Call(`_BayesMallows_rmallows`, rho0, alpha0, n_samples, burnin, thinning, leap_size, metric)
 }
 
-run_mcmc <- function(rankings, obs_freq, constraints, model, compute_options, priors, init, cardinalities, logz_estimate, verbose = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, rankings, obs_freq, constraints, model, compute_options, priors, init, cardinalities, logz_estimate, verbose)
+run_mcmc <- function(data, model, compute_options, priors, init, cardinalities, logz_estimate, verbose = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, data, model, compute_options, priors, init, cardinalities, logz_estimate, verbose)
 }
 
 #' @title Calculate Backward Probability

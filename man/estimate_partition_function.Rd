@@ -141,7 +141,8 @@ model_fit <- compute_mallows(
 \seealso{
 Other preprocessing: 
 \code{\link{generate_constraints}()},
-\code{\link{generate_initial_ranking}()},
+\code{\link{generate_initial_ranking.BayesMallowsIntransitive}()},
+\code{\link{generate_initial_ranking.BayesMallowsTC}()},
 \code{\link{generate_transitive_closure}()},
 \code{\link{obs_freq}},
 \code{\link{prepare_partition_function}()}

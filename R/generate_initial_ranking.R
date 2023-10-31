@@ -1,15 +1,21 @@
+#' Generic function for generating initial ranking
+#'
+#' @export
+#'
+generate_initial_ranking <- function(preferences, n_items, cl) {
+  UseMethod("generate_initial_ranking")
+}
+
 #' Generate Initial Ranking
 #'
 #' Given a consistent set of pairwise preferences, generate a complete ranking
 #' of items which is consistent with the preferences.
 #'
-#' @param tc A dataframe with pairwise comparisons of \code{S3} subclass
+#' @param preferences A dataframe with pairwise comparisons of \code{S3} subclass
 #'   \code{BayesMallowsTC}, returned from
 #'   \code{\link{generate_transitive_closure}}.
 #'
-#' @param n_items The total number of items. If not provided, it is assumed to
-#'   equal the largest item index found in \code{tc}, i.e., \code{max(tc[,
-#'   c("bottom_item", "top_item")])}.
+#' @param n_items The total number of items.
 #'
 #' @param cl Optional computing cluster used for parallelization, returned from
 #'   \code{parallel::makeCluster}. Defaults to \code{NULL}.
@@ -68,13 +74,9 @@
 #'
 #' @family preprocessing
 #'
-generate_initial_ranking <- function(tc,
-                                     n_items = max(tc[, c("bottom_item", "top_item")]),
-                                     cl = NULL, shuffle_unranked = FALSE, random = FALSE,
-                                     random_limit = 8L) {
-  if (!(inherits(tc, "BayesMallowsTC"))) {
-    stop("tc must be an object returned from generate_transitive_closure")
-  }
+generate_initial_ranking.BayesMallowsTC <- function(
+    preferences, n_items, cl = NULL, shuffle_unranked = FALSE, random = FALSE,
+    random_limit = 8L) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
   if (n_items > random_limit && random) {
@@ -84,11 +86,11 @@ generate_initial_ranking <- function(tc,
     ))
   }
 
-  if (n_items < max(tc[, c("bottom_item", "top_item")])) {
+  if (n_items < max(preferences[, c("bottom_item", "top_item")])) {
     stop("Too few items specified. Please see documentation Note about labeling of items.\n")
   }
 
-  prefs <- split(tc[, c("bottom_item", "top_item"), drop = FALSE], tc$assessor)
+  prefs <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE], preferences$assessor)
   if (is.null(cl)) {
     do.call(rbind, lapply(
       prefs, function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
@@ -142,3 +144,48 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     return(get("x", envir = e1)[[sample(get("num", envir = e1), 1)]])
   }
 }
+
+#' Generate initial ranking for non-transitive preferences
+#'
+#' @param preferences A data frame with one row per pairwise comparison, and
+#'   columns \code{assessor}, \code{top_item}, and \code{bottom_item}. Each
+#'   column contains the following:
+#' \itemize{
+#' \item \code{assessor} is a numeric vector containing the assessor index, or a character
+#'       vector containing the (unique) name of the assessor.
+#'
+#' \item \code{bottom_item} is a numeric vector containing the index of the item that
+#'       was disfavored in each pairwise comparison.
+#'
+#' \item \code{top_item} is a numeric vector containing the index of the item that was
+#'       preferred in each pairwise comparison.
+#' }
+#'   So if we have two assessors and five items, and assessor 1 prefers item 1
+#'   to item 2 and item 1 to item 5, while assessor 2 prefers item 3 to item 5,
+#'   we have the following \code{df}:
+#' \tabular{rrr}{
+#' \strong{assessor} \tab \strong{bottom_item} \tab \strong{top_item}\cr
+#' 1 \tab 2 \tab 1\cr
+#' 1 \tab 5 \tab 1\cr
+#' 2 \tab 5 \tab 3\cr
+#' }
+#'
+#' @param n_items Number of items.
+#' @param cl Cluster. Not used.
+#'
+#'
+#' @return A matrix of rankings which can be given in the \code{rankings}
+#'   argument to \code{\link{compute_mallows}}.
+#'
+#' @export
+#'
+#' @family preprocessing
+#'
+generate_initial_ranking.BayesMallowsIntransitive <- function(
+    preferences, n_items, cl = NULL) {
+  n_assessors <- length(unique(preferences$assessor))
+  rankings <- replicate(n_assessors, sample(x = n_items, size = n_items),
+                        simplify = "numeric")
+  rankings <- matrix(rankings, ncol = n_items, nrow = n_assessors, byrow = TRUE)
+  }
+

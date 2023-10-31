@@ -129,14 +129,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_mcmc
-Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, Rcpp::List constraints, Rcpp::List model, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List init, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> logz_estimate, bool verbose);
-RcppExport SEXP _BayesMallows_run_mcmc(SEXP rankingsSEXP, SEXP obs_freqSEXP, SEXP constraintsSEXP, SEXP modelSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP initSEXP, SEXP cardinalitiesSEXP, SEXP logz_estimateSEXP, SEXP verboseSEXP) {
+Rcpp::List run_mcmc(Rcpp::List data, Rcpp::List model, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List init, Rcpp::Nullable<arma::vec> cardinalities, Rcpp::Nullable<arma::vec> logz_estimate, bool verbose);
+RcppExport SEXP _BayesMallows_run_mcmc(SEXP dataSEXP, SEXP modelSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP initSEXP, SEXP cardinalitiesSEXP, SEXP logz_estimateSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type rankings(rankingsSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type obs_freq(obs_freqSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type constraints(constraintsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type data(dataSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type model(modelSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type compute_options(compute_optionsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type priors(priorsSEXP);
@@ -144,7 +142,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type cardinalities(cardinalitiesSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type logz_estimate(logz_estimateSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_mcmc(rankings, obs_freq, constraints, model, compute_options, priors, init, cardinalities, logz_estimate, verbose));
+    rcpp_result_gen = Rcpp::wrap(run_mcmc(data, model, compute_options, priors, init, cardinalities, logz_estimate, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -376,7 +374,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},
-    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 10},
+    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 8},
     {"_BayesMallows_calculate_backward_probability", (DL_FUNC) &_BayesMallows_calculate_backward_probability, 8},
     {"_BayesMallows_calculate_forward_probability", (DL_FUNC) &_BayesMallows_calculate_forward_probability, 7},
     {"_BayesMallows_correction_kernel", (DL_FUNC) &_BayesMallows_correction_kernel, 3},

@@ -26,7 +26,8 @@ Utility function for estimating partition function of the Mallows model.
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
 \code{\link{generate_constraints}()},
-\code{\link{generate_initial_ranking}()},
+\code{\link{generate_initial_ranking.BayesMallowsIntransitive}()},
+\code{\link{generate_initial_ranking.BayesMallowsTC}()},
 \code{\link{generate_transitive_closure}()},
 \code{\link{obs_freq}}
 }

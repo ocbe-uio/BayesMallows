@@ -44,6 +44,7 @@
 #' @family preprocessing
 #'
 generate_transitive_closure <- function(df, cl = NULL) {
+  if(is.null(df)) return(NULL)
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
   prefs <- split(df[, c("bottom_item", "top_item"), drop = FALSE], df$assessor)
 
@@ -68,7 +69,9 @@ generate_transitive_closure <- function(df, cl = NULL) {
   if (nrow(check) > 0) {
     print("Inconsistent rankings:")
     print(check)
-    stop("Cannot compute transitive closure. Please run compute_mallows with error_model='bernoulli'.")
+    stop(
+      "Cannot compute transitive closure, but that is fine. Just make",
+      "sure you run compute_mallows with argument error_model='bernoulli'")
   }
 
   class(prefs) <- c("BayesMallowsTC", class(prefs))

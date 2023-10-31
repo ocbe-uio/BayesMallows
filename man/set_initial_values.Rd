@@ -31,6 +31,7 @@ Set initial values of scale parameter and modal ranking
 Other options: 
 \code{\link{set_compute_options}()},
 \code{\link{set_model_options}()},
-\code{\link{set_priors}()}
+\code{\link{set_priors}()},
+\code{\link{setup_rank_data}()}
 }
 \concept{options}

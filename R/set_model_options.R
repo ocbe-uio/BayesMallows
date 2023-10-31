@@ -22,15 +22,6 @@
 #'   mixtures.
 #'
 #'
-#' @param na_action Character specifying how to deal with \code{NA} values in
-#'   the \code{rankings} matrix, if provided. Defaults to \code{"augment"},
-#'   which means that missing values are automatically filled in using the
-#'   Bayesian data augmentation scheme described in
-#'   \insertCite{vitelli2018;textual}{BayesMallows}. The other options for this
-#'   argument are \code{"fail"}, which means that an error message is printed
-#'   and the algorithm stops if there are \code{NA}s in \code{rankings}, and
-#'   \code{"omit"} which simply deletes rows with \code{NA}s in them.
-#'
 #' @return An object of class \code{"BayesMallowsModelOptions"}, to be provided
 #'   in the \code{model} argument to \code{\link{compute_mallows}}.
 #'
@@ -39,10 +30,9 @@
 #' @family options
 #'
 set_model_options <- function(metric = "footrule", n_clusters = 1,
-                              error_model = "none", na_action = "augment") {
+                              error_model = "none") {
   metric <- match.arg(metric, c("footrule", "spearman", "cayley", "hamming",
                                 "kendall", "ulam"))
-  na_action <- match.arg(na_action, c("augment", "fail", "omit"))
   error_model <- match.arg(error_model, c("none", "bernoulli"))
 
   validate_integer(n_clusters)

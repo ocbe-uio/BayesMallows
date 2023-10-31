@@ -5,6 +5,9 @@
 #'   \code{\link{assess_convergence}} for tools to check convergence of the
 #'   Markov chain.
 #'
+#' @param burnin Integer defining the number of samples to discard. Defaults to
+#'   \code{NULL}, which means that burn-in is not set.
+#'
 #' @param alpha_prop_sd Numeric value specifying the standard deviation of the
 #'   lognormal proposal distribution used for \eqn{\alpha} in the
 #'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
@@ -63,6 +66,7 @@
 #'
 set_compute_options <- function(
     nmc = 2000,
+    burnin = NULL,
     alpha_prop_sd = 0.1,
     leap_size = 1,
     swap_leap = 1,
@@ -74,6 +78,7 @@ set_compute_options <- function(
     save_aug = FALSE,
     save_ind_clus = FALSE
     ) {
+
   validate_integer(nmc)
   validate_positive(alpha_prop_sd)
   validate_integer(leap_size)

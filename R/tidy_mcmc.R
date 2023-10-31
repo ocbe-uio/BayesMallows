@@ -1,12 +1,12 @@
-tidy_mcmc <- function(fits, rankings, model, n_items, compute_options) {
+tidy_mcmc <- function(fits, data, model, compute_options) {
   fit <- list()
   fit$save_aug <- compute_options$save_aug
 
   # Add names of item
-  if (!is.null(colnames(rankings))) {
-    items <- colnames(rankings)
+  if (!is.null(colnames(data$rankings))) {
+    items <- colnames(data$rankings)
   } else {
-    items <- paste("Item", seq(from = 1, to = n_items, by = 1))
+    items <- paste("Item", seq(from = 1, to = data$n_items, by = 1))
   }
 
   fit$rho <- do.call(rbind, lapply(seq_along(fits), function(i) {
@@ -49,7 +49,7 @@ tidy_mcmc <- function(fits, rankings, model, n_items, compute_options) {
 
   fit$n_clusters <- model$n_clusters
   fit$items <- items
-  fit$n_items <- n_items
+  fit$n_items <- data$n_items
   fit$n_assessors <- fits[[1]]$n_assessors
   fit$nmc <- compute_options$nmc
   fit$alpha_acceptance <- rowMeans(matrix(
@@ -60,6 +60,7 @@ tidy_mcmc <- function(fits, rankings, model, n_items, compute_options) {
     vapply(fits, function(x) x$rho_acceptance, numeric(model$n_clusters)),
     nrow = model$n_clusters
   ))
+  fit$burnin <- compute_options$burnin
 
   return(fit)
 }

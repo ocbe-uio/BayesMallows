@@ -4,12 +4,7 @@
 \alias{set_model_options}
 \title{Set options for Bayesian Mallows model}
 \usage{
-set_model_options(
-  metric = "footrule",
-  n_clusters = 1,
-  error_model = "none",
-  na_action = "augment"
-)
+set_model_options(metric = "footrule", n_clusters = 1, error_model = "none")
 }
 \arguments{
 \item{metric}{A character string specifying the distance metric to use in the
@@ -30,15 +25,6 @@ inconsistent rankings are not allowed. At the moment, the only available
 other option is \code{"bernoulli"}, which means that the Bernoulli error
 model is used. See \insertCite{crispino2019;textual}{BayesMallows} for a
 definition of the Bernoulli model.}
-
-\item{na_action}{Character specifying how to deal with \code{NA} values in
-the \code{rankings} matrix, if provided. Defaults to \code{"augment"},
-which means that missing values are automatically filled in using the
-Bayesian data augmentation scheme described in
-\insertCite{vitelli2018;textual}{BayesMallows}. The other options for this
-argument are \code{"fail"}, which means that an error message is printed
-and the algorithm stops if there are \code{NA}s in \code{rankings}, and
-\code{"omit"} which simply deletes rows with \code{NA}s in them.}
 }
 \value{
 An object of class \code{"BayesMallowsModelOptions"}, to be provided
@@ -51,6 +37,7 @@ Set options for Bayesian Mallows model
 Other options: 
 \code{\link{set_compute_options}()},
 \code{\link{set_initial_values}()},
-\code{\link{set_priors}()}
+\code{\link{set_priors}()},
+\code{\link{setup_rank_data}()}
 }
 \concept{options}

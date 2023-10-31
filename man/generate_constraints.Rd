@@ -4,9 +4,12 @@
 \alias{generate_constraints}
 \title{Generate Constraint Set from Pairwise Comparisons}
 \usage{
-generate_constraints(preferences, n_items, cl = NULL)
+generate_constraints(data, cl = NULL)
 }
 \arguments{
+\item{cl}{Optional computing cluster used for parallelization, returned
+from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
+
 \item{preferences}{Data frame of preferences. For the case of consistent
 rankings, \code{preferences} should be returned from \code{\link{generate_transitive_closure}}.
 For the case of inconsistent preferences, when using an error model as described
@@ -14,9 +17,6 @@ in \insertCite{crispino2019;textual}{BayesMallows}, a dataframe of preferences
 can be directly provided.}
 
 \item{n_items}{Integer specifying the number of items.}
-
-\item{cl}{Optional computing cluster used for parallelization, returned
-from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
 }
 \value{
 A list which is used internally by the MCMC algorithm.
@@ -56,7 +56,8 @@ stopCluster(cl)
 \seealso{
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
-\code{\link{generate_initial_ranking}()},
+\code{\link{generate_initial_ranking.BayesMallowsIntransitive}()},
+\code{\link{generate_initial_ranking.BayesMallowsTC}()},
 \code{\link{generate_transitive_closure}()},
 \code{\link{obs_freq}},
 \code{\link{prepare_partition_function}()}

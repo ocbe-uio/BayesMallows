@@ -6,6 +6,7 @@
 \usage{
 set_compute_options(
   nmc = 2000,
+  burnin = NULL,
   alpha_prop_sd = 0.1,
   leap_size = 1,
   swap_leap = 1,
@@ -23,6 +24,9 @@ set_compute_options(
 Metropolis-Hastings algorithm to run. Defaults to \code{2000}. See
 \code{\link{assess_convergence}} for tools to check convergence of the
 Markov chain.}
+
+\item{burnin}{Integer defining the number of samples to discard. Defaults to
+\code{NULL}, which means that burn-in is not set.}
 
 \item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
 lognormal proposal distribution used for \eqn{\alpha} in the
@@ -84,6 +88,7 @@ Specify options for Metropolis-Hastings algorithms
 Other options: 
 \code{\link{set_initial_values}()},
 \code{\link{set_model_options}()},
-\code{\link{set_priors}()}
+\code{\link{set_priors}()},
+\code{\link{setup_rank_data}()}
 }
 \concept{options}

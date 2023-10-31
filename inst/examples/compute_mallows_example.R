@@ -2,7 +2,9 @@
 # The example datasets potato_visual and potato_weighing contain complete
 # rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
 # model:
-model_fit <- compute_mallows(potato_visual)
+model_fit <- compute_mallows(
+  data = setup_rank_data(rankings = potato_visual)
+  )
 
 # We study the trace plot of the parameters
 assess_convergence(model_fit, parameter = "alpha")
@@ -28,16 +30,13 @@ compute_posterior_intervals(model_fit, parameter = "rho")
 # The example dataset beach_preferences contains pairwise
 # preferences between beaches stated by 60 assessors. There
 # is a total of 15 beaches in the dataset.
-# In order to use it, we first generate all the orderings
-# implied by the pairwise preferences.
-beach_tc <- generate_transitive_closure(beach_preferences)
-# We also generate an inital rankings
-beach_rankings <- generate_initial_ranking(beach_tc, n_items = 15)
+beach_data <- setup_rank_data(
+  preferences = beach_preferences
+)
 # We then run the Bayesian Mallows rank model
 # We save the augmented data for diagnostics purposes.
 model_fit <- compute_mallows(
-  rankings = beach_rankings,
-  preferences = beach_tc,
+  data = beach_data,
   compute_options = set_compute_options(save_aug = TRUE),
   verbose = TRUE)
 # We can assess the convergence of the scale parameter
