@@ -6,16 +6,16 @@
 #'
 #'   The \code{BayesMallows} package uses the following parametrization of the
 #'   Mallows rank model \insertCite{mallows1957}{BayesMallows}:
-#'   \deqn{p(r|\alpha,\rho) = (1/Z_{n}(\alpha)) \exp{-\alpha/n d(r,\rho)}} where
-#'   \eqn{r} is a ranking, \eqn{\alpha} is a scale parameter, \eqn{\rho} is the
-#'   latent consensus ranking, \eqn{Z_{n}(\alpha)} is the partition function
-#'   (normalizing constant), and \eqn{d(r,\rho)} is a distance function
-#'   measuring the distance between \eqn{r} and \eqn{\rho}. Note that some
-#'   authors use a Mallows model without division by \eqn{n} in the exponent;
-#'   this includes the \code{PerMallows} package, whose scale parameter
-#'   \eqn{\theta} corresponds to \eqn{\alpha/n} in the \code{BayesMallows}
-#'   package. We refer to \insertCite{vitelli2018}{BayesMallows} for further
-#'   details of the Bayesian Mallows model.
+#'
+#'   \deqn{p(r|\alpha,\rho) = \frac{1}{Z_{n}(\alpha)} \exp\{\frac{-\alpha}{n}
+#'   d(r,\rho)\}}
+#'
+#'   where \eqn{r} is a ranking, \eqn{\alpha} is a scale parameter, \eqn{\rho}
+#'   is the latent consensus ranking, \eqn{Z_{n}(\alpha)} is the partition
+#'   function (normalizing constant), and \eqn{d(r,\rho)} is a distance function
+#'   measuring the distance between \eqn{r} and \eqn{\rho}. We refer to
+#'   \insertCite{vitelli2018}{BayesMallows} for further details of the Bayesian
+#'   Mallows model.
 #'
 #'   \code{compute_mallows} always returns posterior distributions of the latent
 #'   consensus ranking \eqn{\rho} and the scale parameter \eqn{\alpha}. Several
@@ -40,17 +40,13 @@
 #'   from \code{\link{set_initial_values}}.
 #'
 #' @param logz_estimate Estimate of the partition function, computed with
-#'   \code{\link{estimate_partition_function}}. Be aware that when using an
-#'   estimated partition function when \code{n_clusters > 1}, the partition
-#'   function should be estimated over the whole range of \eqn{\alpha} values
-#'   covered by the prior distribution for \eqn{\alpha} with high probability.
-#'   In the case that a cluster \eqn{\alpha_c} becomes empty during the
-#'   Metropolis-Hastings algorithm, the posterior of \eqn{\alpha_c} equals its
-#'   prior. For example, if the rate parameter of the exponential prior equals,
-#'   say \eqn{\lambda = 0.001}, there is about 37 \% (or exactly: \code{1 -
-#'   pexp(1000, 0.001)}) prior probability that \eqn{\alpha_c > 1000}. Hence
-#'   when \code{n_clusters > 1}, the estimated partition function should cover
-#'   this range, or \eqn{\lambda} should be increased.
+#'   \code{\link{estimate_partition_function}}. Defaults to \code{NULL}, which
+#'   means means that \code{compute_mallows} attempts to compute the
+#'   partition function by using either a pre-defined integer sequence or a
+#'   pre-computed importance sampling estimate. When Cayley, Hamming, or
+#'   Kendall distance is used, the partition function is efficiently
+#'   computed analytically, and hence in these cases the argument is not needed,
+#'   although it will still be used if provided.
 #'
 #' @param verbose Logical specifying whether to print out the progress of the
 #'   Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
@@ -58,7 +54,8 @@
 #'
 #' @param seed Optional integer to be used as random number seed.
 #'
-#' @param cl Optional cluster.
+#' @param cl Optional cluster returned from \code{parallel::makeCluster}. If
+#'   provided, chains will be run in parallel, one on each node of \code{cl}.
 #'
 #'
 #' @return A list of class BayesMallows.
@@ -140,8 +137,7 @@ compute_mallows <- function(
       compute_options = compute_options,
       priors = priors,
       init = init,
-      cardinalities = logz_list$cardinalities,
-      logz_estimate = logz_list$logz_estimate,
+      logz_list = logz_list,
       verbose = verbose
     )
   })

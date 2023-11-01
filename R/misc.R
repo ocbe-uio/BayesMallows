@@ -38,17 +38,20 @@ scalefun <- function(x) sprintf("%d", as.integer(x))
 #' @param metric Metric to be used.
 #' @param n_items Number of items.
 #'
-#' @return List with two elements, \code{cardinalities} and \code{logz_estimate},
-#' one of which is \code{NULL} and the other of which contains partition function
-#' estimates.
+#' @return An object of class \code{"BayesMallowsPartitionFunction"} with two
+#'   elements, \code{cardinalities} and \code{logz_estimate}, one of which is
+#'   \code{NULL} and the other of which contains partition function estimates.
 #'
 #' @export
 #' @family preprocessing
 #'
 prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
+  ret <- list(cardinalities = NULL, logz_estimate = NULL)
+  class(ret) <- "BayesMallowsPartitionFunction"
   # First, has the user supplied an estimate?
   if (!is.null(logz_estimate)) {
-    return(list(cardinalities = NULL, logz_estimate = logz_estimate))
+    ret$logz_estimate = logz_estimate
+    return(ret)
   }
 
   # Second, do we have a sequence?
@@ -57,7 +60,8 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
     partition_function_data$type == "cardinalities", , drop = FALSE]
 
   if (nrow(relevant_params) == 1) {
-    return(list(cardinalities = unlist(relevant_params$values), logz_estimate = NULL))
+    ret$cardinalities <- unlist(relevant_params$values)
+    return(ret)
   }
 
   # Third, do we have an importance sampling estimate?
@@ -66,17 +70,13 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
     partition_function_data$type == "importance_sampling", , drop = FALSE]
 
   if (nrow(relevant_params) == 1) {
-    return(list(cardinalities = NULL, logz_estimate = unlist(relevant_params$values)))
-  }
-
-  # Fourth, is it the Ulam distance?
-  if (metric == "ulam") {
-    message("Exact partition function no longer available for Ulam distance with >95 items.")
+    ret$logz_estimate <- unlist(relevant_params$values)
+    return(ret)
   }
 
   # Fifth, can we compute the partition function in our C++ code?
   if (metric %in% c("cayley", "hamming", "kendall")) {
-    return(list(cardinalities = NULL, logz_estimate = NULL))
+    return(ret)
   }
 
   stop("Partition function not available. Please compute an estimate using estimate_partition_function().")

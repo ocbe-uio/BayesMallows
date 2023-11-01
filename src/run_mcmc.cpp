@@ -17,8 +17,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
                     Rcpp::List compute_options,
                     Rcpp::List priors,
                     Rcpp::List init,
-                    Rcpp::Nullable<arma::vec> cardinalities,
-                    Rcpp::Nullable<arma::vec> logz_estimate,
+                    Rcpp::List logz_list,
                     bool verbose = false
                       ){
 
@@ -30,12 +29,16 @@ Rcpp::List run_mcmc(Rcpp::List data,
   // The number of assessors
   int n_assessors = rankings.n_cols;
 
+  Rcpp::Nullable<vec> cardinalities = logz_list["cardinalities"];
+  Rcpp::Nullable<vec> logz_estimate = logz_list["logz_estimate"];
+
   Rcpp::List constraints = data["constraints"];
   bool augpair = (constraints.length() > 0);
   bool any_missing = !is_finite(rankings);
 
   umat missing_indicator;
   uvec assessor_missing;
+
 
   if(any_missing){
     rankings.replace(datum::nan, 0);
@@ -96,8 +99,6 @@ Rcpp::List run_mcmc(Rcpp::List data,
   // Declare indicator vectors to hold acceptance or not
   vec alpha_acceptance = ones(n_clusters);
   vec rho_acceptance = ones(n_clusters);
-
-
 
   vec aug_acceptance;
   if(any_missing | augpair){

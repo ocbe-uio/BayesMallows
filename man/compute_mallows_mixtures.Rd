@@ -36,17 +36,13 @@ returned from \code{\link{set_compute_options}}.}
 from \code{\link{set_initial_values}}.}
 
 \item{logz_estimate}{Estimate of the partition function, computed with
-\code{\link{estimate_partition_function}}. Be aware that when using an
-estimated partition function when \code{n_clusters > 1}, the partition
-function should be estimated over the whole range of \eqn{\alpha} values
-covered by the prior distribution for \eqn{\alpha} with high probability.
-In the case that a cluster \eqn{\alpha_c} becomes empty during the
-Metropolis-Hastings algorithm, the posterior of \eqn{\alpha_c} equals its
-prior. For example, if the rate parameter of the exponential prior equals,
-say \eqn{\lambda = 0.001}, there is about 37 \% (or exactly: \code{1 -
-pexp(1000, 0.001)}) prior probability that \eqn{\alpha_c > 1000}. Hence
-when \code{n_clusters > 1}, the estimated partition function should cover
-this range, or \eqn{\lambda} should be increased.}
+\code{\link{estimate_partition_function}}. Defaults to \code{NULL}, which
+means means that \code{compute_mallows} attempts to compute the
+partition function by using either a pre-defined integer sequence or a
+pre-computed importance sampling estimate. When Cayley, Hamming, or
+Kendall distance is used, the partition function is efficiently
+computed analytically, and hence in these cases the argument is not needed,
+although it will still be used if provided.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
@@ -54,7 +50,8 @@ every 1000th iteration. Defaults to \code{FALSE}.}
 
 \item{seed}{Optional integer to be used as random number seed.}
 
-\item{cl}{Optional cluster.}
+\item{cl}{Optional cluster returned from \code{parallel::makeCluster}. If
+provided, chains will be run in parallel, one on each node of \code{cl}.}
 }
 \value{
 A list of Mallows models of class \code{BayesMallowsMixtures}, with
