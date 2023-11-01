@@ -189,16 +189,16 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
 
 # SPEEDING UP COMPUTION WITH OBSERVATION FREQUENCIES
 # With a large number of assessors taking on a relatively low number of unique rankings,
-# the obs_freq argument allows providing a rankings matrix with the unique set of rankings,
-# and the obs_freq vector giving the number of assessors with each ranking.
+# the observation_frequency argument allows providing a rankings matrix with the unique set of rankings,
+# and the observation_frequency vector giving the number of assessors with each ranking.
 # This is illustrated here for the potato_visual dataset
 #
 # assume each row of potato_visual corresponds to between 1 and 5 assessors, as
-# given by the obs_freq vector
+# given by the observation_frequency vector
 set.seed(1234)
-obs_freq <- sample.int(n = 5, size = nrow(potato_visual), replace = TRUE)
+observation_frequency <- sample.int(n = 5, size = nrow(potato_visual), replace = TRUE)
 m <- compute_mallows(
-  setup_rank_data(rankings = potato_visual, obs_freq = obs_freq))
+  setup_rank_data(rankings = potato_visual, observation_frequency = observation_frequency))
 
 \dontrun{
   # This example shows how to assess if label switching happens in BayesMallows

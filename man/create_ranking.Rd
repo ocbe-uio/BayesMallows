@@ -53,9 +53,9 @@ all.equal(orderings, orderings_2)
 \seealso{
 Other rank functions: 
 \code{\link{compute_expected_distance}()},
+\code{\link{compute_observation_frequency}()},
 \code{\link{get_mallows_loglik}()},
 \code{\link{rank_distance}()},
-\code{\link{rank_freq_distr}()},
 \code{\link{sample_mallows}()}
 }
 \concept{rank functions}

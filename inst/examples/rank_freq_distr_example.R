@@ -3,4 +3,4 @@
 data0 <- sample_mallows(rho0 = 1:5, alpha = 10, n_samples = 1000,
                         burnin = 10, thinning = 1)
 # Find the frequency distribution
-rank_freq_distr(rankings = data0)
+compute_observation_frequency(rankings = data0)

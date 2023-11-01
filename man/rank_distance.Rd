@@ -4,7 +4,7 @@
 \alias{rank_distance}
 \title{Distance between a set of rankings and a given rank sequence}
 \usage{
-rank_distance(rankings, rho, metric, obs_freq = 1)
+rank_distance(rankings, rho, metric, observation_frequency = 1)
 }
 \arguments{
 \item{rankings}{A matrix of size \eqn{N \times n_{items}} of
@@ -17,7 +17,7 @@ can be a vector.}
 Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
 \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.}
 
-\item{obs_freq}{Vector of observation frequencies of length \eqn{N}, or of length 1,
+\item{observation_frequency}{Vector of observation frequencies of length \eqn{N}, or of length 1,
 which means that all ranks are given the same weight. Defaults to 1.}
 }
 \value{
@@ -54,9 +54,9 @@ rank_distance(rankings = data0, rho = 1:10, metric = "kendall")
 \seealso{
 Other rank functions: 
 \code{\link{compute_expected_distance}()},
+\code{\link{compute_observation_frequency}()},
 \code{\link{create_ranking}()},
 \code{\link{get_mallows_loglik}()},
-\code{\link{rank_freq_distr}()},
 \code{\link{sample_mallows}()}
 }
 \concept{rank functions}

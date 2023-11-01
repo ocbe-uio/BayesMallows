@@ -58,7 +58,7 @@
 #' }
 #'
 #'
-#' @export
+#' @noRd
 #'
 #' @family preprocessing
 #'
@@ -68,8 +68,7 @@ generate_initial_ranking <- function(
   UseMethod("generate_initial_ranking")
 }
 
-#' @rdname generate_initial_ranking
-#' @export
+
 generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
     preferences, n_items, cl = NULL, shuffle_unranked = FALSE, random = FALSE,
     random_limit = 8L) {
@@ -102,10 +101,10 @@ generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
   }
 }
 
-#' @rdname generate_initial_ranking
-#' @export
+
 generate_initial_ranking.BayesMallowsIntransitive <- function(
-    preferences, n_items, cl = NULL) {
+    preferences, n_items, cl = NULL, shuffle_unranked = FALSE,
+    random = FALSE, random_limit = 8L) {
   n_assessors <- length(unique(preferences$assessor))
   rankings <- replicate(n_assessors, sample(x = n_items, size = n_items),
                         simplify = "numeric")

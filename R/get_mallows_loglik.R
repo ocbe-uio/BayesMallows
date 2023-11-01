@@ -14,11 +14,11 @@
 #'   `"ulam"` for `n_items<=95`, `"footrule"` for
 #'   `n_items<=50` and `"spearman"` for `n_items<=14`.
 #' @param rankings A matrix with observed rankings in each row.
-#' @param obs_freq A vector of observation frequencies (weights) to apply to
+#' @param observation_frequency A vector of observation frequencies (weights) to apply to
 #'   each row in `rankings`. This can speed up computation if a large
 #'   number of assessors share the same rank pattern. Defaults to `NULL`,
 #'   which means that each row of `rankings` is multiplied by 1. If
-#'   provided, `obs_freq` must have the same number of elements as there
+#'   provided, `observation_frequency` must have the same number of elements as there
 #'   are rows in `rankings`, and `rankings` cannot be `NULL`.
 #' @param log A logical; if TRUE, the log-likelihood value is returned,
 #'   otherwise its exponential. Default is `TRUE`.
@@ -32,17 +32,17 @@
 #' @family rank functions
 #'
 get_mallows_loglik <- function(rho, alpha, weights, metric,
-                               rankings, obs_freq = NULL, log = TRUE) {
+                               rankings, observation_frequency = NULL, log = TRUE) {
   if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }
 
-  if (!is.null(obs_freq)) {
-    if (nrow(rankings) != length(obs_freq)) {
-      stop("obs_freq must be of same length as the number of rows in rankings")
+  if (!is.null(observation_frequency)) {
+    if (nrow(rankings) != length(observation_frequency)) {
+      stop("observation_frequency must be of same length as the number of rows in rankings")
     }
   } else {
-    obs_freq <- rep(1, nrow(rankings))
+    observation_frequency <- rep(1, nrow(rankings))
   }
 
   if (!is.matrix(rho)) {
@@ -51,7 +51,7 @@ get_mallows_loglik <- function(rho, alpha, weights, metric,
 
   n_clusters <- length(weights)
   n_items <- ncol(rankings)
-  N <- sum(obs_freq)
+  N <- sum(observation_frequency)
 
   if (metric %in% c("ulam", "footrule", "spearman")) {
     pfd <- partition_function_data[
@@ -75,7 +75,7 @@ get_mallows_loglik <- function(rho, alpha, weights, metric,
       -(alpha[g] / n_items * rank_dist_sum(
         rankings = t(rankings),
         rho = rho[g, ],
-        metric = metric, obs_freq = obs_freq
+        metric = metric, observation_frequency = observation_frequency
       ) +
         N * get_partition_function(
           alpha = alpha[g],

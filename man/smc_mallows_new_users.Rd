@@ -63,8 +63,7 @@ in the missing data, options are "pseudolikelihood" or "random".}
 \item{logz_estimate}{Estimate of the partition function, computed with
 \code{\link{estimate_partition_function}}.}
 
-\item{cardinalities}{Cardinalities for exact evaluation of partition function,
-returned from \code{\link{prepare_partition_function}}.}
+\item{cardinalities}{Cardinalities for exact evaluation of partition function.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 SMC-Mallows algorithm. Defaults to \code{FALSE}.}

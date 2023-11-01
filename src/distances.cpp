@@ -121,8 +121,8 @@ double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
 
 // [[Rcpp::export]]
 double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho,
-                     const std::string& metric, const arma::vec& obs_freq){
-  return sum(rank_dist_vec(rankings, rho, metric, obs_freq));
+                     const std::string& metric, const arma::vec& observation_frequency){
+  return sum(rank_dist_vec(rankings, rho, metric, observation_frequency));
 }
 
 
@@ -131,12 +131,12 @@ double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho,
 arma::vec rank_dist_vec(const arma::mat& rankings,
                         const arma::vec& rho,
                         const std::string& metric,
-                        const arma::vec& obs_freq){
+                        const arma::vec& observation_frequency){
   int n = rankings.n_cols;
   vec result = zeros(n);
 
   for(int i = 0; i < n; ++i){
-    result(i) = get_rank_distance(rankings.col(i), rho, metric) * obs_freq(i);
+    result(i) = get_rank_distance(rankings.col(i), rho, metric) * observation_frequency(i);
   }
   return(result);
 }

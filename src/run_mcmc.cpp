@@ -89,8 +89,8 @@ Rcpp::List run_mcmc(Rcpp::List data,
   // Matrix with precomputed distances d(R_j, \rho_j), used to avoid looping during cluster assignment
   mat dist_mat(n_assessors, n_clusters);
   std::string metric = model["metric"];
-  vec obs_freq = data["obs_freq"];
-  update_dist_mat(dist_mat, rankings, rho_old, metric, obs_freq);
+  vec observation_frequency = data["observation_frequency"];
+  update_dist_mat(dist_mat, rankings, rho_old, metric, observation_frequency);
   bool include_wcd = compute_options["include_wcd"];
 
   mat within_cluster_distance(n_clusters, include_wcd ? nmc : 1);
@@ -156,7 +156,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
       update_rho(rho, rho_acceptance, rho_old, rho_index, i,
                  rho_thinning, alpha_old(i), leap_size,
                  clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
-                 metric, n_items, t, element_indices, obs_freq);
+                 metric, n_items, t, element_indices, observation_frequency);
     }
 
     if(t % alpha_jump == 0) {
@@ -167,7 +167,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
         double alpha_prop_sd = compute_options["alpha_prop_sd"];
         alpha(i, alpha_index) = update_alpha(alpha_acceptance, alpha_old(i),
               clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
-              clustering ? obs_freq(find(current_cluster_assignment == i)) : obs_freq,
+              clustering ? observation_frequency(find(current_cluster_assignment == i)) : observation_frequency,
               i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate, alpha_max);
       }
       // Update alpha_old
@@ -215,7 +215,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   }
 
   if(clustering | include_wcd){
-    update_dist_mat(dist_mat, rankings, rho_old, metric, obs_freq);
+    update_dist_mat(dist_mat, rankings, rho_old, metric, observation_frequency);
     }
   }
 
@@ -236,6 +236,6 @@ Rcpp::List run_mcmc(Rcpp::List data,
     Rcpp::Named("augpair") = augpair,
     Rcpp::Named("aug_acceptance") = aug_acceptance / nmc,
     Rcpp::Named("n_assessors") = n_assessors,
-    Rcpp::Named("obs_freq") = obs_freq
+    Rcpp::Named("observation_frequency") = observation_frequency
   );
 }

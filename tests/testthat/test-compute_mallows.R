@@ -64,16 +64,16 @@ test_that("rho_init is properly validated", {
     "rho_init cannot have missing values")
 
   expect_error(
-    setup_rank_data(m, obs_freq = -1),
-    "obs_freq must be a vector of strictly positive numbers")
+    setup_rank_data(m, observation_frequency = -1),
+    "observation_frequency must be a vector of strictly positive numbers")
 
   expect_error(
-    setup_rank_data(m, obs_freq = 1),
-    "obs_freq must be of same length as the number of rows in rankings")
+    setup_rank_data(m, observation_frequency = 1),
+    "observation_frequency must be of same length as the number of rows in rankings")
 
   expect_error(
-    setup_rank_data(m, obs_freq = 1:11),
-    "obs_freq must be of same length as the number of rows in rankings")
+    setup_rank_data(m, observation_frequency = 1:11),
+    "observation_frequency must be of same length as the number of rows in rankings")
 })
 
 test_that("inconsistent rankings are discovered", {
@@ -198,10 +198,10 @@ test_that("compute_mallows handles data with lots of missings", {
   expect_s3_class(assess_convergence(m), "gg")
 })
 
-test_that("compute_mallows treats obs_freq properly", {
+test_that("compute_mallows treats observation_frequency properly", {
   m1 <- compute_mallows(
     setup_rank_data(potato_visual,
-                    obs_freq = rep(1, nrow(potato_visual))),
+                    observation_frequency = rep(1, nrow(potato_visual))),
     seed = 2233
   )
   m2 <- compute_mallows(
@@ -210,7 +210,7 @@ test_that("compute_mallows treats obs_freq properly", {
   expect_equal(m1, m2)
 
   # Test with repeated beach preferences
-  obs_freq <- c(2, 1, 4)
+  observation_frequency <- c(2, 1, 4)
 
   beach_small <- subset(beach_preferences, assessor %in% c(1, 2, 3))
 
@@ -220,7 +220,7 @@ test_that("compute_mallows treats obs_freq properly", {
   beach_pref_rep <- do.call(rbind, lapply(split(beach_small, f = seq_len(nrow(beach_small))), function(dd) {
     ret <- merge(
       dd,
-      data.frame(new_assessor = seq_len(obs_freq[dd$assessor])),
+      data.frame(new_assessor = seq_len(observation_frequency[dd$assessor])),
       all = TRUE
     )
     ret$assessor <- paste(ret$assessor, ret$new_assessor, sep = ",")
@@ -231,7 +231,7 @@ test_that("compute_mallows treats obs_freq properly", {
   # We generate the initial rankings for the repeated and the "unrepeated"
   # data
   set.seed(1223)
-  dat <- setup_rank_data(preferences = beach_small, obs_freq = obs_freq)
+  dat <- setup_rank_data(preferences = beach_small, observation_frequency = observation_frequency)
   dat_rep <- setup_rank_data(preferences = beach_pref_rep)
 
   model_fit_obs_freq <- compute_mallows(

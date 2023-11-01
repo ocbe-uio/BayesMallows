@@ -25,30 +25,30 @@ BEGIN_RCPP
 END_RCPP
 }
 // rank_dist_sum
-double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho, const std::string& metric, const arma::vec& obs_freq);
-RcppExport SEXP _BayesMallows_rank_dist_sum(SEXP rankingsSEXP, SEXP rhoSEXP, SEXP metricSEXP, SEXP obs_freqSEXP) {
+double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho, const std::string& metric, const arma::vec& observation_frequency);
+RcppExport SEXP _BayesMallows_rank_dist_sum(SEXP rankingsSEXP, SEXP rhoSEXP, SEXP metricSEXP, SEXP observation_frequencySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type rankings(rankingsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type obs_freq(obs_freqSEXP);
-    rcpp_result_gen = Rcpp::wrap(rank_dist_sum(rankings, rho, metric, obs_freq));
+    Rcpp::traits::input_parameter< const arma::vec& >::type observation_frequency(observation_frequencySEXP);
+    rcpp_result_gen = Rcpp::wrap(rank_dist_sum(rankings, rho, metric, observation_frequency));
     return rcpp_result_gen;
 END_RCPP
 }
 // rank_dist_vec
-arma::vec rank_dist_vec(const arma::mat& rankings, const arma::vec& rho, const std::string& metric, const arma::vec& obs_freq);
-RcppExport SEXP _BayesMallows_rank_dist_vec(SEXP rankingsSEXP, SEXP rhoSEXP, SEXP metricSEXP, SEXP obs_freqSEXP) {
+arma::vec rank_dist_vec(const arma::mat& rankings, const arma::vec& rho, const std::string& metric, const arma::vec& observation_frequency);
+RcppExport SEXP _BayesMallows_rank_dist_vec(SEXP rankingsSEXP, SEXP rhoSEXP, SEXP metricSEXP, SEXP observation_frequencySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type rankings(rankingsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type obs_freq(obs_freqSEXP);
-    rcpp_result_gen = Rcpp::wrap(rank_dist_vec(rankings, rho, metric, obs_freq));
+    Rcpp::traits::input_parameter< const arma::vec& >::type observation_frequency(observation_frequencySEXP);
+    rcpp_result_gen = Rcpp::wrap(rank_dist_vec(rankings, rho, metric, observation_frequency));
     return rcpp_result_gen;
 END_RCPP
 }

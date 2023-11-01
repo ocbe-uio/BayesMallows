@@ -3,7 +3,7 @@
 #' @description Construct the frequency distribution of the distinct ranking
 #'   sequences from the dataset of the individual rankings. This can be of
 #'   interest in itself, but also used to speed up computation by providing
-#'   the `obs_freq` argument to [compute_mallows()].
+#'   the `observation_frequency` argument to [compute_mallows()].
 #'
 #' @param rankings A matrix with the individual rankings in each row.
 #' @return Numeric matrix with the distinct rankings in each row and the
@@ -14,7 +14,7 @@
 #'
 #' @example /inst/examples/rank_freq_distr_example.R
 #'
-rank_freq_distr <- function(rankings) {
+compute_observation_frequency <- function(rankings) {
   if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }

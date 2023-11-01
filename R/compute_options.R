@@ -52,8 +52,7 @@
 #'   probabilities in each step. This results in csv files
 #'   `cluster_probs1.csv`, `cluster_probs2.csv`, ..., being saved in
 #'   the calling directory. This option may slow down the code considerably, but
-#'   is necessary for detecting label switching using Stephen's algorithm. See
-#'   [label_switching()] for more information.
+#'   is necessary for detecting label switching using Stephen's algorithm.
 #'
 #'
 #'

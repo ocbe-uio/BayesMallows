@@ -161,7 +161,7 @@ update_data <- function(data, model) {
   }
 
   data$constraints <- generate_constraints(data)
-  if (is.null(data$obs_freq)) data$obs_freq <- rep(1, nrow(data$rankings))
+  if (is.null(data$observation_frequency)) data$observation_frequency <- rep(1, nrow(data$rankings))
 
   data
 }

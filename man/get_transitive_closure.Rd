@@ -19,7 +19,6 @@ A simple method for showing any transitive closure computed by
 }
 \seealso{
 Other preprocessing: 
-\code{\link{estimate_partition_function}()},
-\code{\link{generate_initial_ranking}()}
+\code{\link{estimate_partition_function}()}
 }
 \concept{preprocessing}

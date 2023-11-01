@@ -34,10 +34,10 @@ compute_expected_distance(4, 10, "spearman")
 }
 \seealso{
 Other rank functions: 
+\code{\link{compute_observation_frequency}()},
 \code{\link{create_ranking}()},
 \code{\link{get_mallows_loglik}()},
 \code{\link{rank_distance}()},
-\code{\link{rank_freq_distr}()},
 \code{\link{sample_mallows}()}
 }
 \concept{rank functions}

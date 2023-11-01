@@ -1,10 +1,10 @@
-test_that("rank_freq_distr works", {
+test_that("compute_observation_frequency works", {
   expect_error(
-    rank_freq_distr(rankings = beach_preferences)
+    compute_observation_frequency(rankings = beach_preferences)
   )
 
   expect_equal(
-    rank_freq_distr(rankings = potato_visual),
+    compute_observation_frequency(rankings = potato_visual),
     structure(c(
       10, 10, 10, 12, 12, 12, 14, 14, 7, 8, 9, 9, 15, 18,
       18, 15, 16, 17, 15, 18, 17, 16, 16, 17, 19, 19, 19, 18, 19, 19,
@@ -40,7 +40,7 @@ test_that("rank_freq_distr works", {
   ))
   mat <- potato_visual[rows, ]
   expect_equal(
-    rank_freq_distr(rankings = mat),
+    compute_observation_frequency(rankings = mat),
     structure(c(
       10, 10, 10, 12, 12, 12, 14, 14, 7, 8, 9, 9, 15, 18,
       18, 15, 16, 17, 15, 18, 17, 16, 16, 17, 19, 19, 19, 18, 19, 19,
@@ -66,7 +66,7 @@ test_that("rank_freq_distr works", {
   )
 
   expect_equal(
-    rank_freq_distr(rankings = potato_visual[2, ]),
+    compute_observation_frequency(rankings = potato_visual[2, ]),
     structure(c(
       10, 18, 19, 17, 11, 15, 6, 20, 4, 3, 13, 1, 2, 7,
       16, 8, 5, 12, 9, 14, 1

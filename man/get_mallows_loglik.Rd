@@ -10,7 +10,7 @@ get_mallows_loglik(
   weights,
   metric,
   rankings,
-  obs_freq = NULL,
+  observation_frequency = NULL,
   log = TRUE
 )
 }
@@ -32,11 +32,11 @@ Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
 
 \item{rankings}{A matrix with observed rankings in each row.}
 
-\item{obs_freq}{A vector of observation frequencies (weights) to apply to
+\item{observation_frequency}{A vector of observation frequencies (weights) to apply to
 each row in \code{rankings}. This can speed up computation if a large
 number of assessors share the same rank pattern. Defaults to \code{NULL},
 which means that each row of \code{rankings} is multiplied by 1. If
-provided, \code{obs_freq} must have the same number of elements as there
+provided, \code{observation_frequency} must have the same number of elements as there
 are rows in \code{rankings}, and \code{rankings} cannot be \code{NULL}.}
 
 \item{log}{A logical; if TRUE, the log-likelihood value is returned,
@@ -81,14 +81,14 @@ get_mallows_loglik(
   )
 
 # or equivalently, by using the frequency distribution
-freq_distr <- rank_freq_distr(mydata)
+freq_distr <- compute_observation_frequency(mydata)
 get_mallows_loglik(
   rho = rbind(1:n_items, 1:n_items),
   alpha = c(10, 10),
   weights = c(0.5, 0.5),
   metric = "kendall",
   rankings = freq_distr[, 1:n_items],
-  obs_freq = freq_distr[, n_items + 1],
+  observation_frequency = freq_distr[, n_items + 1],
   log = FALSE
   )
 
@@ -98,16 +98,16 @@ get_mallows_loglik(
   weights = c(0.5, 0.5),
   metric = "kendall",
   rankings = freq_distr[, 1:n_items],
-  obs_freq = freq_distr[, n_items + 1],
+  observation_frequency = freq_distr[, n_items + 1],
   log = TRUE
   )
 }
 \seealso{
 Other rank functions: 
 \code{\link{compute_expected_distance}()},
+\code{\link{compute_observation_frequency}()},
 \code{\link{create_ranking}()},
 \code{\link{rank_distance}()},
-\code{\link{rank_freq_distr}()},
 \code{\link{sample_mallows}()}
 }
 \concept{rank functions}

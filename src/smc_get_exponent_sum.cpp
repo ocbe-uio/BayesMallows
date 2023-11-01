@@ -60,8 +60,8 @@ double get_exponent_sum(
     rankings = rankings.t();
   }
 
-  vec obs_freq = ones(rankings.n_cols);
-  double sum_distance = rank_dist_sum(rankings, rho, metric, obs_freq);
+  vec observation_frequency = ones(rankings.n_cols);
+  double sum_distance = rank_dist_sum(rankings, rho, metric, observation_frequency);
   double mallows_loglik = -alpha / n_items * sum_distance;
   return(mallows_loglik);
 }

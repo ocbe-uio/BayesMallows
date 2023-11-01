@@ -73,8 +73,7 @@ items not yet ranked, and is required by \code{\link[=plot_top_k]{plot_top_k()}}
 probabilities in each step. This results in csv files
 \code{cluster_probs1.csv}, \code{cluster_probs2.csv}, ..., being saved in
 the calling directory. This option may slow down the code considerably, but
-is necessary for detecting label switching using Stephen's algorithm. See
-\code{\link[=label_switching]{label_switching()}} for more information.}
+is necessary for detecting label switching using Stephen's algorithm.}
 }
 \value{
 An object of class \code{"BayesMallowsComputeOptions"}, to be

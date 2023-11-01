@@ -23,12 +23,12 @@ get_rank_distance <- function(r1, r2, metric) {
     .Call(`_BayesMallows_get_rank_distance`, r1, r2, metric)
 }
 
-rank_dist_sum <- function(rankings, rho, metric, obs_freq) {
-    .Call(`_BayesMallows_rank_dist_sum`, rankings, rho, metric, obs_freq)
+rank_dist_sum <- function(rankings, rho, metric, observation_frequency) {
+    .Call(`_BayesMallows_rank_dist_sum`, rankings, rho, metric, observation_frequency)
 }
 
-rank_dist_vec <- function(rankings, rho, metric, obs_freq) {
-    .Call(`_BayesMallows_rank_dist_vec`, rankings, rho, metric, obs_freq)
+rank_dist_vec <- function(rankings, rho, metric, observation_frequency) {
+    .Call(`_BayesMallows_rank_dist_vec`, rankings, rho, metric, observation_frequency)
 }
 
 #' Compute importance sampling estimates of log partition function
@@ -329,8 +329,7 @@ leap_and_shift_probs <- function(rho, n_items, leap_size = 1L) {
 #' @param Time Integer specifying the number of time steps in the SMC algorithm
 #' @param logz_estimate Estimate of the partition function, computed with
 #' \code{\link{estimate_partition_function}}.
-#' @param cardinalities Cardinalities for exact computation of partition function,
-#' returned from \code{\link{prepare_partition_function}}.
+#' @param cardinalities Cardinalities for exact computation of partition function.
 #' @param mcmc_kernel_app Integer value for the number of applications we apply the MCMC move kernel
 #' @param alpha_prop_sd Numeric value of the standard deviation of the prior distribution for alpha
 #' @param lambda Strictly positive numeric value specifying the rate parameter
@@ -376,8 +375,7 @@ smc_mallows_new_item_rank <- function(n_items, R_obs, N, Time, logz_estimate, ca
 #' @param Time Integer specifying the number of time steps in the SMC algorithm
 #' @param logz_estimate Estimate of the partition function, computed with
 #' \code{\link{estimate_partition_function}}.
-#' @param cardinalities Cardinalities for exact evaluation of partition function,
-#' returned from \code{\link{prepare_partition_function}}.
+#' @param cardinalities Cardinalities for exact evaluation of partition function.
 #' @param mcmc_kernel_app Integer value for the number of applications we
 #' apply the MCMC move kernel
 #' @param num_new_obs Integer value for the number of new observations

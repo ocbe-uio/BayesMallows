@@ -154,7 +154,7 @@ test_that("Exported rank_distance is correct", {
     54
   )
 
-  expect_error(rank_distance(c(1, 6, 2, 5, 3, 4), c(4, 3, 5, 2, 6, 1), "spearman", obs_freq = 1:3))
+  expect_error(rank_distance(c(1, 6, 2, 5, 3, 4), c(4, 3, 5, 2, 6, 1), "spearman", observation_frequency = 1:3))
 
   expect_equal(
     rank_distance(

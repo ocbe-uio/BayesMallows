@@ -23,7 +23,7 @@ arma::mat initialize_rho(int n_items, int n_cols, Rcpp::Nullable<arma::mat> rho_
 double update_alpha(vec& alpha_acceptance,
                   const double& alpha_old,
                   const mat& rankings,
-                  const vec& obs_freq,
+                  const vec& observation_frequency,
                   const int& cluster_index,
                   const vec& rho_old,
                   const double& alpha_prop_sd,
@@ -40,7 +40,7 @@ double update_alpha(vec& alpha_acceptance,
   double alpha_proposal = std::exp(randn<double>() * alpha_prop_sd +
                               std::log(alpha_old));
 
-  double rank_dist = rank_dist_sum(rankings, rho_old, metric, obs_freq);
+  double rank_dist = rank_dist_sum(rankings, rho_old, metric, observation_frequency);
 
   // Difference between current and proposed alpha
   double alpha_diff = alpha_old - alpha_proposal;
@@ -49,7 +49,7 @@ double update_alpha(vec& alpha_acceptance,
   double ratio =
     alpha_diff / n_items * rank_dist +
     lambda * alpha_diff +
-    sum(obs_freq) * (
+    sum(observation_frequency) * (
         get_partition_function(n_items, alpha_old, cardinalities, logz_estimate, metric) -
           get_partition_function(n_items, alpha_proposal, cardinalities, logz_estimate, metric)
     ) + std::log(alpha_proposal) - std::log(alpha_old);
@@ -70,7 +70,7 @@ void update_rho(cube& rho, vec& rho_acceptance, mat& rho_old,
                 int& rho_index, const int& cluster_index, const int& rho_thinning,
                 const double& alpha_old, const int& leap_size, const mat& rankings,
                 const std::string& metric, const int& n_items, const int& t,
-                const uvec& element_indices, const vec& obs_freq) {
+                const uvec& element_indices, const vec& observation_frequency) {
   vec rho_cluster = rho_old.col(cluster_index);
 
   // Sample a rank proposal
@@ -82,8 +82,8 @@ void update_rho(cube& rho, vec& rho_acceptance, mat& rho_old,
                  rho_cluster, leap_size, !((metric == "cayley") || (metric == "ulam")));
 
   // Compute the distances to current and proposed ranks
-  double dist_new = rank_dist_sum(rankings.rows(indices), rho_proposal(indices), metric, obs_freq);
-  double dist_old = rank_dist_sum(rankings.rows(indices), rho_cluster(indices), metric, obs_freq);
+  double dist_new = rank_dist_sum(rankings.rows(indices), rho_proposal(indices), metric, observation_frequency);
+  double dist_old = rank_dist_sum(rankings.rows(indices), rho_cluster(indices), metric, observation_frequency);
 
   // Metropolis-Hastings ratio
   double ratio = - alpha_old / n_items * (dist_new - dist_old) +
