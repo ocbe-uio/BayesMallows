@@ -101,3 +101,15 @@ set_compute_options <- function(
   ret
 }
 
+
+prompt_save_files <- function(compute_options) {
+  if (compute_options$save_ind_clus) {
+    abort <- readline(
+      prompt = paste(
+        compute_options$nmc, "csv files will be saved in your current working directory.",
+        "Proceed? (yes/no): "
+      )
+    )
+    if (tolower(abort) %in% c("n", "no")) stop()
+  }
+}

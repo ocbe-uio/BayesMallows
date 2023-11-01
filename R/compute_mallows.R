@@ -97,16 +97,7 @@ compute_mallows <- function(
 
   data <- update_data(data, model)
   logz_list <- prepare_partition_function(logz_estimate, model$metric, data$n_items)
-
-  if (compute_options$save_ind_clus) {
-    abort <- readline(
-      prompt = paste(
-        compute_options$nmc, "csv files will be saved in your current working directory.",
-        "Proceed? (yes/no): "
-      )
-    )
-    if (tolower(abort) %in% c("n", "no")) stop()
-  }
+  prompt_save_files(compute_options)
 
   if (is.null(cl)) {
     lapplyfun <- lapply
@@ -126,7 +117,7 @@ compute_mallows <- function(
     }
     chain_seq <- seq_along(cl)
   }
-  # to extract one sample at a time. armadillo is column major, just like rankings
+
   fits <- lapplyfun(X = chain_seq, FUN = function(i) {
     if (length(init$alpha_init) > 1) {
       init$alpha_init <- init$alpha_init[[i]]
