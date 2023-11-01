@@ -104,8 +104,8 @@ get_mallows_loglik(
 }
 \seealso{
 Other rank functions: 
+\code{\link{compute_expected_distance}()},
 \code{\link{create_ranking}()},
-\code{\link{expected_dist}()},
 \code{\link{rank_distance}()},
 \code{\link{rank_freq_distr}()},
 \code{\link{sample_mallows}()}

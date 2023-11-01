@@ -1,7 +1,5 @@
 \dontrun{
   # This example shows how to assess if label switching happens in BayesMallows
-
-  library(BayesMallows)
   # We start by creating a directory in which csv files with individual
   # cluster probabilities should be saved in each step of the MCMC algorithm
   dir.create("./test_label_switch")
@@ -11,14 +9,14 @@
   # probabilities The purpose of this is to assess the time it takes to save
   # the cluster probabilites
   system.time(m <- compute_mallows(
-    rankings = sushi_rankings,
+    setup_rank_data(rankings = sushi_rankings),
     model = set_model_options(n_clusters = 6),
     compute_options = set_compute_options(nmc = 2000, save_ind_clus = FALSE),
     verbose = TRUE))
   # With this options, compute_mallows will save cluster_probs2.csv,
   # cluster_probs3.csv, ..., cluster_probs[nmc].csv.
   system.time(m <- compute_mallows(
-    rankings = sushi_rankings,
+    setup_rank_data(rankings = sushi_rankings),
     model = set_model_options(n_clusters = 6),
     compute_options = set_compute_options(nmc = 2000, save_ind_clus = TRUE),
     verbose = TRUE))

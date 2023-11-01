@@ -118,5 +118,3 @@ set.seed(1234)
 obs_freq <- sample.int(n = 5, size = nrow(potato_visual), replace = TRUE)
 m <- compute_mallows(rankings = potato_visual, obs_freq = obs_freq)
 
-# See the separate help page for more examples, with the following code
-help("obs_freq")

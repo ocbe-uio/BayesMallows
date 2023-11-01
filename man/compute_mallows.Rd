@@ -199,8 +199,79 @@ set.seed(1234)
 obs_freq <- sample.int(n = 5, size = nrow(potato_visual), replace = TRUE)
 m <- compute_mallows(rankings = potato_visual, obs_freq = obs_freq)
 
-# See the separate help page for more examples, with the following code
-help("obs_freq")
+\dontrun{
+  # This example shows how to assess if label switching happens in BayesMallows
+  # We start by creating a directory in which csv files with individual
+  # cluster probabilities should be saved in each step of the MCMC algorithm
+  dir.create("./test_label_switch")
+  # Next, we go into this directory
+  setwd("./test_label_switch/")
+  # For comparison, we run compute_mallows with and without saving the cluster
+  # probabilities The purpose of this is to assess the time it takes to save
+  # the cluster probabilites
+  system.time(m <- compute_mallows(
+    setup_rank_data(rankings = sushi_rankings),
+    model = set_model_options(n_clusters = 6),
+    compute_options = set_compute_options(nmc = 2000, save_ind_clus = FALSE),
+    verbose = TRUE))
+  # With this options, compute_mallows will save cluster_probs2.csv,
+  # cluster_probs3.csv, ..., cluster_probs[nmc].csv.
+  system.time(m <- compute_mallows(
+    setup_rank_data(rankings = sushi_rankings),
+    model = set_model_options(n_clusters = 6),
+    compute_options = set_compute_options(nmc = 2000, save_ind_clus = TRUE),
+    verbose = TRUE))
+
+  # Next, we check convergence of alpha
+  assess_convergence(m)
+
+  # We set the burnin to 1000
+  burnin <- 1000
+
+  # Find all files that were saved. Note that the first file saved is cluster_probs2.csv
+  cluster_files <- list.files(pattern = "cluster\\\\_probs[[:digit:]]+\\\\.csv")
+
+  # Check the size of the files that were saved.
+  paste(sum(do.call(file.size, list(cluster_files))) * 1e-6, "MB")
+
+  # Find the iteration each file corresponds to, by extracting its number
+  iteration_number <- as.integer(
+    gsub("(^[a-zA-Z\\\\_\\\\.]*)([0-9]+)([a-zA-Z\\\\_\\\\.]+$)", "\\\\2",
+         cluster_files, perl = TRUE))
+  # Remove all files before burnin
+  file.remove(cluster_files[iteration_number <= burnin])
+  # Update the vector of files, after the deletion
+  cluster_files <- list.files(pattern = "cluster\\\\_probs[[:digit:]]+\\\\.csv")
+  # Create 3d array, with dimensions (iterations, assessors, clusters)
+  prob_array <- array(dim = c(length(cluster_files), m$n_assessors, m$n_clusters))
+  # Read each file, adding to the right element of the array
+  for(i in seq_along(cluster_files)){
+    prob_array[i, , ] <- as.matrix(
+      read.csv(cluster_files[[i]], header = FALSE))
+  }
+
+
+  # Create an integer array of latent allocations, as this is required by label.switching
+  z <- subset(m$cluster_assignment, iteration > burnin)
+  z$value <- as.integer(gsub("Cluster ", "", z$value))
+  z <- stats::reshape(z, direction = "wide", idvar = "iteration", timevar = "assessor")
+  z$iteration <- NULL
+  z <- as.matrix(z)
+
+  # Now apply Stephen's algorithm
+  library(label.switching)
+  ls <- label.switching("STEPHENS", z = z, K = m$n_clusters, p = prob_array)
+
+  # Check the proportion of cluster assignments that were switched
+  mean(apply(ls$permutations$STEPHENS, 1, function(x) !all.equal(x, seq(1, m$n_clusters))))
+
+  # Remove the rest of the csv files
+  file.remove(cluster_files)
+  # Move up one directory
+  setwd("..")
+  # Remove the directory in which the csv files were saved
+  file.remove("./test_label_switch/")
+}
 }
 \references{
 \insertAllCited{}

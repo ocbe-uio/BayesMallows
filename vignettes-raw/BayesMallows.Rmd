@@ -355,14 +355,14 @@ The number underlying the plot can be found using `assign_cluster`.
 We can find clusterwise consensus rankings using `compute_consensus`.
 
 ```{r}
-reshape(
-  compute_consensus(bmm),
-  v.names = "item",
-  timevar = "ranking",
-  idvar = "cluster",
-  drop = "cumprob",
-  direction = "wide"
-)
+cp_consensus <- compute_consensus(bmm)
+stats::reshape(
+  cp_consensus, 
+  direction = "wide", 
+  idvar = "ranking",
+  timevar = "cluster",
+  varying = list(sort(unique(cp_consensus_df$cluster)))
+  )
 ```
 
 Note that for estimating cluster specific parameters, label switching is a potential problem that needs to be handled. `BayesMallows` ignores label switching issues inside the MCMC, because it has been shown that this approach is better for ensuring full convergence of the chain [@jasra2005;@celeux2000]. MCMC iterations can be re-ordered after convergence is achieved, for example by using the implementation of Stephens' algorithm [@Stephens2000] provided by the R package `label.switching` [@papastamoulis2016]. A full example of how to assess label switching after running `compute_mallows` is provided by running the following command:

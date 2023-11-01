@@ -73,6 +73,7 @@
 #' @family modeling
 #'
 #' @example /inst/examples/compute_mallows_example.R
+#' @example /inst/examples/label_switching_example.R
 #'
 compute_mallows <- function(
     data,

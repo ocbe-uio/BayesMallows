@@ -1,17 +1,22 @@
 #' Expected value of metrics under a Mallows rank model
 #'
-#' @description Compute the expectation of several metrics under the Mallows rank model.
-#' @param alpha Non-negative scalar specifying the scale (precision) parameter in the Mallows rank model.
+#' @description Compute the expectation of several metrics under the Mallows
+#'   rank model.
+#' @param alpha Non-negative scalar specifying the scale (precision) parameter
+#'   in the Mallows rank model.
 #' @param n_items Integer specifying the number of items.
-#' @param metric Character string specifying the distance measure to use. Available options are `"kendall"`, `"cayley"`, `"hamming"`, `"ulam"` for `n_items<=95`, `"footrule"` for `n_items<=50` and `"spearman"` for `n_items<=14`.
+#' @param metric Character string specifying the distance measure to use.
+#'   Available options are `"kendall"`, `"cayley"`, `"hamming"`, `"ulam"` for
+#'   `n_items<=95`, `"footrule"`, and `"spearman"`.
 #'
-#' @return A scalar providing the expected value of the `metric` under the Mallows rank model with distance specified by the `metric` argument.
+#' @return A scalar providing the expected value of the `metric` under the
+#'   Mallows rank model with distance specified by the `metric` argument.
 #' @export
 #'
 #' @family rank functions
 #'
 #' @example /inst/examples/expected_dist_example.R
-expected_dist <- function(alpha, n_items, metric) {
+compute_expected_distance <- function(alpha, n_items, metric) {
   if (n_items < 1 | floor(n_items) != n_items) {
     stop("Number of items must be a positive integer")
   }

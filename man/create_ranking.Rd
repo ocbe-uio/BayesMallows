@@ -52,7 +52,7 @@ all.equal(orderings, orderings_2)
 }
 \seealso{
 Other rank functions: 
-\code{\link{expected_dist}()},
+\code{\link{compute_expected_distance}()},
 \code{\link{get_mallows_loglik}()},
 \code{\link{rank_distance}()},
 \code{\link{rank_freq_distr}()},
