@@ -19,7 +19,7 @@
 #'   provided to the `initial_values` argument of [compute_mallows()].
 #' @export
 #'
-#' @family options
+#' @family modeling
 #'
 set_initial_values <- function(rho_init = NULL, alpha_init = 1) {
 

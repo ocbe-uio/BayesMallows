@@ -24,7 +24,7 @@
 #' @seealso [compute_mallows()], [plot.BayesMallows()]
 #'
 #' @export
-#' @family diagnostics
+#' @family modeling
 assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
                                assessors = NULL) {
   stopifnot(inherits(model_fit, "BayesMallows") ||

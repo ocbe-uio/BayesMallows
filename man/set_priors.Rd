@@ -43,10 +43,15 @@ An object of class \code{"BayesMallowsPriors"}, to be provided in the
 Set prior parameters for Bayesian Mallows model
 }
 \seealso{
-Other options: 
+Other modeling: 
+\code{\link{assess_convergence}()},
+\code{\link{compute_mallows_mixtures}()},
+\code{\link{compute_mallows}()},
 \code{\link{set_compute_options}()},
 \code{\link{set_initial_values}()},
 \code{\link{set_model_options}()},
-\code{\link{setup_rank_data}()}
+\code{\link{setup_rank_data}()},
+\code{\link{smc_mallows_new_item_rank}()},
+\code{\link{smc_mallows_new_users}()}
 }
-\concept{options}
+\concept{modeling}

@@ -28,10 +28,15 @@ provided to the \code{initial_values} argument of \code{\link[=compute_mallows]{
 Set initial values of scale parameter and modal ranking
 }
 \seealso{
-Other options: 
+Other modeling: 
+\code{\link{assess_convergence}()},
+\code{\link{compute_mallows_mixtures}()},
+\code{\link{compute_mallows}()},
 \code{\link{set_compute_options}()},
 \code{\link{set_model_options}()},
 \code{\link{set_priors}()},
-\code{\link{setup_rank_data}()}
+\code{\link{setup_rank_data}()},
+\code{\link{smc_mallows_new_item_rank}()},
+\code{\link{smc_mallows_new_users}()}
 }
-\concept{options}
+\concept{modeling}

@@ -7,7 +7,7 @@ reference:
   desc: Functions for estimating the Bayesian Mallows model.
   contents:
   - has_concept("modeling")
-  - BayesMallows
+  - BayesMallows-package
 
 - title: Posterior quantities
   desc: Functions for studying posterior distributions of model parameters.
@@ -19,16 +19,6 @@ reference:
   contents:
   - has_concept("preprocessing")
 
-- title: Diagnostics
-  desc: Functions for checking diagnostics of the Monte Carlo algorithms.
-  contents:
-  - has_concept("diagnostics")
-
-- title: Options
-  desc: Functions for setting various advanced options.
-  contents:
-  - has_concept("options")
-
 - title: Rank functions
   desc: Various functions for sampling ranks and working with ranks.
   contents:
@@ -38,8 +28,3 @@ reference:
   desc: Example datasets included in the package.
   contents:
   - has_concept("datasets")
-
-- title: Deprecated
-  desc: Soft-deprecated functions, which will be removed in a future release.
-  contents:
-  - has_concept("deprecated")

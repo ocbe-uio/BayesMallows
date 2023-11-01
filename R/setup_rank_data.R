@@ -68,7 +68,7 @@
 #'   `data` argument to [compute_mallows()].
 #' @export
 #'
-#' @family options
+#' @family modeling
 #'
 setup_rank_data <- function(
     rankings = NULL,
