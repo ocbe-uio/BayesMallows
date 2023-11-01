@@ -120,7 +120,7 @@ set.seed(994)
 n_items <- ncol(sushi_rankings)
 metric <- "footrule"
 
-logz_list <- prepare_partition_function(metric = metric, n_items = n_items)
+logz_list <- BayesMallows:::prepare_partition_function(metric = metric, n_items = n_items)
 
 data <- sushi_rankings[1:100, ]
 leap_size <- floor(n_items / 5)
@@ -304,7 +304,7 @@ set.seed(995)
 
 
 ```{r new_item_rank_example, message=FALSE, warning=FALSE}
-logz_list <- prepare_partition_function(metric = metric, n_items = n_items)
+logz_list <- BayesMallows:::prepare_partition_function(metric = metric, n_items = n_items)
 
 Time <- dim(test_dataset)[3]
 N <- 1000

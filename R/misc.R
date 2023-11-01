@@ -21,58 +21,6 @@ validate_permutation <- function(vec) {
 # Modified from https://stackoverflow.com/questions/21061653/creating-a-density-histogram-in-ggplot2
 scalefun <- function(x) sprintf("%d", as.integer(x))
 
-#' Prepare partition functions
-#'
-#' Utility function for estimating partition function of the Mallows model.
-#'
-#' @param logz_estimate Optional argument containing the result of calling
-#'   [estimate_partition_function()].
-#' @param metric Metric to be used.
-#' @param n_items Number of items.
-#'
-#' @return An object of class `"BayesMallowsPartitionFunction"` with two
-#'   elements, `cardinalities` and `logz_estimate`, one of which is
-#'   `NULL` and the other of which contains partition function estimates.
-#'
-#' @export
-#' @family preprocessing
-#'
-prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
-  ret <- list(cardinalities = NULL, logz_estimate = NULL)
-  class(ret) <- "BayesMallowsPartitionFunction"
-  # First, has the user supplied an estimate?
-  if (!is.null(logz_estimate)) {
-    ret$logz_estimate = logz_estimate
-    return(ret)
-  }
-
-  # Second, do we have a sequence?
-  relevant_params <- partition_function_data[partition_function_data$n_items == n_items &
-    partition_function_data$metric == metric &
-    partition_function_data$type == "cardinalities", , drop = FALSE]
-
-  if (nrow(relevant_params) == 1) {
-    ret$cardinalities <- unlist(relevant_params$values)
-    return(ret)
-  }
-
-  # Third, do we have an importance sampling estimate?
-  relevant_params <- partition_function_data[partition_function_data$n_items == n_items &
-    partition_function_data$metric == metric &
-    partition_function_data$type == "importance_sampling", , drop = FALSE]
-
-  if (nrow(relevant_params) == 1) {
-    ret$logz_estimate <- unlist(relevant_params$values)
-    return(ret)
-  }
-
-  # Fifth, can we compute the partition function in our C++ code?
-  if (metric %in% c("cayley", "hamming", "kendall")) {
-    return(ret)
-  }
-
-  stop("Partition function not available. Please compute an estimate using estimate_partition_function().")
-}
 
 # function taken from PLMIX package:
 # Copyright Cristina Mollica and Luca Tardella
