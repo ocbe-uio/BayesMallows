@@ -16,7 +16,7 @@ get_transitive_closure <- function(rank_data) {
 #' @export
 #'
 get_transitive_closure.BayesMallowsData <- function(rank_data) {
-  if(inherits(rank_data$preferences, "BayesMallowsTC")) {
+  if(inherits(rank_data$preferences, "BayesMallowsTransitiveClosure")) {
     rank_data$preferences
   } else {
     NULL

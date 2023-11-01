@@ -8,7 +8,7 @@ generate_constraints(data, cl = NULL)
 }
 \arguments{
 \item{cl}{Optional computing cluster used for parallelization, returned
-from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
+from [parallel::makeCluster()]. Defaults to \code{NULL}.}
 
 \item{preferences}{Data frame of preferences. For the case of consistent
 rankings, \code{preferences} should be returned from \code{\link{generate_transitive_closure}}.
@@ -56,8 +56,7 @@ stopCluster(cl)
 \seealso{
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
-\code{\link{generate_initial_ranking.BayesMallowsIntransitive}()},
-\code{\link{generate_initial_ranking.BayesMallowsTC}()},
+\code{\link{generate_initial_ranking}()},
 \code{\link{generate_transitive_closure}()},
 \code{\link{obs_freq}},
 \code{\link{prepare_partition_function}()}

@@ -19,7 +19,7 @@ test_that("generate_transitive_closure works", {
     ), top_item = c(1, 1, 1, 5, 3, 4, 4)), row.names = c(
       NA,
       -7L
-    ), class = c("BayesMallowsTC", "data.frame"))
+    ), class = c("BayesMallowsTransitiveClosure", "data.frame"))
   )
   expect_equal(dat$preferences, dat2$preferences)
 

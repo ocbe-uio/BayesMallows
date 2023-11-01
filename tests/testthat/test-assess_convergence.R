@@ -31,7 +31,7 @@ test_that("assess_convergence fails when it should", {
 
 
   m <- compute_mallows(
-    setup_rank_data(preferences = beach_preferences),
+    data = setup_rank_data(preferences = beach_preferences),
     model = set_model_options(error_model = "bernoulli"),
     compute_options = set_compute_options(nmc = 10)
     )

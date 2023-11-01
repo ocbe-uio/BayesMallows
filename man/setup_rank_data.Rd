@@ -73,9 +73,9 @@ and the algorithm stops if there are \code{NA}s in \code{rankings}, and
 
 \item{cl}{Optional computing cluster used for parallelization when generating
 transitive closure based on preferences, returned from
-\code{parallel::makeCluster}. Defaults to \code{NULL}.}
+[parallel::makeCluster()]. Defaults to \code{NULL}.}
 
-\item{...}{Other optional arguments, forward to
+\item{...}{Other optional arguments, forwarded to
 \code{\link{generate_initial_ranking}}.}
 }
 \value{

@@ -148,8 +148,7 @@ system.time({
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
 \code{\link{generate_constraints}()},
-\code{\link{generate_initial_ranking.BayesMallowsIntransitive}()},
-\code{\link{generate_initial_ranking.BayesMallowsTC}()},
+\code{\link{generate_initial_ranking}()},
 \code{\link{generate_transitive_closure}()},
 \code{\link{prepare_partition_function}()}
 }

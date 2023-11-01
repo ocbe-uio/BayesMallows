@@ -1,24 +1,14 @@
-#' Generic function for generating initial ranking
-#'
-#' @export
-#'
-generate_initial_ranking <- function(preferences, n_items, cl, ...) {
-  UseMethod("generate_initial_ranking")
-}
-
 #' Generate Initial Ranking
 #'
 #' Given a consistent set of pairwise preferences, generate a complete ranking
 #' of items which is consistent with the preferences.
 #'
-#' @param preferences A dataframe with pairwise comparisons of \code{S3} subclass
-#'   \code{BayesMallowsTC}, returned from
-#'   \code{\link{generate_transitive_closure}}.
+#' @param preferences Pairwise preferences returned from [generative_transitive_closure()].
 #'
 #' @param n_items The total number of items.
 #'
 #' @param cl Optional computing cluster used for parallelization, returned from
-#'   \code{parallel::makeCluster}. Defaults to \code{NULL}.
+#'   [parallel::makeCluster()]. Defaults to \code{NULL}.
 #'
 #' @param shuffle_unranked Logical specifying whether or not to randomly
 #'   permuted unranked items in the initial ranking. When
@@ -42,7 +32,7 @@ generate_initial_ranking <- function(preferences, n_items, cl, ...) {
 #' @note Setting \code{random=TRUE} means that all possible orderings of each
 #'   assessor's preferences are generated, and one of them is picked at random.
 #'   This can be useful when experiencing convergence issues, e.g., if the MCMC
-#'   algorithm does not mixed properly. However, finding all possible orderings
+#'   algorithm does not mix properly. However, finding all possible orderings
 #'   is a combinatorial problem, which may be computationally very hard. The
 #'   result may not even be possible to fit in memory, which may cause the R
 #'   session to crash. When using this option, please try to increase the size
@@ -74,7 +64,15 @@ generate_initial_ranking <- function(preferences, n_items, cl, ...) {
 #'
 #' @family preprocessing
 #'
-generate_initial_ranking.BayesMallowsTC <- function(
+generate_initial_ranking <- function(
+    preferences, n_items, cl = NULL, shuffle_unranked = FALSE,
+    random = FALSE, random_limit = 8L) {
+  UseMethod("generate_initial_ranking")
+}
+
+#' @rdname generate_initial_ranking
+#' @export
+generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
     preferences, n_items, cl = NULL, shuffle_unranked = FALSE, random = FALSE,
     random_limit = 8L) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
@@ -105,6 +103,18 @@ generate_initial_ranking.BayesMallowsTC <- function(
     ))
   }
 }
+
+#' @rdname generate_initial_ranking
+#' @export
+generate_initial_ranking.BayesMallowsIntransitive <- function(
+    preferences, n_items, cl = NULL) {
+  n_assessors <- length(unique(preferences$assessor))
+  rankings <- replicate(n_assessors, sample(x = n_items, size = n_items),
+                        simplify = "numeric")
+  rankings <- matrix(rankings, ncol = n_items, nrow = n_assessors, byrow = TRUE)
+}
+
+
 
 create_ranks <- function(mat, n_items, shuffle_unranked, random) {
   if (!random) {
@@ -145,48 +155,4 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     return(get("x", envir = e1)[[sample(get("num", envir = e1), 1)]])
   }
 }
-
-#' Generate initial ranking for non-transitive preferences
-#'
-#' @param preferences A data frame with one row per pairwise comparison, and
-#'   columns \code{assessor}, \code{top_item}, and \code{bottom_item}. Each
-#'   column contains the following:
-#' \itemize{
-#' \item \code{assessor} is a numeric vector containing the assessor index, or a character
-#'       vector containing the (unique) name of the assessor.
-#'
-#' \item \code{bottom_item} is a numeric vector containing the index of the item that
-#'       was disfavored in each pairwise comparison.
-#'
-#' \item \code{top_item} is a numeric vector containing the index of the item that was
-#'       preferred in each pairwise comparison.
-#' }
-#'   So if we have two assessors and five items, and assessor 1 prefers item 1
-#'   to item 2 and item 1 to item 5, while assessor 2 prefers item 3 to item 5,
-#'   we have the following \code{df}:
-#' \tabular{rrr}{
-#' \strong{assessor} \tab \strong{bottom_item} \tab \strong{top_item}\cr
-#' 1 \tab 2 \tab 1\cr
-#' 1 \tab 5 \tab 1\cr
-#' 2 \tab 5 \tab 3\cr
-#' }
-#'
-#' @param n_items Number of items.
-#' @param cl Cluster. Not used.
-#'
-#'
-#' @return A matrix of rankings which can be given in the \code{rankings}
-#'   argument to \code{\link{compute_mallows}}.
-#'
-#' @export
-#'
-#' @family preprocessing
-#'
-generate_initial_ranking.BayesMallowsIntransitive <- function(
-    preferences, n_items, cl = NULL, ...) {
-  n_assessors <- length(unique(preferences$assessor))
-  rankings <- replicate(n_assessors, sample(x = n_items, size = n_items),
-                        simplify = "numeric")
-  rankings <- matrix(rankings, ncol = n_items, nrow = n_assessors, byrow = TRUE)
-  }
 

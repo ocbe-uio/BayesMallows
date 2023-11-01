@@ -47,7 +47,7 @@ every 1000th iteration. Defaults to \code{FALSE}.}
 
 \item{seed}{Optional integer to be used as random number seed.}
 
-\item{cl}{Optional cluster returned from \code{parallel::makeCluster}. If
+\item{cl}{Optional cluster returned from [parallel::makeCluster()]. If
 provided, chains will be run in parallel, one on each node of \code{cl}.}
 }
 \value{

@@ -27,12 +27,12 @@
 #'
 #'
 #' @param cl Optional computing cluster used for parallelization, returned
-#' from \code{parallel::makeCluster}. Defaults to \code{NULL}.
+#' from [parallel::makeCluster()]. Defaults to \code{NULL}.
 #'
 #'
 #' @return A dataframe with the same columns as \code{df}, but with its set of rows expanded
 #' to include all pairwise preferences implied by the ones stated in \code{df}. The returned
-#' object has \code{S3} subclass \code{BayesMallowsTC}, to indicate that this is the
+#' object has \code{S3} subclass \code{BayesMallowsTransitiveClosure}, to indicate that this is the
 #' transitive closure.
 #'
 #' @seealso \code{\link{generate_initial_ranking}}
@@ -72,7 +72,7 @@ generate_transitive_closure <- function(df, cl = NULL) {
       "sure you run compute_mallows with argument error_model='bernoulli'")
   }
 
-  class(prefs) <- c("BayesMallowsTC", class(prefs))
+  class(prefs) <- c("BayesMallowsTransitiveClosure", class(prefs))
 
   return(prefs)
 }

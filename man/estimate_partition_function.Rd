@@ -48,7 +48,7 @@ asymptotic approximation of the partition function. Only used when
 \code{method = "asymptotic"}.}
 
 \item{cl}{Optional computing cluster used for parallelization, returned
-from \code{parallel::makeCluster}. Defaults to \code{NULL}. Only used when
+from [parallel::makeCluster()]. Defaults to \code{NULL}. Only used when
 \code{method = "importance_sampling"}.}
 
 \item{seed}{Optional random number seed.}
@@ -141,8 +141,7 @@ model_fit <- compute_mallows(
 \seealso{
 Other preprocessing: 
 \code{\link{generate_constraints}()},
-\code{\link{generate_initial_ranking.BayesMallowsIntransitive}()},
-\code{\link{generate_initial_ranking.BayesMallowsTC}()},
+\code{\link{generate_initial_ranking}()},
 \code{\link{generate_transitive_closure}()},
 \code{\link{obs_freq}},
 \code{\link{prepare_partition_function}()}

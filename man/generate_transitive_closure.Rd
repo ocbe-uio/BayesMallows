@@ -30,12 +30,12 @@ item 1 to item 5, while assessor 2 prefers item 3 to item 5, we have the followi
 }}
 
 \item{cl}{Optional computing cluster used for parallelization, returned
-from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
+from [parallel::makeCluster()]. Defaults to \code{NULL}.}
 }
 \value{
 A dataframe with the same columns as \code{df}, but with its set of rows expanded
 to include all pairwise preferences implied by the ones stated in \code{df}. The returned
-object has \code{S3} subclass \code{BayesMallowsTC}, to indicate that this is the
+object has \code{S3} subclass \code{BayesMallowsTransitiveClosure}, to indicate that this is the
 transitive closure.
 }
 \description{
@@ -83,8 +83,7 @@ stopCluster(cl)
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
 \code{\link{generate_constraints}()},
-\code{\link{generate_initial_ranking.BayesMallowsIntransitive}()},
-\code{\link{generate_initial_ranking.BayesMallowsTC}()},
+\code{\link{generate_initial_ranking}()},
 \code{\link{obs_freq}},
 \code{\link{prepare_partition_function}()}
 }

@@ -38,7 +38,7 @@
 #'   \code{logz_estimate} argument of \code{\link{compute_mallows}}.
 #'
 #' @param cl Optional computing cluster used for parallelization, returned
-#' from \code{parallel::makeCluster}. Defaults to \code{NULL}. Only used when
+#' from [parallel::makeCluster()]. Defaults to \code{NULL}. Only used when
 #' \code{method = "importance_sampling"}.
 #'
 #' @param seed Optional random number seed.

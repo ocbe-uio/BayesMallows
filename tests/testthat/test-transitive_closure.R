@@ -12,7 +12,7 @@ pair_comp_tc <- data.frame(
   top_item = c(2, 5, 5, 5, 2, 3, 4, 3, 4, 4)
 )
 
-class(pair_comp_tc) <- c("BayesMallowsTC", class(pair_comp_tc))
+class(pair_comp_tc) <- c("BayesMallowsTransitiveClosure", class(pair_comp_tc))
 
 test_that("transitive closure generation works", {
   pair_comp_returned <- generate_transitive_closure(pair_comp)

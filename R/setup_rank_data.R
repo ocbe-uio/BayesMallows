@@ -58,9 +58,9 @@
 #'
 #' @param cl Optional computing cluster used for parallelization when generating
 #'   transitive closure based on preferences, returned from
-#'   \code{parallel::makeCluster}. Defaults to \code{NULL}.
+#'   [parallel::makeCluster()]. Defaults to \code{NULL}.
 #'
-#' @param ... Other optional arguments, forward to
+#' @param ... Other optional arguments, forwarded to
 #'   \code{\link{generate_initial_ranking}}.
 #'
 #'

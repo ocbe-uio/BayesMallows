@@ -14,7 +14,7 @@
 #' @param n_items Integer specifying the number of items.
 #'
 #' @param cl Optional computing cluster used for parallelization, returned
-#' from \code{parallel::makeCluster}. Defaults to \code{NULL}.
+#' from [parallel::makeCluster()]. Defaults to \code{NULL}.
 #'
 #' @return A list which is used internally by the MCMC algorithm.
 #' @export
