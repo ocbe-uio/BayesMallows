@@ -35,12 +35,12 @@ Modern computers have multiple cores, and on computing clusters one can get acce
 
 ## Parallel Chains with Complete Rankings
 
-In "BayesMallows" we use the "parallel" package for parallel computation. Parallelization is obtained by starting a cluster and providing it as an argument. Since the limit to parallelism for vignettes being built on CRAN is 2, we here start a cluster spanning two cores, but in real applications this number should typically be larger (the output from `parallel::detectCores()` can be a good guide). Note that we also give one initial value of the dispersion parameter $\alpha$ to each chain.
+In "BayesMallows" we use the "parallel" package for parallel computation. Parallelization is obtained by starting a cluster and providing it as an argument. Note that we also give one initial value of the dispersion parameter $\alpha$ to each chain.
 
 
 ```r
 library(parallel)
-cl <- makeCluster(2)
+cl <- makeCluster(4)
 fit <- compute_mallows(
   data = setup_rank_data(rankings = potato_visual), 
   compute_options = set_compute_options(nmc = 5000),
@@ -56,7 +56,7 @@ We can assess convergence in the usual way:
 assess_convergence(fit)
 ```
 
-![plot of chunk unnamed-chunk-3](unnamed-chunk-3-1.png)
+![Trace plot of scale parameter for four chains.](parallel_assess_convergence_alpha-1.png)
 
 We can also assess convergence for the latent ranks $\boldsymbol{\rho}$. Since the initial value of $\boldsymbol{\rho}$ is sampled uniformly, the two chains automatically get different initial values.
 
@@ -65,7 +65,7 @@ We can also assess convergence for the latent ranks $\boldsymbol{\rho}$. Since t
 assess_convergence(fit, parameter = "rho", items = 1:3)
 ```
 
-![plot of chunk unnamed-chunk-4](unnamed-chunk-4-1.png)
+![Trace plot of modal ranking for four chains.](parallel_assess_convergence_rho-1.png)
 
 Based on the convergence plots, we set the burnin to 700. 
 
@@ -83,7 +83,7 @@ Below is a plot of the posterior distribution of $\alpha$.
 plot(fit)
 ```
 
-![plot of chunk unnamed-chunk-6](unnamed-chunk-6-1.png)
+![Posterior of scale parameter, combing post-burnin samples from all chains.](parallel_posterior_alpha-1.png)
 
 Next is a plot of the posterior distribution of $\boldsymbol{\rho}$.
 
@@ -93,7 +93,7 @@ Next is a plot of the posterior distribution of $\boldsymbol{\rho}$.
 plot(fit, parameter = "rho", items = 4:7)
 ```
 
-![plot of chunk unnamed-chunk-7](unnamed-chunk-7-1.png)
+![Posterior of modal ranking, combing post-burnin samples from all chains.](parallel_posterior_rho-1.png)
 
 ## Parallel Chains with Pairwise Preferences
 
@@ -106,15 +106,15 @@ A case where parallel chains might be more strongly needed is with incomplete da
 beach_data <- setup_rank_data(preferences = beach_preferences)
 ```
 
-We run two parallel chains, letting the package generate random initial rankings, but again providing a vector of initial values for $\alpha$.
+We run four parallel chains, letting the package generate random initial rankings, but again providing a vector of initial values for $\alpha$.
 
 
 ```r
-cl <- makeCluster(2)
+cl <- makeCluster(4)
 fit <- compute_mallows(
   data = beach_data,
   compute_options = set_compute_options(nmc = 4000, save_aug = TRUE),
-  initial_values = set_initial_values(alpha_init = runif(2, 1, 4)),
+  initial_values = set_initial_values(alpha_init = runif(4, 1, 4)),
   cl = cl
 )
 stopCluster(cl)
@@ -129,7 +129,7 @@ The convergence plots shows some long-range autocorrelation, but otherwise it se
 assess_convergence(fit)
 ```
 
-![plot of chunk unnamed-chunk-10](unnamed-chunk-10-1.png)
+![Trace plot of scale parameter for beach preferences data, on four chains.](parallel_assess_converge_prefs_alpha-1.png)
 
 Here is the convergence plot for $\boldsymbol{\rho}$:
 
@@ -138,7 +138,7 @@ Here is the convergence plot for $\boldsymbol{\rho}$:
 assess_convergence(fit, parameter = "rho", items = 4:6)
 ```
 
-![plot of chunk unnamed-chunk-11](unnamed-chunk-11-1.png)
+![Trace plot of modal ranking for beach preferences data, on four chains.](parallel_assess_converge_prefs_rho-1.png)
 
 To avoid overplotting, it's a good idea to pick a low number of assessors and chains. We here look at items 1-3 of assessors 1 and 2.
 
@@ -150,7 +150,7 @@ assess_convergence(fit,
 )
 ```
 
-![plot of chunk unnamed-chunk-12](unnamed-chunk-12-1.png)
+![Trace plot of augmented rankings for beach preference data, on four chains.](parallel_assess_convergence_prefs_rtilde-1.png)
 
 ### Posterior Quantities
 
@@ -168,7 +168,7 @@ We can now study the posterior distributions. Here is the posterior for $\alpha$
 plot(fit)
 ```
 
-![plot of chunk unnamed-chunk-14](unnamed-chunk-14-1.png)
+![Posterior distribution for scale parameter.](parallel_beach_prefs_alpha_posterior-1.png)
 
 We can also look at the posterior for $\boldsymbol{\rho}$.
 
@@ -177,7 +177,7 @@ We can also look at the posterior for $\boldsymbol{\rho}$.
 plot(fit, parameter = "rho", items = 6:9)
 ```
 
-![plot of chunk unnamed-chunk-15](unnamed-chunk-15-1.png)
+![Posterior distribution for modal rankings.](parallel_beach_prefs_rho_posterior-1.png)
 
 We can also compute posterior intervals in the usual way:
 
@@ -185,7 +185,7 @@ We can also compute posterior intervals in the usual way:
 ```r
 compute_posterior_intervals(fit, parameter = "alpha")
 #>   parameter  mean median conf_level          hpdi central_interval
-#> 1     alpha 4.821  4.822       95 % [4.264,5.403]    [4.254,5.396]
+#> 1     alpha 4.808  4.809       95 % [4.251,5.326]    [4.263,5.352]
 ```
 
 
@@ -193,20 +193,20 @@ compute_posterior_intervals(fit, parameter = "alpha")
 compute_posterior_intervals(fit, parameter = "rho")
 #>       item parameter mean median conf_level    hpdi central_interval
 #> 1   Item 1       rho    7      7       95 %     [7]            [6,7]
-#> 2   Item 2       rho   15     15       95 %    [15]          [14,15]
+#> 2   Item 2       rho   15     15       95 %    [15]             [15]
 #> 3   Item 3       rho    3      3       95 %   [3,4]            [3,4]
-#> 4   Item 4       rho   12     11       95 % [11,13]          [11,14]
-#> 5   Item 5       rho    9      8       95 %  [8,10]           [8,10]
+#> 4   Item 4       rho   11     11       95 % [11,13]          [11,13]
+#> 5   Item 5       rho    9      9       95 %  [8,10]           [8,10]
 #> 6   Item 6       rho    2      2       95 %   [1,2]            [1,2]
-#> 7   Item 7       rho    9      9       95 %  [8,10]           [8,10]
-#> 8   Item 8       rho   12     12       95 % [11,13]          [11,13]
+#> 7   Item 7       rho    9      8       95 %  [8,10]           [8,10]
+#> 8   Item 8       rho   12     12       95 % [11,14]          [11,14]
 #> 9   Item 9       rho    1      1       95 %   [1,2]            [1,2]
-#> 10 Item 10       rho    6      6       95 %   [5,6]            [5,7]
+#> 10 Item 10       rho    6      6       95 %   [5,6]            [5,6]
 #> 11 Item 11       rho    4      4       95 %   [3,4]            [3,5]
 #> 12 Item 12       rho   13     13       95 % [12,14]          [12,14]
-#> 13 Item 13       rho   10     10       95 %  [9,10]           [9,10]
-#> 14 Item 14       rho   13     14       95 % [11,14]          [11,15]
-#> 15 Item 15       rho    5      5       95 %   [4,6]            [4,6]
+#> 13 Item 13       rho   10     10       95 %  [9,10]           [8,10]
+#> 14 Item 14       rho   13     14       95 % [11,14]          [11,14]
+#> 15 Item 15       rho    5      5       95 %   [5,6]            [4,6]
 ```
 
 And we can compute the consensus ranking:
@@ -215,20 +215,20 @@ And we can compute the consensus ranking:
 ```r
 compute_consensus(fit)
 #>    ranking    item   cumprob
-#> 1        1  Item 9 0.8837879
+#> 1        1  Item 9 0.8942424
 #> 2        2  Item 6 1.0000000
-#> 3        3  Item 3 0.7478788
-#> 4        4 Item 11 0.9595455
-#> 5        5 Item 15 0.9487879
-#> 6        6 Item 10 0.9746970
-#> 7        7  Item 1 1.0000000
-#> 8        8  Item 5 0.5031818
-#> 9        9  Item 7 0.9213636
+#> 3        3  Item 3 0.7540909
+#> 4        4 Item 11 0.9712121
+#> 5        5 Item 15 0.9534848
+#> 6        6 Item 10 0.9775000
+#> 7        7  Item 1 0.9984091
+#> 8        8  Item 7 0.5664394
+#> 9        9  Item 5 0.9270455
 #> 10      10 Item 13 1.0000000
-#> 11      11  Item 4 0.5492424
-#> 12      12  Item 8 0.8048485
-#> 13      13 Item 12 0.5416667
-#> 14      14 Item 14 0.9748485
+#> 11      11  Item 4 0.6000758
+#> 12      12  Item 8 0.6967424
+#> 13      13 Item 12 0.6326515
+#> 14      14 Item 14 0.9981818
 #> 15      15  Item 2 1.0000000
 ```
 
@@ -236,21 +236,21 @@ compute_consensus(fit)
 ```r
 compute_consensus(fit, type = "MAP")
 #>    map_ranking    item probability
-#> 1            1  Item 9        0.14
-#> 2            2  Item 6        0.14
-#> 3            3  Item 3        0.14
-#> 4            4 Item 11        0.14
-#> 5            5 Item 15        0.14
-#> 6            6 Item 10        0.14
-#> 7            7  Item 1        0.14
-#> 8            8  Item 5        0.14
-#> 9            9  Item 7        0.14
-#> 10          10 Item 13        0.14
-#> 11          11  Item 4        0.14
-#> 12          12  Item 8        0.14
-#> 13          13 Item 12        0.14
-#> 14          14 Item 14        0.14
-#> 15          15  Item 2        0.14
+#> 1            1  Item 9   0.3390909
+#> 2            2  Item 6   0.3390909
+#> 3            3  Item 3   0.3390909
+#> 4            4 Item 11   0.3390909
+#> 5            5 Item 15   0.3390909
+#> 6            6 Item 10   0.3390909
+#> 7            7  Item 1   0.3390909
+#> 8            8  Item 7   0.3390909
+#> 9            9  Item 5   0.3390909
+#> 10          10 Item 13   0.3390909
+#> 11          11  Item 4   0.3390909
+#> 12          12  Item 8   0.3390909
+#> 13          13 Item 12   0.3390909
+#> 14          14 Item 14   0.3390909
+#> 15          15  Item 2   0.3390909
 ```
 
 We can compute the probability of being top-$k$, here for $k=4$:
@@ -260,7 +260,7 @@ We can compute the probability of being top-$k$, here for $k=4$:
 plot_top_k(fit, k = 4)
 ```
 
-![plot of chunk unnamed-chunk-20](unnamed-chunk-20-1.png)
+![Probability of being top-4 for beach preference data.](parallel_top_k-1.png)
 
 
 
