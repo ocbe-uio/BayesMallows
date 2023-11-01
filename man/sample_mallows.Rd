@@ -107,8 +107,8 @@ compute_posterior_intervals(model_fit, burnin = 2000, parameter = "alpha")
 Other rank functions: 
 \code{\link{compute_expected_distance}()},
 \code{\link{compute_observation_frequency}()},
+\code{\link{compute_rank_distance}()},
 \code{\link{create_ranking}()},
-\code{\link{get_mallows_loglik}()},
-\code{\link{rank_distance}()}
+\code{\link{get_mallows_loglik}()}
 }
 \concept{rank functions}

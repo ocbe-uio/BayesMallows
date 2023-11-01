@@ -31,9 +31,9 @@ compute_observation_frequency(rankings = data0)
 \seealso{
 Other rank functions: 
 \code{\link{compute_expected_distance}()},
+\code{\link{compute_rank_distance}()},
 \code{\link{create_ranking}()},
 \code{\link{get_mallows_loglik}()},
-\code{\link{rank_distance}()},
 \code{\link{sample_mallows}()}
 }
 \concept{rank functions}

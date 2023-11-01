@@ -106,8 +106,8 @@ get_mallows_loglik(
 Other rank functions: 
 \code{\link{compute_expected_distance}()},
 \code{\link{compute_observation_frequency}()},
+\code{\link{compute_rank_distance}()},
 \code{\link{create_ranking}()},
-\code{\link{rank_distance}()},
 \code{\link{sample_mallows}()}
 }
 \concept{rank functions}

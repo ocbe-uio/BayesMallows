@@ -21,7 +21,7 @@
 #' @family rank functions
 #'
 #' @example /inst/examples/rank_distance_example.R
-rank_distance <- function(rankings, rho, metric, observation_frequency = 1) {
+compute_rank_distance <- function(rankings, rho, metric, observation_frequency = 1) {
   if (!is.matrix(rankings)) {
     rankings <- matrix(rankings, nrow = 1)
   }

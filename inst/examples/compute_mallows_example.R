@@ -106,11 +106,12 @@ subset(get_transitive_closure(beach_data), assessor %in% c(1, 2) &
   # an "elbow", e.g., at 6 clusters.
 }
 
-# SPEEDING UP COMPUTION WITH OBSERVATION FREQUENCIES
-# With a large number of assessors taking on a relatively low number of unique rankings,
-# the observation_frequency argument allows providing a rankings matrix with the unique set of rankings,
-# and the observation_frequency vector giving the number of assessors with each ranking.
-# This is illustrated here for the potato_visual dataset
+# SPEEDING UP COMPUTION WITH OBSERVATION FREQUENCIES With a large number of
+# assessors taking on a relatively low number of unique rankings, the
+# observation_frequency argument allows providing a rankings matrix with the
+# unique set of rankings, and the observation_frequency vector giving the number
+# of assessors with each ranking. This is illustrated here for the potato_visual
+# dataset
 #
 # assume each row of potato_visual corresponds to between 1 and 5 assessors, as
 # given by the observation_frequency vector

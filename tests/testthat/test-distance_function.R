@@ -130,34 +130,34 @@ test_that("Ulam distance is correct", {
 })
 
 
-test_that("Exported rank_distance is correct", {
+test_that("Exported compute_rank_distance is correct", {
   # Distance between two vectors of rankings:
-  expect_equal(rank_distance(1:5, 5:1, metric = "kendall"), 10)
+  expect_equal(compute_rank_distance(1:5, 5:1, metric = "kendall"), 10)
   expect_equal(
-    rank_distance(c(2, 4, 3, 6, 1, 7, 5), c(3, 5, 4, 7, 6, 2, 1), metric = "cayley"),
+    compute_rank_distance(c(2, 4, 3, 6, 1, 7, 5), c(3, 5, 4, 7, 6, 2, 1), metric = "cayley"),
     6
   )
   expect_equal(
-    rank_distance(c(4, 2, 3, 1), c(3, 4, 1, 2), metric = "hamming"),
+    compute_rank_distance(c(4, 2, 3, 1), c(3, 4, 1, 2), metric = "hamming"),
     4
   )
   expect_equal(
-    rank_distance(c(1, 3, 5, 7, 9, 8, 6, 4, 2), c(1, 2, 3, 4, 9, 8, 7, 6, 5), "ulam"),
+    compute_rank_distance(c(1, 3, 5, 7, 9, 8, 6, 4, 2), c(1, 2, 3, 4, 9, 8, 7, 6, 5), "ulam"),
     4
   )
   expect_equal(
-    rank_distance(c(8, 7, 1, 2, 6, 5, 3, 4), c(1, 2, 8, 7, 3, 4, 6, 5), "footrule"),
+    compute_rank_distance(c(8, 7, 1, 2, 6, 5, 3, 4), c(1, 2, 8, 7, 3, 4, 6, 5), "footrule"),
     32
   )
   expect_equal(
-    rank_distance(c(1, 6, 2, 5, 3, 4), c(4, 3, 5, 2, 6, 1), "spearman"),
+    compute_rank_distance(c(1, 6, 2, 5, 3, 4), c(4, 3, 5, 2, 6, 1), "spearman"),
     54
   )
 
-  expect_error(rank_distance(c(1, 6, 2, 5, 3, 4), c(4, 3, 5, 2, 6, 1), "spearman", observation_frequency = 1:3))
+  expect_error(compute_rank_distance(c(1, 6, 2, 5, 3, 4), c(4, 3, 5, 2, 6, 1), "spearman", observation_frequency = 1:3))
 
   expect_equal(
-    rank_distance(
+    compute_rank_distance(
       potato_visual, potato_true_ranking, "footrule"
     ),
     c(22, 24, 32, 14, 36, 24, 14, 28, 34, 24, 30, 24)
