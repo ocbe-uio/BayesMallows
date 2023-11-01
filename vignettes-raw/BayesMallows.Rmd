@@ -60,7 +60,7 @@ bmm_visual <- compute_mallows(
   data = complete_data, 
   compute_options = set_compute_options(nmc = 21000, burnin = 1000)
   )
-plot(bmm_visual) # Use S3 method for plotting
+plot(bmm_visual)
 ```
 
 We can also get posterior credible intervals for $\alpha$ using `compute_posterior_intervals`, which returns both highest posterior density intervals (HPDI) and central intervals in a `data.frame`. 
@@ -201,13 +201,13 @@ The plot indicates good mixing.
 
 ## Posterior distributions
 
-Based on the convergence diagnostics, and being fairly conservative, we discard the first 2,000 MCMC iterations as burn-in, and take 5,000 additional samples.
+Based on the convergence diagnostics, and being fairly conservative, we discard the first 2,000 MCMC iterations as burn-in, and take 20,000 additional samples.
 
 ```{r}
 bmm_beaches <- compute_mallows(
   data = beach_data,
   compute_options = 
-    set_compute_options(nmc = 7000, burnin = 2000, save_aug = TRUE)
+    set_compute_options(nmc = 22000, burnin = 2000, save_aug = TRUE)
 )
 ```
 
@@ -261,11 +261,11 @@ sushi_data <- setup_rank_data(sushi_rankings)
 
 The function `compute_mallows_mixtures` computes multiple Mallows models with different numbers of mixture components. It returns a list of models of class `BayesMallowsMixtures`, in which each list element contains a model with a given number of mixture components. Its arguments are `n_clusters`, which specifies the number of mixture components to compute, an optional parameter `cl` which can be set to the return value of the `makeCluster` function in the `parallel` package, and an ellipsis (`...`) for passing on arguments to `compute_mallows`.
 
-Hypothesizing that we may not need more than 10 clusters to find a useful partitioning of the assessors, we start by doing test runs with 1, 4, 7, and 10 mixture components in order to assess convergence. We set the number of Monte Carlo samples to 5,000, and since this is a test run, we do not save within-cluster distances from each MCMC iteration and hence set `include_wcd = FALSE`. We also run the computations in parallel on two cores, which is the maximum when running on CRAN.
+Hypothesizing that we may not need more than 10 clusters to find a useful partitioning of the assessors, we start by doing test runs with 1, 4, 7, and 10 mixture components in order to assess convergence. We set the number of Monte Carlo samples to 5,000, and since this is a test run, we do not save within-cluster distances from each MCMC iteration and hence set `include_wcd = FALSE`.
 
 ```{r}
 library("parallel")
-cl <- makeCluster(2)
+cl <- makeCluster(detectCores())
 bmm <- compute_mallows_mixtures(
   n_clusters = c(1, 4, 7, 10),
   data = sushi_data,
@@ -280,7 +280,6 @@ The function `assess_convergence` automatically creates a grid plot when given a
 assess_convergence(bmm)
 ```
 
-
 The resulting plot shows that all the chains seem to be close to convergence quite quickly. We can also make sure that the posterior distributions of the cluster probabilities $\tau_{c}$, $(c = 1, \dots, C)$ have converged properly, by setting `parameter = "cluster_probs"`. 
 
 ```{r cluster_trace_probs, fig.cap="Trace plots for cluster assignment probabilities."}
@@ -291,10 +290,10 @@ Note that with only one cluster, the cluster probability is fixed at the value 1
 
 ## Deciding on the number of mixture components
 
-Given the convergence assessment of the previous section, we are fairly confident that a burn-in of 1,000 is sufficient. We run 10,000 additional iterations, and try from 1 to 10 mixture components. Our goal is now to determine the number of mixture components to use, and in order to create an elbow plot, we set `include_wcd = TRUE` to compute the within-cluster distances in each step of the MCMC algorithm. Since the posterior distributions of $\rho_{c}$ ($c = 1,\dots,C$) are highly peaked, we save some memory by only saving every 10th value of $\boldsymbol{\rho}$ by setting `rho_thinning = 10`.
+Given the convergence assessment of the previous section, we are fairly confident that a burn-in of 1,000 is sufficient. We run 40,000 additional iterations, and try from 1 to 10 mixture components. Our goal is now to determine the number of mixture components to use, and in order to create an elbow plot, we set `include_wcd = TRUE` to compute the within-cluster distances in each step of the MCMC algorithm. Since the posterior distributions of $\rho_{c}$ ($c = 1,\dots,C$) are highly peaked, we save some memory by only saving every 10th value of $\boldsymbol{\rho}$ by setting `rho_thinning = 10`.
 
 ```{r}
-cl <- makeCluster(2)
+cl <- makeCluster(detectCores())
 bmm <- compute_mallows_mixtures(
   n_clusters = 1:10, 
   data = sushi_data,

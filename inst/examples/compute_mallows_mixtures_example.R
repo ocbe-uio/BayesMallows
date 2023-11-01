@@ -4,7 +4,7 @@
   # We use the convenience function compute_mallows_mixtures
   n_clusters <- seq(from = 1, to = 10)
   models <- compute_mallows_mixtures(
-    n_clusters = n_clusters, rankings = sushi_rankings,
+    n_clusters = n_clusters, data = setup_rank_data(sushi_rankings),
     compute_options = set_compute_options(include_wcd = TRUE))
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows

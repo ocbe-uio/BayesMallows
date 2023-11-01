@@ -13,9 +13,18 @@ validate_integer <- function(argument) {
 
 validate_positive <- function(argument) {
   if(argument <= 0 || !is.numeric(argument)) {
-    stop(paste(deparse(substitute(argument)), "must be a positive number"))
+    stop(paste(deparse(substitute(argument)),
+               "must be a strictly positive number of length one"))
   }
 }
+
+validate_positive_vector <- function(argument) {
+  if(any(argument <= 0) || !is.numeric(argument)) {
+    stop(paste(deparse(substitute(argument)),
+               "must be a vector of strictly positive numbers"))
+  }
+}
+
 
 validate_logical <- function(argument) {
   if(!is.logical(argument) || length(argument) != 1) {
@@ -29,4 +38,25 @@ check_larger <- function(larger, smaller) {
     stop(paste(deparse(substitute(larger)), "must be strictly larger than",
                deparse(substitute(smaller))))
   }
+}
+
+validate_preferences <- function(data, model) {
+  if(inherits(data$preferences, "BayesMallowsIntransitive") &&
+     model$error_model == "none") {
+    stop("Intransitive pairwise comparisons. Please specify an error model.")
+  }
+}
+
+validate_initial_values <- function(init, data) {
+
+  if(!is.null(init$rho)) {
+    if(length(unique(init$rho)) != length(init$rho)) {
+      stop("initial value rho must be a ranking")
+    }
+    if(length(init$rho) != data$n_items) {
+      stop("initial value rho must have one value per item")
+    }
+  }
+
+
 }

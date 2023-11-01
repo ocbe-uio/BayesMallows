@@ -10,7 +10,8 @@ setup_rank_data(
   obs_freq = NULL,
   validate_rankings = TRUE,
   na_action = "augment",
-  cl = NULL
+  cl = NULL,
+  ...
 )
 }
 \arguments{
@@ -73,6 +74,9 @@ and the algorithm stops if there are \code{NA}s in \code{rankings}, and
 \item{cl}{Optional computing cluster used for parallelization when generating
 transitive closure based on preferences, returned from
 \code{parallel::makeCluster}. Defaults to \code{NULL}.}
+
+\item{...}{Other optional arguments, forward to
+\code{\link{generate_initial_ranking}}.}
 }
 \value{
 An object of class \code{"BayesMallowsData"}, to be provided in the

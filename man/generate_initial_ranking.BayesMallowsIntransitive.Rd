@@ -4,7 +4,7 @@
 \alias{generate_initial_ranking.BayesMallowsIntransitive}
 \title{Generate initial ranking for non-transitive preferences}
 \usage{
-\method{generate_initial_ranking}{BayesMallowsIntransitive}(preferences, n_items, cl = NULL)
+\method{generate_initial_ranking}{BayesMallowsIntransitive}(preferences, n_items, cl = NULL, ...)
 }
 \arguments{
 \item{preferences}{A data frame with one row per pairwise comparison, and

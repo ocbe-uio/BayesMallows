@@ -2,7 +2,7 @@
 #'
 #' @export
 #'
-generate_initial_ranking <- function(preferences, n_items, cl) {
+generate_initial_ranking <- function(preferences, n_items, cl, ...) {
   UseMethod("generate_initial_ranking")
 }
 
@@ -78,6 +78,7 @@ generate_initial_ranking.BayesMallowsTC <- function(
     preferences, n_items, cl = NULL, shuffle_unranked = FALSE, random = FALSE,
     random_limit = 8L) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
+
 
   if (n_items > random_limit && random) {
     stop(paste(
@@ -182,7 +183,7 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
 #' @family preprocessing
 #'
 generate_initial_ranking.BayesMallowsIntransitive <- function(
-    preferences, n_items, cl = NULL) {
+    preferences, n_items, cl = NULL, ...) {
   n_assessors <- length(unique(preferences$assessor))
   rankings <- replicate(n_assessors, sample(x = n_items, size = n_items),
                         simplify = "numeric")

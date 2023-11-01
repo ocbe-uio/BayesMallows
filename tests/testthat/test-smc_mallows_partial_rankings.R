@@ -31,7 +31,7 @@ samples[samples > 5] <- NA
 # Bayesmallows MCMC Results ==============================
 nmc <- 2000
 bm_mcmc <- compute_mallows(
-  samples,
+  setup_rank_data(samples),
   model = set_model_options(metric = metric),
   compute_options = set_compute_options(
     nmc = nmc, leap_size = leap_size, alpha_prop_sd = 0.15)

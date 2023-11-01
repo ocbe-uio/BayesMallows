@@ -5,7 +5,7 @@ beach_small <- subset(
 )
 
 b <- compute_mallows(
-  preferences = beach_preferences,
+  data = setup_rank_data(preferences = beach_preferences),
   compute_options = set_compute_options(nmc = 10),
   seed = 123L
 )
@@ -63,13 +63,13 @@ test_that("compute_consensus computes correctly for rho", {
   )
 })
 
-
+dat <- setup_rank_data(preferences = beach_small)
 b2 <- compute_mallows(
-  preferences = beach_small,
+  data = dat,
   compute_options = set_compute_options(nmc = 500, save_aug = TRUE),
   seed = 123L)
 b3 <- compute_mallows(
-  preferences = beach_small,
+  data = dat,
   compute_options = set_compute_options(nmc = 500, save_aug = TRUE, aug_thinning = 3),
   seed = 123L)
 

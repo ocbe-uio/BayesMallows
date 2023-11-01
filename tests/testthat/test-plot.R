@@ -1,7 +1,7 @@
 test_that("plot.BayesMallows fails when it should", {
   class(mtcars) <- "BayesMallows"
   expect_error(plot(mtcars))
-  m <- compute_mallows(potato_visual, compute_options = set_compute_options(nmc = 100))
+  m <- compute_mallows(setup_rank_data(potato_visual), compute_options = set_compute_options(nmc = 100))
   expect_error(plot(m))
   expect_error(plot(m, parameter = "Rtilde", burnin = 50))
   expect_error(plot(m, burnin = 1e7))
@@ -9,21 +9,22 @@ test_that("plot.BayesMallows fails when it should", {
 
 
 test_that("plot.BayesMallows works", {
-  m <- compute_mallows(potato_visual, compute_options = set_compute_options(nmc = 10))
+  m <- compute_mallows(setup_rank_data(potato_visual),
+                       compute_options = set_compute_options(nmc = 10))
   expect_s3_class(plot(m, burnin = 3), "ggplot")
   m$burnin <- 4
   expect_s3_class(plot(m), "ggplot")
   expect_s3_class(plot(m, parameter = "rho"), "ggplot")
   expect_s3_class(plot(m, parameter = "rho", items = 2:3), "ggplot")
 
-  m <- compute_mallows(potato_visual,
+  m <- compute_mallows(setup_rank_data(potato_visual),
                        model = set_model_options(n_clusters = 3),
                        compute_options = set_compute_options(nmc = 10))
   expect_s3_class(plot(m, burnin = 4, parameter = "cluster_probs"), "ggplot")
   expect_s3_class(plot(m, burnin = 4, parameter = "cluster_assignment"), "ggplot")
 
   m <- compute_mallows(
-    preferences = beach_preferences[1:100, ],
+    setup_rank_data(preferences = beach_preferences[1:100, ]),
     model = set_model_options(error_model = "bernoulli"),
     compute_options = set_compute_options(nmc = 10)
     )

@@ -2,66 +2,94 @@
 test_that("miscellaneous input validation", {
   namat <- potato_visual
   namat[c(1, 2, 3), c(7, 9)] <- NA_real_
-  expect_error(compute_mallows(rankings = namat, na_action = "fail"))
-  expect_output(
-    compute_mallows(rankings = namat,
-                    model = set_model_options(na_action = "omit"),
-                    compute_options = set_compute_options(nmc = 2)
-                    ),
+  expect_error(setup_rank_data(namat, na_action = "fail"),
+               "rankings matrix contains NA values")
+  expect_output(setup_rank_data(namat, na_action = "omit"),
     "Omitting 9 rows from rankings due to NA values"
   )
-  expect_s3_class(compute_mallows(
-    rankings = namat,
-    model = set_model_options(na_action = "augment"),
-    compute_options = set_compute_options(nmc = 3)), "BayesMallows")
-  expect_s3_class(compute_mallows(rankings = namat,
-                                  compute_options = set_compute_options(nmc = 3)), "BayesMallows")
+  expect_s3_class(setup_rank_data(namat, na_action = "augment"),
+    "BayesMallowsData")
+  expect_s3_class(setup_rank_data(namat), "BayesMallowsData")
   expect_error(
     compute_mallows(
       compute_options = set_compute_options(nmc = 1000, alpha_prop_sd = 1)))
   expect_error(
     compute_mallows(
-      rankings = potato_visual,
-      compute_options = set_compute_options(nmc = 100, alpha_jump = 102)))
+      setup_rank_data(potato_visual),
+      compute_options = set_compute_options(nmc = 100, alpha_jump = 102)),
+    "nmc must be strictly larger than alpha_jump")
   expect_error(
-    compute_mallows(rankings = potato_visual, lambda = 0))
+    compute_mallows(data = setup_rank_data(potato_visual),
+                    priors = set_priors(lambda = 0)),
+    "lambda must be a strictly positive number of length one")
   expect_error(
-    compute_mallows(rankings = potato_visual, lambda = -10))
+    compute_mallows(data = setup_rank_data(potato_visual),
+                    priors = set_priors(lambda = -10.2)),
+    "lambda must be a strictly positive number of length one")
   expect_error(
     compute_mallows(
-      rankings = potato_visual,
-      compute_options = set_compute_options(nmc = 100, rho_thinning = 200)))
+      data = setup_rank_data(potato_visual),
+      compute_options = set_compute_options(nmc = 100, rho_thinning = 200)),
+    "nmc must be strictly larger than rho_thinning")
   expect_error(
     compute_mallows(
-      rankings = potato_visual,
-      compute_options = set_compute_options(nmc = 100, aug_thinning = 200)))
-  expect_error(compute_mallows(rankings = potato_visual,
-                               compute_options = set_compute_options(nmc = -100)))
+      data = setup_rank_data(potato_visual),
+      compute_options = set_compute_options(nmc = 100, aug_thinning = 200)),
+    "nmc must be strictly larger than aug_thinning")
+  expect_error(compute_mallows(data = setup_rank_data(potato_visual),
+                               compute_options = set_compute_options(nmc = -100)),
+               "nmc must be a positive integer")
 })
 
 test_that("rho_init is properly validated", {
   m <- potato_visual
-  expect_error(compute_mallows(rankings = m, rho_init = 1:(ncol(m) - 1)))
-  expect_error(compute_mallows(rankings = m, rho_init = c(potato_true_ranking[-1], 22)))
-  expect_error(compute_mallows(rankings = m, rho_init = c(NA_real_, 2:ncol(m))))
-  expect_error(compute_mallows(rankings = m, obs_freq = -1))
-  expect_error(compute_mallows(rankings = m, obs_freq = 1))
-  expect_error(compute_mallows(rankings = m, obs_freq = 1:11))
+  expect_error(
+    compute_mallows(
+      data = setup_rank_data(m),
+      init = set_initial_values(rho_init = 1:(ncol(m) - 1))),
+    "initial value rho must have one value per item"
+    )
+
+  expect_error(
+    compute_mallows(
+      data = setup_rank_data(m),
+      init = set_initial_values(rho_init = c(potato_true_ranking[-1], 22))),
+    "rho_init must be a proper permutation"
+    )
+
+  expect_error(
+    compute_mallows(
+      data = setup_rank_data(m),
+      init = set_initial_values(rho_init = c(NA_real_, 2:ncol(m)))),
+    "rho_init cannot have missing values")
+
+  expect_error(
+    setup_rank_data(m, obs_freq = -1),
+    "obs_freq must be a vector of strictly positive numbers")
+
+  expect_error(
+    setup_rank_data(m, obs_freq = 1),
+    "obs_freq must be of same length as the number of rows in rankings")
+
+  expect_error(
+    setup_rank_data(m, obs_freq = 1:11),
+    "obs_freq must be of same length as the number of rows in rankings")
 })
 
-test_that("compute_mallows discovers inconsistent rankings", {
-  expect_error(compute_mallows(
-    rankings = matrix(c(
+test_that("inconsistent rankings are discovered", {
+  expect_error(
+    setup_rank_data(matrix(c(
       1, 2, -3,
       1, 2, 3
-    ), nrow = 2, byrow = TRUE)
-  ))
-  expect_error(compute_mallows(
-    rankings = matrix(c(
-      1, 2, 3,
-      1, 2, 2
-    ), nrow = 2, byrow = TRUE)
-  ))
+    ), nrow = 2, byrow = TRUE)),
+    "invalid permutations provided in rankings matrix")
+
+  expect_error(
+    setup_rank_data(matrix(c(
+      1, 2, 2,
+      1, 2, 3
+    ), nrow = 2, byrow = TRUE)),
+    "invalid permutations provided in rankings matrix")
 })
 
 
@@ -71,14 +99,19 @@ test_that("compute_mallows error model works", {
     bottom_item = c(1, 2, 1, 2),
     top_item = c(2, 1, 2, 3)
   )
-  expect_error(invisible(capture.output(
-    compute_mallows(preferences = preferences,
-                    compute_options = set_compute_options(nmc = 10)))))
-  expect_s3_class(
-    compute_mallows(preferences = preferences,
-                    model = set_model_options(error_model = "bernoulli"),
-                    compute_options = set_compute_options(nmc = 10)),
-    "BayesMallows"
+  expect_error(
+    compute_mallows(
+      setup_rank_data(preferences = preferences),
+      compute_options = set_compute_options(nmc = 10)),
+    "Intransitive pairwise comparisons. Please specify an error model."
+    )
+  expect_message(
+    compute_mallows(
+      data = setup_rank_data(preferences = preferences),
+      model = set_model_options(error_model = "bernoulli"),
+      compute_options = set_compute_options(nmc = 10)
+      ),
+    "Preferences are intransitive."
   )
 })
 
@@ -86,7 +119,9 @@ test_that("compute_mallows with single missing value works", {
   dd <- potato_visual
   dd[1, 1] <- NA
   dd[2, 3] <- NA
-  m <- compute_mallows(dd, compute_options = set_compute_options(nmc = 4), seed = 123L)
+  m <- compute_mallows(
+    setup_rank_data(dd),
+    compute_options = set_compute_options(nmc = 4), seed = 123L)
   expect_equal(
     m$alpha,
     structure(list(
@@ -105,7 +140,7 @@ test_that("compute_mallows with single missing value works", {
 
 test_that("compute_mallows with missing data works", {
   mat <- potato_visual * ifelse(runif(length(potato_visual)) > 0.8, NA_real_, 1)
-  m <- compute_mallows(rankings = mat,
+  m <- compute_mallows(setup_rank_data(mat),
                        compute_options = set_compute_options(nmc = 30))
   expect_gt(sd(m$rho$value), 0)
   expect_gt(sd(m$alpha$value), 0.001)
@@ -114,9 +149,10 @@ test_that("compute_mallows with missing data works", {
 
 
 test_that("compute_mallows runs with the right distances", {
+  dat <- setup_rank_data(potato_visual)
   for (metric in c("footrule", "spearman", "cayley", "kendall", "ulam", "hamming")) {
     expect_s3_class(
-      compute_mallows(potato_visual,
+      compute_mallows(dat,
                       model = set_model_options(metric = metric),
                       compute_options = set_compute_options(nmc = 3)), "BayesMallows")
   }
@@ -133,7 +169,10 @@ test_that("compute_mallows handles integer preferences", {
     eval(parse(text = paste("m$", col, "<- as.integer(m$", col, ")")))
   }
 
-  expect_s3_class(compute_mallows(preferences = m, compute_options = set_compute_options(nmc = 20)), "BayesMallows")
+  expect_s3_class(
+    compute_mallows(
+      setup_rank_data(preferences = m),
+      compute_options = set_compute_options(nmc = 20)), "BayesMallows")
 })
 
 test_that("compute_mallows handles data with lots of missings", {
@@ -155,16 +194,19 @@ test_that("compute_mallows handles data with lots of missings", {
     NA, 9, NA
   ), .Dim = c(12L, 20L))
 
-  m <- compute_mallows(R_partial2)
+  m <- compute_mallows(setup_rank_data(R_partial2))
   expect_s3_class(assess_convergence(m), "gg")
 })
 
 test_that("compute_mallows treats obs_freq properly", {
   m1 <- compute_mallows(
-    rankings = potato_visual,
-    obs_freq = rep(1, nrow(potato_visual)), seed = 2233
+    setup_rank_data(potato_visual,
+                    obs_freq = rep(1, nrow(potato_visual))),
+    seed = 2233
   )
-  m2 <- compute_mallows(rankings = potato_visual, seed = 2233)
+  m2 <- compute_mallows(
+    setup_rank_data(potato_visual),
+    seed = 2233)
   expect_equal(m1, m2)
 
   # Test with repeated beach preferences
@@ -186,21 +228,14 @@ test_that("compute_mallows treats obs_freq properly", {
     ret
   }))
 
-
-  # We generate transitive closure for these preferences
-  beach_tc_rep <- generate_transitive_closure(beach_pref_rep)
-
   # We generate the initial rankings for the repeated and the "unrepeated"
   # data
   set.seed(1223)
-  beach_tc <- generate_transitive_closure(beach_small)
-  beach_rankings <- generate_initial_ranking(beach_tc, n_items = 15)
-  beach_rankings_rep <- generate_initial_ranking(beach_tc_rep, n_items = 15)
+  dat <- setup_rank_data(preferences = beach_small, obs_freq = obs_freq)
+  dat_rep <- setup_rank_data(preferences = beach_pref_rep)
 
   model_fit_obs_freq <- compute_mallows(
-    rankings = beach_rankings,
-    preferences = beach_tc,
-    obs_freq = obs_freq,
+    data = dat,
     compute_options = set_compute_options(nmc = 10, save_aug = TRUE),
     seed = 3344L
   )
@@ -229,8 +264,7 @@ test_that("compute_mallows treats obs_freq properly", {
 
   # Next for the repeated data.
   model_fit_rep <- compute_mallows(
-    rankings = beach_rankings_rep,
-    preferences = beach_tc_rep,
+    data = dat_rep,
     compute_options = set_compute_options(nmc = 10, save_aug = TRUE),
     seed = 3344L
   )

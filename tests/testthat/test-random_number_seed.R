@@ -1,6 +1,6 @@
 bmm <- compute_mallows_mixtures(
   n_clusters = c(1, 4),
-  rankings = sushi_rankings,
+  data = setup_rank_data(sushi_rankings),
   compute_options = set_compute_options(nmc = 50, include_wcd = FALSE),
   seed = 432
 )
@@ -13,7 +13,7 @@ expect_equal(
 
 
 m <- compute_mallows(
-  sushi_rankings,
+  setup_rank_data(sushi_rankings),
   model = set_model_options(n_clusters = 5),
   seed = 123,
   compute_options = set_compute_options(nmc = 20))

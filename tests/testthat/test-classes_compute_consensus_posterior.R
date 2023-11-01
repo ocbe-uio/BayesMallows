@@ -4,7 +4,7 @@ set.seed(6998768)
 
 # Typical BayesMallows workflow ================================================
 
-fit_bm <- compute_mallows(potato_visual)
+fit_bm <- compute_mallows(data = setup_rank_data(potato_visual))
 fit_bm$burnin <- 1000
 fit_bm_post_alpha <- compute_posterior_intervals(fit_bm, parameter = "alpha")
 fit_bm_post_rho <- compute_posterior_intervals(fit_bm, parameter = "rho")

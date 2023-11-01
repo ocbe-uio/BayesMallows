@@ -43,7 +43,8 @@ comparing their relative weights by hand (`potato_weighing`). To fit a
 Bayesian Mallows model on the `potato_visual` dataset, we do
 
 ``` r
-fit <- compute_mallows(potato_visual)
+potato_data <- setup_rank_data(potato_visual)
+fit <- compute_mallows(data = potato_data)
 ```
 
 Next, we can see a diagnostic plot for the Metropolis-Hastings algorithm

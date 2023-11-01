@@ -52,7 +52,8 @@ library(BayesMallows)
 The package comes with several example datasets. The simplest one contains 12 persons' assessments of the weights of 20 potatoes, either by visual inspection (`potato_visual`) or by lifting the potatoes and comparing their relative weights by hand (`potato_weighing`). To fit a Bayesian Mallows model on the `potato_visual` dataset, we do
 
 ```{r}
-fit <- compute_mallows(potato_visual)
+potato_data <- setup_rank_data(potato_visual)
+fit <- compute_mallows(data = potato_data)
 ```
 
 Next, we can see a diagnostic plot for the Metropolis-Hastings algorithm with `assess_convergence()`. The plot below is for the scale parameter, which measures the variation between the individual rankings.

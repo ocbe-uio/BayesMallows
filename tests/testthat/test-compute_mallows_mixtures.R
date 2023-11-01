@@ -1,9 +1,11 @@
 test_that("compute_mallows_mixtures works", {
   n_clusters <- c(1, 4, 6)
+  dat <- setup_rank_data(rankings = sushi_rankings[1:100, ])
+
   models <- compute_mallows_mixtures(
     n_clusters = n_clusters,
+    data = dat,
     compute_options = set_compute_options(nmc = 20L),
-    rankings = sushi_rankings[1:100, ],
     seed = 1234
   )
 
@@ -27,7 +29,7 @@ test_that("compute_mallows_mixtures works", {
   )
 
   mixture_model <- compute_mallows(
-    rankings = sushi_rankings[1:100, ],
+    data = dat,
     model = set_model_options(n_clusters = 5),
     compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
     seed = 123
@@ -46,8 +48,8 @@ test_that("compute_mallows_mixtures works", {
   cl <- parallel::makeCluster(1)
   models <- compute_mallows_mixtures(
     n_clusters = n_clusters,
+    data = dat,
     compute_options = set_compute_options(nmc = 20L),
-    rankings = sushi_rankings[1:100, ],
     cl = cl
   )
   parallel::stopCluster(cl)
@@ -55,7 +57,7 @@ test_that("compute_mallows_mixtures works", {
 
   # check that psi argument is being used
   mixture_model1 <- compute_mallows(
-    rankings = sushi_rankings[1:100, ],
+    data = dat,
     model = set_model_options(n_clusters = 5),
     compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
     priors = set_priors(psi = 100),
@@ -63,7 +65,7 @@ test_that("compute_mallows_mixtures works", {
   )
 
   mixture_model2 <- compute_mallows(
-    rankings = sushi_rankings[1:100, ],
+    data = dat,
     model = set_model_options(n_clusters = 5),
     compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
     priors = set_priors(psi = 1),

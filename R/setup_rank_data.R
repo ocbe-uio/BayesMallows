@@ -60,6 +60,9 @@
 #'   transitive closure based on preferences, returned from
 #'   \code{parallel::makeCluster}. Defaults to \code{NULL}.
 #'
+#' @param ... Other optional arguments, forward to
+#'   \code{\link{generate_initial_ranking}}.
+#'
 #'
 #' @return An object of class \code{"BayesMallowsData"}, to be provided in the
 #'   \code{data} argument to \code{\link{compute_mallows}}.
@@ -73,7 +76,8 @@ setup_rank_data <- function(
     obs_freq = NULL,
     validate_rankings = TRUE,
     na_action = "augment",
-    cl = NULL
+    cl = NULL,
+    ...
 ) {
 
   na_action <- match.arg(na_action, c("augment", "fail", "omit"))
@@ -92,7 +96,7 @@ setup_rank_data <- function(
   },
   error = function(e) {
     ret <- preferences
-    class(ret) <- "BayesMallowsIntransitive"
+    class(ret) <- c("BayesMallowsIntransitive", class(ret))
     message("Preferences are intransitive. Make sure to run compute_mallows() ",
             "with an appropriate error model.")
     ret
@@ -110,11 +114,12 @@ setup_rank_data <- function(
       rankings <- rankings[keeps, , drop = FALSE]
     }
   } else {
-    rankings <- generate_initial_ranking(preferences, n_items, cl)
+    rankings <- generate_initial_ranking(preferences, n_items, cl, ...)
   }
 
   # Check if obs_freq are provided
   if (!is.null(obs_freq)) {
+    validate_positive_vector(obs_freq)
     if (is.null(rankings)) {
       stop("rankings matrix must be provided when obs_freq are provided")
     }

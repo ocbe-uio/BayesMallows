@@ -4,26 +4,71 @@
 \alias{compute_mallows_mixtures}
 \title{Compute Mixtures of Mallows Models}
 \usage{
-compute_mallows_mixtures(n_clusters, ..., cl = NULL)
+compute_mallows_mixtures(
+  n_clusters,
+  data,
+  model = set_model_options(),
+  compute_options = set_compute_options(),
+  priors = set_priors(),
+  init = set_initial_values(),
+  logz_estimate = NULL,
+  verbose = FALSE,
+  seed = NULL,
+  cl = NULL
+)
 }
 \arguments{
-\item{n_clusters}{Integer vector specifying the number of clusters
-to use.}
+\item{n_clusters}{Integer vector specifying the number of clusters to use.}
 
-\item{...}{Other named arguments, passed to \code{\link{compute_mallows}}.}
+\item{data}{An object of class \code{"BayesMallowsData"} returned from
+\code{\link{setup_rank_data}}.}
 
-\item{cl}{Optional computing cluster used for parallelization, returned
-from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
+\item{model}{An object of class \code{"BayesMallowsModelOptions"} returned
+from \code{\link{set_model_options}}.}
+
+\item{compute_options}{An object of class \code{"BayesMallowsComputeOptions"}
+returned from \code{\link{set_compute_options}}.}
+
+\item{priors}{An object of class \code{"BayesMallowsPriors"} returned from
+\code{\link{set_priors}}.}
+
+\item{init}{An object of class \code{"BayesMallowsInitialValues"} returned
+from \code{\link{set_initial_values}}.}
+
+\item{logz_estimate}{Estimate of the partition function, computed with
+\code{\link{estimate_partition_function}}. Be aware that when using an
+estimated partition function when \code{n_clusters > 1}, the partition
+function should be estimated over the whole range of \eqn{\alpha} values
+covered by the prior distribution for \eqn{\alpha} with high probability.
+In the case that a cluster \eqn{\alpha_c} becomes empty during the
+Metropolis-Hastings algorithm, the posterior of \eqn{\alpha_c} equals its
+prior. For example, if the rate parameter of the exponential prior equals,
+say \eqn{\lambda = 0.001}, there is about 37 \% (or exactly: \code{1 -
+pexp(1000, 0.001)}) prior probability that \eqn{\alpha_c > 1000}. Hence
+when \code{n_clusters > 1}, the estimated partition function should cover
+this range, or \eqn{\lambda} should be increased.}
+
+\item{verbose}{Logical specifying whether to print out the progress of the
+Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
+every 1000th iteration. Defaults to \code{FALSE}.}
+
+\item{seed}{Optional integer to be used as random number seed.}
+
+\item{cl}{Optional cluster.}
 }
 \value{
-A list of Mallows models of class \code{BayesMallowsMixtures}, with one element
-for each number of mixtures that
-was computed. This object can be studied with \code{\link{plot_elbow}}.
+A list of Mallows models of class \code{BayesMallowsMixtures}, with
+  one element for each number of mixtures that was computed. This object can
+  be studied with \code{\link{plot_elbow}}.
 }
 \description{
-Convenience function for computing Mallows models with varying
-numbers of mixtures. This is useful for deciding the number of
-mixtures to use in the final model.
+Convenience function for computing Mallows models with varying numbers of
+mixtures. This is useful for deciding the number of mixtures to use in the
+final model.
+}
+\details{
+The \code{n_clusters} argument to \code{\link{set_model_options}} is ignored
+when calling \code{compute_mallows_mixtures}.
 }
 \examples{
 # DETERMINING THE NUMBER OF CLUSTERS IN THE SUSHI EXAMPLE DATA
@@ -32,7 +77,7 @@ mixtures to use in the final model.
   # We use the convenience function compute_mallows_mixtures
   n_clusters <- seq(from = 1, to = 10)
   models <- compute_mallows_mixtures(
-    n_clusters = n_clusters, rankings = sushi_rankings,
+    n_clusters = n_clusters, data = setup_rank_data(sushi_rankings),
     compute_options = set_compute_options(include_wcd = TRUE))
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows

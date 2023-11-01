@@ -1,5 +1,18 @@
 # BayesMallows (development versions)
 
+## Major breaking changes
+
+* The number of arguments to compute_mallows() has been reduced from 29 to 9, by
+  creating new functions for setting up data objects, model parameters, 
+  computational options, initial values, and priors. See the introductory 
+  vignette to get started.
+* The function compute_mallows_mixtures() now takes the same arguments as
+  compute_mallows(), rather than simpy forwarding the arguments with an 
+  ellipsis (...).
+  
+
+## Other changes
+
 * Argument obs_freq to internal function rmallows() is removed, as it is not 
   being used. Thanks to Lorenzo Zuccato for pointing this our 
   (https://github.com/ocbe-uio/BayesMallows/issues/337).

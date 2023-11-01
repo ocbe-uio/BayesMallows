@@ -4,7 +4,7 @@
 \alias{generate_initial_ranking}
 \title{Generic function for generating initial ranking}
 \usage{
-generate_initial_ranking(preferences, n_items, cl)
+generate_initial_ranking(preferences, n_items, cl, ...)
 }
 \description{
 Generic function for generating initial ranking

@@ -1,6 +1,7 @@
 test_that("plot_elbow fails when it should", {
   test <- compute_mallows_mixtures(
-    n_clusters = 1:3, rankings = potato_visual,
+    n_clusters = 1:3,
+    data = setup_rank_data(rankings = potato_visual),
     compute_options = set_compute_options(nmc = 20, include_wcd = TRUE)
   )
   expect_s3_class(plot_elbow(test, burnin = 16), "ggplot")
@@ -8,7 +9,8 @@ test_that("plot_elbow fails when it should", {
   expect_error(plot_elbow(test, burnin = 200))
   expect_error(plot_elbow(test))
   test <- compute_mallows_mixtures(
-    n_clusters = 1:3, rankings = potato_visual,
+    n_clusters = 1:3,
+    data = setup_rank_data(rankings = potato_visual),
     compute_options = set_compute_options(nmc = 20, include_wcd = FALSE)
   )
   expect_error(plot_elbow(test, burnin = 100))

@@ -1,12 +1,13 @@
 test_that("assess_convergence fails when it should", {
+  dat <- setup_rank_data(potato_visual)
   m <- compute_mallows(
-    potato_visual, compute_options = set_compute_options(nmc = 10))
+    dat, compute_options = set_compute_options(nmc = 10))
   class(m) <- NULL
   expect_error(assess_convergence(m))
   expect_error(assess_convergence(m, parameter = "aaa"))
   expect_error(assess_convergence(m, parameter = "Rtilde"))
   m <- compute_mallows(
-    potato_visual,
+    dat,
     compute_options = set_compute_options(nmc = 10, save_aug = TRUE))
   expect_error(assess_convergence(m, parameter = "theta"),
                regexp = "Theta not available")
@@ -23,15 +24,17 @@ test_that("assess_convergence fails when it should", {
   expect_error(assess_convergence(m, parameter = "rororo"))
 
   m <- compute_mallows(
-    potato_visual,
+    dat,
     model = set_model_options(n_clusters = 2),
     compute_options = set_compute_options(nmc = 10, save_aug = FALSE))
   expect_error(assess_convergence(m, parameter = "Rtilde"))
 
-  m <- compute_mallows(preferences = beach_preferences,
-                       model = set_model_options(error_model = "bernoulli"),
-                       compute_options = set_compute_options(nmc = 10)
-                       )
+
+  m <- compute_mallows(
+    setup_rank_data(preferences = beach_preferences),
+    model = set_model_options(error_model = "bernoulli"),
+    compute_options = set_compute_options(nmc = 10)
+    )
   expect_s3_class(assess_convergence(m, parameter = "theta"), "ggplot")
 
   # This one should not give message
@@ -44,13 +47,15 @@ test_that("assess_convergence fails when it should", {
     nrow = 3, ncol = 3, byrow = TRUE
   )
 
-  m <- compute_mallows(testdat, compute_options = set_compute_options(nmc = 5))
+  m <- compute_mallows(
+    setup_rank_data(testdat),
+    compute_options = set_compute_options(nmc = 5))
   expect_equal(
     assess_convergence(m, parameter = "rho"),
     assess_convergence(m, parameter = "rho", items = 1:3)
   )
   m <- compute_mallows(
-    testdat,
+    setup_rank_data(testdat),
     model = set_model_options(n_clusters = 2),
     compute_options = set_compute_options(nmc = 5, save_aug = TRUE))
   expect_equal(
@@ -59,17 +64,18 @@ test_that("assess_convergence fails when it should", {
   )
 })
 
-
 test_that("assess_convergence works with mixtures", {
-  m <- compute_mallows_mixtures(n_clusters = 3, rankings = potato_visual,
-                                compute_options = set_compute_options(nmc = 10))
+  m <- compute_mallows_mixtures(
+    n_clusters = 3,
+    data = setup_rank_data(potato_visual),
+    compute_options = set_compute_options(nmc = 10))
   class(m) <- NULL
   expect_error(assess_convergence(m))
   expect_error(assess_convergence(m, parameter = "aaa"))
   expect_error(assess_convergence(m, parameter = "Rtilde"))
 
   m <- compute_mallows_mixtures(
-    n_clusters = 3, rankings = potato_visual,
+    n_clusters = 3, data = setup_rank_data(potato_visual),
     compute_options = set_compute_options(nmc = 10, save_aug = TRUE)
   )
   expect_s3_class(assess_convergence(m, parameter = "alpha"), "ggplot")
@@ -82,7 +88,7 @@ test_that("assess_convergence works with mixtures", {
   expect_s3_class(assess_convergence(m, parameter = "cluster_probs"), "ggplot")
 
   m <- compute_mallows(
-    potato_visual,
+    data = setup_rank_data(potato_visual),
     model = set_model_options(n_clusters = 2),
     compute_options = set_compute_options(nmc = 10))
   plt <- assess_convergence(m, parameter = "cluster_probs")

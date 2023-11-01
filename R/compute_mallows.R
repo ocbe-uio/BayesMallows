@@ -93,6 +93,8 @@ compute_mallows <- function(
   validate_class(compute_options, "BayesMallowsComputeOptions")
   validate_class(priors, "BayesMallowsPriors")
   validate_class(init, "BayesMallowsInitialValues")
+  validate_preferences(data, model)
+  validate_initial_values(init, data)
 
   if (!is.null(seed)) set.seed(seed)
 
@@ -157,11 +159,6 @@ compute_mallows <- function(
 }
 
 update_data <- function(data, model) {
-  if (is.null(data$preferences) && model$error_model != "none") {
-    stop("Error model requires preferences to be set.")
-  }
-
-  # If any row of rankings has only one missing value, replace it with the implied ranking
   if (any(is.na(data$rankings))) {
     dn <- dimnames(data$rankings)
     data$rankings <- lapply(

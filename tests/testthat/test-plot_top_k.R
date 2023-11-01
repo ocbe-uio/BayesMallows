@@ -2,12 +2,11 @@ beach_small <- subset(
   beach_preferences,
   bottom_item %in% 1:5 & top_item %in% 1:5
 )
-beach_tc <- generate_transitive_closure(beach_small)
-beach_init_rank <- generate_initial_ranking(beach_tc)
+dat <- setup_rank_data(preferences = beach_small)
 
 test_that("plot_top_k and predict_top_k fail when they should", {
   bmm <- compute_mallows(
-    rankings = beach_init_rank, preferences = beach_tc,
+    data = dat,
     compute_options = set_compute_options(nmc = 2, save_aug = TRUE)
   )
   # Expecting error because burnin is not set
@@ -30,7 +29,7 @@ test_that("plot_top_k and predict_top_k fail when they should", {
   expect_error(predict_top_k(bmm))
 
   bmm <- compute_mallows(
-    rankings = beach_init_rank, preferences = beach_tc,
+    data = dat,
     compute_options = set_compute_options(nmc = 2, save_aug = FALSE)
   )
   # Expecting error because save_aug = FALSE
@@ -39,7 +38,7 @@ test_that("plot_top_k and predict_top_k fail when they should", {
 
   # Test whether predict_top_k returns correct numbers
   bmm <- compute_mallows(
-    rankings = beach_init_rank, preferences = beach_tc,
+    data = dat,
     compute_options = set_compute_options(nmc = 20, save_aug = TRUE),
     seed = 1L
   )
@@ -76,15 +75,16 @@ test_that("predict_top_k works with augmentation thinning", {
   dat[dat > 3] <- NA
   dat <- dat[, apply(dat, 2, function(x) !all(is.na(x)))]
 
+
   # Run the model with different levels of thinning
   # This model is deterministic, because each subject has either ranked or not ranked the item
   bmm1 <- compute_mallows(
-    rankings = dat,
+    setup_rank_data(dat),
     compute_options = set_compute_options(nmc = 500, save_aug = TRUE, aug_thinning = 1L),
     seed = 1L
   )
   bmm3 <- compute_mallows(
-    rankings = dat,
+    setup_rank_data(dat),
     compute_options = set_compute_options(nmc = 500, save_aug = TRUE, aug_thinning = 3L),
     seed = 1L
   )
@@ -95,16 +95,16 @@ test_that("predict_top_k works with augmentation thinning", {
   expect_equal(pred1, pred3)
 })
 
-
+dat <- setup_rank_data(preferences = beach_preferences)
 test_that("plot_top_k works", {
   bmm <- compute_mallows(
-    rankings = beach_init_rank, preferences = beach_tc,
+    dat,
     compute_options = set_compute_options(nmc = 10, save_aug = TRUE)
   )
   expect_s3_class(plot_top_k(bmm, k = 4, burnin = 5), "ggplot")
 
   bmm <- compute_mallows(
-    rankings = beach_init_rank, preferences = beach_tc,
+    dat,
     model = set_model_options(n_clusters = 2),
     compute_options = set_compute_options(nmc = 10, save_aug = TRUE)
   )

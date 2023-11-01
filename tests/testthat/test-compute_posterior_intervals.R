@@ -1,6 +1,6 @@
 test_that("compute posterior intervals works", {
   m <- compute_mallows(
-    potato_visual,
+    setup_rank_data(potato_visual),
     compute_options = set_compute_options(nmc = 10),
     seed = 123)
   expect_error(compute_posterior_intervals(m))
@@ -21,7 +21,7 @@ test_that("compute posterior intervals works", {
 
 
   m <- compute_mallows(
-    potato_visual,
+    setup_rank_data(potato_visual),
     model = set_model_options(n_clusters = 2),
     compute_options = set_compute_options(nmc = 10), seed = 22)
   expect_snapshot(

@@ -16,7 +16,7 @@ metric <- "footrule"
 nmc <- 20
 burnin <- 5
 model_fit <- compute_mallows(
-  rankings = data,
+  setup_rank_data(data),
   model = set_model_options(metric = metric),
   compute_options = set_compute_options(nmc = nmc, leap_size = leap_size,
                                         alpha_prop_sd = 0.15)

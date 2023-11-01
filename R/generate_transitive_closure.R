@@ -67,10 +67,8 @@ generate_transitive_closure <- function(df, cl = NULL) {
   )
 
   if (nrow(check) > 0) {
-    print("Inconsistent rankings:")
-    print(check)
     stop(
-      "Cannot compute transitive closure, but that is fine. Just make",
+      "Cannot compute transitive closure, but that is fine. Just make ",
       "sure you run compute_mallows with argument error_model='bernoulli'")
   }
 
@@ -95,10 +93,10 @@ generate_transitive_closure <- function(df, cl = NULL) {
   incidence <- relations::relation_incidence(tc)
 
   new_mat <- which(incidence == 1, arr.ind = TRUE)
-
+  row_inds <- as.numeric(gsub("[^0-9]+", "", rownames(incidence)))
   result <- data.frame(
-    bottom_item = as.numeric(rownames(incidence)[new_mat[, 1, drop = FALSE]]),
-    top_item = as.numeric(colnames(incidence)[new_mat[, 2, drop = FALSE]])
+    bottom_item = row_inds[new_mat[, 1, drop = FALSE]],
+    top_item = row_inds[new_mat[, 2, drop = FALSE]]
   )
 
 
