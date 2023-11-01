@@ -453,8 +453,8 @@ smc_mallows_new_item_rank_cpp <- function(n_items, rankings, n_particles, timest
 #'
 #' @family modeling
 #'
-smc_mallows_new_users <- function(rankings, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "uniform", logz_estimate = NULL, cardinalities = NULL, verbose = FALSE, metric = "footrule", leap_size = 1L, rho_init = NULL, alpha_init = NULL, aug_init = NULL, num_obs = 0L) {
-    .Call(`_BayesMallows_smc_mallows_new_users`, rankings, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size, rho_init, alpha_init, aug_init, num_obs)
+smc_mallows_new_users <- function(rankings, rho_init, alpha_init, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "uniform", logz_estimate = NULL, cardinalities = NULL, metric = "footrule", leap_size = 1L, aug_init = NULL, num_obs = 0L) {
+    .Call(`_BayesMallows_smc_mallows_new_users`, rankings, rho_init, alpha_init, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, metric, leap_size, aug_init, num_obs)
 }
 
 #' @title Metropolis-Hastings Alpha
@@ -511,41 +511,6 @@ metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking
     .Call(`_BayesMallows_metropolis_hastings_aug_ranking`, alpha, rho, n_items, partial_ranking, current_ranking, pseudo, metric)
 }
 
-#' @title Metropolis-Hastings Rho
-#' @description Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
-#' @inheritParams get_exponent_sum
-#' @param leap_size Integer specifying the step size of the leap-and-shift
-#' proposal distribution.
-#' @noRd
-#' @examples
-#' rho <- t(c(1,2,3,4,5,6))
-#' alpha <- 2
-#' metric <- "footrule"
-#' n_items <- 6
-#'
-#' metropolis_hastings_rho(
-#' 	alpha = alpha, n_items = n_items, rankings = rho, metric = metric,
-#' 	rho = rho, leap_size = 1
-#' )
-#'
-#' metropolis_hastings_rho(
-#' 	alpha = alpha, n_items = n_items, rankings = rho, metric = metric,
-#' 	rho = rho, leap_size = 2
-#' )
-#'
-#' metropolis_hastings_rho(
-#' 	alpha = alpha, n_items = n_items, rankings = rho, metric = metric,
-#' 	rho = rho, leap_size = 3
-#' )
-#'
-#' rankings <- sample_mallows(
-#'  rho0 = rho, alpha0 = alpha, n_samples = 10, burnin = 1000, thinning = 500
-#' )
-#' metropolis_hastings_rho(
-#' 	alpha = alpha, n_items = n_items, rankings = rankings, metric = metric,
-#' 	rho = rho, leap_size = 1
-#' )
-#'
 metropolis_hastings_rho <- function(alpha, n_items, rankings, rho, metric = "footnote", leap_size = 1L) {
     .Call(`_BayesMallows_metropolis_hastings_rho`, alpha, n_items, rankings, rho, metric, leap_size)
 }

@@ -5,41 +5,7 @@
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
-//' @title Metropolis-Hastings Rho
-//' @description Function to perform Metropolis-Hastings for new rho under the Mallows model with footrule distance metric!
-//' @inheritParams get_exponent_sum
-//' @param leap_size Integer specifying the step size of the leap-and-shift
-//' proposal distribution.
-//' @noRd
-//' @examples
-//' rho <- t(c(1,2,3,4,5,6))
-//' alpha <- 2
-//' metric <- "footrule"
-//' n_items <- 6
-//'
-//' metropolis_hastings_rho(
-//' 	alpha = alpha, n_items = n_items, rankings = rho, metric = metric,
-//' 	rho = rho, leap_size = 1
-//' )
-//'
-//' metropolis_hastings_rho(
-//' 	alpha = alpha, n_items = n_items, rankings = rho, metric = metric,
-//' 	rho = rho, leap_size = 2
-//' )
-//'
-//' metropolis_hastings_rho(
-//' 	alpha = alpha, n_items = n_items, rankings = rho, metric = metric,
-//' 	rho = rho, leap_size = 3
-//' )
-//'
-//' rankings <- sample_mallows(
-//'  rho0 = rho, alpha0 = alpha, n_samples = 10, burnin = 1000, thinning = 500
-//' )
-//' metropolis_hastings_rho(
-//' 	alpha = alpha, n_items = n_items, rankings = rankings, metric = metric,
-//' 	rho = rho, leap_size = 1
-//' )
-//'
+
 // [[Rcpp::export]]
 arma::vec metropolis_hastings_rho(
 	const double alpha,

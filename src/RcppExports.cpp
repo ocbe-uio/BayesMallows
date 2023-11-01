@@ -302,12 +302,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // smc_mallows_new_users
-Rcpp::List smc_mallows_new_users(const arma::mat& rankings, const std::string& type, const int& n_particles, const int& mcmc_steps, const int& num_new_obs, const double alpha_prop_sd, const double lambda, const double alpha_max, const double alpha, const std::string& aug_method, const Rcpp::Nullable<arma::vec>& logz_estimate, const Rcpp::Nullable<arma::vec>& cardinalities, const bool verbose, const std::string& metric, const int& leap_size, Rcpp::Nullable<arma::mat> rho_init, Rcpp::Nullable<arma::vec> alpha_init, Rcpp::Nullable<arma::cube> aug_init, int num_obs);
-RcppExport SEXP _BayesMallows_smc_mallows_new_users(SEXP rankingsSEXP, SEXP typeSEXP, SEXP n_particlesSEXP, SEXP mcmc_stepsSEXP, SEXP num_new_obsSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP, SEXP alphaSEXP, SEXP aug_methodSEXP, SEXP logz_estimateSEXP, SEXP cardinalitiesSEXP, SEXP verboseSEXP, SEXP metricSEXP, SEXP leap_sizeSEXP, SEXP rho_initSEXP, SEXP alpha_initSEXP, SEXP aug_initSEXP, SEXP num_obsSEXP) {
+Rcpp::List smc_mallows_new_users(const arma::mat& rankings, arma::mat rho_init, arma::vec alpha_init, const std::string& type, const int& n_particles, const int& mcmc_steps, const int& num_new_obs, const double alpha_prop_sd, const double lambda, const double alpha_max, const double alpha, const std::string& aug_method, const Rcpp::Nullable<arma::vec>& logz_estimate, const Rcpp::Nullable<arma::vec>& cardinalities, const std::string& metric, const int& leap_size, Rcpp::Nullable<arma::cube> aug_init, int num_obs);
+RcppExport SEXP _BayesMallows_smc_mallows_new_users(SEXP rankingsSEXP, SEXP rho_initSEXP, SEXP alpha_initSEXP, SEXP typeSEXP, SEXP n_particlesSEXP, SEXP mcmc_stepsSEXP, SEXP num_new_obsSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP alpha_maxSEXP, SEXP alphaSEXP, SEXP aug_methodSEXP, SEXP logz_estimateSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP, SEXP leap_sizeSEXP, SEXP aug_initSEXP, SEXP num_obsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type rankings(rankingsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type rho_init(rho_initSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type alpha_init(alpha_initSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type type(typeSEXP);
     Rcpp::traits::input_parameter< const int& >::type n_particles(n_particlesSEXP);
     Rcpp::traits::input_parameter< const int& >::type mcmc_steps(mcmc_stepsSEXP);
@@ -319,14 +321,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const std::string& >::type aug_method(aug_methodSEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::vec>& >::type logz_estimate(logz_estimateSEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::vec>& >::type cardinalities(cardinalitiesSEXP);
-    Rcpp::traits::input_parameter< const bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< const int& >::type leap_size(leap_sizeSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::mat> >::type rho_init(rho_initSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type alpha_init(alpha_initSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::cube> >::type aug_init(aug_initSEXP);
     Rcpp::traits::input_parameter< int >::type num_obs(num_obsSEXP);
-    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_users(rankings, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, verbose, metric, leap_size, rho_init, alpha_init, aug_init, num_obs));
+    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_users(rankings, rho_init, alpha_init, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, metric, leap_size, aug_init, num_obs));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -404,7 +403,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_sample_probabilities", (DL_FUNC) &_BayesMallows_get_sample_probabilities, 5},
     {"_BayesMallows_leap_and_shift_probs", (DL_FUNC) &_BayesMallows_leap_and_shift_probs, 3},
     {"_BayesMallows_smc_mallows_new_item_rank_cpp", (DL_FUNC) &_BayesMallows_smc_mallows_new_item_rank_cpp, 19},
-    {"_BayesMallows_smc_mallows_new_users", (DL_FUNC) &_BayesMallows_smc_mallows_new_users, 19},
+    {"_BayesMallows_smc_mallows_new_users", (DL_FUNC) &_BayesMallows_smc_mallows_new_users, 18},
     {"_BayesMallows_metropolis_hastings_alpha", (DL_FUNC) &_BayesMallows_metropolis_hastings_alpha, 10},
     {"_BayesMallows_metropolis_hastings_aug_ranking", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking, 7},
     {"_BayesMallows_metropolis_hastings_rho", (DL_FUNC) &_BayesMallows_metropolis_hastings_rho, 6},

@@ -114,6 +114,7 @@ double get_partition_function(int n_items, double alpha,
                               const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue,
                               std::string metric = "footrule"){
   if (cardinalities.isNotNull()) {
+    Rcpp::Rcout << "inside get_partition_function" << std::endl;
     return logz_cardinalities(alpha, n_items, Rcpp::as<vec>(cardinalities), metric);
   } else if (logz_estimate.isNotNull()) {
     return compute_is_fit(alpha, Rcpp::as<vec>(logz_estimate));

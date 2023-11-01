@@ -98,7 +98,6 @@ Function to perform resample-move SMC algorithm where we receive
 Other modeling: 
 \code{\link{compute_mallows_mixtures}()},
 \code{\link{compute_mallows}()},
-\code{\link{update_mallows.BayesMallows}()},
-\code{\link{update_mallows.SMCMallows}()}
+\code{\link{update_mallows}()}
 }
 \concept{modeling}

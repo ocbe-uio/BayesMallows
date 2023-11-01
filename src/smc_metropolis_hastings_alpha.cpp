@@ -55,17 +55,22 @@ double metropolis_hastings_alpha(
 
   // Difference between current and proposed alpha
   const double& alpha_diff = alpha - alpha_prime;
+
   const double mallows_loglik_prop = get_exponent_sum(alpha_prime - alpha, rho, n_items, rankings, metric);
+
 
   // evaluate the log estimate of the partition function for a particular
   // value of alpha
   const double logz_alpha = get_partition_function(n_items, alpha, cardinalities, logz_estimate, metric);
   const double logz_alpha_prime = get_partition_function(n_items, alpha_prime, cardinalities, logz_estimate, metric);
 
+
   const double& obs_freq = rankings.n_elem / n_items;
 
   // Compute the Metropolis-Hastings ratio
+
   const double& loga = mallows_loglik_prop + lambda * alpha_diff + obs_freq * (logz_alpha - logz_alpha_prime) + log(alpha_prime) - log(alpha);
+
 
   // determine whether to accept or reject proposed rho and return now consensus
   // ranking

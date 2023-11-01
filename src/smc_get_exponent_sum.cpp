@@ -55,10 +55,6 @@ double get_exponent_sum(
   arma::mat rankings,
   const std::string metric = "footrule"
 ) {
-  /* Transpose matrices as needed ------------------------- */
-  if (rho.n_rows == rankings.n_cols) {
-    rankings = rankings.t();
-  }
 
   vec obs_freq = ones(rankings.n_cols);
   double sum_distance = rank_dist_sum(rankings, rho, metric, obs_freq);

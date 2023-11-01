@@ -1,25 +1,12 @@
-#' Generic function for updating Mallows models using SMC
+#' Update a Bayesian Mallows model with new users
 #'
 #' @param model A model object.
-#' @param new_rankings A matrix with rankings.
-#' @param ... Other optional arguments.
-#'
-#' @return An updated model.
-#' @export
-#'
-update_mallows <- function(model, new_rankings, ...) {
-  UseMethod("update_mallows")
-}
-
-#' Update Bayesian Mallows model with new users
-#'
-#' @param model Object of class \code{c("BayesMallows")}
-#'   returned from \code{\link{compute_mallows}}.
 #' @param new_rankings Matrix containing the new set of observed rankings of size
 #'   n_assessors by n_items.
 #' @param n_particles Integer specifying the number of particles.
 #' @param augmentation One of "pseudo" and "uniform".
-#' @param ... Optional additional arguments. Currently not used.
+#' @param mcmc_steps Number of Metropolis-Hastings steps to apply in sequential
+#'   Monte Carlo.
 #'
 #' @return An updated model, of class "SMCMallows".
 #' @export
@@ -28,10 +15,18 @@ update_mallows <- function(model, new_rankings, ...) {
 #'
 #' @family modeling
 #'
+update_mallows <- function(model, new_rankings, n_particles,
+                           augmentation = "pseudo",
+                           mcmc_steps = 5) {
+  UseMethod("update_mallows")
+}
+
+#' @export
+#' @rdname update_mallows
 update_mallows.BayesMallows <- function(
     model, new_rankings, n_particles,
-    type = "complete", augmentation = "pseudo",
-    mcmc_steps = 5, ...) {
+    augmentation = "pseudo",
+    mcmc_steps = 5) {
 
   augmentation <- match.arg(augmentation, c("pseudo", "uniform"))
   stopifnot(is.matrix(new_rankings))
@@ -46,7 +41,7 @@ update_mallows.BayesMallows <- function(
   rho_init <- extract_rho_init(model, n_particles, model$burnin)
 
   ret <- smc_mallows_new_users(
-    rankings = new_rankings,
+    rankings = t(new_rankings),
     type = type,
     n_particles = n_particles,
     mcmc_steps = mcmc_steps,
@@ -80,28 +75,17 @@ update_mallows.BayesMallows <- function(
 }
 
 
-#' Update an SMC Mallows model
-#'
-#' @param model An object of class \code{"SMCMallows"}, returned from
-#'   \code{\link{update_mallows.SMCMallows}}
-#' @param new_rankings New rankings
-#' @param ... Other optional parameters
-#'
-#' @return An object of class "SMCMallows".
 #' @export
-#'
-#' @example inst/examples/smc_mallows_new_users_complete_example.R
-#'
-#' @family modeling
-#'
-update_mallows.SMCMallows <- function(model, new_rankings, ...) {
+#' @rdname update_mallows
+update_mallows.SMCMallows <- function(model, new_rankings) {
 
   rankings <- rbind(model$rankings, new_rankings)
   alpha_init <- extract_alpha_init(model, model$n_particles)
   rho_init <- extract_rho_init(model, model$n_particles)
 
+
   ret <- smc_mallows_new_users(
-    rankings = rankings,
+    rankings = t(rankings),
     type = model$type,
     n_particles = model$n_particles,
     mcmc_steps = model$mcmc_steps,
@@ -110,7 +94,8 @@ update_mallows.SMCMallows <- function(model, new_rankings, ...) {
     cardinalities = model$logz_list$cardinalities,
     metric = model$metric,
     rho_init = rho_init,
-    alpha_init = alpha_init
+    alpha_init = alpha_init,
+    num_obs = nrow(model$rankings)
   )
 
 
@@ -153,5 +138,5 @@ extract_rho_init <- function(model, n_particles, burnin = 0) {
     direction = "wide")
   rho_init <- rho_init[sample(nrow(rho_init), n_particles, replace = TRUE), ]
   rho_init <- rho_init[, grep("^value", colnames(rho_init))]
-  as.matrix(rho_init)
+  t(as.matrix(rho_init))
 }
