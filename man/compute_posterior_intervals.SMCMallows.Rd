@@ -42,7 +42,7 @@ Time <- 20
 N <- 100
 
 # Prepare exact partition function
-cardinalities <- prepare_partition_function(metric = metric,
+cardinalities <- BayesMallows:::prepare_partition_function(metric = metric,
                                             n_items = n_items)$cardinalities
 
 # Performing SMC

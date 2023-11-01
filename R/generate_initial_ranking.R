@@ -60,8 +60,6 @@
 #'
 #' @export
 #'
-#' @example /inst/examples/generate_initial_ranking_example.R
-#'
 #' @family preprocessing
 #'
 generate_initial_ranking <- function(

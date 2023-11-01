@@ -37,7 +37,7 @@
 #'
 #' @seealso [generate_initial_ranking()]
 #'
-#' @export
+#' @noRd
 #'
 #' @example /inst/examples/generate_transitive_closure_example.R
 #'

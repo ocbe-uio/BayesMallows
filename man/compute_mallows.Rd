@@ -133,7 +133,7 @@ assess_convergence(model_fit, parameter = "Rtilde",
 # beach 2 consistently has a higher rank value (lower preference) for
 # assessor 2. We can see why by looking at the implied orderings in
 # beach_tc
-subset(beach_tc, assessor \%in\% c(1, 2) &
+subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
          bottom_item \%in\% c(2, 4) & top_item \%in\% c(2, 4))
 # Assessor 1 has no implied ordering between beach 2 and beach 4,
 # while assessor 2 has the implied ordering that beach 4 is preferred
@@ -197,7 +197,8 @@ subset(beach_tc, assessor \%in\% c(1, 2) &
 # given by the obs_freq vector
 set.seed(1234)
 obs_freq <- sample.int(n = 5, size = nrow(potato_visual), replace = TRUE)
-m <- compute_mallows(rankings = potato_visual, obs_freq = obs_freq)
+m <- compute_mallows(
+  setup_rank_data(rankings = potato_visual, obs_freq = obs_freq))
 
 \dontrun{
   # This example shows how to assess if label switching happens in BayesMallows

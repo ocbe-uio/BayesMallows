@@ -79,6 +79,7 @@ create_ranking <- function(orderings) {
 }
 
 #' @rdname create_ranking
+#' @export
 create_ordering <- function(rankings) {
   create_ranking(rankings)
 }

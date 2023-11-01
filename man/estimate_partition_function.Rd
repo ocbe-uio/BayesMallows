@@ -130,7 +130,7 @@ ggplot(estimates, aes(x = alpha, y = logz_estimate, color = type)) +
 # logz_estimate argument to compute_mallows
 # Say we choose to use the importance sampling estimate with 1e4 Monte Carlo samples:
 model_fit <- compute_mallows(
-  potato_visual,
+  setup_rank_data(potato_visual),
   model = set_model_options(metric = "spearman"),
   logz_estimate = fit2)
 
@@ -141,7 +141,6 @@ model_fit <- compute_mallows(
 \seealso{
 Other preprocessing: 
 \code{\link{generate_initial_ranking}()},
-\code{\link{generate_transitive_closure}()},
 \code{\link{get_transitive_closure}()}
 }
 \concept{preprocessing}

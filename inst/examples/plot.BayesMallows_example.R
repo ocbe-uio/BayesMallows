@@ -1,7 +1,7 @@
 # The example datasets potato_visual and potato_weighing contain complete
 # rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
 # model:
-model_fit <- compute_mallows(potato_visual)
+model_fit <- compute_mallows(setup_rank_data(potato_visual))
 
 # Se the documentation to compute_mallows for how to assess the convergence
 # of the algorithm
@@ -31,7 +31,7 @@ plot(model_fit, parameter = "rho",
   # We use the sushi example data. See the documentation of compute_mallows for a more elaborate
   # example
   model_fit <- compute_mallows(
-    sushi_rankings,
+    setup_rank_data(sushi_rankings),
     model = set_model_options(n_clusters = 5))
   model_fit$burnin <- 1000
   # We can then plot the posterior distributions of the cluster probabilities
