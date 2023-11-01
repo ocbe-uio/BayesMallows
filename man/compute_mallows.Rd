@@ -9,7 +9,7 @@ compute_mallows(
   model = set_model_options(),
   compute_options = set_compute_options(),
   priors = set_priors(),
-  init = set_initial_values(),
+  initial_values = set_initial_values(),
   logz_estimate = NULL,
   verbose = FALSE,
   seed = NULL,
@@ -29,7 +29,7 @@ returned from \code{\link[=set_compute_options]{set_compute_options()}}.}
 \item{priors}{An object of class \code{"BayesMallowsPriors"} returned from
 \code{\link[=set_priors]{set_priors()}}.}
 
-\item{init}{An object of class \code{"BayesMallowsInitialValues"} returned
+\item{initial_values}{An object of class \code{"BayesMallowsInitialValues"} returned
 from \code{\link[=set_initial_values]{set_initial_values()}}.}
 
 \item{logz_estimate}{Estimate of the partition function, computed with

@@ -16,7 +16,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
                     Rcpp::List model,
                     Rcpp::List compute_options,
                     Rcpp::List priors,
-                    Rcpp::List init,
+                    Rcpp::List initial_values,
                     Rcpp::List logz_list,
                     bool verbose = false
                       ){
@@ -56,14 +56,14 @@ Rcpp::List run_mcmc(Rcpp::List data,
   int nmc = compute_options["nmc"];
   int n_clusters = model["n_clusters"];
   cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
-  Rcpp::Nullable<mat> rho_init = init["rho_init"];
+  Rcpp::Nullable<mat> rho_init = initial_values["rho_init"];
   rho.slice(0) = initialize_rho(n_items, n_clusters, rho_init);
   mat rho_old = rho(span::all, span::all, span(0));
 
   // Declare the vector to hold the scaling parameter alpha
   int alpha_jump = compute_options["alpha_jump"];
   mat alpha(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
-  double alpha_init = init["alpha_init"];
+  double alpha_init = initial_values["alpha_init"];
   alpha.col(0).fill(alpha_init);
 
   // If the user wants to save augmented data, we need a cube

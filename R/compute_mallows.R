@@ -36,7 +36,7 @@
 #' @param priors An object of class `"BayesMallowsPriors"` returned from
 #'   [set_priors()].
 #'
-#' @param init An object of class `"BayesMallowsInitialValues"` returned
+#' @param initial_values An object of class `"BayesMallowsInitialValues"` returned
 #'   from [set_initial_values()].
 #'
 #' @param logz_estimate Estimate of the partition function, computed with
@@ -79,7 +79,7 @@ compute_mallows <- function(
     model = set_model_options(),
     compute_options = set_compute_options(),
     priors = set_priors(),
-    init = set_initial_values(),
+    initial_values = set_initial_values(),
     logz_estimate = NULL,
     verbose = FALSE,
     seed = NULL,
@@ -89,9 +89,9 @@ compute_mallows <- function(
   validate_class(model, "BayesMallowsModelOptions")
   validate_class(compute_options, "BayesMallowsComputeOptions")
   validate_class(priors, "BayesMallowsPriors")
-  validate_class(init, "BayesMallowsInitialValues")
+  validate_class(initial_values, "BayesMallowsInitialValues")
   validate_preferences(data, model)
-  validate_initial_values(init, data)
+  validate_initial_values(initial_values, data)
 
   if (!is.null(seed)) set.seed(seed)
 
@@ -106,7 +106,7 @@ compute_mallows <- function(
     parallel::clusterExport(
       cl = cl,
       varlist = c(
-        "data", "model", "compute_options", "priors", "init",
+        "data", "model", "compute_options", "priors", "initial_values",
         "logz_list", "verbose"
       ),
       envir = environment()
@@ -119,15 +119,15 @@ compute_mallows <- function(
   }
 
   fits <- lapplyfun(X = chain_seq, FUN = function(i) {
-    if (length(init$alpha_init) > 1) {
-      init$alpha_init <- init$alpha_init[[i]]
+    if (length(initial_values$alpha_init) > 1) {
+      initial_values$alpha_init <- initial_values$alpha_init[[i]]
     }
     run_mcmc(
       data = data,
       model = model,
       compute_options = compute_options,
       priors = priors,
-      init = init,
+      initial_values = initial_values,
       logz_list = logz_list,
       verbose = verbose
     )

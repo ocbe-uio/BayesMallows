@@ -16,7 +16,7 @@
 #'
 #'
 #' @return An object of class `"BayesMallowsInitialValues"`, to be
-#'   provided to the `init` argument of [compute_mallows()].
+#'   provided to the `initial_values` argument of [compute_mallows()].
 #' @export
 #'
 #' @family options

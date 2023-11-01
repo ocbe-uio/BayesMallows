@@ -114,7 +114,7 @@ cl <- makeCluster(2)
 fit <- compute_mallows(
   data = beach_data,
   compute_options = set_compute_options(nmc = 4000, save_aug = TRUE),
-  init = set_initial_values(alpha_init = runif(2, 1, 4)),
+  initial_values = set_initial_values(alpha_init = runif(2, 1, 4)),
   cl = cl
 )
 stopCluster(cl)

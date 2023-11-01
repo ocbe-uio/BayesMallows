@@ -47,13 +47,13 @@ validate_preferences <- function(data, model) {
   }
 }
 
-validate_initial_values <- function(init, data) {
+validate_initial_values <- function(initial_values, data) {
 
-  if(!is.null(init$rho)) {
-    if(length(unique(init$rho)) != length(init$rho)) {
+  if(!is.null(initial_values$rho)) {
+    if(length(unique(initial_values$rho)) != length(initial_values$rho)) {
       stop("initial value rho must be a ranking")
     }
-    if(length(init$rho) != data$n_items) {
+    if(length(initial_values$rho) != data$n_items) {
       stop("initial value rho must have one value per item")
     }
   }

@@ -29,7 +29,7 @@ compute_mallows_mixtures <- function(
     model = set_model_options(),
     compute_options = set_compute_options(),
     priors = set_priors(),
-    init = set_initial_values(),
+    initial_values = set_initial_values(),
     logz_estimate = NULL,
     verbose = FALSE,
     seed = NULL,
@@ -41,7 +41,7 @@ compute_mallows_mixtures <- function(
     lapplyfun <- lapply
   } else {
     varlist <- c(
-      "data", "model", "compute_options", "priors", "init",
+      "data", "model", "compute_options", "priors", "initial_values",
       "logz_estimate", "verbose"
     )
 
@@ -55,7 +55,7 @@ compute_mallows_mixtures <- function(
     model$n_clusters <- x
     compute_mallows(
       data = data, model = model, compute_options = compute_options,
-      priors = priors, init = init, verbose = verbose, seed = seed)
+      priors = priors, initial_values = initial_values, verbose = verbose, seed = seed)
   })
 
   class(models) <- "BayesMallowsMixtures"

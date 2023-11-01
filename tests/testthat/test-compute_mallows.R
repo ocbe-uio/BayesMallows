@@ -46,21 +46,21 @@ test_that("rho_init is properly validated", {
   expect_error(
     compute_mallows(
       data = setup_rank_data(m),
-      init = set_initial_values(rho_init = 1:(ncol(m) - 1))),
+      initial_values = set_initial_values(rho_init = 1:(ncol(m) - 1))),
     "initial value rho must have one value per item"
     )
 
   expect_error(
     compute_mallows(
       data = setup_rank_data(m),
-      init = set_initial_values(rho_init = c(potato_true_ranking[-1], 22))),
+      initial_values = set_initial_values(rho_init = c(potato_true_ranking[-1], 22))),
     "rho_init must be a proper permutation"
     )
 
   expect_error(
     compute_mallows(
       data = setup_rank_data(m),
-      init = set_initial_values(rho_init = c(NA_real_, 2:ncol(m)))),
+      initial_values = set_initial_values(rho_init = c(NA_real_, 2:ncol(m)))),
     "rho_init cannot have missing values")
 
   expect_error(
