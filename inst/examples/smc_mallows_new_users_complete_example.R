@@ -5,7 +5,7 @@ metric <- "footrule"
 num_new_obs <- 10
 
 # Prepare exact partition function
-cardinalities <- prepare_partition_function(metric = metric,
+cardinalities <- BayesMallows:::prepare_partition_function(metric = metric,
                                             n_items = n_items)$cardinalities
 
 # Calculating rho and alpha samples
