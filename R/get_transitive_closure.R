@@ -1,21 +1,17 @@
-#' Generic function for obtaining transitive closure
-#'
-#' @export
-#'
-get_transitive_closure <- function(rank_data) {
-  UseMethod("get_transitive_closure")
-}
-
-
 #' Get transitive closure
 #'
-#' @param rank_data An object of class \code{"BayesMallowsData"} returned from
-#'   \code{\link{setup_rank_data}}.
+#' A simple method for showing any transitive closure computed by
+#' [setup_rank_data()].
+#'
+#' @param rank_data An object of class `"BayesMallowsData"` returned from
+#'   [setup_rank_data].
 #'
 #' @return A dataframe with transitive closure, if these is any.
 #' @export
 #'
-get_transitive_closure.BayesMallowsData <- function(rank_data) {
+#' @family preprocessing
+#'
+get_transitive_closure <- function(rank_data) {
   if(inherits(rank_data$preferences, "BayesMallowsTransitiveClosure")) {
     rank_data$preferences
   } else {

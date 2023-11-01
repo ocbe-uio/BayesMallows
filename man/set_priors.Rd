@@ -37,7 +37,7 @@ argument is not used.}
 }
 \value{
 An object of class \code{"BayesMallowsPriors"}, to be provided in the
-  \code{priors} argument to \code{\link{compute_mallows}}.
+\code{priors} argument to \code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \description{
 Set prior parameters for Bayesian Mallows model

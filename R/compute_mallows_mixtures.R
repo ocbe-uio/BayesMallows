@@ -8,13 +8,13 @@
 #' @inheritParams compute_mallows
 #'
 #'
-#' @return A list of Mallows models of class \code{BayesMallowsMixtures}, with
+#' @return A list of Mallows models of class `BayesMallowsMixtures`, with
 #'   one element for each number of mixtures that was computed. This object can
-#'   be studied with \code{\link{plot_elbow}}.
+#'   be studied with [plot_elbow()].
 #'
 #' @details
-#' The \code{n_clusters} argument to \code{\link{set_model_options}} is ignored
-#' when calling \code{compute_mallows_mixtures}.
+#' The `n_clusters` argument to [set_model_options()] is ignored
+#' when calling `compute_mallows_mixtures`.
 #'
 #'
 #' @family modeling

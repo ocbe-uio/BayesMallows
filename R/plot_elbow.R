@@ -4,14 +4,14 @@
 #' consensus for different number of clusters. This function is useful for
 #' selecting the number of mixture.
 #'
-#' @param ... One or more objects returned from \code{\link{compute_mallows}},
+#' @param ... One or more objects returned from [compute_mallows()],
 #' separated by comma, or a list of such objects. Typically, each object
 #' has been run with a different number of mixtures, as specified in the
-#' \code{n_clusters} argument to \code{\link{compute_mallows}}.
+#' `n_clusters` argument to [compute_mallows()].
 #'
 #' @param burnin The number of iterations to discard as burnin. Either a vector of
 #' numbers, one for each model, or a single number which is taken to be the burnin for
-#' all models. If each model provided has a \code{burnin} element, then this is taken
+#' all models. If each model provided has a `burnin` element, then this is taken
 #' as the default.
 #'
 #' @return A boxplot with the number of clusters on the horizontal axis and the
@@ -19,7 +19,7 @@
 #'
 #' @export
 #'
-#' @seealso \code{\link{compute_mallows}}
+#' @seealso [compute_mallows()]
 #'
 #' @example /inst/examples/compute_mallows_mixtures_example.R
 #' @family posterior quantities

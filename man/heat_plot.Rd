@@ -8,15 +8,15 @@ heat_plot(model_fit, burnin = model_fit$burnin, ...)
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
-\code{\link{compute_mallows}}.}
+\code{\link[=compute_mallows]{compute_mallows()}}.}
 
 \item{burnin}{A numeric value specifying the number of iterations
 to discard as burn-in. Defaults to \code{x$burnin}, and must be
-provided if \code{x$burnin} does not exist. See \code{\link{assess_convergence}}.}
+provided if \code{x$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{...}{Additional arguments passed on to other methods. In particular,
 \code{type = "CP"} or \code{type = "MAP"} can be passed on to
-\code{\link{compute_consensus}} to determine the order of items along the
+\code{\link[=compute_consensus]{compute_consensus()}} to determine the order of items along the
 horizontal axis.}
 }
 \value{

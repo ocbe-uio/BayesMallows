@@ -38,13 +38,13 @@ and \code{"ulam"}.}
 }
 \value{
 List containing aug_ranking, a ranking sequence vector of the
-  proposed augmented ranking and forward_prob a numerical value of the
-  probability of creating the augmented ranking using the pseudolikelihood
-  augmentation.
+proposed augmented ranking and forward_prob a numerical value of the
+probability of creating the augmented ranking using the pseudolikelihood
+augmentation.
 }
 \description{
 Function to calculate probability of assigning a set of
-  specific ranks to an specific item
+specific ranks to an specific item
 given its rank in the consensus ranking
 }
 \keyword{internal}

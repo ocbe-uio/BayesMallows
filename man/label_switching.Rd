@@ -10,7 +10,7 @@ in the \code{label.switching} package \insertCite{papastamoulis2016}{BayesMallow
 assessment of label switching after MCMC. At the moment, this is the only available option
 in the \code{BayesMallows} package. The Stephens algorithms requires the individual cluster
 probabilities of each assessor to be saved in each iteration of the MCMC algorithm. As this
-potentially requires much memory, the current implementation of \code{\link{compute_mallows}}
+potentially requires much memory, the current implementation of \code{\link[=compute_mallows]{compute_mallows()}}
 saves these cluster probabilities to a csv file in each iteration. The example below shows how
 to perform such a check for label switching in practice.
 

@@ -8,28 +8,28 @@
 #' @param n_items The total number of items.
 #'
 #' @param cl Optional computing cluster used for parallelization, returned from
-#'   [parallel::makeCluster()]. Defaults to \code{NULL}.
+#'   [parallel::makeCluster()]. Defaults to `NULL`.
 #'
 #' @param shuffle_unranked Logical specifying whether or not to randomly
 #'   permuted unranked items in the initial ranking. When
-#'   \code{shuffle_unranked=TRUE} and \code{random=FALSE}, all unranked items
+#'   `shuffle_unranked=TRUE` and `random=FALSE`, all unranked items
 #'   for each assessor are randomly permuted. Otherwise, the first ordering
-#'   returned by \code{igraph::topo_sort()} is returned.
+#'   returned by `igraph::topo_sort()` is returned.
 #'
 #' @param random Logical specifying whether or not to use a random initial
-#'   ranking. Defaults to \code{FALSE}. Setting this to \code{TRUE} means that
+#'   ranking. Defaults to `FALSE`. Setting this to `TRUE` means that
 #'   all possible orderings consistent with the stated pairwise preferences are
 #'   generated for each assessor, and one of them is picked at random.
 #'
 #' @param random_limit Integer specifying the maximum number of items allowed
-#'   when all possible orderings are computed, i.e., when \code{random=TRUE}.
-#'   Defaults to \code{8L}.
+#'   when all possible orderings are computed, i.e., when `random=TRUE`.
+#'   Defaults to `8L`.
 #'
 #'
-#' @return A matrix of rankings which can be given in the \code{rankings}
-#'   argument to \code{\link{compute_mallows}}.
+#' @return A matrix of rankings which can be given in the `rankings`
+#'   argument to [compute_mallows()].
 #'
-#' @note Setting \code{random=TRUE} means that all possible orderings of each
+#' @note Setting `random=TRUE` means that all possible orderings of each
 #'   assessor's preferences are generated, and one of them is picked at random.
 #'   This can be useful when experiencing convergence issues, e.g., if the MCMC
 #'   algorithm does not mix properly. However, finding all possible orderings
@@ -39,21 +39,21 @@
 #'   of the problem incrementally, by starting with smaller subsets of the
 #'   complete data. An example is given below.
 #'
-#'   As detailed in the documentation to \code{\link{generate_transitive_closure}},
+#'   As detailed in the documentation to [generate_transitive_closure()],
 #'   it is assumed that the items are labeled starting from 1. For example, if a single
 #'   comparison of the following form is provided, it is assumed that there is a total
-#'   of 30 items (\code{n_items=30}), and the initial ranking is a permutation of these 30
+#'   of 30 items (`n_items=30`), and the initial ranking is a permutation of these 30
 #'   items consistent with the preference 29<30.
 #'
 #' \tabular{rrr}{
-#' \strong{assessor} \tab \strong{bottom_item} \tab \strong{top_item}\cr
+#' **assessor** \tab **bottom_item** \tab **top_item**\cr
 #' 1 \tab 29 \tab 30\cr
 #' }
 #'
 #' If in reality there are only two items, they should be relabeled to 1 and 2, as follows:
 #'
 #' \tabular{rrr}{
-#' \strong{assessor} \tab \strong{bottom_item} \tab \strong{top_item}\cr
+#' **assessor** \tab **bottom_item** \tab **top_item**\cr
 #' 1 \tab 1 \tab 2\cr
 #' }
 #'

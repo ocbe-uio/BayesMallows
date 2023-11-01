@@ -3,11 +3,11 @@
 #' @description Construct the frequency distribution of the distinct ranking
 #'   sequences from the dataset of the individual rankings. This can be of
 #'   interest in itself, but also used to speed up computation by providing
-#'   the \code{obs_freq} argument to \code{\link{compute_mallows}}.
+#'   the `obs_freq` argument to [compute_mallows()].
 #'
 #' @param rankings A matrix with the individual rankings in each row.
 #' @return Numeric matrix with the distinct rankings in each row and the
-#'   corresponding frequencies indicated in the last \code{(n_items+1)}-th
+#'   corresponding frequencies indicated in the last `(n_items+1)`-th
 #'   column.
 #' @export
 #' @family rank functions

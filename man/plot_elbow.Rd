@@ -7,10 +7,10 @@
 plot_elbow(..., burnin = NULL)
 }
 \arguments{
-\item{...}{One or more objects returned from \code{\link{compute_mallows}},
+\item{...}{One or more objects returned from \code{\link[=compute_mallows]{compute_mallows()}},
 separated by comma, or a list of such objects. Typically, each object
 has been run with a different number of mixtures, as specified in the
-\code{n_clusters} argument to \code{\link{compute_mallows}}.}
+\code{n_clusters} argument to \code{\link[=compute_mallows]{compute_mallows()}}.}
 
 \item{burnin}{The number of iterations to discard as burnin. Either a vector of
 numbers, one for each model, or a single number which is taken to be the burnin for
@@ -92,7 +92,7 @@ selecting the number of mixture.
 
 }
 \seealso{
-\code{\link{compute_mallows}}
+\code{\link[=compute_mallows]{compute_mallows()}}
 
 Other posterior quantities: 
 \code{\link{assign_cluster}()},

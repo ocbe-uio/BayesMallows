@@ -1,27 +1,27 @@
 #' Trace Plots from Metropolis-Hastings Algorithm
 #'
-#' \code{assess_convergence} provides trace plots for the parameters of the
+#' `assess_convergence` provides trace plots for the parameters of the
 #' Mallows Rank model, in order to study the convergence of the Metropolis-Hastings
 #' algorithm.
 #'
-#' @param model_fit A fitted model object of class \code{BayesMallows} returned from
-#'  \code{\link{compute_mallows}} or an object of class \code{BayesMallowsMixtures}
-#'  returned from \code{\link{compute_mallows_mixtures}}.
+#' @param model_fit A fitted model object of class `BayesMallows` returned from
+#'  [compute_mallows()] or an object of class `BayesMallowsMixtures`
+#'  returned from [compute_mallows_mixtures()].
 #'
 #' @param parameter Character string specifying which parameter to plot. Available
-#' options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"},
-#' \code{"cluster_probs"}, or \code{"theta"}.
+#' options are `"alpha"`, `"rho"`, `"Rtilde"`,
+#' `"cluster_probs"`, or `"theta"`.
 #'
-#' @param items The items to study in the diagnostic plot for \code{rho}. Either
-#'   a vector of item names, corresponding to \code{model_fit$items} or a
+#' @param items The items to study in the diagnostic plot for `rho`. Either
+#'   a vector of item names, corresponding to `model_fit$items` or a
 #'   vector of indices. If NULL, five items are selected randomly. Only used when
-#'   \code{parameter = "rho"} or \code{parameter = "Rtilde"}.
+#'   `parameter = "rho"` or `parameter = "Rtilde"`.
 #'
 #' @param assessors Numeric vector specifying the assessors to study in
-#' the diagnostic plot for \code{"Rtilde"}.
+#' the diagnostic plot for `"Rtilde"`.
 #'
 #'
-#' @seealso \code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
+#' @seealso [compute_mallows()], [plot.BayesMallows()]
 #'
 #' @export
 #' @family diagnostics

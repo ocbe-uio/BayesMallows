@@ -11,14 +11,14 @@ rank_freq_distr(rankings)
 }
 \value{
 Numeric matrix with the distinct rankings in each row and the
-  corresponding frequencies indicated in the last \code{(n_items+1)}-th
-  column.
+corresponding frequencies indicated in the last \code{(n_items+1)}-th
+column.
 }
 \description{
 Construct the frequency distribution of the distinct ranking
-  sequences from the dataset of the individual rankings. This can be of
-  interest in itself, but also used to speed up computation by providing
-  the \code{obs_freq} argument to \code{\link{compute_mallows}}.
+sequences from the dataset of the individual rankings. This can be of
+interest in itself, but also used to speed up computation by providing
+the \code{obs_freq} argument to \code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \examples{
 # Create example data. We set the burn-in and thinning very low

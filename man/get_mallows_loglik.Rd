@@ -15,7 +15,7 @@ get_mallows_loglik(
 )
 }
 \arguments{
-\item{rho}{A matrix of size \code{n_clusters x n_items} whose rows are
+\item{rho}{A matrix of size \verb{n_clusters x n_items} whose rows are
 permutations of the first n_items integers corresponding to the modal
 rankings of the Mallows mixture components.}
 
@@ -44,12 +44,12 @@ otherwise its exponential. Default is \code{TRUE}.}
 }
 \value{
 The likelihood or the log-likelihood value corresponding to one or
-  more observed complete rankings under the Mallows mixture rank model with
-  distance specified by the \code{metric} argument.
+more observed complete rankings under the Mallows mixture rank model with
+distance specified by the \code{metric} argument.
 }
 \description{
 Compute either the likelihood or the log-likelihood value of the
-  Mallows mixture model parameters for a dataset of complete rankings.
+Mallows mixture model parameters for a dataset of complete rankings.
 }
 \examples{
 # Simulate a sample from a Mallows model with the Kendall distance

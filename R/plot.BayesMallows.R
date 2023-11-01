@@ -2,23 +2,23 @@
 #'
 #' Plot posterior distributions of the parameters of the Mallows Rank model.
 #'
-#' @param x An object of type \code{BayesMallows}, returned from
-#'   \code{\link{compute_mallows}}.
+#' @param x An object of type `BayesMallows`, returned from
+#'   [compute_mallows()].
 #'
 #' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{x$burnin}, and must be
-#' provided if \code{x$burnin} does not exist. See \code{\link{assess_convergence}}.
+#' to discard as burn-in. Defaults to `x$burnin`, and must be
+#' provided if `x$burnin` does not exist. See [assess_convergence()].
 #'
 #' @param parameter Character string defining the parameter to plot. Available
-#' options are \code{"alpha"}, \code{"rho"}, \code{"cluster_probs"},
-#' \code{"cluster_assignment"}, and \code{"theta"}.
+#' options are `"alpha"`, `"rho"`, `"cluster_probs"`,
+#' `"cluster_assignment"`, and `"theta"`.
 #'
-#' @param items The items to study in the diagnostic plot for \code{rho}. Either
-#'   a vector of item names, corresponding to \code{x$items} or a
+#' @param items The items to study in the diagnostic plot for `rho`. Either
+#'   a vector of item names, corresponding to `x$items` or a
 #'   vector of indices. If NULL, five items are selected randomly.
-#'   Only used when \code{parameter = "rho"}.
+#'   Only used when `parameter = "rho"`.
 #'
-#' @param ... Other arguments passed to \code{plot} (not used).
+#' @param ... Other arguments passed to `plot` (not used).
 #'
 #' @export
 #'

@@ -18,22 +18,22 @@ compute_mallows(
 }
 \arguments{
 \item{data}{An object of class \code{"BayesMallowsData"} returned from
-\code{\link{setup_rank_data}}.}
+\code{\link[=setup_rank_data]{setup_rank_data()}}.}
 
 \item{model}{An object of class \code{"BayesMallowsModelOptions"} returned
-from \code{\link{set_model_options}}.}
+from \code{\link[=set_model_options]{set_model_options()}}.}
 
 \item{compute_options}{An object of class \code{"BayesMallowsComputeOptions"}
-returned from \code{\link{set_compute_options}}.}
+returned from \code{\link[=set_compute_options]{set_compute_options()}}.}
 
 \item{priors}{An object of class \code{"BayesMallowsPriors"} returned from
-\code{\link{set_priors}}.}
+\code{\link[=set_priors]{set_priors()}}.}
 
 \item{init}{An object of class \code{"BayesMallowsInitialValues"} returned
-from \code{\link{set_initial_values}}.}
+from \code{\link[=set_initial_values]{set_initial_values()}}.}
 
 \item{logz_estimate}{Estimate of the partition function, computed with
-\code{\link{estimate_partition_function}}. Defaults to \code{NULL}, which
+\code{\link[=estimate_partition_function]{estimate_partition_function()}}. Defaults to \code{NULL}, which
 means means that \code{compute_mallows} attempts to compute the
 partition function by using either a pre-defined integer sequence or a
 pre-computed importance sampling estimate. When Cayley, Hamming, or
@@ -47,7 +47,7 @@ every 1000th iteration. Defaults to \code{FALSE}.}
 
 \item{seed}{Optional integer to be used as random number seed.}
 
-\item{cl}{Optional cluster returned from [parallel::makeCluster()]. If
+\item{cl}{Optional cluster returned from \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. If
 provided, chains will be run in parallel, one on each node of \code{cl}.}
 }
 \value{
@@ -55,28 +55,28 @@ A list of class BayesMallows.
 }
 \description{
 Compute the posterior distributions of the parameters of the
-  Bayesian Mallows Rank Model, given rankings or preferences stated by a set
-  of assessors.
+Bayesian Mallows Rank Model, given rankings or preferences stated by a set
+of assessors.
 
-  The \code{BayesMallows} package uses the following parametrization of the
-  Mallows rank model \insertCite{mallows1957}{BayesMallows}:
+The \code{BayesMallows} package uses the following parametrization of the
+Mallows rank model \insertCite{mallows1957}{BayesMallows}:
 
-  \deqn{p(r|\alpha,\rho) = \frac{1}{Z_{n}(\alpha)} \exp\{\frac{-\alpha}{n}
-  d(r,\rho)\}}
+\deqn{p(r|\alpha,\rho) = \frac{1}{Z_{n}(\alpha)} \exp\left\{\frac{-\alpha}{n}
+  d(r,\rho)\right\}}
 
-  where \eqn{r} is a ranking, \eqn{\alpha} is a scale parameter, \eqn{\rho}
-  is the latent consensus ranking, \eqn{Z_{n}(\alpha)} is the partition
-  function (normalizing constant), and \eqn{d(r,\rho)} is a distance function
-  measuring the distance between \eqn{r} and \eqn{\rho}. We refer to
-  \insertCite{vitelli2018}{BayesMallows} for further details of the Bayesian
-  Mallows model.
+where \eqn{r} is a ranking, \eqn{\alpha} is a scale parameter, \eqn{\rho}
+is the latent consensus ranking, \eqn{Z_{n}(\alpha)} is the partition
+function (normalizing constant), and \eqn{d(r,\rho)} is a distance function
+measuring the distance between \eqn{r} and \eqn{\rho}. We refer to
+\insertCite{vitelli2018;textual}{BayesMallows} for further details of the Bayesian
+Mallows model.
 
-  \code{compute_mallows} always returns posterior distributions of the latent
-  consensus ranking \eqn{\rho} and the scale parameter \eqn{\alpha}. Several
-  distance measures are supported, and the preferences can take the form of
-  complete or incomplete rankings, as well as pairwise preferences.
-  \code{compute_mallows} can also compute mixtures of Mallows models, for
-  clustering of assessors with similar preferences.
+\code{compute_mallows} always returns posterior distributions of the latent
+consensus ranking \eqn{\rho} and the scale parameter \eqn{\alpha}. Several
+distance measures are supported, and the preferences can take the form of
+complete or incomplete rankings, as well as pairwise preferences.
+\code{compute_mallows} can also compute mixtures of Mallows models, for
+clustering of assessors with similar preferences.
 }
 \examples{
 # ANALYSIS OF COMPLETE RANKINGS
@@ -206,8 +206,8 @@ help("obs_freq")
 \insertAllCited{}
 }
 \seealso{
-\code{\link{compute_mallows_mixtures}} for a function that computes
-  separate Mallows models for varying numbers of clusters.
+\code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}} for a function that computes
+separate Mallows models for varying numbers of clusters.
 
 Other modeling: 
 \code{\link{compute_mallows_mixtures}()},

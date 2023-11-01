@@ -8,7 +8,7 @@
 }
 \arguments{
 \item{x}{An object of type \code{BayesMallowsMixtures}, returned from
-\code{\link{compute_mallows_mixtures}}.}
+\code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}}.}
 
 \item{...}{Other arguments passed to \code{print} (not used).}
 }

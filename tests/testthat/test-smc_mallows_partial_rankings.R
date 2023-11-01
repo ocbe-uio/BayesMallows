@@ -228,14 +228,6 @@ test_that("Specific example results are OK", {
     tolerance = 1e-5
   )
 
-  expect_warning(
-    compute_rho_consensus(
-      output = test$rho_samples[, , Time + 1], nmc = N, burnin = NULL, C = 1,
-      type = "CP"
-    ),
-    "deprecated"
-  )
-
   rho_cp <- compute_consensus(test)
 
   set.seed(545)

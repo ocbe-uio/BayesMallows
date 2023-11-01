@@ -12,13 +12,13 @@ generate_transitive_closure(df, cl = NULL)
 following:
 \itemize{
 \item \code{assessor} is a numeric vector containing the assessor index, or a character
-      vector containing the (unique) name of the assessor.
+vector containing the (unique) name of the assessor.
 
 \item \code{bottom_item} is a numeric vector containing the index of the item that
-      was disfavored in each pairwise comparison.
+was disfavored in each pairwise comparison.
 
 \item \code{top_item} is a numeric vector containing the index of the item that was
-      preferred in each pairwise comparison.
+preferred in each pairwise comparison.
 }
 So if we have two assessors and five items, and assessor 1 prefers item 1 to item 2 and
 item 1 to item 5, while assessor 2 prefers item 3 to item 5, we have the following \code{df}:
@@ -30,7 +30,7 @@ item 1 to item 5, while assessor 2 prefers item 3 to item 5, we have the followi
 }}
 
 \item{cl}{Optional computing cluster used for parallelization, returned
-from [parallel::makeCluster()]. Defaults to \code{NULL}.}
+from \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}.}
 }
 \value{
 A dataframe with the same columns as \code{df}, but with its set of rows expanded
@@ -40,7 +40,7 @@ transitive closure.
 }
 \description{
 Generate the transitive closure for a set of consistent pairwise comparisons. The result
-can be given in the \code{preferences} argument to \code{\link{compute_mallows}}.
+can be given in the \code{preferences} argument to \code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \examples{
 # Let us first consider a simple case with two assessors, where assessor 1
@@ -78,12 +78,12 @@ stopCluster(cl)
 
 }
 \seealso{
-\code{\link{generate_initial_ranking}}
+\code{\link[=generate_initial_ranking]{generate_initial_ranking()}}
 
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
-\code{\link{generate_constraints}()},
 \code{\link{generate_initial_ranking}()},
+\code{\link{get_transitive_closure}()},
 \code{\link{obs_freq}},
 \code{\link{prepare_partition_function}()}
 }

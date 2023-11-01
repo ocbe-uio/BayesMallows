@@ -3,9 +3,9 @@
 #' @description Compute the expectation of several metrics under the Mallows rank model.
 #' @param alpha Non-negative scalar specifying the scale (precision) parameter in the Mallows rank model.
 #' @param n_items Integer specifying the number of items.
-#' @param metric Character string specifying the distance measure to use. Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"ulam"} for \code{n_items<=95}, \code{"footrule"} for \code{n_items<=50} and \code{"spearman"} for \code{n_items<=14}.
+#' @param metric Character string specifying the distance measure to use. Available options are `"kendall"`, `"cayley"`, `"hamming"`, `"ulam"` for `n_items<=95`, `"footrule"` for `n_items<=50` and `"spearman"` for `n_items<=14`.
 #'
-#' @return A scalar providing the expected value of the \code{metric} under the Mallows rank model with distance specified by the \code{metric} argument.
+#' @return A scalar providing the expected value of the `metric` under the Mallows rank model with distance specified by the `metric` argument.
 #' @export
 #'
 #' @family rank functions

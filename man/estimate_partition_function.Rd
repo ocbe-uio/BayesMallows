@@ -48,14 +48,14 @@ asymptotic approximation of the partition function. Only used when
 \code{method = "asymptotic"}.}
 
 \item{cl}{Optional computing cluster used for parallelization, returned
-from [parallel::makeCluster()]. Defaults to \code{NULL}. Only used when
+from \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}. Only used when
 \code{method = "importance_sampling"}.}
 
 \item{seed}{Optional random number seed.}
 }
 \value{
 A vector of length \code{degree} which can be supplied to the
-  \code{logz_estimate} argument of \code{\link{compute_mallows}}.
+\code{logz_estimate} argument of \code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \description{
 Estimate the logarithm of the partition function of the Mallows rank model. Choose
@@ -140,9 +140,9 @@ model_fit <- compute_mallows(
 }
 \seealso{
 Other preprocessing: 
-\code{\link{generate_constraints}()},
 \code{\link{generate_initial_ranking}()},
 \code{\link{generate_transitive_closure}()},
+\code{\link{get_transitive_closure}()},
 \code{\link{obs_freq}},
 \code{\link{prepare_partition_function}()}
 }

@@ -3,30 +3,30 @@
 #' Assign assessors to clusters by finding the cluster with highest
 #' posterior probability.
 #'
-#' @param model_fit An object of type \code{BayesMallows}, returned from
-#'   \code{\link{compute_mallows}}.
+#' @param model_fit An object of type `BayesMallows`, returned from
+#'   [compute_mallows()].
 #'
 #' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
+#' to discard as burn-in. Defaults to `model_fit$burnin`, and must be
+#' provided if `model_fit$burnin` does not exist. See [assess_convergence()].
 #'
 #' @param soft A logical specifying whether to perform soft or
-#' hard clustering. If \code{soft=TRUE}, all cluster probabilities
-#' are returned, whereas if \code{soft=FALSE}, only the maximum a
+#' hard clustering. If `soft=TRUE`, all cluster probabilities
+#' are returned, whereas if `soft=FALSE`, only the maximum a
 #' posterior (MAP) cluster probability is returned, per assessor. In the
 #' case of a tie between two or more cluster assignments, a random cluster
 #' is taken as MAP estimate.
 #'
 #' @param expand A logical specifying whether or not to expand the rowset
 #' of each assessor to also include clusters for which the assessor has
-#' 0 a posterior assignment probability. Only used when \code{soft = TRUE}. Defaults
-#' to \code{FALSE}.
+#' 0 a posterior assignment probability. Only used when `soft = TRUE`. Defaults
+#' to `FALSE`.
 #'
-#' @return A dataframe. If \code{soft = FALSE}, it has one row per assessor, and columns \code{assessor},
-#' \code{probability} and \code{map_cluster}. If \code{soft = TRUE}, it has \code{n_cluster}
-#' rows per assessor, and the additional column \code{cluster}.
+#' @return A dataframe. If `soft = FALSE`, it has one row per assessor, and columns `assessor`,
+#' `probability` and `map_cluster`. If `soft = TRUE`, it has `n_cluster`
+#' rows per assessor, and the additional column `cluster`.
 #'
-#' @seealso \code{\link{compute_mallows}} for an example where this function is used.
+#' @seealso [compute_mallows()] for an example where this function is used.
 #'
 #' @export
 #'

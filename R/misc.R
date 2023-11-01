@@ -1,11 +1,3 @@
-#' @importFrom Rdpack reprompt
-#' @importFrom Rcpp sourceCpp
-#' @importFrom stats aggregate
-#' @importFrom utils head
-#' @useDynLib BayesMallows, .registration = TRUE
-NULL
-
-
 .onUnload <- function(libpath) {
   library.dynam.unload("BayesMallows", libpath)
 }
@@ -34,13 +26,13 @@ scalefun <- function(x) sprintf("%d", as.integer(x))
 #' Utility function for estimating partition function of the Mallows model.
 #'
 #' @param logz_estimate Optional argument containing the result of calling
-#'   \code{\link{estimate_partition_function}}.
+#'   [estimate_partition_function()].
 #' @param metric Metric to be used.
 #' @param n_items Number of items.
 #'
-#' @return An object of class \code{"BayesMallowsPartitionFunction"} with two
-#'   elements, \code{cardinalities} and \code{logz_estimate}, one of which is
-#'   \code{NULL} and the other of which contains partition function estimates.
+#' @return An object of class `"BayesMallowsPartitionFunction"` with two
+#'   elements, `cardinalities` and `logz_estimate`, one of which is
+#'   `NULL` and the other of which contains partition function estimates.
 #'
 #' @export
 #' @family preprocessing

@@ -1,12 +1,12 @@
 #' Print Method for BayesMallows Objects
 #'
-#' The default print method for a \code{BayesMallows} object.
+#' The default print method for a `BayesMallows` object.
 #'
 #'
-#' @param x An object of type \code{BayesMallows}, returned from
-#'   \code{\link{compute_mallows}}.
+#' @param x An object of type `BayesMallows`, returned from
+#'   [compute_mallows()].
 #'
-#' @param ... Other arguments passed to \code{print} (not used).
+#' @param ... Other arguments passed to `print` (not used).
 #'
 #' @export
 #'

@@ -1,12 +1,12 @@
 #' Print Method for BayesMallowsMixtures Objects
 #'
-#' The default print method for a \code{BayesMallowsMixtures} object.
+#' The default print method for a `BayesMallowsMixtures` object.
 #'
 #'
-#' @param x An object of type \code{BayesMallowsMixtures}, returned from
-#'   \code{\link{compute_mallows_mixtures}}.
+#' @param x An object of type `BayesMallowsMixtures`, returned from
+#'   [compute_mallows_mixtures()].
 #'
-#' @param ... Other arguments passed to \code{print} (not used).
+#' @param ... Other arguments passed to `print` (not used).
 #'
 #' @export
 #'

@@ -2,21 +2,21 @@
 #'
 #' @param rho_init Numeric vector specifying the initial value of the latent
 #'   consensus ranking \eqn{\rho}. Defaults to NULL, which means that the
-#'   initial value is set randomly. If \code{rho_init} is provided when
-#'   \code{n_clusters > 1}, each mixture component \eqn{\rho_{c}} gets the same
+#'   initial value is set randomly. If `rho_init` is provided when
+#'   `n_clusters > 1`, each mixture component \eqn{\rho_{c}} gets the same
 #'   initial value.
 #'
 #'
 #' @param alpha_init Numeric value specifying the initial value of the scale
-#'   parameter \eqn{\alpha}. Defaults to \code{1}. When \code{n_clusters > 1},
+#'   parameter \eqn{\alpha}. Defaults to `1`. When `n_clusters > 1`,
 #'   each mixture component \eqn{\alpha_{c}} gets the same initial value. When
-#'   chains are run in parallel, by providing an argument \code{cl = cl}, then
-#'   \code{alpha_init} can be a vector of of length \code{length(cl)}, each
+#'   chains are run in parallel, by providing an argument `cl = cl`, then
+#'   `alpha_init` can be a vector of of length `length(cl)`, each
 #'   element of which becomes an initial value for the given chain.
 #'
 #'
-#' @return An object of class \code{"BayesMallowsInitialValues"}, to be
-#'   provided to the \code{init} argument of \code{\link{compute_mallows}}.
+#' @return An object of class `"BayesMallowsInitialValues"`, to be
+#'   provided to the `init` argument of [compute_mallows()].
 #' @export
 #'
 #' @family options

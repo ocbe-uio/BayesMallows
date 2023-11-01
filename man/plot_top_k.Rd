@@ -13,17 +13,17 @@ plot_top_k(
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
-\code{\link{compute_mallows}}.}
+\code{\link[=compute_mallows]{compute_mallows()}}.}
 
 \item{burnin}{A numeric value specifying the number of iterations
 to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
+provided if \code{model_fit$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{k}{Integer specifying the k in top-\eqn{k}.}
 
 \item{rel_widths}{The relative widths of the plots of \code{rho} per cluster
 and the plot of assessors, respectively. This argument is passed on to
-\code{\link[cowplot]{plot_grid}}.}
+\code{\link[cowplot:plot_grid]{cowplot::plot_grid()}}.}
 }
 \description{
 Plot the posterior probability, per item, of being ranked among the top-\eqn{k}
@@ -52,7 +52,7 @@ preferences.
 }
 }
 \seealso{
-\code{\link{predict_top_k}}
+\code{\link[=predict_top_k]{predict_top_k()}}
 
 Other posterior quantities: 
 \code{\link{assign_cluster}()},

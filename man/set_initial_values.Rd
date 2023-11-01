@@ -22,7 +22,7 @@ element of which becomes an initial value for the given chain.}
 }
 \value{
 An object of class \code{"BayesMallowsInitialValues"}, to be
-  provided to the \code{init} argument of \code{\link{compute_mallows}}.
+provided to the \code{init} argument of \code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \description{
 Set initial values of scale parameter and modal ranking

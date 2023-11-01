@@ -22,7 +22,7 @@ set_compute_options(
 \arguments{
 \item{nmc}{Integer specifying the number of iteration of the
 Metropolis-Hastings algorithm to run. Defaults to \code{2000}. See
-\code{\link{assess_convergence}} for tools to check convergence of the
+\code{\link[=assess_convergence]{assess_convergence()}} for tools to check convergence of the
 Markov chain.}
 
 \item{burnin}{Integer defining the number of samples to discard. Defaults to
@@ -61,25 +61,25 @@ performed in the Metropolis- Hastings algorithm. Defaults to \code{1}.
 distances computed during the Metropolis-Hastings algorithm. Defaults to
 \code{FALSE}. Setting \code{include_wcd = TRUE} is useful when deciding the
 number of mixture components to include, and is required by
-\code{\link{plot_elbow}}.}
+\code{\link[=plot_elbow]{plot_elbow()}}.}
 
 \item{save_aug}{Logical specifying whether or not to save the augmented
 rankings every \code{aug_thinning}th iteration, for the case of missing
 data or pairwise preferences. Defaults to \code{FALSE}. Saving augmented
 data is useful for predicting the rankings each assessor would give to the
-items not yet ranked, and is required by \code{\link{plot_top_k}}.}
+items not yet ranked, and is required by \code{\link[=plot_top_k]{plot_top_k()}}.}
 
 \item{save_ind_clus}{Whether or not to save the individual cluster
 probabilities in each step. This results in csv files
 \code{cluster_probs1.csv}, \code{cluster_probs2.csv}, ..., being saved in
 the calling directory. This option may slow down the code considerably, but
 is necessary for detecting label switching using Stephen's algorithm. See
-\code{\link{label_switching}} for more information.}
+\code{\link[=label_switching]{label_switching()}} for more information.}
 }
 \value{
 An object of class \code{"BayesMallowsComputeOptions"}, to be
-  provided in the \code{compute_options} argument to
-  \code{\link{compute_mallows}}.
+provided in the \code{compute_options} argument to
+\code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \description{
 Specify options for Metropolis-Hastings algorithms

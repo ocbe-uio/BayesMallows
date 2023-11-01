@@ -4,20 +4,20 @@
 #' for each assessor. This plot is useful when the data take the form of pairwise
 #' preferences.
 #'
-#' @param model_fit An object of type \code{BayesMallows}, returned from
-#'   \code{\link{compute_mallows}}.
+#' @param model_fit An object of type `BayesMallows`, returned from
+#'   [compute_mallows()].
 #'
 #' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-#' provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.
+#' to discard as burn-in. Defaults to `model_fit$burnin`, and must be
+#' provided if `model_fit$burnin` does not exist. See [assess_convergence()].
 #'
 #' @param k Integer specifying the k in top-\eqn{k}.
 #'
-#' @param rel_widths The relative widths of the plots of \code{rho} per cluster
+#' @param rel_widths The relative widths of the plots of `rho` per cluster
 #' and the plot of assessors, respectively. This argument is passed on to
-#' \code{\link[cowplot]{plot_grid}}.
+#' [cowplot::plot_grid()].
 #'
-#' @seealso \code{\link{predict_top_k}}
+#' @seealso [predict_top_k()]
 #'
 #' @export
 #'

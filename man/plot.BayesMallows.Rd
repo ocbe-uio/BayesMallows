@@ -8,11 +8,11 @@
 }
 \arguments{
 \item{x}{An object of type \code{BayesMallows}, returned from
-\code{\link{compute_mallows}}.}
+\code{\link[=compute_mallows]{compute_mallows()}}.}
 
 \item{burnin}{A numeric value specifying the number of iterations
 to discard as burn-in. Defaults to \code{x$burnin}, and must be
-provided if \code{x$burnin} does not exist. See \code{\link{assess_convergence}}.}
+provided if \code{x$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{parameter}{Character string defining the parameter to plot. Available
 options are \code{"alpha"}, \code{"rho"}, \code{"cluster_probs"},

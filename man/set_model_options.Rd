@@ -15,7 +15,7 @@ within-cluster distances, when \code{include_wcd = TRUE}.}
 
 \item{n_clusters}{Integer specifying the number of clusters, i.e., the number
 of mixture components to use. Defaults to \code{1L}, which means no
-clustering is performed. See \code{\link{compute_mallows_mixtures}} for a
+clustering is performed. See \code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}} for a
 convenience function for computing several models with varying numbers of
 mixtures.}
 
@@ -28,7 +28,7 @@ definition of the Bernoulli model.}
 }
 \value{
 An object of class \code{"BayesMallowsModelOptions"}, to be provided
-  in the \code{model} argument to \code{\link{compute_mallows}}.
+in the \code{model} argument to \code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \description{
 Set options for Bayesian Mallows model

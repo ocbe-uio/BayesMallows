@@ -8,19 +8,19 @@ predict_top_k(model_fit, burnin = model_fit$burnin, k = 3)
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
-\code{\link{compute_mallows}}.}
+\code{\link[=compute_mallows]{compute_mallows()}}.}
 
 \item{burnin}{A numeric value specifying the number of iterations to discard
 as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
 \code{model_fit$burnin} does not exist. See
-\code{\link{assess_convergence}}.}
+\code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{k}{Integer specifying the k in top-\eqn{k}.}
 }
 \value{
 A dataframe with columns \code{assessor}, \code{item}, and
-  \code{prob}, where each row states the probability that the given assessor
-  rates the given item among top-\eqn{k}.
+\code{prob}, where each row states the probability that the given assessor
+rates the given item among top-\eqn{k}.
 }
 \description{
 Predict the posterior probability, per item, of being ranked among the
@@ -49,7 +49,7 @@ pairwise preferences.
 }
 }
 \seealso{
-\code{\link{plot_top_k}}
+\code{\link[=plot_top_k]{plot_top_k()}}
 
 Other posterior quantities: 
 \code{\link{assign_cluster}()},

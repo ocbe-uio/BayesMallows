@@ -13,11 +13,11 @@ assign_cluster(
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
-\code{\link{compute_mallows}}.}
+\code{\link[=compute_mallows]{compute_mallows()}}.}
 
 \item{burnin}{A numeric value specifying the number of iterations
 to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-provided if \code{model_fit$burnin} does not exist. See \code{\link{assess_convergence}}.}
+provided if \code{model_fit$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{soft}{A logical specifying whether to perform soft or
 hard clustering. If \code{soft=TRUE}, all cluster probabilities
@@ -41,7 +41,7 @@ Assign assessors to clusters by finding the cluster with highest
 posterior probability.
 }
 \seealso{
-\code{\link{compute_mallows}} for an example where this function is used.
+\code{\link[=compute_mallows]{compute_mallows()}} for an example where this function is used.
 
 Other posterior quantities: 
 \code{\link{compute_consensus.BayesMallows}()},

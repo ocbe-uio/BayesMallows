@@ -8,7 +8,7 @@ prepare_partition_function(logz_estimate = NULL, metric, n_items)
 }
 \arguments{
 \item{logz_estimate}{Optional argument containing the result of calling
-\code{\link{estimate_partition_function}}.}
+\code{\link[=estimate_partition_function]{estimate_partition_function()}}.}
 
 \item{metric}{Metric to be used.}
 
@@ -16,8 +16,8 @@ prepare_partition_function(logz_estimate = NULL, metric, n_items)
 }
 \value{
 An object of class \code{"BayesMallowsPartitionFunction"} with two
-  elements, \code{cardinalities} and \code{logz_estimate}, one of which is
-  \code{NULL} and the other of which contains partition function estimates.
+elements, \code{cardinalities} and \code{logz_estimate}, one of which is
+\code{NULL} and the other of which contains partition function estimates.
 }
 \description{
 Utility function for estimating partition function of the Mallows model.
@@ -25,9 +25,9 @@ Utility function for estimating partition function of the Mallows model.
 \seealso{
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
-\code{\link{generate_constraints}()},
 \code{\link{generate_initial_ranking}()},
 \code{\link{generate_transitive_closure}()},
+\code{\link{get_transitive_closure}()},
 \code{\link{obs_freq}}
 }
 \concept{preprocessing}

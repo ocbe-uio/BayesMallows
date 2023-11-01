@@ -4,16 +4,16 @@
 #' horizontal axis and ranking along the vertical axis. The color denotes
 #' posterior probability.
 #'
-#' @param model_fit An object of type \code{BayesMallows}, returned from
-#'   \code{\link{compute_mallows}}.
+#' @param model_fit An object of type `BayesMallows`, returned from
+#'   [compute_mallows()].
 #'
 #' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to \code{x$burnin}, and must be
-#' provided if \code{x$burnin} does not exist. See \code{\link{assess_convergence}}.
+#' to discard as burn-in. Defaults to `x$burnin`, and must be
+#' provided if `x$burnin` does not exist. See [assess_convergence()].
 #'
 #' @param ... Additional arguments passed on to other methods. In particular,
-#'   \code{type = "CP"} or \code{type = "MAP"} can be passed on to
-#'   \code{\link{compute_consensus}} to determine the order of items along the
+#'   `type = "CP"` or `type = "MAP"` can be passed on to
+#'   [compute_consensus()] to determine the order of items along the
 #'   horizontal axis.
 #'
 #' @return A ggplot object.

@@ -7,7 +7,7 @@
 rank_distance(rankings, rho, metric, obs_freq = 1)
 }
 \arguments{
-\item{rankings}{A matrix of size \eqn{N }\eqn{\times}{x}\eqn{ n_items} of
+\item{rankings}{A matrix of size \eqn{N \times n_{items}} of
 rankings in each row. Alternatively, if \eqn{N} equals 1, \code{rankings}
 can be a vector.}
 
@@ -25,11 +25,11 @@ A vector of distances according to the given \code{metric}.
 }
 \description{
 Compute the distance between a matrix of rankings and a rank
-  sequence.
+sequence.
 }
 \details{
-The implementation of Cayley distance is based on a \code{C++}
-translation of \code{Rankcluster::distCayley} \insertCite{Grimonprez2016}{BayesMallows}.
+The implementation of Cayley distance is based on a \verb{C++}
+translation of \code{Rankcluster::distCayley()} \insertCite{Grimonprez2016}{BayesMallows}.
 }
 \examples{
 

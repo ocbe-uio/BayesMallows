@@ -27,12 +27,12 @@ generate_initial_ranking(
 \method{generate_initial_ranking}{BayesMallowsIntransitive}(preferences, n_items, cl = NULL)
 }
 \arguments{
-\item{preferences}{Pairwise preferences returned from [generative_transitive_closure()].}
+\item{preferences}{Pairwise preferences returned from \code{\link[=generative_transitive_closure]{generative_transitive_closure()}}.}
 
 \item{n_items}{The total number of items.}
 
 \item{cl}{Optional computing cluster used for parallelization, returned from
-[parallel::makeCluster()]. Defaults to \code{NULL}.}
+\code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}.}
 
 \item{shuffle_unranked}{Logical specifying whether or not to randomly
 permuted unranked items in the initial ranking. When
@@ -51,7 +51,7 @@ Defaults to \code{8L}.}
 }
 \value{
 A matrix of rankings which can be given in the \code{rankings}
-  argument to \code{\link{compute_mallows}}.
+argument to \code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \description{
 Given a consistent set of pairwise preferences, generate a complete ranking
@@ -59,20 +59,20 @@ of items which is consistent with the preferences.
 }
 \note{
 Setting \code{random=TRUE} means that all possible orderings of each
-  assessor's preferences are generated, and one of them is picked at random.
-  This can be useful when experiencing convergence issues, e.g., if the MCMC
-  algorithm does not mix properly. However, finding all possible orderings
-  is a combinatorial problem, which may be computationally very hard. The
-  result may not even be possible to fit in memory, which may cause the R
-  session to crash. When using this option, please try to increase the size
-  of the problem incrementally, by starting with smaller subsets of the
-  complete data. An example is given below.
+assessor's preferences are generated, and one of them is picked at random.
+This can be useful when experiencing convergence issues, e.g., if the MCMC
+algorithm does not mix properly. However, finding all possible orderings
+is a combinatorial problem, which may be computationally very hard. The
+result may not even be possible to fit in memory, which may cause the R
+session to crash. When using this option, please try to increase the size
+of the problem incrementally, by starting with smaller subsets of the
+complete data. An example is given below.
 
-  As detailed in the documentation to \code{\link{generate_transitive_closure}},
-  it is assumed that the items are labeled starting from 1. For example, if a single
-  comparison of the following form is provided, it is assumed that there is a total
-  of 30 items (\code{n_items=30}), and the initial ranking is a permutation of these 30
-  items consistent with the preference 29<30.
+As detailed in the documentation to \code{\link[=generate_transitive_closure]{generate_transitive_closure()}},
+it is assumed that the items are labeled starting from 1. For example, if a single
+comparison of the following form is provided, it is assumed that there is a total
+of 30 items (\code{n_items=30}), and the initial ranking is a permutation of these 30
+items consistent with the preference 29<30.
 
 \tabular{rrr}{
 \strong{assessor} \tab \strong{bottom_item} \tab \strong{top_item}\cr
@@ -163,8 +163,8 @@ stopCluster(cl)
 \seealso{
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
-\code{\link{generate_constraints}()},
 \code{\link{generate_transitive_closure}()},
+\code{\link{get_transitive_closure}()},
 \code{\link{obs_freq}},
 \code{\link{prepare_partition_function}()}
 }

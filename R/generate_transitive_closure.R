@@ -1,25 +1,25 @@
 #' Generate Transitive Closure
 #'
 #' Generate the transitive closure for a set of consistent pairwise comparisons. The result
-#' can be given in the \code{preferences} argument to \code{\link{compute_mallows}}.
+#' can be given in the `preferences` argument to [compute_mallows()].
 #'
 #' @param df A data frame with one row per pairwise comparison, and columns
-#' \code{assessor}, \code{top_item}, and \code{bottom_item}. Each column contains the
+#' `assessor`, `top_item`, and `bottom_item`. Each column contains the
 #' following:
 #' \itemize{
-#' \item \code{assessor} is a numeric vector containing the assessor index, or a character
+#' \item `assessor` is a numeric vector containing the assessor index, or a character
 #'       vector containing the (unique) name of the assessor.
 #'
-#' \item \code{bottom_item} is a numeric vector containing the index of the item that
+#' \item `bottom_item` is a numeric vector containing the index of the item that
 #'       was disfavored in each pairwise comparison.
 #'
-#' \item \code{top_item} is a numeric vector containing the index of the item that was
+#' \item `top_item` is a numeric vector containing the index of the item that was
 #'       preferred in each pairwise comparison.
 #' }
 #' So if we have two assessors and five items, and assessor 1 prefers item 1 to item 2 and
-#' item 1 to item 5, while assessor 2 prefers item 3 to item 5, we have the following \code{df}:
+#' item 1 to item 5, while assessor 2 prefers item 3 to item 5, we have the following `df`:
 #' \tabular{rrr}{
-#' \strong{assessor} \tab \strong{bottom_item} \tab \strong{top_item}\cr
+#' **assessor** \tab **bottom_item** \tab **top_item**\cr
 #' 1 \tab 2 \tab 1\cr
 #' 1 \tab 5 \tab 1\cr
 #' 2 \tab 5 \tab 3\cr
@@ -27,15 +27,15 @@
 #'
 #'
 #' @param cl Optional computing cluster used for parallelization, returned
-#' from [parallel::makeCluster()]. Defaults to \code{NULL}.
+#' from [parallel::makeCluster()]. Defaults to `NULL`.
 #'
 #'
-#' @return A dataframe with the same columns as \code{df}, but with its set of rows expanded
-#' to include all pairwise preferences implied by the ones stated in \code{df}. The returned
-#' object has \code{S3} subclass \code{BayesMallowsTransitiveClosure}, to indicate that this is the
+#' @return A dataframe with the same columns as `df`, but with its set of rows expanded
+#' to include all pairwise preferences implied by the ones stated in `df`. The returned
+#' object has `S3` subclass `BayesMallowsTransitiveClosure`, to indicate that this is the
 #' transitive closure.
 #'
-#' @seealso \code{\link{generate_initial_ranking}}
+#' @seealso [generate_initial_ranking()]
 #'
 #' @export
 #'

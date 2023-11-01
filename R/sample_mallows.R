@@ -11,29 +11,29 @@
 #' @param alpha0 Scalar specifying the scale parameter in the Mallows rank
 #'   model.
 #' @param n_samples Integer specifying the number of random samples to generate.
-#'   When \code{diagnostic = TRUE}, this number must be larger than 1.
+#'   When `diagnostic = TRUE`, this number must be larger than 1.
 #' @param leap_size Integer specifying the step size of the leap-and-shift
 #'   proposal distribution.
 #' @param metric Character string specifying the distance measure to use.
-#'   Available options are \code{"footrule"} (default), \code{"spearman"},
-#'   \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and \code{"ulam"}.
-#'   See also the \code{rmm} function in the \code{PerMallows} package
+#'   Available options are `"footrule"` (default), `"spearman"`,
+#'   `"cayley"`, `"hamming"`, `"kendall"`, and `"ulam"`.
+#'   See also the `rmm` function in the `PerMallows` package
 #'   \insertCite{irurozki2016}{BayesMallows} for sampling from the Mallows
 #'   model with Cayley, Hamming, Kendall, and Ulam distances.
 #' @param diagnostic Logical specifying whether to output convergence
-#'   diagnostics. If \code{TRUE}, a diagnostic plot is printed, together with
+#'   diagnostics. If `TRUE`, a diagnostic plot is printed, together with
 #'   the returned samples.
 #' @param burnin Integer specifying the number of iterations to discard as
-#'   burn-in. Defaults to 1000 when \code{diagnostic = FALSE}, else to 0.
+#'   burn-in. Defaults to 1000 when `diagnostic = FALSE`, else to 0.
 #' @param thinning Integer specifying the number of MCMC iterations to perform
 #'   between each time a random rank vector is sampled. Defaults to 1000 when
-#'   \code{diagnostic = FALSE}, else to 1.
-#' @param items_to_plot Integer vector used if \code{diagnostic = TRUE}, in
+#'   `diagnostic = FALSE`, else to 1.
+#' @param items_to_plot Integer vector used if `diagnostic = TRUE`, in
 #'   order to specify the items to plot in the diagnostic output. If not
 #'   provided, 5 items are picked at random.
 #' @param max_lag Integer specifying the maximum lag to use in the computation
 #'   of autocorrelation. Defaults to 1000L. This argument is passed to
-#'   \code{stats::acf}. Only used when \code{diagnostic = TRUE}.
+#'   `stats::acf`. Only used when `diagnostic = TRUE`.
 #'
 #' @references \insertAllCited{}
 #'

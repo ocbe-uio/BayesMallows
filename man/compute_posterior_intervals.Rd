@@ -55,7 +55,7 @@ compute_posterior_intervals(model_fit, parameter = "rho")
 \insertAllCited{}
 }
 \seealso{
-\code{\link{compute_mallows}}
+\code{\link[=compute_mallows]{compute_mallows()}}
 
 Other posterior quantities: 
 \code{\link{assign_cluster}()},

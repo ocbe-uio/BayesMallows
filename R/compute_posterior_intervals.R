@@ -10,10 +10,10 @@
 #' @details This function computes both the Highest Posterior Density Interval (HPDI),
 #' which may be discontinuous for bimodal distributions, and
 #' the central posterior interval, which is simply defined by the quantiles of the posterior
-#' distribution. The HPDI intervals are computed using the \code{HDInterval} package
+#' distribution. The HPDI intervals are computed using the `HDInterval` package
 #' \insertCite{meredith2018}{BayesMallows}.
 #'
-#' @seealso \code{\link{compute_mallows}}
+#' @seealso [compute_mallows()]
 #'
 #' @references \insertAllCited{}
 #'
@@ -28,19 +28,19 @@ compute_posterior_intervals <- function(model_fit, ...) {
 
 #' Compute posterior intervals
 #'
-#' @param model_fit An object of class \code{BayesMallows} returned from
-#'   \code{\link{compute_mallows}}.
+#' @param model_fit An object of class `BayesMallows` returned from
+#'   [compute_mallows()].
 #' @param burnin A numeric value specifying the number of iterations to discard
-#'   as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
-#'   \code{model_fit$burnin} does not exist. See
-#'   \code{\link{assess_convergence}}.
+#'   as burn-in. Defaults to `model_fit$burnin`, and must be provided if
+#'   `model_fit$burnin` does not exist. See
+#'   [assess_convergence()].
 #' @param parameter Character string defining which parameter to compute
-#'   posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
-#'   \code{"cluster_probs"}. Default is \code{"alpha"}.
+#'   posterior intervals for. One of `"alpha"`, `"rho"`, or
+#'   `"cluster_probs"`. Default is `"alpha"`.
 #' @param level Decimal number in \eqn{[0,1]} specifying the confidence level.
-#'   Defaults to \code{0.95}.
+#'   Defaults to `0.95`.
 #' @param decimals Integer specifying the number of decimals to include in
-#'   posterior intervals and the mean and median. Defaults to \code{3}.
+#'   posterior intervals and the mean and median. Defaults to `3`.
 #' @param ... Other arguments. Currently not used.
 #'
 #' @seealso assess_convergence
@@ -91,15 +91,15 @@ compute_posterior_intervals.BayesMallows <- function(
 #' @description This function computes posterior intervals based on the set of samples at the
 #' last timepoint of the SMC algorithm.
 #'
-#' @param model_fit An object of class \code{SMCMallows}, returned from
-#'   \code{\link{smc_mallows_new_item_rank}} or
-#'   \code{\link{smc_mallows_new_users}}.
+#' @param model_fit An object of class `SMCMallows`, returned from
+#'   [smc_mallows_new_item_rank()] or
+#'   [smc_mallows_new_users()].
 #' @param parameter Character string defining which parameter to compute
-#'   posterior intervals for. One of \code{"alpha"} or \code{"rho"}.
+#'   posterior intervals for. One of `"alpha"` or `"rho"`.
 #' @param level Decimal number in \eqn{[0,1]} specifying the confidence level.
-#'   Defaults to \code{0.95}.
+#'   Defaults to `0.95`.
 #' @param decimals Integer specifying the number of decimals to include in
-#'   posterior intervals and the mean and median. Defaults to \code{3}.
+#'   posterior intervals and the mean and median. Defaults to `3`.
 #' @param ... Other arguments. Currently not used.
 #' @export
 #' @family posterior quantities

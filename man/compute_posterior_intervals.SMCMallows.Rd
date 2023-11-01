@@ -14,8 +14,8 @@
 }
 \arguments{
 \item{model_fit}{An object of class \code{SMCMallows}, returned from
-\code{\link{smc_mallows_new_item_rank}} or
-\code{\link{smc_mallows_new_users}}.}
+\code{\link[=smc_mallows_new_item_rank]{smc_mallows_new_item_rank()}} or
+\code{\link[=smc_mallows_new_users]{smc_mallows_new_users()}}.}
 
 \item{parameter}{Character string defining which parameter to compute
 posterior intervals for. One of \code{"alpha"} or \code{"rho"}.}

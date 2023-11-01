@@ -2,10 +2,27 @@
 % Please edit documentation in R/get_transitive_closure.R
 \name{get_transitive_closure}
 \alias{get_transitive_closure}
-\title{Generic function for obtaining transitive closure}
+\title{Get transitive closure}
 \usage{
 get_transitive_closure(rank_data)
 }
-\description{
-Generic function for obtaining transitive closure
+\arguments{
+\item{rank_data}{An object of class \code{"BayesMallowsData"} returned from
+\link{setup_rank_data}.}
 }
+\value{
+A dataframe with transitive closure, if these is any.
+}
+\description{
+A simple method for showing any transitive closure computed by
+\code{\link[=setup_rank_data]{setup_rank_data()}}.
+}
+\seealso{
+Other preprocessing: 
+\code{\link{estimate_partition_function}()},
+\code{\link{generate_initial_ranking}()},
+\code{\link{generate_transitive_closure}()},
+\code{\link{obs_freq}},
+\code{\link{prepare_partition_function}()}
+}
+\concept{preprocessing}

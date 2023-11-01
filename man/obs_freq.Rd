@@ -6,9 +6,9 @@
 \description{
 When more than one assessor have given the exact same rankings or preferences,
 considerable speed-up can be obtained by providing only the unique set of
-rankings/preferences to \code{\link{compute_mallows}}, and instead providing
+rankings/preferences to \code{\link[=compute_mallows]{compute_mallows()}}, and instead providing
 the number of assessors in the \code{obs_freq} argument. This topic is illustrated
-here. See also the function \code{\link{rank_freq_distr}} for how to easily compute
+here. See also the function \code{\link[=rank_freq_distr]{rank_freq_distr()}} for how to easily compute
 the observation frequencies.
 }
 \examples{
@@ -147,9 +147,9 @@ system.time({
 \seealso{
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
-\code{\link{generate_constraints}()},
 \code{\link{generate_initial_ranking}()},
 \code{\link{generate_transitive_closure}()},
+\code{\link{get_transitive_closure}()},
 \code{\link{prepare_partition_function}()}
 }
 \concept{preprocessing}

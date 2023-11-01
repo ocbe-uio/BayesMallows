@@ -13,8 +13,8 @@ assess_convergence(
 }
 \arguments{
 \item{model_fit}{A fitted model object of class \code{BayesMallows} returned from
-\code{\link{compute_mallows}} or an object of class \code{BayesMallowsMixtures}
-returned from \code{\link{compute_mallows_mixtures}}.}
+\code{\link[=compute_mallows]{compute_mallows()}} or an object of class \code{BayesMallowsMixtures}
+returned from \code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}}.}
 
 \item{parameter}{Character string specifying which parameter to plot. Available
 options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"},
@@ -34,7 +34,7 @@ Mallows Rank model, in order to study the convergence of the Metropolis-Hastings
 algorithm.
 }
 \seealso{
-\code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
+\code{\link[=compute_mallows]{compute_mallows()}}, \code{\link[=plot.BayesMallows]{plot.BayesMallows()}}
 
 Other diagnostics: 
 \code{\link{label_switching}}

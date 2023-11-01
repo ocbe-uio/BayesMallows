@@ -4,7 +4,7 @@
 #' \insertCite{vitelli2018}{BayesMallows}. For mixture models, the
 #' consensus is given for each mixture. Consensus of augmented ranks
 #' can also be computed
-#' for each assessor, by setting \code{parameter = "Rtilde"}.
+#' for each assessor, by setting `parameter = "Rtilde"`.
 #' @param model_fit A model fit.
 #' @param ... other arguments passed to methods.
 #' @references \insertAllCited{}
@@ -19,22 +19,22 @@ compute_consensus <- function(model_fit, ...) {
 
 #' @title Compute Consensus Ranking
 #'
-#' @param model_fit Object of type \code{BayesMallows} returned from
-#'   \code{\link{compute_mallows}}.
+#' @param model_fit Object of type `BayesMallows` returned from
+#'   [compute_mallows()].
 #' @param type Character string specifying which consensus to compute. Either
-#'   \code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.
+#'   `"CP"` or `"MAP"`. Defaults to `"CP"`.
 #' @param burnin A numeric value specifying the number of iterations to discard
-#'   as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
-#'   \code{model_fit$burnin} does not exist. See
-#'   \code{\link{assess_convergence}}.
+#'   as burn-in. Defaults to `model_fit$burnin`, and must be provided if
+#'   `model_fit$burnin` does not exist. See
+#'   [assess_convergence()].
 #' @param parameter Character string defining the parameter for which to compute
-#'   the consensus. Defaults to \code{"rho"}. Available options are \code{"rho"}
-#'   and \code{"Rtilde"}, with the latter giving consensus rankings for
+#'   the consensus. Defaults to `"rho"`. Available options are `"rho"`
+#'   and `"Rtilde"`, with the latter giving consensus rankings for
 #'   augmented ranks.
-#' @param assessors When \code{parameter = "rho"}, this integer vector is used
+#' @param assessors When `parameter = "rho"`, this integer vector is used
 #'   to define the assessors for which to compute the augmented ranking.
 #' @param ... Other arguments passed on to other methods. Currently not used.
-#'   Defaults to \code{1L}, which yields augmented rankings for assessor 1.
+#'   Defaults to `1L`, which yields augmented rankings for assessor 1.
 #' @export
 #' @family posterior quantities
 compute_consensus.BayesMallows <- function(
@@ -118,12 +118,12 @@ compute_consensus.BayesMallows <- function(
 #' maximum a posteriori (MAP) consensus \insertCite{vitelli2018}{BayesMallows}.
 #' For mixture models, the consensus is given for each mixture.
 #'
-#' @param model_fit An object of class \code{SMCMallows}, returned from
-#'   \code{\link{smc_mallows_new_item_rank}} or
-#'   \code{\link{smc_mallows_new_users}}.
+#' @param model_fit An object of class `SMCMallows`, returned from
+#'   [smc_mallows_new_item_rank()] or
+#'   [smc_mallows_new_users()].
 #'
 #' @param type Character string specifying which consensus to compute. Either
-#'   \code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.
+#'   `"CP"` or `"MAP"`. Defaults to `"CP"`.
 #'
 #'
 #' @param ... Other optional arguments passed to methods. Currently not used.

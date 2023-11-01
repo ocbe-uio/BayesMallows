@@ -15,7 +15,7 @@
 }
 \arguments{
 \item{model_fit}{Object of type \code{BayesMallows} returned from
-\code{\link{compute_mallows}}.}
+\code{\link[=compute_mallows]{compute_mallows()}}.}
 
 \item{type}{Character string specifying which consensus to compute. Either
 \code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.}
@@ -23,7 +23,7 @@
 \item{burnin}{A numeric value specifying the number of iterations to discard
 as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
 \code{model_fit$burnin} does not exist. See
-\code{\link{assess_convergence}}.}
+\code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{parameter}{Character string defining the parameter for which to compute
 the consensus. Defaults to \code{"rho"}. Available options are \code{"rho"}
