@@ -53,9 +53,9 @@ rank_distance(rankings = data0, rho = 1:10, metric = "kendall")
 }
 \seealso{
 Other rank functions: 
+\code{\link{create_ranking}()},
 \code{\link{expected_dist}()},
 \code{\link{get_mallows_loglik}()},
-\code{\link{rank_conversion}},
 \code{\link{rank_freq_distr}()},
 \code{\link{sample_mallows}()}
 }
