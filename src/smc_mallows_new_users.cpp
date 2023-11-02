@@ -9,69 +9,18 @@
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
-//' @title SMC-Mallows New Users
-//' @description Function to perform resample-move SMC algorithm where we
-//' receive new users with complete rankings at each time step. See Chapter 4
-//' of \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
-//'
-//' @param rankings Matrix containing the full set of observed rankings of size
-//' n_assessors by n_items
-//' @param type One of \code{"complete"}, \code{"partial"}, or
-//' \code{"partial_alpha_fixed"}.
-//' @param n_items Integer is the number of items in a ranking
-//' @param n_users number of users
-//' @param metric A character string specifying the distance metric to use
-//' in the Bayesian Mallows Model. Available options are \code{"footrule"},
-//' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-//' \code{"ulam"}.
-//' @param leap_size leap_size Integer specifying the step size of the
-//' leap-and-shift proposal distribution
-//' @param n_particles Integer specifying the number of particles
-//' @param timesteps Integer specifying the number of time steps in the SMC algorithm
-//' @param logz_estimate Estimate of the partition function, computed with
-//' \code{\link{estimate_partition_function}}.
-//' @param cardinalities Cardinalities for exact evaluation of partition function,
-//' returned from \code{\link{prepare_partition_function}}.
-//' @param mcmc_steps Integer value for the number of applications we
-//' apply the MCMC move kernel
-//' @param num_new_obs Integer value for the number of new observations
-//' (complete rankings) for each time step
-//' @param alpha_prop_sd Numeric value specifying the standard deviation of the
-//'   lognormal proposal distribution used for \eqn{\alpha} in the
-//'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
-//' @param lambda Strictly positive numeric value specifying the rate parameter
-//'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
-//'   to \code{0.1}. When \code{n_cluster > 1}, each mixture component
-//'   \eqn{\alpha_{c}} has the same prior distribution.
-//' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
-//'   prior distribution.
-//' @param alpha A numeric value of the scale parameter which is known and fixed.
-//' @param aug_method A character string specifying the approach for filling
-//' in the missing data, options are "pseudolikelihood" or "uniform".
-//' @param verbose Logical specifying whether to print out the progress of the
-//' SMC-Mallows algorithm. Defaults to \code{FALSE}.
-//' @param rho_init Initial value of \code{rho}.
-//'
-//' @return a set of particles each containing a value of rho and alpha
-//'
-//' @noRd
-//'
-//' @example inst/examples/smc_mallows_new_users_complete_example.R
-//'
-//' @family modeling
-//'
+
 // [[Rcpp::export]]
 Rcpp::List smc_mallows_new_users(
   const arma::mat& rankings,
+  const arma::mat& new_rankings,
   arma::mat rho_init,
   arma::vec alpha_init,
   const std::string& type,
   const int& n_particles,
   const int& mcmc_steps,
-  const int& num_new_obs,
   const double alpha_prop_sd = 0.5,
   const double lambda = 0.1,
-  const double alpha_max = 1e6,
   const double alpha = 0,
   const std::string& aug_method = "uniform",
   const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
@@ -81,14 +30,14 @@ Rcpp::List smc_mallows_new_users(
   Rcpp::Nullable<arma::cube> aug_init = R_NilValue,
   int num_obs = 0
 ) {
+
+  int num_new_obs = new_rankings.n_cols;
   int n_users = rankings.n_cols;
   int n_items = rankings.n_rows;
-
 
   mat rho_samples(n_items, n_particles);
   vec alpha_samples = zeros(n_particles);
   double effective_sample_size;
-
 
   cube aug_rankings; // no. users by items by particles
   if(type == "partial" || type == "partial_alpha_fixed"){
@@ -98,11 +47,6 @@ Rcpp::List smc_mallows_new_users(
     }
   }
 
-  /* ====================================================== */
-  /* New user situation                                     */
-  /* ====================================================== */
-
-  // keep tally of how many ranking observations we have so far
   num_obs += num_new_obs;
 
   /* ====================================================== */
@@ -113,16 +57,13 @@ Rcpp::List smc_mallows_new_users(
 
   mat new_observed_rankings, all_observed_rankings;
   if(type == "complete"){
-    int col_start = num_obs - num_new_obs;
-    new_observed_rankings = rankings.submat(0, col_start, rankings.n_rows - 1, num_obs - 1);
-    all_observed_rankings = rankings.submat(0, 0, rankings.n_rows - 1, num_obs - 1);
+    new_observed_rankings = new_rankings;
+    all_observed_rankings = rankings;
   }
-
-
 
   // propagate particles onto the next time step
   rho_samples = rho_init;
-  if(type != "partial_alpha_fixed") alpha_samples = alpha_init;
+  alpha_samples = alpha_init;
   vec log_inc_wgt(n_particles, fill::zeros);
 
   /* ====================================================== */
@@ -169,20 +110,18 @@ Rcpp::List smc_mallows_new_users(
   for (int ii = 0; ii < n_particles; ++ii) {
     if(type == "complete"){
       for (int kk = 0; kk < mcmc_steps; ++kk) {
-
         rho_samples.col(ii) =
           metropolis_hastings_rho(
             alpha_samples(ii), n_items, all_observed_rankings, rho_samples.col(ii), metric, leap_size
           );
         alpha_samples(ii) = metropolis_hastings_alpha(
           alpha_samples(ii), n_items, all_observed_rankings, rho_samples.col(ii), logz_estimate,
-          cardinalities, metric, alpha_prop_sd, alpha_max, lambda
+          cardinalities, metric, alpha_prop_sd, lambda
         );
       }
     } else if(type == "partial" || type == "partial_alpha_fixed"){
         for (int kk = 0; kk < mcmc_steps; ++kk) {
           double as = (type == "partial" ? alpha_samples(ii) : alpha);
-          mat all_observed_rankings;
           all_observed_rankings = aug_rankings(span(0, num_obs - 1), span::all, span(ii));
 
           // move each particle containing sample of rho and alpha by using
@@ -194,7 +133,7 @@ Rcpp::List smc_mallows_new_users(
           if(type == "partial"){
             alpha_samples(ii) = metropolis_hastings_alpha(
               as, n_items, all_observed_rankings, rho_samples.col(ii), logz_estimate,
-              cardinalities, metric, alpha_prop_sd, alpha_max, lambda
+              cardinalities, metric, alpha_prop_sd, lambda
             );
           }
           for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {

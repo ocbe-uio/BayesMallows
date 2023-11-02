@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include "smc.h"
 #include "leapandshift.h"
+#include "distances.h"
 
 using namespace arma;
 
@@ -16,6 +17,7 @@ arma::vec metropolis_hastings_rho(
 	const int leap_size = 1
 ) {
   // create new potential consensus ranking
+  int n_assessors = rankings.n_cols;
   vec rho_proposal{};
   uvec indices{};
   double prob_forward, prob_backward;
@@ -23,18 +25,19 @@ arma::vec metropolis_hastings_rho(
                  rho, leap_size, false);
 
   // evaluate the log-likelihood with current rankings
-  const double mallows_loglik_curr = get_exponent_sum(alpha, rho, n_items, rankings, metric);
-  const double mallows_loglik_prop = get_exponent_sum(alpha, rho_proposal, n_items, rankings, metric);
+  double dist_new = rank_dist_sum(rankings.rows(indices), rho_proposal(indices), metric, ones(n_assessors));
+  double dist_old = rank_dist_sum(rankings.rows(indices), rho(indices), metric, ones(n_assessors));
 
   // calculate acceptance probability
-  const double& loga = std::log(prob_backward) - std::log(prob_forward) +
-    mallows_loglik_prop - mallows_loglik_curr;
+  double ratio = - alpha / n_items * (dist_new - dist_old) +
+    std::log(prob_backward) - std::log(prob_forward);
 
-  // determine whether to accept or reject proposed rho and return now consensus ranking
-  const double& p = R::runif(0, 1);
-  if (std::log(p) <= loga) {
+  double u = std::log(randu<double>());
+
+  if(ratio > u){
     return(rho_proposal);
   } else {
     return(rho);
   }
+
 }

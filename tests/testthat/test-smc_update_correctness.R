@@ -1,8 +1,3 @@
-consensus_unwrapper <- function(x) {
-  x <- compute_consensus(x)
-  as.numeric(unlist(regmatches(x$item, gregexpr("[0-9]+", x$item))))
-}
-
 
 test_that("skip_extended works", {
   Sys.setenv(BAYESMALLOWS_EXTENDED_TESTS = "true")
@@ -14,39 +9,100 @@ test_that("skip_extended works", {
 
 test_that("update_mallows is correct for new rankings", {
 
+  triple_potato <- rbind(potato_visual, potato_visual, potato_visual)
+
   set.seed(123)
 
   # Metropolis-Hastings
-  mod_bmm <- compute_mallows(rankings = potato_visual, nmc = 10000)
+  mod_bmm <- compute_mallows(rankings = triple_potato, nmc = 10000)
   mod_bmm$burnin <- 1000
 
   # Sequentially, using update function
-  mod_init <- compute_mallows(rankings = potato_visual[1:6, ], nmc = 10000)
+  mod_init <- compute_mallows(rankings = triple_potato[1:4, , drop = FALSE],
+                              nmc = 10000)
   mod_init$burnin <- 1000
   mod_smc <- update_mallows(
     model = mod_init,
-    new_rankings = potato_visual[7:12, ],
-    n_particles = 500
+    new_rankings = triple_potato[5:20, ],
+    n_particles = 5000,
+    mcmc_steps = 3
     )
+
+  mod_smc_next <- update_mallows(
+    model = mod_smc,
+    new_rankings = triple_potato[21:36, ]
+  )
 
 
   # Poterior mean of alpha should be the same in both SMC methods, and close to BMM
-  expect_equal(mean(mod_smc$alpha$value),
+  expect_equal(mean(mod_smc_next$alpha$value),
                mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-               tolerance = 0.1)
+               tolerance = 0.02)
+
+  expect_equal(sd(mod_smc_next$alpha$value),
+               sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
+               tolerance = 0.02)
 
   # Is there any disagreement between the methods about the ranking of the items?
-  bmm_consensus <- consensus_unwrapper(mod_bmm)
-  smc_consensus <- consensus_unwrapper(mod_smc)
+  bmm_consensus <- compute_consensus(mod_bmm)
+  smc_consensus <- compute_consensus(mod_smc_next)
 
   # How many items are in disagreement
   expect_equal(
-    rank_distance(matrix(bmm_consensus, nrow = 1),
-      smc_consensus,
+    rank_distance(
+      matrix(as.numeric(as.factor(bmm_consensus$item)), nrow = 1),
+      as.numeric(as.factor(smc_consensus$item)),
       metric = "ulam"
     ),
     1
   )
+
+
+  set.seed(123)
+
+  # Metropolis-Hastings
+  mod_bmm <- compute_mallows(rankings = sushi_rankings, nmc = 1000)
+  mod_bmm$burnin <- 200
+
+  # Sequentially, using update function
+  mod_init <- compute_mallows(rankings = sushi_rankings[1:100, ],
+                              nmc = 10000)
+  mod_init$burnin <- 1000
+  mod_smc <- update_mallows(
+    model = mod_init,
+    new_rankings = sushi_rankings[101:2000, ],
+    n_particles = 500,
+    mcmc_steps = 3
+  )
+
+  mod_smc_next <- update_mallows(
+    model = mod_smc,
+    new_rankings = sushi_rankings[2001:5000, ]
+  )
+
+
+  # Poterior mean of alpha should be the same in both SMC methods, and close to BMM
+  expect_equal(mean(mod_smc_next$alpha$value),
+               mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 200]),
+               tolerance = 0.02)
+
+  expect_equal(sd(mod_smc_next$alpha$value),
+               sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 200]),
+               tolerance = 0.01)
+
+  bmm_consensus <- compute_consensus(mod_bmm)
+  smc_consensus <- compute_consensus(mod_smc_next)
+
+  # How many items are in disagreement
+  expect_equal(
+    rank_distance(
+      matrix(as.numeric(as.factor(bmm_consensus$item)), nrow = 1),
+      as.numeric(as.factor(smc_consensus$item)),
+      metric = "ulam"
+    ),
+    2
+  )
+
 })
 
 test_that("update_mallows is correct for new partial rankings", {

@@ -402,94 +402,12 @@ smc_mallows_new_item_rank_cpp <- function(n_items, rankings, n_particles, timest
     .Call(`_BayesMallows_smc_mallows_new_item_rank_cpp`, n_items, rankings, n_particles, timesteps, logz_estimate, cardinalities, mcmc_steps, aug_rankings_init, rho_samples_init, alpha_samples_init, alpha, alpha_prop_sd, lambda, alpha_max, aug_method, verbose, alpha_fixed, metric, leap_size)
 }
 
-#' @title SMC-Mallows New Users
-#' @description Function to perform resample-move SMC algorithm where we
-#' receive new users with complete rankings at each time step. See Chapter 4
-#' of \insertCite{steinSequentialInferenceMallows2023}{BayesMallows}
-#'
-#' @param rankings Matrix containing the full set of observed rankings of size
-#' n_assessors by n_items
-#' @param type One of \code{"complete"}, \code{"partial"}, or
-#' \code{"partial_alpha_fixed"}.
-#' @param n_items Integer is the number of items in a ranking
-#' @param n_users number of users
-#' @param metric A character string specifying the distance metric to use
-#' in the Bayesian Mallows Model. Available options are \code{"footrule"},
-#' \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-#' \code{"ulam"}.
-#' @param leap_size leap_size Integer specifying the step size of the
-#' leap-and-shift proposal distribution
-#' @param n_particles Integer specifying the number of particles
-#' @param timesteps Integer specifying the number of time steps in the SMC algorithm
-#' @param logz_estimate Estimate of the partition function, computed with
-#' \code{\link{estimate_partition_function}}.
-#' @param cardinalities Cardinalities for exact evaluation of partition function,
-#' returned from \code{\link{prepare_partition_function}}.
-#' @param mcmc_steps Integer value for the number of applications we
-#' apply the MCMC move kernel
-#' @param num_new_obs Integer value for the number of new observations
-#' (complete rankings) for each time step
-#' @param alpha_prop_sd Numeric value specifying the standard deviation of the
-#'   lognormal proposal distribution used for \eqn{\alpha} in the
-#'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
-#' @param lambda Strictly positive numeric value specifying the rate parameter
-#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
-#'   to \code{0.1}. When \code{n_cluster > 1}, each mixture component
-#'   \eqn{\alpha_{c}} has the same prior distribution.
-#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
-#'   prior distribution.
-#' @param alpha A numeric value of the scale parameter which is known and fixed.
-#' @param aug_method A character string specifying the approach for filling
-#' in the missing data, options are "pseudolikelihood" or "uniform".
-#' @param verbose Logical specifying whether to print out the progress of the
-#' SMC-Mallows algorithm. Defaults to \code{FALSE}.
-#' @param rho_init Initial value of \code{rho}.
-#'
-#' @return a set of particles each containing a value of rho and alpha
-#'
-#' @noRd
-#'
-#' @example inst/examples/smc_mallows_new_users_complete_example.R
-#'
-#' @family modeling
-#'
-smc_mallows_new_users <- function(rankings, rho_init, alpha_init, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd = 0.5, lambda = 0.1, alpha_max = 1e6, alpha = 0, aug_method = "uniform", logz_estimate = NULL, cardinalities = NULL, metric = "footrule", leap_size = 1L, aug_init = NULL, num_obs = 0L) {
-    .Call(`_BayesMallows_smc_mallows_new_users`, rankings, rho_init, alpha_init, type, n_particles, mcmc_steps, num_new_obs, alpha_prop_sd, lambda, alpha_max, alpha, aug_method, logz_estimate, cardinalities, metric, leap_size, aug_init, num_obs)
+smc_mallows_new_users <- function(rankings, new_rankings, rho_init, alpha_init, type, n_particles, mcmc_steps, alpha_prop_sd = 0.5, lambda = 0.1, alpha = 0, aug_method = "uniform", logz_estimate = NULL, cardinalities = NULL, metric = "footrule", leap_size = 1L, aug_init = NULL, num_obs = 0L) {
+    .Call(`_BayesMallows_smc_mallows_new_users`, rankings, new_rankings, rho_init, alpha_init, type, n_particles, mcmc_steps, alpha_prop_sd, lambda, alpha, aug_method, logz_estimate, cardinalities, metric, leap_size, aug_init, num_obs)
 }
 
-#' @title Metropolis-Hastings Alpha
-#' @description Function to perform Metropolis-Hastings for new rho under
-#'   the Mallows model with footrule distance metric!
-#' @param alpha Numeric value of the scale parameter
-#' @param n_items Integer is the number of items in a ranking
-#' @param rankings the observed rankings, i.e, preference data
-#' @details \code{rankings} is a matrix of size
-#'   \eqn{N }\eqn{\times}{x}\eqn{ n_items} of rankings in each row.
-#'   Alternatively, if \code{N} equals 1, \code{rankings} can be a vector.
-#' @param metric A character string specifying the distance metric to use
-#'   in the Bayesian Mallows Model. Available options are \code{"footrule"},
-#'   \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"},
-#'   and \code{"ulam"}.
-#' @param rho Numeric vector specifying the current consensus ranking
-#' @param logz_estimate Estimate  grid of log of partition function,
-#'   computed with \code{\link{estimate_partition_function}}.
-#' @param cardinalities Cardinalities for exact computation of partition function,
-#' returned from \code{\link{prepare_partition_function}}.
-#' @param alpha_prop_sd Numeric value specifying the standard deviation of the
-#'   lognormal proposal distribution used for \eqn{\alpha} in the
-#'   Metropolis-Hastings algorithm. Defaults to \code{0.1}.
-#' @return \code{alpha} or \code{alpha_prime}: Numeric value to be used
-#'   as the proposal of a new alpha
-#' @param lambda Strictly positive numeric value specifying the rate parameter
-#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
-#'   to \code{0.1}. When \code{n_cluster > 1}, each mixture component
-#'   \eqn{\alpha_{c}} has the same prior distribution.
-#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
-#'   prior distribution.
-#' @example /inst/examples/metropolis_hastings_alpha_example.R
-#' @noRd
-metropolis_hastings_alpha <- function(alpha, n_items, rankings, rho, logz_estimate, cardinalities, metric = "footrule", alpha_prop_sd = 0.5, alpha_max = 1e6, lambda = 0.1) {
-    .Call(`_BayesMallows_metropolis_hastings_alpha`, alpha, n_items, rankings, rho, logz_estimate, cardinalities, metric, alpha_prop_sd, alpha_max, lambda)
+metropolis_hastings_alpha <- function(alpha_old, n_items, rankings, rho, logz_estimate, cardinalities, metric = "footrule", alpha_prop_sd = 0.5, lambda = 0.1) {
+    .Call(`_BayesMallows_metropolis_hastings_alpha`, alpha_old, n_items, rankings, rho, logz_estimate, cardinalities, metric, alpha_prop_sd, lambda)
 }
 
 #' @title Metropolis-Hastings Augmented Ranking

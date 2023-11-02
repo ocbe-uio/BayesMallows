@@ -81,7 +81,6 @@ void smc_mallows_new_users_resample(
   int n_particles = rho_samples.n_cols;
   /* Resample particles using multinomial resampling ------ */
   uvec index = sample(regspace<uvec>(0, n_particles - 1), n_particles, true, norm_wgt);
-
   rho_samples = rho_samples.cols(index);
 
   /* Replacing tt + 1 column on alpha_samples ------------- */
@@ -116,10 +115,7 @@ void smc_mallows_new_users_reweight(
   int n_particles = rho_samples.n_cols;
   int n_items = rho_samples.n_rows;
   for (int ii{}; ii < n_particles; ++ii) {
-
-
     double alpha_used = augment_alpha ? alpha_samples(ii) : alpha;
-
 
     /* Calculating log_z_alpha and log_likelihood ----------- */
     const double log_z_alpha = get_partition_function(

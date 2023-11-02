@@ -13,23 +13,23 @@ cardinalities <- prepare_partition_function(metric = metric,
 metropolis_hastings_alpha(
   alpha, n_items, rankings, rho, logz_estimate = NULL,
   cardinalities = cardinalities, alpha_prop_sd = 0.5,
-  lambda = 0.1, alpha_max = 20, metric
+  lambda = 0.1, metric
 )
 
 metropolis_hastings_alpha(
   alpha, n_items, rankings, rho, logz_estimate = NULL,
   cardinalities = cardinalities, alpha_prop_sd = 0.15, lambda = 0.1,
-  alpha_max = 20, metric
+  metric
 )
 
 metropolis_hastings_alpha(
   alpha, n_items, rankings, rho, logz_estimate = NULL,
   cardinalities = cardinalities, alpha_prop_sd = 0.5, lambda = 0.15,
-  alpha_max = 20, metric
+  metric
 )
 
 metropolis_hastings_alpha(
   alpha, n_items, rankings, rho, logz_estimate = NULL,
   cardinalities = cardinalities, alpha_prop_sd = 0.15, lambda = 0.15,
-  alpha_max = 20, metric
+  metric
 )

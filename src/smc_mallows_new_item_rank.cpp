@@ -39,7 +39,7 @@ void new_items_move_step(
         alpha_samples(ii, ttplus1), n_items, aug_rankings.slice(ii),
         rho_samples.slice(ttplus1).row(ii).t(), logz_estimate,
         cardinalities,
-        metric, alpha_prop_sd, alpha_max, lambda
+        metric, alpha_prop_sd, lambda
       );
     }
 

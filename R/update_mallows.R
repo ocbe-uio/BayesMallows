@@ -42,16 +42,17 @@ update_mallows.BayesMallows <- function(
 
   ret <- smc_mallows_new_users(
     rankings = t(new_rankings),
+    new_rankings = t(new_rankings),
     type = type,
     n_particles = n_particles,
     mcmc_steps = mcmc_steps,
-    num_new_obs = nrow(new_rankings),
     aug_method = augmentation,
     logz_estimate = model$logz_list$logz_estimate,
     cardinalities = model$logz_list$cardinalities,
     metric = model$metric,
     rho_init = rho_init,
-    alpha_init = alpha_init
+    alpha_init = alpha_init,
+    leap_size = floor(model$n_items / 4)
   )
 
   tidy_parameters <- tidy_smc(ret, model$items)
@@ -83,18 +84,17 @@ update_mallows.SMCMallows <- function(model, new_rankings) {
   alpha_init <- extract_alpha_init(model, model$n_particles)
   rho_init <- extract_rho_init(model, model$n_particles)
 
-
   ret <- smc_mallows_new_users(
     rankings = t(rankings),
+    new_rankings = t(new_rankings),
+    rho_init = rho_init,
+    alpha_init = alpha_init,
     type = model$type,
     n_particles = model$n_particles,
     mcmc_steps = model$mcmc_steps,
-    num_new_obs = nrow(new_rankings),
     logz_estimate = model$logz_list$logz_estimate,
     cardinalities = model$logz_list$cardinalities,
     metric = model$metric,
-    rho_init = rho_init,
-    alpha_init = alpha_init,
     num_obs = nrow(model$rankings)
   )
 
@@ -113,20 +113,20 @@ update_mallows.SMCMallows <- function(model, new_rankings) {
 
 tidy_smc <- function(ret, items) {
   result <- list()
-  result$alpha <- tidy_alpha(
-    t(ret$alpha_samples[, ncol(ret$alpha_samples)]), 1, 1)
+  result$alpha <- tidy_alpha(ret$alpha_samples, 1, 1)
 
-  rho_mat <- array(dim = c(dim(ret$rho_samples)[[2]], 1, dim(ret$rho_samples)[[1]]))
-  rho_mat[, 1, ] <- aperm(ret$rho_samples, c(3, 2, 1))[dim(ret$rho_samples)[[3]], , , drop = TRUE]
+  rho_mat <- array(dim = c(dim(ret$rho_samples)[[1]], 1, dim(ret$rho_samples)[[2]]))
+  rho_mat[, 1, ] <- ret$rho_samples
   result$rho <- tidy_rho(rho_mat, 1, 1, items)
 
   result
 }
 
 extract_alpha_init <- function(model, n_particles, burnin = 0) {
-  sample(
-    model$alpha$value[model$alpha$iteration > burnin],
-    size = n_particles, replace = TRUE)
+  full_sample <- model$alpha$value[model$alpha$iteration > burnin]
+  full_sample[
+    seq(from = 1, to = length(full_sample), length.out = n_particles)]
+
 }
 
 extract_rho_init <- function(model, n_particles, burnin = 0) {
@@ -136,7 +136,8 @@ extract_rho_init <- function(model, n_particles, burnin = 0) {
     idvar = c("chain", "iteration"),
     timevar = "item",
     direction = "wide")
-  rho_init <- rho_init[sample(nrow(rho_init), n_particles, replace = TRUE), ]
+  rho_init <- rho_init[
+    seq(from = 1, to = nrow(rho_init), length.out = n_particles), ]
   rho_init <- rho_init[, grep("^value", colnames(rho_init))]
   t(as.matrix(rho_init))
 }
