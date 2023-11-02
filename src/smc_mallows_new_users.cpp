@@ -34,6 +34,7 @@ Rcpp::List smc_mallows_new_users(
   int num_new_obs = new_rankings.n_cols;
   int n_users = rankings.n_cols;
   int n_items = rankings.n_rows;
+  vec obs_freq = ones(n_users);
 
   mat rho_samples(n_items, n_particles);
   vec alpha_samples = zeros(n_particles);
@@ -110,10 +111,9 @@ Rcpp::List smc_mallows_new_users(
   for (int ii = 0; ii < n_particles; ++ii) {
     if(type == "complete"){
       for (int kk = 0; kk < mcmc_steps; ++kk) {
-        rho_samples.col(ii) =
-          metropolis_hastings_rho(
-            alpha_samples(ii), n_items, all_observed_rankings, rho_samples.col(ii), metric, leap_size
-          );
+        rho_samples.col(ii) = make_new_rho(rho_samples.col(ii), all_observed_rankings,
+                        alpha_samples(ii), leap_size, metric, obs_freq);
+
         alpha_samples(ii) = metropolis_hastings_alpha(
           alpha_samples(ii), n_items, all_observed_rankings, rho_samples.col(ii), logz_estimate,
           cardinalities, metric, alpha_prop_sd, lambda

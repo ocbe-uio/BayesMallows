@@ -24,6 +24,7 @@ void update_rho(arma::cube& rho, arma::mat& rho_old,
                 const std::string& metric, const int& t,
                 const arma::uvec& element_indices, const arma::vec& obs_freq);
 
-
+arma::vec make_new_rho(arma::vec current_rho, const arma::mat& rankings, double alpha_old, int leap_size, std::string metric,
+                 arma::vec obs_freq);
 
 #endif
