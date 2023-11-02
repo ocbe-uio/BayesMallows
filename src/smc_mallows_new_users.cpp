@@ -114,10 +114,10 @@ Rcpp::List smc_mallows_new_users(
         rho_samples.col(ii) = make_new_rho(rho_samples.col(ii), all_observed_rankings,
                         alpha_samples(ii), leap_size, metric, obs_freq);
 
-        alpha_samples(ii) = metropolis_hastings_alpha(
-          alpha_samples(ii), n_items, all_observed_rankings, rho_samples.col(ii), logz_estimate,
-          cardinalities, metric, alpha_prop_sd, lambda
-        );
+        alpha_samples(ii) = update_alpha(alpha_samples(ii), all_observed_rankings,
+                      obs_freq, rho_samples.col(ii), alpha_prop_sd, metric,
+                      lambda, cardinalities, logz_estimate);
+
       }
     } else if(type == "partial" || type == "partial_alpha_fixed"){
         for (int kk = 0; kk < mcmc_steps; ++kk) {
@@ -132,10 +132,10 @@ Rcpp::List smc_mallows_new_users(
             );
 
           if(type == "partial"){
-            alpha_samples(ii) = metropolis_hastings_alpha(
-              as, n_items, all_observed_rankings, rho_samples.col(ii), logz_estimate,
-              cardinalities, metric, alpha_prop_sd, lambda
-            );
+            alpha_samples(ii) = update_alpha(alpha_samples(ii), all_observed_rankings,
+                          obs_freq, rho_samples.col(ii), alpha_prop_sd, metric,
+                          lambda, cardinalities, logz_estimate);
+
           }
           for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
             rowvec ar;

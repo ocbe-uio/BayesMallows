@@ -21,7 +21,6 @@ compute_mallows(
   alpha_init = 1,
   alpha_jump = 1L,
   lambda = 0.001,
-  alpha_max = 1e+06,
   psi = 10L,
   include_wcd = (n_clusters > 1),
   save_aug = FALSE,
@@ -132,9 +131,6 @@ for the Mallows model needs to be computed. Defaults to \code{1L}.}
 of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
 to \code{0.1}. When \code{n_cluster > 1}, each mixture component
 \eqn{\alpha_{c}} has the same prior distribution.}
-
-\item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential
-prior distribution.}
 
 \item{psi}{Integer specifying the concentration parameter \eqn{\psi} of the
 Dirichlet prior distribution used for the cluster probabilities

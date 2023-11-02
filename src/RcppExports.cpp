@@ -328,25 +328,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// metropolis_hastings_alpha
-double metropolis_hastings_alpha(const double alpha_old, const int n_items, const arma::mat rankings, const arma::vec rho, const Rcpp::Nullable<arma::vec> logz_estimate, const Rcpp::Nullable<arma::vec> cardinalities, const std::string metric, const double alpha_prop_sd, const double lambda);
-RcppExport SEXP _BayesMallows_metropolis_hastings_alpha(SEXP alpha_oldSEXP, SEXP n_itemsSEXP, SEXP rankingsSEXP, SEXP rhoSEXP, SEXP logz_estimateSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const double >::type alpha_old(alpha_oldSEXP);
-    Rcpp::traits::input_parameter< const int >::type n_items(n_itemsSEXP);
-    Rcpp::traits::input_parameter< const arma::mat >::type rankings(rankingsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec >::type rho(rhoSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::vec> >::type logz_estimate(logz_estimateSEXP);
-    Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::vec> >::type cardinalities(cardinalitiesSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type metric(metricSEXP);
-    Rcpp::traits::input_parameter< const double >::type alpha_prop_sd(alpha_prop_sdSEXP);
-    Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(metropolis_hastings_alpha(alpha_old, n_items, rankings, rho, logz_estimate, cardinalities, metric, alpha_prop_sd, lambda));
-    return rcpp_result_gen;
-END_RCPP
-}
 // metropolis_hastings_aug_ranking
 arma::vec metropolis_hastings_aug_ranking(const double& alpha, const arma::vec& rho, const int& n_items, const arma::vec& partial_ranking, const arma::vec& current_ranking, const bool& pseudo, const std::string& metric);
 RcppExport SEXP _BayesMallows_metropolis_hastings_aug_ranking(SEXP alphaSEXP, SEXP rhoSEXP, SEXP n_itemsSEXP, SEXP partial_rankingSEXP, SEXP current_rankingSEXP, SEXP pseudoSEXP, SEXP metricSEXP) {
@@ -386,7 +367,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_leap_and_shift_probs", (DL_FUNC) &_BayesMallows_leap_and_shift_probs, 3},
     {"_BayesMallows_smc_mallows_new_item_rank_cpp", (DL_FUNC) &_BayesMallows_smc_mallows_new_item_rank_cpp, 19},
     {"_BayesMallows_smc_mallows_new_users", (DL_FUNC) &_BayesMallows_smc_mallows_new_users, 17},
-    {"_BayesMallows_metropolis_hastings_alpha", (DL_FUNC) &_BayesMallows_metropolis_hastings_alpha, 9},
     {"_BayesMallows_metropolis_hastings_aug_ranking", (DL_FUNC) &_BayesMallows_metropolis_hastings_aug_ranking, 7},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}

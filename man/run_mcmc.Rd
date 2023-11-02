@@ -76,8 +76,6 @@ have to do expensive computation of the partition function.}
 
 \item{lambda}{Parameter of the prior distribution.}
 
-\item{alpha_max}{Maximum value of \code{alpha}, used for truncating the exponential prior distribution.}
-
 \item{psi}{Hyperparameter for the Dirichlet prior distribution used in clustering.}
 
 \item{rho_thinning}{Thinning parameter. Keep only every \code{rho_thinning} rank

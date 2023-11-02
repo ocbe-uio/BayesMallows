@@ -405,10 +405,6 @@ smc_mallows_new_users <- function(rankings, new_rankings, rho_init, alpha_init, 
     .Call(`_BayesMallows_smc_mallows_new_users`, rankings, new_rankings, rho_init, alpha_init, type, n_particles, mcmc_steps, alpha_prop_sd, lambda, alpha, aug_method, logz_estimate, cardinalities, metric, leap_size, aug_init, num_obs)
 }
 
-metropolis_hastings_alpha <- function(alpha_old, n_items, rankings, rho, logz_estimate, cardinalities, metric = "footrule", alpha_prop_sd = 0.5, lambda = 0.1) {
-    .Call(`_BayesMallows_metropolis_hastings_alpha`, alpha_old, n_items, rankings, rho, logz_estimate, cardinalities, metric, alpha_prop_sd, lambda)
-}
-
 #' @title Metropolis-Hastings Augmented Ranking
 #' @description Function to perform Metropolis-Hastings for new augmented ranking
 #'

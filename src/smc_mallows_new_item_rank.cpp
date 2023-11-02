@@ -39,12 +39,10 @@ void new_items_move_step(
       ones(num_ranks)
     ).t();
     if(!alpha_fixed){
-      alpha_samples(ii, ttplus1) = metropolis_hastings_alpha(
-        alpha_samples(ii, ttplus1), n_items, aug_rankings.slice(ii),
-        rho_samples.slice(ttplus1).row(ii).t(), logz_estimate,
-        cardinalities,
-        metric, alpha_prop_sd, lambda
-      );
+      alpha_samples(ii) = update_alpha(alpha_samples(ii, ttplus1), aug_rankings.slice(ii),
+                    ones(num_ranks), rho_samples.slice(ttplus1).row(ii).t(), alpha_prop_sd, metric,
+                    lambda, cardinalities, logz_estimate);
+
     }
 
     for (uword jj = 0; jj < num_ranks; ++jj) {
