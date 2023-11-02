@@ -30,9 +30,13 @@ void new_items_move_step(
   const uword n_particles = rho_samples.n_rows;
   int n_items = rho_samples.n_cols;
   for (uword ii = 0; ii < n_particles; ++ii) {
-    rho_samples.slice(ttplus1).row(ii) = metropolis_hastings_rho(
-      alpha_fixed ? alpha : alpha_samples(ii, ttplus1), n_items, aug_rankings.slice(ii),
-      rho_samples.slice(ttplus1).row(ii).t(), metric, leap_size
+    rho_samples.slice(ttplus1).row(ii) = make_new_rho(
+      rho_samples.slice(ttplus1).row(ii).t(),
+      aug_rankings.slice(ii),
+      alpha_fixed ? alpha : alpha_samples(ii, ttplus1),
+      leap_size,
+      metric,
+      ones(num_ranks)
     ).t();
     if(!alpha_fixed){
       alpha_samples(ii, ttplus1) = metropolis_hastings_alpha(

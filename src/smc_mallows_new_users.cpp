@@ -127,9 +127,10 @@ Rcpp::List smc_mallows_new_users(
           // move each particle containing sample of rho and alpha by using
           // the MCMC kernels
           rho_samples.col(ii) =
-            metropolis_hastings_rho(
-              as, n_items, all_observed_rankings, rho_samples.col(ii), metric, leap_size
+            make_new_rho(
+              rho_samples.col(ii), all_observed_rankings, as, leap_size, metric, obs_freq
             );
+
           if(type == "partial"){
             alpha_samples(ii) = metropolis_hastings_alpha(
               as, n_items, all_observed_rankings, rho_samples.col(ii), logz_estimate,
