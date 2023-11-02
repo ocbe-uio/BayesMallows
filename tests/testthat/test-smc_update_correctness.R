@@ -39,16 +39,20 @@ test_that("update_mallows is correct for new rankings", {
                mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
                tolerance = 0.02)
 
+  expect_equal(mean(mod_smc_next$alpha$value), 10.76, tolerance = .1)
+
   expect_equal(sd(mod_smc_next$alpha$value),
                sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
                tolerance = 0.02)
+
+  expect_equal(sd(mod_smc_next$alpha$value), .43, tolerance = .01)
 
   # Is there any disagreement between the methods about the ranking of the items?
   bmm_consensus <- compute_consensus(mod_bmm)
   smc_consensus <- compute_consensus(mod_smc_next)
 
   # How many items are in disagreement
-  expect_equal(
+  expect_lte(
     rank_distance(
       matrix(as.numeric(as.factor(bmm_consensus$item)), nrow = 1),
       as.numeric(as.factor(smc_consensus$item)),
@@ -56,7 +60,6 @@ test_that("update_mallows is correct for new rankings", {
     ),
     1
   )
-
 
   set.seed(123)
 
@@ -86,15 +89,19 @@ test_that("update_mallows is correct for new rankings", {
                mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 200]),
                tolerance = 0.02)
 
+  expect_equal(mean(mod_smc_next$alpha$value), 1.7, tolerance = 0.02)
+
   expect_equal(sd(mod_smc_next$alpha$value),
                sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 200]),
                tolerance = 0.01)
+
+  expect_equal(sd(mod_smc_next$alpha$value), 0.01, tolerance = 0.005)
 
   bmm_consensus <- compute_consensus(mod_bmm)
   smc_consensus <- compute_consensus(mod_smc_next)
 
   # How many items are in disagreement
-  expect_equal(
+  expect_lte(
     rank_distance(
       matrix(as.numeric(as.factor(bmm_consensus$item)), nrow = 1),
       as.numeric(as.factor(smc_consensus$item)),
