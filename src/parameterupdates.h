@@ -9,7 +9,6 @@ double update_alpha(
                   const double& alpha_old,
                   const arma::mat& rankings,
                   const arma::vec& obs_freq,
-                  const int& cluster_index,
                   const arma::vec& rho_old,
                   const double& alpha_prop_sd,
                   const std::string& metric,

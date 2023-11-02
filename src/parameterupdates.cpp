@@ -25,7 +25,6 @@ double update_alpha(
                   const double& alpha_old,
                   const mat& rankings,
                   const vec& obs_freq,
-                  const int& cluster_index,
                   const vec& rho_old,
                   const double& alpha_prop_sd,
                   const std::string& metric,
