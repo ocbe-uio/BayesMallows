@@ -429,7 +429,3 @@ metropolis_hastings_aug_ranking <- function(alpha, rho, n_items, partial_ranking
     .Call(`_BayesMallows_metropolis_hastings_aug_ranking`, alpha, rho, n_items, partial_ranking, current_ranking, pseudo, metric)
 }
 
-metropolis_hastings_rho <- function(alpha, n_items, rankings, rho, metric = "footnote", leap_size = 1L) {
-    .Call(`_BayesMallows_metropolis_hastings_rho`, alpha, n_items, rankings, rho, metric, leap_size)
-}
-
