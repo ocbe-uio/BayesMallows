@@ -123,9 +123,6 @@
 #'   to \code{0.1}. When \code{n_cluster > 1}, each mixture component
 #'   \eqn{\alpha_{c}} has the same prior distribution.
 #'
-#' @param alpha_max Maximum value of \code{alpha} in the truncated exponential
-#'   prior distribution.
-#'
 #' @param psi Integer specifying the concentration parameter \eqn{\psi} of the
 #'   Dirichlet prior distribution used for the cluster probabilities
 #'   \eqn{\tau_{1}, \tau_{2}, \dots, \tau_{C}}, where \eqn{C} is the value of
@@ -229,7 +226,6 @@ compute_mallows <- function(rankings = NULL,
                             alpha_init = 1,
                             alpha_jump = 1L,
                             lambda = 0.001,
-                            alpha_max = 1e6,
                             psi = 10L,
                             include_wcd = (n_clusters > 1),
                             save_aug = FALSE,
@@ -372,7 +368,7 @@ compute_mallows <- function(rankings = NULL,
         "rankings", "obs_freq", "nmc", "constraints", "logz_list",
         "rho_init", "metric", "swap_leap", "error_model",
         "n_clusters", "include_wcd", "leap_size", "alpha_prop_sd", "alpha_init",
-        "alpha_jump", "lambda", "alpha_max", "psi", "rho_thinning", "aug_thinning",
+        "alpha_jump", "lambda", "psi", "rho_thinning", "aug_thinning",
         "clus_thin", "save_aug", "verbose", "save_ind_clus"
       ),
       envir = environment()
@@ -402,7 +398,6 @@ compute_mallows <- function(rankings = NULL,
       n_clusters = n_clusters,
       include_wcd = include_wcd,
       lambda = lambda,
-      alpha_max = alpha_max,
       psi = psi,
       leap_size = leap_size,
       alpha_prop_sd = alpha_prop_sd,

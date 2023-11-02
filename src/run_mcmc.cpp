@@ -37,7 +37,6 @@ using namespace arma;
 //' number can significantly speed up computation time, since we then do not
 //' have to do expensive computation of the partition function.
 //' @param lambda Parameter of the prior distribution.
-//' @param alpha_max Maximum value of \code{alpha}, used for truncating the exponential prior distribution.
 //' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
 //' @param rho_thinning Thinning parameter. Keep only every \code{rho_thinning} rank
 //' sample from the posterior distribution.
@@ -193,7 +192,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
         alpha(i, alpha_index) = update_alpha(alpha_old(i),
               clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
               clustering ? obs_freq(find(current_cluster_assignment == i)) : obs_freq,
-              i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate, alpha_max);
+              i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate);
       }
       // Update alpha_old
       alpha_old = alpha.col(alpha_index);

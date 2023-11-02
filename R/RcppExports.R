@@ -152,7 +152,6 @@ rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, 
 #' number can significantly speed up computation time, since we then do not
 #' have to do expensive computation of the partition function.
 #' @param lambda Parameter of the prior distribution.
-#' @param alpha_max Maximum value of \code{alpha}, used for truncating the exponential prior distribution.
 #' @param psi Hyperparameter for the Dirichlet prior distribution used in clustering.
 #' @param rho_thinning Thinning parameter. Keep only every \code{rho_thinning} rank
 #' sample from the posterior distribution.

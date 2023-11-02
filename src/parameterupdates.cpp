@@ -31,8 +31,7 @@ double update_alpha(
                   const std::string& metric,
                   const double& lambda,
                   const Rcpp::Nullable<vec> cardinalities = R_NilValue,
-                  const Rcpp::Nullable<vec> logz_estimate = R_NilValue,
-                  double alpha_max = 1e6) {
+                  const Rcpp::Nullable<vec> logz_estimate = R_NilValue) {
   // Set the number of assessors. Not using the variable from run_mcmc because
   // here we want the number of assessors in this cluster
   //int n_assessors = rankings.n_cols;
@@ -58,7 +57,7 @@ double update_alpha(
   // Draw a uniform random number
   double u = std::log(randu<double>());
 
-  if(ratio > u && alpha_proposal < alpha_max){
+  if(ratio > u){
     return alpha_proposal;
   } else {
     return alpha_old;
