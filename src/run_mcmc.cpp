@@ -184,7 +184,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
       update_rho(rho, rho_old, rho_index, i,
                  rho_thinning, alpha_old(i), leap_size,
                  clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
-                 metric, n_items, t, element_indices, obs_freq);
+                 metric, t, element_indices, obs_freq);
     }
 
     if(t % alpha_jump == 0) {

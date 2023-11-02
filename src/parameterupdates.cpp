@@ -69,14 +69,16 @@ double update_alpha(
 void update_rho(cube& rho, mat& rho_old,
                 int& rho_index, const int& cluster_index, const int& rho_thinning,
                 const double& alpha_old, const int& leap_size, const mat& rankings,
-                const std::string& metric, const int& n_items, const int& t,
+                const std::string& metric, const int& t,
                 const uvec& element_indices, const vec& obs_freq) {
   vec rho_cluster = rho_old.col(cluster_index);
 
   // Sample a rank proposal
+
   vec rho_proposal;
   uvec indices;
   double prob_backward, prob_forward;
+  int n_items = rho_cluster.n_elem;
 
   leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
                  rho_cluster, leap_size, !((metric == "cayley") || (metric == "ulam")));
