@@ -20,6 +20,8 @@ arma::vec metropolis_hastings_rho(
   int n_assessors = rankings.n_cols;
   vec rho_proposal{};
   uvec indices{};
+
+
   double prob_forward, prob_backward;
   leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
                  rho, leap_size, false);

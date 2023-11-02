@@ -33,12 +33,6 @@ tidy_mcmc <- function(fits, rho_thinning, rankings, alpha_jump,
     tidy_augmented_data(fits[[i]]$augmented_data, i, items, aug_thinning)
   }))
 
-  fit$aug_acceptance <- lapply(seq_along(fits), function(i) {
-    tidy_augmentation_acceptance(
-      fits[[i]]$aug_acceptance, i, fits[[i]]$any_missing, fits[[i]]$augpair
-    )
-  })
-
   fit$theta <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_error_probability(fits[[i]]$theta, i)
   }))
@@ -48,14 +42,6 @@ tidy_mcmc <- function(fits, rho_thinning, rankings, alpha_jump,
   fit$n_items <- n_items
   fit$n_assessors <- fits[[1]]$n_assessors
   fit$nmc <- nmc
-  fit$alpha_acceptance <- rowMeans(matrix(
-    vapply(fits, function(x) x$alpha_acceptance, numeric(n_clusters)),
-    nrow = n_clusters
-  ))
-  fit$rho_acceptance <- rowMeans(matrix(
-    vapply(fits, function(x) x$rho_acceptance, numeric(n_clusters)),
-    nrow = n_clusters
-  ))
 
   return(fit)
 }
@@ -260,20 +246,6 @@ tidy_augmented_data <- function(augmented_data, chain, items, aug_thinning) {
   }
 }
 
-
-tidy_augmentation_acceptance <- function(aug_acceptance, chain, any_missing, augpair) {
-  # Augmentation acceptance
-
-  if (any_missing || augpair) {
-    aug_acceptance <- data.frame(acceptance_rate = c(aug_acceptance))
-    aug_acceptance$assessor <- seq_len(nrow(aug_acceptance))
-    aug_acceptance <- aug_acceptance[, c("assessor", "acceptance_rate")]
-    aug_acceptance$chain <- chain
-    aug_acceptance
-  } else {
-    NULL
-  }
-}
 
 tidy_error_probability <- function(theta, chain) {
   theta_length <- length(theta)

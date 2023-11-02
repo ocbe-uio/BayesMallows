@@ -21,7 +21,7 @@ arma::mat initialize_rho(int n_items, int n_cols,
   }
 }
 
-double update_alpha(vec& alpha_acceptance,
+double update_alpha(
                   const double& alpha_old,
                   const mat& rankings,
                   const vec& obs_freq,
@@ -59,7 +59,6 @@ double update_alpha(vec& alpha_acceptance,
   double u = std::log(randu<double>());
 
   if(ratio > u && alpha_proposal < alpha_max){
-    ++alpha_acceptance(cluster_index);
     return alpha_proposal;
   } else {
     return alpha_old;
@@ -67,7 +66,7 @@ double update_alpha(vec& alpha_acceptance,
 }
 
 
-void update_rho(cube& rho, vec& rho_acceptance, mat& rho_old,
+void update_rho(cube& rho, mat& rho_old,
                 int& rho_index, const int& cluster_index, const int& rho_thinning,
                 const double& alpha_old, const int& leap_size, const mat& rankings,
                 const std::string& metric, const int& n_items, const int& t,
@@ -95,7 +94,6 @@ void update_rho(cube& rho, vec& rho_acceptance, mat& rho_old,
 
   if(ratio > u){
     rho_old.col(cluster_index) = rho_proposal;
-    ++rho_acceptance(cluster_index);
   }
 
   // Save rho if appropriate

@@ -36,7 +36,6 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator,
 }
 
 void update_missing_ranks(mat& rankings, const uvec& current_cluster_assignment,
-                          vec& aug_acceptance,
                           const umat& missing_indicator,
                           const uvec& assessor_missing,
                           const vec& alpha, const mat& rho,
@@ -46,7 +45,6 @@ void update_missing_ranks(mat& rankings, const uvec& current_cluster_assignment,
 
   for(int i = 0; i < n_assessors; ++i){
     if(assessor_missing(i) == 0){
-      ++aug_acceptance(i);
       continue;
     }
 
@@ -65,7 +63,6 @@ void update_missing_ranks(mat& rankings, const uvec& current_cluster_assignment,
 
     if(ratio > u){
       rankings.col(i) = proposal;
-      ++aug_acceptance(i);
     }
   }
 }

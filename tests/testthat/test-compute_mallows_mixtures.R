@@ -22,10 +22,7 @@ test_that("compute_mallows_mixtures works", {
     c(6, 2, 5, 10, 3, 8, 1)
   )
 
-  expect_equal(
-    models[[3]]$rho_acceptance,
-    c(0.75, 0.8, 0.95, 0.45, 0.9, 0.45)
-  )
+
 
 
   set.seed(123)

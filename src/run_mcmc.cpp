@@ -139,18 +139,6 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   mat within_cluster_distance(n_clusters, include_wcd ? nmc : 1);
   within_cluster_distance.col(0) = update_wcd(current_cluster_assignment, dist_mat);
 
-
-  // Declare indicator vectors to hold acceptance or not
-  vec alpha_acceptance = ones(n_clusters);
-  vec rho_acceptance = ones(n_clusters);
-
-  vec aug_acceptance;
-  if(any_missing | augpair){
-    aug_acceptance = ones<vec>(n_assessors);
-  } else {
-    aug_acceptance.reset();
-  }
-
   // Declare vector with Bernoulli parameter for the case of intransitive preferences
   vec theta, shape_1, shape_2;
   if(error_model == "bernoulli"){
@@ -193,7 +181,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
     }
 
     for(int i = 0; i < n_clusters; ++i){
-      update_rho(rho, rho_acceptance, rho_old, rho_index, i,
+      update_rho(rho, rho_old, rho_index, i,
                  rho_thinning, alpha_old(i), leap_size,
                  clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
                  metric, n_items, t, element_indices, obs_freq);
@@ -202,7 +190,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
     if(t % alpha_jump == 0) {
       ++alpha_index;
       for(int i = 0; i < n_clusters; ++i){
-        alpha(i, alpha_index) = update_alpha(alpha_acceptance, alpha_old(i),
+        alpha(i, alpha_index) = update_alpha(alpha_old(i),
               clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
               clustering ? obs_freq(find(current_cluster_assignment == i)) : obs_freq,
               i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate, alpha_max);
@@ -232,14 +220,14 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
 
   // Perform data augmentation of missing ranks, if needed
   if(any_missing){
-    update_missing_ranks(rankings, current_cluster_assignment, aug_acceptance, missing_indicator,
+    update_missing_ranks(rankings, current_cluster_assignment, missing_indicator,
                          assessor_missing, alpha_old, rho_old, metric);
   }
 
   // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
     augment_pairwise(rankings, current_cluster_assignment, alpha_old, 0.1, rho_old,
-                     metric, constraints, aug_acceptance, error_model, Lswap);
+                     metric, constraints, error_model, Lswap);
   }
 
   // Save augmented data if the user wants this. Uses the same index as rho.
@@ -258,9 +246,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   // Return everything that might be of interest
   return Rcpp::List::create(
     Rcpp::Named("rho") = rho,
-    Rcpp::Named("rho_acceptance") = rho_acceptance / nmc,
     Rcpp::Named("alpha") = alpha,
-    Rcpp::Named("alpha_acceptance") = alpha_acceptance / nmc,
     Rcpp::Named("theta") = theta,
     Rcpp::Named("shape1") = shape_1,
     Rcpp::Named("shape2") = shape_2,
@@ -270,7 +256,6 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
     Rcpp::Named("augmented_data") = augmented_data,
     Rcpp::Named("any_missing") = any_missing,
     Rcpp::Named("augpair") = augpair,
-    Rcpp::Named("aug_acceptance") = aug_acceptance / nmc,
     Rcpp::Named("n_assessors") = n_assessors,
     Rcpp::Named("obs_freq") = obs_freq
   );
