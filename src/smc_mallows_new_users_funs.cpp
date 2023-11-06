@@ -27,7 +27,7 @@ void smc_mallows_new_users_augment_partial(
   ivec ranks = regspace<ivec>(1, n_items);
   for (int ii{}; ii < n_particles; ++ii) {
     for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
-      vec partial_ranking = rankings.row(jj).t();
+      vec partial_ranking = rankings.col(jj);
 
       // find items missing from original observed ranking
       const uvec& unranked_items = find_nonfinite(partial_ranking);
@@ -42,7 +42,7 @@ void smc_mallows_new_users_augment_partial(
         // create new augmented ranking by sampling remaining ranks from set uniformly
         partial_ranking.elem(find_nonfinite(partial_ranking)) = shuffle(missing_ranks);
 
-        aug_rankings(span(jj), span::all, span(ii)) = partial_ranking;
+        aug_rankings(span::all, span(jj), span(ii)) = partial_ranking;
         aug_prob(ii) = divide_by_fact(aug_prob(ii), missing_ranks.n_elem);
       } else {
         // randomly permute the unranked items to give the order in which they will be allocated
@@ -55,7 +55,7 @@ void smc_mallows_new_users_augment_partial(
 
         const vec& a_rank = proposal["aug_ranking"];
         const double& f_prob = proposal["forward_prob"];
-        aug_rankings(span(jj), span::all, span(ii)) = a_rank;
+        aug_rankings(span::all, span(jj), span(ii)) = a_rank;
         aug_prob(ii) = aug_prob(ii) * f_prob;
       }
     }
@@ -81,16 +81,17 @@ void smc_mallows_new_users_resample(
   int n_particles = rho_samples.n_cols;
   /* Resample particles using multinomial resampling ------ */
   uvec index = sample(regspace<uvec>(0, n_particles - 1), n_particles, true, norm_wgt);
+
   rho_samples = rho_samples.cols(index);
 
-  /* Replacing tt + 1 column on alpha_samples ------------- */
   if(augment_alpha){
     alpha_samples = alpha_samples.rows(index);
   }
 
   if(partial){
     cube aug_rankings_index = aug_rankings.slices(index);
-    aug_rankings.rows(0, num_obs - 1) = aug_rankings_index(span(0, num_obs - 1), span::all, span::all);
+    aug_rankings.cols(0, num_obs - 1) =
+      aug_rankings_index(span::all, span(0, num_obs - 1), span::all);
   }
 }
 
@@ -122,11 +123,14 @@ void smc_mallows_new_users_reweight(
       n_items, alpha_used, cardinalities, logz_estimate, metric
     );
 
-    double log_likelihood = get_exponent_sum(                          \
-      alpha_used, rho_samples.col(ii), n_items,
-      partial ? aug_rankings(span(num_obs - num_new_obs, num_obs - 1), span::all, span(ii)) : observed_rankings,
-      metric
-    );
+
+    mat rankings = !partial ? observed_rankings : aug_rankings(span::all,
+      span(num_obs - num_new_obs, num_obs - 1),
+      span(ii));
+
+
+    double log_likelihood = get_exponent_sum(
+      alpha_used, rho_samples.col(ii), n_items, rankings, metric);
     log_inc_wgt(ii) = log_likelihood - num_new_obs * log_z_alpha - log(aug_prob(ii));
   }
 

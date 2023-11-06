@@ -29,6 +29,7 @@ tidy_mcmc <- function(fits, rho_thinning, rankings, alpha_jump,
     tidy_wcd(fits[[i]]$within_cluster_distance, i)
   }))
 
+
   fit$augmented_data <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_augmented_data(fits[[i]]$augmented_data, i, items, aug_thinning)
   }))

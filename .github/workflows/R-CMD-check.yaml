@@ -27,7 +27,6 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      BAYESMALLOWS_EXTENDED_TESTS: ${{contains(github.event.head_commit.message, 'run-extended')}}
 
     steps:
       - uses: actions/checkout@v3

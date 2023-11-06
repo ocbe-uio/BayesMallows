@@ -83,10 +83,10 @@ arma::vec metropolis_hastings_aug_ranking(
   // Calculate the log posterior of the current and proposed rankings.
   // NB the current can usually be stored to save recalculating it, but we're not caring about that yet
   const double curr_logpost = get_exponent_sum(     \
-    alpha, rho, n_items, current_ranking.t(), metric\
+    alpha, rho, n_items, current_ranking, metric\
   );
   const double prop_logpost = get_exponent_sum(                \
-    alpha, rho, n_items, proposed_ranking.t(), metric          \
+    alpha, rho, n_items, proposed_ranking, metric          \
   );
 
   const double log_acceptance_prob = prop_logpost - curr_logpost + forward_backward_prob;
