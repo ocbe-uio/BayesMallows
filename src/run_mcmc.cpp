@@ -92,18 +92,15 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   bool any_missing = !is_finite(rankings);
 
   umat missing_indicator;
-  uvec assessor_missing;
 
   if(any_missing){
     // Converting to umat will convert NA to 0, but might cause clang-UBSAN error, so converting explicitly.
     rankings.replace(datum::nan, 0);
     missing_indicator = conv_to<umat>::from(rankings);
     missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
-    assessor_missing = conv_to<uvec>::from(sum(missing_indicator, 0));
-    initialize_missing_ranks(rankings, missing_indicator, assessor_missing);
+    initialize_missing_ranks(rankings, missing_indicator);
   } else {
     missing_indicator.reset();
-    assessor_missing.reset();
   }
 
   // Declare the cube to hold the latent ranks
@@ -220,7 +217,7 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   // Perform data augmentation of missing ranks, if needed
   if(any_missing){
     update_missing_ranks(rankings, current_cluster_assignment, missing_indicator,
-                         assessor_missing, alpha_old, rho_old, metric);
+                         alpha_old, rho_old, metric);
   }
 
   // Perform data augmentation of pairwise comparisons, if needed
