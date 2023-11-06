@@ -2,6 +2,7 @@
 #include "distances.h"
 #include "misc.h"
 #include "setdiff.h"
+#include "missing_data.h"
 
 using namespace arma;
 
@@ -40,21 +41,34 @@ void update_missing_ranks(mat& rankings, const uvec& current_cluster_assignment,
 
   for(int i = 0; i < n_assessors; ++i){
 
-    // Sample an augmentation proposal
-    vec proposal = propose_augmentation(rankings.col(i), missing_indicator.col(i));
-
-    // Draw a uniform random number
-    double u = std::log(randu<double>());
-
-    // Find which cluster the assessor belongs to
     int cluster = current_cluster_assignment(i);
 
-    double ratio = -alpha(cluster) / n_items *
-      (get_rank_distance(proposal, rho.col(cluster), metric) -
-      get_rank_distance(rankings.col(i), rho.col(cluster), metric));
+    rankings.col(i) = make_new_augmentation(
+      rankings.col(i), missing_indicator.col(i),
+      alpha(cluster), rho.col(cluster), metric
+    );
 
-    if(ratio > u){
-      rankings.col(i) = proposal;
-    }
+  }
+}
+
+vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
+                          const double& alpha, const vec& rho,
+                          const std::string& metric) {
+  // Sample an augmentation proposal
+  vec proposal = propose_augmentation(rankings, missing_indicator);
+
+  // Draw a uniform random number
+  double u = std::log(randu<double>());
+
+  int n_items = rho.n_elem;
+
+  double ratio = -alpha / n_items *
+    (get_rank_distance(proposal, rho, metric) -
+    get_rank_distance(rankings, rho, metric));
+
+  if(ratio > u){
+    return proposal;
+  } else {
+    return rankings;
   }
 }
