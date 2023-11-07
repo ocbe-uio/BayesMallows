@@ -4,29 +4,7 @@
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
-//' @title Leap and Shift Probabilities
-//' @description Calculates transition probabilities for proposing a new rho
-//' @param rho A ranking sequence
-//' @param leap_size Integer specifying the step size of the leap-and-shift
-//' proposal distribution.
-//' @param n_items Integer is the number of items in a ranking
-//' @return A list containing:
-//' \itemize{
-//' \item \code{rho_prime} A ranking sequence proposed consensus ranking
-//' \item \code{forwards_prob} Numeric value to account for transition probability from rho to rho_prime
-//' \item \code{backwards_prob} Numeric Value to account for the transition probability from \code{rho_prime} to \code{rho}
-//' }
-//'
-//' @noRd
-//' @examples
-//' rho <- c(1, 2, 3, 4, 5, 6)
-//' n_items <- 6
-//'
-//' leap_and_shift_probs(rho, n_items, 1)
-//' leap_and_shift_probs(rho, n_items, 2)
-//' leap_and_shift_probs(rho, n_items, 3)
-//'
-// [[Rcpp::export]]
+
 Rcpp::List leap_and_shift_probs(const arma::vec rho, const int n_items, const int leap_size = 1) {
   vec rho_proposal{};
   uvec indices{};

@@ -5,7 +5,7 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// [[Rcpp::export]]
+
 double get_exponent_sum(
   const double alpha,
   const arma::vec rho,

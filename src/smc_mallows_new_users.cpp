@@ -5,15 +5,16 @@
 #include "partitionfuns.h"
 #include "misc.h"
 #include "smc_mallows_new_users.h"
+#include "missing_data.h"
 
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-Rcpp::List smc_mallows_new_users(
-  const arma::mat& rankings,
-  const arma::mat& new_rankings,
+Rcpp::List  smc_mallows_new_users(
+  arma::mat rankings,
+  arma::mat new_rankings,
   arma::mat rho_init,
   arma::vec alpha_init,
   const std::string& type,
@@ -21,7 +22,6 @@ Rcpp::List smc_mallows_new_users(
   const int& mcmc_steps,
   const double alpha_prop_sd = 0.5,
   const double lambda = 0.1,
-  const double alpha = 0,
   const std::string& aug_method = "uniform",
   const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
   const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue,
@@ -35,118 +35,90 @@ Rcpp::List smc_mallows_new_users(
   int n_users = rankings.n_cols;
   int n_items = rankings.n_rows;
   vec obs_freq = ones(n_users);
+  vec aug_prob = ones(n_particles);
 
   mat rho_samples(n_items, n_particles);
   vec alpha_samples = zeros(n_particles);
   double effective_sample_size;
 
-  cube aug_rankings; // no. users by items by particles
-  if(type == "partial" || type == "partial_alpha_fixed"){
+  cube aug_rankings;
+  umat missing_indicator;
+  if(type == "partial"){
+
+    rankings.replace(datum::nan, 0);
+    missing_indicator = conv_to<umat>::from(rankings);
+    missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
     aug_rankings = zeros(n_items, n_users, n_particles);
+
+    for(int i{}; i < n_particles; i++) {
+      aug_rankings.slice(i) = rankings;
+      initialize_missing_ranks(aug_rankings.slice(i), missing_indicator);
+    }
+
     if(aug_init.isNotNull()) {
       aug_rankings(span::all, span(0, num_obs - 1), span::all) = Rcpp::as<cube>(aug_init);
     }
   }
 
   num_obs += num_new_obs;
-
-  /* ====================================================== */
-  /* New Information                                        */
-  /* ====================================================== */
-  // create two ranking dataset to use for the reweight and move stages of the
-  // algorithm
-
   mat new_observed_rankings, all_observed_rankings;
   if(type == "complete"){
     new_observed_rankings = new_rankings;
     all_observed_rankings = rankings;
   }
 
-  // propagate particles onto the next time step
   rho_samples = rho_init;
   alpha_samples = alpha_init;
   vec log_inc_wgt(n_particles, fill::zeros);
 
-  /* ====================================================== */
-  /* Augment partial rankings                               */
-  /* ====================================================== */
-
-
-  vec aug_prob = ones(n_particles);
-  if(type == "partial" || type == "partial_alpha_fixed"){
+  if(type == "partial"){
     smc_mallows_new_users_augment_partial(
       aug_rankings, aug_prob, rho_samples, alpha_samples, num_obs, num_new_obs,
-      rankings, aug_method, alpha, type != "partial_alpha_fixed", metric);
+      aug_method, missing_indicator, metric);
   }
 
-
-
-  /* ====================================================== */
-  /* Re-weight                                              */
-  /* ====================================================== */
-
-  // calculate incremental weight for each particle, based on
-  // new observed rankings
   vec norm_wgt;
   smc_mallows_new_users_reweight(
     log_inc_wgt, effective_sample_size, norm_wgt, aug_rankings, new_observed_rankings, rho_samples,
-    alpha, alpha_samples, logz_estimate, cardinalities, num_obs, num_new_obs, ones(n_particles),
-    type != "partial_alpha_fixed", type != "complete", metric);
-
-
-
-  /* ====================================================== */
-  /* Resample                                               */
-  /* ====================================================== */
+    alpha_samples, logz_estimate, cardinalities, num_obs, num_new_obs, aug_prob,
+    type != "complete", metric);
 
   smc_mallows_new_users_resample(
     rho_samples, alpha_samples, aug_rankings, norm_wgt, num_obs,
-    type != "partial_alpha_fixed", type != "complete");
+    type != "complete");
 
-
-  /* ====================================================== */
-  /* Move step                                              */
-  /* ====================================================== */
   for (int ii = 0; ii < n_particles; ++ii) {
-    if(type == "complete"){
-      for (int kk = 0; kk < mcmc_steps; ++kk) {
-        rho_samples.col(ii) = make_new_rho(rho_samples.col(ii), all_observed_rankings,
-                        alpha_samples(ii), leap_size, metric, obs_freq);
+
+    for (int kk = 0; kk < mcmc_steps; ++kk) {
+      if(type == "partial") {
+        all_observed_rankings = aug_rankings.slice(ii);
+      }
+      rho_samples.col(ii) = make_new_rho(rho_samples.col(ii), all_observed_rankings,
+                      alpha_samples(ii), leap_size, metric, obs_freq);
 
 
-        alpha_samples(ii) = update_alpha(alpha_samples(ii), all_observed_rankings,
-                      obs_freq, rho_samples.col(ii), alpha_prop_sd, metric,
-                      lambda, cardinalities, logz_estimate);
+      alpha_samples(ii) = update_alpha(alpha_samples(ii), all_observed_rankings,
+                    obs_freq, rho_samples.col(ii), alpha_prop_sd, metric,
+                    lambda, cardinalities, logz_estimate);
+
+    }
+
+    if(type == "partial") {
+      for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
+
+        aug_rankings(span::all, span(jj), span(ii)) = make_new_augmentation(
+          aug_rankings(span::all, span(jj), span(ii)),
+          missing_indicator.col(jj),
+          alpha_samples(ii),
+          rho_samples.col(ii),
+          metric
+        );
 
       }
-    } else if(type == "partial" || type == "partial_alpha_fixed"){
-        for (int kk = 0; kk < mcmc_steps; ++kk) {
-          double as = (type == "partial" ? alpha_samples(ii) : alpha);
-          all_observed_rankings = aug_rankings.slice(ii);
-
-          // move each particle containing sample of rho and alpha by using
-          // the MCMC kernels
-          rho_samples.col(ii) =
-            make_new_rho(
-              rho_samples.col(ii), all_observed_rankings, as, leap_size, metric, obs_freq
-            );
-          if(type == "partial"){
-            alpha_samples(ii) = update_alpha(alpha_samples(ii), all_observed_rankings,
-                          obs_freq, rho_samples.col(ii), alpha_prop_sd, metric,
-                          lambda, cardinalities, logz_estimate);
-          }
-          for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
-
-            vec mh_aug_result;
-            mh_aug_result = metropolis_hastings_aug_ranking(
-              as, rho_samples.col(ii), n_items, rankings.col(jj),
-              aug_rankings(span::all, span(jj), span(ii)),
-              is_pseudo(aug_method, metric), metric
-            );
-            aug_rankings(span::all, span(jj), span(ii)) = mh_aug_result;
-          }
-        }
     }
+
+
+
   }
 
   // return the history of the particles and their values

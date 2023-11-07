@@ -94,7 +94,6 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   umat missing_indicator;
 
   if(any_missing){
-    // Converting to umat will convert NA to 0, but might cause clang-UBSAN error, so converting explicitly.
     rankings.replace(datum::nan, 0);
     missing_indicator = conv_to<umat>::from(rankings);
     missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
