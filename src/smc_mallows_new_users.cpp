@@ -123,12 +123,13 @@ Rcpp::List  smc_mallows_new_users(
 
           Rcpp::List pprop = make_pseudo_proposal(
             unranked_items, aug_rankings(span::all, span(jj), span(ii)),
-            alpha_samples(ii), rho_samples.col(ii), metric
+            alpha_samples(ii), rho_samples.col(ii), metric, true
           );
 
-          double bprob = compute_backward_probability(
+          Rcpp::List bprop = make_pseudo_proposal(
             unranked_items, aug_rankings(span::all, span(jj), span(ii)),
-            alpha_samples(ii), rho_samples.col(ii), metric);
+            alpha_samples(ii), rho_samples.col(ii), metric, false);
+          double bprob = bprop["probability"];
 
           vec ar = pprop["proposal"];
           double prob = pprop["probability"];

@@ -21,7 +21,7 @@ void smc_mallows_new_users_resample(
 Rcpp::List make_pseudo_proposal(
     arma::uvec unranked_items, arma::vec rankings, const double& alpha,
     const arma::vec& rho,
-    const std::string metric
+    const std::string metric, const bool forward
 );
 
 double compute_backward_probability(arma::uvec unranked_items, arma::vec rankings,

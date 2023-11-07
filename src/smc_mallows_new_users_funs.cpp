@@ -13,7 +13,7 @@ using namespace arma;
 
 Rcpp::List make_pseudo_proposal(
     uvec unranked_items, vec rankings, const double& alpha, const vec& rho,
-    const std::string metric
+    const std::string metric, const bool forward = true
 ) {
 
   int n_items = rankings.n_elem;
@@ -29,14 +29,18 @@ Rcpp::List make_pseudo_proposal(
         get_rank_distance(rho(span(item_to_rank)), available_rankings(span(ll)), metric);
     }
     vec sample_probs = normalize_weights(log_numerator);
-    rankings(span(item_to_rank)) =
-      sample(available_rankings, 1, false, sample_probs);
+    if(forward) {
+      rankings(span(item_to_rank)) =
+        sample(available_rankings, 1, false, sample_probs);
+    }
+
 
     int ranking_chosen = as_scalar(find(rankings(item_to_rank) == available_rankings));
 
     prob *= sample_probs(ranking_chosen);
     if(available_rankings.n_elem <= 1) break;
     unranked_items = unranked_items.subvec(1, available_rankings.n_elem - 1);
+
     rankings(unranked_items) = setdiff_template(available_rankings, available_rankings(span(ranking_chosen)));
   }
 
@@ -44,33 +48,6 @@ Rcpp::List make_pseudo_proposal(
     Rcpp::Named("proposal") = rankings,
     Rcpp::Named("probability") = prob
   );
-}
-
-double compute_backward_probability(uvec unranked_items, vec rankings,
-                                    const double& alpha, const vec& rho,
-                                    const std::string metric) {
-  int n_items = rankings.n_elem;
-
-  double prob = 1;
-  while(unranked_items.n_elem > 0) {
-    vec available_rankings = rankings(unranked_items);
-    int item_to_rank = unranked_items(0);
-
-    vec log_numerator(available_rankings.n_elem);
-    for(int ll{}; ll < available_rankings.n_elem; ll++) {
-      log_numerator(ll) = -alpha / n_items *
-        get_rank_distance(rho(span(item_to_rank)), available_rankings(span(ll)), metric);
-    }
-    vec sample_probs = normalize_weights(log_numerator);
-
-    int ranking_chosen = as_scalar(find(rankings(item_to_rank) == available_rankings));
-
-
-    prob *= sample_probs(ranking_chosen);
-    if(available_rankings.n_elem <= 1) break;
-    unranked_items = unranked_items.subvec(1, available_rankings.n_elem - 1);
-  }
-  return prob;
 }
 
 void smc_mallows_new_users_augment_partial(
