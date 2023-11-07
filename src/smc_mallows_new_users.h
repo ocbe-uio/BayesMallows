@@ -24,8 +24,4 @@ Rcpp::List make_pseudo_proposal(
     const std::string metric, const bool forward
 );
 
-double compute_backward_probability(arma::uvec unranked_items, arma::vec rankings,
-                                    const double& alpha, const arma::vec& rho,
-                                    const std::string metric);
-
 #endif
