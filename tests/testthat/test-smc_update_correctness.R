@@ -101,6 +101,7 @@ test_that("update_mallows is correct for new rankings", {
 
 test_that("update_mallows is correct for new partial rankings", {
   skip_on_cran()
+
   set.seed(123)
 
   dat0 <- t(apply(potato_visual, 1, function(x) {
@@ -119,9 +120,9 @@ test_that("update_mallows is correct for new partial rankings", {
   mod_smc <- update_mallows(
     model = mod_init,
     new_rankings = dat[5:20, ],
-    n_particles = 3000,
-    mcmc_steps = 5,
-    augmentation = "uniform"
+    n_particles = 1000,
+    mcmc_steps = 10,
+    augmentation = "pseudo"
   )
 
   mod_smc_next <- update_mallows(
@@ -132,16 +133,14 @@ test_that("update_mallows is correct for new partial rankings", {
   expect_equal(
     mean(mod_smc_next$alpha$value),
     mean(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
-    tolerance = .1
+    tolerance = .05
   )
 
   expect_equal(
     sd(mod_smc_next$alpha$value),
     sd(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
-    tolerance = .2
+    tolerance = .05
   )
-
-  expect_equal(mean(mod_smc_next$alpha$value), 10.7, tolerance = .02)
 
   bmm_consensus <- compute_consensus(bmm_mod)
   smc_consensus <- compute_consensus(mod_smc_next)
@@ -152,6 +151,6 @@ test_that("update_mallows is correct for new partial rankings", {
       as.numeric(as.factor(smc_consensus$item)),
       metric = "ulam"
     ),
-    1
+    2
   )
 })

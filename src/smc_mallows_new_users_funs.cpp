@@ -11,6 +11,37 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
+
+Rcpp::List make_pseudo_proposal(
+    uvec unranked_items, vec rankings, const double& alpha, const vec& rho
+) {
+  int n_items = rankings.n_elem;
+  uvec unranked_items_ordered = shuffle(unranked_items);
+
+  double prob = 1;
+  while(unranked_items_ordered.n_elem > 0) {
+    vec available_rankings = rankings(unranked_items_ordered);
+    int item_to_rank = unranked_items_ordered(0);
+
+    vec log_numerator(available_rankings.n_elem);
+    for(int ll{}; ll < available_rankings.n_elem; ll++) {
+      log_numerator(ll) = -alpha / n_items * abs(rho(item_to_rank) - available_rankings(ll));
+    }
+    vec sample_probs = normalize_weights(log_numerator);
+    rankings(span(item_to_rank)) =
+      sample(available_rankings, 1, false, sample_probs);
+    int ranking_chosen = as_scalar(find(rankings(item_to_rank) == available_rankings));
+
+    prob *= sample_probs(ranking_chosen);
+    if(available_rankings.n_elem <= 1) break;
+    unranked_items_ordered = unranked_items_ordered.subvec(1, available_rankings.n_elem - 1);
+  }
+  return Rcpp::List::create(
+    Rcpp::Named("proposal") = rankings,
+    Rcpp::Named("probability") = prob
+  );
+}
+
 void smc_mallows_new_users_augment_partial(
     arma::cube& aug_rankings,
     arma::vec& aug_prob,
@@ -37,31 +68,17 @@ void smc_mallows_new_users_augment_partial(
           propose_augmentation(aug_rankings(span::all, span(jj), span(ii)),
                                missing_indicator.col(jj));
 
-        aug_prob(ii) = divide_by_fact(1.0, unranked_items.n_elem);
+        aug_prob(ii) = divide_by_fact(aug_prob(ii), unranked_items.n_elem);
 
       } else {
-
-        uvec unranked_items_ordered = shuffle(unranked_items);
-        vec rankings = aug_rankings(span::all, span(jj), span(ii));
-
-        while(unranked_items_ordered.n_elem > 0) {
-          vec available_rankings = rankings(unranked_items_ordered);
-          int item_to_rank = unranked_items_ordered(0);
-
-          vec log_numerator(available_rankings.n_elem);
-          for(int ll{}; ll < available_rankings.n_elem; ll++) {
-            log_numerator(ll) = -alpha / n_items * abs(rho(item_to_rank) - available_rankings(ll));
-          }
-          vec sample_probs = normalize_weights(log_numerator);
-          rankings(span(item_to_rank)) =
-            sample(available_rankings, 1, false, sample_probs);
-          int ranking_chosen = as_scalar(find(rankings(item_to_rank) == available_rankings));
-
-          aug_prob(ii) *= sample_probs(ranking_chosen);
-          if(available_rankings.n_elem <= 1) break;
-          unranked_items_ordered = unranked_items_ordered.subvec(1, available_rankings.n_elem - 1);
-
-        }
+        Rcpp::List pprop = make_pseudo_proposal(
+          unranked_items, aug_rankings(span::all, span(jj), span(ii)),
+          alpha, rho
+        );
+        vec ar = pprop["proposal"];
+        aug_rankings(span::all, span(jj), span(ii)) = ar;
+        double prob = pprop["probability"];
+        aug_prob(ii) *= prob;
       }
     }
   }
@@ -88,7 +105,6 @@ void smc_mallows_new_users_resample(
   uvec index = sample(regspace<uvec>(0, n_particles - 1), n_particles, true, norm_wgt);
   rho_samples = rho_samples.cols(index);
   alpha_samples = alpha_samples.rows(index);
-
 
   if(partial){
     cube aug_rankings_index = aug_rankings.slices(index);
@@ -137,3 +153,5 @@ void smc_mallows_new_users_reweight(
 
   effective_sample_size = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 }
+
+
