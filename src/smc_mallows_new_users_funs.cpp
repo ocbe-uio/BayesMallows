@@ -11,35 +11,66 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-
 Rcpp::List make_pseudo_proposal(
-    uvec unranked_items, vec rankings, const double& alpha, const vec& rho
+    uvec unranked_items, vec rankings, const double& alpha, const vec& rho,
+    const std::string metric
 ) {
+
   int n_items = rankings.n_elem;
-  uvec unranked_items_ordered = shuffle(unranked_items);
 
   double prob = 1;
-  while(unranked_items_ordered.n_elem > 0) {
-    vec available_rankings = rankings(unranked_items_ordered);
-    int item_to_rank = unranked_items_ordered(0);
+  while(unranked_items.n_elem > 0) {
+    vec available_rankings = rankings(unranked_items);
+    int item_to_rank = unranked_items(0);
 
     vec log_numerator(available_rankings.n_elem);
     for(int ll{}; ll < available_rankings.n_elem; ll++) {
-      log_numerator(ll) = -alpha / n_items * abs(rho(item_to_rank) - available_rankings(ll));
+      log_numerator(ll) = -alpha / n_items *
+        get_rank_distance(rho(span(item_to_rank)), available_rankings(span(ll)), metric);
     }
     vec sample_probs = normalize_weights(log_numerator);
     rankings(span(item_to_rank)) =
       sample(available_rankings, 1, false, sample_probs);
+
     int ranking_chosen = as_scalar(find(rankings(item_to_rank) == available_rankings));
 
     prob *= sample_probs(ranking_chosen);
     if(available_rankings.n_elem <= 1) break;
-    unranked_items_ordered = unranked_items_ordered.subvec(1, available_rankings.n_elem - 1);
+    unranked_items = unranked_items.subvec(1, available_rankings.n_elem - 1);
+    rankings(unranked_items) = setdiff_template(available_rankings, available_rankings(span(ranking_chosen)));
   }
+
   return Rcpp::List::create(
     Rcpp::Named("proposal") = rankings,
     Rcpp::Named("probability") = prob
   );
+}
+
+double compute_backward_probability(uvec unranked_items, vec rankings,
+                                    const double& alpha, const vec& rho,
+                                    const std::string metric) {
+  int n_items = rankings.n_elem;
+
+  double prob = 1;
+  while(unranked_items.n_elem > 0) {
+    vec available_rankings = rankings(unranked_items);
+    int item_to_rank = unranked_items(0);
+
+    vec log_numerator(available_rankings.n_elem);
+    for(int ll{}; ll < available_rankings.n_elem; ll++) {
+      log_numerator(ll) = -alpha / n_items *
+        get_rank_distance(rho(span(item_to_rank)), available_rankings(span(ll)), metric);
+    }
+    vec sample_probs = normalize_weights(log_numerator);
+
+    int ranking_chosen = as_scalar(find(rankings(item_to_rank) == available_rankings));
+
+
+    prob *= sample_probs(ranking_chosen);
+    if(available_rankings.n_elem <= 1) break;
+    unranked_items = unranked_items.subvec(1, available_rankings.n_elem - 1);
+  }
+  return prob;
 }
 
 void smc_mallows_new_users_augment_partial(
@@ -54,16 +85,14 @@ void smc_mallows_new_users_augment_partial(
     const std::string& metric = "footrule"
 ){
   int n_particles = rho_samples.n_cols;
-  int n_items = rho_samples.n_rows;
-  const bool pseudo = is_pseudo(aug_method, metric);
 
   for (int ii{}; ii < n_particles; ++ii) {
     double alpha = alpha_samples(ii);
     vec rho = rho_samples.col(ii);
     for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
-      uvec unranked_items = find(missing_indicator.col(jj) == 1);
+      uvec unranked_items = shuffle(find(missing_indicator.col(jj) == 1));
 
-      if (!pseudo) {
+      if (aug_method != "pseudo") {
         aug_rankings(span::all, span(jj), span(ii)) =
           propose_augmentation(aug_rankings(span::all, span(jj), span(ii)),
                                missing_indicator.col(jj));
@@ -73,8 +102,9 @@ void smc_mallows_new_users_augment_partial(
       } else {
         Rcpp::List pprop = make_pseudo_proposal(
           unranked_items, aug_rankings(span::all, span(jj), span(ii)),
-          alpha, rho
+          alpha, rho, metric
         );
+
         vec ar = pprop["proposal"];
         aug_rankings(span::all, span(jj), span(ii)) = ar;
         double prob = pprop["probability"];

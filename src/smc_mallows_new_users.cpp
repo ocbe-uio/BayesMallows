@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include "distances.h"
 #include "parameterupdates.h"
 #include "sample.h"
 #include "smc.h"
@@ -77,6 +78,7 @@ Rcpp::List  smc_mallows_new_users(
       aug_method, missing_indicator, metric);
   }
 
+
   vec norm_wgt;
   smc_mallows_new_users_reweight(
     log_inc_wgt, effective_sample_size, norm_wgt, aug_rankings, new_observed_rankings, rho_samples,
@@ -104,15 +106,49 @@ Rcpp::List  smc_mallows_new_users(
     }
 
     if(type == "partial") {
-      for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
 
-        aug_rankings(span::all, span(jj), span(ii)) = make_new_augmentation(
-          aug_rankings(span::all, span(jj), span(ii)),
-          missing_indicator.col(jj),
-          alpha_samples(ii),
-          rho_samples.col(ii),
-          metric
-        );
+      for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
+        double log_hastings_correction = 0;
+
+        uvec unranked_items = shuffle(find(missing_indicator.col(jj) == 1));
+        if(aug_method == "uniform") {
+          aug_rankings(span::all, span(jj), span(ii)) = make_new_augmentation(
+            aug_rankings(span::all, span(jj), span(ii)),
+            missing_indicator.col(jj),
+            alpha_samples(ii),
+            rho_samples.col(ii),
+            metric
+          );
+        } else {
+
+          Rcpp::List pprop = make_pseudo_proposal(
+            unranked_items, aug_rankings(span::all, span(jj), span(ii)),
+            alpha_samples(ii), rho_samples.col(ii), metric
+          );
+
+          double bprob = compute_backward_probability(
+            unranked_items, aug_rankings(span::all, span(jj), span(ii)),
+            alpha_samples(ii), rho_samples.col(ii), metric);
+
+          vec ar = pprop["proposal"];
+          double prob = pprop["probability"];
+
+          log_hastings_correction = -std::log(prob) + std::log(bprob);
+
+          double ratio = -alpha_samples(ii) / n_items * (
+            get_rank_distance(ar, rho_samples.col(ii), metric) -
+              get_rank_distance(aug_rankings(span::all, span(jj), span(ii)),
+                                rho_samples.col(ii), metric)
+          ) + log_hastings_correction;
+
+
+          double u = std::log(randu<double>());
+
+          if(ratio > u){
+            aug_rankings(span::all, span(jj), span(ii)) = ar;
+          }
+        }
+
 
       }
     }

@@ -17,4 +17,15 @@ void smc_mallows_new_users_reweight(
 void smc_mallows_new_users_resample(
     arma::mat&, arma::vec&, arma::cube&, const arma::vec&,
     const int& num_obs, const bool& partial);
+
+Rcpp::List make_pseudo_proposal(
+    arma::uvec unranked_items, arma::vec rankings, const double& alpha,
+    const arma::vec& rho,
+    const std::string metric
+);
+
+double compute_backward_probability(arma::uvec unranked_items, arma::vec rankings,
+                                    const double& alpha, const arma::vec& rho,
+                                    const std::string metric);
+
 #endif

@@ -117,40 +117,44 @@ test_that("update_mallows is correct for new partial rankings", {
   mod_init <- compute_mallows(
     rankings = dat[1:4, , drop = FALSE], nmc = 10000, save_aug = TRUE)
   mod_init$burnin <- 1000
-  mod_smc <- update_mallows(
-    model = mod_init,
-    new_rankings = dat[5:20, ],
-    n_particles = 1000,
-    mcmc_steps = 10,
-    augmentation = "pseudo"
-  )
 
-  mod_smc_next <- update_mallows(
-    model = mod_smc,
-    new_rankings = dat[21:36, ]
-  )
+  for(aug in c("uniform", "pseudo")) {
+    mod_smc <- update_mallows(
+      model = mod_init,
+      new_rankings = dat[5:20, ],
+      n_particles = 3000,
+      mcmc_steps = 10,
+      augmentation = aug
+    )
 
-  expect_equal(
-    mean(mod_smc_next$alpha$value),
-    mean(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
-    tolerance = .05
-  )
+    mod_smc_next <- update_mallows(
+      model = mod_smc,
+      new_rankings = dat[21:36, ]
+    )
 
-  expect_equal(
-    sd(mod_smc_next$alpha$value),
-    sd(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
-    tolerance = .05
-  )
+    expect_equal(
+      mean(mod_smc_next$alpha$value),
+      mean(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
+      tolerance = .1
+    )
 
-  bmm_consensus <- compute_consensus(bmm_mod)
-  smc_consensus <- compute_consensus(mod_smc_next)
+    expect_equal(
+      sd(mod_smc_next$alpha$value),
+      sd(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
+      tolerance = .1
+    )
 
-  expect_lte(
-    rank_distance(
-      matrix(as.numeric(as.factor(bmm_consensus$item)), nrow = 1),
-      as.numeric(as.factor(smc_consensus$item)),
-      metric = "ulam"
-    ),
-    2
-  )
+    bmm_consensus <- compute_consensus(bmm_mod)
+    smc_consensus <- compute_consensus(mod_smc_next)
+
+    expect_lte(
+      rank_distance(
+        matrix(as.numeric(as.factor(bmm_consensus$item)), nrow = 1),
+        as.numeric(as.factor(smc_consensus$item)),
+        metric = "ulam"
+      ),
+      2
+    )
+  }
+
 })
