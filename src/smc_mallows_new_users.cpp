@@ -44,6 +44,8 @@ Rcpp::List  smc_mallows_new_users(
 
   cube aug_rankings;
   umat missing_indicator;
+
+
   if(any_missing){
 
     rankings.replace(datum::nan, 0);
