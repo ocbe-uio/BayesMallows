@@ -58,11 +58,6 @@ Rcpp::List  smc_mallows_new_users(
     }
   }
 
-  mat all_observed_rankings;
-  if(!any_missing){
-    all_observed_rankings = rankings;
-  }
-
   rho_samples = rho_init;
   alpha_samples = alpha_init;
   vec log_inc_wgt(n_particles, fill::zeros);
@@ -88,13 +83,13 @@ Rcpp::List  smc_mallows_new_users(
 
     for (int kk = 0; kk < mcmc_steps; ++kk) {
       if(any_missing) {
-        all_observed_rankings = augmented_data.slice(ii);
+        rankings = augmented_data.slice(ii);
       }
-      rho_samples.col(ii) = make_new_rho(rho_samples.col(ii), all_observed_rankings,
+      rho_samples.col(ii) = make_new_rho(rho_samples.col(ii), rankings,
                       alpha_samples(ii), leap_size, metric, obs_freq);
 
 
-      alpha_samples(ii) = update_alpha(alpha_samples(ii), all_observed_rankings,
+      alpha_samples(ii) = update_alpha(alpha_samples(ii), rankings,
                     obs_freq, rho_samples.col(ii), alpha_prop_sd, metric,
                     lambda, cardinalities, logz_estimate);
 
