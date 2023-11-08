@@ -337,3 +337,4 @@ test_that("compute_mallows treats observation_frequency properly", {
     )
   )
 })
+

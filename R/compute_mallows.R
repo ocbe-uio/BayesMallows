@@ -52,8 +52,6 @@
 #'   Metropolis-Hastings algorithm. If `TRUE`, a notification is printed
 #'   every 1000th iteration. Defaults to `FALSE`.
 #'
-#' @param seed Optional integer to be used as random number seed.
-#'
 #' @param cl Optional cluster returned from [parallel::makeCluster()]. If
 #'   provided, chains will be run in parallel, one on each node of `cl`.
 #'
@@ -78,7 +76,6 @@ compute_mallows <- function(
     initial_values = set_initial_values(),
     logz_estimate = NULL,
     verbose = FALSE,
-    seed = NULL,
     cl = NULL) {
   validate_class(data, "BayesMallowsData")
   validate_class(model, "BayesMallowsModelOptions")
@@ -87,8 +84,6 @@ compute_mallows <- function(
   validate_class(initial_values, "BayesMallowsInitialValues")
   validate_preferences(data, model)
   validate_initial_values(initial_values, data)
-
-  if (!is.null(seed)) set.seed(seed)
 
   data <- update_data(data, model)
   logz_list <- prepare_partition_function(logz_estimate, model$metric, data$n_items)
@@ -106,7 +101,7 @@ compute_mallows <- function(
       ),
       envir = environment()
     )
-    if (!is.null(seed)) parallel::clusterSetRNGStream(cl, seed)
+    parallel::clusterSetRNGStream(cl)
     lapplyfun <- function(X, FUN, ...) {
       parallel::parLapply(cl = cl, X = X, fun = FUN, ...)
     }

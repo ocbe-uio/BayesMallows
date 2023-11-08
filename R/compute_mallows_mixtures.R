@@ -32,7 +32,6 @@ compute_mallows_mixtures <- function(
     initial_values = set_initial_values(),
     logz_estimate = NULL,
     verbose = FALSE,
-    seed = NULL,
     cl = NULL) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
@@ -54,7 +53,7 @@ compute_mallows_mixtures <- function(
     model$n_clusters <- x
     compute_mallows(
       data = data, model = model, compute_options = compute_options,
-      priors = priors, initial_values = initial_values, verbose = verbose, seed = seed
+      priors = priors, initial_values = initial_values, verbose = verbose
     )
   })
 
