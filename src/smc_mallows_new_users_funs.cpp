@@ -1,9 +1,9 @@
 #include <RcppArmadillo.h>
-#include "misc.h"
-#include "sample.h"
-#include "setdiff.h"
-#include "partitionfuns.h"
 #include "missing_data.h"
+#include "sample.h"
+#include "parameterupdates.h"
+#include "misc.h"
+#include "partitionfuns.h"
 #include "distances.h"
 
 using namespace arma;

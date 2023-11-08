@@ -1,8 +1,6 @@
 #ifndef SMC_NEW_USERS
 #define SMC_NEW_USERS
 
-#include <RcppArmadillo.h>
-
 void smc_mallows_new_users_augment_partial(arma::cube&, arma::vec&,
     const arma::mat&, const arma::vec&, const int&,
     const std::string&,

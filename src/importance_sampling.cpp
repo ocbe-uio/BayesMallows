@@ -3,22 +3,9 @@
 
 using namespace arma;
 
-// via the depends attribute we tell Rcpp to create hooks for
-// RcppArmadillo so that the build process will know what to do
-//
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
-//' Compute importance sampling estimates of log partition function
-//' for footrule and Spearman distances.
-//'
-//' @param alpha_vector Vector of alpha values at which to compute partition function.
-//' @param n_items Integer specifying the number of ranked items.
-//' @param metric Distance measure of the target Mallows distribution. Defaults to \code{footrule}.
-//' @param nmc Number of Monte Carlo samples. Defaults to \code{1e4}.
-//'
-//' @keywords internal
-//'
 // [[Rcpp::export]]
 arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_items,
                           std::string metric = "footrule", int nmc = 1e4

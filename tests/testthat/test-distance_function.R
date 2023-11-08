@@ -11,7 +11,7 @@ test_that("footrule distance is correct", {
   for (n in c(2, 3, 5)) {
     expect_equal(
       check_dist(n, fun = function(r1, r2) {
-        get_rank_distance(r1, r2, "footrule")
+        sum(rank_dist_vec(matrix(r1, ncol = 1), r2, "footrule", 1))
       }),
       check_dist(n, fun = function(r1, r2) sum(abs(r1 - r2)))
     )
@@ -23,7 +23,7 @@ test_that("Spearman distance is correct", {
   for (n in c(2, 3, 5)) {
     expect_equal(
       check_dist(n, fun = function(r1, r2) {
-        get_rank_distance(r1, r2, "spearman")
+        sum(rank_dist_vec(matrix(r1, ncol = 1), r2, "spearman", 1))
       }),
       check_dist(n, fun = function(r1, r2) sum((r1 - r2)^2))
     )
@@ -47,7 +47,7 @@ test_that("Kendall distance is correct", {
   for (i in seq_along(ns)) {
     expect_equal(
       check_dist(ns[[i]], fun = function(r1, r2) {
-        get_rank_distance(r1, r2, "kendall")
+        sum(rank_dist_vec(matrix(r1, ncol = 1), r2, "kendall", 1))
       }),
       correct[[i]]
     )
@@ -72,7 +72,7 @@ test_that("Cayley distance is correct", {
   for (i in seq_along(ns)) {
     expect_equal(
       check_dist(ns[[i]], fun = function(r1, r2) {
-        get_rank_distance(r1, r2, "cayley")
+        sum(rank_dist_vec(matrix(r1, ncol = 1), r2, "cayley", 1))
       }),
       correct[[i]]
     )
@@ -97,7 +97,7 @@ test_that("Hamming distance is correct", {
   for (i in seq_along(ns)) {
     expect_equal(
       check_dist(ns[[i]], fun = function(r1, r2) {
-        get_rank_distance(r1, r2, "hamming")
+        sum(rank_dist_vec(matrix(r1, ncol = 1), r2, "hamming", 1))
       }),
       correct[[i]]
     )
@@ -122,7 +122,7 @@ test_that("Ulam distance is correct", {
   for (i in seq_along(ns)) {
     expect_equal(
       check_dist(ns[[i]], fun = function(r1, r2) {
-        get_rank_distance(r1, r2, "ulam")
+        sum(rank_dist_vec(matrix(r1, ncol = 1), r2, "ulam", 1))
       }),
       correct[[i]]
     )

@@ -1,7 +1,6 @@
 #ifndef DISTANCES_H
 #define DISTANCES_H
 
-#include "RcppArmadillo.h" // needed because of rank_dist_vec function
 
 
 double get_rank_distance(arma::vec, arma::vec, std::string);

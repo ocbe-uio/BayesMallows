@@ -1,11 +1,7 @@
 #include <RcppArmadillo.h>
-#include "distances.h"
-#include "parameterupdates.h"
-#include "sample.h"
-#include "partitionfuns.h"
-#include "misc.h"
-#include "smc_mallows_new_users.h"
 #include "missing_data.h"
+#include "smc_mallows_new_users.h"
+#include "parameterupdates.h"
 
 using namespace arma;
 

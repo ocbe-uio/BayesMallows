@@ -24,8 +24,6 @@ double rtruncbeta(int shape1, int shape2, double trunc = 1) {
   return x;
 }
 
-
-
 double divide_by_fact(double prob, int set_length) {
   // Using the fact that Gamma(x + 1) = x!
   return(prob / tgamma(set_length + 1));

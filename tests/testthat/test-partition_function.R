@@ -3,7 +3,6 @@ check_log_zn <- function(n, alpha, metric) {
   # Generate all permutations
   perm <- permutations(n)
 
-
   # Compute the partition function
   if (metric == "footrule") {
     log(sum(exp(-alpha / n * colSums(abs(t(perm) - 1:n)))))
@@ -11,18 +10,15 @@ check_log_zn <- function(n, alpha, metric) {
     log(sum(exp(-alpha / n * colSums((t(perm) - 1:n)^2))))
   } else if (metric == "kendall") {
     log(sum(exp(-alpha / n * apply(perm, 1,
-      get_rank_distance,
-      r2 = 1:n, metric = "kendall"
+      function(x) rank_dist_vec(matrix(x, ncol = 1), 1:n, metric = "kendall", 1)
     ))))
   } else if (metric == "cayley") {
     log(sum(exp(-alpha / n * apply(perm, 1,
-      get_rank_distance,
-      r2 = 1:n, metric = "cayley"
+                                   function(x) rank_dist_vec(matrix(x, ncol = 1), 1:n, metric = "cayley", 1)
     ))))
   } else if (metric == "hamming") {
     log(sum(exp(-alpha / n * apply(perm, 1,
-      get_rank_distance,
-      r2 = 1:n, metric = "hamming"
+                                   function(x) rank_dist_vec(matrix(x, ncol = 1), 1:n, metric = "hamming", 1)
     ))))
   } else {
     stop("Unknown metric.")
@@ -169,3 +165,4 @@ test_that("estimate_partition_function runs in parallel", {
     expect_equal(length(fit), 3)
   })
 })
+

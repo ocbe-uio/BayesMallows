@@ -76,25 +76,6 @@ double ulam_distance(const vec& r1, const vec& r2){
 }
 
 
-//' Compute the Distance between two rankings
-//'
-//' @description Compute the distance between two rankings according to several metrics.
-//' @param r1 A vector of ranks.
-//' @param r2 A vector of ranks.
-//' @param metric A string. Available options are \code{"footrule"},
-//' \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"spearman"}, and \code{"ulam"}.
-//' @return A scalar.
-//' @details Note that the Spearman distance is the squared L2 norm, whereas
-//' the footrule distance is the L1 norm.
-//'
-//' The Ulam distance uses the SUBSET library developed by John Burkardt, available at http://people.sc.fsu.edu/~jburkardt/cpp_src/subset/subset.html.
-//'
-//' The implementation of Cayley distance is based on a \code{C++} translation of \code{Rankcluster::distCayley} \insertCite{Grimonprez2016}{BayesMallows}.
-//'
-//'
-//' @references \insertAllCited{}
-//' @keywords internal
-// [[Rcpp::export]]
 double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
   if (r1.n_elem != r2.n_elem){
     Rcpp::stop("r1 and r2 must have the same length");
@@ -117,15 +98,10 @@ double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
   }
 }
 
-
-
-// [[Rcpp::export]]
 double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho,
                      const std::string& metric, const arma::vec& observation_frequency){
   return sum(rank_dist_vec(rankings, rho, metric, observation_frequency));
 }
-
-
 
 // [[Rcpp::export]]
 arma::vec rank_dist_vec(const arma::mat& rankings,

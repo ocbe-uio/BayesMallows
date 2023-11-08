@@ -1,8 +1,8 @@
 #include <RcppArmadillo.h>
-#include "distances.h"
-#include "misc.h"
 #include "setdiff.h"
+#include "distances.h"
 #include "missing_data.h"
+#include "misc.h"
 #include "sample.h"
 
 using namespace arma;
@@ -29,7 +29,7 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator) {
     vec present_ranks = rank_vector(find(missing_indicator.col(i) == 0));
     uvec missing_inds = find(missing_indicator.col(i) == 1);
     // Find the available ranks and permute them
-    vec new_ranks = shuffle(setdiff_template(regspace<vec>(1, rank_vector.n_elem), present_ranks));
+    vec new_ranks = shuffle(setdiff(regspace<vec>(1, rank_vector.n_elem), present_ranks));
 
     rank_vector(missing_inds) = new_ranks;
     rankings.col(i) = rank_vector;
@@ -118,8 +118,8 @@ Rcpp::List make_pseudo_proposal(
     }
     vec sample_probs = normalize_weights(log_numerator);
     if(forward) {
-      rankings(span(item_to_rank)) =
-        sample(available_rankings, 1, false, sample_probs);
+
+      rankings(span(item_to_rank)) = sample(available_rankings, 1, false, sample_probs);
     }
 
     int ranking_chosen = as_scalar(find(rankings(item_to_rank) == available_rankings));
@@ -128,7 +128,7 @@ Rcpp::List make_pseudo_proposal(
     if(available_rankings.n_elem <= 1) break;
     unranked_items = unranked_items.subvec(1, available_rankings.n_elem - 1);
 
-    rankings(unranked_items) = setdiff_template(available_rankings, available_rankings(span(ranking_chosen)));
+    rankings(unranked_items) = setdiff(available_rankings, available_rankings(span(ranking_chosen)));
   }
 
   return Rcpp::List::create(
