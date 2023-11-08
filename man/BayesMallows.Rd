@@ -29,7 +29,7 @@ The BayesMallows package provides functionality for fully
  \code{\link{estimate_partition_function}}.
  \item For sequential Monte Carlo algorithms developed in
  \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}, see
- \code{\link{smc_mallows_new_users}} and \code{\link{smc_mallows_new_item_rank}}.
+ \code{\link{update_mallows}}.
 }
 }
 \references{

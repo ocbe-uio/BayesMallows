@@ -7,6 +7,7 @@
 #' @param augmentation One of "pseudo" and "uniform".
 #' @param mcmc_steps Number of Metropolis-Hastings steps to apply in sequential
 #'   Monte Carlo.
+#' @param ... Optional arguments. Currently not used.
 #'
 #' @return An updated model, of class "SMCMallows".
 #' @export
@@ -14,9 +15,7 @@
 #'
 #' @family modeling
 #'
-update_mallows <- function(model, new_rankings, n_particles,
-                           augmentation = "pseudo",
-                           mcmc_steps = 5) {
+update_mallows <- function(model, new_rankings, ...) {
   UseMethod("update_mallows")
 }
 
@@ -25,7 +24,7 @@ update_mallows <- function(model, new_rankings, n_particles,
 update_mallows.BayesMallows <- function(
     model, new_rankings, n_particles,
     augmentation = "pseudo",
-    mcmc_steps = 5) {
+    mcmc_steps = 5, ...) {
 
   augmentation <- match.arg(augmentation, c("pseudo", "uniform"))
   stopifnot(is.matrix(new_rankings))
@@ -72,7 +71,7 @@ update_mallows.BayesMallows <- function(
 
 #' @export
 #' @rdname update_mallows
-update_mallows.SMCMallows <- function(model, new_rankings) {
+update_mallows.SMCMallows <- function(model, new_rankings, ...) {
 
   rankings <- rbind(model$rankings, new_rankings)
   alpha_init <- model$alpha_samples
@@ -123,7 +122,7 @@ extract_alpha_init <- function(model, n_particles) {
 }
 
 extract_rho_init <- function(model, n_particles) {
-  rho_init <- reshape(
+  rho_init <- stats::reshape(
     data = model$rho[model$rho$iteration > model$burnin, ],
     v.names = "value",
     idvar = c("chain", "iteration"),
@@ -141,7 +140,7 @@ extract_aug_init <- function(model, n_particles) {
   aug_init <- array(dim = c(length(ids), model$n_items, n_particles))
   for(i in seq_along(ids)) {
     id <- ids[[i]]
-    tmp <- reshape(
+    tmp <- stats::reshape(
       data = model$augmented_data[
         model$augmented_data$iteration > model$burnin &
           model$augmented_data$assessor == id, ],

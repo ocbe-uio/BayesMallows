@@ -94,8 +94,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 
 #' @title Plot SMC Posterior Distributions
 #' @description Plot posterior distributions of SMC-Mallow parameters.
-#' @param x An object of type \code{SMC-Mallows}, returned for example from
-#'   \code{\link{smc_mallows_update}}.
+#' @param x An object of type \code{SMC-Mallows}.
 #' @param parameter Character string defining the parameter to plot. Available
 #'   options are \code{"alpha"} and \code{"rho"}.
 #' @param items Either a vector of item names, or a vector of indices. If NULL,

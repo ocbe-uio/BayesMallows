@@ -58,9 +58,7 @@
 #'
 #' Simulated dataset based on \code{\link{potato_visual}}, in which 50 % of the
 #' potatoes are initially unranked. Through ten subsequent timesteps, more
-#' ranks are added each time, given complete rankings at time 11. The dataset
-#' is used to demonstrate \code{\link{smc_mallows_new_item_rank}} and
-#' \code{\link{smc_mallows_update}}.
+#' ranks are added each time, given complete rankings at time 11.
 #'
 #' @family datasets
 #' @references \insertRef{liu2019}{BayesMallows}

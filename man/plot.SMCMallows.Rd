@@ -7,8 +7,7 @@
 \method{plot}{SMCMallows}(x, parameter = "alpha", items = NULL, ...)
 }
 \arguments{
-\item{x}{An object of type \code{SMC-Mallows}, returned for example from
-\code{\link{smc_mallows_update}}.}
+\item{x}{An object of type \code{SMC-Mallows}.}
 
 \item{parameter}{Character string defining the parameter to plot. Available
 options are \code{"alpha"} and \code{"rho"}.}
