@@ -12,10 +12,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(BayesMallows)
-```
+
 
 This vignette describes the `SMC-Mallows` functions of the package. These use Sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. We use an alternative data augmentation method, called the pseudolikelihood approach, when we are using the footrule and Spearman distance functions instead of using an independent sampler. For an in-depth treatment of the implemented methodology, see @steinSequentialInferenceMallows2023. 
 
@@ -93,58 +90,82 @@ where $\alpha^{(i)}_{t-1}$ and $\boldsymbol{\rho}^{(i)}_{t-1}, \ i=1,\dots,N$ ar
 
 We are interested in updating the parameter estimates of the Bayesian Mallows model based on the existing ranking data and new observations. We demonstrate the `SMC-Mallows` functions using the `sushi_rankings` dataset [@kamishima2003nantonac], which contains 5000 rankings for 10 sushi dishes.
 
-```{r sushi_rankings_demo}
+
+```r
 head(sushi_rankings)
+```
+
+```
+##      shrimp sea eel tuna squid sea urchin salmon roe egg fatty tuna tuna roll cucumber roll
+## [1,]      2       8   10     3          4          1   5          9         7             6
+## [2,]      1       8    6     4         10          9   3          5         7             2
+## [3,]      2       8    3     4          6          7  10          1         5             9
+## [4,]      4       7    5     6          1          2   8          3         9            10
+## [5,]      4      10    7     5          9          3   2          8         1             6
+## [6,]      4       6    2    10          7          5   1          9         8             3
 ```
 
 Assume we initially have a set of 300 sushi rankings, in `data_batch1`:
 
-```{r}
+
+```r
 data_batch1 <- sushi_rankings[1:300, ]
 ```
 
 We estimate a model on these data using `compute_mallows()`, which runs a full Metropolis-Hastings algorithm.
 
-```{r}
+
+```r
 model1 <- compute_mallows(data = setup_rank_data(data_batch1))
 ```
 
 We assess convergence, and find that 300 is an appropriate burnin value.
 
-```{r}
+
+```r
 assess_convergence(model1)
+```
+
+![plot of chunk unnamed-chunk-22](figure/unnamed-chunk-22-1.png)
+
+```r
 model1$burnin <- 300
 ```
 
 
 Having saved this model, we received another batch of preferences at a later timepoint. 
 
-```{r}
+
+```r
 data_batch2 <- sushi_rankings[301:600, ]
 ```
 
 
 We can now update the initial model, without rerunning the full Metropolis-Hastings algorithm, by calling `update_mallows()`. This function uses the sequential Monte Carlo algorithm described above, and extracts a thinned sample of size `n_particles` from `model1` as initial values.
 
-```{r}
+
+```r
 model2 <- update_mallows(model1, new_rankings = data_batch2, n_particles = 1000)
 ```
 
 Next, assume we get yet another set of rankings later, now of size 1000.
 
-```{r}
+
+```r
 data_batch3 <- sushi_rankings[601:1600, ]
 ```
 
 We can re-update the model.
 
-```{r}
+
+```r
 model3 <- update_mallows(model2, new_rankings = data_batch2)
 ```
 
 Below is a comparison of the posterior intervals of the dispersion parameter for each model. Note how the intervals get increasingly narrower as more data is added.
 
-```{r}
+
+```r
 rbind(
   compute_posterior_intervals(model1),
   compute_posterior_intervals(model2), 
@@ -152,22 +173,65 @@ rbind(
 )
 ```
 
+```
+##   parameter  mean median conf_level          hpdi central_interval
+## 1     alpha 1.776  1.778       95 % [1.612,1.943]    [1.597,1.934]
+## 2     alpha 1.777  1.776       95 % [1.655,1.925]    [1.644,1.914]
+## 3     alpha 1.785  1.783       95 % [1.671,1.896]    [1.678,1.909]
+```
+
 We can use all the same functions to look at posterior summaries as we do for models computed using Metropolis-Hastings. Here is a plot of the posterior for the dispersion parameter:
 
-```{r plot_smc_complete, out.height="4cm", fig.cap="Posterior distribution of scale parameter."}
+
+```r
 plot(model3)
 ```
 
+<div class="figure">
+<img src="figure/plot_smc_complete-1.png" alt="Posterior distribution of scale parameter." height="4cm" />
+<p class="caption">Posterior distribution of scale parameter.</p>
+</div>
+
 Next are the CP consensus and the MAP consensus [@vitelli2018]:
 
-```{r posterior_intervals_rho, message=FALSE, warning=FALSE}
+
+```r
 compute_consensus(model3)
+```
+
+```
+##    ranking          item cumprob
+## 1        1    fatty tuna   1.000
+## 2        2    salmon roe   0.994
+## 3        3          tuna   1.000
+## 4        4        shrimp   0.970
+## 5        5       sea eel   1.000
+## 6        6     tuna roll   0.641
+## 7        7         squid   1.000
+## 8        8    sea urchin   1.000
+## 9        9           egg   1.000
+## 10      10 cucumber roll   1.000
+```
+
+```r
 compute_consensus(model3, type = "MAP")
 ```
 
-```{r, include=FALSE}
-rm(data_batch1, data_batch2, data_batch3)
 ```
+##    map_ranking          item probability
+## 1            1    fatty tuna       0.615
+## 2            2    salmon roe       0.615
+## 3            3          tuna       0.615
+## 4            4        shrimp       0.615
+## 5            5       sea eel       0.615
+## 6            6     tuna roll       0.615
+## 7            7         squid       0.615
+## 8            8    sea urchin       0.615
+## 9            9           egg       0.615
+## 10          10 cucumber roll       0.615
+```
+
+
 
 
 ### Partial Rankings
@@ -192,65 +256,106 @@ where $\alpha^{(i)}_{t-1}$ and $\boldsymbol{\rho}^{(i)}_{t-1}, \ i=1,\dots,N$ ar
 
 For this demonstration we shall assume that we can only observe the top-5 ranked items from each user in the `sushi_rankings` dataset.
 
-```{r smc_partial_set_up}
+
+```r
 data_partial <- sushi_rankings
 data_partial[data_partial > 5] <- NA
 head(data_partial)
 ```
 
+```
+##      shrimp sea eel tuna squid sea urchin salmon roe egg fatty tuna tuna roll cucumber roll
+## [1,]      2      NA   NA     3          4          1   5         NA        NA            NA
+## [2,]      1      NA   NA     4         NA         NA   3          5        NA             2
+## [3,]      2      NA    3     4         NA         NA  NA          1         5            NA
+## [4,]      4      NA    5    NA          1          2  NA          3        NA            NA
+## [5,]      4      NA   NA     5         NA          3   2         NA         1            NA
+## [6,]      4      NA    2    NA         NA          5   1         NA        NA             3
+```
+
 Again, assume we start out with a batch of data, this time with 100 rankings:
 
-```{r}
+
+```r
 data_batch1 <- data_partial[1:100, ]
 ```
 
 We then estimate this model using `compute_mallows()`. Since there are `NA`s in the data, `compute_mallows()` will run imputation over the missing ranks.
 
-```{r}
+
+```r
 model1 <- compute_mallows(data = setup_rank_data(data_batch1))
 ```
 
-```{r}
+
+```r
 assess_convergence(model1)
+```
+
+![plot of chunk unnamed-chunk-31](figure/unnamed-chunk-31-1.png)
+
+```r
 model1$burnin <- 300
 ```
 
 Next, assume we receive 100 more top-5 rankings:
 
-```{r}
+
+```r
 data_batch2 <- data_partial[101:200, ]
 ```
 
 We can now update the initial model, using sequential Monte Carlo:
 
-```{r}
+
+```r
 model2 <- update_mallows(model1, new_rankings = data_batch2, n_particles = 1000)
 ```
 
 We can study model output as before:
 
-```{r smc_init_posterior, out.height="4cm", fig.cap="Posterior distribution of scale parameter after initial run."}
+
+```r
 plot(model1)
 ```
 
-```{r smc_updated_posterior, out.height="4cm", fig.cap="Posterior distribution of scale parameter after updating the model based on new rankings."}
+<div class="figure">
+<img src="figure/smc_init_posterior-1.png" alt="Posterior distribution of scale parameter after initial run." height="4cm" />
+<p class="caption">Posterior distribution of scale parameter after initial run.</p>
+</div>
+
+
+```r
 plot(model2)
 ```
+
+<div class="figure">
+<img src="figure/smc_updated_posterior-1.png" alt="Posterior distribution of scale parameter after updating the model based on new rankings." height="4cm" />
+<p class="caption">Posterior distribution of scale parameter after updating the model based on new rankings.</p>
+</div>
 
 
 When even more data arrives, we can update the model again. For example, assume we now get a set of complete rankings:
 
-```{r}
+
+```r
 data_batch3 <- sushi_rankings[201:300, ]
 ```
 
-```{r}
+
+```r
 model3 <- update_mallows(model2, new_rankings = data_batch3)
 ```
 
-```{r smc_second_updated_posterior, out.height="4cm", fig.cap="Posterior distribution of scale parameter after updating the model based on new rankings."}
+
+```r
 plot(model3)
 ```
+
+<div class="figure">
+<img src="figure/smc_second_updated_posterior-1.png" alt="Posterior distribution of scale parameter after updating the model based on new rankings." height="4cm" />
+<p class="caption">Posterior distribution of scale parameter after updating the model based on new rankings.</p>
+</div>
 
 
 

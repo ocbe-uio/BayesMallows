@@ -105,7 +105,7 @@ update_mallows.SMCMallows <- function(model, new_rankings, ...) {
 
 tidy_smc <- function(ret, items) {
   result <- list()
-  result$alpha <- tidy_alpha(ret$alpha_samples, 1, 1)
+  result$alpha <- tidy_alpha(matrix(ret$alpha_samples, nrow = 1), 1, 1)
 
   rho_mat <- array(dim = c(dim(ret$rho_samples)[[1]], 1, dim(ret$rho_samples)[[2]]))
   rho_mat[, 1, ] <- ret$rho_samples
