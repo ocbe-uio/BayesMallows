@@ -145,7 +145,6 @@ Rcpp::List run_mcmc(Rcpp::List data,
       ++alpha_index;
       for(int i = 0; i < n_clusters; ++i){
         double lambda = priors["lambda"];
-        double alpha_max = priors["alpha_max"];
         double alpha_prop_sd = compute_options["alpha_prop_sd"];
 
         alpha(i, alpha_index) = update_alpha(alpha_old(i),

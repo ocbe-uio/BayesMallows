@@ -11,7 +11,7 @@ An object of class \code{array} of dimension 12 x 20 x 11.
 potato_partial
 }
 \description{
-Simulated dataset based on \code{\link{potato_visual}}, in which 50 % of the
+Simulated dataset based on \code{\link{potato_visual}}, in which 50 \% of the
 potatoes are initially unranked. Through ten subsequent timesteps, more
 ranks are added each time, given complete rankings at time 11.
 }

@@ -5,9 +5,6 @@
 #'   to `0.1`. When `n_cluster > 1`, each mixture component
 #'   \eqn{\alpha_{c}} has the same prior distribution.
 #'
-#' @param alpha_max Maximum value of `alpha` in the truncated exponential
-#'   prior distribution.
-#'
 #' @param psi Positive integer specifying the concentration parameter \eqn{\psi}
 #'   of the Dirichlet prior distribution used for the cluster probabilities
 #'   \eqn{\tau_{1}, \tau_{2}, \dots, \tau_{C}}, where \eqn{C} is the value of
@@ -28,10 +25,9 @@
 #'
 #' @family modeling
 #'
-set_priors <- function(lambda = 0.001, alpha_max = 1e6, psi = 10,
+set_priors <- function(lambda = 0.001, psi = 10,
                        kappa_1 = 1, kappa_2 = 1) {
   validate_positive(lambda)
-  validate_positive(alpha_max)
   validate_integer(psi)
   validate_positive(psi)
   validate_positive(kappa_1)

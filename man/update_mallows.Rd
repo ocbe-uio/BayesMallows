@@ -42,7 +42,13 @@ Update a Bayesian Mallows model with new users
 }
 \seealso{
 Other modeling: 
+\code{\link{assess_convergence}()},
 \code{\link{compute_mallows_mixtures}()},
-\code{\link{compute_mallows}()}
+\code{\link{compute_mallows}()},
+\code{\link{set_compute_options}()},
+\code{\link{set_initial_values}()},
+\code{\link{set_model_options}()},
+\code{\link{set_priors}()},
+\code{\link{setup_rank_data}()}
 }
 \concept{modeling}

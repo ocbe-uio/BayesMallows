@@ -48,14 +48,7 @@ tidy_mcmc <- function(fits, data, model, compute_options) {
   fit$n_assessors <- fits[[1]]$n_assessors
 
   fit$nmc <- compute_options$nmc
-  fit$alpha_acceptance <- rowMeans(matrix(
-    vapply(fits, function(x) x$alpha_acceptance, numeric(model$n_clusters)),
-    nrow = model$n_clusters
-  ))
-  fit$rho_acceptance <- rowMeans(matrix(
-    vapply(fits, function(x) x$rho_acceptance, numeric(model$n_clusters)),
-    nrow = model$n_clusters
-  ))
+  fit$metric <- model$metric
   fit$burnin <- compute_options$burnin
 
   return(fit)

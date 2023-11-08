@@ -44,7 +44,6 @@ Other modeling:
 \code{\link{set_model_options}()},
 \code{\link{set_priors}()},
 \code{\link{setup_rank_data}()},
-\code{\link{smc_mallows_new_item_rank}()},
-\code{\link{smc_mallows_new_users}()}
+\code{\link{update_mallows}()}
 }
 \concept{modeling}

@@ -23,11 +23,6 @@ test_that("compute_mallows_mixtures works", {
     c(10, 8, 3, 7, 5, 2, 1)
   )
 
-  expect_equal(
-    models[[3]]$rho_acceptance,
-    c(1, 0.9, 0.8, 1, 0.55, 0.8)
-  )
-
   mixture_model <- compute_mallows(
     data = dat,
     model = set_model_options(n_clusters = 5),

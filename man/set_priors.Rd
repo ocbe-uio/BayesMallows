@@ -4,22 +4,13 @@
 \alias{set_priors}
 \title{Set prior parameters for Bayesian Mallows model}
 \usage{
-set_priors(
-  lambda = 0.001,
-  alpha_max = 1e+06,
-  psi = 10,
-  kappa_1 = 1,
-  kappa_2 = 1
-)
+set_priors(lambda = 0.001, psi = 10, kappa_1 = 1, kappa_2 = 1)
 }
 \arguments{
 \item{lambda}{Strictly positive numeric value specifying the rate parameter
 of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
 to \code{0.1}. When \code{n_cluster > 1}, each mixture component
 \eqn{\alpha_{c}} has the same prior distribution.}
-
-\item{alpha_max}{Maximum value of \code{alpha} in the truncated exponential
-prior distribution.}
 
 \item{psi}{Positive integer specifying the concentration parameter \eqn{\psi}
 of the Dirichlet prior distribution used for the cluster probabilities
@@ -51,7 +42,6 @@ Other modeling:
 \code{\link{set_initial_values}()},
 \code{\link{set_model_options}()},
 \code{\link{setup_rank_data}()},
-\code{\link{smc_mallows_new_item_rank}()},
-\code{\link{smc_mallows_new_users}()}
+\code{\link{update_mallows}()}
 }
 \concept{modeling}

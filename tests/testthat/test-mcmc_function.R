@@ -13,23 +13,7 @@ test_that(
 )
 
 
-test_that(
-  "acceptance rate is acceptable for footrule",
-  {
-    expect_true(
-      model_fit$alpha_acceptance > 0 && model_fit$alpha_acceptance < 1
-    )
-  }
-)
 
-test_that(
-  "acceptance rate is acceptable for rho",
-  {
-    expect_true(
-      model_fit$rho_acceptance > 0 && model_fit$rho_acceptance < 1
-    )
-  }
-)
 
 
 test_that(
