@@ -31,12 +31,6 @@ update_mallows.BayesMallows <- function(
   augmentation <- match.arg(augmentation, c("pseudo", "uniform"))
   stopifnot(is.matrix(new_rankings))
 
-  if(any(is.na(new_rankings))) {
-    type <- "partial"
-  } else {
-    type <- "complete"
-  }
-
   if(augmentation == "pseudo" && !model$metric %in% c("footrule", "spearman")) {
     stop("pseudolikelihood augmentation only possible for metrics 'footrule' ",
          "and 'spearman'.")
@@ -48,7 +42,6 @@ update_mallows.BayesMallows <- function(
   ret <- smc_mallows_new_users(
     rankings = t(new_rankings),
     new_rankings = t(new_rankings),
-    type = type,
     n_particles = n_particles,
     mcmc_steps = mcmc_steps,
     aug_method = augmentation,
@@ -69,7 +62,6 @@ update_mallows.BayesMallows <- function(
   ret$n_clusters <- 1
   ret$rankings <- new_rankings
   ret$n_particles <- n_particles
-  ret$type <- type
   ret$mcmc_steps <- mcmc_steps
   ret$logz_list <- model$logz_list
   ret$metric <- model$metric
@@ -93,7 +85,6 @@ update_mallows.SMCMallows <- function(model, new_rankings) {
     new_rankings = t(new_rankings),
     rho_init = rho_init,
     alpha_init = alpha_init,
-    type = model$type,
     n_particles = model$n_particles,
     mcmc_steps = model$mcmc_steps,
     logz_estimate = model$logz_list$logz_estimate,

@@ -16,19 +16,18 @@ using namespace arma;
 Rcpp::List  smc_mallows_new_users(
   arma::mat rankings,
   arma::mat new_rankings,
-  arma::mat rho_init,
-  arma::vec alpha_init,
-  const std::string& type,
-  const int& n_particles,
-  const int& mcmc_steps,
+  const arma::mat rho_init,
+  const arma::vec alpha_init,
+  const int n_particles,
+  const int mcmc_steps,
   const double alpha_prop_sd = 0.5,
   const double lambda = 0.1,
-  const std::string& aug_method = "uniform",
+  const std::string aug_method = "uniform",
   const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
   const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue,
   const std::string& metric = "footrule",
   const int& leap_size = 1,
-  Rcpp::Nullable<arma::cube> aug_init = R_NilValue,
+  const Rcpp::Nullable<arma::cube> aug_init = R_NilValue,
   int num_obs = 0
 ) {
 
@@ -37,6 +36,7 @@ Rcpp::List  smc_mallows_new_users(
   int n_items = rankings.n_rows;
   vec obs_freq = ones(n_users);
   vec aug_prob = ones(n_particles);
+  bool any_missing = !is_finite(rankings);
 
   mat rho_samples(n_items, n_particles);
   vec alpha_samples = zeros(n_particles);
@@ -44,7 +44,7 @@ Rcpp::List  smc_mallows_new_users(
 
   cube aug_rankings;
   umat missing_indicator;
-  if(type == "partial"){
+  if(any_missing){
 
     rankings.replace(datum::nan, 0);
     missing_indicator = conv_to<umat>::from(rankings);
@@ -59,11 +59,13 @@ Rcpp::List  smc_mallows_new_users(
     if(aug_init.isNotNull()) {
       aug_rankings(span::all, span(0, num_obs - 1), span::all) = Rcpp::as<cube>(aug_init);
     }
+  } else {
+    missing_indicator.reset();
   }
 
   num_obs += num_new_obs;
   mat new_observed_rankings, all_observed_rankings;
-  if(type == "complete"){
+  if(!any_missing){
     new_observed_rankings = new_rankings;
     all_observed_rankings = rankings;
   }
@@ -72,7 +74,7 @@ Rcpp::List  smc_mallows_new_users(
   alpha_samples = alpha_init;
   vec log_inc_wgt(n_particles, fill::zeros);
 
-  if(type == "partial"){
+  if(any_missing){
     smc_mallows_new_users_augment_partial(
       aug_rankings, aug_prob, rho_samples, alpha_samples, num_obs, num_new_obs,
       aug_method, missing_indicator, metric);
@@ -83,16 +85,16 @@ Rcpp::List  smc_mallows_new_users(
   smc_mallows_new_users_reweight(
     log_inc_wgt, effective_sample_size, norm_wgt, aug_rankings, new_observed_rankings, rho_samples,
     alpha_samples, logz_estimate, cardinalities, num_obs, num_new_obs, aug_prob,
-    type != "complete", metric);
+    any_missing, metric);
 
   smc_mallows_new_users_resample(
     rho_samples, alpha_samples, aug_rankings, norm_wgt, num_obs,
-    type != "complete");
+    any_missing);
 
   for (int ii = 0; ii < n_particles; ++ii) {
 
     for (int kk = 0; kk < mcmc_steps; ++kk) {
-      if(type == "partial") {
+      if(any_missing) {
         all_observed_rankings = aug_rankings.slice(ii);
       }
       rho_samples.col(ii) = make_new_rho(rho_samples.col(ii), all_observed_rankings,
@@ -105,7 +107,7 @@ Rcpp::List  smc_mallows_new_users(
 
     }
 
-    if(type == "partial") {
+    if(any_missing) {
 
       for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
         double log_hastings_correction = 0;

@@ -174,7 +174,7 @@ run_mcmc <- function(rankings, obs_freq, nmc, constraints, cardinalities, logz_e
     .Call(`_BayesMallows_run_mcmc`, rankings, obs_freq, nmc, constraints, cardinalities, logz_estimate, rho_init, metric, error_model, Lswap, n_clusters, include_wcd, leap_size, alpha_prop_sd, alpha_init, alpha_jump, lambda, alpha_max, psi, rho_thinning, aug_thinning, clus_thin, save_aug, verbose, kappa_1, kappa_2, save_ind_clus)
 }
 
-smc_mallows_new_users <- function(rankings, new_rankings, rho_init, alpha_init, type, n_particles, mcmc_steps, alpha_prop_sd = 0.5, lambda = 0.1, aug_method = "uniform", logz_estimate = NULL, cardinalities = NULL, metric = "footrule", leap_size = 1L, aug_init = NULL, num_obs = 0L) {
-    .Call(`_BayesMallows_smc_mallows_new_users`, rankings, new_rankings, rho_init, alpha_init, type, n_particles, mcmc_steps, alpha_prop_sd, lambda, aug_method, logz_estimate, cardinalities, metric, leap_size, aug_init, num_obs)
+smc_mallows_new_users <- function(rankings, new_rankings, rho_init, alpha_init, n_particles, mcmc_steps, alpha_prop_sd = 0.5, lambda = 0.1, aug_method = "uniform", logz_estimate = NULL, cardinalities = NULL, metric = "footrule", leap_size = 1L, aug_init = NULL, num_obs = 0L) {
+    .Call(`_BayesMallows_smc_mallows_new_users`, rankings, new_rankings, rho_init, alpha_init, n_particles, mcmc_steps, alpha_prop_sd, lambda, aug_method, logz_estimate, cardinalities, metric, leap_size, aug_init, num_obs)
 }
 
