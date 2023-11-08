@@ -102,9 +102,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 #'   five items are selected randomly.
 #' @param ... Other arguments passed to \code{\link[base]{plot}} (not used).
 #' @return A plot of the posterior distributions
-#' @author Waldir Leoncio
 #' @export
-#' @example /inst/examples/plot.SMCMallows_example.R
 #' @family posterior quantities
 plot.SMCMallows <- function(
     x, parameter = "alpha", items = NULL, ...) {

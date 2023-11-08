@@ -11,7 +11,6 @@
 #' @return An updated model, of class "SMCMallows".
 #' @export
 #'
-#' @example inst/examples/smc_mallows_new_users_complete_example.R
 #'
 #' @family modeling
 #'
