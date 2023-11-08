@@ -185,7 +185,7 @@ We can also compute posterior intervals in the usual way:
 ```r
 compute_posterior_intervals(fit, parameter = "alpha")
 #>   parameter  mean median conf_level          hpdi central_interval
-#> 1     alpha 4.808  4.809       95 % [4.251,5.326]    [4.263,5.352]
+#> 1     alpha 4.829  4.828       95 % [4.254,5.359]    [4.284,5.391]
 ```
 
 
@@ -196,17 +196,17 @@ compute_posterior_intervals(fit, parameter = "rho")
 #> 2   Item 2       rho   15     15       95 %    [15]             [15]
 #> 3   Item 3       rho    3      3       95 %   [3,4]            [3,4]
 #> 4   Item 4       rho   11     11       95 % [11,13]          [11,13]
-#> 5   Item 5       rho    9      9       95 %  [8,10]           [8,10]
+#> 5   Item 5       rho    9      9       95 %   [8,9]           [8,10]
 #> 6   Item 6       rho    2      2       95 %   [1,2]            [1,2]
-#> 7   Item 7       rho    9      8       95 %  [8,10]           [8,10]
+#> 7   Item 7       rho    8      8       95 %   [8,9]           [8,10]
 #> 8   Item 8       rho   12     12       95 % [11,14]          [11,14]
 #> 9   Item 9       rho    1      1       95 %   [1,2]            [1,2]
-#> 10 Item 10       rho    6      6       95 %   [5,6]            [5,6]
-#> 11 Item 11       rho    4      4       95 %   [3,4]            [3,5]
+#> 10 Item 10       rho    6      6       95 %   [6,7]            [5,7]
+#> 11 Item 11       rho    4      4       95 %   [3,5]            [3,5]
 #> 12 Item 12       rho   13     13       95 % [12,14]          [12,14]
-#> 13 Item 13       rho   10     10       95 %  [9,10]           [8,10]
+#> 13 Item 13       rho   10     10       95 %  [9,10]           [9,10]
 #> 14 Item 14       rho   13     14       95 % [11,14]          [11,14]
-#> 15 Item 15       rho    5      5       95 %   [5,6]            [4,6]
+#> 15 Item 15       rho    5      5       95 %   [4,5]            [4,6]
 ```
 
 And we can compute the consensus ranking:
@@ -215,20 +215,20 @@ And we can compute the consensus ranking:
 ```r
 compute_consensus(fit)
 #>    ranking    item   cumprob
-#> 1        1  Item 9 0.8942424
+#> 1        1  Item 9 0.8828030
 #> 2        2  Item 6 1.0000000
-#> 3        3  Item 3 0.7540909
-#> 4        4 Item 11 0.9712121
-#> 5        5 Item 15 0.9534848
-#> 6        6 Item 10 0.9775000
-#> 7        7  Item 1 0.9984091
-#> 8        8  Item 7 0.5664394
-#> 9        9  Item 5 0.9270455
+#> 3        3  Item 3 0.7033333
+#> 4        4 Item 11 0.9468939
+#> 5        5 Item 15 0.9701515
+#> 6        6 Item 10 0.9679545
+#> 7        7  Item 1 1.0000000
+#> 8        8  Item 7 0.5886364
+#> 9        9  Item 5 0.9600000
 #> 10      10 Item 13 1.0000000
-#> 11      11  Item 4 0.6000758
-#> 12      12  Item 8 0.6967424
-#> 13      13 Item 12 0.6326515
-#> 14      14 Item 14 0.9981818
+#> 11      11  Item 4 0.6562121
+#> 12      12  Item 8 0.6817424
+#> 13      13 Item 12 0.6011364
+#> 14      14 Item 14 0.9940152
 #> 15      15  Item 2 1.0000000
 ```
 
@@ -236,21 +236,21 @@ compute_consensus(fit)
 ```r
 compute_consensus(fit, type = "MAP")
 #>    map_ranking    item probability
-#> 1            1  Item 9   0.3390909
-#> 2            2  Item 6   0.3390909
-#> 3            3  Item 3   0.3390909
-#> 4            4 Item 11   0.3390909
-#> 5            5 Item 15   0.3390909
-#> 6            6 Item 10   0.3390909
-#> 7            7  Item 1   0.3390909
-#> 8            8  Item 7   0.3390909
-#> 9            9  Item 5   0.3390909
-#> 10          10 Item 13   0.3390909
-#> 11          11  Item 4   0.3390909
-#> 12          12  Item 8   0.3390909
-#> 13          13 Item 12   0.3390909
-#> 14          14 Item 14   0.3390909
-#> 15          15  Item 2   0.3390909
+#> 1            1  Item 9        0.34
+#> 2            2  Item 6        0.34
+#> 3            3  Item 3        0.34
+#> 4            4 Item 11        0.34
+#> 5            5 Item 15        0.34
+#> 6            6 Item 10        0.34
+#> 7            7  Item 1        0.34
+#> 8            8  Item 7        0.34
+#> 9            9  Item 5        0.34
+#> 10          10 Item 13        0.34
+#> 11          11  Item 4        0.34
+#> 12          12  Item 8        0.34
+#> 13          13 Item 12        0.34
+#> 14          14 Item 14        0.34
+#> 15          15  Item 2        0.34
 ```
 
 We can compute the probability of being top-$k$, here for $k=4$:

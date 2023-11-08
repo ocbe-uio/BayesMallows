@@ -5,8 +5,21 @@
 #' consensus is given for each mixture. Consensus of augmented ranks
 #' can also be computed
 #' for each assessor, by setting `parameter = "Rtilde"`.
+#'
 #' @param model_fit A model fit.
-#' @param ... other arguments passed to methods.
+#' @param type Character string specifying which consensus to compute. Either
+#'   `"CP"` or `"MAP"`. Defaults to `"CP"`.
+#' @param burnin A numeric value specifying the number of iterations to discard
+#'   as burn-in. Defaults to `model_fit$burnin`, and must be provided if
+#'   `model_fit$burnin` does not exist. See [assess_convergence()].
+#' @param parameter Character string defining the parameter for which to compute
+#'   the consensus. Defaults to `"rho"`. Available options are `"rho"` and
+#'   `"Rtilde"`, with the latter giving consensus rankings for augmented ranks.
+#' @param assessors When `parameter = "rho"`, this integer vector is used to
+#'   define the assessors for which to compute the augmented ranking. #'
+#'   Defaults to `1L`, which yields augmented rankings for assessor 1.
+#' @param ... Other arguments passed on to other methods. Currently not used.
+#'
 #' @references \insertAllCited{}
 #' @export
 #' @example /inst/examples/compute_consensus_example.R
@@ -17,26 +30,8 @@ compute_consensus <- function(model_fit, ...) {
   UseMethod("compute_consensus")
 }
 
-#' @title Compute Consensus Ranking
-#'
-#' @param model_fit Object of type `BayesMallows` returned from
-#'   [compute_mallows()].
-#' @param type Character string specifying which consensus to compute. Either
-#'   `"CP"` or `"MAP"`. Defaults to `"CP"`.
-#' @param burnin A numeric value specifying the number of iterations to discard
-#'   as burn-in. Defaults to `model_fit$burnin`, and must be provided if
-#'   `model_fit$burnin` does not exist. See
-#'   [assess_convergence()].
-#' @param parameter Character string defining the parameter for which to compute
-#'   the consensus. Defaults to `"rho"`. Available options are `"rho"`
-#'   and `"Rtilde"`, with the latter giving consensus rankings for
-#'   augmented ranks.
-#' @param assessors When `parameter = "rho"`, this integer vector is used
-#'   to define the assessors for which to compute the augmented ranking.
-#' @param ... Other arguments passed on to other methods. Currently not used.
-#'   Defaults to `1L`, which yields augmented rankings for assessor 1.
 #' @export
-#' @family posterior quantities
+#' @rdname compute_consensus
 compute_consensus.BayesMallows <- function(
     model_fit, type = "CP", burnin = model_fit$burnin, parameter = "rho",
     assessors = 1L, ...) {
@@ -113,7 +108,8 @@ compute_consensus.BayesMallows <- function(
 }
 
 
-#' @rdname compute_consensus.BayesMallows
+#' @export
+#' @rdname compute_consensus
 compute_consensus.SMCMallows <- function(model_fit, type = "CP", ...) {
   model_fit$burnin <- 0
   model_fit$nmc <- model_fit$n_particles

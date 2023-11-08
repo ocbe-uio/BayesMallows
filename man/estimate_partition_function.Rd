@@ -140,6 +140,11 @@ model_fit <- compute_mallows(
 }
 \seealso{
 Other preprocessing: 
-\code{\link{get_transitive_closure}()}
+\code{\link{get_transitive_closure}()},
+\code{\link{set_compute_options}()},
+\code{\link{set_initial_values}()},
+\code{\link{set_model_options}()},
+\code{\link{set_priors}()},
+\code{\link{setup_rank_data}()}
 }
 \concept{preprocessing}

@@ -12,10 +12,19 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "",
+  error = FALSE
+)
+```
+
+```{r}
 library(BayesMallows)
 ```
+
 
 This vignette describes the `SMC-Mallows` functions of the package. These use Sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. We use an alternative data augmentation method, called the pseudolikelihood approach, when we are using the footrule and Spearman distance functions instead of using an independent sampler. For an in-depth treatment of the implemented methodology, see @steinSequentialInferenceMallows2023. 
 
@@ -111,8 +120,12 @@ model1 <- compute_mallows(data = setup_rank_data(data_batch1))
 
 We assess convergence, and find that 300 is an appropriate burnin value.
 
-```{r}
+```{r, convergence_smc_full, out.height="5cm", fig.cap="Trace plot for SMC model."}
 assess_convergence(model1)
+```
+
+
+```{r}
 model1$burnin <- 300
 ```
 
@@ -154,7 +167,7 @@ rbind(
 
 We can use all the same functions to look at posterior summaries as we do for models computed using Metropolis-Hastings. Here is a plot of the posterior for the dispersion parameter:
 
-```{r plot_smc_complete, out.height="4cm", fig.cap="Posterior distribution of scale parameter."}
+```{r, plot_smc_complete, out.height="4cm", fig.cap="Posterior distribution of scale parameter."}
 plot(model3)
 ```
 
@@ -210,10 +223,14 @@ We then estimate this model using `compute_mallows()`. Since there are `NA`s in 
 model1 <- compute_mallows(data = setup_rank_data(data_batch1))
 ```
 
-```{r}
+```{r, convergence_smc_partial, out.height="5cm", fig.cap="Trace plot for SMC model."}
 assess_convergence(model1)
+```
+
+```{r}
 model1$burnin <- 300
 ```
+
 
 Next, assume we receive 100 more top-5 rankings:
 
@@ -229,11 +246,11 @@ model2 <- update_mallows(model1, new_rankings = data_batch2, n_particles = 1000)
 
 We can study model output as before:
 
-```{r smc_init_posterior, out.height="4cm", fig.cap="Posterior distribution of scale parameter after initial run."}
+```{r, smc_init_posterior_partial, out.height="4cm", fig.cap="Posterior distribution of scale parameter after initial run."}
 plot(model1)
 ```
 
-```{r smc_updated_posterior, out.height="4cm", fig.cap="Posterior distribution of scale parameter after updating the model based on new rankings."}
+```{r, smc_updated_posterior_partial, out.height="4cm", fig.cap="Posterior distribution of scale parameter after updating the model based on new rankings."}
 plot(model2)
 ```
 
@@ -248,7 +265,7 @@ data_batch3 <- sushi_rankings[201:300, ]
 model3 <- update_mallows(model2, new_rankings = data_batch3)
 ```
 
-```{r smc_second_updated_posterior, out.height="4cm", fig.cap="Posterior distribution of scale parameter after updating the model based on new rankings."}
+```{r, smc_second_updated_posterior_partial, out.height="4cm", fig.cap="Posterior distribution of scale parameter after updating the model based on new rankings."}
 plot(model3)
 ```
 

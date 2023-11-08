@@ -23,7 +23,7 @@
 #'   `priors` argument to [compute_mallows()].
 #' @export
 #'
-#' @family modeling
+#' @family preprocessing
 #'
 set_priors <- function(lambda = 0.001, psi = 10,
                        kappa_1 = 1, kappa_2 = 1) {

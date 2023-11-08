@@ -61,7 +61,7 @@
 #'   [compute_mallows()].
 #' @export
 #'
-#' @family modeling
+#' @family preprocessing
 #'
 set_compute_options <- function(
     nmc = 2000,

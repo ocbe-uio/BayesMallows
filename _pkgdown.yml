@@ -3,21 +3,21 @@ template:
   bootstrap: 5
 
 reference:
-- title: Modeling fitting
+- title: Model estimation
   desc: Functions for estimating the Bayesian Mallows model.
   contents:
   - has_concept("modeling")
-  - BayesMallows-package
+  - has_concept("diagnostics")
+
+- title: Preparing model estimation
+  desc: Functions to run prior to fitting a model.
+  contents:
+  - has_concept("preprocessing")
 
 - title: Posterior quantities
   desc: Functions for studying posterior distributions of model parameters.
   contents:
   - has_concept("posterior quantities")
-
-- title: Preprocessing
-  desc: Functions to run prior to fitting a model.
-  contents:
-  - has_concept("preprocessing")
 
 - title: Rank functions
   desc: Various functions for sampling ranks and working with ranks.

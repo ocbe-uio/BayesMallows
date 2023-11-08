@@ -2,14 +2,42 @@
 % Please edit documentation in R/compute_consensus.R
 \name{compute_consensus}
 \alias{compute_consensus}
+\alias{compute_consensus.BayesMallows}
+\alias{compute_consensus.SMCMallows}
 \title{Compute Consensus Ranking}
 \usage{
 compute_consensus(model_fit, ...)
+
+\method{compute_consensus}{BayesMallows}(
+  model_fit,
+  type = "CP",
+  burnin = model_fit$burnin,
+  parameter = "rho",
+  assessors = 1L,
+  ...
+)
+
+\method{compute_consensus}{SMCMallows}(model_fit, type = "CP", ...)
 }
 \arguments{
 \item{model_fit}{A model fit.}
 
-\item{...}{other arguments passed to methods.}
+\item{...}{Other arguments passed on to other methods. Currently not used.}
+
+\item{type}{Character string specifying which consensus to compute. Either
+\code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.}
+
+\item{burnin}{A numeric value specifying the number of iterations to discard
+as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
+\code{model_fit$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
+
+\item{parameter}{Character string defining the parameter for which to compute
+the consensus. Defaults to \code{"rho"}. Available options are \code{"rho"} and
+\code{"Rtilde"}, with the latter giving consensus rankings for augmented ranks.}
+
+\item{assessors}{When \code{parameter = "rho"}, this integer vector is used to
+define the assessors for which to compute the augmented ranking. #'
+Defaults to \code{1L}, which yields augmented rankings for assessor 1.}
 }
 \description{
 Compute the consensus ranking using either cumulative
@@ -91,8 +119,6 @@ compute_consensus(model_fit, type = "MAP", parameter = "Rtilde", assessors = 2L)
 \seealso{
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
-\code{\link{compute_consensus.BayesMallows}()},
-\code{\link{compute_posterior_intervals.BayesMallows}()},
 \code{\link{compute_posterior_intervals}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},

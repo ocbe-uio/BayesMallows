@@ -46,9 +46,7 @@ heat_plot(model_fit, type = "MAP")
 \seealso{
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
-\code{\link{compute_consensus.BayesMallows}()},
 \code{\link{compute_consensus}()},
-\code{\link{compute_posterior_intervals.BayesMallows}()},
 \code{\link{compute_posterior_intervals}()},
 \code{\link{plot.BayesMallows}()},
 \code{\link{plot.SMCMallows}()},

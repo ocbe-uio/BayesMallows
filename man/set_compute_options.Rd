@@ -84,14 +84,12 @@ provided in the \code{compute_options} argument to
 Specify options for Metropolis-Hastings algorithms
 }
 \seealso{
-Other modeling: 
-\code{\link{assess_convergence}()},
-\code{\link{compute_mallows_mixtures}()},
-\code{\link{compute_mallows}()},
+Other preprocessing: 
+\code{\link{estimate_partition_function}()},
+\code{\link{get_transitive_closure}()},
 \code{\link{set_initial_values}()},
 \code{\link{set_model_options}()},
 \code{\link{set_priors}()},
-\code{\link{setup_rank_data}()},
-\code{\link{update_mallows}()}
+\code{\link{setup_rank_data}()}
 }
-\concept{modeling}
+\concept{preprocessing}

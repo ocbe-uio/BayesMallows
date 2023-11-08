@@ -59,15 +59,13 @@ Imports: Rcpp (>= 1.0.0),
   cowplot (>= 1.0.0)
 LinkingTo: Rcpp, RcppArmadillo, testthat
 Suggests:
-  R.rsp,
-  xml2,
   knitr,
   testthat (>= 3.0.0),
   label.switching (>= 1.7),
   rmarkdown,
   covr,
   parallel (>= 3.5.1)
-VignetteBuilder: R.rsp, knitr
+VignetteBuilder: knitr, rmarkdown
 RdMacros: Rdpack
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)

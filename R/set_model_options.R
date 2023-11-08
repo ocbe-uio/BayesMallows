@@ -27,7 +27,7 @@
 #'
 #' @export
 #'
-#' @family modeling
+#' @family preprocessing
 #'
 set_model_options <- function(metric = "footrule", n_clusters = 1,
                               error_model = "none") {

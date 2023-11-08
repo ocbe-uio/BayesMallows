@@ -2,14 +2,48 @@
 % Please edit documentation in R/compute_posterior_intervals.R
 \name{compute_posterior_intervals}
 \alias{compute_posterior_intervals}
+\alias{compute_posterior_intervals.BayesMallows}
+\alias{compute_posterior_intervals.SMCMallows}
 \title{Compute Posterior Intervals}
 \usage{
 compute_posterior_intervals(model_fit, ...)
+
+\method{compute_posterior_intervals}{BayesMallows}(
+  model_fit,
+  burnin = model_fit$burnin,
+  parameter = "alpha",
+  level = 0.95,
+  decimals = 3L,
+  ...
+)
+
+\method{compute_posterior_intervals}{SMCMallows}(
+  model_fit,
+  parameter = "alpha",
+  level = 0.95,
+  decimals = 3L,
+  ...
+)
 }
 \arguments{
 \item{model_fit}{A model object.}
 
-\item{...}{other arguments passed to methods.}
+\item{...}{Other arguments. Currently not used.}
+
+\item{burnin}{A numeric value specifying the number of iterations to discard
+as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
+\code{model_fit$burnin} does not exist. See
+\code{\link[=assess_convergence]{assess_convergence()}}.}
+
+\item{parameter}{Character string defining which parameter to compute
+posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
+\code{"cluster_probs"}. Default is \code{"alpha"}.}
+
+\item{level}{Decimal number in \eqn{[0,1]} specifying the confidence level.
+Defaults to \code{0.95}.}
+
+\item{decimals}{Integer specifying the number of decimals to include in
+posterior intervals and the mean and median. Defaults to \code{3}.}
 }
 \description{
 Compute posterior intervals of parameters of interest.
@@ -58,13 +92,9 @@ compute_posterior_intervals(model_fit, parameter = "rho")
 \insertAllCited{}
 }
 \seealso{
-\code{\link[=compute_mallows]{compute_mallows()}}
-
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
-\code{\link{compute_consensus.BayesMallows}()},
 \code{\link{compute_consensus}()},
-\code{\link{compute_posterior_intervals.BayesMallows}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},
 \code{\link{plot.SMCMallows}()},

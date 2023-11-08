@@ -5,31 +5,6 @@
 #'
 #' @param model_fit A model object.
 #'
-#' @param ... other arguments passed to methods.
-#'
-#' @details This function computes both the Highest Posterior Density Interval (HPDI),
-#' which may be discontinuous for bimodal distributions, and
-#' the central posterior interval, which is simply defined by the quantiles of the posterior
-#' distribution. The HPDI intervals are computed using the `HDInterval` package
-#' \insertCite{meredith2018}{BayesMallows}.
-#'
-#' @seealso [compute_mallows()]
-#'
-#' @references \insertAllCited{}
-#'
-#' @example /inst/examples/compute_posterior_intervals_example.R
-#'
-#' @export
-#' @family posterior quantities
-compute_posterior_intervals <- function(model_fit, ...) {
-  UseMethod("compute_posterior_intervals")
-}
-
-
-#' Compute posterior intervals
-#'
-#' @param model_fit An object of class `BayesMallows` returned from
-#'   [compute_mallows()].
 #' @param burnin A numeric value specifying the number of iterations to discard
 #'   as burn-in. Defaults to `model_fit$burnin`, and must be provided if
 #'   `model_fit$burnin` does not exist. See
@@ -43,9 +18,24 @@ compute_posterior_intervals <- function(model_fit, ...) {
 #'   posterior intervals and the mean and median. Defaults to `3`.
 #' @param ... Other arguments. Currently not used.
 #'
-#' @seealso assess_convergence
+#' @details This function computes both the Highest Posterior Density Interval (HPDI),
+#' which may be discontinuous for bimodal distributions, and
+#' the central posterior interval, which is simply defined by the quantiles of the posterior
+#' distribution. The HPDI intervals are computed using the `HDInterval` package
+#' \insertCite{meredith2018}{BayesMallows}.
+#'
+#' @references \insertAllCited{}
+#'
+#' @example /inst/examples/compute_posterior_intervals_example.R
+#'
 #' @export
 #' @family posterior quantities
+compute_posterior_intervals <- function(model_fit, ...) {
+  UseMethod("compute_posterior_intervals")
+}
+
+#' @export
+#' @rdname compute_posterior_intervals
 compute_posterior_intervals.BayesMallows <- function(
     model_fit, burnin = model_fit$burnin,
     parameter = "alpha",
@@ -85,7 +75,8 @@ compute_posterior_intervals.BayesMallows <- function(
   return(df)
 }
 
-#' @rdname compute_posterior_intervals.BayesMallows
+#' @export
+#' @rdname compute_posterior_intervals
 compute_posterior_intervals.SMCMallows <- function(
     model_fit, parameter = "alpha", level = 0.95,
     decimals = 3L, ...) {

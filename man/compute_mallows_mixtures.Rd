@@ -13,7 +13,6 @@ compute_mallows_mixtures(
   initial_values = set_initial_values(),
   logz_estimate = NULL,
   verbose = FALSE,
-  seed = NULL,
   cl = NULL
 )
 }
@@ -47,8 +46,6 @@ although it will still be used if provided.}
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
 every 1000th iteration. Defaults to \code{FALSE}.}
-
-\item{seed}{Optional integer to be used as random number seed.}
 
 \item{cl}{Optional cluster returned from \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. If
 provided, chains will be run in parallel, one on each node of \code{cl}.}
@@ -134,13 +131,7 @@ when calling \code{compute_mallows_mixtures}.
 }
 \seealso{
 Other modeling: 
-\code{\link{assess_convergence}()},
 \code{\link{compute_mallows}()},
-\code{\link{set_compute_options}()},
-\code{\link{set_initial_values}()},
-\code{\link{set_model_options}()},
-\code{\link{set_priors}()},
-\code{\link{setup_rank_data}()},
 \code{\link{update_mallows}()}
 }
 \concept{modeling}

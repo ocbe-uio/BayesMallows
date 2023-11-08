@@ -19,6 +19,11 @@ A simple method for showing any transitive closure computed by
 }
 \seealso{
 Other preprocessing: 
-\code{\link{estimate_partition_function}()}
+\code{\link{estimate_partition_function}()},
+\code{\link{set_compute_options}()},
+\code{\link{set_initial_values}()},
+\code{\link{set_model_options}()},
+\code{\link{set_priors}()},
+\code{\link{setup_rank_data}()}
 }
 \concept{preprocessing}

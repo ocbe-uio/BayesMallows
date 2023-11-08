@@ -53,9 +53,7 @@ pairwise preferences.
 
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
-\code{\link{compute_consensus.BayesMallows}()},
 \code{\link{compute_consensus}()},
-\code{\link{compute_posterior_intervals.BayesMallows}()},
 \code{\link{compute_posterior_intervals}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},

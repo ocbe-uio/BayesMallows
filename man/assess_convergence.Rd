@@ -35,15 +35,5 @@ algorithm.
 }
 \seealso{
 \code{\link[=compute_mallows]{compute_mallows()}}, \code{\link[=plot.BayesMallows]{plot.BayesMallows()}}
-
-Other modeling: 
-\code{\link{compute_mallows_mixtures}()},
-\code{\link{compute_mallows}()},
-\code{\link{set_compute_options}()},
-\code{\link{set_initial_values}()},
-\code{\link{set_model_options}()},
-\code{\link{set_priors}()},
-\code{\link{setup_rank_data}()},
-\code{\link{update_mallows}()}
 }
-\concept{modeling}
+\concept{diagnostics}
