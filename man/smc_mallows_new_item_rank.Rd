@@ -9,7 +9,7 @@ smc_mallows_new_item_rank(
   n_particles,
   logz_estimate = NULL,
   mcmc_steps,
-  aug_rankings_init = NULL,
+  augmented_data_init = NULL,
   rho_samples_init = NULL,
   alpha_samples_init = 0,
   alpha = 0,
@@ -45,7 +45,7 @@ this range, or \eqn{\lambda} should be increased.}
 \item{mcmc_steps}{Integer value for the number of applications we apply
 the MCMC move kernel}
 
-\item{aug_rankings_init}{Initial values for augmented rankings.}
+\item{augmented_data_init}{Initial values for augmented rankings.}
 
 \item{rho_samples_init}{Initial values for rho samples.}
 

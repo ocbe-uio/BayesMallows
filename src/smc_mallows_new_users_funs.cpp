@@ -51,7 +51,7 @@ Rcpp::List make_pseudo_proposal(
 }
 
 void smc_mallows_new_users_augment_partial(
-    arma::cube& aug_rankings,
+    arma::cube& augmented_data,
     arma::vec& aug_prob,
     const arma::mat& rho_samples,
     const arma::vec& alpha_samples,
@@ -70,20 +70,20 @@ void smc_mallows_new_users_augment_partial(
       uvec unranked_items = shuffle(find(missing_indicator.col(jj) == 1));
 
       if (aug_method != "pseudo") {
-        aug_rankings(span::all, span(jj), span(ii)) =
-          propose_augmentation(aug_rankings(span::all, span(jj), span(ii)),
+        augmented_data(span::all, span(jj), span(ii)) =
+          propose_augmentation(augmented_data(span::all, span(jj), span(ii)),
                                missing_indicator.col(jj));
 
         aug_prob(ii) = divide_by_fact(aug_prob(ii), unranked_items.n_elem);
 
       } else {
         Rcpp::List pprop = make_pseudo_proposal(
-          unranked_items, aug_rankings(span::all, span(jj), span(ii)),
+          unranked_items, augmented_data(span::all, span(jj), span(ii)),
           alpha, rho, metric
         );
 
         vec ar = pprop["proposal"];
-        aug_rankings(span::all, span(jj), span(ii)) = ar;
+        augmented_data(span::all, span(jj), span(ii)) = ar;
         double prob = pprop["probability"];
         aug_prob(ii) *= prob;
       }
@@ -92,7 +92,7 @@ void smc_mallows_new_users_augment_partial(
 }
 
 void smc_mallows_new_users_resample(
-    mat& rho_samples, vec& alpha_samples, cube& aug_rankings,
+    mat& rho_samples, vec& alpha_samples, cube& augmented_data,
     const vec& norm_wgt, const int& num_obs,
     const bool& partial
 ){
@@ -103,9 +103,9 @@ void smc_mallows_new_users_resample(
   alpha_samples = alpha_samples.rows(index);
 
   if(partial){
-    cube aug_rankings_index = aug_rankings.slices(index);
-    aug_rankings.cols(0, num_obs - 1) =
-      aug_rankings_index(span::all, span(0, num_obs - 1), span::all);
+    cube augmented_data_index = augmented_data.slices(index);
+    augmented_data.cols(0, num_obs - 1) =
+      augmented_data_index(span::all, span(0, num_obs - 1), span::all);
   }
 }
 
@@ -113,7 +113,7 @@ void smc_mallows_new_users_reweight(
     vec& log_inc_wgt,
     double& effective_sample_size,
     vec& norm_wgt,
-    const cube& aug_rankings,
+    const cube& augmented_data,
     const mat& observed_rankings,
     const mat& rho_samples,
     const vec& alpha_samples,
@@ -134,7 +134,7 @@ void smc_mallows_new_users_reweight(
       n_items, alpha_samples(ii), cardinalities, logz_estimate, metric
     );
 
-    mat rankings = !partial ? observed_rankings : aug_rankings(span::all,
+    mat rankings = !partial ? observed_rankings : augmented_data(span::all,
       span(num_obs - num_new_obs, num_obs - 1),
       span(ii));
 

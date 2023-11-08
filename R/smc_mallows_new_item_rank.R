@@ -38,7 +38,7 @@
 #'   SMC-Mallows algorithm. Defaults to \code{FALSE}.
 #' @param alpha_fixed Logical indicating whether to sample \code{alpha} or not.
 #' @param alpha numeric value of the scale parameter.
-#' @param aug_rankings_init Initial values for augmented rankings.
+#' @param augmented_data_init Initial values for augmented rankings.
 #' @param rho_samples_init Initial values for rho samples.
 #' @param alpha_samples_init Initial values for alpha samples.
 #'
@@ -61,7 +61,7 @@ smc_mallows_new_item_rank <- function(
     n_particles,
     logz_estimate = NULL,
     mcmc_steps,
-    aug_rankings_init = NULL,
+    augmented_data_init = NULL,
     rho_samples_init = NULL,
     alpha_samples_init = 0,
     alpha = 0,
@@ -91,7 +91,7 @@ smc_mallows_new_item_rank <- function(
     logz_estimate = logz_list$logz_estimate,
     cardinalities = logz_list$cardinalities,
     mcmc_steps,
-    aug_rankings_init,
+    augmented_data_init,
     rho_samples_init,
     alpha_samples_init,
     alpha,
