@@ -90,7 +90,6 @@ update_mallows.SMCMallows <- function(model, new_rankings) {
     logz_estimate = model$logz_list$logz_estimate,
     cardinalities = model$logz_list$cardinalities,
     metric = model$metric,
-    num_obs = nrow(model$rankings),
     aug_init = aug_init
   )
 

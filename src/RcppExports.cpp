@@ -166,8 +166,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // smc_mallows_new_users
-Rcpp::List smc_mallows_new_users(arma::mat rankings, arma::mat new_rankings, const arma::mat rho_init, const arma::vec alpha_init, const int n_particles, const int mcmc_steps, const double alpha_prop_sd, const double lambda, const std::string aug_method, const Rcpp::Nullable<arma::vec>& logz_estimate, const Rcpp::Nullable<arma::vec>& cardinalities, const std::string& metric, const int& leap_size, const Rcpp::Nullable<arma::cube> aug_init, int num_obs);
-RcppExport SEXP _BayesMallows_smc_mallows_new_users(SEXP rankingsSEXP, SEXP new_rankingsSEXP, SEXP rho_initSEXP, SEXP alpha_initSEXP, SEXP n_particlesSEXP, SEXP mcmc_stepsSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP aug_methodSEXP, SEXP logz_estimateSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP, SEXP leap_sizeSEXP, SEXP aug_initSEXP, SEXP num_obsSEXP) {
+Rcpp::List smc_mallows_new_users(arma::mat rankings, arma::mat new_rankings, const arma::mat rho_init, const arma::vec alpha_init, const int n_particles, const int mcmc_steps, const double alpha_prop_sd, const double lambda, const std::string aug_method, const Rcpp::Nullable<arma::vec>& logz_estimate, const Rcpp::Nullable<arma::vec>& cardinalities, const std::string& metric, const int& leap_size, const Rcpp::Nullable<arma::cube> aug_init);
+RcppExport SEXP _BayesMallows_smc_mallows_new_users(SEXP rankingsSEXP, SEXP new_rankingsSEXP, SEXP rho_initSEXP, SEXP alpha_initSEXP, SEXP n_particlesSEXP, SEXP mcmc_stepsSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP aug_methodSEXP, SEXP logz_estimateSEXP, SEXP cardinalitiesSEXP, SEXP metricSEXP, SEXP leap_sizeSEXP, SEXP aug_initSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -185,8 +185,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
     Rcpp::traits::input_parameter< const int& >::type leap_size(leap_sizeSEXP);
     Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::cube> >::type aug_init(aug_initSEXP);
-    Rcpp::traits::input_parameter< int >::type num_obs(num_obsSEXP);
-    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_users(rankings, new_rankings, rho_init, alpha_init, n_particles, mcmc_steps, alpha_prop_sd, lambda, aug_method, logz_estimate, cardinalities, metric, leap_size, aug_init, num_obs));
+    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_users(rankings, new_rankings, rho_init, alpha_init, n_particles, mcmc_steps, alpha_prop_sd, lambda, aug_method, logz_estimate, cardinalities, metric, leap_size, aug_init));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -203,7 +202,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 27},
-    {"_BayesMallows_smc_mallows_new_users", (DL_FUNC) &_BayesMallows_smc_mallows_new_users, 15},
+    {"_BayesMallows_smc_mallows_new_users", (DL_FUNC) &_BayesMallows_smc_mallows_new_users, 14},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}
 };

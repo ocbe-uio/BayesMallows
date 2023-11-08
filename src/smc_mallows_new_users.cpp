@@ -27,8 +27,7 @@ Rcpp::List  smc_mallows_new_users(
   const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue,
   const std::string& metric = "footrule",
   const int& leap_size = 1,
-  const Rcpp::Nullable<arma::cube> aug_init = R_NilValue,
-  int num_obs = 0
+  const Rcpp::Nullable<arma::cube> aug_init = R_NilValue
 ) {
 
   int num_new_obs = new_rankings.n_cols;
@@ -42,16 +41,12 @@ Rcpp::List  smc_mallows_new_users(
   vec alpha_samples = zeros(n_particles);
   double effective_sample_size;
 
-  cube augmented_data;
-  umat missing_indicator;
-
+  cube augmented_data{};
+  umat missing_indicator{};
 
   if(any_missing){
-
-    rankings.replace(datum::nan, 0);
-    missing_indicator = conv_to<umat>::from(rankings);
-    missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
-    augmented_data = zeros(n_items, n_users, n_particles);
+    set_up_missing(rankings, missing_indicator);
+    augmented_data.set_size(n_items, n_users, n_particles);
 
     for(int i{}; i < n_particles; i++) {
       augmented_data.slice(i) = rankings;
@@ -59,13 +54,10 @@ Rcpp::List  smc_mallows_new_users(
     }
 
     if(aug_init.isNotNull()) {
-      augmented_data(span::all, span(0, num_obs - 1), span::all) = Rcpp::as<cube>(aug_init);
+      augmented_data(span::all, span(0, rankings.n_cols - new_rankings.n_cols - 1), span::all) = Rcpp::as<cube>(aug_init);
     }
-  } else {
-    missing_indicator.reset();
   }
 
-  num_obs += num_new_obs;
   mat new_observed_rankings, all_observed_rankings;
   if(!any_missing){
     new_observed_rankings = new_rankings;
@@ -78,7 +70,7 @@ Rcpp::List  smc_mallows_new_users(
 
   if(any_missing){
     smc_mallows_new_users_augment_partial(
-      augmented_data, aug_prob, rho_samples, alpha_samples, num_obs, num_new_obs,
+      augmented_data, aug_prob, rho_samples, alpha_samples, num_new_obs,
       aug_method, missing_indicator, metric);
   }
 
@@ -86,11 +78,11 @@ Rcpp::List  smc_mallows_new_users(
   vec norm_wgt;
   smc_mallows_new_users_reweight(
     log_inc_wgt, effective_sample_size, norm_wgt, augmented_data, new_observed_rankings, rho_samples,
-    alpha_samples, logz_estimate, cardinalities, num_obs, num_new_obs, aug_prob,
+    alpha_samples, logz_estimate, cardinalities, num_new_obs, aug_prob,
     any_missing, metric);
 
   smc_mallows_new_users_resample(
-    rho_samples, alpha_samples, augmented_data, norm_wgt, num_obs,
+    rho_samples, alpha_samples, augmented_data, norm_wgt,
     any_missing);
 
   for (int ii = 0; ii < n_particles; ++ii) {
@@ -110,7 +102,7 @@ Rcpp::List  smc_mallows_new_users(
     }
 
     if(any_missing) {
-
+      int num_obs = rankings.n_cols;
       for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
         double log_hastings_correction = 0;
 

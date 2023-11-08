@@ -55,13 +55,13 @@ void smc_mallows_new_users_augment_partial(
     arma::vec& aug_prob,
     const arma::mat& rho_samples,
     const arma::vec& alpha_samples,
-    const int& num_obs,
     const int& num_new_obs,
     const std::string& aug_method,
     const umat& missing_indicator,
     const std::string& metric = "footrule"
 ){
   int n_particles = rho_samples.n_cols;
+  int num_obs = augmented_data.n_cols;
 
   for (int ii{}; ii < n_particles; ++ii) {
     double alpha = alpha_samples(ii);
@@ -93,7 +93,7 @@ void smc_mallows_new_users_augment_partial(
 
 void smc_mallows_new_users_resample(
     mat& rho_samples, vec& alpha_samples, cube& augmented_data,
-    const vec& norm_wgt, const int& num_obs,
+    const vec& norm_wgt,
     const bool& partial
 ){
   int n_particles = rho_samples.n_cols;
@@ -103,9 +103,7 @@ void smc_mallows_new_users_resample(
   alpha_samples = alpha_samples.rows(index);
 
   if(partial){
-    cube augmented_data_index = augmented_data.slices(index);
-    augmented_data.cols(0, num_obs - 1) =
-      augmented_data_index(span::all, span(0, num_obs - 1), span::all);
+    augmented_data = augmented_data.slices(index);
   }
 }
 
@@ -119,7 +117,6 @@ void smc_mallows_new_users_reweight(
     const vec& alpha_samples,
     const Rcpp::Nullable<vec> logz_estimate,
     const Rcpp::Nullable<vec> cardinalities,
-    const int& num_obs,
     const int& num_new_obs,
     const vec& aug_prob,
     const bool& partial,
@@ -127,6 +124,7 @@ void smc_mallows_new_users_reweight(
 ){
   int n_particles = rho_samples.n_cols;
   int n_items = rho_samples.n_rows;
+  int num_obs = augmented_data.n_cols;
   for (int ii{}; ii < n_particles; ++ii) {
 
     /* Calculating log_z_alpha and log_likelihood ----------- */

@@ -7,6 +7,8 @@ arma::vec make_new_augmentation(const arma::vec& rankings, const arma::uvec& mis
                                 const double& alpha, const arma::vec& rho,
                                 const std::string& metric);
 
+void set_up_missing(arma::mat& rankings, arma::umat& missing_indicator);
+
 void initialize_missing_ranks(arma::mat& rankings, const arma::umat& missing_indicator);
 
 void update_missing_ranks(arma::mat& rankings, const arma::uvec& current_cluster_assignment,

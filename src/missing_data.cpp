@@ -14,6 +14,12 @@ vec propose_augmentation(const vec& ranks, const uvec& indicator){
   return proposal;
 }
 
+void set_up_missing(arma::mat& rankings, arma::umat& missing_indicator) {
+  rankings.replace(datum::nan, 0);
+  missing_indicator = conv_to<umat>::from(rankings);
+  missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
+}
+
 void initialize_missing_ranks(mat& rankings, const umat& missing_indicator) {
   int n_assessors = rankings.n_cols;
 

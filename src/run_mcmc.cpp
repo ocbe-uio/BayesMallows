@@ -92,16 +92,13 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   bool any_missing = !is_finite(rankings);
 
   umat missing_indicator{};
+  cube augmented_data{};
 
   if(any_missing){
-    rankings.replace(datum::nan, 0);
-    missing_indicator = conv_to<umat>::from(rankings);
-    missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
+    set_up_missing(rankings, missing_indicator);
     initialize_missing_ranks(rankings, missing_indicator);
   }
 
-  // If the user wants to save augmented data, we need a cube
-  cube augmented_data{};
   if(save_aug){
     augmented_data.set_size(n_items, n_assessors, std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
     augmented_data.slice(0) = rankings;
