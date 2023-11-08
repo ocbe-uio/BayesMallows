@@ -142,7 +142,6 @@ void augment_pairwise(
     const mat& rho,
     const std::string& metric,
     const Rcpp::List& constraints,
-    vec& aug_acceptance,
     const std::string& error_model,
     const int& swap_leap
 ){
@@ -180,7 +179,6 @@ void augment_pairwise(
 
     if(ratio > u){
       rankings.col(i) = proposal;
-      ++aug_acceptance(i);
     }
   }
 }

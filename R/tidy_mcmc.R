@@ -32,16 +32,11 @@ tidy_mcmc <- function(fits, data, model, compute_options) {
     tidy_wcd(fits[[i]]$within_cluster_distance, i)
   }))
 
+
   fit$augmented_data <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_augmented_data(fits[[i]]$augmented_data, i, items,
                         compute_options$aug_thinning)
   }))
-
-  fit$aug_acceptance <- lapply(seq_along(fits), function(i) {
-    tidy_augmentation_acceptance(
-      fits[[i]]$aug_acceptance, i, fits[[i]]$any_missing, fits[[i]]$augpair
-    )
-  })
 
   fit$theta <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_error_probability(fits[[i]]$theta, i)
@@ -51,6 +46,7 @@ tidy_mcmc <- function(fits, data, model, compute_options) {
   fit$items <- items
   fit$n_items <- data$n_items
   fit$n_assessors <- fits[[1]]$n_assessors
+
   fit$nmc <- compute_options$nmc
   fit$alpha_acceptance <- rowMeans(matrix(
     vapply(fits, function(x) x$alpha_acceptance, numeric(model$n_clusters)),
@@ -265,20 +261,6 @@ tidy_augmented_data <- function(augmented_data, chain, items, aug_thinning) {
   }
 }
 
-
-tidy_augmentation_acceptance <- function(aug_acceptance, chain, any_missing, augpair) {
-  # Augmentation acceptance
-
-  if (any_missing || augpair) {
-    aug_acceptance <- data.frame(acceptance_rate = c(aug_acceptance))
-    aug_acceptance$assessor <- seq_len(nrow(aug_acceptance))
-    aug_acceptance <- aug_acceptance[, c("assessor", "acceptance_rate")]
-    aug_acceptance$chain <- chain
-    aug_acceptance
-  } else {
-    NULL
-  }
-}
 
 tidy_error_probability <- function(theta, chain) {
   theta_length <- length(theta)

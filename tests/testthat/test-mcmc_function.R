@@ -12,6 +12,7 @@ test_that(
   }
 )
 
+
 test_that(
   "acceptance rate is acceptable for footrule",
   {

@@ -10,7 +10,6 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(Rcpp::List data,
                     Rcpp::List model,
@@ -36,25 +35,26 @@ Rcpp::List run_mcmc(Rcpp::List data,
   bool augpair = (constraints.length() > 0);
   bool any_missing = !is_finite(rankings);
 
-  umat missing_indicator;
-  uvec assessor_missing;
-
-
-  if(any_missing){
-    rankings.replace(datum::nan, 0);
-    missing_indicator = conv_to<umat>::from(rankings);
-    missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
-    assessor_missing = conv_to<uvec>::from(sum(missing_indicator, 0));
-    initialize_missing_ranks(rankings, missing_indicator, assessor_missing);
-  } else {
-    missing_indicator.reset();
-    assessor_missing.reset();
-  }
-
-  // Declare the cube to hold the latent ranks
+  umat missing_indicator{};
+  cube augmented_data{};
+  bool save_aug = compute_options["save_aug"];
+  int aug_thinning = compute_options["aug_thinning"];
   int rho_thinning = compute_options["rho_thinning"];
   int nmc = compute_options["nmc"];
   int n_clusters = model["n_clusters"];
+
+  if(any_missing){
+    set_up_missing(rankings, missing_indicator);
+    initialize_missing_ranks(rankings, missing_indicator);
+  }
+
+  if(save_aug){
+    augmented_data.set_size(n_items, n_assessors, std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
+    augmented_data.slice(0) = rankings;
+  }
+
+  // Declare the cube to hold the latent ranks
+
   cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
   Rcpp::Nullable<mat> rho_init = initial_values["rho_init"];
   rho.slice(0) = initialize_rho(n_items, n_clusters, rho_init);
@@ -65,15 +65,6 @@ Rcpp::List run_mcmc(Rcpp::List data,
   mat alpha(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
   double alpha_init = initial_values["alpha_init"];
   alpha.col(0).fill(alpha_init);
-
-  // If the user wants to save augmented data, we need a cube
-  cube augmented_data;
-  bool save_aug = compute_options["save_aug"];
-  int aug_thinning = compute_options["aug_thinning"];
-  if(save_aug){
-    augmented_data.set_size(n_items, n_assessors, std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
-    augmented_data.slice(0) = rankings;
-  }
 
   // Clustering
   bool clustering = n_clusters > 1;
@@ -96,19 +87,10 @@ Rcpp::List run_mcmc(Rcpp::List data,
   mat within_cluster_distance(n_clusters, include_wcd ? nmc : 1);
   within_cluster_distance.col(0) = update_wcd(current_cluster_assignment, dist_mat);
 
-  // Declare indicator vectors to hold acceptance or not
-  vec alpha_acceptance = ones(n_clusters);
-  vec rho_acceptance = ones(n_clusters);
-
-  vec aug_acceptance;
-  if(any_missing | augpair){
-    aug_acceptance = ones<vec>(n_assessors);
-  } else {
-    aug_acceptance.reset();
-  }
 
   int kappa_1 = priors["kappa_1"];
   int kappa_2 = priors["kappa_2"];
+
   // Declare vector with Bernoulli parameter for the case of intransitive preferences
   vec theta, shape_1, shape_2;
   std::string error_model = model["error_model"];
@@ -153,10 +135,10 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
     for(int i = 0; i < n_clusters; ++i){
       int leap_size = compute_options["leap_size"];
-      update_rho(rho, rho_acceptance, rho_old, rho_index, i,
+      update_rho(rho, rho_old, rho_index, i,
                  rho_thinning, alpha_old(i), leap_size,
                  clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
-                 metric, n_items, t, element_indices, observation_frequency);
+                 metric, t, element_indices, observation_frequency);
     }
 
     if(t % alpha_jump == 0) {
@@ -165,10 +147,12 @@ Rcpp::List run_mcmc(Rcpp::List data,
         double lambda = priors["lambda"];
         double alpha_max = priors["alpha_max"];
         double alpha_prop_sd = compute_options["alpha_prop_sd"];
-        alpha(i, alpha_index) = update_alpha(alpha_acceptance, alpha_old(i),
+
+        alpha(i, alpha_index) = update_alpha(alpha_old(i),
               clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
               clustering ? observation_frequency(find(current_cluster_assignment == i)) : observation_frequency,
-              i, rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate, alpha_max);
+              rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate);
+
       }
       // Update alpha_old
       alpha_old = alpha.col(alpha_index);
@@ -197,15 +181,15 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
   // Perform data augmentation of missing ranks, if needed
   if(any_missing){
-    update_missing_ranks(rankings, current_cluster_assignment, aug_acceptance, missing_indicator,
-                         assessor_missing, alpha_old, rho_old, metric);
+    update_missing_ranks(rankings, current_cluster_assignment, missing_indicator,
+                         alpha_old, rho_old, metric);
   }
 
   // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
     int swap_leap = compute_options["swap_leap"];
     augment_pairwise(rankings, current_cluster_assignment, alpha_old, 0.1, rho_old,
-                     metric, constraints, aug_acceptance, error_model, swap_leap);
+                     metric, constraints, error_model, swap_leap);
   }
 
   // Save augmented data if the user wants this. Uses the same index as rho.
@@ -222,9 +206,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   // Return everything that might be of interest
   return Rcpp::List::create(
     Rcpp::Named("rho") = rho,
-    Rcpp::Named("rho_acceptance") = rho_acceptance / nmc,
     Rcpp::Named("alpha") = alpha,
-    Rcpp::Named("alpha_acceptance") = alpha_acceptance / nmc,
     Rcpp::Named("theta") = theta,
     Rcpp::Named("shape1") = shape_1,
     Rcpp::Named("shape2") = shape_2,
@@ -234,7 +216,6 @@ Rcpp::List run_mcmc(Rcpp::List data,
     Rcpp::Named("augmented_data") = augmented_data,
     Rcpp::Named("any_missing") = any_missing,
     Rcpp::Named("augpair") = augpair,
-    Rcpp::Named("aug_acceptance") = aug_acceptance / nmc,
     Rcpp::Named("n_assessors") = n_assessors,
     Rcpp::Named("observation_frequency") = observation_frequency
   );

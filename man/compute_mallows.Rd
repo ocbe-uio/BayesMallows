@@ -5,11 +5,34 @@
 \title{Preference Learning with the Mallows Rank Model}
 \usage{
 compute_mallows(
+<<<<<<< HEAD
   data,
   model = set_model_options(),
   compute_options = set_compute_options(),
   priors = set_priors(),
   initial_values = set_initial_values(),
+=======
+  rankings = NULL,
+  preferences = NULL,
+  obs_freq = NULL,
+  metric = "footrule",
+  error_model = NULL,
+  n_clusters = 1L,
+  clus_thin = 1L,
+  nmc = 2000L,
+  leap_size = max(1L, floor(n_items/5)),
+  swap_leap = 1L,
+  rho_init = NULL,
+  rho_thinning = 1L,
+  alpha_prop_sd = 0.1,
+  alpha_init = 1,
+  alpha_jump = 1L,
+  lambda = 0.001,
+  psi = 10L,
+  include_wcd = (n_clusters > 1),
+  save_aug = FALSE,
+  aug_thinning = 1L,
+>>>>>>> smc-issue-306
   logz_estimate = NULL,
   verbose = FALSE,
   seed = NULL,
@@ -29,8 +52,93 @@ returned from \code{\link[=set_compute_options]{set_compute_options()}}.}
 \item{priors}{An object of class \code{"BayesMallowsPriors"} returned from
 \code{\link[=set_priors]{set_priors()}}.}
 
+<<<<<<< HEAD
 \item{initial_values}{An object of class \code{"BayesMallowsInitialValues"} returned
 from \code{\link[=set_initial_values]{set_initial_values()}}.}
+=======
+\item{error_model}{Character string specifying which model to use for
+inconsistent rankings. Defaults to \code{NULL}, which means that
+inconsistent rankings are not allowed. At the moment, the only available
+other option is \code{"bernoulli"}, which means that the Bernoulli error
+model is used. See \insertCite{crispino2019;textual}{BayesMallows} for a
+definition of the Bernoulli model.}
+
+\item{n_clusters}{Integer specifying the number of clusters, i.e., the number
+of mixture components to use. Defaults to \code{1L}, which means no
+clustering is performed. See \code{\link{compute_mallows_mixtures}} for a
+convenience function for computing several models with varying numbers of
+mixtures.}
+
+\item{clus_thin}{Integer specifying the thinning to be applied to cluster
+assignments and cluster probabilities. Defaults to \code{1L}.}
+
+\item{nmc}{Integer specifying the number of iteration of the
+Metropolis-Hastings algorithm to run. Defaults to \code{2000L}. See
+\code{\link{assess_convergence}} for tools to check convergence of the
+Markov chain.}
+
+\item{leap_size}{Integer specifying the step size of the leap-and-shift
+proposal distribution. Defaults \code{floor(n_items / 5)}.}
+
+\item{swap_leap}{Integer specifying the step size of the Swap proposal. Only
+used when \code{error_model} is not \code{NULL}.}
+
+\item{rho_init}{Numeric vector specifying the initial value of the latent
+consensus ranking \eqn{\rho}. Defaults to NULL, which means that the
+initial value is set randomly. If \code{rho_init} is provided when
+\code{n_clusters > 1}, each mixture component \eqn{\rho_{c}} gets the same
+initial value.}
+
+\item{rho_thinning}{Integer specifying the thinning of \code{rho} to be
+performed in the Metropolis- Hastings algorithm. Defaults to \code{1L}.
+\code{compute_mallows} save every \code{rho_thinning}th value of
+\eqn{\rho}.}
+
+\item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
+lognormal proposal distribution used for \eqn{\alpha} in the
+Metropolis-Hastings algorithm. Defaults to \code{0.1}.}
+
+\item{alpha_init}{Numeric value specifying the initial value of the scale
+parameter \eqn{\alpha}. Defaults to \code{1}. When \code{n_clusters > 1},
+each mixture component \eqn{\alpha_{c}} gets the same initial value. When
+chains are run in parallel, by providing an argument \code{cl = cl}, then
+\code{alpha_init} can be a vector of of length \code{length(cl)}, each
+element of which becomes an initial value for the given chain.}
+
+\item{alpha_jump}{Integer specifying how many times to sample \eqn{\rho}
+between each sampling of \eqn{\alpha}. In other words, how many times to
+jump over \eqn{\alpha} while sampling \eqn{\rho}, and possibly other
+parameters like augmented ranks \eqn{\tilde{R}} or cluster assignments
+\eqn{z}. Setting \code{alpha_jump} to a high number can speed up
+computation time, by reducing the number of times the partition function
+for the Mallows model needs to be computed. Defaults to \code{1L}.}
+
+\item{lambda}{Strictly positive numeric value specifying the rate parameter
+of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+to \code{0.1}. When \code{n_cluster > 1}, each mixture component
+\eqn{\alpha_{c}} has the same prior distribution.}
+
+\item{psi}{Integer specifying the concentration parameter \eqn{\psi} of the
+Dirichlet prior distribution used for the cluster probabilities
+\eqn{\tau_{1}, \tau_{2}, \dots, \tau_{C}}, where \eqn{C} is the value of
+\code{n_clusters}. Defaults to \code{10L}. When \code{n_clusters = 1}, this
+argument is not used.}
+
+\item{include_wcd}{Logical indicating whether to store the within-cluster
+distances computed during the Metropolis-Hastings algorithm. Defaults to
+\code{TRUE} if \code{n_clusters > 1} and otherwise \code{FALSE}. Setting
+\code{include_wcd = TRUE} is useful when deciding the number of mixture
+components to include, and is required by \code{\link{plot_elbow}}.}
+
+\item{save_aug}{Logical specifying whether or not to save the augmented
+rankings every \code{aug_thinning}th iteration, for the case of missing
+data or pairwise preferences. Defaults to \code{FALSE}. Saving augmented
+data is useful for predicting the rankings each assessor would give to the
+items not yet ranked, and is required by \code{\link{plot_top_k}}.}
+
+\item{aug_thinning}{Integer specifying the thinning for saving augmented
+data. Only used when \code{save_aug = TRUE}. Defaults to \code{1L}.}
+>>>>>>> smc-issue-306
 
 \item{logz_estimate}{Estimate of the partition function, computed with
 \code{\link[=estimate_partition_function]{estimate_partition_function()}}. Defaults to \code{NULL}, which
@@ -285,6 +393,7 @@ separate Mallows models for varying numbers of clusters.
 Other modeling: 
 \code{\link{assess_convergence}()},
 \code{\link{compute_mallows_mixtures}()},
+<<<<<<< HEAD
 \code{\link{set_compute_options}()},
 \code{\link{set_initial_values}()},
 \code{\link{set_model_options}()},
@@ -292,5 +401,8 @@ Other modeling:
 \code{\link{setup_rank_data}()},
 \code{\link{smc_mallows_new_item_rank}()},
 \code{\link{smc_mallows_new_users}()}
+=======
+\code{\link{update_mallows}()}
+>>>>>>> smc-issue-306
 }
 \concept{modeling}

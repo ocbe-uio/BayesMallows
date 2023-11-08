@@ -1,5 +1,6 @@
 # BayesMallows (development versions)
 
+
 ## Major breaking changes
 
 * The number of arguments to compute_mallows() has been reduced from 29 to 9, by
@@ -11,6 +12,45 @@
   ellipsis (...).
   
 
+## Changes to sequential Monte Carlo methods
+
+* BREAKING CHANGE: "C" argument removed from plot.SMCMallows() since clustering
+  is currently not supported for these models.
+* BREAKING CHANGE: argument "mcmc_kernel_app" renamed to "mcmc_steps", to 
+  better explain what it is doing.
+* BREAKING CHANGE: argument "nmc" to plot.SMCMallows has been removed because it
+  is now a part of the objects of class "SMCMallows", and hence does not need to
+  be explicitly provided.
+* BREAKING CHANGE: argument "burnin" to plot.SMCMallows has been removed because
+  burnin is not relevant with sequential Monte Carlo.
+* BREAKING CHANGE: arguments "timesteps" and "n_items" to 
+  smc_mallows_new_item_rank() have been removed, since they are given by the 
+  dimension of the rankings argument.
+* function smc_mallows_update() has been added, which allows updating existing
+  models as new data arrive.
+* BREAKING CHANGE: Argument "N" in SMC Mallows functions has been change to 
+  "n_particles".
+* BREAKING CHANGE: Argument "Time" in SMC Mallows functions has been changed to
+  "timesteps", to better describe what it means.
+* BREAKING CHANGE: smc_mallows_new_users() no longer takes the argument 
+  "n_items", as it is given by the number of columns in its "rankings" argument.
+* BREAKING CHANGE: Functions smc_mallows_new_users() and 
+  smc_mallows_new_item_rank() are now wrappers in R, which call the underlying 
+  C++ functions. These functions are now able to compute the partition function
+  automatically, not requiring the user to do this manually. As a consequence,
+  the argument "cardinalities" has been removed, and the argument 
+  "logz_estimate" has changed its expectation, to be consistent with the use
+  in compute_mallows().
+* BREAKING CHANGE: compute_rho_consensus() for SMC Mallows has been deprecated 
+  in favor of compute_consensus().
+* BREAKING CHANGE: compute_posterior_intervals_rho() and compute_posterior_intervals_alpha()
+  for SMC Mallows have been deprecated in factor of 
+  compute_posterior_intervals() with argument parameter = "rho" and
+  parameter = "alpha".
+* Plot title "Implemented SMC scheme" removed from plot.SMCMallows() with 
+  argument parameter = "alpha".
+
+
 ## Other changes
 
 * Argument obs_freq to internal function rmallows() is removed, as it is not 
@@ -19,12 +59,6 @@
 * Argument save_clus to compute_mallows() has been removed, as it was not used.
 * compute_mallows() now supports parallel chains, by providing a 'cl' argument.
   See vignette "MCMC with Parallel Chains" for a tutorial.
-* compute_rho_consensus() for SMC Mallows has been deprecated in favor of 
-  compute_consensus().
-* compute_posterior_intervals_rho() and compute_posterior_intervals_alpha()
-  for SMC Mallows have been deprecated in factor of 
-  compute_posterior_intervals() with argument parameter = "rho" and
-  parameter = "alpha".
 * Documentation of functions are now grouped in families.
 * lik_db_mix() is now deprecated in favor of get_mallows_loglik()
 * Unusued argument removed from internal function augment_pairwise(). Thanks to

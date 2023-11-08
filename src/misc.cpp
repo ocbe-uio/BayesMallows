@@ -24,25 +24,6 @@ double rtruncbeta(int shape1, int shape2, double trunc = 1) {
   return x;
 }
 
-uvec maybe_offset_indices(
-  vec& x,
-  uvec idx_x,
-  const bool& quiet = true
-) {
-  // Adjust the indices of x (i.e., idx_x) depending on whether it seems to be
-  // using R or C++ indices.
-  const uvec& io_idx_cpp   = find_nonfinite(x);
-  const uvec& io_idx_input = sort(idx_x);
-  std::string message = "C++ indices detected. Unchanged.";
-  if (any(io_idx_input - io_idx_cpp)) {
-    idx_x -= 1;
-    message = "R indices detected. Shifted.";
-  }
-  if (!quiet) {
-    Rcpp::Rcout << message << std::endl;
-  }
-  return(idx_x);
-}
 
 
 double divide_by_fact(double prob, int set_length) {
@@ -50,17 +31,4 @@ double divide_by_fact(double prob, int set_length) {
   return(prob / tgamma(set_length + 1));
 }
 
-bool is_pseudo(const std::string aug_method, const std::string metric) {
-  // Checks for valid combinaions of the inputs, stops if invalid
-  if (aug_method == "random") {
-    return(false);
-  } else if (aug_method == "pseudolikelihood") {
-    if ((metric == "footrule") || (metric == "spearman")) {
-      return(true);
-    } else {
-      Rcpp::stop("Pseudolikelihood only supports footrule and spearman metrics");
-    }
-  } else {
-    Rcpp::stop("Invalid aug_method. Please choose random or pseudolikelihood");
-  }
-}
+

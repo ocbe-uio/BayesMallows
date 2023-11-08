@@ -2,6 +2,7 @@
 % Please edit documentation in R/compute_consensus.R
 \name{compute_consensus.BayesMallows}
 \alias{compute_consensus.BayesMallows}
+\alias{compute_consensus.SMCMallows}
 \title{Compute Consensus Ranking}
 \usage{
 \method{compute_consensus}{BayesMallows}(
@@ -12,6 +13,8 @@
   assessors = 1L,
   ...
 )
+
+\method{compute_consensus}{SMCMallows}(model_fit, type = "CP", ...)
 }
 \arguments{
 \item{model_fit}{Object of type \code{BayesMallows} returned from
@@ -42,10 +45,8 @@ Compute Consensus Ranking
 \seealso{
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
-\code{\link{compute_consensus.SMCMallows}()},
 \code{\link{compute_consensus}()},
 \code{\link{compute_posterior_intervals.BayesMallows}()},
-\code{\link{compute_posterior_intervals.SMCMallows}()},
 \code{\link{compute_posterior_intervals}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},

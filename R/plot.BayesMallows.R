@@ -25,63 +25,22 @@
 #' @example /inst/examples/plot.BayesMallows_example.R
 #' @family posterior quantities
 plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items = NULL, ...) {
+
+  parameter <- match.arg(
+    parameter,
+    c("alpha", "rho", "cluster_probs", "cluster_assignment", "theta"))
+
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
   if (x$nmc <= burnin) stop("burnin must be <= nmc")
 
-  stopifnot(parameter %in% c("alpha", "rho", "cluster_probs", "cluster_assignment", "theta"))
-
   if (parameter == "alpha") {
-    df <- x$alpha[x$alpha$iteration > burnin, , drop = FALSE]
 
-    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
-      ggplot2::geom_density() +
-      ggplot2::xlab(expression(alpha)) +
-      ggplot2::ylab("Posterior density")
+    plot_alpha(x, burnin)
 
-    if (x$n_clusters > 1) {
-      p <- p + ggplot2::facet_wrap(~ .data$cluster, scales = "free_x")
-    }
-
-    return(p)
   } else if (parameter == "rho") {
-    if (is.null(items) && x$n_items > 5) {
-      message("Items not provided by user. Picking 5 at random.")
-      items <- sample.int(x$n_items, 5)
-    } else if (is.null(items) && x$n_items > 0) {
-      items <- seq.int(from = 1, to = x$n_items)
-    }
-
-    if (!is.character(items)) {
-      items <- x$items[items]
-    }
-
-    df <- x$rho[x$rho$iteration > burnin & x$rho$item %in% items, , drop = FALSE]
-
-    # Compute the density, rather than the count, since the latter
-    # depends on the number of Monte Carlo samples
-    df <- aggregate(
-      list(n = df$iteration),
-      list(cluster = df$cluster, item = df$item, value = df$value),
-      FUN = length
-    )
-    df$pct <- df$n / sum(df$n)
-
-    # Finally create the plot
-    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
-      ggplot2::geom_col() +
-      ggplot2::scale_x_continuous(labels = scalefun) +
-      ggplot2::xlab("rank") +
-      ggplot2::ylab("Posterior probability")
-
-    if (x$n_clusters == 1) {
-      p <- p + ggplot2::facet_wrap(~ .data$item)
-    } else {
-      p <- p + ggplot2::facet_wrap(~ .data$cluster + .data$item)
-    }
-
-    return(p)
+    plot_rho(x, items, burnin)
   } else if (parameter == "cluster_probs") {
     df <- x$cluster_probs[x$cluster_probs$iteration > burnin, , drop = FALSE]
 
@@ -130,4 +89,84 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 
     return(p)
   }
+}
+
+
+#' @title Plot SMC Posterior Distributions
+#' @description Plot posterior distributions of SMC-Mallow parameters.
+#' @param x An object of type \code{SMC-Mallows}.
+#' @param parameter Character string defining the parameter to plot. Available
+#'   options are \code{"alpha"} and \code{"rho"}.
+#' @param items Either a vector of item names, or a vector of indices. If NULL,
+#'   five items are selected randomly.
+#' @param ... Other arguments passed to \code{\link[base]{plot}} (not used).
+#' @return A plot of the posterior distributions
+#' @export
+#' @family posterior quantities
+plot.SMCMallows <- function(
+    x, parameter = "alpha", items = NULL, ...) {
+
+  parameter <- match.arg(parameter, c("alpha", "rho"))
+
+  if (parameter == "alpha") {
+    plot_alpha(x)
+  } else if (parameter == "rho") {
+    plot_rho(x, items)
+  } else {
+    stop("parameter must be either 'alpha' or 'rho'.")
+  }
+}
+
+plot_alpha <- function(x, burnin = 0) {
+  plot_dat <- x$alpha[x$alpha$iteration > burnin, , drop = FALSE]
+
+  p <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = .data$value)) +
+    ggplot2::geom_density() +
+    ggplot2::xlab(expression(alpha)) +
+    ggplot2::ylab("Posterior density")
+
+  if (x$n_clusters > 1) {
+    p <- p + ggplot2::facet_wrap(~ .data$cluster, scales = "free_x")
+  }
+  p
+}
+
+
+plot_rho <- function(x, items, burnin = 0) {
+  if (is.null(items) && x$n_items > 5) {
+    message("Items not provided by user. Picking 5 at random.")
+    items <- sample.int(x$n_items, 5)
+  } else if (is.null(items) && x$n_items > 0) {
+    items <- seq.int(from = 1, to = x$n_items)
+  }
+
+  if (!is.character(items)) {
+    items <- x$items[items]
+  }
+
+  df <- x$rho[x$rho$iteration > burnin & x$rho$item %in% items, , drop = FALSE]
+
+  # Compute the density, rather than the count, since the latter
+  # depends on the number of Monte Carlo samples
+  df <- aggregate(
+    list(n = df$iteration),
+    list(cluster = df$cluster, item = df$item, value = df$value),
+    FUN = length
+  )
+  df$pct <- df$n / sum(df$n)
+
+  # Finally create the plot
+  p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
+    ggplot2::geom_col() +
+    ggplot2::scale_x_continuous(labels = scalefun) +
+    ggplot2::xlab("rank") +
+    ggplot2::ylab("Posterior probability")
+
+  if (x$n_clusters == 1) {
+    p <- p + ggplot2::facet_wrap(~ .data$item)
+  } else {
+    p <- p + ggplot2::facet_wrap(~ .data$cluster + .data$item)
+  }
+
+  return(p)
 }
