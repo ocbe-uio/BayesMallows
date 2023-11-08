@@ -91,15 +91,20 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   bool augpair = (constraints.length() > 0);
   bool any_missing = !is_finite(rankings);
 
-  umat missing_indicator;
+  umat missing_indicator{};
 
   if(any_missing){
     rankings.replace(datum::nan, 0);
     missing_indicator = conv_to<umat>::from(rankings);
     missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
     initialize_missing_ranks(rankings, missing_indicator);
-  } else {
-    missing_indicator.reset();
+  }
+
+  // If the user wants to save augmented data, we need a cube
+  cube augmented_data{};
+  if(save_aug){
+    augmented_data.set_size(n_items, n_assessors, std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
+    augmented_data.slice(0) = rankings;
   }
 
   // Declare the cube to hold the latent ranks
@@ -111,12 +116,6 @@ Rcpp::List run_mcmc(arma::mat rankings, arma::vec obs_freq, int nmc,
   mat alpha(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
   alpha.col(0).fill(alpha_init);
 
-  // If the user wants to save augmented data, we need a cube
-  cube augmented_data;
-  if(save_aug){
-    augmented_data.set_size(n_items, n_assessors, std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
-    augmented_data.slice(0) = rankings;
-  }
 
   // Clustering
   bool clustering = n_clusters > 1;
