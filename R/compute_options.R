@@ -75,9 +75,7 @@ set_compute_options <- function(
     rho_thinning = 1,
     include_wcd = FALSE,
     save_aug = FALSE,
-    save_ind_clus = FALSE
-    ) {
-
+    save_ind_clus = FALSE) {
   validate_integer(nmc)
   validate_positive(alpha_prop_sd)
   validate_integer(leap_size)

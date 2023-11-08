@@ -16,7 +16,6 @@ for (m in c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam")) {
     {
       expect_true(mean(samples[, 1]) < mean(samples[, n_items]))
     }
-
   )
 
   test_that(

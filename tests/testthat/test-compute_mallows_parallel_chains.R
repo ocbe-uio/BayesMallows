@@ -17,57 +17,75 @@ test_that("miscellaneous input validation", {
     compute_mallows(
       data = setup_rank_data(rankings = namat, na_action = "augment"),
       compute_options = set_compute_options(nmc = 3),
-      cl = cl),
-    "BayesMallows")
+      cl = cl
+    ),
+    "BayesMallows"
+  )
   expect_s3_class(
     compute_mallows(
       data = setup_rank_data(rankings = namat),
       compute_options = set_compute_options(nmc = 3),
-      cl = cl),
-    "BayesMallows")
+      cl = cl
+    ),
+    "BayesMallows"
+  )
   expect_error(
     compute_mallows(
       compute_options = set_compute_options(nmc = 1000, alpha_prop_sd = 1),
-      cl = cl),
-    "argument \"data\" is missing, with no default")
+      cl = cl
+    ),
+    "argument \"data\" is missing, with no default"
+  )
   expect_error(
     compute_mallows(setup_rank_data(rankings = potato_visual),
-                    compute_options = set_compute_options(nmc = 100, alpha_jump = 102), cl = cl),
-    "nmc must be strictly larger than alpha_jump")
+      compute_options = set_compute_options(nmc = 100, alpha_jump = 102), cl = cl
+    ),
+    "nmc must be strictly larger than alpha_jump"
+  )
   expect_error(
     compute_mallows(
       setup_rank_data(rankings = potato_visual),
       priors = set_priors(lambda = 0),
-      cl = cl),
-    "lambda must be a strictly positive number of length one")
+      cl = cl
+    ),
+    "lambda must be a strictly positive number of length one"
+  )
   expect_error(
     compute_mallows(
       setup_rank_data(rankings = potato_visual),
       priors = set_priors(lambda = -10),
-      cl = cl),
-    "lambda must be a strictly positive number of length one")
+      cl = cl
+    ),
+    "lambda must be a strictly positive number of length one"
+  )
 
 
   expect_error(
     compute_mallows(
       setup_rank_data(rankings = potato_visual),
       compute_options = set_compute_options(nmc = 100, rho_thinning = 200),
-      cl = cl),
-    "nmc must be strictly larger than rho_thinning")
+      cl = cl
+    ),
+    "nmc must be strictly larger than rho_thinning"
+  )
 
   expect_error(
     compute_mallows(
       setup_rank_data(rankings = potato_visual),
       compute_options = set_compute_options(nmc = 100, aug_thinning = 200),
-      cl = cl),
-    "nmc must be strictly larger than aug_thinning")
+      cl = cl
+    ),
+    "nmc must be strictly larger than aug_thinning"
+  )
 
   expect_error(
     compute_mallows(
       setup_rank_data(rankings = potato_visual),
       compute_options = set_compute_options(nmc = -100),
-      cl = cl),
-    "nmc must be a positive integer")
+      cl = cl
+    ),
+    "nmc must be a positive integer"
+  )
 })
 
 test_that("rho_init is properly validated", {
@@ -81,20 +99,24 @@ test_that("rho_init is properly validated", {
 })
 
 test_that("compute_mallows discovers inconsistent rankings", {
-  expect_error(setup_rank_data(
-    rankings = matrix(c(
-      1, 2, -3,
-      1, 2, 3
-    ), nrow = 2, byrow = TRUE), cl = cl
-  ),
-  "invalid permutations provided in rankings matrix")
-  expect_error(setup_rank_data(
-    rankings = matrix(c(
-      1, 2, 3,
-      1, 2, 2
-    ), nrow = 2, byrow = TRUE), cl = cl
-  ),
-  "invalid permutations provided in rankings matrix")
+  expect_error(
+    setup_rank_data(
+      rankings = matrix(c(
+        1, 2, -3,
+        1, 2, 3
+      ), nrow = 2, byrow = TRUE), cl = cl
+    ),
+    "invalid permutations provided in rankings matrix"
+  )
+  expect_error(
+    setup_rank_data(
+      rankings = matrix(c(
+        1, 2, 3,
+        1, 2, 2
+      ), nrow = 2, byrow = TRUE), cl = cl
+    ),
+    "invalid permutations provided in rankings matrix"
+  )
 })
 
 
@@ -107,13 +129,15 @@ test_that("compute_mallows error model works", {
   dat <- setup_rank_data(preferences = preferences)
   expect_error(
     compute_mallows(data = dat, cl = cl),
-    "Intransitive pairwise comparisons. Please specify an error model.")
+    "Intransitive pairwise comparisons. Please specify an error model."
+  )
   expect_s3_class(
     compute_mallows(
       data = dat,
       model = set_model_options(error_model = "bernoulli"),
       compute_options = set_compute_options(nmc = 10),
-      cl = cl),
+      cl = cl
+    ),
     "BayesMallows"
   )
 })
@@ -126,7 +150,8 @@ test_that("compute_mallows with single missing value works", {
   m <- compute_mallows(
     setup_rank_data(dd),
     compute_options = set_compute_options(nmc = 4),
-    cl = cl)
+    cl = cl
+  )
   expect_gt(mean(m$alpha$value), 0)
 })
 
@@ -134,7 +159,8 @@ test_that("compute_mallows with missing data works", {
   mat <- potato_visual * ifelse(runif(length(potato_visual)) > 0.8, NA_real_, 1)
   m <- compute_mallows(
     setup_rank_data(mat),
-    compute_options = set_compute_options(nmc = 30), cl = cl)
+    compute_options = set_compute_options(nmc = 30), cl = cl
+  )
   expect_gt(sd(m$rho$value), 0)
   expect_gt(sd(m$alpha$value), 0.001)
   expect_s3_class(m, "BayesMallows")
@@ -145,9 +171,12 @@ test_that("compute_mallows runs with the right distances", {
   dat <- setup_rank_data(potato_visual)
   for (metric in c("footrule", "spearman", "cayley", "kendall", "ulam", "hamming")) {
     expect_s3_class(
-      compute_mallows(data = dat,
-                      model = set_model_options(metric = metric),
-                      compute_options = set_compute_options(nmc = 3), cl = cl), "BayesMallows")
+      compute_mallows(
+        data = dat,
+        model = set_model_options(metric = metric),
+        compute_options = set_compute_options(nmc = 3), cl = cl
+      ), "BayesMallows"
+    )
   }
 })
 
@@ -165,8 +194,10 @@ test_that("compute_mallows handles integer preferences", {
   dat <- setup_rank_data(preferences = m)
   expect_s3_class(
     compute_mallows(setup_rank_data(preferences = m),
-                    compute_options = set_compute_options(nmc = 20), cl = cl),
-    "BayesMallows")
+      compute_options = set_compute_options(nmc = 20), cl = cl
+    ),
+    "BayesMallows"
+  )
 })
 
 test_that("compute_mallows handles data with lots of missings", {
@@ -236,7 +267,8 @@ test_that("compute_mallows treats observation_frequency properly", {
 
   expect_equal(
     model_fit_obs_freq$rho$value,
-    c(14, 5, 4, 6, 11, 8, 12, 10, 1, 7, 15, 13, 9, 2, 3, 14, 5, 3,
+    c(
+      14, 5, 4, 6, 11, 8, 12, 10, 1, 7, 15, 13, 9, 2, 3, 14, 5, 3,
       6, 11, 8, 12, 10, 1, 7, 15, 13, 9, 2, 4, 14, 5, 4, 6, 11, 8,
       12, 10, 1, 7, 15, 13, 9, 2, 3, 14, 5, 3, 6, 11, 8, 12, 10, 1,
       7, 15, 13, 9, 2, 4, 14, 5, 3, 6, 12, 8, 11, 10, 1, 7, 15, 13,
@@ -252,15 +284,18 @@ test_that("compute_mallows treats observation_frequency properly", {
       7, 14, 12, 14, 10, 3, 6, 15, 9, 1, 4, 8, 5, 11, 2, 7, 13, 12,
       14, 10, 3, 6, 15, 9, 1, 4, 8, 5, 11, 2, 7, 13, 12, 14, 9, 3,
       6, 15, 10, 1, 4, 8, 5, 11, 2, 7, 13, 12, 14, 9, 2, 6, 15, 10,
-      1, 4, 8, 5, 11, 3, 7, 13)
+      1, 4, 8, 5, 11, 3, 7, 13
+    )
   )
 
   expect_equal(
     model_fit_obs_freq$alpha$value,
-    c(1, 1.06375201942709, 1.23638446536771, 1.18903533953607, 1.12499350243193,
+    c(
+      1, 1.06375201942709, 1.23638446536771, 1.18903533953607, 1.12499350243193,
       0.983202718639466, 0.970847993206225, 1.02691791700127, 1.05732241361015,
       0.848313407171291, 1, 1, 1, 1, 1, 1, 0.910488058825459, 0.818043766566705,
-      0.818043766566705, 0.743101499728633)
+      0.818043766566705, 0.743101499728633
+    )
   )
 
   # Next for the repeated data.
@@ -272,7 +307,8 @@ test_that("compute_mallows treats observation_frequency properly", {
 
   expect_equal(
     model_fit_rep$rho$value,
-    c(14, 5, 4, 6, 11, 8, 12, 10, 1, 7, 15, 13, 9, 2, 3, 14, 6, 4,
+    c(
+      14, 5, 4, 6, 11, 8, 12, 10, 1, 7, 15, 13, 9, 2, 3, 14, 6, 4,
       5, 11, 8, 12, 10, 1, 7, 15, 13, 9, 2, 3, 14, 6, 5, 4, 11, 8,
       12, 10, 1, 7, 15, 13, 9, 2, 3, 14, 6, 5, 4, 11, 7, 12, 10, 1,
       8, 15, 13, 9, 2, 3, 14, 6, 5, 4, 11, 7, 12, 10, 1, 8, 15, 13,
@@ -288,24 +324,28 @@ test_that("compute_mallows treats observation_frequency properly", {
       6, 14, 12, 14, 11, 3, 4, 15, 10, 1, 5, 8, 7, 9, 2, 6, 13, 12,
       14, 10, 3, 4, 15, 11, 1, 5, 8, 7, 9, 2, 6, 13, 13, 14, 10, 3,
       4, 15, 11, 1, 5, 8, 7, 9, 2, 6, 12, 13, 14, 10, 3, 5, 15, 11,
-      1, 4, 8, 7, 9, 2, 6, 12)
+      1, 4, 8, 7, 9, 2, 6, 12
+    )
   )
 
   expect_equal(
     model_fit_rep$alpha$value,
-    c(1, 1, 1.19997449202174, 1.04873333072888, 1.15559892469591,
+    c(
+      1, 1, 1.19997449202174, 1.04873333072888, 1.15559892469591,
       1.08094257108279, 1.07869198268456, 1.05402584033873, 1.20165043028671,
       1.30638245220182, 1, 0.970031407694195, 0.908995832092313, 0.899961691712196,
       0.922780739528762, 0.922780739528762, 0.878378621847317, 0.878286218390065,
-      0.755742998802395, 0.755742998802395)
+      0.755742998802395, 0.755742998802395
+    )
   )
 })
 
 test_that("compute_mallows() takes initial alpha", {
   mm <- compute_mallows(setup_rank_data(potato_visual),
-                        compute_options = set_compute_options(nmc = 5),
-                        initial_values = set_initial_values(alpha_init = c(3, 4)),
-                        cl = cl)
+    compute_options = set_compute_options(nmc = 5),
+    initial_values = set_initial_values(alpha_init = c(3, 4)),
+    cl = cl
+  )
   expect_s3_class(mm, "BayesMallows")
 })
 

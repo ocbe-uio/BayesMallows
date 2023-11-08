@@ -31,8 +31,10 @@
 #'
 set_model_options <- function(metric = "footrule", n_clusters = 1,
                               error_model = "none") {
-  metric <- match.arg(metric, c("footrule", "spearman", "cayley", "hamming",
-                                "kendall", "ulam"))
+  metric <- match.arg(metric, c(
+    "footrule", "spearman", "cayley", "hamming",
+    "kendall", "ulam"
+  ))
   error_model <- match.arg(error_model, c("none", "bernoulli"))
 
   validate_integer(n_clusters)

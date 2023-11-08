@@ -12,7 +12,7 @@
 #' @family preprocessing
 #'
 get_transitive_closure <- function(rank_data) {
-  if(inherits(rank_data$preferences, "BayesMallowsTransitiveClosure")) {
+  if (inherits(rank_data$preferences, "BayesMallowsTransitiveClosure")) {
     rank_data$preferences
   } else {
     NULL

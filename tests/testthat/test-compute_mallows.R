@@ -1,44 +1,66 @@
-
 test_that("miscellaneous input validation", {
   namat <- potato_visual
   namat[c(1, 2, 3), c(7, 9)] <- NA_real_
-  expect_error(setup_rank_data(namat, na_action = "fail"),
-               "rankings matrix contains NA values")
-  expect_output(setup_rank_data(namat, na_action = "omit"),
+  expect_error(
+    setup_rank_data(namat, na_action = "fail"),
+    "rankings matrix contains NA values"
+  )
+  expect_output(
+    setup_rank_data(namat, na_action = "omit"),
     "Omitting 9 rows from rankings due to NA values"
   )
-  expect_s3_class(setup_rank_data(namat, na_action = "augment"),
-    "BayesMallowsData")
+  expect_s3_class(
+    setup_rank_data(namat, na_action = "augment"),
+    "BayesMallowsData"
+  )
   expect_s3_class(setup_rank_data(namat), "BayesMallowsData")
   expect_error(
     compute_mallows(
-      compute_options = set_compute_options(nmc = 1000, alpha_prop_sd = 1)))
+      compute_options = set_compute_options(nmc = 1000, alpha_prop_sd = 1)
+    )
+  )
   expect_error(
     compute_mallows(
       setup_rank_data(potato_visual),
-      compute_options = set_compute_options(nmc = 100, alpha_jump = 102)),
-    "nmc must be strictly larger than alpha_jump")
-  expect_error(
-    compute_mallows(data = setup_rank_data(potato_visual),
-                    priors = set_priors(lambda = 0)),
-    "lambda must be a strictly positive number of length one")
-  expect_error(
-    compute_mallows(data = setup_rank_data(potato_visual),
-                    priors = set_priors(lambda = -10.2)),
-    "lambda must be a strictly positive number of length one")
+      compute_options = set_compute_options(nmc = 100, alpha_jump = 102)
+    ),
+    "nmc must be strictly larger than alpha_jump"
+  )
   expect_error(
     compute_mallows(
       data = setup_rank_data(potato_visual),
-      compute_options = set_compute_options(nmc = 100, rho_thinning = 200)),
-    "nmc must be strictly larger than rho_thinning")
+      priors = set_priors(lambda = 0)
+    ),
+    "lambda must be a strictly positive number of length one"
+  )
   expect_error(
     compute_mallows(
       data = setup_rank_data(potato_visual),
-      compute_options = set_compute_options(nmc = 100, aug_thinning = 200)),
-    "nmc must be strictly larger than aug_thinning")
-  expect_error(compute_mallows(data = setup_rank_data(potato_visual),
-                               compute_options = set_compute_options(nmc = -100)),
-               "nmc must be a positive integer")
+      priors = set_priors(lambda = -10.2)
+    ),
+    "lambda must be a strictly positive number of length one"
+  )
+  expect_error(
+    compute_mallows(
+      data = setup_rank_data(potato_visual),
+      compute_options = set_compute_options(nmc = 100, rho_thinning = 200)
+    ),
+    "nmc must be strictly larger than rho_thinning"
+  )
+  expect_error(
+    compute_mallows(
+      data = setup_rank_data(potato_visual),
+      compute_options = set_compute_options(nmc = 100, aug_thinning = 200)
+    ),
+    "nmc must be strictly larger than aug_thinning"
+  )
+  expect_error(
+    compute_mallows(
+      data = setup_rank_data(potato_visual),
+      compute_options = set_compute_options(nmc = -100)
+    ),
+    "nmc must be a positive integer"
+  )
 })
 
 test_that("rho_init is properly validated", {
@@ -46,34 +68,41 @@ test_that("rho_init is properly validated", {
   expect_error(
     compute_mallows(
       data = setup_rank_data(m),
-      initial_values = set_initial_values(rho_init = 1:(ncol(m) - 1))),
+      initial_values = set_initial_values(rho_init = 1:(ncol(m) - 1))
+    ),
     "initial value rho must have one value per item"
-    )
+  )
 
   expect_error(
     compute_mallows(
       data = setup_rank_data(m),
-      initial_values = set_initial_values(rho_init = c(potato_true_ranking[-1], 22))),
+      initial_values = set_initial_values(rho_init = c(potato_true_ranking[-1], 22))
+    ),
     "rho_init must be a proper permutation"
-    )
+  )
 
   expect_error(
     compute_mallows(
       data = setup_rank_data(m),
-      initial_values = set_initial_values(rho_init = c(NA_real_, 2:ncol(m)))),
-    "rho_init cannot have missing values")
+      initial_values = set_initial_values(rho_init = c(NA_real_, 2:ncol(m)))
+    ),
+    "rho_init cannot have missing values"
+  )
 
   expect_error(
     setup_rank_data(m, observation_frequency = -1),
-    "observation_frequency must be a vector of strictly positive numbers")
+    "observation_frequency must be a vector of strictly positive numbers"
+  )
 
   expect_error(
     setup_rank_data(m, observation_frequency = 1),
-    "observation_frequency must be of same length as the number of rows in rankings")
+    "observation_frequency must be of same length as the number of rows in rankings"
+  )
 
   expect_error(
     setup_rank_data(m, observation_frequency = 1:11),
-    "observation_frequency must be of same length as the number of rows in rankings")
+    "observation_frequency must be of same length as the number of rows in rankings"
+  )
 })
 
 test_that("inconsistent rankings are discovered", {
@@ -82,14 +111,16 @@ test_that("inconsistent rankings are discovered", {
       1, 2, -3,
       1, 2, 3
     ), nrow = 2, byrow = TRUE)),
-    "invalid permutations provided in rankings matrix")
+    "invalid permutations provided in rankings matrix"
+  )
 
   expect_error(
     setup_rank_data(matrix(c(
       1, 2, 2,
       1, 2, 3
     ), nrow = 2, byrow = TRUE)),
-    "invalid permutations provided in rankings matrix")
+    "invalid permutations provided in rankings matrix"
+  )
 })
 
 
@@ -102,15 +133,16 @@ test_that("compute_mallows error model works", {
   expect_error(
     compute_mallows(
       setup_rank_data(preferences = preferences),
-      compute_options = set_compute_options(nmc = 10)),
+      compute_options = set_compute_options(nmc = 10)
+    ),
     "Intransitive pairwise comparisons. Please specify an error model."
-    )
+  )
   expect_message(
     compute_mallows(
       data = setup_rank_data(preferences = preferences),
       model = set_model_options(error_model = "bernoulli"),
       compute_options = set_compute_options(nmc = 10)
-      ),
+    ),
     "Preferences are intransitive."
   )
 })
@@ -121,7 +153,8 @@ test_that("compute_mallows with single missing value works", {
   dd[2, 3] <- NA
   m <- compute_mallows(
     setup_rank_data(dd),
-    compute_options = set_compute_options(nmc = 4), seed = 123L)
+    compute_options = set_compute_options(nmc = 4), seed = 123L
+  )
   expect_equal(
     m$alpha,
     structure(list(
@@ -141,7 +174,8 @@ test_that("compute_mallows with single missing value works", {
 test_that("compute_mallows with missing data works", {
   mat <- potato_visual * ifelse(runif(length(potato_visual)) > 0.8, NA_real_, 1)
   m <- compute_mallows(setup_rank_data(mat),
-                       compute_options = set_compute_options(nmc = 30))
+    compute_options = set_compute_options(nmc = 30)
+  )
   expect_gt(sd(m$rho$value), 0)
   expect_gt(sd(m$alpha$value), 0.001)
   expect_s3_class(m, "BayesMallows")
@@ -153,8 +187,10 @@ test_that("compute_mallows runs with the right distances", {
   for (metric in c("footrule", "spearman", "cayley", "kendall", "ulam", "hamming")) {
     expect_s3_class(
       compute_mallows(dat,
-                      model = set_model_options(metric = metric),
-                      compute_options = set_compute_options(nmc = 3)), "BayesMallows")
+        model = set_model_options(metric = metric),
+        compute_options = set_compute_options(nmc = 3)
+      ), "BayesMallows"
+    )
   }
 })
 
@@ -172,7 +208,9 @@ test_that("compute_mallows handles integer preferences", {
   expect_s3_class(
     compute_mallows(
       setup_rank_data(preferences = m),
-      compute_options = set_compute_options(nmc = 20)), "BayesMallows")
+      compute_options = set_compute_options(nmc = 20)
+    ), "BayesMallows"
+  )
 })
 
 test_that("compute_mallows handles data with lots of missings", {
@@ -201,12 +239,14 @@ test_that("compute_mallows handles data with lots of missings", {
 test_that("compute_mallows treats observation_frequency properly", {
   m1 <- compute_mallows(
     setup_rank_data(potato_visual,
-                    observation_frequency = rep(1, nrow(potato_visual))),
+      observation_frequency = rep(1, nrow(potato_visual))
+    ),
     seed = 2233
   )
   m2 <- compute_mallows(
     setup_rank_data(potato_visual),
-    seed = 2233)
+    seed = 2233
+  )
   expect_equal(m1, m2)
 
   # Test with repeated beach preferences
@@ -242,7 +282,8 @@ test_that("compute_mallows treats observation_frequency properly", {
 
   expect_equal(
     model_fit_obs_freq$rho$value,
-    c(15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 4, 12,
+    c(
+      15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 4, 12,
       13, 8, 6, 2, 14, 3, 10, 11, 1, 9, 7, 5, 15, 4, 12, 13, 7, 6,
       2, 14, 3, 10, 11, 1, 9, 8, 5, 15, 4, 12, 13, 8, 6, 2, 14, 3,
       10, 11, 1, 9, 7, 5, 15, 4, 12, 13, 8, 6, 2, 14, 3, 10, 11, 1,
@@ -250,7 +291,8 @@ test_that("compute_mallows treats observation_frequency properly", {
       5, 12, 13, 8, 6, 2, 14, 3, 9, 11, 1, 10, 7, 4, 15, 5, 12, 13,
       8, 6, 2, 14, 4, 9, 11, 1, 10, 7, 3, 14, 5, 12, 13, 8, 6, 2, 15,
       4, 9, 11, 1, 10, 7, 3, 14, 5, 12, 13, 8, 6, 2, 15, 3, 9, 11,
-      1, 10, 7, 4)
+      1, 10, 7, 4
+    )
   )
 
   expect_equal(
@@ -272,7 +314,8 @@ test_that("compute_mallows treats observation_frequency properly", {
 
   expect_equal(
     model_fit_rep$rho$value,
-    c(15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 4, 12,
+    c(
+      15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 4, 12,
       13, 8, 6, 3, 14, 2, 11, 10, 1, 9, 7, 5, 15, 4, 11, 13, 8, 6,
       3, 14, 2, 12, 10, 1, 9, 7, 5, 15, 4, 11, 13, 8, 5, 3, 14, 2,
       12, 10, 1, 9, 7, 6, 15, 4, 11, 13, 8, 5, 3, 14, 1, 12, 10, 2,
@@ -280,7 +323,8 @@ test_that("compute_mallows treats observation_frequency properly", {
       4, 11, 13, 8, 5, 3, 15, 1, 12, 9, 2, 10, 7, 6, 14, 4, 10, 13,
       8, 5, 3, 15, 1, 12, 9, 2, 11, 7, 6, 14, 4, 10, 13, 9, 5, 3, 15,
       1, 12, 8, 2, 11, 7, 6, 14, 4, 10, 13, 9, 5, 3, 15, 1, 12, 8,
-      2, 11, 7, 6)
+      2, 11, 7, 6
+    )
   )
 
   expect_equal(

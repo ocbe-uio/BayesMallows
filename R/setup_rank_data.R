@@ -117,30 +117,32 @@ setup_rank_data <- function(
     cl = NULL,
     shuffle_unranked = FALSE,
     random = FALSE,
-    random_limit = 8L
-) {
-
+    random_limit = 8L) {
   na_action <- match.arg(na_action, c("augment", "fail", "omit"))
 
   if (is.null(rankings) && is.null(preferences)) {
     stop("Either rankings or preferences (or both) must be provided.")
   }
 
-  if(is.null(rankings)) {
+  if (is.null(rankings)) {
     n_items <- max(preferences[, c("bottom_item", "top_item")])
   } else {
     n_items <- ncol(rankings)
   }
-  preferences <- tryCatch({
-    generate_transitive_closure(preferences, cl)
-  },
-  error = function(e) {
-    ret <- preferences
-    class(ret) <- c("BayesMallowsIntransitive", class(ret))
-    message("Preferences are intransitive. Make sure to run compute_mallows() ",
-            "with an appropriate error model.")
-    ret
-  })
+  preferences <- tryCatch(
+    {
+      generate_transitive_closure(preferences, cl)
+    },
+    error = function(e) {
+      ret <- preferences
+      class(ret) <- c("BayesMallowsIntransitive", class(ret))
+      message(
+        "Preferences are intransitive. Make sure to run compute_mallows() ",
+        "with an appropriate error model."
+      )
+      ret
+    }
+  )
 
   # Check if there are NAs in rankings, if it is provided
   if (!is.null(rankings)) {
@@ -155,7 +157,8 @@ setup_rank_data <- function(
     }
   } else {
     rankings <- generate_initial_ranking(
-      preferences, n_items, cl, shuffle_unranked, random, random_limit)
+      preferences, n_items, cl, shuffle_unranked, random, random_limit
+    )
   }
 
   # Check if observation_frequency are provided
@@ -171,13 +174,11 @@ setup_rank_data <- function(
 
   # Check that all rows of rankings are proper permutations
   if (validate_rankings &&
-      !all(apply(rankings, 1, validate_permutation))) {
+    !all(apply(rankings, 1, validate_permutation))) {
     stop("invalid permutations provided in rankings matrix")
   }
 
   ret <- as.list(environment())
   class(ret) <- "BayesMallowsData"
   ret
-
 }
-

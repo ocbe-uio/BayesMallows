@@ -1,4 +1,3 @@
-
 # Create some test data
 pair_comp <- data.frame(
   assessor = c(1, 1, 1, 2, 2, 2),

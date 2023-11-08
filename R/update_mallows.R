@@ -25,13 +25,14 @@ update_mallows.BayesMallows <- function(
     model, new_rankings, n_particles,
     augmentation = "pseudo",
     mcmc_steps = 5, ...) {
-
   augmentation <- match.arg(augmentation, c("pseudo", "uniform"))
   stopifnot(is.matrix(new_rankings))
 
-  if(augmentation == "pseudo" && !model$metric %in% c("footrule", "spearman")) {
-    stop("pseudolikelihood augmentation only possible for metrics 'footrule' ",
-         "and 'spearman'.")
+  if (augmentation == "pseudo" && !model$metric %in% c("footrule", "spearman")) {
+    stop(
+      "pseudolikelihood augmentation only possible for metrics 'footrule' ",
+      "and 'spearman'."
+    )
   }
 
   alpha_init <- extract_alpha_init(model, n_particles)
@@ -72,7 +73,6 @@ update_mallows.BayesMallows <- function(
 #' @export
 #' @rdname update_mallows
 update_mallows.SMCMallows <- function(model, new_rankings, ...) {
-
   rankings <- rbind(model$rankings, new_rankings)
   alpha_init <- model$alpha_samples
   rho_init <- model$rho_samples
@@ -115,46 +115,16 @@ tidy_smc <- function(ret, items) {
 }
 
 extract_alpha_init <- function(model, n_particles) {
-  full_sample <- model$alpha$value[model$alpha$iteration > model$burnin]
-  full_sample[
-    floor(seq(from = 1, to = length(full_sample), length.out = n_particles))]
-
+  thinned_inds <- floor(
+    seq(from = model$burnin + 1, to = ncol(model$alpha_samples),
+        length.out = n_particles))
+  model$alpha_samples[1,  thinned_inds, drop = TRUE]
 }
 
 extract_rho_init <- function(model, n_particles) {
-  rho_init <- stats::reshape(
-    data = model$rho[model$rho$iteration > model$burnin, ],
-    v.names = "value",
-    idvar = c("chain", "iteration"),
-    timevar = "item",
-    direction = "wide")
-  rho_init <- rho_init[
-    floor(seq(from = 1, to = nrow(rho_init), length.out = n_particles)), ]
-  rho_init <- rho_init[, grep("^value", colnames(rho_init))]
-  t(as.matrix(rho_init))
+  thinned_inds <- floor(
+    seq(from = model$burnin + 1, to = dim(model$rho_samples)[[3]],
+        length.out = n_particles))
+  model$rho_samples[, 1, thinned_inds, drop = TRUE]
 }
 
-extract_aug_init <- function(model, n_particles) {
-
-  ids <- unique(model$augmented_data$assessor)
-  aug_init <- array(dim = c(length(ids), model$n_items, n_particles))
-  for(i in seq_along(ids)) {
-    id <- ids[[i]]
-    tmp <- stats::reshape(
-      data = model$augmented_data[
-        model$augmented_data$iteration > model$burnin &
-          model$augmented_data$assessor == id, ],
-      v.names = "value",
-      idvar = c("chain", "iteration"),
-      timevar = "item",
-      direction = "wide")
-
-    tmp <- tmp[
-      floor(seq(from = 1, to = nrow(tmp), length.out = n_particles)), ]
-    tmp <- tmp[, grep("^value", colnames(tmp))]
-    rownames(tmp) <- NULL
-    aug_init[i ,, ] <- t(as.matrix(tmp))
-  }
-  return(aug_init)
-
-}

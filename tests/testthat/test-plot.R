@@ -10,7 +10,8 @@ test_that("plot.BayesMallows fails when it should", {
 
 test_that("plot.BayesMallows works", {
   m <- compute_mallows(setup_rank_data(potato_visual),
-                       compute_options = set_compute_options(nmc = 10))
+    compute_options = set_compute_options(nmc = 10)
+  )
   expect_s3_class(plot(m, burnin = 3), "ggplot")
   m$burnin <- 4
   expect_s3_class(plot(m), "ggplot")
@@ -18,8 +19,9 @@ test_that("plot.BayesMallows works", {
   expect_s3_class(plot(m, parameter = "rho", items = 2:3), "ggplot")
 
   m <- compute_mallows(setup_rank_data(potato_visual),
-                       model = set_model_options(n_clusters = 3),
-                       compute_options = set_compute_options(nmc = 10))
+    model = set_model_options(n_clusters = 3),
+    compute_options = set_compute_options(nmc = 10)
+  )
   expect_s3_class(plot(m, burnin = 4, parameter = "cluster_probs"), "ggplot")
   expect_s3_class(plot(m, burnin = 4, parameter = "cluster_assignment"), "ggplot")
 
@@ -27,6 +29,6 @@ test_that("plot.BayesMallows works", {
     setup_rank_data(preferences = beach_preferences[1:100, ]),
     model = set_model_options(error_model = "bernoulli"),
     compute_options = set_compute_options(nmc = 10)
-    )
+  )
   expect_s3_class(plot(m, burnin = 3, parameter = "theta"), "ggplot")
 })

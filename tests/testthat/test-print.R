@@ -2,7 +2,8 @@ test_that("print.BayesMallows fails when it should", {
   class(mtcars) <- "BayesMallows"
   expect_error(print(mtcars))
   m <- compute_mallows(setup_rank_data(potato_visual),
-                       compute_options = set_compute_options(nmc = 5))
+    compute_options = set_compute_options(nmc = 5)
+  )
   m$n_items <- NULL
   expect_error(print(m), "BayesMallows object must have elements n_items and n_assessors.")
   m$n_assessors <- NULL
@@ -18,17 +19,21 @@ test_that("print.BayesMallowsMixtures fails when it should", {
   expect_error(print(mtcars),
     regexp = "All elements of a BayesMallowsMixtures object must be of class BayesMallows."
   )
-  m <- compute_mallows_mixtures(n_clusters = 1:3,
-                                data = setup_rank_data(potato_visual),
-                                compute_options = set_compute_options(nmc = 5))
+  m <- compute_mallows_mixtures(
+    n_clusters = 1:3,
+    data = setup_rank_data(potato_visual),
+    compute_options = set_compute_options(nmc = 5)
+  )
   class(m[[1]]) <- "list"
   expect_error(print(m),
     regexp = "All elements of a BayesMallowsMixtures object must be of class BayesMallows."
   )
 
-  m <- compute_mallows_mixtures(n_clusters = 1:3,
-                                data = setup_rank_data(potato_visual),
-                                compute_options = set_compute_options(nmc = 5))
+  m <- compute_mallows_mixtures(
+    n_clusters = 1:3,
+    data = setup_rank_data(potato_visual),
+    compute_options = set_compute_options(nmc = 5)
+  )
   expect_output(
     print(m),
     "Collection of 3 Bayesian Mallows Mixture Models with the following number of mixture components:"

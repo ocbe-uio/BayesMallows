@@ -25,10 +25,10 @@
 #' @example /inst/examples/plot.BayesMallows_example.R
 #' @family posterior quantities
 plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items = NULL, ...) {
-
   parameter <- match.arg(
     parameter,
-    c("alpha", "rho", "cluster_probs", "cluster_assignment", "theta"))
+    c("alpha", "rho", "cluster_probs", "cluster_assignment", "theta")
+  )
 
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
@@ -36,9 +36,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
   if (x$nmc <= burnin) stop("burnin must be <= nmc")
 
   if (parameter == "alpha") {
-
     plot_alpha(x, burnin)
-
   } else if (parameter == "rho") {
     plot_rho(x, items, burnin)
   } else if (parameter == "cluster_probs") {
@@ -105,7 +103,6 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 #' @family posterior quantities
 plot.SMCMallows <- function(
     x, parameter = "alpha", items = NULL, ...) {
-
   parameter <- match.arg(parameter, c("alpha", "rho"))
 
   if (parameter == "alpha") {

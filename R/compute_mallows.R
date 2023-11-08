@@ -85,7 +85,6 @@ compute_mallows <- function(
     verbose = FALSE,
     seed = NULL,
     cl = NULL) {
-
   validate_class(data, "BayesMallowsData")
   validate_class(model, "BayesMallowsModelOptions")
   validate_class(compute_options, "BayesMallowsComputeOptions")

@@ -115,7 +115,6 @@ compute_consensus.BayesMallows <- function(
 
 #' @rdname compute_consensus.BayesMallows
 compute_consensus.SMCMallows <- function(model_fit, type = "CP", ...) {
-
   model_fit$burnin <- 0
   model_fit$nmc <- model_fit$n_particles
   NextMethod("compute_consensus")

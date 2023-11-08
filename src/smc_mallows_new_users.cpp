@@ -36,8 +36,8 @@ Rcpp::List  smc_mallows_new_users(
   vec aug_prob = ones(n_particles);
   bool any_missing = !is_finite(rankings);
 
-  mat rho_samples(n_items, n_particles);
-  vec alpha_samples = zeros(n_particles);
+  mat rho_samples = rho_init;
+  vec alpha_samples = alpha_init;
   double effective_sample_size;
 
   cube augmented_data{};
@@ -56,9 +56,6 @@ Rcpp::List  smc_mallows_new_users(
       augmented_data(span::all, span(0, rankings.n_cols - new_rankings.n_cols - 1), span::all) = Rcpp::as<cube>(aug_init);
     }
   }
-
-  rho_samples = rho_init;
-  alpha_samples = alpha_init;
 
   if(any_missing){
     smc_mallows_new_users_augment_partial(

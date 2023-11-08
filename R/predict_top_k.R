@@ -25,8 +25,8 @@
 #' @example /inst/examples/plot_top_k_example.R
 #' @family posterior quantities
 predict_top_k <- function(model_fit, burnin = model_fit$burnin, k = 3) {
-    validate_top_k(model_fit, burnin)
-    .predict_top_k(model_fit, burnin, k)
+  validate_top_k(model_fit, burnin)
+  .predict_top_k(model_fit, burnin, k)
 }
 
 .predict_top_k <- function(model_fit, burnin, k) {

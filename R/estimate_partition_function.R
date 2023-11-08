@@ -19,14 +19,14 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
   class(ret) <- "BayesMallowsPartitionFunction"
   # First, has the user supplied an estimate?
   if (!is.null(logz_estimate)) {
-    ret$logz_estimate = logz_estimate
+    ret$logz_estimate <- logz_estimate
     return(ret)
   }
 
   # Second, do we have a sequence?
   relevant_params <- partition_function_data[partition_function_data$n_items == n_items &
-                                               partition_function_data$metric == metric &
-                                               partition_function_data$type == "cardinalities", , drop = FALSE]
+    partition_function_data$metric == metric &
+    partition_function_data$type == "cardinalities", , drop = FALSE]
 
   if (nrow(relevant_params) == 1) {
     ret$cardinalities <- unlist(relevant_params$values)
@@ -35,8 +35,8 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
 
   # Third, do we have an importance sampling estimate?
   relevant_params <- partition_function_data[partition_function_data$n_items == n_items &
-                                               partition_function_data$metric == metric &
-                                               partition_function_data$type == "importance_sampling", , drop = FALSE]
+    partition_function_data$metric == metric &
+    partition_function_data$type == "importance_sampling", , drop = FALSE]
 
   if (nrow(relevant_params) == 1) {
     ret$logz_estimate <- unlist(relevant_params$values)

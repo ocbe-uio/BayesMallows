@@ -1,4 +1,3 @@
-
 beach_small <- subset(
   beach_preferences,
   bottom_item %in% 1:3 & top_item %in% 1:3
@@ -67,11 +66,13 @@ dat <- setup_rank_data(preferences = beach_small)
 b2 <- compute_mallows(
   data = dat,
   compute_options = set_compute_options(nmc = 500, save_aug = TRUE),
-  seed = 123L)
+  seed = 123L
+)
 b3 <- compute_mallows(
   data = dat,
   compute_options = set_compute_options(nmc = 500, save_aug = TRUE, aug_thinning = 3),
-  seed = 123L)
+  seed = 123L
+)
 
 test_that("compute_consensus fails when it should", {
   # Burnin not set

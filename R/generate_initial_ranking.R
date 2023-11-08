@@ -107,7 +107,8 @@ generate_initial_ranking.BayesMallowsIntransitive <- function(
     random = FALSE, random_limit = 8L) {
   n_assessors <- length(unique(preferences$assessor))
   rankings <- replicate(n_assessors, sample(x = n_items, size = n_items),
-                        simplify = "numeric")
+    simplify = "numeric"
+  )
   rankings <- matrix(rankings, ncol = n_items, nrow = n_assessors, byrow = TRUE)
 }
 
@@ -152,4 +153,3 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     return(get("x", envir = e1)[[sample(get("num", envir = e1), 1)]])
   }
 }
-

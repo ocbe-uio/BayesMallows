@@ -33,8 +33,7 @@ compute_mallows_mixtures <- function(
     logz_estimate = NULL,
     verbose = FALSE,
     seed = NULL,
-    cl = NULL
-    ) {
+    cl = NULL) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
   if (is.null(cl)) {
@@ -55,7 +54,8 @@ compute_mallows_mixtures <- function(
     model$n_clusters <- x
     compute_mallows(
       data = data, model = model, compute_options = compute_options,
-      priors = priors, initial_values = initial_values, verbose = verbose, seed = seed)
+      priors = priors, initial_values = initial_values, verbose = verbose, seed = seed
+    )
   })
 
   class(models) <- "BayesMallowsMixtures"

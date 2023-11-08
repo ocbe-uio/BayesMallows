@@ -9,23 +9,39 @@ tidy_mcmc <- function(fits, data, model, compute_options) {
     items <- paste("Item", seq(from = 1, to = data$n_items, by = 1))
   }
 
-  fit$rho <- do.call(rbind, lapply(seq_along(fits), function(i) {
-    tidy_rho(fits[[i]]$rho, i, compute_options$rho_thinning, items)
+  rho_dims <- dim(fits[[1]]$rho)
+  rhos <- lapply(seq_along(fits), function(i) fits[[i]]$rho)
+  fit$rho_samples <- array(
+    as.vector(do.call(rbind, rhos)),
+    dim = c(rho_dims[[1]], rho_dims[[2]], length(fits) * rho_dims[[3]])
+  )
+
+  fit$rho <- do.call(rbind, lapply(seq_along(rhos), function(i) {
+    tidy_rho(rhos[[i]], i, compute_options$rho_thinning, items)
   }))
 
-  fit$alpha <- do.call(rbind, lapply(seq_along(fits), function(i) {
-    tidy_alpha(fits[[i]]$alpha, i, compute_options$alpha_jump)
+  alpha_dims <- dim(fits[[1]]$alpha)
+  alphas <- lapply(seq_along(fits), function(i) fits[[i]]$alpha)
+  fit$alpha_samples <- matrix(as.vector(do.call(rbind, alphas)),
+    nrow = alpha_dims[[1]], ncol = length(fits) * alpha_dims[[2]]
+  )
+
+  fit$alpha <- do.call(rbind, lapply(seq_along(alphas), function(i) {
+    tidy_alpha(alphas[[i]], i, compute_options$alpha_jump)
   }))
 
   fit$cluster_assignment <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_cluster_assignment(
       fits[[i]]$cluster_assignment, i, model$n_clusters, fits[[i]]$n_assessors,
-      compute_options$nmc)
+      compute_options$nmc
+    )
   }))
 
   fit$cluster_probs <- do.call(rbind, lapply(seq_along(fits), function(i) {
-    tidy_cluster_probabilities(fits[[i]]$cluster_probs, i, model$n_clusters,
-                               compute_options$nmc)
+    tidy_cluster_probabilities(
+      fits[[i]]$cluster_probs, i, model$n_clusters,
+      compute_options$nmc
+    )
   }))
 
   fit$within_cluster_distance <- do.call(rbind, lapply(seq_along(fits), function(i) {
@@ -34,8 +50,10 @@ tidy_mcmc <- function(fits, data, model, compute_options) {
 
 
   fit$augmented_data <- do.call(rbind, lapply(seq_along(fits), function(i) {
-    tidy_augmented_data(fits[[i]]$augmented_data, i, items,
-                        compute_options$aug_thinning)
+    tidy_augmented_data(
+      fits[[i]]$augmented_data, i, items,
+      compute_options$aug_thinning
+    )
   }))
 
   fit$theta <- do.call(rbind, lapply(seq_along(fits), function(i) {

@@ -22,8 +22,9 @@
 #' @references \insertAllCited{}
 #'
 generate_constraints <- function(data, cl = NULL) {
-
-  if(is.null(data$preferences)) return(list())
+  if (is.null(data$preferences)) {
+    return(list())
+  }
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
   # Turn the preferences dataframe into a list of dataframes,

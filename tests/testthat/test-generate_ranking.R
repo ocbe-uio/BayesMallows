@@ -14,18 +14,25 @@ test_that("generate_initial_ranking works", {
 
 beach_small <- subset(beach_preferences, assessor %in% 1:6 & bottom_item %in% 1:4 & top_item %in% 1:4)
 test_that("generate_initial_ranking with shuffle_unranked works", {
-
   set.seed(123)
   dat <- setup_rank_data(preferences = beach_small, shuffle_unranked = TRUE, random = FALSE)
-  expect_equal(dat$rankings, structure(c(1L, 4L, 1L, 1L, 2L, 4L, 2L, 4L, 2L, 4L, 3L, 1L, 2L,
-                                         4L, 1L, 2L, 3L, 3L, 3L, 3L), dim = 5:4, dimnames = list(c("2",
-                                                                                                   "3", "4", "5", "6"), NULL)))
+  expect_equal(dat$rankings, structure(c(
+    1L, 4L, 1L, 1L, 2L, 4L, 2L, 4L, 2L, 4L, 3L, 1L, 2L,
+    4L, 1L, 2L, 3L, 3L, 3L, 3L
+  ), dim = 5:4, dimnames = list(c(
+    "2",
+    "3", "4", "5", "6"
+  ), NULL)))
 
   set.seed(321)
   dat <- setup_rank_data(preferences = beach_small, shuffle_unranked = TRUE, random = FALSE)
-  expect_equal(dat$rankings, structure(c(1L, 1L, 3L, 4L, 2L, 4L, 3L, 4L, 1L, 4L, 2L, 2L, 2L,
-                                         3L, 1L, 3L, 4L, 1L, 2L, 3L), dim = 5:4, dimnames = list(c("2",
-                                                                                                   "3", "4", "5", "6"), NULL)))
+  expect_equal(dat$rankings, structure(c(
+    1L, 1L, 3L, 4L, 2L, 4L, 3L, 4L, 1L, 4L, 2L, 2L, 2L,
+    3L, 1L, 3L, 4L, 1L, 2L, 3L
+  ), dim = 5:4, dimnames = list(c(
+    "2",
+    "3", "4", "5", "6"
+  ), NULL)))
 })
 
 
@@ -33,8 +40,11 @@ test_that("generate_initial_ranking with shuffle_unranked works", {
 test_that("generate_initial_ranking with random works", {
   set.seed(123)
   dat <- setup_rank_data(preferences = beach_small, random = TRUE)
-  expect_equal(dat$rankings, structure(c(1L, 3L, 1L, 1L, 1L, 4L, 2L, 4L, 4L, 3L, 3L, 1L, 3L,
-                                         3L, 2L, 2L, 4L, 2L, 2L, 4L), dim = 5:4, dimnames = list(c("2",
-                                                                                                   "3", "4", "5", "6"), NULL)))
-
+  expect_equal(dat$rankings, structure(c(
+    1L, 3L, 1L, 1L, 1L, 4L, 2L, 4L, 4L, 3L, 3L, 1L, 3L,
+    3L, 2L, 2L, 4L, 2L, 2L, 4L
+  ), dim = 5:4, dimnames = list(c(
+    "2",
+    "3", "4", "5", "6"
+  ), NULL)))
 })

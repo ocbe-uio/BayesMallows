@@ -22,7 +22,6 @@
 #' @family modeling
 #'
 set_initial_values <- function(rho_init = NULL, alpha_init = 1) {
-
   if (!is.null(rho_init)) {
     if (!validate_permutation(rho_init)) stop("rho_init must be a proper permutation")
     if (!(sum(is.na(rho_init)) == 0)) stop("rho_init cannot have missing values")
@@ -32,5 +31,4 @@ set_initial_values <- function(rho_init = NULL, alpha_init = 1) {
   ret <- as.list(environment())
   class(ret) <- "BayesMallowsInitialValues"
   ret
-
 }
