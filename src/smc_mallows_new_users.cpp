@@ -68,8 +68,7 @@ Rcpp::List  smc_mallows_new_users(
       aug_method, missing_indicator, metric);
   }
 
-
-  vec norm_wgt;
+  vec norm_wgt(n_particles);
   smc_mallows_new_users_reweight(
     log_inc_wgt, effective_sample_size, norm_wgt, augmented_data, new_rankings, rho_samples,
     alpha_samples, logz_estimate, cardinalities, num_new_obs, aug_prob,

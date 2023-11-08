@@ -34,7 +34,6 @@ Rcpp::List make_pseudo_proposal(
         sample(available_rankings, 1, false, sample_probs);
     }
 
-
     int ranking_chosen = as_scalar(find(rankings(item_to_rank) == available_rankings));
 
     prob *= sample_probs(ranking_chosen);
