@@ -3,6 +3,7 @@
 #include "misc.h"
 #include "setdiff.h"
 #include "missing_data.h"
+#include "sample.h"
 
 using namespace arma;
 
@@ -56,9 +57,30 @@ void update_missing_ranks(mat& rankings, const uvec& current_cluster_assignment,
 
 vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
                           const double& alpha, const vec& rho,
-                          const std::string& metric) {
+                          const std::string& metric, bool pseudo) {
+  double log_hastings_correction = 0;
+  vec proposal{};
   // Sample an augmentation proposal
-  vec proposal = propose_augmentation(rankings, missing_indicator);
+  if(pseudo) {
+    uvec unranked_items = shuffle(find(missing_indicator == 1));
+    Rcpp::List pprop = make_pseudo_proposal(
+      unranked_items, rankings, alpha, rho, metric, true
+    );
+
+    Rcpp::List bprop = make_pseudo_proposal(
+      unranked_items, rankings, alpha, rho, metric, false);
+    double bprob = bprop["probability"];
+
+    vec ar = pprop["proposal"];
+    proposal = ar;
+    double prob = pprop["probability"];
+
+    log_hastings_correction = -std::log(prob) + std::log(bprob);
+
+  } else {
+    proposal = propose_augmentation(rankings, missing_indicator);
+  }
+
 
   // Draw a uniform random number
   double u = std::log(randu<double>());
@@ -67,11 +89,50 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
 
   double ratio = -alpha / n_items *
     (get_rank_distance(proposal, rho, metric) -
-    get_rank_distance(rankings, rho, metric));
+    get_rank_distance(rankings, rho, metric)) + log_hastings_correction;
 
   if(ratio > u){
     return proposal;
   } else {
     return rankings;
   }
+}
+
+
+Rcpp::List make_pseudo_proposal(
+    uvec unranked_items, vec rankings, const double& alpha, const vec& rho,
+    const std::string metric, const bool forward
+) {
+
+  int n_items = rankings.n_elem;
+
+  double prob = 1;
+  while(unranked_items.n_elem > 0) {
+    vec available_rankings = rankings(unranked_items);
+    int item_to_rank = unranked_items(0);
+
+    vec log_numerator(available_rankings.n_elem);
+    for(int ll{}; ll < available_rankings.n_elem; ll++) {
+      log_numerator(ll) = -alpha / n_items *
+        get_rank_distance(rho(span(item_to_rank)), available_rankings(span(ll)), metric);
+    }
+    vec sample_probs = normalize_weights(log_numerator);
+    if(forward) {
+      rankings(span(item_to_rank)) =
+        sample(available_rankings, 1, false, sample_probs);
+    }
+
+    int ranking_chosen = as_scalar(find(rankings(item_to_rank) == available_rankings));
+
+    prob *= sample_probs(ranking_chosen);
+    if(available_rankings.n_elem <= 1) break;
+    unranked_items = unranked_items.subvec(1, available_rankings.n_elem - 1);
+
+    rankings(unranked_items) = setdiff_template(available_rankings, available_rankings(span(ranking_chosen)));
+  }
+
+  return Rcpp::List::create(
+    Rcpp::Named("proposal") = rankings,
+    Rcpp::Named("probability") = prob
+  );
 }

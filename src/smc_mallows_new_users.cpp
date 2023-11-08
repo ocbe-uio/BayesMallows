@@ -2,7 +2,6 @@
 #include "distances.h"
 #include "parameterupdates.h"
 #include "sample.h"
-#include "smc.h"
 #include "partitionfuns.h"
 #include "misc.h"
 #include "smc_mallows_new_users.h"
@@ -93,49 +92,14 @@ Rcpp::List  smc_mallows_new_users(
       if(any_missing) {
         int num_obs = rankings.n_cols;
         for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
-          double log_hastings_correction = 0;
 
-          uvec unranked_items = shuffle(find(missing_indicator.col(jj) == 1));
-          if(aug_method == "uniform") {
-            augmented_data(span::all, span(jj), span(ii)) = make_new_augmentation(
-              augmented_data(span::all, span(jj), span(ii)),
-              missing_indicator.col(jj),
-              alpha_samples(ii),
-              rho_samples.col(ii),
-              metric
-            );
-          } else {
-
-            Rcpp::List pprop = make_pseudo_proposal(
-              unranked_items, augmented_data(span::all, span(jj), span(ii)),
-              alpha_samples(ii), rho_samples.col(ii), metric, true
-            );
-
-            Rcpp::List bprop = make_pseudo_proposal(
-              unranked_items, augmented_data(span::all, span(jj), span(ii)),
-              alpha_samples(ii), rho_samples.col(ii), metric, false);
-            double bprob = bprop["probability"];
-
-            vec ar = pprop["proposal"];
-            double prob = pprop["probability"];
-
-            log_hastings_correction = -std::log(prob) + std::log(bprob);
-
-            double ratio = -alpha_samples(ii) / n_items * (
-              get_rank_distance(ar, rho_samples.col(ii), metric) -
-                get_rank_distance(augmented_data(span::all, span(jj), span(ii)),
-                                  rho_samples.col(ii), metric)
-            ) + log_hastings_correction;
-
-
-            double u = std::log(randu<double>());
-
-            if(ratio > u){
-              augmented_data(span::all, span(jj), span(ii)) = ar;
-            }
-          }
-
-
+          augmented_data(span::all, span(jj), span(ii)) = make_new_augmentation(
+            augmented_data(span::all, span(jj), span(ii)),
+            missing_indicator.col(jj),
+            alpha_samples(ii),
+            rho_samples.col(ii),
+            metric, aug_method == "pseudo"
+          );
         }
       }
 
