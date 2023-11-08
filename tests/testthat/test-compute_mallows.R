@@ -151,9 +151,10 @@ test_that("compute_mallows with single missing value works", {
   dd <- potato_visual
   dd[1, 1] <- NA
   dd[2, 3] <- NA
+  set.seed(123)
   m <- compute_mallows(
     setup_rank_data(dd),
-    compute_options = set_compute_options(nmc = 4), seed = 123L
+    compute_options = set_compute_options(nmc = 4)
   )
   expect_equal(
     m$alpha,
@@ -237,15 +238,15 @@ test_that("compute_mallows handles data with lots of missings", {
 })
 
 test_that("compute_mallows treats observation_frequency properly", {
+  set.seed(2233)
   m1 <- compute_mallows(
     setup_rank_data(potato_visual,
       observation_frequency = rep(1, nrow(potato_visual))
-    ),
-    seed = 2233
+    )
   )
+  set.seed(2233)
   m2 <- compute_mallows(
-    setup_rank_data(potato_visual),
-    seed = 2233
+    setup_rank_data(potato_visual)
   )
   expect_equal(m1, m2)
 
@@ -274,10 +275,10 @@ test_that("compute_mallows treats observation_frequency properly", {
   dat <- setup_rank_data(preferences = beach_small, observation_frequency = observation_frequency)
   dat_rep <- setup_rank_data(preferences = beach_pref_rep)
 
+  set.seed(3344)
   model_fit_obs_freq <- compute_mallows(
     data = dat,
-    compute_options = set_compute_options(nmc = 10, save_aug = TRUE),
-    seed = 3344L
+    compute_options = set_compute_options(nmc = 10, save_aug = TRUE)
   )
 
   expect_equal(
@@ -305,10 +306,10 @@ test_that("compute_mallows treats observation_frequency properly", {
   )
 
   # Next for the repeated data.
+  set.seed(3344)
   model_fit_rep <- compute_mallows(
     data = dat_rep,
-    compute_options = set_compute_options(nmc = 10, save_aug = TRUE),
-    seed = 3344L
+    compute_options = set_compute_options(nmc = 10, save_aug = TRUE)
   )
 
 

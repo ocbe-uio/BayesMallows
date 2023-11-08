@@ -2,11 +2,11 @@ test_that("compute_mallows_mixtures works", {
   n_clusters <- c(1, 4, 6)
   dat <- setup_rank_data(rankings = sushi_rankings[1:100, ])
 
+  set.seed(1234)
   models <- compute_mallows_mixtures(
     n_clusters = n_clusters,
     data = dat,
-    compute_options = set_compute_options(nmc = 20L),
-    seed = 1234
+    compute_options = set_compute_options(nmc = 20L)
   )
 
   expect_equal(
@@ -21,14 +21,14 @@ test_that("compute_mallows_mixtures works", {
 
   expect_equal(
     models[[2]]$rho$value[12:18],
-    c(10, 8, 3, 7, 5, 2, 1)
+    c(6, 2, 5, 10, 3, 8, 1)
   )
 
+  set.seed(123)
   mixture_model <- compute_mallows(
     data = dat,
     model = set_model_options(n_clusters = 5),
-    compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
-    seed = 123
+    compute_options = set_compute_options(include_wcd = TRUE, nmc = 10)
   )
 
   expect_equal(
@@ -54,20 +54,20 @@ test_that("compute_mallows_mixtures works", {
   expect_s3_class(models, "BayesMallowsMixtures")
 
   # check that psi argument is being used
+  set.seed(123)
   mixture_model1 <- compute_mallows(
     data = dat,
     model = set_model_options(n_clusters = 5),
     compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
-    priors = set_priors(psi = 100),
-    seed = 123
+    priors = set_priors(psi = 100)
   )
 
+  set.seed(123)
   mixture_model2 <- compute_mallows(
     data = dat,
     model = set_model_options(n_clusters = 5),
     compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
-    priors = set_priors(psi = 1),
-    seed = 123
+    priors = set_priors(psi = 1)
   )
 
   expect_lt(

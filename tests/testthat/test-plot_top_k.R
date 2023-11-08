@@ -37,10 +37,10 @@ test_that("plot_top_k and predict_top_k fail when they should", {
   expect_error(predict_top_k(bmm, burnin = 50))
 
   # Test whether predict_top_k returns correct numbers
+  set.seed(1)
   bmm <- compute_mallows(
     data = dat,
-    compute_options = set_compute_options(nmc = 20, save_aug = TRUE),
-    seed = 1L
+    compute_options = set_compute_options(nmc = 20, save_aug = TRUE)
   )
 
   pred <- predict_top_k(bmm, burnin = 4, k = 3)
@@ -78,15 +78,15 @@ test_that("predict_top_k works with augmentation thinning", {
 
   # Run the model with different levels of thinning
   # This model is deterministic, because each subject has either ranked or not ranked the item
+  set.seed(1)
   bmm1 <- compute_mallows(
     setup_rank_data(dat),
-    compute_options = set_compute_options(nmc = 500, save_aug = TRUE, aug_thinning = 1L),
-    seed = 1L
+    compute_options = set_compute_options(nmc = 500, save_aug = TRUE, aug_thinning = 1L)
   )
+  set.seed(1)
   bmm3 <- compute_mallows(
     setup_rank_data(dat),
-    compute_options = set_compute_options(nmc = 500, save_aug = TRUE, aug_thinning = 3L),
-    seed = 1L
+    compute_options = set_compute_options(nmc = 500, save_aug = TRUE, aug_thinning = 3L)
   )
 
   pred1 <- predict_top_k(bmm1, burnin = 200, k = k)

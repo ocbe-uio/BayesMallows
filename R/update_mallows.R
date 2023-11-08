@@ -1,5 +1,12 @@
 #' Update a Bayesian Mallows model with new users
 #'
+#' Update a Bayesian Mallows model estimated using the Metropolis-Hastings
+#' algorithm in [compute_mallows()] using the sequential Monte Carlo
+#' algorithm described in
+#' \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}. This
+#' is useful when new data arrives, and is typically more computationally
+#' efficient than running Metropolis-Hastings from scratch.
+#'
 #' @param model A model object.
 #' @param new_rankings Matrix containing the new set of observed rankings of size
 #'   n_assessors by n_items.

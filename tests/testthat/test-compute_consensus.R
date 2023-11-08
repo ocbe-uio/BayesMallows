@@ -3,10 +3,10 @@ beach_small <- subset(
   bottom_item %in% 1:3 & top_item %in% 1:3
 )
 
+set.seed(123)
 b <- compute_mallows(
   data = setup_rank_data(preferences = beach_preferences),
-  compute_options = set_compute_options(nmc = 10),
-  seed = 123L
+  compute_options = set_compute_options(nmc = 10)
 )
 b$burnin <- 2
 cp <- compute_consensus(b)
@@ -63,15 +63,15 @@ test_that("compute_consensus computes correctly for rho", {
 })
 
 dat <- setup_rank_data(preferences = beach_small)
+set.seed(123)
 b2 <- compute_mallows(
   data = dat,
-  compute_options = set_compute_options(nmc = 500, save_aug = TRUE),
-  seed = 123L
+  compute_options = set_compute_options(nmc = 500, save_aug = TRUE)
 )
+set.seed(123)
 b3 <- compute_mallows(
   data = dat,
-  compute_options = set_compute_options(nmc = 500, save_aug = TRUE, aug_thinning = 3),
-  seed = 123L
+  compute_options = set_compute_options(nmc = 500, save_aug = TRUE, aug_thinning = 3)
 )
 
 test_that("compute_consensus fails when it should", {

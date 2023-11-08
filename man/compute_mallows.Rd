@@ -279,9 +279,6 @@ m <- compute_mallows(
 \insertAllCited{}
 }
 \seealso{
-\code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}} for a function that computes
-separate Mallows models for varying numbers of clusters.
-
 Other modeling: 
 \code{\link{assess_convergence}()},
 \code{\link{compute_mallows_mixtures}()},

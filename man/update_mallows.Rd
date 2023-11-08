@@ -38,7 +38,12 @@ Monte Carlo.}
 An updated model, of class "SMCMallows".
 }
 \description{
-Update a Bayesian Mallows model with new users
+Update a Bayesian Mallows model estimated using the Metropolis-Hastings
+algorithm in \code{\link[=compute_mallows]{compute_mallows()}} using the sequential Monte Carlo
+algorithm described in
+\insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}. This
+is useful when new data arrives, and is typically more computationally
+efficient than running Metropolis-Hastings from scratch.
 }
 \seealso{
 Other modeling: 

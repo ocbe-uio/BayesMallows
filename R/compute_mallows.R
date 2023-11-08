@@ -60,11 +60,6 @@
 #'
 #' @return A list of class BayesMallows.
 #'
-#' @seealso [compute_mallows_mixtures()] for a function that computes
-#'   separate Mallows models for varying numbers of clusters.
-#'
-#'
-#'
 #' @references \insertAllCited{}
 #'
 #' @export
