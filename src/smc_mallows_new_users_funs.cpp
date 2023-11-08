@@ -105,7 +105,6 @@ void smc_mallows_new_users_resample(
 }
 
 void smc_mallows_new_users_reweight(
-    vec& log_inc_wgt,
     double& effective_sample_size,
     vec& norm_wgt,
     const cube& augmented_data,
@@ -122,6 +121,7 @@ void smc_mallows_new_users_reweight(
   int n_particles = rho_samples.n_cols;
   int n_items = rho_samples.n_rows;
   int num_obs = augmented_data.n_cols;
+  vec log_inc_wgt(n_particles);
   for (int ii{}; ii < n_particles; ++ii) {
 
     const double log_z_alpha = get_partition_function(

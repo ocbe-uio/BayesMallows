@@ -8,7 +8,7 @@ void smc_mallows_new_users_augment_partial(arma::cube&, arma::vec&,
     const std::string&,
     const arma::umat& missing_indicator, const std::string&);
 void smc_mallows_new_users_reweight(
-    arma::vec&, double&, arma::vec&,
+    double&, arma::vec&,
     const arma::cube&, const arma::mat&, const arma::mat&,
     const arma::vec&, const Rcpp::Nullable<arma::vec>,
     const Rcpp::Nullable<arma::vec>,
