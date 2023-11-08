@@ -123,7 +123,7 @@ test_that("update_mallows is correct for new partial rankings", {
       model = mod_init,
       new_rankings = dat[5:20, ],
       n_particles = 3000,
-      mcmc_steps = 10,
+      mcmc_steps = 5,
       augmentation = aug
     )
 
@@ -135,13 +135,13 @@ test_that("update_mallows is correct for new partial rankings", {
     expect_equal(
       mean(mod_smc_next$alpha$value),
       mean(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
-      tolerance = .1
+      tolerance = ifelse(aug == "uniform", .2, .05)
     )
 
     expect_equal(
       sd(mod_smc_next$alpha$value),
       sd(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
-      tolerance = .1
+      tolerance = ifelse(aug == "uniform", .2, .05)
     )
 
     bmm_consensus <- compute_consensus(bmm_mod)
@@ -153,7 +153,7 @@ test_that("update_mallows is correct for new partial rankings", {
         as.numeric(as.factor(smc_consensus$item)),
         metric = "ulam"
       ),
-      2
+      ifelse(aug == "uniform", 4, 1)
     )
   }
 

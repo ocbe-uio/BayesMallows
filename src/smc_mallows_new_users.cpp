@@ -80,70 +80,66 @@ Rcpp::List  smc_mallows_new_users(
   for (int ii = 0; ii < n_particles; ++ii) {
 
     for (int kk = 0; kk < mcmc_steps; ++kk) {
-      if(any_missing) {
-        rankings = augmented_data.slice(ii);
-      }
-      rho_samples.col(ii) = make_new_rho(rho_samples.col(ii), rankings,
-                      alpha_samples(ii), leap_size, metric, obs_freq);
+      if(any_missing) rankings = augmented_data.slice(ii);
 
+      rho_samples.col(ii) =
+        make_new_rho(rho_samples.col(ii), rankings,
+                     alpha_samples(ii), leap_size, metric, obs_freq);
 
       alpha_samples(ii) = update_alpha(alpha_samples(ii), rankings,
                     obs_freq, rho_samples.col(ii), alpha_prop_sd, metric,
                     lambda, cardinalities, logz_estimate);
 
-    }
+      if(any_missing) {
+        int num_obs = rankings.n_cols;
+        for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
+          double log_hastings_correction = 0;
 
-    if(any_missing) {
-      int num_obs = rankings.n_cols;
-      for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
-        double log_hastings_correction = 0;
+          uvec unranked_items = shuffle(find(missing_indicator.col(jj) == 1));
+          if(aug_method == "uniform") {
+            augmented_data(span::all, span(jj), span(ii)) = make_new_augmentation(
+              augmented_data(span::all, span(jj), span(ii)),
+              missing_indicator.col(jj),
+              alpha_samples(ii),
+              rho_samples.col(ii),
+              metric
+            );
+          } else {
 
-        uvec unranked_items = shuffle(find(missing_indicator.col(jj) == 1));
-        if(aug_method == "uniform") {
-          augmented_data(span::all, span(jj), span(ii)) = make_new_augmentation(
-            augmented_data(span::all, span(jj), span(ii)),
-            missing_indicator.col(jj),
-            alpha_samples(ii),
-            rho_samples.col(ii),
-            metric
-          );
-        } else {
+            Rcpp::List pprop = make_pseudo_proposal(
+              unranked_items, augmented_data(span::all, span(jj), span(ii)),
+              alpha_samples(ii), rho_samples.col(ii), metric, true
+            );
 
-          Rcpp::List pprop = make_pseudo_proposal(
-            unranked_items, augmented_data(span::all, span(jj), span(ii)),
-            alpha_samples(ii), rho_samples.col(ii), metric, true
-          );
+            Rcpp::List bprop = make_pseudo_proposal(
+              unranked_items, augmented_data(span::all, span(jj), span(ii)),
+              alpha_samples(ii), rho_samples.col(ii), metric, false);
+            double bprob = bprop["probability"];
 
-          Rcpp::List bprop = make_pseudo_proposal(
-            unranked_items, augmented_data(span::all, span(jj), span(ii)),
-            alpha_samples(ii), rho_samples.col(ii), metric, false);
-          double bprob = bprop["probability"];
+            vec ar = pprop["proposal"];
+            double prob = pprop["probability"];
 
-          vec ar = pprop["proposal"];
-          double prob = pprop["probability"];
+            log_hastings_correction = -std::log(prob) + std::log(bprob);
 
-          log_hastings_correction = -std::log(prob) + std::log(bprob);
-
-          double ratio = -alpha_samples(ii) / n_items * (
-            get_rank_distance(ar, rho_samples.col(ii), metric) -
-              get_rank_distance(augmented_data(span::all, span(jj), span(ii)),
-                                rho_samples.col(ii), metric)
-          ) + log_hastings_correction;
+            double ratio = -alpha_samples(ii) / n_items * (
+              get_rank_distance(ar, rho_samples.col(ii), metric) -
+                get_rank_distance(augmented_data(span::all, span(jj), span(ii)),
+                                  rho_samples.col(ii), metric)
+            ) + log_hastings_correction;
 
 
-          double u = std::log(randu<double>());
+            double u = std::log(randu<double>());
 
-          if(ratio > u){
-            augmented_data(span::all, span(jj), span(ii)) = ar;
+            if(ratio > u){
+              augmented_data(span::all, span(jj), span(ii)) = ar;
+            }
           }
+
+
         }
-
-
       }
+
     }
-
-
-
   }
 
   // return the history of the particles and their values
