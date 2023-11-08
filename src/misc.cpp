@@ -31,17 +31,4 @@ double divide_by_fact(double prob, int set_length) {
   return(prob / tgamma(set_length + 1));
 }
 
-bool is_pseudo(const std::string aug_method, const std::string metric) {
-  // Checks for valid combinations of the inputs, stops if invalid
-  if (aug_method == "uniform") {
-    return(false);
-  } else if (aug_method == "pseudo") {
-    if ((metric == "footrule") || (metric == "spearman")) {
-      return(true);
-    } else {
-      Rcpp::stop("Pseudolikelihood only supports footrule and spearman metrics");
-    }
-  } else {
-    Rcpp::stop("Invalid aug_method. Please choose random or pseudolikelihood");
-  }
-}
+

@@ -91,17 +91,6 @@ void smc_mallows_new_users_augment_partial(
   }
 }
 
-vec initialize_alpha(
-    const int& n_particles,
-    const Rcpp::Nullable<vec>& alpha_init){
-  if(alpha_init.isNotNull()) {
-    return Rcpp::as<vec>(alpha_init);
-  } else {
-    return Rcpp::rexp(n_particles, 1);
-  }
-
-}
-
 void smc_mallows_new_users_resample(
     mat& rho_samples, vec& alpha_samples, cube& aug_rankings,
     const vec& norm_wgt, const int& num_obs,
@@ -149,9 +138,9 @@ void smc_mallows_new_users_reweight(
       span(num_obs - num_new_obs, num_obs - 1),
       span(ii));
 
+    double log_likelihood = -alpha_samples(ii) / n_items *
+      rank_dist_sum(rankings, rho_samples.col(ii), metric, ones(rankings.n_cols));
 
-    double log_likelihood = get_exponent_sum(
-      alpha_samples(ii), rho_samples.col(ii), n_items, rankings, metric);
     log_inc_wgt(ii) = log_likelihood - num_new_obs * log_z_alpha - log(aug_prob(ii));
   }
 

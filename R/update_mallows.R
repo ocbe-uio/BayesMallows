@@ -37,6 +37,11 @@ update_mallows.BayesMallows <- function(
     type <- "complete"
   }
 
+  if(augmentation == "pseudo" && !model$metric %in% c("footrule", "spearman")) {
+    stop("pseudolikelihood augmentation only possible for metrics 'footrule' ",
+         "and 'spearman'.")
+  }
+
   alpha_init <- extract_alpha_init(model, n_particles)
   rho_init <- extract_rho_init(model, n_particles)
 
