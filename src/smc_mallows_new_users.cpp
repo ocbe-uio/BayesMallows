@@ -58,9 +58,8 @@ Rcpp::List  smc_mallows_new_users(
     }
   }
 
-  mat new_observed_rankings, all_observed_rankings;
+  mat all_observed_rankings;
   if(!any_missing){
-    new_observed_rankings = new_rankings;
     all_observed_rankings = rankings;
   }
 
@@ -77,7 +76,7 @@ Rcpp::List  smc_mallows_new_users(
 
   vec norm_wgt;
   smc_mallows_new_users_reweight(
-    log_inc_wgt, effective_sample_size, norm_wgt, augmented_data, new_observed_rankings, rho_samples,
+    log_inc_wgt, effective_sample_size, norm_wgt, augmented_data, new_rankings, rho_samples,
     alpha_samples, logz_estimate, cardinalities, num_new_obs, aug_prob,
     any_missing, metric);
 

@@ -102,9 +102,7 @@ void smc_mallows_new_users_resample(
   rho_samples = rho_samples.cols(index);
   alpha_samples = alpha_samples.rows(index);
 
-  if(partial){
-    augmented_data = augmented_data.slices(index);
-  }
+  if(partial) augmented_data = augmented_data.slices(index);
 }
 
 void smc_mallows_new_users_reweight(
@@ -127,7 +125,6 @@ void smc_mallows_new_users_reweight(
   int num_obs = augmented_data.n_cols;
   for (int ii{}; ii < n_particles; ++ii) {
 
-    /* Calculating log_z_alpha and log_likelihood ----------- */
     const double log_z_alpha = get_partition_function(
       n_items, alpha_samples(ii), cardinalities, logz_estimate, metric
     );
@@ -142,9 +139,7 @@ void smc_mallows_new_users_reweight(
     log_inc_wgt(ii) = log_likelihood - num_new_obs * log_z_alpha - log(aug_prob(ii));
   }
 
-  /* normalise weights ------------------------------------ */
   norm_wgt = normalize_weights(log_inc_wgt);
-
   effective_sample_size = (sum(norm_wgt) * sum(norm_wgt)) / sum(norm_wgt % norm_wgt);
 }
 
