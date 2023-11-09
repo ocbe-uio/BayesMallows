@@ -23,8 +23,7 @@ Other datasets:
 \code{\link{potato_partial}},
 \code{\link{potato_true_ranking}},
 \code{\link{potato_visual}},
-\code{\link{potato_weighing}},
-\code{\link{sample_dataset}}
+\code{\link{potato_weighing}}
 }
 \concept{datasets}
 \keyword{datasets}
