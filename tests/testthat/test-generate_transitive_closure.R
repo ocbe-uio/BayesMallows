@@ -13,13 +13,13 @@ test_that("generate_transitive_closure works", {
 
   expect_equal(
     dat$preferences,
-    structure(list(assessor = c(1, 1, 1, 1, 2, 2, 2), bottom_item = c(
-      2,
-      3, 5, 3, 5, 3, 5
-    ), top_item = c(1, 1, 1, 5, 3, 4, 4)), row.names = c(
-      NA,
-      -7L
-    ), class = c("BayesMallowsTransitiveClosure", "data.frame"))
+    structure(list(assessor = c("1", "1", "1", "1", "2", "2", "2"), bottom_item = c(2, 3, 5, 3, 5, 3, 5), top_item = c(
+      1, 1, 1,
+      5, 3, 4, 4
+    )), row.names = c(NA, -7L), class = c(
+      "BayesMallowsTransitiveClosure",
+      "data.frame"
+    ))
   )
   expect_equal(dat$preferences, dat2$preferences)
 
