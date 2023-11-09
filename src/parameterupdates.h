@@ -13,8 +13,7 @@ double update_alpha(
                   const double& alpha_prop_sd,
                   const std::string& metric,
                   const double& lambda,
-                  const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-                  const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue);
+                  const Rcpp::List& logz_list);
 
 void update_rho(arma::cube& rho, arma::mat& rho_old,
                 int& rho_index, const int& cluster_index, const int& rho_thinning,

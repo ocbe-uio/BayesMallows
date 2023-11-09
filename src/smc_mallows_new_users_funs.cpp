@@ -74,8 +74,7 @@ void smc_mallows_new_users_reweight(
     const mat& observed_rankings,
     const mat& rho_samples,
     const vec& alpha_samples,
-    const Rcpp::Nullable<vec> logz_estimate,
-    const Rcpp::Nullable<vec> cardinalities,
+    const Rcpp::List& logz_list,
     const int& num_new_obs,
     const vec& aug_prob,
     const bool& partial,
@@ -88,7 +87,7 @@ void smc_mallows_new_users_reweight(
   for (int ii{}; ii < n_particles; ++ii) {
 
     const double log_z_alpha = get_partition_function(
-      n_items, alpha_samples(ii), cardinalities, logz_estimate, metric
+      n_items, alpha_samples(ii), logz_list, metric
     );
 
     mat rankings = !partial ? observed_rankings : augmented_data(span::all,

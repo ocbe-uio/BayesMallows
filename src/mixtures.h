@@ -14,8 +14,7 @@ arma::uvec update_cluster_labels(
     const int& n_items,
     const int& t,
     const std::string& metric,
-    const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-    const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue,
+    const Rcpp::List& logz_list,
     const bool& save_ind_clus = false
 );
 

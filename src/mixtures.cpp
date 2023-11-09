@@ -23,8 +23,7 @@ uvec update_cluster_labels(
     const int& n_items,
     const int& t,
     const std::string& metric,
-    const Rcpp::Nullable<vec> cardinalities = R_NilValue,
-    const Rcpp::Nullable<vec> logz_estimate = R_NilValue,
+    const Rcpp::List& logz_list,
     const bool& save_ind_clus = false
 ){
   int n_assessors = dist_mat.n_rows;
@@ -37,7 +36,7 @@ uvec update_cluster_labels(
     // Compute the logarithm of the unnormalized probability
     assignment_prob.col(i) = std::log(cluster_probs(i)) -
       alpha_old(i) / n_items * dist_mat.col(i) -
-      get_partition_function(n_items, alpha_old(i), cardinalities, logz_estimate, metric);
+      get_partition_function(n_items, alpha_old(i), logz_list, metric);
   }
 
   for(int i = 0; i < n_assessors; ++i){

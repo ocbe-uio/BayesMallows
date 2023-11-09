@@ -38,8 +38,8 @@ log_expected_dist <- function(alpha, n_items, cardinalities, metric) {
 #'
 #' @references \insertAllCited{}
 #'
-get_partition_function <- function(n_items, alpha, cardinalities = NULL, logz_estimate = NULL, metric = "footrule") {
-    .Call(`_BayesMallows_get_partition_function`, n_items, alpha, cardinalities, logz_estimate, metric)
+get_partition_function <- function(n_items, alpha, logz_list, metric = "footrule") {
+    .Call(`_BayesMallows_get_partition_function`, n_items, alpha, logz_list, metric)
 }
 
 #' Asymptotic Approximation of Partition Function

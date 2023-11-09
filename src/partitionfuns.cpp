@@ -110,9 +110,11 @@ double log_expected_dist(const double& alpha, const int& n_items,
 //'
 // [[Rcpp::export]]
 double get_partition_function(int n_items, double alpha,
-                              const Rcpp::Nullable<arma::vec> cardinalities = R_NilValue,
-                              const Rcpp::Nullable<arma::vec> logz_estimate = R_NilValue,
+                              const Rcpp::List& logz_list,
                               std::string metric = "footrule"){
+  Rcpp::Nullable<vec> cardinalities = logz_list["cardinalities"];
+  Rcpp::Nullable<vec> logz_estimate = logz_list["logz_estimate"];
+
   if (cardinalities.isNotNull()) {
     return logz_cardinalities(alpha, n_items, Rcpp::as<vec>(cardinalities), metric);
   } else if (logz_estimate.isNotNull()) {

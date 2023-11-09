@@ -24,9 +24,6 @@ Rcpp::List  smc_mallows_new_users(
   const Rcpp::Nullable<arma::cube> aug_init = R_NilValue
 ) {
 
-  Rcpp::Nullable<vec> cardinalities = logz_list["cardinalities"];
-  Rcpp::Nullable<vec> logz_estimate = logz_list["logz_estimate"];
-
   int num_new_obs = new_rankings.n_cols;
   int n_users = rankings.n_cols;
   int n_items = rankings.n_rows;
@@ -64,7 +61,7 @@ Rcpp::List  smc_mallows_new_users(
   vec norm_wgt(n_particles);
   smc_mallows_new_users_reweight(
     effective_sample_size, norm_wgt, augmented_data, new_rankings, rho_samples,
-    alpha_samples, logz_estimate, cardinalities, num_new_obs, aug_prob,
+    alpha_samples, logz_list, num_new_obs, aug_prob,
     any_missing, metric);
 
   smc_mallows_new_users_resample(
@@ -82,7 +79,7 @@ Rcpp::List  smc_mallows_new_users(
 
       alpha_samples(ii) = update_alpha(alpha_samples(ii), rankings,
                     obs_freq, rho_samples.col(ii), alpha_prop_sd, metric,
-                    lambda, cardinalities, logz_estimate);
+                    lambda, logz_list);
 
       if(any_missing) {
         int num_obs = rankings.n_cols;

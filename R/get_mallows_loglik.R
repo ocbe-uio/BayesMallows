@@ -80,7 +80,7 @@ get_mallows_loglik <- function(rho, alpha, weights, metric,
         N * get_partition_function(
           alpha = alpha[g],
           n_items = n_items, metric = metric,
-          cardinalities = card
+          logz_list = list(logz_estimate = NULL, cardinalities = card)
         )) * weights[[g]]
     },
     FUN.VALUE = numeric(1)

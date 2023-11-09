@@ -29,8 +29,7 @@ double update_alpha(
                   const double& alpha_prop_sd,
                   const std::string& metric,
                   const double& lambda,
-                  const Rcpp::Nullable<vec> cardinalities = R_NilValue,
-                  const Rcpp::Nullable<vec> logz_estimate = R_NilValue) {
+                  const Rcpp::List& logz_list) {
   // Set the number of assessors. Not using the variable from run_mcmc because
   // here we want the number of assessors in this cluster
   //int n_assessors = rankings.n_cols;
@@ -49,8 +48,8 @@ double update_alpha(
     alpha_diff / n_items * rank_dist +
     lambda * alpha_diff +
     sum(observation_frequency) * (
-        get_partition_function(n_items, alpha_old, cardinalities, logz_estimate, metric) -
-          get_partition_function(n_items, alpha_proposal, cardinalities, logz_estimate, metric)
+        get_partition_function(n_items, alpha_old, logz_list, metric) -
+          get_partition_function(n_items, alpha_proposal, logz_list, metric)
     ) + std::log(alpha_proposal) - std::log(alpha_old);
 
   // Draw a uniform random number

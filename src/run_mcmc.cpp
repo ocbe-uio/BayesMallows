@@ -28,9 +28,6 @@ Rcpp::List run_mcmc(Rcpp::List data,
   // The number of assessors
   int n_assessors = rankings.n_cols;
 
-  Rcpp::Nullable<vec> cardinalities = logz_list["cardinalities"];
-  Rcpp::Nullable<vec> logz_estimate = logz_list["logz_estimate"];
-
   Rcpp::List constraints = data["constraints"];
   bool augpair = (constraints.length() > 0);
   bool any_missing = !is_finite(rankings);
@@ -150,7 +147,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
         alpha(i, alpha_index) = update_alpha(alpha_old(i),
               clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
               clustering ? observation_frequency(find(current_cluster_assignment == i)) : observation_frequency,
-              rho_old.col(i), alpha_prop_sd, metric, lambda, cardinalities, logz_estimate);
+              rho_old.col(i), alpha_prop_sd, metric, lambda, logz_list);
 
       }
       // Update alpha_old
@@ -162,9 +159,8 @@ Rcpp::List run_mcmc(Rcpp::List data,
     int psi = priors["psi"];
     current_cluster_probs = update_cluster_probs(current_cluster_assignment, n_clusters, psi);
 
-    current_cluster_assignment = update_cluster_labels(dist_mat, current_cluster_probs,
-                                                       alpha_old, n_items, t, metric, cardinalities,
-                                                       logz_estimate, save_ind_clus);
+    current_cluster_assignment = update_cluster_labels(
+      dist_mat, current_cluster_probs, alpha_old, n_items, t, metric, logz_list, save_ind_clus);
 
     if(t % clus_thinning == 0){
       ++cluster_assignment_index;
