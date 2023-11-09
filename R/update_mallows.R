@@ -48,14 +48,13 @@ update_mallows.BayesMallows <- function(
   ret <- smc_mallows_new_users(
     rankings = t(new_rankings),
     new_rankings = t(new_rankings),
+    rho_init = rho_init,
+    alpha_init = alpha_init,
     n_particles = n_particles,
     mcmc_steps = mcmc_steps,
     aug_method = augmentation,
-    logz_estimate = model$logz_list$logz_estimate,
-    cardinalities = model$logz_list$cardinalities,
+    logz_list = model$logz_list,
     metric = model$metric,
-    rho_init = rho_init,
-    alpha_init = alpha_init,
     leap_size = floor(model$n_items / 4)
   )
 
@@ -63,6 +62,7 @@ update_mallows.BayesMallows <- function(
   ret$alpha <- tidy_parameters$alpha
   ret$rho <- tidy_parameters$rho
 
+  ret$augmentation <- augmentation
   ret$n_items <- model$n_items
   ret$burnin <- 0
   ret$n_clusters <- 1
@@ -92,8 +92,8 @@ update_mallows.SMCMallows <- function(model, new_rankings, ...) {
     alpha_init = alpha_init,
     n_particles = model$n_particles,
     mcmc_steps = model$mcmc_steps,
-    logz_estimate = model$logz_list$logz_estimate,
-    cardinalities = model$logz_list$cardinalities,
+    aug_method = model$augmentation,
+    logz_list = model$logz_list,
     metric = model$metric,
     aug_init = aug_init
   )

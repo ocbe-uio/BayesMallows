@@ -93,7 +93,7 @@ run_mcmc <- function(data, model, compute_options, priors, initial_values, logz_
     .Call(`_BayesMallows_run_mcmc`, data, model, compute_options, priors, initial_values, logz_list, verbose)
 }
 
-smc_mallows_new_users <- function(rankings, new_rankings, rho_init, alpha_init, n_particles, mcmc_steps, alpha_prop_sd = 0.5, lambda = 0.1, aug_method = "uniform", logz_estimate = NULL, cardinalities = NULL, metric = "footrule", leap_size = 1L, aug_init = NULL) {
-    .Call(`_BayesMallows_smc_mallows_new_users`, rankings, new_rankings, rho_init, alpha_init, n_particles, mcmc_steps, alpha_prop_sd, lambda, aug_method, logz_estimate, cardinalities, metric, leap_size, aug_init)
+smc_mallows_new_users <- function(rankings, new_rankings, rho_init, alpha_init, n_particles, mcmc_steps, aug_method, logz_list, metric, alpha_prop_sd = 0.5, lambda = 0.1, leap_size = 1L, aug_init = NULL) {
+    .Call(`_BayesMallows_smc_mallows_new_users`, rankings, new_rankings, rho_init, alpha_init, n_particles, mcmc_steps, aug_method, logz_list, metric, alpha_prop_sd, lambda, leap_size, aug_init)
 }
 

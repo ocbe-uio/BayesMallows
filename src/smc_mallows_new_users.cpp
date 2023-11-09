@@ -15,15 +15,17 @@ Rcpp::List  smc_mallows_new_users(
   const arma::vec alpha_init,
   const int n_particles,
   const int mcmc_steps,
+  const std::string aug_method,
+  Rcpp::List logz_list,
+  const std::string& metric,
   const double alpha_prop_sd = 0.5,
   const double lambda = 0.1,
-  const std::string aug_method = "uniform",
-  const Rcpp::Nullable<arma::vec>& logz_estimate = R_NilValue,
-  const Rcpp::Nullable<arma::vec>& cardinalities = R_NilValue,
-  const std::string& metric = "footrule",
   const int& leap_size = 1,
   const Rcpp::Nullable<arma::cube> aug_init = R_NilValue
 ) {
+
+  Rcpp::Nullable<vec> cardinalities = logz_list["cardinalities"];
+  Rcpp::Nullable<vec> logz_estimate = logz_list["logz_estimate"];
 
   int num_new_obs = new_rankings.n_cols;
   int n_users = rankings.n_cols;

@@ -93,12 +93,10 @@ compute_mallows <- function(
     lapplyfun <- lapply
     chain_seq <- 1
   } else {
-    parallel::clusterExport(
-      cl = cl,
+    parallel::clusterExport(cl = cl,
       varlist = c(
         "data", "model", "compute_options", "priors", "initial_values",
-        "logz_list", "verbose"
-      ),
+        "logz_list", "verbose"),
       envir = environment()
     )
     parallel::clusterSetRNGStream(cl)
