@@ -180,9 +180,9 @@ rbind(
   compute_posterior_intervals(model3)
 )
 #>   parameter  mean median conf_level          hpdi central_interval
-#> 1     alpha 1.773  1.773       95 % [1.616,1.928]    [1.617,1.930]
-#> 2     alpha 1.772  1.774       95 % [1.642,1.916]    [1.633,1.912]
-#> 3     alpha 1.788  1.787       95 % [1.673,1.895]    [1.676,1.900]
+#> 1     alpha 1.770  1.767       95 % [1.621,1.943]    [1.612,1.943]
+#> 2     alpha 1.771  1.766       95 % [1.633,1.912]    [1.634,1.914]
+#> 3     alpha 1.784  1.784       95 % [1.670,1.883]    [1.682,1.897]
 ```
 
 We can use all the same functions to look at posterior summaries as we do for models computed using Metropolis-Hastings. Here is a plot of the posterior for the dispersion parameter:
@@ -204,27 +204,27 @@ Next are the CP consensus and the MAP consensus [@vitelli2018]:
 compute_consensus(model3)
 #>    ranking          item cumprob
 #> 1        1    fatty tuna   1.000
-#> 2        2    salmon roe   0.992
+#> 2        2    salmon roe   0.995
 #> 3        3          tuna   1.000
 #> 4        4        shrimp   0.966
-#> 5        5       sea eel   1.000
-#> 6        6     tuna roll   0.602
-#> 7        7         squid   0.990
-#> 8        8    sea urchin   0.999
+#> 5        5       sea eel   0.999
+#> 6        6     tuna roll   0.594
+#> 7        7         squid   0.996
+#> 8        8    sea urchin   1.000
 #> 9        9           egg   1.000
 #> 10      10 cucumber roll   1.000
 compute_consensus(model3, type = "MAP")
 #>    map_ranking          item probability
-#> 1            1    fatty tuna       0.575
-#> 2            2    salmon roe       0.575
-#> 3            3          tuna       0.575
-#> 4            4        shrimp       0.575
-#> 5            5       sea eel       0.575
-#> 6            6     tuna roll       0.575
-#> 7            7         squid       0.575
-#> 8            8    sea urchin       0.575
-#> 9            9           egg       0.575
-#> 10          10 cucumber roll       0.575
+#> 1            1    fatty tuna       0.571
+#> 2            2    salmon roe       0.571
+#> 3            3          tuna       0.571
+#> 4            4        shrimp       0.571
+#> 5            5       sea eel       0.571
+#> 6            6     tuna roll       0.571
+#> 7            7         squid       0.571
+#> 8            8    sea urchin       0.571
+#> 9            9           egg       0.571
+#> 10          10 cucumber roll       0.571
 ```
 
 
