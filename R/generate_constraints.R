@@ -1,26 +1,3 @@
-#' Generate Constraint Set from Pairwise Comparisons
-#'
-#' This function is relevant when [compute_mallows()] is called
-#' repeatedly with the same data, e.g., when determining the
-#' number of clusters. It precomputes a list of constraints used
-#' internally by the MCMC algorithm, which otherwise would be
-#' recomputed each time [compute_mallows()] is called.
-#'
-#' @param preferences Data frame of preferences. For the case of consistent
-#' rankings, `preferences` should be returned from [generate_transitive_closure()].
-#' For the case of inconsistent preferences, when using an error model as described
-#' in \insertCite{crispino2019;textual}{BayesMallows}, a dataframe of preferences
-#' can be directly provided.
-#' @param n_items Integer specifying the number of items.
-#'
-#' @param cl Optional computing cluster used for parallelization, returned
-#' from [parallel::makeCluster()]. Defaults to `NULL`.
-#'
-#' @return A list which is used internally by the MCMC algorithm.
-#' @noRd
-#'
-#' @references \insertAllCited{}
-#'
 generate_constraints <- function(data, cl = NULL) {
   if (is.null(data$preferences)) {
     return(list())
