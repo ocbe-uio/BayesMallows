@@ -73,7 +73,7 @@ We can also get posterior credible intervals for $\alpha$ using `compute_posteri
 ```r
 compute_posterior_intervals(bmm_visual, decimals = 1L)
 #>   parameter mean median conf_level       hpdi central_interval
-#> 1     alpha   10   10.8       95 % [0.0,12.1]       [0.0,12.3]
+#> 1     alpha 10.8   10.8       95 % [9.5,12.3]       [9.4,12.3]
 ```
 
 Next, we can go on to study the posterior distribution of $\boldsymbol{\rho}$. If the \code{items} argument is not provided, and the number of items exceeds five, five items are picked at random for plotting. To show all potatoes, we explicitly set \code{items = 1:20}.
@@ -267,20 +267,20 @@ The posterior distributions of $\alpha$ and $\boldsymbol{\rho}$ can be studied a
 compute_posterior_intervals(bmm_beaches, parameter = "rho")
 #>       item parameter mean median conf_level    hpdi central_interval
 #> 1   Item 1       rho    7      7       95 %     [7]            [6,7]
-#> 2   Item 2       rho   15     15       95 %    [15]          [14,15]
+#> 2   Item 2       rho   15     15       95 %    [15]             [15]
 #> 3   Item 3       rho    3      3       95 %   [3,4]            [3,4]
 #> 4   Item 4       rho   12     12       95 % [11,13]          [11,14]
 #> 5   Item 5       rho    9      9       95 %  [8,10]           [8,10]
 #> 6   Item 6       rho    2      2       95 %   [1,2]            [1,2]
-#> 7   Item 7       rho    9      9       95 %  [8,10]           [8,10]
-#> 8   Item 8       rho   12     11       95 % [11,13]          [11,13]
+#> 7   Item 7       rho    9      8       95 %  [8,10]           [8,10]
+#> 8   Item 8       rho   12     12       95 % [11,13]          [11,13]
 #> 9   Item 9       rho    1      1       95 %   [1,2]            [1,2]
-#> 10 Item 10       rho    6      6       95 %   [6,7]            [6,7]
-#> 11 Item 11       rho    4      4       95 %   [3,5]            [3,5]
+#> 10 Item 10       rho    6      6       95 %   [5,6]            [5,7]
+#> 11 Item 11       rho    4      4       95 %   [3,4]            [3,5]
 #> 12 Item 12       rho   13     13       95 % [12,14]          [12,14]
-#> 13 Item 13       rho   10     10       95 %  [8,10]           [8,10]
-#> 14 Item 14       rho   13     14       95 % [11,14]          [11,14]
-#> 15 Item 15       rho    5      5       95 %   [4,5]            [4,5]
+#> 13 Item 13       rho   10     10       95 %  [9,10]           [8,10]
+#> 14 Item 14       rho   13     13       95 % [11,14]          [11,14]
+#> 15 Item 15       rho    5      5       95 %   [5,6]            [4,6]
 ```
 
 
@@ -290,20 +290,20 @@ We can also rank the beaches according to their cumulative probability (CP) cons
 ```r
 compute_consensus(bmm_beaches, type = "CP")
 #>    ranking    item cumprob
-#> 1        1  Item 9 0.88015
+#> 1        1  Item 9 0.91040
 #> 2        2  Item 6 1.00000
-#> 3        3  Item 3 0.66325
-#> 4        4 Item 11 0.94100
-#> 5        5 Item 15 0.97925
-#> 6        6 Item 10 0.95695
+#> 3        3  Item 3 0.70005
+#> 4        4 Item 11 0.97155
+#> 5        5 Item 15 0.95310
+#> 6        6 Item 10 0.95735
 #> 7        7  Item 1 1.00000
-#> 8        8  Item 7 0.48825
-#> 9        9  Item 5 0.92460
-#> 10      10 Item 13 0.99545
-#> 11      11  Item 8 0.50680
-#> 12      12  Item 4 0.80070
-#> 13      13 Item 12 0.68850
-#> 14      14 Item 14 0.98530
+#> 8        8  Item 7 0.55560
+#> 9        9  Item 5 0.89475
+#> 10      10 Item 13 1.00000
+#> 11      11  Item 4 0.44725
+#> 12      12  Item 8 0.76425
+#> 13      13 Item 14 0.56120
+#> 14      14 Item 12 0.99755
 #> 15      15  Item 2 1.00000
 ```
 
@@ -313,21 +313,21 @@ The column `cumprob` shows the probability of having the given rank or lower. Lo
 ```r
 compute_consensus(bmm_beaches, type = "MAP")
 #>    map_ranking    item probability
-#> 1            1  Item 9     0.05315
-#> 2            2  Item 6     0.05315
-#> 3            3  Item 3     0.05315
-#> 4            4 Item 11     0.05315
-#> 5            5 Item 15     0.05315
-#> 6            6 Item 10     0.05315
-#> 7            7  Item 1     0.05315
-#> 8            8  Item 7     0.05315
-#> 9            9  Item 5     0.05315
-#> 10          10 Item 13     0.05315
-#> 11          11  Item 4     0.05315
-#> 12          12  Item 8     0.05315
-#> 13          13 Item 12     0.05315
-#> 14          14 Item 14     0.05315
-#> 15          15  Item 2     0.05315
+#> 1            1  Item 9     0.03995
+#> 2            2  Item 6     0.03995
+#> 3            3  Item 3     0.03995
+#> 4            4 Item 11     0.03995
+#> 5            5 Item 15     0.03995
+#> 6            6 Item 10     0.03995
+#> 7            7  Item 1     0.03995
+#> 8            8  Item 7     0.03995
+#> 9            9  Item 5     0.03995
+#> 10          10 Item 13     0.03995
+#> 11          11  Item 4     0.03995
+#> 12          12  Item 8     0.03995
+#> 13          13 Item 12     0.03995
+#> 14          14 Item 14     0.03995
+#> 15          15  Item 2     0.03995
 ```
 
 
@@ -348,12 +348,14 @@ The function `predict_top_k` returns a dataframe with all the underlying probabi
 ```r
 subset(predict_top_k(bmm_beaches), prob > .9 & assessor %in% 1:5)
 #>     assessor    item    prob
-#> 121        1 Item 11 0.94890
-#> 661        1  Item 6 0.99275
-#> 663        3  Item 6 0.99445
-#> 843        3  Item 9 1.00000
-#> 844        4  Item 9 1.00000
-#> 665        5  Item 6 0.97740
+#> 121        1 Item 11 0.95160
+#> 661        1  Item 6 0.99625
+#> 842        2  Item 9 0.95085
+#> 123        3 Item 11 1.00000
+#> 843        3  Item 9 0.99190
+#> 604        4  Item 5 1.00000
+#> 844        4  Item 9 0.99400
+#> 665        5  Item 6 1.00000
 ```
 
 Note that assessor 2 does not appear in this table, i.e., there are no beaches for which we are at least 90 \% certain that the beach is among assessor 2's top-3.
@@ -490,6 +492,31 @@ The number underlying the plot can be found using `assign_cluster`.
 We can find clusterwise consensus rankings using `compute_consensus`.
 
 
+```r
+cp_consensus <- compute_consensus(bmm)
+reshape(
+  cp_consensus, 
+  direction = "wide", 
+  idvar = "ranking",
+  timevar = "cluster",
+  varying = list(unique(cp_consensus$cluster)),
+  drop = "cumprob"
+  )
+#>    ranking     Cluster 1     Cluster 2     Cluster 3     Cluster 4     Cluster 5
+#> 1        1    fatty tuna    fatty tuna       sea eel    fatty tuna    fatty tuna
+#> 2        2    salmon roe    sea urchin        shrimp    sea urchin          tuna
+#> 3        3          tuna          tuna         squid    salmon roe        shrimp
+#> 4        4     tuna roll    salmon roe           egg       sea eel       sea eel
+#> 5        5        shrimp        shrimp    salmon roe          tuna     tuna roll
+#> 6        6         squid     tuna roll    fatty tuna        shrimp         squid
+#> 7        7           egg         squid          tuna         squid           egg
+#> 8        8 cucumber roll       sea eel     tuna roll     tuna roll cucumber roll
+#> 9        9       sea eel           egg cucumber roll           egg    salmon roe
+#> 10      10    sea urchin cucumber roll    sea urchin cucumber roll    sea urchin
+```
+
+Note that for estimating cluster specific parameters, label switching is a potential problem that needs to be handled. `BayesMallows` ignores label switching issues inside the MCMC, because it has been shown that this approach is better for ensuring full convergence of the chain [@jasra2005;@celeux2000]. MCMC iterations can be re-ordered after convergence is achieved, for example by using the implementation of Stephens' algorithm [@Stephens2000] provided by the R package `label.switching` [@papastamoulis2016]. A full example of how to assess label switching is provided in the examples for the `compute_mallows` function.
 
 
+# References
 
