@@ -1,60 +1,90 @@
 test_that("compute_mallows is correct for complete data", {
 
-  set.seed(123)
-
-  mod_bmm <- compute_mallows(
-    data = setup_rank_data(potato_visual),
-    compute_options = set_compute_options(nmc = 10000, burnin = 1000)
+  expectations <- data.frame(
+    metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
+    mean = c(10.85, 1.988, 20.11, 29.53, 16.43, 35.03),
+    sd = c(0.77, 0.197, 4.31, 3.10, 1.287, 4.149)
   )
 
-  expect_equal(
-    mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-    10.85, tolerance = .05)
+  for(i in seq_len(nrow(expectations))) {
+    set.seed(123)
+    mod_bmm <- compute_mallows(
+      data = setup_rank_data(potato_visual),
+      model = set_model_options(metric = expectations$metric[[i]]),
+      compute_options = set_compute_options(nmc = 10000, burnin = 1000)
+    )
 
-  expect_equal(
-    sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-    0.77, tolerance = .1)
+    expect_equal(
+      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
+      expectations$mean[[i]], tolerance = .05)
+
+    expect_equal(
+      sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
+      expectations$sd[[i]], tolerance = .1)
+
+  }
 
 })
 
 
 test_that("compute_mallows is correct for pairwise preferences", {
 
-  set.seed(123)
-
-  mod_bmm <- compute_mallows(
-    data = setup_rank_data(preferences = beach_preferences),
-    compute_options = set_compute_options(nmc = 10000, burnin = 1000)
+  expectations <- data.frame(
+    metric = c("footrule", "kendall"),
+    mean = c(4.825, 6.666),
+    sd = c(0.286, 0.418)
   )
 
-  expect_equal(
-    mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-    4.825, tolerance = .05)
+  for(i in seq_len(nrow(expectations))) {
+    set.seed(123)
 
-  expect_equal(
-    sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-    0.286, tolerance = .1)
+    mod_bmm <- compute_mallows(
+      data = setup_rank_data(preferences = beach_preferences),
+      model = set_model_options(metric = expectations$metric[[i]]),
+      compute_options = set_compute_options(
+        nmc = 10000, burnin = 1000, alpha_prop_sd = .1)
+    )
+
+    expect_equal(
+      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
+      expectations$mean[[i]], tolerance = .05)
+
+    expect_equal(
+      sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
+      expectations$sd[[i]], tolerance = .1)
+  }
+
 
 })
 
 
 test_that("compute_mallows is correct for top-k ranks", {
 
-  set.seed(123)
   dat <- potato_visual
   dat[dat > 10] <- NA
 
-  mod_bmm <- compute_mallows(
-    data = setup_rank_data(dat),
-    compute_options = set_compute_options(nmc = 10000, burnin = 1000)
+  expectations <- data.frame(
+    metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
+    mean = c(10.033, 1.686, 33.22, 37.745, 14.51, 30.682),
+    sd = c(0.781, 0.1678, 4.311, 2.581, 1.398, 12.344)
   )
 
-  expect_equal(
-    mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-    10.29, tolerance = .01)
+  for(i in seq_len(nrow(expectations))) {
+    set.seed(123)
+    mod_bmm <- compute_mallows(
+      data = setup_rank_data(dat),
+      model = set_model_options(metric = expectations$metric[[i]]),
+      compute_options = set_compute_options(nmc = 20000, burnin = 10000)
+    )
 
-  expect_equal(
-    sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-    1.506, tolerance = .1)
+    expect_equal(
+      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 10000]),
+      expectations$mean[[i]], tolerance = .05)
+
+    expect_equal(
+      sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 10000]),
+      expectations$sd[[i]], tolerance = .1)
+
+  }
 
 })
