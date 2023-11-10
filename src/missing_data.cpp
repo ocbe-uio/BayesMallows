@@ -118,7 +118,6 @@ Rcpp::List make_pseudo_proposal(
     }
     vec sample_probs = normalize_weights(log_numerator);
     if(forward) {
-
       rankings(span(item_to_rank)) = sample(available_rankings, 1, false, sample_probs);
     }
 
