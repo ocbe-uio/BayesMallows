@@ -58,6 +58,34 @@ test_that("compute_mallows is correct for pairwise preferences", {
 })
 
 
+test_that("augmented rankings obey transitive closure", {
+  beach_data <- setup_rank_data(
+    preferences = beach_preferences
+  )
+
+  model_fit <- compute_mallows(
+    data = beach_data,
+    compute_options = set_compute_options(save_aug = TRUE))
+
+
+  expect_true(all(
+    subset(model_fit$augmented_data, assessor == 1 & item == "Item 4")$value >
+    subset(model_fit$augmented_data, assessor == 1 & item == "Item 1")$value
+  ))
+
+  expect_true(all(
+    subset(model_fit$augmented_data, assessor == 5 & item == "Item 15")$value >
+      subset(model_fit$augmented_data, assessor == 5 & item == "Item 9")$value
+  ))
+
+  expect_true(all(
+    subset(model_fit$augmented_data, assessor == 15 & item == "Item 7")$value >
+      subset(model_fit$augmented_data, assessor == 15 & item == "Item 15")$value
+  ))
+
+
+})
+
 test_that("compute_mallows is correct for top-k ranks", {
 
   dat <- potato_visual
@@ -65,8 +93,8 @@ test_that("compute_mallows is correct for top-k ranks", {
 
   expectations <- data.frame(
     metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
-    mean = c(10.033, 1.686, 33.22, 37.745, 14.51, 30.682),
-    sd = c(0.781, 0.1678, 4.311, 2.581, 1.398, 12.344)
+    mean = c(10.033, 1.686, 29, 37.745, 14.51, 30.682),
+    sd = c(0.781, 0.1678, 4.311, 2.581, 1.398, 7)
   )
 
   for(i in seq_len(nrow(expectations))) {

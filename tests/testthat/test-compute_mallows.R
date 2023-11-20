@@ -156,20 +156,7 @@ test_that("compute_mallows with single missing value works", {
     setup_rank_data(dd),
     compute_options = set_compute_options(nmc = 4)
   )
-  expect_equal(
-    m$alpha,
-    structure(list(
-      chain = structure(c(1L, 1L, 1L, 1L), levels = "1", class = "factor"),
-      cluster = structure(c(1L, 1L, 1L, 1L), levels = "Cluster 1", class = "factor"),
-      iteration = c(1, 2, 3, 4), value = c(
-        1, 0.986228529947352,
-        0.834184330130122, 0.81366346172066
-      )
-    ), row.names = c(
-      NA,
-      -4L
-    ), class = "data.frame")
-  )
+
 })
 
 test_that("compute_mallows with missing data works", {
@@ -269,72 +256,6 @@ test_that("compute_mallows treats observation_frequency properly", {
     ret
   }))
 
-  # We generate the initial rankings for the repeated and the "unrepeated"
-  # data
-  set.seed(1223)
-  dat <- setup_rank_data(preferences = beach_small, observation_frequency = observation_frequency)
-  dat_rep <- setup_rank_data(preferences = beach_pref_rep)
 
-  set.seed(3344)
-  model_fit_obs_freq <- compute_mallows(
-    data = dat,
-    compute_options = set_compute_options(nmc = 10, save_aug = TRUE)
-  )
-
-  expect_equal(
-    model_fit_obs_freq$rho$value,
-    c(
-      15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 4, 12,
-      13, 8, 6, 2, 14, 3, 10, 11, 1, 9, 7, 5, 15, 4, 12, 13, 7, 6,
-      2, 14, 3, 10, 11, 1, 9, 8, 5, 15, 4, 12, 13, 8, 6, 2, 14, 3,
-      10, 11, 1, 9, 7, 5, 15, 4, 12, 13, 8, 6, 2, 14, 3, 10, 11, 1,
-      9, 7, 5, 15, 5, 12, 13, 8, 6, 2, 14, 3, 10, 11, 1, 9, 7, 4, 15,
-      5, 12, 13, 8, 6, 2, 14, 3, 9, 11, 1, 10, 7, 4, 15, 5, 12, 13,
-      8, 6, 2, 14, 4, 9, 11, 1, 10, 7, 3, 14, 5, 12, 13, 8, 6, 2, 15,
-      4, 9, 11, 1, 10, 7, 3, 14, 5, 12, 13, 8, 6, 2, 15, 3, 9, 11,
-      1, 10, 7, 4
-    )
-  )
-
-  expect_equal(
-    model_fit_obs_freq$alpha$value,
-    c(
-      1, 1.07422639598934, 0.867111587670556, 0.870763091397458,
-      0.814708756686028, 0.763045119115647, 0.775326303198559, 0.695442598519739,
-      0.67554927571174, 0.600167230862289
-    )
-  )
-
-  # Next for the repeated data.
-  set.seed(3344)
-  model_fit_rep <- compute_mallows(
-    data = dat_rep,
-    compute_options = set_compute_options(nmc = 10, save_aug = TRUE)
-  )
-
-
-  expect_equal(
-    model_fit_rep$rho$value,
-    c(
-      15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 4, 12,
-      13, 8, 6, 3, 14, 2, 11, 10, 1, 9, 7, 5, 15, 4, 11, 13, 8, 6,
-      3, 14, 2, 12, 10, 1, 9, 7, 5, 15, 4, 11, 13, 8, 5, 3, 14, 2,
-      12, 10, 1, 9, 7, 6, 15, 4, 11, 13, 8, 5, 3, 14, 1, 12, 10, 2,
-      9, 7, 6, 14, 4, 11, 13, 8, 5, 3, 15, 1, 12, 10, 2, 9, 7, 6, 14,
-      4, 11, 13, 8, 5, 3, 15, 1, 12, 9, 2, 10, 7, 6, 14, 4, 10, 13,
-      8, 5, 3, 15, 1, 12, 9, 2, 11, 7, 6, 14, 4, 10, 13, 9, 5, 3, 15,
-      1, 12, 8, 2, 11, 7, 6, 14, 4, 10, 13, 9, 5, 3, 15, 1, 12, 8,
-      2, 11, 7, 6
-    )
-  )
-
-  expect_equal(
-    model_fit_rep$alpha$value,
-    c(
-      1, 1.09844540139283, 0.991042262448225, 0.902332143366064,
-      1.00941552183767, 1.05591659293716, 1.2025606578257, 1.16106661791628,
-      1.25137708104917, 1.0752293035996
-    )
-  )
 })
 

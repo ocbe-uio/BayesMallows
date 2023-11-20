@@ -48,5 +48,5 @@
     Output
           cluster parameter  mean median conf_level          hpdi central_interval
       1 Cluster 1     alpha 0.666  0.666       95 % [0.621,0.711]    [0.624,0.709]
-      2 Cluster 2     alpha 1.227  1.227       95 % [1.164,1.289]    [1.167,1.286]
+      2 Cluster 2     alpha 1.122  1.122       95 % [1.065,1.180]    [1.068,1.177]
 

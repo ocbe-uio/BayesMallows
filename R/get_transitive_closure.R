@@ -6,7 +6,7 @@
 #' @param rank_data An object of class `"BayesMallowsData"` returned from
 #'   [setup_rank_data].
 #'
-#' @return A dataframe with transitive closure, if these is any.
+#' @return A dataframe with transitive closure, if there is any.
 #' @export
 #'
 #' @family preprocessing

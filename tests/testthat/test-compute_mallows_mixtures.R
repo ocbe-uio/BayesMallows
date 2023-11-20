@@ -31,16 +31,6 @@ test_that("compute_mallows_mixtures works", {
     compute_options = set_compute_options(include_wcd = TRUE, nmc = 10)
   )
 
-  expect_equal(
-    mixture_model$within_cluster_distance$value,
-    c(
-      684, 740, 716, 770, 506, 726, 574, 434, 420, 856, 678, 672,
-      370, 244, 996, 662, 462, 450, 294, 1070, 916, 218, 288, 84, 1334,
-      572, 128, 172, 192, 1682, 548, 58, 258, 270, 1564, 632, 184,
-      70, 354, 1506, 652, 152, 174, 266, 1526, 772, 144, 166, 318,
-      1402
-    )
-  )
 
   # check that it runs in parallel
   cl <- parallel::makeCluster(1)

@@ -12,8 +12,7 @@
 #'   columns `assessor`, `top_item`, and `bottom_item`. Each column contains the
 #'   following:
 #' \itemize{
-#' \item `assessor` is a numeric vector containing the assessor index, or a character
-#'       vector containing the (unique) name of the assessor.
+#' \item `assessor` is a numeric vector containing the assessor index.
 #'
 #' \item `bottom_item` is a numeric vector containing the index of the item that
 #'       was disfavored in each pairwise comparison.

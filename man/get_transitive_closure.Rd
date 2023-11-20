@@ -11,7 +11,7 @@ get_transitive_closure(rank_data)
 \link{setup_rank_data}.}
 }
 \value{
-A dataframe with transitive closure, if these is any.
+A dataframe with transitive closure, if there is any.
 }
 \description{
 A simple method for showing any transitive closure computed by

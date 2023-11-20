@@ -3,6 +3,11 @@ generate_transitive_closure <- function(preferences, cl = NULL) {
     return(NULL)
   }
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
+
+  if(!is.numeric(preferences$assessor)) {
+    stop("assessor column in preferences must be numeric")
+  }
+
   prefs <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE], preferences$assessor)
 
   if (is.null(cl)) {
