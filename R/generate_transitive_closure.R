@@ -5,7 +5,6 @@ generate_transitive_closure <- function(preferences, cl = NULL) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
   prefs <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE], preferences$assessor)
 
-  #fun <- function(x, y) cbind(y, .generate_transitive_closure(cbind(x$bottom_item, x$top_item)))
   if (is.null(cl)) {
     lapplyfun <- lapply
   } else {
@@ -14,7 +13,7 @@ generate_transitive_closure <- function(preferences, cl = NULL) {
     }
   }
   prefs <- lapplyfun(seq_along(prefs), function(i) {
-    cbind(assessor = names(prefs)[[i]],
+    cbind(assessor = as.numeric(names(prefs)[[i]]),
           .generate_transitive_closure(as.matrix(prefs[[i]])))
   })
 

@@ -85,7 +85,6 @@ compute_mallows <- function(
   validate_preferences(data, model)
   validate_initial_values(initial_values, data)
 
-  data <- update_data(data, model)
   logz_list <- prepare_partition_function(logz_estimate, model$metric, data$n_items)
   prompt_save_files(compute_options)
 
@@ -132,24 +131,4 @@ compute_mallows <- function(
   class(fit) <- "BayesMallows"
 
   return(fit)
-}
-
-update_data <- function(data, model) {
-  if (any(is.na(data$rankings))) {
-    dn <- dimnames(data$rankings)
-    data$rankings <- lapply(
-      split(data$rankings, f = seq_len(nrow(data$rankings))),
-      function(x) {
-        if (sum(is.na(x)) == 1) x[is.na(x)] <- setdiff(seq_along(x), x)
-        return(x)
-      }
-    )
-    data$rankings <- do.call(rbind, data$rankings)
-    dimnames(data$rankings) <- dn
-  }
-
-  data$constraints <- generate_constraints(data)
-  if (is.null(data$observation_frequency)) data$observation_frequency <- rep(1, nrow(data$rankings))
-
-  data
 }

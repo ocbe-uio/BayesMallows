@@ -170,6 +170,8 @@ setup_rank_data <- function(
     if (nrow(rankings) != length(observation_frequency)) {
       stop("observation_frequency must be of same length as the number of rows in rankings")
     }
+  } else {
+    observation_frequency <- rep(1, nrow(rankings))
   }
 
   # Check that all rows of rankings are proper permutations
@@ -177,6 +179,10 @@ setup_rank_data <- function(
     !all(apply(rankings, 1, validate_permutation))) {
     stop("invalid permutations provided in rankings matrix")
   }
+
+  constraints <- generate_constraints(preferences, n_items, cl)
+
+  #####
 
   ret <- as.list(environment())
   class(ret) <- "BayesMallowsData"

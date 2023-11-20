@@ -1,5 +1,5 @@
-generate_constraints <- function(data, cl = NULL) {
-  if (is.null(data$preferences)) {
+generate_constraints <- function(preferences, n_items, cl = NULL) {
+  if (is.null(preferences)) {
     return(list())
   }
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
@@ -7,13 +7,13 @@ generate_constraints <- function(data, cl = NULL) {
   # Turn the preferences dataframe into a list of dataframes,
   # one list element per assessor
   constraints <- split(
-    data$preferences[, c("bottom_item", "top_item"), drop = FALSE],
-    data$preferences$assessor
+    preferences[, c("bottom_item", "top_item"), drop = FALSE],
+    preferences$assessor
   )
   if (is.null(cl)) {
-    lapply(constraints, constraint_fun, data$n_items)
+    lapply(constraints, constraint_fun, n_items)
   } else {
-    parallel::parLapply(cl = cl, X = constraints, fun = constraint_fun, data$n_items)
+    parallel::parLapply(cl = cl, X = constraints, fun = constraint_fun, n_items)
   }
 }
 
