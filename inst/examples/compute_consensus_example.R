@@ -40,8 +40,7 @@ map_consensus_df <- compute_consensus(model_fit, type = "MAP")
 # We use the example dataset with beach preferences.
 model_fit <- compute_mallows(
   setup_rank_data(preferences = beach_preferences),
-  compute_options = set_compute_options(save_aug = TRUE, aug_thinning = 2),
-  seed = 123L)
+  compute_options = set_compute_options(save_aug = TRUE, aug_thinning = 2))
 # We set burnin = 1000
 model_fit$burnin <- 1000
 # We now compute the CP consensus of augmented ranks for assessors 1 and 3
@@ -57,8 +56,7 @@ map_consensus_df <- compute_consensus(model_fit, type = "MAP",
 # equally likely in this case (and for this seed).
 model_fit <- compute_mallows(
   setup_rank_data(preferences = beach_preferences),
-  compute_options = set_compute_options(nmc = 1005, save_aug = TRUE, aug_thinning = 1),
-  seed = 123L)
+  compute_options = set_compute_options(nmc = 1005, save_aug = TRUE, aug_thinning = 1))
 model_fit$burnin <- 1000
 compute_consensus(model_fit, type = "MAP", parameter = "Rtilde", assessors = 2L)
 
