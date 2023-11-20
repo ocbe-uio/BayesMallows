@@ -93,23 +93,3 @@ vec make_new_rho(vec current_rho, const mat& rankings, double alpha_old, int lea
   }
 
 }
-
-
-void update_rho(cube& rho, mat& rho_old,
-                int& rho_index, const int& cluster_index, const int& rho_thinning,
-                const double& alpha_old, const int& leap_size, const mat& rankings,
-                const std::string& metric, const int& t,
-                const uvec& element_indices, const vec& observation_frequency) {
-  vec rho_cluster = rho_old.col(cluster_index);
-
-
-  rho_old.col(cluster_index) = make_new_rho(rho_cluster, rankings, alpha_old, leap_size, metric,
-              observation_frequency);
-
-  // Save rho if appropriate
-  if(t % rho_thinning == 0){
-    if(cluster_index == 0) ++rho_index;
-    rho.slice(rho_index).col(cluster_index) = rho_old.col(cluster_index);
-  }
-
-}

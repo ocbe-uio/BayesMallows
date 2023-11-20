@@ -36,7 +36,6 @@ Rcpp::List run_mcmc(Rcpp::List data,
   cube augmented_data{};
   bool save_aug = compute_options["save_aug"];
   int aug_thinning = compute_options["aug_thinning"];
-  int rho_thinning = compute_options["rho_thinning"];
   int nmc = compute_options["nmc"];
   int n_clusters = model["n_clusters"];
 
@@ -96,24 +95,13 @@ Rcpp::List run_mcmc(Rcpp::List data,
     if(pars.error_model == "bernoulli") pars.update_shape(t, rankings, constraints);
 
     for(int i = 0; i < n_clusters; ++i){
-      int leap_size = compute_options["leap_size"];
-      update_rho(pars.rho, pars.rho_old, rho_index, i,
-                 rho_thinning, pars.alpha_old(i), leap_size,
-                 clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
-                 metric, t, element_indices, observation_frequency);
+      pars.update_rho(i, t, rho_index, rankings, observation_frequency);
     }
 
     if(t % alpha_jump == 0) {
       ++alpha_index;
       for(int i = 0; i < n_clusters; ++i){
-        double lambda = priors["lambda"];
-        double alpha_prop_sd = compute_options["alpha_prop_sd"];
-
-        pars.alpha(i, alpha_index) = update_alpha(pars.alpha_old(i),
-              clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
-              clustering ? observation_frequency(find(current_cluster_assignment == i)) : observation_frequency,
-              pars.rho_old.col(i), alpha_prop_sd, metric, lambda, logz_list);
-
+        pars.update_alpha(i, alpha_index, rankings, observation_frequency, logz_list);
       }
       // Update alpha_old
       pars.alpha_old = pars.alpha.col(alpha_index);
