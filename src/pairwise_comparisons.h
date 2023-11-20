@@ -1,14 +1,6 @@
 #ifndef PAIRWISE_H
 #define PAIRWISE_H
 
-void update_shape_bernoulli(
-    double& shape_1,
-    double& shape_2,
-    const double& kappa_1,
-    const double& kappa_2,
-    const arma::mat& rankings,
-    const Rcpp::List& constraints
-);
 
 void augment_pairwise(
     arma::mat& rankings,

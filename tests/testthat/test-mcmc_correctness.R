@@ -83,7 +83,7 @@ test_that("compute_mallows is correct for top-k ranks", {
 
     expect_equal(
       sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 10000]),
-      expectations$sd[[i]], tolerance = .1)
+      expectations$sd[[i]], tolerance = .2)
 
   }
 

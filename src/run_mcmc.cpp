@@ -5,6 +5,7 @@
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
 #include "parameterupdates.h"
+#include "parameters.h"
 
 using namespace arma;
 
@@ -20,17 +21,16 @@ Rcpp::List run_mcmc(Rcpp::List data,
                     bool verbose = false
                       ){
 
-  // The number of items ranked
   mat rankings = data["rankings"];
   rankings = rankings.t();
   int n_items = rankings.n_rows;
-
-  // The number of assessors
   int n_assessors = rankings.n_cols;
 
   Rcpp::List constraints = data["constraints"];
   bool augpair = (constraints.length() > 0);
   bool any_missing = !is_finite(rankings);
+
+  parameters pars{model, compute_options, priors, initial_values, n_items};
 
   umat missing_indicator{};
   cube augmented_data{};
@@ -50,18 +50,8 @@ Rcpp::List run_mcmc(Rcpp::List data,
     augmented_data.slice(0) = rankings;
   }
 
-  // Declare the cube to hold the latent ranks
-
-  cube rho(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
-  Rcpp::Nullable<mat> rho_init = initial_values["rho_init"];
-  rho.slice(0) = initialize_rho(n_items, n_clusters, rho_init);
-  mat rho_old = rho(span::all, span::all, span(0));
-
   // Declare the vector to hold the scaling parameter alpha
   int alpha_jump = compute_options["alpha_jump"];
-  mat alpha(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
-  double alpha_init = initial_values["alpha_init"];
-  alpha.col(0).fill(alpha_init);
 
   // Clustering
   bool clustering = n_clusters > 1;
@@ -78,34 +68,15 @@ Rcpp::List run_mcmc(Rcpp::List data,
   mat dist_mat(n_assessors, n_clusters);
   std::string metric = model["metric"];
   vec observation_frequency = data["observation_frequency"];
-  update_dist_mat(dist_mat, rankings, rho_old, metric, observation_frequency);
+  update_dist_mat(dist_mat, rankings, pars.rho_old, metric, observation_frequency);
   bool include_wcd = compute_options["include_wcd"];
 
   mat within_cluster_distance(n_clusters, include_wcd ? nmc : 1);
   within_cluster_distance.col(0) = update_wcd(current_cluster_assignment, dist_mat);
 
 
-  int kappa_1 = priors["kappa_1"];
-  int kappa_2 = priors["kappa_2"];
-
-  // Declare vector with Bernoulli parameter for the case of intransitive preferences
-  vec theta, shape_1, shape_2;
-  std::string error_model = model["error_model"];
-  if(error_model == "bernoulli"){
-    theta = zeros<vec>(nmc);
-    shape_1 = zeros<vec>(nmc);
-    shape_2 = zeros<vec>(nmc);
-    shape_1(0) = kappa_1;
-    shape_2(0) = kappa_2;
-  } else {
-    theta.reset();
-    shape_1.reset();
-    shape_2.reset();
-  }
-
   // Other variables used
   int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
-  vec alpha_old = alpha.col(0);
 
   uvec element_indices = regspace<uvec>(0, rankings.n_rows - 1);
 
@@ -122,18 +93,12 @@ Rcpp::List run_mcmc(Rcpp::List data,
       }
     }
 
-    if(error_model == "bernoulli"){
-      update_shape_bernoulli(shape_1(t), shape_2(t), kappa_1, kappa_2,
-                             rankings, constraints);
-
-      // Update the theta parameter for the error model, which is independent of cluster
-      theta(t) = rtruncbeta(shape_1(t), shape_2(t), 0.5);
-    }
+    if(pars.error_model == "bernoulli") pars.update_shape(t, rankings, constraints);
 
     for(int i = 0; i < n_clusters; ++i){
       int leap_size = compute_options["leap_size"];
-      update_rho(rho, rho_old, rho_index, i,
-                 rho_thinning, alpha_old(i), leap_size,
+      update_rho(pars.rho, pars.rho_old, rho_index, i,
+                 rho_thinning, pars.alpha_old(i), leap_size,
                  clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
                  metric, t, element_indices, observation_frequency);
     }
@@ -144,14 +109,14 @@ Rcpp::List run_mcmc(Rcpp::List data,
         double lambda = priors["lambda"];
         double alpha_prop_sd = compute_options["alpha_prop_sd"];
 
-        alpha(i, alpha_index) = update_alpha(alpha_old(i),
+        pars.alpha(i, alpha_index) = update_alpha(pars.alpha_old(i),
               clustering ? rankings.submat(element_indices, find(current_cluster_assignment == i)) : rankings,
               clustering ? observation_frequency(find(current_cluster_assignment == i)) : observation_frequency,
-              rho_old.col(i), alpha_prop_sd, metric, lambda, logz_list);
+              pars.rho_old.col(i), alpha_prop_sd, metric, lambda, logz_list);
 
       }
       // Update alpha_old
-      alpha_old = alpha.col(alpha_index);
+      pars.alpha_old = pars.alpha.col(alpha_index);
     }
 
   if(clustering){
@@ -160,7 +125,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
     current_cluster_probs = update_cluster_probs(current_cluster_assignment, n_clusters, psi);
 
     current_cluster_assignment = update_cluster_labels(
-      dist_mat, current_cluster_probs, alpha_old, n_items, t, metric, logz_list, save_ind_clus);
+      dist_mat, current_cluster_probs, pars.alpha_old, n_items, t, metric, logz_list, save_ind_clus);
 
     if(t % clus_thinning == 0){
       ++cluster_assignment_index;
@@ -177,14 +142,14 @@ Rcpp::List run_mcmc(Rcpp::List data,
   // Perform data augmentation of missing ranks, if needed
   if(any_missing){
     update_missing_ranks(rankings, current_cluster_assignment, missing_indicator,
-                         alpha_old, rho_old, metric);
+                         pars.alpha_old, pars.rho_old, metric);
   }
 
   // Perform data augmentation of pairwise comparisons, if needed
   if(augpair){
     int swap_leap = compute_options["swap_leap"];
-    augment_pairwise(rankings, current_cluster_assignment, alpha_old, 0.1, rho_old,
-                     metric, constraints, error_model, swap_leap);
+    augment_pairwise(rankings, current_cluster_assignment, pars.alpha_old, 0.1, pars.rho_old,
+                     metric, constraints, pars.error_model, swap_leap);
   }
 
   // Save augmented data if the user wants this. Uses the same index as rho.
@@ -194,17 +159,17 @@ Rcpp::List run_mcmc(Rcpp::List data,
   }
 
   if(clustering | include_wcd){
-    update_dist_mat(dist_mat, rankings, rho_old, metric, observation_frequency);
+    update_dist_mat(dist_mat, rankings, pars.rho_old, metric, observation_frequency);
     }
   }
 
   // Return everything that might be of interest
   return Rcpp::List::create(
-    Rcpp::Named("rho") = rho,
-    Rcpp::Named("alpha") = alpha,
-    Rcpp::Named("theta") = theta,
-    Rcpp::Named("shape1") = shape_1,
-    Rcpp::Named("shape2") = shape_2,
+    Rcpp::Named("rho") = pars.rho,
+    Rcpp::Named("alpha") = pars.alpha,
+    Rcpp::Named("theta") = pars.theta,
+    Rcpp::Named("shape1") = pars.shape_1,
+    Rcpp::Named("shape2") = pars.shape_2,
     Rcpp::Named("cluster_assignment") = cluster_assignment + 1,
     Rcpp::Named("cluster_probs") = cluster_probs,
     Rcpp::Named("within_cluster_distance") = within_cluster_distance,

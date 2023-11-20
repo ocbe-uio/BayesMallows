@@ -6,39 +6,7 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// Update shape parameters for the Bernoulli error model
-void update_shape_bernoulli(
-    double& shape_1,
-    double& shape_2,
-    const double& kappa_1,
-    const double& kappa_2,
-    const mat& rankings,
-    const Rcpp::List& constraints
-){
-  int n_items = rankings.n_rows;
-  int n_assessors = rankings.n_cols;
-  int sum_1 = 0, sum_2 = 0;
-  for(int i = 0; i < n_assessors; ++i){
-    Rcpp::List assessor_constraints = Rcpp::as<Rcpp::List>(constraints[i]);
-    for(int j = 0; j < n_items; ++j) {
-      uvec items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[j]);
-      uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[j]);
 
-      for(unsigned int k = 0; k < items_above.n_elem; ++k){
-        int g = (as_scalar(rankings.col(i).row(j)) < as_scalar(rankings.col(i).row(items_above(k) - 1)));
-        sum_1 += g;
-        sum_2 += 1 - g;
-      }
-      for(unsigned int k = 0; k < items_below.n_elem; ++k){
-        int g = (as_scalar(rankings.col(i).row(j)) > as_scalar(rankings.col(i).row(items_below(k) - 1)));
-        sum_1 += g;
-        sum_2 += 1 - g;
-      }
-    }
-  }
-  shape_1 = kappa_1 + sum_1;
-  shape_2 = kappa_2 + sum_2;
-}
 
 void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
                           const Rcpp::List& assessor_constraints,

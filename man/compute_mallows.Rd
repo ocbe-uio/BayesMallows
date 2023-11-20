@@ -143,7 +143,7 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
   # rankings of 10 types of sushi
   # We start with computing a 3-cluster solution
   model_fit <- compute_mallows(
-    sushi_rankings,
+    data = setup_rank_data(sushi_rankings),
     model = set_model_options(n_clusters = 3),
     compute_options = set_compute_options(nmc = 10000),
     verbose = TRUE)
@@ -172,7 +172,8 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
   # We use the convenience function compute_mallows_mixtures
   n_clusters <- seq(from = 1, to = 10)
   models <- compute_mallows_mixtures(
-    n_clusters = n_clusters, rankings = sushi_rankings,
+    n_clusters = n_clusters,
+    data = setup_rank_data(rankings = sushi_rankings),
     compute_options = set_compute_options(
       nmc = 6000, alpha_jump = 10, include_wcd = TRUE)
     )
