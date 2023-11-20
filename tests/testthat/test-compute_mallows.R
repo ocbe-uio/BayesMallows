@@ -147,17 +147,6 @@ test_that("compute_mallows error model works", {
   )
 })
 
-test_that("compute_mallows with single missing value works", {
-  dd <- potato_visual
-  dd[1, 1] <- NA
-  dd[2, 3] <- NA
-  set.seed(123)
-  m <- compute_mallows(
-    setup_rank_data(dd),
-    compute_options = set_compute_options(nmc = 4)
-  )
-
-})
 
 test_that("compute_mallows with missing data works", {
   mat <- potato_visual * ifelse(runif(length(potato_visual)) > 0.8, NA_real_, 1)
