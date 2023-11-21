@@ -60,8 +60,7 @@ struct Parameters {
   void update_alpha(
       int cluster_index,
       int alpha_index,
-      const arma::mat& rankings,
-      const arma::vec& observation_frequency,
+      const Data& dat,
       const Rcpp::List& logz_list,
       const Priors& priors);
 
@@ -135,6 +134,7 @@ struct Clustering {
   const bool clustering;
   const unsigned int clus_thinning;
   const bool include_wcd;
+  const bool save_ind_clus;
 
 
 };

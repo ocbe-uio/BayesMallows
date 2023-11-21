@@ -81,7 +81,8 @@ Clustering::Clustering(const Parameters& pars,
                        const unsigned int n_assessors) :
   clustering {pars.n_clusters > 1},
   clus_thinning { Rcpp::as<unsigned int>(compute_options["clus_thinning"]) },
-  include_wcd { Rcpp::as<bool>(compute_options["include_wcd"]) }
+  include_wcd { Rcpp::as<bool>(compute_options["include_wcd"]) },
+  save_ind_clus { Rcpp::as<bool>(compute_options["save_ind_clus"]) }
 {
 
     int n_cluster_assignments = pars.n_clusters > 1 ? std::ceil(static_cast<double>(pars.nmc * 1.0 / clus_thinning)) : 1;
@@ -145,27 +146,26 @@ void Parameters::update_shape(int t, const Data& dat,
 void Parameters::update_alpha(
     int cluster_index,
     int alpha_index,
-    const mat& rankings,
-    const vec& observation_frequency,
+    const Data& dat,
     const Rcpp::List& logz_list,
     const Priors& priors) {
 
-  const unsigned int n_items = rankings.n_rows;
   double alpha_proposal = std::exp(randn<double>() * alpha_prop_sd +
                                    std::log(alpha_old(cluster_index)));
 
-  double rank_dist = rank_dist_sum(rankings, rho_old.col(cluster_index), metric, observation_frequency);
+  double rank_dist = rank_dist_sum(dat.rankings, rho_old.col(cluster_index),
+                                   metric, dat.observation_frequency);
 
   // Difference between current and proposed alpha
   double alpha_diff = alpha_old(cluster_index) - alpha_proposal;
 
   // Compute the Metropolis-Hastings ratio
   double ratio =
-    alpha_diff / n_items * rank_dist +
+    alpha_diff / dat.n_items * rank_dist +
     priors.lambda * alpha_diff +
-    sum(observation_frequency) * (
-        get_partition_function(n_items, alpha_old(cluster_index), logz_list, metric) -
-          get_partition_function(n_items, alpha_proposal, logz_list, metric)
+    sum(dat.observation_frequency) * (
+        get_partition_function(dat.n_items, alpha_old(cluster_index), logz_list, metric) -
+          get_partition_function(dat.n_items, alpha_proposal, logz_list, metric)
     ) + std::log(alpha_proposal) - std::log(alpha_old(cluster_index));
 
   // Draw a uniform random number

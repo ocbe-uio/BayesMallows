@@ -53,19 +53,18 @@ Rcpp::List run_mcmc(Rcpp::List data,
     if(t % pars.get_alpha_jump() == 0) {
       ++alpha_index;
       for(int i = 0; i < pars.n_clusters; ++i){
-        pars.update_alpha(i, alpha_index, dat.rankings, dat.observation_frequency, logz_list, pris);
+        pars.update_alpha(i, alpha_index, dat, logz_list, pris);
       }
       // Update alpha_old
       pars.alpha_old = pars.alpha.col(alpha_index);
     }
 
   if(clus.clustering){
-    bool save_ind_clus = compute_options["save_ind_clus"];
     int psi = priors["psi"];
     clus.current_cluster_probs = update_cluster_probs(clus.current_cluster_assignment, pars.n_clusters, psi);
 
     clus.current_cluster_assignment = update_cluster_labels(
-      clus.dist_mat, clus.current_cluster_probs, pars.alpha_old, dat.n_items, t, pars.get_metric(), logz_list, save_ind_clus);
+      clus.dist_mat, clus.current_cluster_probs, pars.alpha_old, dat.n_items, t, pars.get_metric(), logz_list, clus.save_ind_clus);
 
     if(t % clus.clus_thinning == 0){
       ++cluster_assignment_index;
