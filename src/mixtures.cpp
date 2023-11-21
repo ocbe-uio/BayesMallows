@@ -20,7 +20,7 @@ uvec update_cluster_labels(
     const mat& dist_mat,
     const vec& cluster_probs,
     const vec& alpha_old,
-    const int& n_items,
+    const unsigned int& n_items,
     const int& t,
     const std::string& metric,
     const Rcpp::List& logz_list,
