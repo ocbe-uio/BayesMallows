@@ -97,7 +97,7 @@ Clustering::Clustering(const Parameters& pars,
     dist_mat.set_size(n_assessors, pars.n_clusters);
 
     within_cluster_distance.set_size(pars.n_clusters, include_wcd ? pars.nmc : 1);
-    within_cluster_distance.col(0) = update_wcd(current_cluster_assignment, dist_mat);
+    update_wcd(0);
 }
 
 void Parameters::update_rho(int cluster_index, int t, int& rho_index,
@@ -225,4 +225,19 @@ void Clustering::update_cluster_labels(
   }
   current_cluster_assignment = new_cluster_assignment;
 
+}
+
+void Clustering::update_wcd(const int t){
+  if(!include_wcd) return;
+
+  int n_clusters = dist_mat.n_cols;
+  vec wcd(n_clusters);
+
+  uvec inds = regspace<uvec>(0, n_clusters - 1);
+  for(int i = 0; i < n_clusters; ++i){
+    mat dist_vec = dist_mat.submat(find(current_cluster_assignment == i), inds.subvec(i, i));
+    wcd(i) = accu(dist_vec);
+  }
+
+  within_cluster_distance.col(t) = wcd;
 }

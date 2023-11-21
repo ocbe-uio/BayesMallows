@@ -8,9 +8,4 @@ void update_dist_mat(arma::mat& dist_mat, const arma::mat& rankings,
                      const arma::vec& observation_frequency);
 
 
-
-
-arma::vec update_wcd(const arma::uvec& current_cluster_assignment,
-                     const arma::mat& dist_mat);
-
 #endif

@@ -140,6 +140,7 @@ struct Clustering {
                              const Parameters& pars,
                              const Rcpp::List& logz_list);
 
+  void update_wcd(const int t);
 
 
 };

@@ -71,10 +71,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
     }
   }
 
-  if(clus.include_wcd){
-    // Update within_cluster_distance
-    clus.within_cluster_distance.col(t) = update_wcd(clus.current_cluster_assignment, clus.dist_mat);
-  }
+  clus.update_wcd(t);
 
   // Perform data augmentation of missing ranks, if needed
   if(dat.any_missing){
