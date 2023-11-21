@@ -31,10 +31,17 @@ struct Data {
   const bool save_aug;
   const unsigned int aug_thinning;
   const arma::vec observation_frequency;
-  const unsigned int swap_leap;
 
   arma::umat missing_indicator{};
   arma::cube augmented_data{};
+
+};
+
+struct Augmentation {
+  Augmentation(const Rcpp::List& data, const Rcpp::List& compute_options);
+  ~Augmentation() = default;
+
+  const unsigned int swap_leap;
 
 };
 

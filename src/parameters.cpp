@@ -14,8 +14,7 @@ Data::Data(
   any_missing { !is_finite(rankings) },
   save_aug { Rcpp::as<bool>(compute_options["save_aug"]) },
   aug_thinning { Rcpp::as<unsigned int>(compute_options["aug_thinning"]) },
-  observation_frequency { Rcpp::as<vec>(data["observation_frequency"]) },
-  swap_leap { Rcpp::as<unsigned int>(compute_options["swap_leap"]) }
+  observation_frequency { Rcpp::as<vec>(data["observation_frequency"]) }
   {
 
     if(any_missing){
@@ -28,6 +27,14 @@ Data::Data(
       augmented_data.set_size(n_items, n_assessors, std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
       augmented_data.slice(0) = rankings;
     }
+
+  }
+
+Augmentation::Augmentation(
+  const Rcpp::List& data,
+  const Rcpp::List& compute_options
+) :
+  swap_leap { Rcpp::as<unsigned int>(compute_options["swap_leap"]) } {
 
   }
 

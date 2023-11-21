@@ -25,6 +25,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   Priors pris{priors};
   Parameters pars{model, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};
+  Augmentation aug{data, compute_options};
 
   clus.update_dist_mat(dat, pars);
 
@@ -82,7 +83,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   if(dat.augpair){
 
     augment_pairwise(dat.rankings, clus.current_cluster_assignment, pars.alpha_old, 0.1, pars.rho_old,
-                     pars.metric, dat.constraints, pars.get_error_model(), dat.swap_leap);
+                     pars.metric, dat.constraints, pars.get_error_model(), aug.swap_leap);
   }
 
   // Save augmented data if the user wants this. Uses the same index as rho.
