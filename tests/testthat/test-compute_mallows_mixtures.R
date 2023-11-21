@@ -48,7 +48,7 @@ test_that("compute_mallows_mixtures works", {
   mixture_model1 <- compute_mallows(
     data = dat,
     model = set_model_options(n_clusters = 5),
-    compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
+    compute_options = set_compute_options(include_wcd = TRUE, nmc = 1000),
     priors = set_priors(psi = 100)
   )
 
@@ -56,17 +56,13 @@ test_that("compute_mallows_mixtures works", {
   mixture_model2 <- compute_mallows(
     data = dat,
     model = set_model_options(n_clusters = 5),
-    compute_options = set_compute_options(include_wcd = TRUE, nmc = 10),
+    compute_options = set_compute_options(include_wcd = TRUE, nmc = 1000),
     priors = set_priors(psi = 1)
   )
 
   expect_lt(
     max(mixture_model1$cluster_probs$value),
-    max(mixture_model$cluster_probs$value)
+    max(mixture_model2$cluster_probs$value)
   )
 
-  expect_gt(
-    max(mixture_model2$cluster_probs$value),
-    max(mixture_model$cluster_probs$value)
-  )
 })

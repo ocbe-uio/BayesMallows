@@ -27,7 +27,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   Parameters pars{model, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};
 
-  update_dist_mat(clus.dist_mat, dat.rankings, pars.rho_old, pars.get_metric(), dat.observation_frequency);
+  update_dist_mat(clus.dist_mat, dat.rankings, pars.rho_old, pars.metric, dat.observation_frequency);
 
   int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
 
@@ -62,9 +62,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   if(clus.clustering){
 
     clus.update_cluster_probs(pars, pris);
-
-    clus.current_cluster_assignment = update_cluster_labels(
-      clus.dist_mat, clus.current_cluster_probs, pars.alpha_old, dat.n_items, t, pars.get_metric(), logz_list, clus.save_ind_clus);
+    clus.update_cluster_labels(t, dat, pars, logz_list);
 
     if(t % clus.clus_thinning == 0){
       ++cluster_assignment_index;
@@ -81,14 +79,14 @@ Rcpp::List run_mcmc(Rcpp::List data,
   // Perform data augmentation of missing ranks, if needed
   if(dat.any_missing){
     update_missing_ranks(dat.rankings, clus.current_cluster_assignment, dat.missing_indicator,
-                         pars.alpha_old, pars.rho_old, pars.get_metric());
+                         pars.alpha_old, pars.rho_old, pars.metric);
   }
 
   // Perform data augmentation of pairwise comparisons, if needed
   if(dat.augpair){
     int swap_leap = compute_options["swap_leap"];
     augment_pairwise(dat.rankings, clus.current_cluster_assignment, pars.alpha_old, 0.1, pars.rho_old,
-                     pars.get_metric(), dat.constraints, pars.get_error_model(), swap_leap);
+                     pars.metric, dat.constraints, pars.get_error_model(), swap_leap);
   }
 
   // Save augmented data if the user wants this. Uses the same index as rho.
@@ -98,7 +96,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   }
 
   if(clus.clustering | clus.include_wcd){
-    update_dist_mat(clus.dist_mat, dat.rankings, pars.rho_old, pars.get_metric(), dat.observation_frequency);
+    update_dist_mat(clus.dist_mat, dat.rankings, pars.rho_old, pars.metric, dat.observation_frequency);
     }
   }
 

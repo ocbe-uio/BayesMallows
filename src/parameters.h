@@ -8,6 +8,7 @@
 #include "partitionfuns.h"
 #include "missing_data.h"
 #include "mixtures.h"
+#include "sample.h"
 
 template <typename T>
 static T verify_positive(const T input) {
@@ -75,6 +76,7 @@ struct Parameters {
 
   const int n_clusters;
   const int nmc;
+  const std::string metric;
 
   const int get_alpha_jump() {
     return alpha_jump;
@@ -82,9 +84,6 @@ struct Parameters {
 
   const std::string get_error_model() {
     return error_model;
-  }
-  const std::string get_metric() {
-    return metric;
   }
 
 private:
@@ -115,7 +114,6 @@ private:
   const double alpha_prop_sd;
   const std::string error_model;
   const int leap_size;
-  const std::string metric;
   const int rho_thinning;
 
 };
@@ -138,6 +136,9 @@ struct Clustering {
   const bool save_ind_clus;
 
   void update_cluster_probs(const Parameters& pars, const Priors& pris);
+  void update_cluster_labels(const int t, const Data& dat,
+                             const Parameters& pars,
+                             const Rcpp::List& logz_list);
 
 
 

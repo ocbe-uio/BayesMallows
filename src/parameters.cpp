@@ -47,11 +47,11 @@ Parameters::Parameters(
   const unsigned int n_items) :
   n_clusters { Rcpp::as<int>(model["n_clusters"]) },
   nmc { Rcpp::as<int>(compute_options["nmc"]) },
+  metric { verify_metric(Rcpp::as<std::string>(model["metric"])) },
   alpha_jump { Rcpp::as<int>(compute_options["alpha_jump"]) },
   alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
   error_model { verify_error_model(Rcpp::as<std::string>(model["error_model"])) },
   leap_size { Rcpp::as<int>(compute_options["leap_size"]) },
-  metric { verify_metric(Rcpp::as<std::string>(model["metric"])) },
   rho_thinning { Rcpp::as<int>(compute_options["rho_thinning"]) }
   {
 
@@ -191,4 +191,38 @@ void Clustering::update_cluster_probs(const Parameters& pars, const Priors& pris
   // Finally, normalize cluster_probs with 1-norm.
   // result now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
   current_cluster_probs = normalise(cluster_probs, 1);
+}
+
+void Clustering::update_cluster_labels(
+    const int t,
+    const Data& dat,
+    const Parameters& pars,
+    const Rcpp::List& logz_list
+){
+
+  uvec new_cluster_assignment(dat.n_assessors);
+
+  mat assignment_prob(dat.n_assessors, pars.n_clusters);
+  for(int i = 0; i < pars.n_clusters; ++i){
+    // Compute the logarithm of the unnormalized probability
+    assignment_prob.col(i) = std::log(cluster_probs(i)) -
+      pars.alpha_old(i) / dat.n_items * dist_mat.col(i) -
+      get_partition_function(dat.n_items, pars.alpha_old(i), logz_list, pars.metric);
+  }
+
+  for(int i = 0; i < dat.n_assessors; ++i){
+    // Exponentiate to get unnormalized prob relative to max
+    rowvec probs = exp(assignment_prob.row(i) -
+      max(assignment_prob.row(i)));
+
+    // Normalize with 1-norm
+    assignment_prob.row(i) = normalise(probs, 1);
+    new_cluster_assignment(span(i)) = sample(regspace<uvec>(0, probs.n_elem - 1), 1, false, assignment_prob.row(i).t());
+  }
+
+  if(save_ind_clus){
+    assignment_prob.save(std::string("cluster_probs") + std::to_string(t + 1) + std::string(".csv"), csv_ascii);
+  }
+  current_cluster_assignment = new_cluster_assignment;
+
 }

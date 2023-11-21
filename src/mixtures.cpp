@@ -16,44 +16,6 @@ void update_dist_mat(mat& dist_mat, const mat& rankings,
     dist_mat.col(i) = rank_dist_vec(rankings, rho_old.col(i), metric, observation_frequency);
 }
 
-uvec update_cluster_labels(
-    const mat& dist_mat,
-    const vec& cluster_probs,
-    const vec& alpha_old,
-    const unsigned int& n_items,
-    const int& t,
-    const std::string& metric,
-    const Rcpp::List& logz_list,
-    const bool& save_ind_clus = false
-){
-  int n_assessors = dist_mat.n_rows;
-  int n_clusters = dist_mat.n_cols;
-  uvec new_cluster_assignment(n_assessors);
-
-
-  mat assignment_prob(n_assessors, n_clusters);
-  for(int i = 0; i < n_clusters; ++i){
-    // Compute the logarithm of the unnormalized probability
-    assignment_prob.col(i) = std::log(cluster_probs(i)) -
-      alpha_old(i) / n_items * dist_mat.col(i) -
-      get_partition_function(n_items, alpha_old(i), logz_list, metric);
-  }
-
-  for(int i = 0; i < n_assessors; ++i){
-    // Exponentiate to get unnormalized prob relative to max
-    rowvec probs = exp(assignment_prob.row(i) -
-      max(assignment_prob.row(i)));
-
-    // Normalize with 1-norm
-    assignment_prob.row(i) = normalise(probs, 1);
-    new_cluster_assignment(span(i)) = sample(regspace<uvec>(0, probs.n_elem - 1), 1, false, assignment_prob.row(i).t());
-  }
-
-  if(save_ind_clus){
-    assignment_prob.save(std::string("cluster_probs") + std::to_string(t + 1) + std::string(".csv"), csv_ascii);
-  }
-  return(new_cluster_assignment);
-}
 
 
 
