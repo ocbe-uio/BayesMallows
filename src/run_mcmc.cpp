@@ -47,7 +47,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
     pars.update_shape(t, dat, pris);
 
     for(int i = 0; i < pars.n_clusters; ++i){
-      pars.update_rho(i, t, rho_index, dat.rankings, dat.observation_frequency);
+      pars.update_rho(i, t, rho_index, dat);
     }
 
     if(t % pars.get_alpha_jump() == 0) {

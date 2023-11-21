@@ -99,11 +99,10 @@ Clustering::Clustering(const Parameters& pars,
 }
 
 void Parameters::update_rho(int cluster_index, int t, int& rho_index,
-                            const mat& rankings,
-                            const vec& observation_frequency) {
+                            const Data& dat) {
   vec rho_cluster = rho_old.col(cluster_index);
-  rho_old.col(cluster_index) = make_new_rho(rho_cluster, rankings, alpha_old(cluster_index),
-              leap_size, metric, observation_frequency);
+  rho_old.col(cluster_index) = make_new_rho(rho_cluster, dat.rankings, alpha_old(cluster_index),
+              leap_size, metric, dat.observation_frequency);
 
   // Save rho if appropriate
   if(t % rho_thinning == 0){

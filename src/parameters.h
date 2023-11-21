@@ -55,8 +55,7 @@ struct Parameters {
 
   void update_shape(int t, const Data& dat, const Priors& priors);
   void update_rho(int cluster_index, int t, int& rho_index,
-                  const arma::mat& rankings,
-                  const arma::vec& observation_frequency);
+                  const Data& dat);
 
   void update_alpha(
       int cluster_index,
