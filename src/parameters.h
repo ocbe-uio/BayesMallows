@@ -7,6 +7,7 @@
 #include "distances.h"
 #include "partitionfuns.h"
 #include "missing_data.h"
+#include "mixtures.h"
 
 template <typename T>
 static T verify_positive(const T input) {
@@ -29,6 +30,7 @@ struct Data {
   const bool any_missing;
   const bool save_aug;
   const unsigned int aug_thinning;
+  const arma::vec observation_frequency;
 
   arma::umat missing_indicator{};
   arma::cube augmented_data{};
@@ -75,13 +77,12 @@ struct Parameters {
   arma::vec theta;
 
   const int n_clusters;
+  const int nmc;
 
   const int get_alpha_jump() {
     return alpha_jump;
   }
-  const int get_nmc() {
-    return nmc;
-  }
+
   const std::string get_error_model() {
     return error_model;
   }
@@ -118,16 +119,27 @@ private:
   const std::string error_model;
   const int leap_size;
   const std::string metric;
-  const int nmc;
   const int rho_thinning;
 
 };
 
 struct Clustering {
-  Clustering(const Parameters& pars);
+  Clustering(const Parameters& pars, const Rcpp::List& compute_options,
+             const unsigned int n_assessors);
   ~Clustering() = default;
 
-  bool clustering;
+  arma::mat cluster_probs;
+  arma::vec current_cluster_probs;
+  arma::umat cluster_assignment;
+  arma::uvec current_cluster_assignment;
+  arma::mat within_cluster_distance;
+  arma::mat dist_mat;
+
+  const bool clustering;
+  const unsigned int clus_thinning;
+  const bool include_wcd;
+
+
 };
 
 

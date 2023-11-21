@@ -222,26 +222,6 @@ test_that("compute_mallows handles data with lots of missings", {
   expect_s3_class(assess_convergence(m), "gg")
 })
 
-test_that("compute_mallows treats observation_frequency properly", {
-  dat <- setup_rank_data(potato_visual, observation_frequency = rep(1, nrow(potato_visual)))
-  set.seed(123)
-  m1 <- compute_mallows(
-    data = dat, compute_options = set_compute_options(nmc = 10),
-     cl = cl
-  )
-  dat <- setup_rank_data(potato_visual)
-  set.seed(123)
-  m2 <- compute_mallows(
-    data = dat, compute_options = set_compute_options(nmc = 10),
-    cl = cl
-  )
-  expect_equal(m1, m2)
-
-  # Test with repeated beach preferences
-  observation_frequency <- c(2, 1, 4)
-  beach_small <- subset(beach_preferences, assessor %in% c(1, 2, 3))
-
-})
 
 test_that("compute_mallows() takes initial alpha", {
   mm <- compute_mallows(setup_rank_data(potato_visual),

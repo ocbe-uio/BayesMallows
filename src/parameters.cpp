@@ -13,7 +13,8 @@ Data::Data(
   augpair { constraints.length() > 0 },
   any_missing { !is_finite(rankings) },
   save_aug { Rcpp::as<bool>(compute_options["save_aug"]) },
-  aug_thinning { Rcpp::as<unsigned int>(compute_options["aug_thinning"]) }
+  aug_thinning { Rcpp::as<unsigned int>(compute_options["aug_thinning"]) },
+  observation_frequency { Rcpp::as<vec>(data["observation_frequency"]) }
   {
 
     if(any_missing){
@@ -44,12 +45,12 @@ Parameters::Parameters(
   const Rcpp::List& initial_values,
   const unsigned int n_items) :
   n_clusters { Rcpp::as<int>(model["n_clusters"]) },
+  nmc { Rcpp::as<int>(compute_options["nmc"]) },
   alpha_jump { Rcpp::as<int>(compute_options["alpha_jump"]) },
   alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
   error_model { verify_error_model(Rcpp::as<std::string>(model["error_model"])) },
   leap_size { Rcpp::as<int>(compute_options["leap_size"]) },
   metric { verify_metric(Rcpp::as<std::string>(model["metric"])) },
-  nmc { Rcpp::as<int>(compute_options["nmc"]) },
   rho_thinning { Rcpp::as<int>(compute_options["rho_thinning"]) }
   {
 
@@ -75,9 +76,26 @@ Parameters::Parameters(
   }
 
 
-Clustering::Clustering(const Parameters& pars) :
-  clustering {pars.n_clusters > 1} {
+Clustering::Clustering(const Parameters& pars,
+                       const Rcpp::List& compute_options,
+                       const unsigned int n_assessors) :
+  clustering {pars.n_clusters > 1},
+  clus_thinning { Rcpp::as<unsigned int>(compute_options["clus_thinning"]) },
+  include_wcd { Rcpp::as<bool>(compute_options["include_wcd"]) }
+{
 
+    int n_cluster_assignments = pars.n_clusters > 1 ? std::ceil(static_cast<double>(pars.nmc * 1.0 / clus_thinning)) : 1;
+    cluster_probs.set_size(pars.n_clusters, n_cluster_assignments);
+    cluster_probs.col(0).fill(1.0 / pars.n_clusters);
+    current_cluster_probs = cluster_probs.col(0);
+    cluster_assignment.set_size(n_assessors, n_cluster_assignments);
+    cluster_assignment.col(0) = randi<uvec>(n_assessors, distr_param(0, pars.n_clusters - 1));
+    current_cluster_assignment = cluster_assignment.col(0);
+
+    dist_mat.set_size(n_assessors, pars.n_clusters);
+
+    within_cluster_distance.set_size(pars.n_clusters, include_wcd ? pars.nmc : 1);
+    within_cluster_distance.col(0) = update_wcd(current_cluster_assignment, dist_mat);
 }
 
 void Parameters::update_rho(int cluster_index, int t, int& rho_index,
