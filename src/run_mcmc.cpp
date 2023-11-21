@@ -29,11 +29,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
   update_dist_mat(clus.dist_mat, dat.rankings, pars.rho_old, pars.get_metric(), dat.observation_frequency);
 
-
-  // Other variables used
   int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
-
-  uvec element_indices = regspace<uvec>(0, dat.rankings.n_rows - 1);
 
   // This is the Metropolis-Hastings loop
 
