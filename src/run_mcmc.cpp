@@ -80,9 +80,9 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
   // Perform data augmentation of pairwise comparisons, if needed
   if(dat.augpair){
-    int swap_leap = compute_options["swap_leap"];
+
     augment_pairwise(dat.rankings, clus.current_cluster_assignment, pars.alpha_old, 0.1, pars.rho_old,
-                     pars.metric, dat.constraints, pars.get_error_model(), swap_leap);
+                     pars.metric, dat.constraints, pars.get_error_model(), dat.swap_leap);
   }
 
   // Save augmented data if the user wants this. Uses the same index as rho.

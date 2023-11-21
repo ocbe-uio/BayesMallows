@@ -11,7 +11,7 @@ void augment_pairwise(
     const std::string& metric,
     const Rcpp::List& constraints,
     const std::string& error_model,
-    const int& swap_leap
+    const unsigned int& swap_leap
 );
 
 
