@@ -43,12 +43,12 @@ Parameters::Parameters(
   const Rcpp::List& compute_options,
   const Rcpp::List& initial_values,
   const unsigned int n_items) :
+  n_clusters { Rcpp::as<int>(model["n_clusters"]) },
   alpha_jump { Rcpp::as<int>(compute_options["alpha_jump"]) },
   alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
   error_model { verify_error_model(Rcpp::as<std::string>(model["error_model"])) },
   leap_size { Rcpp::as<int>(compute_options["leap_size"]) },
   metric { verify_metric(Rcpp::as<std::string>(model["metric"])) },
-  n_clusters { Rcpp::as<int>(model["n_clusters"]) },
   nmc { Rcpp::as<int>(compute_options["nmc"]) },
   rho_thinning { Rcpp::as<int>(compute_options["rho_thinning"]) }
   {
@@ -73,6 +73,12 @@ Parameters::Parameters(
       shape_2.reset();
     }
   }
+
+
+Clustering::Clustering(const Parameters& pars) :
+  clustering {pars.n_clusters > 1} {
+
+}
 
 void Parameters::update_rho(int cluster_index, int t, int& rho_index,
                             const mat& rankings,

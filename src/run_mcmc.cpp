@@ -25,25 +25,24 @@ Rcpp::List run_mcmc(Rcpp::List data,
   Data dat{data, compute_options};
   Priors pris{priors};
   Parameters pars{model, compute_options, initial_values, dat.n_items};
+  Clustering clus{pars};
 
-  // Clustering
-  bool clustering = pars.get_n_clusters() > 1;
   int clus_thinning = compute_options["clus_thinning"];
-  int n_cluster_assignments = pars.get_n_clusters() > 1 ? std::ceil(static_cast<double>(pars.get_nmc() * 1.0 / clus_thinning)) : 1;
-  mat cluster_probs(pars.get_n_clusters(), n_cluster_assignments);
-  cluster_probs.col(0).fill(1.0 / pars.get_n_clusters());
+  int n_cluster_assignments = pars.n_clusters > 1 ? std::ceil(static_cast<double>(pars.get_nmc() * 1.0 / clus_thinning)) : 1;
+  mat cluster_probs(pars.n_clusters, n_cluster_assignments);
+  cluster_probs.col(0).fill(1.0 / pars.n_clusters);
   vec current_cluster_probs = cluster_probs.col(0);
   umat cluster_assignment(dat.n_assessors, n_cluster_assignments);
-  cluster_assignment.col(0) = randi<uvec>(dat.n_assessors, distr_param(0, pars.get_n_clusters() - 1));
+  cluster_assignment.col(0) = randi<uvec>(dat.n_assessors, distr_param(0, pars.n_clusters - 1));
   uvec current_cluster_assignment = cluster_assignment.col(0);
 
   // Matrix with precomputed distances d(R_j, \rho_j), used to avoid looping during cluster assignment
-  mat dist_mat(dat.n_assessors, pars.get_n_clusters());
+  mat dist_mat(dat.n_assessors, pars.n_clusters);
   vec observation_frequency = data["observation_frequency"];
   update_dist_mat(dist_mat, dat.rankings, pars.rho_old, pars.get_metric(), observation_frequency);
   bool include_wcd = compute_options["include_wcd"];
 
-  mat within_cluster_distance(pars.get_n_clusters(), include_wcd ? pars.get_nmc() : 1);
+  mat within_cluster_distance(pars.n_clusters, include_wcd ? pars.get_nmc() : 1);
   within_cluster_distance.col(0) = update_wcd(current_cluster_assignment, dist_mat);
 
 
@@ -67,23 +66,23 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
     if(pars.get_error_model() == "bernoulli") pars.update_shape(t, dat.rankings, dat.constraints, pris);
 
-    for(int i = 0; i < pars.get_n_clusters(); ++i){
+    for(int i = 0; i < pars.n_clusters; ++i){
       pars.update_rho(i, t, rho_index, dat.rankings, observation_frequency);
     }
 
     if(t % pars.get_alpha_jump() == 0) {
       ++alpha_index;
-      for(int i = 0; i < pars.get_n_clusters(); ++i){
+      for(int i = 0; i < pars.n_clusters; ++i){
         pars.update_alpha(i, alpha_index, dat.rankings, observation_frequency, logz_list, pris);
       }
       // Update alpha_old
       pars.alpha_old = pars.alpha.col(alpha_index);
     }
 
-  if(clustering){
+  if(clus.clustering){
     bool save_ind_clus = compute_options["save_ind_clus"];
     int psi = priors["psi"];
-    current_cluster_probs = update_cluster_probs(current_cluster_assignment, pars.get_n_clusters(), psi);
+    current_cluster_probs = update_cluster_probs(current_cluster_assignment, pars.n_clusters, psi);
 
     current_cluster_assignment = update_cluster_labels(
       dist_mat, current_cluster_probs, pars.alpha_old, dat.n_items, t, pars.get_metric(), logz_list, save_ind_clus);
@@ -119,7 +118,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
     dat.augmented_data.slice(aug_index) = dat.rankings;
   }
 
-  if(clustering | include_wcd){
+  if(clus.clustering | include_wcd){
     update_dist_mat(dist_mat, dat.rankings, pars.rho_old, pars.get_metric(), observation_frequency);
     }
   }

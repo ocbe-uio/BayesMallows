@@ -16,6 +16,7 @@ static T verify_positive(const T input) {
   return input;
 }
 
+
 struct Data {
   Data(const Rcpp::List& data, const Rcpp::List& compute_options);
   ~Data() = default;
@@ -73,14 +74,13 @@ struct Parameters {
   arma::vec shape_2;
   arma::vec theta;
 
+  const int n_clusters;
+
   const int get_alpha_jump() {
     return alpha_jump;
   }
   const int get_nmc() {
     return nmc;
-  }
-  const int get_n_clusters() {
-    return n_clusters;
   }
   const std::string get_error_model() {
     return error_model;
@@ -118,10 +118,16 @@ private:
   const std::string error_model;
   const int leap_size;
   const std::string metric;
-  const int n_clusters;
   const int nmc;
   const int rho_thinning;
 
+};
+
+struct Clustering {
+  Clustering(const Parameters& pars);
+  ~Clustering() = default;
+
+  bool clustering;
 };
 
 
