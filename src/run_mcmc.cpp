@@ -30,7 +30,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   bool augpair = (constraints.length() > 0);
   bool any_missing = !is_finite(rankings);
 
-  parameters pars{model, compute_options, priors, initial_values, n_items};
+  Parameters pars{model, compute_options, priors, initial_values, n_items};
 
   umat missing_indicator{};
   cube augmented_data{};

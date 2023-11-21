@@ -7,13 +7,13 @@
 #include "distances.h"
 #include "partitionfuns.h"
 
-struct parameters {
-  parameters(const Rcpp::List& model,
+struct Parameters {
+  Parameters(const Rcpp::List& model,
              const Rcpp::List& compute_options,
              const Rcpp::List& priors,
              const Rcpp::List& initial_values,
              const int n_items);
-  ~parameters() = default;
+  ~Parameters() = default;
 
   void update_shape(int t, const arma::mat& rankings,
                     const Rcpp::List& constraints);

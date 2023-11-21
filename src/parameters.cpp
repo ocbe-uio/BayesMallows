@@ -2,7 +2,7 @@
 
 using namespace arma;
 
-parameters::parameters(
+Parameters::Parameters(
   const Rcpp::List& model,
   const Rcpp::List& compute_options,
   const Rcpp::List& priors,
@@ -46,7 +46,7 @@ parameters::parameters(
     }
   }
 
-void parameters::update_rho(int cluster_index, int t, int& rho_index,
+void Parameters::update_rho(int cluster_index, int t, int& rho_index,
                             const mat& rankings,
                             const vec& observation_frequency) {
   vec rho_cluster = rho_old.col(cluster_index);
@@ -60,7 +60,7 @@ void parameters::update_rho(int cluster_index, int t, int& rho_index,
   }
 }
 
-void parameters::update_shape(int t, const mat& rankings,
+void Parameters::update_shape(int t, const mat& rankings,
                               const Rcpp::List& constraints) {
 
 
@@ -90,7 +90,7 @@ void parameters::update_shape(int t, const mat& rankings,
   theta(t) = rtruncbeta(shape_1(t), shape_2(t), 0.5);
 }
 
-void parameters::update_alpha(
+void Parameters::update_alpha(
     int cluster_index,
     int alpha_index,
     const mat& rankings,
