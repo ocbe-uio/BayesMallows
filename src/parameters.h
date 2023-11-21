@@ -7,7 +7,6 @@
 #include "distances.h"
 #include "partitionfuns.h"
 #include "missing_data.h"
-#include "mixtures.h"
 #include "sample.h"
 
 template <typename T>
@@ -141,6 +140,7 @@ struct Clustering {
                              const Rcpp::List& logz_list);
 
   void update_wcd(const int t);
+  void update_dist_mat(const Data& dat, const Parameters& pars);
 
 
 };

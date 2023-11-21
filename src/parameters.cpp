@@ -241,3 +241,12 @@ void Clustering::update_wcd(const int t){
 
   within_cluster_distance.col(t) = wcd;
 }
+
+void Clustering::update_dist_mat(const Data& dat, const Parameters& pars){
+
+  if(!clustering & !include_wcd) return;
+
+  for(int i = 0; i < pars.n_clusters; ++i)
+    dist_mat.col(i) = rank_dist_vec(dat.rankings, pars.rho_old.col(i),
+                 pars.metric, dat.observation_frequency);
+}

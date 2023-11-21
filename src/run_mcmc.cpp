@@ -1,6 +1,5 @@
 #include <RcppArmadillo.h>
 #include "misc.h"
-#include "mixtures.h"
 #include "distances.h"
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
@@ -27,7 +26,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   Parameters pars{model, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};
 
-  update_dist_mat(clus.dist_mat, dat.rankings, pars.rho_old, pars.metric, dat.observation_frequency);
+  clus.update_dist_mat(dat, pars);
 
   int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
 
@@ -92,9 +91,8 @@ Rcpp::List run_mcmc(Rcpp::List data,
     dat.augmented_data.slice(aug_index) = dat.rankings;
   }
 
-  if(clus.clustering | clus.include_wcd){
-    update_dist_mat(clus.dist_mat, dat.rankings, pars.rho_old, pars.metric, dat.observation_frequency);
-    }
+  clus.update_dist_mat(dat, pars);
+
   }
 
   // Return everything that might be of interest
