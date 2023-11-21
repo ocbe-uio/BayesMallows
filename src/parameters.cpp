@@ -34,7 +34,8 @@ Priors::Priors(
   const Rcpp::List& priors
 ) : lambda { verify_positive(Rcpp::as<double>(priors["lambda"])) },
   kappa_1 { Rcpp::as<unsigned int>(priors["kappa_1"]) },
-  kappa_2 { Rcpp::as<unsigned int>(priors["kappa_2"]) }
+  kappa_2 { Rcpp::as<unsigned int>(priors["kappa_2"]) },
+  psi { Rcpp::as<unsigned int>(priors["psi"]) }
   {
 
 }

@@ -60,8 +60,8 @@ Rcpp::List run_mcmc(Rcpp::List data,
     }
 
   if(clus.clustering){
-    int psi = priors["psi"];
-    clus.current_cluster_probs = update_cluster_probs(clus.current_cluster_assignment, pars.n_clusters, psi);
+
+    clus.current_cluster_probs = update_cluster_probs(clus.current_cluster_assignment, pars.n_clusters, pris.psi);
 
     clus.current_cluster_assignment = update_cluster_labels(
       clus.dist_mat, clus.current_cluster_probs, pars.alpha_old, dat.n_items, t, pars.get_metric(), logz_list, clus.save_ind_clus);

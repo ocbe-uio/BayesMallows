@@ -58,7 +58,7 @@ uvec update_cluster_labels(
 vec update_cluster_probs(
     const uvec& current_cluster_assignment,
     const int& n_clusters,
-    const int& psi
+    const unsigned int& psi
 ){
   vec cluster_probs(n_clusters);
 

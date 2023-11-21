@@ -44,6 +44,7 @@ struct Priors {
   const double lambda;
   const unsigned int kappa_1;
   const unsigned int kappa_2;
+  const unsigned int psi;
 };
 
 struct Parameters {
