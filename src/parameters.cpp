@@ -7,7 +7,8 @@ Data::Data(
 ) :
   rankings { Rcpp::as<mat>(data["rankings"]).t() },
   n_assessors { rankings.n_cols },
-  n_items { rankings.n_rows }
+  n_items { rankings.n_rows },
+  constraints { Rcpp::as<Rcpp::List>(data["constraints"]) }
   {
 
 }

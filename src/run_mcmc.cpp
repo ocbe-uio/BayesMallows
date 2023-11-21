@@ -24,8 +24,8 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
   Data dat{data};
 
-  Rcpp::List constraints = data["constraints"];
-  bool augpair = (constraints.length() > 0);
+
+  bool augpair = (dat.constraints.length() > 0);
   bool any_missing = !is_finite(dat.rankings);
 
   Priors pris{priors};
@@ -85,7 +85,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
       }
     }
 
-    if(pars.get_error_model() == "bernoulli") pars.update_shape(t, dat.rankings, constraints, pris);
+    if(pars.get_error_model() == "bernoulli") pars.update_shape(t, dat.rankings, dat.constraints, pris);
 
     for(int i = 0; i < pars.get_n_clusters(); ++i){
       pars.update_rho(i, t, rho_index, dat.rankings, observation_frequency);
@@ -130,7 +130,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   if(augpair){
     int swap_leap = compute_options["swap_leap"];
     augment_pairwise(dat.rankings, current_cluster_assignment, pars.alpha_old, 0.1, pars.rho_old,
-                     pars.get_metric(), constraints, pars.get_error_model(), swap_leap);
+                     pars.get_metric(), dat.constraints, pars.get_error_model(), swap_leap);
   }
 
   // Save augmented data if the user wants this. Uses the same index as rho.
