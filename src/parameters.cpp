@@ -178,3 +178,17 @@ void Parameters::update_alpha(
     alpha(cluster_index, alpha_index) = alpha_old(cluster_index);
   }
 }
+
+
+void Clustering::update_cluster_probs(const Parameters& pars, const Priors& pris){
+
+  vec cluster_probs(pars.n_clusters);
+
+  for(int i = 0; i < pars.n_clusters; ++i){
+    // Find the parameter for this cluster and provide it to the gamma distribution
+    cluster_probs(i) = R::rgamma(sum(current_cluster_assignment == i) + pris.psi, 1.0);
+  }
+  // Finally, normalize cluster_probs with 1-norm.
+  // result now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
+  current_cluster_probs = normalise(cluster_probs, 1);
+}

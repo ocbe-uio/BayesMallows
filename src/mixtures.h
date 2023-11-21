@@ -18,11 +18,6 @@ arma::uvec update_cluster_labels(
     const bool& save_ind_clus = false
 );
 
-arma::vec update_cluster_probs(
-    const arma::uvec& current_cluster_assignment,
-    const int& n_clusters,
-    const unsigned int& psi
-);
 
 arma::vec update_wcd(const arma::uvec& current_cluster_assignment,
                      const arma::mat& dist_mat);

@@ -137,6 +137,9 @@ struct Clustering {
   const bool include_wcd;
   const bool save_ind_clus;
 
+  void update_cluster_probs(const Parameters& pars, const Priors& pris);
+
+
 
 };
 

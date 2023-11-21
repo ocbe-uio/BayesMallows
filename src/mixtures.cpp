@@ -55,21 +55,7 @@ uvec update_cluster_labels(
   return(new_cluster_assignment);
 }
 
-vec update_cluster_probs(
-    const uvec& current_cluster_assignment,
-    const int& n_clusters,
-    const unsigned int& psi
-){
-  vec cluster_probs(n_clusters);
 
-  for(int i = 0; i < n_clusters; ++i){
-    // Find the parameter for this cluster and provide it to the gamma distribution
-    cluster_probs(i) = R::rgamma(sum(current_cluster_assignment == i) + psi, 1.0);
-  }
-  // Finally, normalize cluster_probs with 1-norm.
-  // result now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
-  return normalise(cluster_probs, 1);
-}
 
 
 vec update_wcd(const uvec& current_cluster_assignment,
