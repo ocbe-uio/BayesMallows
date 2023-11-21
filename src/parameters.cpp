@@ -112,29 +112,26 @@ void Parameters::update_rho(int cluster_index, int t, int& rho_index,
   }
 }
 
-void Parameters::update_shape(int t, const mat& rankings,
-                              const Rcpp::List& constraints,
+void Parameters::update_shape(int t, const Data& dat,
                               const Priors& priors) {
 
   if(error_model != "bernoulli") return;
 
-  const unsigned int n_items = rankings.n_rows;
-  int n_assessors = rankings.n_cols;
   int sum_1{};
   int sum_2{};
-  for(int i = 0; i < n_assessors; ++i){
-    Rcpp::List assessor_constraints = Rcpp::as<Rcpp::List>(constraints[i]);
-    for(int j = 0; j < n_items; ++j) {
+  for(int i = 0; i < dat.n_assessors; ++i){
+    Rcpp::List assessor_constraints = Rcpp::as<Rcpp::List>(dat.constraints[i]);
+    for(int j = 0; j < dat.n_items; ++j) {
       uvec items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[j]);
       uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[j]);
 
       for(unsigned int k = 0; k < items_above.n_elem; ++k){
-        int g = (as_scalar(rankings.col(i).row(j)) < as_scalar(rankings.col(i).row(items_above(k) - 1)));
+        int g = (as_scalar(dat.rankings.col(i).row(j)) < as_scalar(dat.rankings.col(i).row(items_above(k) - 1)));
         sum_1 += g;
         sum_2 += 1 - g;
       }
       for(unsigned int k = 0; k < items_below.n_elem; ++k){
-        int g = (as_scalar(rankings.col(i).row(j)) > as_scalar(rankings.col(i).row(items_below(k) - 1)));
+        int g = (as_scalar(dat.rankings.col(i).row(j)) > as_scalar(dat.rankings.col(i).row(items_below(k) - 1)));
         sum_1 += g;
         sum_2 += 1 - g;
       }

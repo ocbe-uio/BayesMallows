@@ -53,9 +53,7 @@ struct Parameters {
              const unsigned int n_items);
   ~Parameters() = default;
 
-  void update_shape(int t, const arma::mat& rankings,
-                    const Rcpp::List& constraints,
-                    const Priors& priors);
+  void update_shape(int t, const Data& dat, const Priors& priors);
   void update_rho(int cluster_index, int t, int& rho_index,
                   const arma::mat& rankings,
                   const arma::vec& observation_frequency);
