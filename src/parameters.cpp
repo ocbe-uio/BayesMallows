@@ -116,6 +116,8 @@ void Parameters::update_shape(int t, const mat& rankings,
                               const Rcpp::List& constraints,
                               const Priors& priors) {
 
+  if(error_model != "bernoulli") return;
+
   const unsigned int n_items = rankings.n_rows;
   int n_assessors = rankings.n_cols;
   int sum_1{};

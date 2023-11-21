@@ -44,7 +44,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
       }
     }
 
-    if(pars.get_error_model() == "bernoulli") pars.update_shape(t, dat.rankings, dat.constraints, pris);
+    pars.update_shape(t, dat.rankings, dat.constraints, pris);
 
     for(int i = 0; i < pars.n_clusters; ++i){
       pars.update_rho(i, t, rho_index, dat.rankings, dat.observation_frequency);
