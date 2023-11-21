@@ -8,6 +8,7 @@
 #include "partitionfuns.h"
 #include "missing_data.h"
 #include "sample.h"
+#include "pairwise_comparisons.h"
 
 template <typename T>
 static T verify_positive(const T input) {
@@ -26,24 +27,12 @@ struct Data {
   const Rcpp::List constraints;
   const unsigned int n_assessors;
   const unsigned int n_items;
-  const bool augpair;
-  const bool any_missing;
-  const bool save_aug;
-  const unsigned int aug_thinning;
   const arma::vec observation_frequency;
 
-  arma::umat missing_indicator{};
-  arma::cube augmented_data{};
+
 
 };
 
-struct Augmentation {
-  Augmentation(const Rcpp::List& data, const Rcpp::List& compute_options);
-  ~Augmentation() = default;
-
-  const unsigned int swap_leap;
-
-};
 
 struct Priors {
   Priors(const Rcpp::List& priors);
@@ -53,6 +42,7 @@ struct Priors {
   const unsigned int kappa_1;
   const unsigned int kappa_2;
   const unsigned int psi;
+  const double theta_error{0.1};
 };
 
 struct Parameters {
@@ -84,13 +74,10 @@ struct Parameters {
   const int n_clusters;
   const int nmc;
   const std::string metric;
+  const std::string error_model;
 
   const int get_alpha_jump() {
     return alpha_jump;
-  }
-
-  const std::string get_error_model() {
-    return error_model;
   }
 
 private:
@@ -119,7 +106,6 @@ private:
 
   const int alpha_jump;
   const double alpha_prop_sd;
-  const std::string error_model;
   const int leap_size;
   const int rho_thinning;
 
@@ -153,5 +139,24 @@ struct Clustering {
 
 };
 
+struct Augmentation {
+  Augmentation(Data& dat, const Rcpp::List& compute_options);
+  ~Augmentation() = default;
+
+  const bool augpair;
+  const bool any_missing;
+  const bool save_aug;
+  const unsigned int aug_thinning;
+  const unsigned int swap_leap;
+
+  arma::umat missing_indicator{};
+  arma::cube augmented_data{};
+
+  void augment_pairwise(Data& dat, const Parameters& pars,
+                        const Clustering& clus, const Priors& pris);
+
+};
+
 
 #endif
+

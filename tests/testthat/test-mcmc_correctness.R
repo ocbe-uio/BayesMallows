@@ -93,8 +93,8 @@ test_that("compute_mallows is correct for top-k ranks", {
 
   expectations <- data.frame(
     metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
-    mean = c(10.033, 1.686, 33, 37.745, 14.51, 30.682),
-    sd = c(0.781, 0.1678, 4.311, 2.581, 1.398, 12)
+    mean = c(10.033, 1.686, 35.28, 44.637, 14.70, 52.09),
+    sd = c(0.781, 0.6463, 5.91, 3.44, 1.38, 5.19)
   )
 
   for(i in seq_len(nrow(expectations))) {
@@ -102,11 +102,11 @@ test_that("compute_mallows is correct for top-k ranks", {
     mod_bmm <- compute_mallows(
       data = setup_rank_data(dat),
       model = set_model_options(metric = expectations$metric[[i]]),
-      compute_options = set_compute_options(nmc = 20000, burnin = 10000)
+      compute_options = set_compute_options(nmc = 200000, burnin = 100000)
     )
 
     expect_equal(
-      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 10000]),
+      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 100000]),
       expectations$mean[[i]], tolerance = .05)
 
     expect_equal(

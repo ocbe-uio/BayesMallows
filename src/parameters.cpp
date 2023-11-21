@@ -10,31 +10,31 @@ Data::Data(
   constraints { Rcpp::as<Rcpp::List>(data["constraints"]) },
   n_assessors { rankings.n_cols },
   n_items { rankings.n_rows },
-  augpair { constraints.length() > 0 },
-  any_missing { !is_finite(rankings) },
-  save_aug { Rcpp::as<bool>(compute_options["save_aug"]) },
-  aug_thinning { Rcpp::as<unsigned int>(compute_options["aug_thinning"]) },
   observation_frequency { Rcpp::as<vec>(data["observation_frequency"]) }
   {
-
-    if(any_missing){
-      set_up_missing(rankings, missing_indicator);
-      initialize_missing_ranks(rankings, missing_indicator);
-    }
-
-    if(save_aug){
-      unsigned int nmc = Rcpp::as<unsigned int>(compute_options["nmc"]);
-      augmented_data.set_size(n_items, n_assessors, std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
-      augmented_data.slice(0) = rankings;
-    }
-
   }
 
 Augmentation::Augmentation(
-  const Rcpp::List& data,
+  Data& dat,
   const Rcpp::List& compute_options
 ) :
+  augpair { dat.constraints.length() > 0 },
+  any_missing { !is_finite(dat.rankings) },
+  save_aug { Rcpp::as<bool>(compute_options["save_aug"]) },
+  aug_thinning { Rcpp::as<unsigned int>(compute_options["aug_thinning"]) },
   swap_leap { Rcpp::as<unsigned int>(compute_options["swap_leap"]) } {
+
+  if(any_missing){
+    set_up_missing(dat.rankings, missing_indicator);
+    initialize_missing_ranks(dat.rankings, missing_indicator);
+  }
+
+  if(save_aug){
+    unsigned int nmc = Rcpp::as<unsigned int>(compute_options["nmc"]);
+    augmented_data.set_size(dat.n_items, dat.n_assessors,
+                            std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
+    augmented_data.slice(0) = dat.rankings;
+  }
 
   }
 
@@ -56,9 +56,9 @@ Parameters::Parameters(
   n_clusters { Rcpp::as<int>(model["n_clusters"]) },
   nmc { Rcpp::as<int>(compute_options["nmc"]) },
   metric { verify_metric(Rcpp::as<std::string>(model["metric"])) },
+  error_model { verify_error_model(Rcpp::as<std::string>(model["error_model"])) },
   alpha_jump { Rcpp::as<int>(compute_options["alpha_jump"]) },
   alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
-  error_model { verify_error_model(Rcpp::as<std::string>(model["error_model"])) },
   leap_size { Rcpp::as<int>(compute_options["leap_size"]) },
   rho_thinning { Rcpp::as<int>(compute_options["rho_thinning"]) }
   {
@@ -257,4 +257,48 @@ void Clustering::update_dist_mat(const Data& dat, const Parameters& pars){
   for(int i = 0; i < pars.n_clusters; ++i)
     dist_mat.col(i) = rank_dist_vec(dat.rankings, pars.rho_old.col(i),
                  pars.metric, dat.observation_frequency);
+}
+
+
+void Augmentation::augment_pairwise(
+    Data& dat,
+    const Parameters& pars,
+    const Clustering& clus,
+    const Priors& pris
+){
+
+  if(!augpair) return;
+  for(int i = 0; i < dat.n_assessors; ++i) {
+    vec proposal;
+    // Summed difference over error function before and after proposal
+    int g_diff = 0;
+
+    // Sample a proposal, depending on the error model
+    if(pars.error_model == "none"){
+      proposal = propose_pairwise_augmentation(dat.rankings.col(i), Rcpp::as<Rcpp::List>(dat.constraints[i]));
+    } else if(pars.error_model == "bernoulli"){
+      proposal = propose_swap(dat.rankings.col(i), Rcpp::as<Rcpp::List>(dat.constraints[i]), g_diff, swap_leap);
+    } else {
+      Rcpp::stop("error_model must be 'none' or 'bernoulli'");
+    }
+
+    // Finally, decide whether to accept the proposal or not
+    // Draw a uniform random number
+    double u = std::log(randu<double>());
+
+    // Find which cluster the assessor belongs to
+    int cluster = clus.current_cluster_assignment(i);
+
+    double ratio = -pars.alpha_old(cluster) / dat.n_items *
+      (get_rank_distance(proposal, pars.rho_old.col(cluster), pars.metric) -
+      get_rank_distance(dat.rankings.col(i), pars.rho_old.col(cluster), pars.metric));
+
+    if((pris.theta_error > 0) & (g_diff != 0)) {
+      ratio += g_diff * std::log(pris.theta_error / (1 - pris.theta_error));
+    }
+
+    if(ratio > u){
+      dat.rankings.col(i) = proposal;
+    }
+  }
 }

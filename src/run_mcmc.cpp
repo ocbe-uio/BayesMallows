@@ -25,7 +25,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   Priors pris{priors};
   Parameters pars{model, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};
-  Augmentation aug{data, compute_options};
+  Augmentation aug{dat, compute_options};
 
   clus.update_dist_mat(dat, pars);
 
@@ -74,22 +74,18 @@ Rcpp::List run_mcmc(Rcpp::List data,
   clus.update_wcd(t);
 
   // Perform data augmentation of missing ranks, if needed
-  if(dat.any_missing){
-    update_missing_ranks(dat.rankings, clus.current_cluster_assignment, dat.missing_indicator,
+  if(aug.any_missing){
+    update_missing_ranks(dat.rankings, clus.current_cluster_assignment, aug.missing_indicator,
                          pars.alpha_old, pars.rho_old, pars.metric);
   }
 
   // Perform data augmentation of pairwise comparisons, if needed
-  if(dat.augpair){
-
-    augment_pairwise(dat.rankings, clus.current_cluster_assignment, pars.alpha_old, 0.1, pars.rho_old,
-                     pars.metric, dat.constraints, pars.get_error_model(), aug.swap_leap);
-  }
+  aug.augment_pairwise(dat, pars, clus, pris);
 
   // Save augmented data if the user wants this. Uses the same index as rho.
-  if(dat.save_aug & (t % dat.aug_thinning == 0)){
+  if(aug.save_aug & (t % aug.aug_thinning == 0)){
     ++aug_index;
-    dat.augmented_data.slice(aug_index) = dat.rankings;
+    aug.augmented_data.slice(aug_index) = dat.rankings;
   }
 
   clus.update_dist_mat(dat, pars);
@@ -106,9 +102,9 @@ Rcpp::List run_mcmc(Rcpp::List data,
     Rcpp::Named("cluster_assignment") = clus.cluster_assignment + 1,
     Rcpp::Named("cluster_probs") = clus.cluster_probs,
     Rcpp::Named("within_cluster_distance") = clus.within_cluster_distance,
-    Rcpp::Named("augmented_data") = dat.augmented_data,
-    Rcpp::Named("any_missing") = dat.any_missing,
-    Rcpp::Named("augpair") = dat.augpair,
+    Rcpp::Named("augmented_data") = aug.augmented_data,
+    Rcpp::Named("any_missing") = aug.any_missing,
+    Rcpp::Named("augpair") = aug.augpair,
     Rcpp::Named("n_assessors") = dat.n_assessors,
     Rcpp::Named("observation_frequency") = dat.observation_frequency
   );
