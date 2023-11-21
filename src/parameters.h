@@ -8,8 +8,11 @@
 #include "partitionfuns.h"
 
 struct parameters {
-  parameters(Rcpp::List model, Rcpp::List compute_options,
-             Rcpp::List priors, Rcpp::List initial_values, int n_items);
+  parameters(const Rcpp::List& model,
+             const Rcpp::List& compute_options,
+             const Rcpp::List& priors,
+             const Rcpp::List& initial_values,
+             const int n_items);
   ~parameters() = default;
 
   void update_shape(int t, const arma::mat& rankings,
@@ -34,13 +37,39 @@ struct parameters {
   arma::vec shape_1;
   arma::vec shape_2;
 
+  int get_nmc() {
+    return nmc;
+  }
+  std::string get_metric() {
+    return metric;
+  }
+
 private:
+  static int verify_positive(const int input) {
+    if(input < 0) {
+      Rcpp::stop("Positive value required.\n");
+    }
+    return input;
+  }
+  static std::string verify_metric(const std::string input) {
+    bool check = (input.compare("footrule") == 0) ||
+    (input.compare("spearman") == 0) ||
+    (input.compare("cayley") == 0) ||
+    (input.compare("kendall") == 0) ||
+    (input.compare("ulam") == 0) ||
+    (input.compare("hamming") == 0);
+    if(!check) {
+      Rcpp::stop("Unknown metric.\n");
+    }
+    return input;
+  }
   int kappa_1;
   int kappa_2;
+  const std::string metric;
   const int n_items;
+  const int nmc;
   int leap_size;
   int rho_thinning;
-  std::string metric;
   double lambda;
   double alpha_prop_sd;
 };

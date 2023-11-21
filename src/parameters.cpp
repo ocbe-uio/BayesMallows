@@ -2,10 +2,16 @@
 
 using namespace arma;
 
-parameters::parameters(Rcpp::List model, Rcpp::List compute_options,
-           Rcpp::List priors, Rcpp::List initial_values, int n_items) :
-  n_items { n_items } {
-    int nmc = compute_options["nmc"];
+parameters::parameters(
+  const Rcpp::List& model,
+  const Rcpp::List& compute_options,
+  const Rcpp::List& priors,
+  const Rcpp::List& initial_values,
+  const int n_items) :
+  metric { verify_metric(model["metric"]) },
+  n_items { n_items },
+  nmc { verify_positive(compute_options["nmc"]) }
+  {
     int n_clusters = model["n_clusters"];
     int alpha_jump = compute_options["alpha_jump"];
     alpha.set_size(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
@@ -14,8 +20,6 @@ parameters::parameters(Rcpp::List model, Rcpp::List compute_options,
     alpha_old = alpha.col(0);
     lambda = Rcpp::as<double>(priors["lambda"]);
     alpha_prop_sd = Rcpp::as<double>(compute_options["alpha_prop_sd"]);
-
-    metric = Rcpp::as<std::string>(model["metric"]);
 
     rho_thinning = Rcpp::as<int>(compute_options["rho_thinning"]);
     rho.set_size(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
