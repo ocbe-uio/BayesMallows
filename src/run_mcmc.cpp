@@ -29,15 +29,11 @@ Rcpp::List run_mcmc(Rcpp::List data,
   Priors pris{priors};
   Parameters pars{model, compute_options, initial_values, dat.n_items};
 
-  umat missing_indicator{};
+
   cube augmented_data{};
   bool save_aug = compute_options["save_aug"];
   int aug_thinning = compute_options["aug_thinning"];
 
-  if(dat.any_missing){
-    set_up_missing(dat.rankings, missing_indicator);
-    initialize_missing_ranks(dat.rankings, missing_indicator);
-  }
 
   if(save_aug){
     augmented_data.set_size(dat.n_items, dat.n_assessors, std::ceil(static_cast<double>(pars.get_nmc() * 1.0 / aug_thinning)));
@@ -120,7 +116,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
   // Perform data augmentation of missing ranks, if needed
   if(dat.any_missing){
-    update_missing_ranks(dat.rankings, current_cluster_assignment, missing_indicator,
+    update_missing_ranks(dat.rankings, current_cluster_assignment, dat.missing_indicator,
                          pars.alpha_old, pars.rho_old, pars.get_metric());
   }
 

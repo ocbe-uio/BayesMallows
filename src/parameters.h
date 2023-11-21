@@ -6,6 +6,7 @@
 #include "misc.h"
 #include "distances.h"
 #include "partitionfuns.h"
+#include "missing_data.h"
 
 template <typename T>
 static T verify_positive(const T input) {
@@ -25,6 +26,8 @@ struct Data {
   const unsigned int n_items;
   const bool augpair;
   const bool any_missing;
+
+  arma::umat missing_indicator{};
 
 };
 

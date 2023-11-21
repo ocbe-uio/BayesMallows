@@ -11,7 +11,14 @@ Data::Data(
   n_items { rankings.n_rows },
   augpair { constraints.length() > 0 },
   any_missing { !is_finite(rankings) }
-  {}
+  {
+
+    if(any_missing){
+      set_up_missing(rankings, missing_indicator);
+      initialize_missing_ranks(rankings, missing_indicator);
+    }
+
+  }
 
 Priors::Priors(
   const Rcpp::List& priors
