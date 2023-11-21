@@ -22,23 +22,9 @@ Rcpp::List run_mcmc(Rcpp::List data,
                       ){
 
 
-  Data dat{data};
-
-
-
+  Data dat{data, compute_options};
   Priors pris{priors};
   Parameters pars{model, compute_options, initial_values, dat.n_items};
-
-
-  cube augmented_data{};
-  bool save_aug = compute_options["save_aug"];
-  int aug_thinning = compute_options["aug_thinning"];
-
-
-  if(save_aug){
-    augmented_data.set_size(dat.n_items, dat.n_assessors, std::ceil(static_cast<double>(pars.get_nmc() * 1.0 / aug_thinning)));
-    augmented_data.slice(0) = dat.rankings;
-  }
 
   // Clustering
   bool clustering = pars.get_n_clusters() > 1;
@@ -128,9 +114,9 @@ Rcpp::List run_mcmc(Rcpp::List data,
   }
 
   // Save augmented data if the user wants this. Uses the same index as rho.
-  if(save_aug & (t % aug_thinning == 0)){
+  if(dat.save_aug & (t % dat.aug_thinning == 0)){
     ++aug_index;
-    augmented_data.slice(aug_index) = dat.rankings;
+    dat.augmented_data.slice(aug_index) = dat.rankings;
   }
 
   if(clustering | include_wcd){
@@ -148,7 +134,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
     Rcpp::Named("cluster_assignment") = cluster_assignment + 1,
     Rcpp::Named("cluster_probs") = cluster_probs,
     Rcpp::Named("within_cluster_distance") = within_cluster_distance,
-    Rcpp::Named("augmented_data") = augmented_data,
+    Rcpp::Named("augmented_data") = dat.augmented_data,
     Rcpp::Named("any_missing") = dat.any_missing,
     Rcpp::Named("augpair") = dat.augpair,
     Rcpp::Named("n_assessors") = dat.n_assessors,

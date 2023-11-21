@@ -3,19 +3,28 @@
 using namespace arma;
 
 Data::Data(
-  const Rcpp::List& data
+  const Rcpp::List& data,
+  const Rcpp::List& compute_options
 ) :
   rankings { Rcpp::as<mat>(data["rankings"]).t() },
   constraints { Rcpp::as<Rcpp::List>(data["constraints"]) },
   n_assessors { rankings.n_cols },
   n_items { rankings.n_rows },
   augpair { constraints.length() > 0 },
-  any_missing { !is_finite(rankings) }
+  any_missing { !is_finite(rankings) },
+  save_aug { Rcpp::as<bool>(compute_options["save_aug"]) },
+  aug_thinning { Rcpp::as<unsigned int>(compute_options["aug_thinning"]) }
   {
 
     if(any_missing){
       set_up_missing(rankings, missing_indicator);
       initialize_missing_ranks(rankings, missing_indicator);
+    }
+
+    if(save_aug){
+      unsigned int nmc = Rcpp::as<unsigned int>(compute_options["nmc"]);
+      augmented_data.set_size(n_items, n_assessors, std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
+      augmented_data.slice(0) = rankings;
     }
 
   }

@@ -17,7 +17,7 @@ static T verify_positive(const T input) {
 }
 
 struct Data {
-  Data(const Rcpp::List& data);
+  Data(const Rcpp::List& data, const Rcpp::List& compute_options);
   ~Data() = default;
 
   arma::mat rankings;
@@ -26,8 +26,11 @@ struct Data {
   const unsigned int n_items;
   const bool augpair;
   const bool any_missing;
+  const bool save_aug;
+  const unsigned int aug_thinning;
 
   arma::umat missing_indicator{};
+  arma::cube augmented_data{};
 
 };
 
