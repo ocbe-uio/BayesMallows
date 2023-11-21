@@ -6,12 +6,12 @@ Data::Data(
   const Rcpp::List& data
 ) :
   rankings { Rcpp::as<mat>(data["rankings"]).t() },
+  constraints { Rcpp::as<Rcpp::List>(data["constraints"]) },
   n_assessors { rankings.n_cols },
   n_items { rankings.n_rows },
-  constraints { Rcpp::as<Rcpp::List>(data["constraints"]) }
-  {
-
-}
+  augpair { constraints.length() > 0 },
+  any_missing { !is_finite(rankings) }
+  {}
 
 Priors::Priors(
   const Rcpp::List& priors

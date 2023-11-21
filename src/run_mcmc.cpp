@@ -25,8 +25,6 @@ Rcpp::List run_mcmc(Rcpp::List data,
   Data dat{data};
 
 
-  bool augpair = (dat.constraints.length() > 0);
-  bool any_missing = !is_finite(dat.rankings);
 
   Priors pris{priors};
   Parameters pars{model, compute_options, initial_values, dat.n_items};
@@ -36,7 +34,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   bool save_aug = compute_options["save_aug"];
   int aug_thinning = compute_options["aug_thinning"];
 
-  if(any_missing){
+  if(dat.any_missing){
     set_up_missing(dat.rankings, missing_indicator);
     initialize_missing_ranks(dat.rankings, missing_indicator);
   }
@@ -121,13 +119,13 @@ Rcpp::List run_mcmc(Rcpp::List data,
   }
 
   // Perform data augmentation of missing ranks, if needed
-  if(any_missing){
+  if(dat.any_missing){
     update_missing_ranks(dat.rankings, current_cluster_assignment, missing_indicator,
                          pars.alpha_old, pars.rho_old, pars.get_metric());
   }
 
   // Perform data augmentation of pairwise comparisons, if needed
-  if(augpair){
+  if(dat.augpair){
     int swap_leap = compute_options["swap_leap"];
     augment_pairwise(dat.rankings, current_cluster_assignment, pars.alpha_old, 0.1, pars.rho_old,
                      pars.get_metric(), dat.constraints, pars.get_error_model(), swap_leap);
@@ -155,8 +153,8 @@ Rcpp::List run_mcmc(Rcpp::List data,
     Rcpp::Named("cluster_probs") = cluster_probs,
     Rcpp::Named("within_cluster_distance") = within_cluster_distance,
     Rcpp::Named("augmented_data") = augmented_data,
-    Rcpp::Named("any_missing") = any_missing,
-    Rcpp::Named("augpair") = augpair,
+    Rcpp::Named("any_missing") = dat.any_missing,
+    Rcpp::Named("augpair") = dat.augpair,
     Rcpp::Named("n_assessors") = dat.n_assessors,
     Rcpp::Named("observation_frequency") = observation_frequency
   );

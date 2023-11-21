@@ -23,6 +23,8 @@ struct Data {
   const Rcpp::List constraints;
   const unsigned int n_assessors;
   const unsigned int n_items;
+  const bool augpair;
+  const bool any_missing;
 
 };
 
