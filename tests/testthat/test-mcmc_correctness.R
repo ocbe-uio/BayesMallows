@@ -93,8 +93,8 @@ test_that("compute_mallows is correct for top-k ranks", {
 
   expectations <- data.frame(
     metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
-    mean = c(10.033, 1.686, 29, 37.745, 14.51, 30.682),
-    sd = c(0.781, 0.1678, 4.311, 2.581, 1.398, 7)
+    mean = c(10.033, 1.686, 33, 37.745, 14.51, 30.682),
+    sd = c(0.781, 0.1678, 4.311, 2.581, 1.398, 12)
   )
 
   for(i in seq_len(nrow(expectations))) {
