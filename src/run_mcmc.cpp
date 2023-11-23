@@ -73,16 +73,9 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
   clus.update_wcd(t);
 
-  // Perform data augmentation of missing ranks, if needed
-  if(aug.any_missing){
-    update_missing_ranks(dat.rankings, clus.current_cluster_assignment, aug.missing_indicator,
-                         pars.alpha_old, pars.rho_old, pars.metric);
-  }
-
-  // Perform data augmentation of pairwise comparisons, if needed
+  aug.update_missing_ranks(dat, clus, pars);
   aug.augment_pairwise(dat, pars, clus, pris);
 
-  // Save augmented data if the user wants this. Uses the same index as rho.
   if(aug.save_aug & (t % aug.aug_thinning == 0)){
     ++aug_index;
     aug.augmented_data.slice(aug_index) = dat.rankings;

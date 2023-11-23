@@ -302,3 +302,24 @@ void Augmentation::augment_pairwise(
     }
   }
 }
+
+
+void Augmentation::update_missing_ranks(
+    Data& dat,
+    const Clustering& clus,
+    const Parameters& pars) {
+
+  if(!any_missing) return;
+
+  for(int i = 0; i < dat.n_assessors; ++i){
+
+    int cluster = clus.current_cluster_assignment(i);
+
+    dat.rankings.col(i) = make_new_augmentation(
+      dat.rankings.col(i), missing_indicator.col(i),
+      pars.alpha_old(cluster), pars.rho_old.col(cluster),
+      pars.metric
+    );
+
+  }
+}

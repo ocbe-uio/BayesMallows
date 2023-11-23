@@ -36,25 +36,6 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator) {
   }
 }
 
-void update_missing_ranks(mat& rankings, const uvec& current_cluster_assignment,
-                          const umat& missing_indicator,
-                          const vec& alpha, const mat& rho,
-                          const std::string& metric) {
-
-  int n_assessors = rankings.n_cols;
-
-  for(int i = 0; i < n_assessors; ++i){
-
-    int cluster = current_cluster_assignment(i);
-
-    rankings.col(i) = make_new_augmentation(
-      rankings.col(i), missing_indicator.col(i),
-      alpha(cluster), rho.col(cluster), metric
-    );
-
-  }
-}
-
 vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
                           const double& alpha, const vec& rho,
                           const std::string& metric, bool pseudo) {

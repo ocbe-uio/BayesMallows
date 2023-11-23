@@ -155,6 +155,13 @@ struct Augmentation {
   void augment_pairwise(Data& dat, const Parameters& pars,
                         const Clustering& clus, const Priors& pris);
 
+  void update_missing_ranks(
+      Data& dat,
+      const Clustering& clus,
+      const Parameters& pars
+  );
+
+
 };
 
 
