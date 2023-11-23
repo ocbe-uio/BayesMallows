@@ -31,16 +31,12 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
   int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
 
-  // This is the Metropolis-Hastings loop
-
-  // Starting at t = 1, meaning that alpha and rho must be initialized at index 0,
-  // and this has been done above
   for(size_t t{1}; t < pars.nmc; ++t){
-    // Check if the user has tried to interrupt.
     if (t % 1000 == 0) {
       Rcpp::checkUserInterrupt();
       if(verbose){
-        Rcpp::Rcout << "First " << t << " iterations of Metropolis-Hastings algorithm completed." << std::endl;
+        Rcpp::Rcout << "First " << t <<
+          " iterations of Metropolis-Hastings algorithm completed." << std::endl;
       }
     }
 
@@ -55,12 +51,10 @@ Rcpp::List run_mcmc(Rcpp::List data,
       for(int i = 0; i < pars.n_clusters; ++i){
         pars.update_alpha(i, alpha_index, dat, logz_list, pris);
       }
-      // Update alpha_old
       pars.alpha_old = pars.alpha.col(alpha_index);
     }
 
   if(clus.clustering){
-
     clus.update_cluster_probs(pars, pris);
     clus.update_cluster_labels(t, dat, pars, logz_list);
 
