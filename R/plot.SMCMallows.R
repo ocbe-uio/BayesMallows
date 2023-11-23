@@ -88,7 +88,6 @@ plot_rho_smc <- function(output, nmc, burnin, C, colnames = NULL, items = NULL) 
   # Finally create the plot
   p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
     ggplot2::geom_col() +
-    ggplot2::scale_x_continuous(labels = scalefun) +
     ggplot2::xlab("rank") +
     ggplot2::ylab("Posterior probability")
 

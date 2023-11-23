@@ -1,5 +1,8 @@
 # BayesMallows (development versions)
 
+* Bug in plot.BayesMallows for posterior distribution with 'parameter = "rho"'
+  has been fixed. Thanks to Lorenzo Zuccato for points out the issue. 
+  (https://github.com/ocbe-uio/BayesMallows/issues/342)
 * Argument obs_freq to internal function rmallows() is removed, as it is not 
   being used. Thanks to Lorenzo Zuccato for pointing this our 
   (https://github.com/ocbe-uio/BayesMallows/issues/337).
