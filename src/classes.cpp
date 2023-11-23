@@ -293,7 +293,7 @@ void Augmentation::augment_pairwise(
       (get_rank_distance(proposal, pars.rho_old.col(cluster), pars.metric) -
       get_rank_distance(dat.rankings.col(i), pars.rho_old.col(cluster), pars.metric));
 
-    if((pris.theta_error > 0) & (g_diff != 0)) {
+    if((pris.theta_error > 0) && (g_diff != 0)) {
       ratio += g_diff * std::log(pris.theta_error / (1 - pris.theta_error));
     }
 
