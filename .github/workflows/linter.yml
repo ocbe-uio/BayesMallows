@@ -56,6 +56,7 @@ jobs:
               "inst/examples/sample_mallows_example.R",
               "data-raw/",
               "tests/testthat.R",
+              "tests/",
               "R/RcppExports.R",
               "vignettes/parallel_chains.Rmd",
               "vignettes/SMC-Mallows.Rmd" = 19
