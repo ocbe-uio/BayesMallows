@@ -261,10 +261,10 @@ void Clustering::update_dist_mat(const Data& dat, const Parameters& pars){
 
 
 void Augmentation::augment_pairwise(
+    const unsigned int t,
     Data& dat,
     const Parameters& pars,
-    const Clustering& clus,
-    const Priors& pris
+    const Clustering& clus
 ){
 
   if(!augpair) return;
@@ -293,8 +293,8 @@ void Augmentation::augment_pairwise(
       (get_rank_distance(proposal, pars.rho_old.col(cluster), pars.metric) -
       get_rank_distance(dat.rankings.col(i), pars.rho_old.col(cluster), pars.metric));
 
-    if((pris.theta_error > 0) && (g_diff != 0)) {
-      ratio += g_diff * std::log(pris.theta_error / (1 - pris.theta_error));
+    if(pars.error_model != "none") {
+      ratio += g_diff * std::log(pars.theta(t) / (1 - pars.theta(t)));
     }
 
     if(ratio > u){

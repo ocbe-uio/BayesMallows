@@ -42,7 +42,6 @@ struct Priors {
   const unsigned int kappa_1;
   const unsigned int kappa_2;
   const unsigned int psi;
-  const double theta_error{0.1};
 };
 
 struct Parameters {
@@ -152,8 +151,11 @@ struct Augmentation {
   arma::umat missing_indicator{};
   arma::cube augmented_data{};
 
-  void augment_pairwise(Data& dat, const Parameters& pars,
-                        const Clustering& clus, const Priors& pris);
+  void augment_pairwise(
+      const unsigned int t,
+      Data& dat,
+      const Parameters& pars,
+      const Clustering& clus);
 
   void update_missing_ranks(
       Data& dat,
