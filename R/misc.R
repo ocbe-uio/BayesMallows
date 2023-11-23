@@ -25,10 +25,6 @@ validate_permutation <- function(vec) {
   }
 }
 
-# Function for getting an x axis without decimals.
-# Modified from https://stackoverflow.com/questions/21061653/creating-a-density-histogram-in-ggplot2
-scalefun <- function(x) sprintf("%d", as.integer(x))
-
 #' Prepare partition functions
 #'
 #' Utility function for estimating partition function of the Mallows model.
