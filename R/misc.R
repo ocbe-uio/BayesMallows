@@ -17,11 +17,6 @@ validate_permutation <- function(vec) {
   }
 }
 
-# Function for getting an x axis without decimals.
-# Modified from https://stackoverflow.com/questions/21061653/creating-a-density-histogram-in-ggplot2
-scalefun <- function(x) sprintf("%d", as.integer(x))
-
-
 # function taken from PLMIX package:
 # Copyright Cristina Mollica and Luca Tardella
 unit_to_freq <- function(data) {

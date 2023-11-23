@@ -142,20 +142,12 @@ plot_rho <- function(x, items, burnin = 0) {
   }
 
   df <- x$rho[x$rho$iteration > burnin & x$rho$item %in% items, , drop = FALSE]
-
-  # Compute the density, rather than the count, since the latter
-  # depends on the number of Monte Carlo samples
-  df <- aggregate(
-    list(n = df$iteration),
-    list(cluster = df$cluster, item = df$item, value = df$value),
-    FUN = length
-  )
-  df$pct <- df$n / sum(df$n)
+  df1 <- aggregate(iteration ~ item + cluster + value, data = df, FUN = length)
+  df1$pct <- df1$iteration / length(unique(df$iteration))
 
   # Finally create the plot
-  p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
+  p <- ggplot2::ggplot(df1, ggplot2::aes(x = factor(.data$value), y = .data$pct)) +
     ggplot2::geom_col() +
-    ggplot2::scale_x_continuous(labels = scalefun) +
     ggplot2::xlab("rank") +
     ggplot2::ylab("Posterior probability")
 
