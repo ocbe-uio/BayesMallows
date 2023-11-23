@@ -4,7 +4,7 @@
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
 #include "parameterupdates.h"
-#include "parameters.h"
+#include "classes.h"
 
 using namespace arma;
 
