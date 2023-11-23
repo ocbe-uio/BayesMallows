@@ -59,19 +59,11 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items =
 
     df <- x$rho[x$rho$iteration > burnin & x$rho$item %in% items, , drop = FALSE]
 
-    # Compute the density, rather than the count, since the latter
-    # depends on the number of Monte Carlo samples
-    df <- aggregate(
-      list(n = df$iteration),
-      list(cluster = df$cluster, item = df$item, value = df$value),
-      FUN = length
-    )
-    df$pct <- df$n / sum(df$n)
-
     # Finally create the plot
-    p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value, y = .data$pct)) +
-      ggplot2::geom_col() +
-      ggplot2::scale_x_continuous(labels = scalefun) +
+    p <- ggplot2::ggplot(df, ggplot2::aes(.data$value)) +
+      ggplot2::geom_histogram(
+        bins = x$n_items, ggplot2::aes(y = ggplot2::after_stat(density)),
+        fill = "black", col = "gray") +
       ggplot2::xlab("rank") +
       ggplot2::ylab("Posterior probability")
 
