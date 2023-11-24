@@ -1,5 +1,7 @@
 # BayesMallows (development versions)
 
+* Bug in augmentation with intransitive pairwise preferences has been fixed. 
+  (https://github.com/ocbe-uio/BayesMallows/issues/345)
 * Bug in plot.BayesMallows for posterior distribution with 'parameter = "rho"'
   has been fixed. Thanks to Lorenzo Zuccato for points out the issue. 
   (https://github.com/ocbe-uio/BayesMallows/issues/342)
