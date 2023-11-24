@@ -12,6 +12,8 @@
 #' @param smc_options SMC specific options returned from [set_smc_options()].
 #' @param compute_options An object of class `"BayesMallowsComputeOptions"`
 #'   returned from [set_compute_options()].
+#' @param priors An object of class `"BayesMallowsPriors"` returned from
+#'   [set_priors()]. Defaults to the priors used in `model`.
 #' @param ... Optional arguments. Currently not used.
 #'
 #' @return An updated model, of class "SMCMallows".
@@ -29,7 +31,9 @@ update_mallows <- function(model, new_data, ...) {
 update_mallows.BayesMallows <- function(
     model, new_data,
     smc_options = set_smc_options(),
-    compute_options = set_compute_options(), ...) {
+    compute_options = set_compute_options(),
+    priors = model$priors,
+    ...) {
 
 
   if (smc_options$aug_method == "pseudo" && !model$metric %in% c("footrule", "spearman")) {

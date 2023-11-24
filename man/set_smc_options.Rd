@@ -4,7 +4,7 @@
 \alias{set_smc_options}
 \title{Set SMC compute options}
 \usage{
-set_smc_options(n_particles, aug_method = "pseudo", mcmc_steps = 5)
+set_smc_options(n_particles = 1000, aug_method = "pseudo", mcmc_steps = 5)
 }
 \arguments{
 \item{n_particles}{Integer specifying the number of particles.}
@@ -16,7 +16,7 @@ set_smc_options(n_particles, aug_method = "pseudo", mcmc_steps = 5)
 step.}
 }
 \value{
-An object "SMCOptions".
+An object of class "SMCOptions".
 }
 \description{
 Sets the SMC compute options to be used in \code{\link[=update_mallows.BayesMallows]{update_mallows.BayesMallows()}}.

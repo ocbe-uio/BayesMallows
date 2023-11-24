@@ -8,7 +8,14 @@
 \usage{
 update_mallows(model, new_data, ...)
 
-\method{update_mallows}{BayesMallows}(model, new_data, smc_options, ...)
+\method{update_mallows}{BayesMallows}(
+  model,
+  new_data,
+  smc_options = set_smc_options(),
+  compute_options = set_compute_options(),
+  priors = model$priors,
+  ...
+)
 
 \method{update_mallows}{SMCMallows}(model, new_data, ...)
 }
@@ -19,7 +26,13 @@ update_mallows(model, new_data, ...)
 
 \item{...}{Optional arguments. Currently not used.}
 
-\item{smc_options}{Options returned from \code{\link[=set_smc_options]{set_smc_options()}}.}
+\item{smc_options}{SMC specific options returned from \code{\link[=set_smc_options]{set_smc_options()}}.}
+
+\item{compute_options}{An object of class \code{"BayesMallowsComputeOptions"}
+returned from \code{\link[=set_compute_options]{set_compute_options()}}.}
+
+\item{priors}{An object of class \code{"BayesMallowsPriors"} returned from
+\code{\link[=set_priors]{set_priors()}}. Defaults to the priors used in \code{model}.}
 }
 \value{
 An updated model, of class "SMCMallows".

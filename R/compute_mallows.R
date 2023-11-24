@@ -126,6 +126,7 @@ compute_mallows <- function(
 
   fit <- tidy_mcmc(fits, data, model, compute_options)
   fit$logz_list <- logz_list
+  fit$priors <- priors
 
   # Add class attribute
   class(fit) <- "BayesMallows"
