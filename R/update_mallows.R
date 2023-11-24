@@ -9,6 +9,8 @@
 #'
 #' @param model A model object.
 #' @param new_data Object returned from [setup_rank_data()] containing new data.
+#' @param model_options An object of class `"BayesMallowsModelOptions"` returned
+#'   from [set_model_options()].
 #' @param smc_options SMC specific options returned from [set_smc_options()].
 #' @param compute_options An object of class `"BayesMallowsComputeOptions"`
 #'   returned from [set_compute_options()].
@@ -30,6 +32,7 @@ update_mallows <- function(model, new_data, ...) {
 #' @rdname update_mallows
 update_mallows.BayesMallows <- function(
     model, new_data,
+    model_options = set_model_options(),
     smc_options = set_smc_options(),
     compute_options = set_compute_options(),
     priors = model$priors,
@@ -49,6 +52,7 @@ update_mallows.BayesMallows <- function(
   ret <- run_smc(
     data = new_data,
     new_data = new_data,
+    model_options = model_options,
     smc_options = smc_options,
     compute_options = compute_options,
     priors = priors,
@@ -62,6 +66,7 @@ update_mallows.BayesMallows <- function(
   ret$alpha <- tidy_parameters$alpha
   ret$rho <- tidy_parameters$rho
 
+  ret$model_options <- model_options
   ret$smc_options <- smc_options
   ret$compute_options <- compute_options
   ret$priors <- priors
@@ -89,6 +94,7 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
   ret <- run_smc(
     data = data,
     new_data = new_data,
+    model_options = model$model_options,
     smc_options = model$smc_options,
     compute_options = model$compute_options,
     priors = model$priors,

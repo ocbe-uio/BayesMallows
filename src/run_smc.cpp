@@ -12,6 +12,7 @@ using namespace arma;
 Rcpp::List  run_smc(
   Rcpp::List data,
   Rcpp::List new_data,
+  Rcpp::List model_options,
   Rcpp::List smc_options,
   Rcpp::List compute_options,
   Rcpp::List priors,
@@ -21,53 +22,28 @@ Rcpp::List  run_smc(
 ) {
 
   SMCData dat{data, new_data, Rcpp::List{}};
-  SMCOptions smc_opt{smc_options};
-  SMCParameters pars{compute_options, initial_values};
+  SMCParameters pars{model_options, smc_options, compute_options, initial_values};
   Priors pris{priors};
-
-  vec aug_prob = ones(smc_opt.n_particles);
-  bool any_missing = !is_finite(dat.rankings);
+  SMCAugmentation aug{dat, pars, smc_options, initial_values};
 
   double effective_sample_size;
 
-  cube augmented_data{};
-  umat missing_indicator{};
+  aug.augment_partial(pars, dat);
 
-  if(any_missing){
-    set_up_missing(dat.rankings, missing_indicator);
-    augmented_data.set_size(dat.n_items, dat.n_assessors, smc_opt.n_particles);
-
-    for(int i{}; i < smc_opt.n_particles; i++) {
-      augmented_data.slice(i) = dat.rankings;
-      initialize_missing_ranks(augmented_data.slice(i), missing_indicator);
-    }
-
-    Rcpp::Nullable<arma::cube> aug_init = initial_values["aug_init"];
-    if(aug_init.isNotNull()) {
-      augmented_data(span::all, span(0, dat.rankings.n_cols - dat.new_rankings.n_cols - 1), span::all) = Rcpp::as<cube>(aug_init);
-    }
-  }
-
-  if(any_missing){
-    smc_mallows_new_users_augment_partial(
-      augmented_data, aug_prob, pars.rho_samples, pars.alpha_samples, dat.num_new_obs,
-      smc_opt.aug_method, missing_indicator, metric);
-  }
-
-  vec norm_wgt(smc_opt.n_particles);
+  vec norm_wgt(pars.n_particles);
   smc_mallows_new_users_reweight(
-    effective_sample_size, norm_wgt, augmented_data, dat.new_rankings, pars.rho_samples,
-    pars.alpha_samples, logz_list, dat.num_new_obs, aug_prob,
-    any_missing, metric);
+    effective_sample_size, norm_wgt, aug.augmented_data, dat.new_rankings, pars.rho_samples,
+    pars.alpha_samples, logz_list, dat.num_new_obs, aug.aug_prob,
+    aug.any_missing, pars.metric);
 
   smc_mallows_new_users_resample(
-    pars.rho_samples, pars.alpha_samples, augmented_data, norm_wgt,
-    any_missing);
+    pars.rho_samples, pars.alpha_samples, aug.augmented_data, norm_wgt,
+    aug.any_missing);
 
-  for (int ii = 0; ii < smc_opt.n_particles; ++ii) {
+  for (int ii = 0; ii < pars.n_particles; ++ii) {
 
-    for (int kk = 0; kk < smc_opt.mcmc_steps; ++kk) {
-      if(any_missing) dat.rankings = augmented_data.slice(ii);
+    for (int kk = 0; kk < pars.mcmc_steps; ++kk) {
+      if(aug.any_missing) dat.rankings = aug.augmented_data.slice(ii);
 
       pars.rho_samples.col(ii) =
         make_new_rho(pars.rho_samples.col(ii), dat.rankings,
@@ -77,16 +53,16 @@ Rcpp::List  run_smc(
                     dat.observation_frequency, pars.rho_samples.col(ii), pars.alpha_prop_sd, metric,
                     pris.lambda, logz_list);
 
-      if(any_missing) {
+      if(aug.any_missing) {
         int num_obs = dat.rankings.n_cols;
         for (int jj = num_obs - dat.num_new_obs; jj < num_obs; ++jj) {
 
-          augmented_data(span::all, span(jj), span(ii)) = make_new_augmentation(
-            augmented_data(span::all, span(jj), span(ii)),
-            missing_indicator.col(jj),
+          aug.augmented_data(span::all, span(jj), span(ii)) = make_new_augmentation(
+            aug.augmented_data(span::all, span(jj), span(ii)),
+            aug.missing_indicator.col(jj),
             pars.alpha_samples(ii),
             pars.rho_samples.col(ii),
-            metric, smc_opt.aug_method == "pseudo"
+            metric, aug.aug_method == "pseudo"
           );
         }
       }
@@ -98,7 +74,7 @@ Rcpp::List  run_smc(
   Rcpp::List particle_history = Rcpp::List::create(
     Rcpp::Named("rho_samples") = pars.rho_samples,
     Rcpp::Named("alpha_samples") = pars.alpha_samples,
-    Rcpp::Named("augmented_rankings") = augmented_data,
+    Rcpp::Named("augmented_rankings") = aug.augmented_data,
     Rcpp::Named("ESS") = effective_sample_size
   );
 

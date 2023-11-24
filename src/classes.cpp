@@ -2,6 +2,30 @@
 
 using namespace arma;
 
+
+static std::string verify_metric(const std::string input) {
+  bool check = (input.compare("footrule") == 0) ||
+    (input.compare("spearman") == 0) ||
+    (input.compare("cayley") == 0) ||
+    (input.compare("kendall") == 0) ||
+    (input.compare("ulam") == 0) ||
+    (input.compare("hamming") == 0);
+  if(!check) {
+    Rcpp::stop("Unknown metric.\n");
+  }
+  return input;
+}
+
+static std::string verify_error_model(const std::string input) {
+  bool check = (input.compare("none") == 0) ||
+    (input.compare("bernoulli") == 0);
+  if(!check) {
+    Rcpp::stop("Unknown error model.\n");
+  }
+  return input;
+}
+
+
 Data::Data(
   const Rcpp::List& data,
   const Rcpp::List& compute_options
@@ -23,20 +47,19 @@ SMCData::SMCData(
   num_new_obs { new_rankings.n_cols }
 {}
 
-SMCOptions::SMCOptions(const Rcpp::List& smc_options) :
-  n_particles { Rcpp::as<unsigned int>(smc_options["n_particles"]) },
-  mcmc_steps { Rcpp::as<unsigned int>(smc_options["mcmc_steps"]) },
-  aug_method { Rcpp::as<std::string>(smc_options["aug_method"]) }
-  {}
-
 SMCParameters::SMCParameters(
+  const Rcpp::List& model,
+  const Rcpp::List& smc_options,
   const Rcpp::List& compute_options,
   const Rcpp::List& initial_values
 ) :
+  n_particles { Rcpp::as<unsigned int>(smc_options["n_particles"]) },
+  mcmc_steps { Rcpp::as<unsigned int>(smc_options["mcmc_steps"]) },
   alpha_samples { Rcpp::as<arma::vec>(initial_values["alpha_init"]) },
   rho_samples { Rcpp::as<arma::mat>(initial_values["rho_init"]) },
   alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
-  leap_size { Rcpp::as<unsigned int>(compute_options["leap_size"]) }
+  leap_size { Rcpp::as<unsigned int>(compute_options["leap_size"]) },
+  metric { verify_metric(Rcpp::as<std::string>(model["metric"])) }
 {}
 
 Augmentation::Augmentation(
@@ -60,6 +83,38 @@ Augmentation::Augmentation(
                             std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
     augmented_data.slice(0) = dat.rankings;
   }
+
+  }
+
+SMCAugmentation::SMCAugmentation(
+  SMCData& dat,
+  const SMCParameters& pars,
+  const Rcpp::List& smc_options,
+  const Rcpp::List& initial_values
+) :
+  aug_method { Rcpp::as<std::string>(smc_options["aug_method"]) },
+  aug_prob { arma::ones(pars.n_particles) },
+  any_missing { !is_finite(dat.rankings) },
+  aug_init { Rcpp::as<Rcpp::Nullable<arma::cube>>(initial_values["aug_init"])}
+  {
+
+    if(any_missing){
+      set_up_missing(dat.rankings, missing_indicator);
+      augmented_data.set_size(dat.n_items, dat.n_assessors, pars.n_particles);
+
+      for(int i{}; i < pars.n_particles; i++) {
+        augmented_data.slice(i) = dat.rankings;
+        initialize_missing_ranks(augmented_data.slice(i), missing_indicator);
+      }
+
+      if(aug_init.isNotNull()) {
+        augmented_data(
+          span::all,
+          span(0, dat.rankings.n_cols - dat.new_rankings.n_cols - 1),
+          span::all) = Rcpp::as<cube>(aug_init);
+      }
+    }
+
 
   }
 
@@ -346,5 +401,39 @@ void Augmentation::update_missing_ranks(
       pars.metric
     );
 
+  }
+}
+
+void SMCAugmentation::augment_partial(
+    const SMCParameters& pars,
+    const SMCData& dat
+){
+
+  if(!any_missing) return;
+  for (int ii{}; ii < pars.n_particles; ++ii) {
+    double alpha = pars.alpha_samples(ii);
+    vec rho = pars.rho_samples.col(ii);
+    for (int jj = dat.n_assessors - dat.num_new_obs; jj < dat.n_assessors; ++jj) {
+      uvec unranked_items = shuffle(find(missing_indicator.col(jj) == 1));
+
+      if (aug_method != "pseudo") {
+        augmented_data(span::all, span(jj), span(ii)) =
+          propose_augmentation(augmented_data(span::all, span(jj), span(ii)),
+                               missing_indicator.col(jj));
+
+        aug_prob(ii) = divide_by_fact(aug_prob(ii), unranked_items.n_elem);
+
+      } else {
+        Rcpp::List pprop = make_pseudo_proposal(
+          unranked_items, augmented_data(span::all, span(jj), span(ii)),
+          alpha, rho, pars.metric
+        );
+
+        vec ar = pprop["proposal"];
+        augmented_data(span::all, span(jj), span(ii)) = ar;
+        double prob = pprop["probability"];
+        aug_prob(ii) *= prob;
+      }
+    }
   }
 }

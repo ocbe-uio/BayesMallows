@@ -39,15 +39,6 @@ struct SMCData : Data {
   const unsigned int num_new_obs;
 };
 
-struct SMCOptions {
-  SMCOptions(const Rcpp::List& smc_options);
-  ~SMCOptions() = default;
-
-  const unsigned int n_particles;
-  const unsigned int mcmc_steps;
-  const std::string aug_method;
-};
-
 
 struct Priors {
   Priors(const Rcpp::List& priors);
@@ -96,28 +87,6 @@ struct Parameters {
 
 private:
 
-  static std::string verify_metric(const std::string input) {
-    bool check = (input.compare("footrule") == 0) ||
-    (input.compare("spearman") == 0) ||
-    (input.compare("cayley") == 0) ||
-    (input.compare("kendall") == 0) ||
-    (input.compare("ulam") == 0) ||
-    (input.compare("hamming") == 0);
-    if(!check) {
-      Rcpp::stop("Unknown metric.\n");
-    }
-    return input;
-  }
-
-  static std::string verify_error_model(const std::string input) {
-    bool check = (input.compare("none") == 0) ||
-      (input.compare("bernoulli") == 0);
-    if(!check) {
-      Rcpp::stop("Unknown error model.\n");
-    }
-    return input;
-  }
-
   const int alpha_jump;
   const double alpha_prop_sd;
   const int leap_size;
@@ -126,14 +95,20 @@ private:
 };
 
 struct SMCParameters {
-  SMCParameters(const Rcpp::List& compute_options,
-                const Rcpp::List& initial_values);
+  SMCParameters(
+    const Rcpp::List& model,
+    const Rcpp::List& smc_options,
+    const Rcpp::List& compute_options,
+    const Rcpp::List& initial_values);
   ~SMCParameters() = default;
 
+  const unsigned int n_particles;
+  const unsigned int mcmc_steps;
   arma::vec alpha_samples;
   arma::mat rho_samples;
   const double alpha_prop_sd;
   const unsigned int leap_size;
+  const std::string metric;
 };
 
 struct Clustering {
@@ -188,7 +163,27 @@ struct Augmentation {
       const Clustering& clus,
       const Parameters& pars
   );
+};
 
+struct SMCAugmentation {
+  SMCAugmentation(
+    SMCData& dat,
+    const SMCParameters& pars,
+    const Rcpp::List& smc_options,
+    const Rcpp::List& initial_values);
+  ~SMCAugmentation() = default;
+
+  void augment_partial(
+      const SMCParameters& pars,
+      const SMCData& dat
+  );
+
+  const std::string aug_method;
+  arma::vec aug_prob;
+  bool any_missing;
+  arma::cube augmented_data;
+  arma::umat missing_indicator;
+  Rcpp::Nullable<arma::cube> aug_init;
 
 };
 

@@ -12,46 +12,7 @@ using namespace arma;
 
 
 
-void smc_mallows_new_users_augment_partial(
-    arma::cube& augmented_data,
-    arma::vec& aug_prob,
-    const arma::mat& rho_samples,
-    const arma::vec& alpha_samples,
-    const int& num_new_obs,
-    const std::string& aug_method,
-    const umat& missing_indicator,
-    const std::string& metric = "footrule"
-){
-  int n_particles = rho_samples.n_cols;
-  int num_obs = augmented_data.n_cols;
 
-  for (int ii{}; ii < n_particles; ++ii) {
-    double alpha = alpha_samples(ii);
-    vec rho = rho_samples.col(ii);
-    for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
-      uvec unranked_items = shuffle(find(missing_indicator.col(jj) == 1));
-
-      if (aug_method != "pseudo") {
-        augmented_data(span::all, span(jj), span(ii)) =
-          propose_augmentation(augmented_data(span::all, span(jj), span(ii)),
-                               missing_indicator.col(jj));
-
-        aug_prob(ii) = divide_by_fact(aug_prob(ii), unranked_items.n_elem);
-
-      } else {
-        Rcpp::List pprop = make_pseudo_proposal(
-          unranked_items, augmented_data(span::all, span(jj), span(ii)),
-          alpha, rho, metric
-        );
-
-        vec ar = pprop["proposal"];
-        augmented_data(span::all, span(jj), span(ii)) = ar;
-        double prob = pprop["probability"];
-        aug_prob(ii) *= prob;
-      }
-    }
-  }
-}
 
 void smc_mallows_new_users_resample(
     mat& rho_samples, vec& alpha_samples, cube& augmented_data,
