@@ -21,7 +21,7 @@ Rcpp::List  run_smc(
   const std::string& metric
 ) {
 
-  SMCData dat{data, new_data, Rcpp::List{}};
+  SMCData dat{data, new_data};
   SMCParameters pars{model_options, smc_options, compute_options, initial_values};
   Priors pris{priors};
   SMCAugmentation aug{dat, pars, smc_options, initial_values};

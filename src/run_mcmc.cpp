@@ -21,7 +21,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
                       ){
 
 
-  Data dat{data, compute_options};
+  Data dat{data};
   Priors pris{priors};
   Parameters pars{model, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};

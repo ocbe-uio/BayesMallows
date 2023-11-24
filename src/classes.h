@@ -20,7 +20,7 @@ static T verify_positive(const T input) {
 
 
 struct Data {
-  Data(const Rcpp::List& data, const Rcpp::List& compute_options);
+  Data(const Rcpp::List& data);
   ~Data() = default;
 
   arma::mat rankings;
@@ -145,8 +145,7 @@ struct Augmentation {
 
 
 struct SMCData : Data {
-  SMCData(const Rcpp::List& data, const Rcpp::List& new_data,
-          const Rcpp::List& compute_options);
+  SMCData(const Rcpp::List& data, const Rcpp::List& new_data);
 
   arma::mat new_rankings;
   const unsigned int num_new_obs;
