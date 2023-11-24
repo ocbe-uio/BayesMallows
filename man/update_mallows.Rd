@@ -8,14 +8,7 @@
 \usage{
 update_mallows(model, new_data, ...)
 
-\method{update_mallows}{BayesMallows}(
-  model,
-  new_data,
-  n_particles,
-  augmentation = "pseudo",
-  mcmc_steps = 5,
-  ...
-)
+\method{update_mallows}{BayesMallows}(model, new_data, smc_options, ...)
 
 \method{update_mallows}{SMCMallows}(model, new_data, ...)
 }
@@ -26,12 +19,7 @@ update_mallows(model, new_data, ...)
 
 \item{...}{Optional arguments. Currently not used.}
 
-\item{n_particles}{Integer specifying the number of particles.}
-
-\item{augmentation}{One of "pseudo" and "uniform".}
-
-\item{mcmc_steps}{Number of Metropolis-Hastings steps to apply in sequential
-Monte Carlo.}
+\item{smc_options}{Options returned from \code{\link[=set_smc_options]{set_smc_options()}}.}
 }
 \value{
 An updated model, of class "SMCMallows".

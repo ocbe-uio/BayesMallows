@@ -14,6 +14,21 @@ Data::Data(
   {
   }
 
+SMCData::SMCData(
+  const Rcpp::List& data,
+  const Rcpp::List& new_data,
+  const Rcpp::List& compute_options
+) : Data(data, compute_options),
+  new_rankings { Rcpp::as<mat>(new_data["rankings"]).t() },
+  num_new_obs { new_rankings.n_cols }
+{}
+
+SMCOptions::SMCOptions(const Rcpp::List& smc_options) :
+  n_particles { Rcpp::as<unsigned int>(smc_options["n_particles"]) },
+  mcmc_steps { Rcpp::as<unsigned int>(smc_options["mcmc_steps"]) },
+  aug_method { Rcpp::as<std::string>(smc_options["aug_method"]) }
+  {}
+
 Augmentation::Augmentation(
   Data& dat,
   const Rcpp::List& compute_options

@@ -2,6 +2,7 @@
 #include "missing_data.h"
 #include "smc_mallows_new_users.h"
 #include "parameterupdates.h"
+#include "classes.h"
 
 using namespace arma;
 
@@ -9,13 +10,11 @@ using namespace arma;
 
 // [[Rcpp::export]]
 Rcpp::List  smc_mallows_new_users(
-  arma::mat rankings,
-  arma::mat new_rankings,
+  Rcpp::List data,
+  Rcpp::List new_data,
+  Rcpp::List smc_options,
   const arma::mat rho_init,
   const arma::vec alpha_init,
-  const int n_particles,
-  const int mcmc_steps,
-  const std::string aug_method,
   Rcpp::List logz_list,
   const std::string& metric,
   const double alpha_prop_sd = 0.5,
@@ -24,12 +23,12 @@ Rcpp::List  smc_mallows_new_users(
   const Rcpp::Nullable<arma::cube> aug_init = R_NilValue
 ) {
 
-  int num_new_obs = new_rankings.n_cols;
-  int n_users = rankings.n_cols;
-  int n_items = rankings.n_rows;
-  vec obs_freq = ones(n_users);
-  vec aug_prob = ones(n_particles);
-  bool any_missing = !is_finite(rankings);
+  SMCData dat{data, new_data, Rcpp::List{}};
+  SMCOptions smc_opt{smc_options};
+
+
+  vec aug_prob = ones(smc_opt.n_particles);
+  bool any_missing = !is_finite(dat.rankings);
 
   mat rho_samples = rho_init;
   vec alpha_samples = alpha_init;
@@ -39,58 +38,58 @@ Rcpp::List  smc_mallows_new_users(
   umat missing_indicator{};
 
   if(any_missing){
-    set_up_missing(rankings, missing_indicator);
-    augmented_data.set_size(n_items, n_users, n_particles);
+    set_up_missing(dat.rankings, missing_indicator);
+    augmented_data.set_size(dat.n_items, dat.n_assessors, smc_opt.n_particles);
 
-    for(int i{}; i < n_particles; i++) {
-      augmented_data.slice(i) = rankings;
+    for(int i{}; i < smc_opt.n_particles; i++) {
+      augmented_data.slice(i) = dat.rankings;
       initialize_missing_ranks(augmented_data.slice(i), missing_indicator);
     }
 
     if(aug_init.isNotNull()) {
-      augmented_data(span::all, span(0, rankings.n_cols - new_rankings.n_cols - 1), span::all) = Rcpp::as<cube>(aug_init);
+      augmented_data(span::all, span(0, dat.rankings.n_cols - dat.new_rankings.n_cols - 1), span::all) = Rcpp::as<cube>(aug_init);
     }
   }
 
   if(any_missing){
     smc_mallows_new_users_augment_partial(
-      augmented_data, aug_prob, rho_samples, alpha_samples, num_new_obs,
-      aug_method, missing_indicator, metric);
+      augmented_data, aug_prob, rho_samples, alpha_samples, dat.num_new_obs,
+      smc_opt.aug_method, missing_indicator, metric);
   }
 
-  vec norm_wgt(n_particles);
+  vec norm_wgt(smc_opt.n_particles);
   smc_mallows_new_users_reweight(
-    effective_sample_size, norm_wgt, augmented_data, new_rankings, rho_samples,
-    alpha_samples, logz_list, num_new_obs, aug_prob,
+    effective_sample_size, norm_wgt, augmented_data, dat.new_rankings, rho_samples,
+    alpha_samples, logz_list, dat.num_new_obs, aug_prob,
     any_missing, metric);
 
   smc_mallows_new_users_resample(
     rho_samples, alpha_samples, augmented_data, norm_wgt,
     any_missing);
 
-  for (int ii = 0; ii < n_particles; ++ii) {
+  for (int ii = 0; ii < smc_opt.n_particles; ++ii) {
 
-    for (int kk = 0; kk < mcmc_steps; ++kk) {
-      if(any_missing) rankings = augmented_data.slice(ii);
+    for (int kk = 0; kk < smc_opt.mcmc_steps; ++kk) {
+      if(any_missing) dat.rankings = augmented_data.slice(ii);
 
       rho_samples.col(ii) =
-        make_new_rho(rho_samples.col(ii), rankings,
-                     alpha_samples(ii), leap_size, metric, obs_freq);
+        make_new_rho(rho_samples.col(ii), dat.rankings,
+                     alpha_samples(ii), leap_size, metric, dat.observation_frequency);
 
-      alpha_samples(ii) = update_alpha(alpha_samples(ii), rankings,
-                    obs_freq, rho_samples.col(ii), alpha_prop_sd, metric,
+      alpha_samples(ii) = update_alpha(alpha_samples(ii), dat.rankings,
+                    dat.observation_frequency, rho_samples.col(ii), alpha_prop_sd, metric,
                     lambda, logz_list);
 
       if(any_missing) {
-        int num_obs = rankings.n_cols;
-        for (int jj = num_obs - num_new_obs; jj < num_obs; ++jj) {
+        int num_obs = dat.rankings.n_cols;
+        for (int jj = num_obs - dat.num_new_obs; jj < num_obs; ++jj) {
 
           augmented_data(span::all, span(jj), span(ii)) = make_new_augmentation(
             augmented_data(span::all, span(jj), span(ii)),
             missing_indicator.col(jj),
             alpha_samples(ii),
             rho_samples.col(ii),
-            metric, aug_method == "pseudo"
+            metric, smc_opt.aug_method == "pseudo"
           );
         }
       }

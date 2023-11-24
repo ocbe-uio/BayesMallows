@@ -29,8 +29,23 @@ struct Data {
   const unsigned int n_items;
   const arma::vec observation_frequency;
 
+};
 
+struct SMCData : Data {
+  SMCData(const Rcpp::List& data, const Rcpp::List& new_data,
+          const Rcpp::List& compute_options);
 
+  arma::mat new_rankings;
+  const unsigned int num_new_obs;
+};
+
+struct SMCOptions {
+  SMCOptions(const Rcpp::List& smc_options);
+  ~SMCOptions() = default;
+
+  const unsigned int n_particles;
+  const unsigned int mcmc_steps;
+  const std::string aug_method;
 };
 
 

@@ -9,10 +9,7 @@
 #'
 #' @param model A model object.
 #' @param new_data Object returned from [setup_rank_data()] containing new data.
-#' @param n_particles Integer specifying the number of particles.
-#' @param augmentation One of "pseudo" and "uniform".
-#' @param mcmc_steps Number of Metropolis-Hastings steps to apply in sequential
-#'   Monte Carlo.
+#' @param smc_options Options returned from [set_smc_options()].
 #' @param ... Optional arguments. Currently not used.
 #'
 #' @return An updated model, of class "SMCMallows".
@@ -28,29 +25,25 @@ update_mallows <- function(model, new_data, ...) {
 #' @export
 #' @rdname update_mallows
 update_mallows.BayesMallows <- function(
-    model, new_data, n_particles,
-    augmentation = "pseudo",
-    mcmc_steps = 5, ...) {
-  augmentation <- match.arg(augmentation, c("pseudo", "uniform"))
+    model, new_data, smc_options, ...) {
 
-  if (augmentation == "pseudo" && !model$metric %in% c("footrule", "spearman")) {
+
+  if (smc_options$aug_method == "pseudo" && !model$metric %in% c("footrule", "spearman")) {
     stop(
-      "pseudolikelihood augmentation only possible for metrics 'footrule' ",
+      "pseudolikelihood aug_method only possible for metrics 'footrule' ",
       "and 'spearman'."
     )
   }
 
-  alpha_init <- extract_alpha_init(model, n_particles)
-  rho_init <- extract_rho_init(model, n_particles)
+  alpha_init <- extract_alpha_init(model, smc_options$n_particles)
+  rho_init <- extract_rho_init(model, smc_options$n_particles)
 
   ret <- smc_mallows_new_users(
-    rankings = t(new_data$rankings),
-    new_rankings = t(new_data$rankings),
+    data = new_data,
+    new_data = new_data,
+    smc_options = smc_options,
     rho_init = rho_init,
     alpha_init = alpha_init,
-    n_particles = n_particles,
-    mcmc_steps = mcmc_steps,
-    aug_method = augmentation,
     logz_list = model$logz_list,
     metric = model$metric,
     leap_size = floor(model$n_items / 4)
@@ -60,13 +53,11 @@ update_mallows.BayesMallows <- function(
   ret$alpha <- tidy_parameters$alpha
   ret$rho <- tidy_parameters$rho
 
-  ret$augmentation <- augmentation
+  ret$smc_options <- smc_options
   ret$n_items <- model$n_items
   ret$burnin <- 0
   ret$n_clusters <- 1
   ret$data <- new_data
-  ret$n_particles <- n_particles
-  ret$mcmc_steps <- mcmc_steps
   ret$logz_list <- model$logz_list
   ret$metric <- model$metric
   ret$items <- model$items
@@ -79,19 +70,17 @@ update_mallows.BayesMallows <- function(
 #' @rdname update_mallows
 update_mallows.SMCMallows <- function(model, new_data, ...) {
 
-  rankings <- rbind(model$data$rankings, new_data$rankings)
+  data <- setup_rank_data(rankings = rbind(model$data$rankings, new_data$rankings))
   alpha_init <- model$alpha_samples
   rho_init <- model$rho_samples
   aug_init <- model$augmented_rankings
 
   ret <- smc_mallows_new_users(
-    rankings = t(rankings),
-    new_rankings = t(new_data$rankings),
+    data = data,
+    new_data = new_data,
+    smc_options = model$smc_options,
     rho_init = rho_init,
     alpha_init = alpha_init,
-    n_particles = model$n_particles,
-    mcmc_steps = model$mcmc_steps,
-    aug_method = model$augmentation,
     logz_list = model$logz_list,
     metric = model$metric,
     aug_init = aug_init
@@ -102,7 +91,7 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
   model$rho <- tidy_parameters$rho
   model$augmented_rankings <- ret$augmented_rankings
   model$ESS <- ret$ESS
-  model$data <- setup_rank_data(rankings = rankings)
+  model$data <- data
 
   class(model) <- c("SMCMallows", "BayesMallows")
   model
