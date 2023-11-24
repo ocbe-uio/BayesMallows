@@ -2,12 +2,7 @@
 #define PARAMETERS_H
 
 #include <RcppArmadillo.h>
-#include "misc.h"
-#include "distances.h"
-#include "partitionfuns.h"
-#include "missing_data.h"
-#include "sample.h"
-#include "pairwise_comparisons.h"
+
 
 template <typename T>
 static T verify_positive(const T input) {

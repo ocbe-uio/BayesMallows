@@ -1,5 +1,11 @@
 #include "classes.h"
 #include "parameterupdates.h"
+#include "misc.h"
+#include "distances.h"
+#include "partitionfuns.h"
+#include "missing_data.h"
+#include "sample.h"
+#include "pairwise_comparisons.h"
 
 using namespace arma;
 
