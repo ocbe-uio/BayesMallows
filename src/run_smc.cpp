@@ -28,9 +28,10 @@ Rcpp::List  run_smc(
   aug.augment_partial(pars, dat);
   reweight_new_users(pars, aug, dat, logz_list);
 
-  smc_mallows_new_users_resample(
-    pars.rho_samples, pars.alpha_samples, aug.augmented_data, pars.norm_wgt,
-    aug.any_missing);
+  uvec index = pars.draw_resampling_index();
+  pars.resample(index);
+  aug.resample(index);
+
 
   for (int ii = 0; ii < pars.n_particles; ++ii) {
 

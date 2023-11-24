@@ -437,4 +437,16 @@ void SMCAugmentation::augment_partial(
   }
 }
 
+uvec SMCParameters::draw_resampling_index() {
+  return sample(regspace<uvec>(0, n_particles - 1), n_particles, true, norm_wgt);
+}
 
+void SMCParameters::resample(const uvec& index) {
+  rho_samples = rho_samples.cols(index);
+  alpha_samples = alpha_samples.rows(index);
+}
+
+void SMCAugmentation::resample(const uvec& index) {
+  if(!any_missing) return;
+  augmented_data = augmented_data.slices(index);
+}

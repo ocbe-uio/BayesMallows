@@ -169,6 +169,11 @@ struct SMCParameters {
   const std::string metric;
   double effective_sample_size{};
   arma::vec norm_wgt;
+
+  arma::uvec draw_resampling_index();
+  void resample(const arma::uvec& index);
+
+
 };
 
 struct SMCAugmentation {
@@ -184,6 +189,7 @@ struct SMCAugmentation {
       const SMCData& dat
   );
 
+  void resample(const arma::uvec& index);
   const std::string aug_method;
   arma::vec aug_prob;
   bool any_missing;
@@ -192,6 +198,7 @@ struct SMCAugmentation {
   Rcpp::Nullable<arma::cube> aug_init;
 
 };
+
 
 
 #endif
