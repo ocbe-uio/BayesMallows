@@ -8,7 +8,7 @@
 #' @param mcmc_steps Number of MCMC steps to be applied in the resample-move
 #'   step.
 #'
-#' @return An object "SMCOptions".
+#' @return An object of class "SMCOptions".
 #' @export
 #'
 #' @family preprocessing

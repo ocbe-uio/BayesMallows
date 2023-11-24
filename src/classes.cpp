@@ -29,6 +29,11 @@ SMCOptions::SMCOptions(const Rcpp::List& smc_options) :
   aug_method { Rcpp::as<std::string>(smc_options["aug_method"]) }
   {}
 
+SMCParameters::SMCParameters(const Rcpp::List& initial_values) :
+  alpha_samples { Rcpp::as<arma::vec>(initial_values["alpha_init"]) },
+  rho_samples { Rcpp::as<arma::mat>(initial_values["rho_init"]) }
+{}
+
 Augmentation::Augmentation(
   Data& dat,
   const Rcpp::List& compute_options

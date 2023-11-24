@@ -93,7 +93,7 @@ run_mcmc <- function(data, model, compute_options, priors, initial_values, logz_
     .Call(`_BayesMallows_run_mcmc`, data, model, compute_options, priors, initial_values, logz_list, verbose)
 }
 
-smc_mallows_new_users <- function(data, new_data, smc_options, rho_init, alpha_init, logz_list, metric, alpha_prop_sd = 0.5, lambda = 0.1, leap_size = 1L, aug_init = NULL) {
-    .Call(`_BayesMallows_smc_mallows_new_users`, data, new_data, smc_options, rho_init, alpha_init, logz_list, metric, alpha_prop_sd, lambda, leap_size, aug_init)
+smc_mallows_new_users <- function(data, new_data, smc_options, initial_values, logz_list, metric, alpha_prop_sd = 0.5, lambda = 0.1, leap_size = 1L) {
+    .Call(`_BayesMallows_smc_mallows_new_users`, data, new_data, smc_options, initial_values, logz_list, metric, alpha_prop_sd, lambda, leap_size)
 }
 

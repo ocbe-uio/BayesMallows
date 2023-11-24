@@ -9,7 +9,9 @@
 #'
 #' @param model A model object.
 #' @param new_data Object returned from [setup_rank_data()] containing new data.
-#' @param smc_options Options returned from [set_smc_options()].
+#' @param compute_options An object of class `"BayesMallowsComputeOptions"`
+#'   returned from [set_compute_options()].
+#' @param smc_options SMC specific options returned from [set_smc_options()].
 #' @param ... Optional arguments. Currently not used.
 #'
 #' @return An updated model, of class "SMCMallows".
@@ -42,8 +44,8 @@ update_mallows.BayesMallows <- function(
     data = new_data,
     new_data = new_data,
     smc_options = smc_options,
-    rho_init = rho_init,
-    alpha_init = alpha_init,
+    initial_values = list(alpha_init = alpha_init, rho_init = rho_init,
+                          aug_init = NULL),
     logz_list = model$logz_list,
     metric = model$metric,
     leap_size = floor(model$n_items / 4)
@@ -79,11 +81,10 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     data = data,
     new_data = new_data,
     smc_options = model$smc_options,
-    rho_init = rho_init,
-    alpha_init = alpha_init,
+    initial_values = list(alpha_init = alpha_init, rho_init = rho_init,
+                          aug_init = aug_init),
     logz_list = model$logz_list,
-    metric = model$metric,
-    aug_init = aug_init
+    metric = model$metric
   )
 
   tidy_parameters <- tidy_smc(ret, model$items)
