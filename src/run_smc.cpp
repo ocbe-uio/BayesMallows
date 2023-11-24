@@ -38,10 +38,7 @@ Rcpp::List  run_smc(
     for (int kk = 0; kk < pars.mcmc_steps; ++kk) {
       if(aug.any_missing) dat.rankings = aug.augmented_data.slice(ii);
 
-      pars.rho_samples.col(ii) =
-        make_new_rho(pars.rho_samples.col(ii), dat.rankings,
-                     pars.alpha_samples(ii), pars.leap_size, pars.metric, dat.observation_frequency);
-
+      pars.update_rho(ii, dat);
       pars.update_alpha(ii, dat, logz_list, pris);
 
       if(aug.any_missing) {

@@ -166,6 +166,11 @@ struct SMCParameters {
       const Rcpp::List& logz_list,
       const Priors& priors);
 
+  void update_rho(
+    const unsigned int particle_index,
+    const SMCData& dat
+  );
+
   const unsigned int n_particles;
   const unsigned int mcmc_steps;
   arma::vec alpha_samples;

@@ -200,6 +200,16 @@ void Parameters::update_rho(int cluster_index, int t, int& rho_index,
   }
 }
 
+void SMCParameters::update_rho(
+    const unsigned int particle_index,
+    const SMCData& dat
+) {
+  rho_samples.col(particle_index) = make_new_rho(
+    rho_samples.col(particle_index), dat.rankings,
+    alpha_samples(particle_index), leap_size, metric,
+    dat.observation_frequency);
+}
+
 void Parameters::update_shape(int t, const Data& dat,
                               const Priors& priors) {
 
