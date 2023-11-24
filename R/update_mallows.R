@@ -9,9 +9,9 @@
 #'
 #' @param model A model object.
 #' @param new_data Object returned from [setup_rank_data()] containing new data.
+#' @param smc_options SMC specific options returned from [set_smc_options()].
 #' @param compute_options An object of class `"BayesMallowsComputeOptions"`
 #'   returned from [set_compute_options()].
-#' @param smc_options SMC specific options returned from [set_smc_options()].
 #' @param ... Optional arguments. Currently not used.
 #'
 #' @return An updated model, of class "SMCMallows".
@@ -27,7 +27,9 @@ update_mallows <- function(model, new_data, ...) {
 #' @export
 #' @rdname update_mallows
 update_mallows.BayesMallows <- function(
-    model, new_data, smc_options, ...) {
+    model, new_data,
+    smc_options = set_smc_options(),
+    compute_options = set_compute_options(), ...) {
 
 
   if (smc_options$aug_method == "pseudo" && !model$metric %in% c("footrule", "spearman")) {
@@ -44,11 +46,11 @@ update_mallows.BayesMallows <- function(
     data = new_data,
     new_data = new_data,
     smc_options = smc_options,
+    compute_options = compute_options,
     initial_values = list(alpha_init = alpha_init, rho_init = rho_init,
                           aug_init = NULL),
     logz_list = model$logz_list,
-    metric = model$metric,
-    leap_size = floor(model$n_items / 4)
+    metric = model$metric
   )
 
   tidy_parameters <- tidy_smc(ret, model$items)
@@ -56,6 +58,7 @@ update_mallows.BayesMallows <- function(
   ret$rho <- tidy_parameters$rho
 
   ret$smc_options <- smc_options
+  ret$compute_options <- compute_options
   ret$n_items <- model$n_items
   ret$burnin <- 0
   ret$n_clusters <- 1
@@ -81,6 +84,7 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     data = data,
     new_data = new_data,
     smc_options = model$smc_options,
+    compute_options = model$compute_options,
     initial_values = list(alpha_init = alpha_init, rho_init = rho_init,
                           aug_init = aug_init),
     logz_list = model$logz_list,

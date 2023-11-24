@@ -12,7 +12,7 @@
 #' @export
 #'
 #' @family preprocessing
-set_smc_options <- function(n_particles, aug_method = "pseudo",
+set_smc_options <- function(n_particles = 1000, aug_method = "pseudo",
                             mcmc_steps = 5) {
   aug_method <- match.arg(aug_method, c("pseudo", "uniform"))
 

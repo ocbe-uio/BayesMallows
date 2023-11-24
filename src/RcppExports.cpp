@@ -118,21 +118,20 @@ BEGIN_RCPP
 END_RCPP
 }
 // smc_mallows_new_users
-Rcpp::List smc_mallows_new_users(Rcpp::List data, Rcpp::List new_data, Rcpp::List smc_options, Rcpp::List initial_values, Rcpp::List logz_list, const std::string& metric, const double alpha_prop_sd, const double lambda, const int& leap_size);
-RcppExport SEXP _BayesMallows_smc_mallows_new_users(SEXP dataSEXP, SEXP new_dataSEXP, SEXP smc_optionsSEXP, SEXP initial_valuesSEXP, SEXP logz_listSEXP, SEXP metricSEXP, SEXP alpha_prop_sdSEXP, SEXP lambdaSEXP, SEXP leap_sizeSEXP) {
+Rcpp::List smc_mallows_new_users(Rcpp::List data, Rcpp::List new_data, Rcpp::List smc_options, Rcpp::List compute_options, Rcpp::List initial_values, Rcpp::List logz_list, const std::string& metric, const double lambda);
+RcppExport SEXP _BayesMallows_smc_mallows_new_users(SEXP dataSEXP, SEXP new_dataSEXP, SEXP smc_optionsSEXP, SEXP compute_optionsSEXP, SEXP initial_valuesSEXP, SEXP logz_listSEXP, SEXP metricSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List >::type data(dataSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type new_data(new_dataSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type smc_options(smc_optionsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type compute_options(compute_optionsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type initial_values(initial_valuesSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type logz_list(logz_listSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
-    Rcpp::traits::input_parameter< const double >::type alpha_prop_sd(alpha_prop_sdSEXP);
     Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< const int& >::type leap_size(leap_sizeSEXP);
-    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_users(data, new_data, smc_options, initial_values, logz_list, metric, alpha_prop_sd, lambda, leap_size));
+    rcpp_result_gen = Rcpp::wrap(smc_mallows_new_users(data, new_data, smc_options, compute_options, initial_values, logz_list, metric, lambda));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -147,7 +146,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 7},
-    {"_BayesMallows_smc_mallows_new_users", (DL_FUNC) &_BayesMallows_smc_mallows_new_users, 9},
+    {"_BayesMallows_smc_mallows_new_users", (DL_FUNC) &_BayesMallows_smc_mallows_new_users, 8},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}
 };

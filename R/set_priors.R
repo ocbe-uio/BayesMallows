@@ -2,7 +2,7 @@
 #'
 #' @param lambda Strictly positive numeric value specifying the rate parameter
 #'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
-#'   to `0.1`. When `n_cluster > 1`, each mixture component
+#'   to `0.001`. When `n_cluster > 1`, each mixture component
 #'   \eqn{\alpha_{c}} has the same prior distribution.
 #'
 #' @param psi Positive integer specifying the concentration parameter \eqn{\psi}

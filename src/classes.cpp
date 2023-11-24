@@ -29,9 +29,14 @@ SMCOptions::SMCOptions(const Rcpp::List& smc_options) :
   aug_method { Rcpp::as<std::string>(smc_options["aug_method"]) }
   {}
 
-SMCParameters::SMCParameters(const Rcpp::List& initial_values) :
+SMCParameters::SMCParameters(
+  const Rcpp::List& compute_options,
+  const Rcpp::List& initial_values
+) :
   alpha_samples { Rcpp::as<arma::vec>(initial_values["alpha_init"]) },
-  rho_samples { Rcpp::as<arma::mat>(initial_values["rho_init"]) }
+  rho_samples { Rcpp::as<arma::mat>(initial_values["rho_init"]) },
+  alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
+  leap_size { Rcpp::as<unsigned int>(compute_options["leap_size"]) }
 {}
 
 Augmentation::Augmentation(

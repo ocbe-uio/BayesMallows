@@ -13,17 +13,16 @@ Rcpp::List  smc_mallows_new_users(
   Rcpp::List data,
   Rcpp::List new_data,
   Rcpp::List smc_options,
+  Rcpp::List compute_options,
   Rcpp::List initial_values,
   Rcpp::List logz_list,
   const std::string& metric,
-  const double alpha_prop_sd = 0.5,
-  const double lambda = 0.1,
-  const int& leap_size = 1
+  const double lambda = 0.1
 ) {
 
   SMCData dat{data, new_data, Rcpp::List{}};
   SMCOptions smc_opt{smc_options};
-  SMCParameters pars{initial_values};
+  SMCParameters pars{compute_options, initial_values};
 
   vec aug_prob = ones(smc_opt.n_particles);
   bool any_missing = !is_finite(dat.rankings);
@@ -71,10 +70,10 @@ Rcpp::List  smc_mallows_new_users(
 
       pars.rho_samples.col(ii) =
         make_new_rho(pars.rho_samples.col(ii), dat.rankings,
-                     pars.alpha_samples(ii), leap_size, metric, dat.observation_frequency);
+                     pars.alpha_samples(ii), pars.leap_size, metric, dat.observation_frequency);
 
       pars.alpha_samples(ii) = update_alpha(pars.alpha_samples(ii), dat.rankings,
-                    dat.observation_frequency, pars.rho_samples.col(ii), alpha_prop_sd, metric,
+                    dat.observation_frequency, pars.rho_samples.col(ii), pars.alpha_prop_sd, metric,
                     lambda, logz_list);
 
       if(any_missing) {

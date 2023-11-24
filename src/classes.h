@@ -126,11 +126,14 @@ private:
 };
 
 struct SMCParameters {
-  SMCParameters(const Rcpp::List& initial_values);
+  SMCParameters(const Rcpp::List& compute_options,
+                const Rcpp::List& initial_values);
   ~SMCParameters() = default;
 
   arma::vec alpha_samples;
   arma::mat rho_samples;
+  const double alpha_prop_sd;
+  const unsigned int leap_size;
 };
 
 struct Clustering {
