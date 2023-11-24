@@ -29,8 +29,7 @@ behavior, see the \code{na_action} argument to \code{\link[=set_model_options]{s
 columns \code{assessor}, \code{top_item}, and \code{bottom_item}. Each column contains the
 following:
 \itemize{
-\item \code{assessor} is a numeric vector containing the assessor index, or a character
-vector containing the (unique) name of the assessor.
+\item \code{assessor} is a numeric vector containing the assessor index.
 
 \item \code{bottom_item} is a numeric vector containing the index of the item that
 was disfavored in each pairwise comparison.

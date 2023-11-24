@@ -15,14 +15,14 @@ test_that("update_mallows is correct for new rankings", {
 
   mod_smc <- update_mallows(
     model = mod_init,
-    new_rankings = triple_potato[5:20, ],
+    new_data = setup_rank_data(rankings = triple_potato[5:20, ]),
     n_particles = 10000,
     mcmc_steps = 5
   )
 
   mod_smc_next <- update_mallows(
     model = mod_smc,
-    new_rankings = triple_potato[21:36, ]
+    new_data = setup_rank_data(rankings = triple_potato[21:36, ])
   )
 
   # Posterior mean of alpha should be the same in both SMC methods, and close to BMM
@@ -64,14 +64,14 @@ test_that("update_mallows is correct for new rankings", {
 
   mod_smc <- update_mallows(
     model = mod_init,
-    new_rankings = sushi_rankings[101:2000, ],
+    new_data = setup_rank_data(rankings = sushi_rankings[101:2000, ]),
     n_particles = 500,
     mcmc_steps = 3
   )
 
   mod_smc_next <- update_mallows(
     model = mod_smc,
-    new_rankings = sushi_rankings[2001:5000, ]
+    new_data = setup_rank_data(sushi_rankings[2001:5000, ])
   )
 
   # Posterior mean of alpha should be the same in both SMC methods, and close to BMM
@@ -127,7 +127,7 @@ test_that("update_mallows is correct for new partial rankings", {
   for (aug in c("uniform", "pseudo")) {
     mod_smc <- update_mallows(
       model = mod_init,
-      new_rankings = dat[5:20, ],
+      new_data = setup_rank_data(rankings = dat[5:20, ]),
       n_particles = 10000,
       mcmc_steps = 10,
       augmentation = aug
@@ -135,7 +135,7 @@ test_that("update_mallows is correct for new partial rankings", {
 
     mod_smc_next <- update_mallows(
       model = mod_smc,
-      new_rankings = dat[21:36, ]
+      new_data = setup_rank_data(rankings = dat[21:36, ])
     )
 
     expect_equal(

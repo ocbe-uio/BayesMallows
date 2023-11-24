@@ -6,24 +6,23 @@
 \alias{update_mallows.SMCMallows}
 \title{Update a Bayesian Mallows model with new users}
 \usage{
-update_mallows(model, new_rankings, ...)
+update_mallows(model, new_data, ...)
 
 \method{update_mallows}{BayesMallows}(
   model,
-  new_rankings,
+  new_data,
   n_particles,
   augmentation = "pseudo",
   mcmc_steps = 5,
   ...
 )
 
-\method{update_mallows}{SMCMallows}(model, new_rankings, ...)
+\method{update_mallows}{SMCMallows}(model, new_data, ...)
 }
 \arguments{
 \item{model}{A model object.}
 
-\item{new_rankings}{Matrix containing the new set of observed rankings of size
-n_assessors by n_items.}
+\item{new_data}{Object returned from \code{\link[=setup_rank_data]{setup_rank_data()}} containing new data.}
 
 \item{...}{Optional arguments. Currently not used.}
 
