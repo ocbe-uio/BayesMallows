@@ -160,6 +160,12 @@ struct SMCParameters {
     const Rcpp::List& initial_values);
   ~SMCParameters() = default;
 
+  void update_alpha(
+      const unsigned int particle_index,
+      const SMCData& dat,
+      const Rcpp::List& logz_list,
+      const Priors& priors);
+
   const unsigned int n_particles;
   const unsigned int mcmc_steps;
   arma::vec alpha_samples;

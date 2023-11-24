@@ -21,47 +21,6 @@ arma::mat initialize_rho(int n_items, int n_cols,
   }
 }
 
-double update_alpha(
-                  const double& alpha_old,
-                  const mat& rankings,
-                  const vec& observation_frequency,
-                  const vec& rho_old,
-                  const double& alpha_prop_sd,
-                  const std::string& metric,
-                  const double& lambda,
-                  const Rcpp::List& logz_list) {
-  // Set the number of assessors. Not using the variable from run_mcmc because
-  // here we want the number of assessors in this cluster
-  //int n_assessors = rankings.n_cols;
-  int n_items = rho_old.n_elem;
-
-  double alpha_proposal = std::exp(randn<double>() * alpha_prop_sd +
-                              std::log(alpha_old));
-
-  double rank_dist = rank_dist_sum(rankings, rho_old, metric, observation_frequency);
-
-  // Difference between current and proposed alpha
-  double alpha_diff = alpha_old - alpha_proposal;
-
-  // Compute the Metropolis-Hastings ratio
-  double ratio =
-    alpha_diff / n_items * rank_dist +
-    lambda * alpha_diff +
-    sum(observation_frequency) * (
-        get_partition_function(n_items, alpha_old, logz_list, metric) -
-          get_partition_function(n_items, alpha_proposal, logz_list, metric)
-    ) + std::log(alpha_proposal) - std::log(alpha_old);
-
-  // Draw a uniform random number
-  double u = std::log(randu<double>());
-
-  if(ratio > u){
-    return alpha_proposal;
-  } else {
-    return alpha_old;
-  }
-}
-
 
 vec make_new_rho(vec current_rho, const mat& rankings, double alpha_old, int leap_size, std::string metric,
                  vec observation_frequency) {

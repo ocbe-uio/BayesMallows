@@ -266,6 +266,38 @@ void Parameters::update_alpha(
   }
 }
 
+void SMCParameters::update_alpha(
+    const unsigned int particle_index,
+    const SMCData& dat,
+    const Rcpp::List& logz_list,
+    const Priors& priors) {
+
+  double alpha_proposal = std::exp(randn<double>() * alpha_prop_sd +
+                                   std::log(alpha_samples(particle_index)));
+
+  double rank_dist = rank_dist_sum(dat.rankings, rho_samples.col(particle_index),
+                                   metric, dat.observation_frequency);
+
+  // Difference between current and proposed alpha
+  double alpha_diff = alpha_samples(particle_index) - alpha_proposal;
+
+  // Compute the Metropolis-Hastings ratio
+  double ratio =
+    alpha_diff / dat.n_items * rank_dist +
+    priors.lambda * alpha_diff +
+    sum(dat.observation_frequency) * (
+        get_partition_function(dat.n_items, alpha_samples(particle_index), logz_list, metric) -
+          get_partition_function(dat.n_items, alpha_proposal, logz_list, metric)
+    ) + std::log(alpha_proposal) - std::log(alpha_samples(particle_index));
+
+  // Draw a uniform random number
+  double u = std::log(randu<double>());
+
+  if(ratio > u){
+    alpha_samples(particle_index) = alpha_proposal;
+  }
+}
+
 
 void Clustering::update_cluster_probs(const Parameters& pars, const Priors& pris){
 

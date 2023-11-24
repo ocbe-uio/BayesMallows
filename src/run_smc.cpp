@@ -42,9 +42,7 @@ Rcpp::List  run_smc(
         make_new_rho(pars.rho_samples.col(ii), dat.rankings,
                      pars.alpha_samples(ii), pars.leap_size, pars.metric, dat.observation_frequency);
 
-      pars.alpha_samples(ii) = update_alpha(pars.alpha_samples(ii), dat.rankings,
-                    dat.observation_frequency, pars.rho_samples.col(ii), pars.alpha_prop_sd, pars.metric,
-                    pris.lambda, logz_list);
+      pars.update_alpha(ii, dat, logz_list, pris);
 
       if(aug.any_missing) {
         int num_obs = dat.rankings.n_cols;
