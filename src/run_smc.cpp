@@ -17,20 +17,16 @@ Rcpp::List  run_smc(
   Rcpp::List compute_options,
   Rcpp::List priors,
   Rcpp::List initial_values,
-  Rcpp::List logz_list,
-  const std::string& metric
+  Rcpp::List logz_list
 ) {
 
   SMCData dat{data, new_data};
   SMCParameters pars{model_options, smc_options, compute_options, initial_values};
   Priors pris{priors};
-  SMCAugmentation aug{dat, pars, smc_options, initial_values};
+  SMCAugmentation aug{dat, smc_options, initial_values, pars.n_particles};
 
   aug.augment_partial(pars, dat);
-  smc_mallows_new_users_reweight(
-    pars.effective_sample_size, pars.norm_wgt, aug.augmented_data, dat.new_rankings, pars.rho_samples,
-    pars.alpha_samples, logz_list, dat.num_new_obs, aug.aug_prob,
-    aug.any_missing, pars.metric);
+  reweight_new_users(pars, aug, dat, logz_list);
 
   smc_mallows_new_users_resample(
     pars.rho_samples, pars.alpha_samples, aug.augmented_data, pars.norm_wgt,
@@ -43,10 +39,10 @@ Rcpp::List  run_smc(
 
       pars.rho_samples.col(ii) =
         make_new_rho(pars.rho_samples.col(ii), dat.rankings,
-                     pars.alpha_samples(ii), pars.leap_size, metric, dat.observation_frequency);
+                     pars.alpha_samples(ii), pars.leap_size, pars.metric, dat.observation_frequency);
 
       pars.alpha_samples(ii) = update_alpha(pars.alpha_samples(ii), dat.rankings,
-                    dat.observation_frequency, pars.rho_samples.col(ii), pars.alpha_prop_sd, metric,
+                    dat.observation_frequency, pars.rho_samples.col(ii), pars.alpha_prop_sd, pars.metric,
                     pris.lambda, logz_list);
 
       if(aug.any_missing) {
@@ -58,7 +54,7 @@ Rcpp::List  run_smc(
             aug.missing_indicator.col(jj),
             pars.alpha_samples(ii),
             pars.rho_samples.col(ii),
-            metric, aug.aug_method == "pseudo"
+            pars.metric, aug.aug_method == "pseudo"
           );
         }
       }

@@ -58,8 +58,7 @@ update_mallows.BayesMallows <- function(
     priors = priors,
     initial_values = list(alpha_init = alpha_init, rho_init = rho_init,
                           aug_init = NULL),
-    logz_list = model$logz_list,
-    metric = model$metric
+    logz_list = model$logz_list
   )
 
   tidy_parameters <- tidy_smc(ret, model$items)
@@ -100,8 +99,7 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     priors = model$priors,
     initial_values = list(alpha_init = alpha_init, rho_init = rho_init,
                           aug_init = aug_init),
-    logz_list = model$logz_list,
-    metric = model$metric
+    logz_list = model$logz_list
   )
 
   tidy_parameters <- tidy_smc(ret, model$items)

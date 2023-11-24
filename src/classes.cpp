@@ -87,21 +87,21 @@ Augmentation::Augmentation(
 
 SMCAugmentation::SMCAugmentation(
   SMCData& dat,
-  const SMCParameters& pars,
   const Rcpp::List& smc_options,
-  const Rcpp::List& initial_values
+  const Rcpp::List& initial_values,
+  const unsigned int n_particles
 ) :
   aug_method { Rcpp::as<std::string>(smc_options["aug_method"]) },
-  aug_prob { arma::ones(pars.n_particles) },
+  aug_prob { arma::ones(n_particles) },
   any_missing { !is_finite(dat.rankings) },
   aug_init { Rcpp::as<Rcpp::Nullable<arma::cube>>(initial_values["aug_init"])}
   {
 
     if(any_missing){
       set_up_missing(dat.rankings, missing_indicator);
-      augmented_data.set_size(dat.n_items, dat.n_assessors, pars.n_particles);
+      augmented_data.set_size(dat.n_items, dat.n_assessors, n_particles);
 
-      for(int i{}; i < pars.n_particles; i++) {
+      for(int i{}; i < n_particles; i++) {
         augmented_data.slice(i) = dat.rankings;
         initialize_missing_ranks(augmented_data.slice(i), missing_indicator);
       }
@@ -436,4 +436,5 @@ void SMCAugmentation::augment_partial(
     }
   }
 }
+
 

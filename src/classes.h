@@ -174,9 +174,9 @@ struct SMCParameters {
 struct SMCAugmentation {
   SMCAugmentation(
     SMCData& dat,
-    const SMCParameters& pars,
     const Rcpp::List& smc_options,
-    const Rcpp::List& initial_values);
+    const Rcpp::List& initial_values,
+    const unsigned int n_particles);
   ~SMCAugmentation() = default;
 
   void augment_partial(
