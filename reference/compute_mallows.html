@@ -54,7 +54,7 @@ compute_mallows always returns posterior distributions of the latent
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -446,21 +446,21 @@ is necessary for detecting label switching using Stephen's algorithm. See
 <span class="r-out co"><span class="r-pr">#&gt;</span>    ranking item cumprob</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1        1  P12   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2        2  P13   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        3   P9   0.990</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        4  P10   0.956</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        5  P17   0.951</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        6   P7   0.897</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        3   P9   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        4  P10   0.988</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        5  P17   0.832</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6        6   P7   0.680</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7        7  P14   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        8  P16   0.952</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9        9   P1   0.466</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10      10  P11   0.487</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11      11   P5   0.676</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8        8  P16   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9        9   P1   0.393</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      10  P11   0.654</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11      11   P5   0.844</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 12      12  P19   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13      13  P20   0.537</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13      13  P20   0.509</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 14      14  P18   1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15      15   P6   0.935</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16      16   P4   0.808</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17      17   P2   0.876</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15      15   P6   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16      16   P4   0.578</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17      17   P2   0.963</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 18      18  P15   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 19      19   P3   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 20      20   P8   1.000</span>
@@ -469,7 +469,7 @@ is necessary for detecting label switching using Stephen's algorithm. See
 <span class="r-in"><span><span class="co"># First we compute the interval for alpha</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   parameter   mean median conf_level           hpdi central_interval</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     alpha 10.878  10.85       95 % [9.517,12.319]   [9.462,12.279]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     alpha 10.799 10.757       95 % [9.500,12.198]   [9.499,12.198]</span>
 <span class="r-in"><span><span class="co"># Then we compute the interval for all the items</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="fu"><a href="compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
