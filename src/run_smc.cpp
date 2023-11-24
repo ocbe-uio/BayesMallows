@@ -9,7 +9,7 @@ using namespace arma;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-Rcpp::List  smc_mallows_new_users(
+Rcpp::List  run_smc(
   Rcpp::List data,
   Rcpp::List new_data,
   Rcpp::List smc_options,

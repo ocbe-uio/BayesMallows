@@ -46,7 +46,7 @@ update_mallows.BayesMallows <- function(
   alpha_init <- extract_alpha_init(model, smc_options$n_particles)
   rho_init <- extract_rho_init(model, smc_options$n_particles)
 
-  ret <- smc_mallows_new_users(
+  ret <- run_smc(
     data = new_data,
     new_data = new_data,
     smc_options = smc_options,
@@ -84,7 +84,7 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
   rho_init <- model$rho_samples
   aug_init <- model$augmented_rankings
 
-  ret <- smc_mallows_new_users(
+  ret <- run_smc(
     data = data,
     new_data = new_data,
     smc_options = model$smc_options,

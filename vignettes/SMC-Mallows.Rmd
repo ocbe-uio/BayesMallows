@@ -26,7 +26,7 @@ The main functions for estimating Bayesian Mallows models using SMC are listed b
 
 | Function Name                | Description |
 |:-----------------------------|:--------------------------------------------|
-| `smc_mallows_new_users` |  Runs the SMC algorithm for case where we observe full rankings as new observational data. |
+| `run_smc` |  Runs the SMC algorithm for case where we observe full rankings as new observational data. |
 | `smc_mallows_new_item_rank` | Runs the SMC algorithm for case where we observe updated partial rankings as from existing users. |
 | `smc_mallows_update` | Update existing models when new data arrive. |
 
