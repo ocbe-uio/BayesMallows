@@ -2,6 +2,20 @@
 #define PARAMETERUPDATES_H
 
 #include "RcppArmadillo.h"
+#include "classes.h"
+
+struct AlphaRatio{
+  AlphaRatio(double proposal, bool accept) :
+  proposal {proposal}, accept {accept} {}
+  ~AlphaRatio() = default;
+  double proposal;
+  bool accept;
+};
+
+AlphaRatio make_new_alpha(const double& alpha_old, const arma::vec& rho_old,
+                          const double& alpha_prop_sd, const std::string& metric,
+                          const Rcpp::List& logz_list,
+                          const Data& dat, const Priors& priors);
 
 arma::mat initialize_rho(int n_items, int n_cols,
                          Rcpp::Nullable<arma::mat> rho_init = R_NilValue);

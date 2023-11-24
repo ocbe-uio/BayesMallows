@@ -1,4 +1,5 @@
 #include "classes.h"
+#include "parameterupdates.h"
 
 using namespace arma;
 
@@ -248,29 +249,12 @@ void Parameters::update_alpha(
     const Rcpp::List& logz_list,
     const Priors& priors) {
 
-  double alpha_proposal = std::exp(randn<double>() * alpha_prop_sd +
-                                   std::log(alpha_old(cluster_index)));
+  AlphaRatio test = make_new_alpha(
+    alpha_old(cluster_index), rho_old.col(cluster_index),
+    alpha_prop_sd, metric, logz_list, dat, priors);
 
-  double rank_dist = rank_dist_sum(dat.rankings, rho_old.col(cluster_index),
-                                   metric, dat.observation_frequency);
-
-  // Difference between current and proposed alpha
-  double alpha_diff = alpha_old(cluster_index) - alpha_proposal;
-
-  // Compute the Metropolis-Hastings ratio
-  double ratio =
-    alpha_diff / dat.n_items * rank_dist +
-    priors.lambda * alpha_diff +
-    sum(dat.observation_frequency) * (
-        get_partition_function(dat.n_items, alpha_old(cluster_index), logz_list, metric) -
-          get_partition_function(dat.n_items, alpha_proposal, logz_list, metric)
-    ) + std::log(alpha_proposal) - std::log(alpha_old(cluster_index));
-
-  // Draw a uniform random number
-  double u = std::log(randu<double>());
-
-  if(ratio > u){
-    alpha(cluster_index, alpha_index) = alpha_proposal;
+  if(test.accept){
+    alpha(cluster_index, alpha_index) = test.proposal;
   } else {
     alpha(cluster_index, alpha_index) = alpha_old(cluster_index);
   }
@@ -282,29 +266,14 @@ void SMCParameters::update_alpha(
     const Rcpp::List& logz_list,
     const Priors& priors) {
 
-  double alpha_proposal = std::exp(randn<double>() * alpha_prop_sd +
-                                   std::log(alpha_samples(particle_index)));
+  AlphaRatio test = make_new_alpha(
+    alpha_samples(particle_index),
+    rho_samples.col(particle_index),
+    alpha_prop_sd, metric, logz_list, dat, priors
+  );
 
-  double rank_dist = rank_dist_sum(dat.rankings, rho_samples.col(particle_index),
-                                   metric, dat.observation_frequency);
-
-  // Difference between current and proposed alpha
-  double alpha_diff = alpha_samples(particle_index) - alpha_proposal;
-
-  // Compute the Metropolis-Hastings ratio
-  double ratio =
-    alpha_diff / dat.n_items * rank_dist +
-    priors.lambda * alpha_diff +
-    sum(dat.observation_frequency) * (
-        get_partition_function(dat.n_items, alpha_samples(particle_index), logz_list, metric) -
-          get_partition_function(dat.n_items, alpha_proposal, logz_list, metric)
-    ) + std::log(alpha_proposal) - std::log(alpha_samples(particle_index));
-
-  // Draw a uniform random number
-  double u = std::log(randu<double>());
-
-  if(ratio > u){
-    alpha_samples(particle_index) = alpha_proposal;
+  if(test.accept){
+    alpha_samples(particle_index) = test.proposal;
   }
 }
 

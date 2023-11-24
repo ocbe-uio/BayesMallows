@@ -2,6 +2,7 @@
 #include "leapandshift.h"
 #include "distances.h"
 #include "partitionfuns.h"
+#include "parameterupdates.h"
 
 using namespace arma;
 
@@ -21,6 +22,33 @@ arma::mat initialize_rho(int n_items, int n_cols,
   }
 }
 
+AlphaRatio make_new_alpha(const double& alpha_old, const vec& rho_old,
+                          const double& alpha_prop_sd, const std::string& metric,
+                          const Rcpp::List& logz_list,
+                          const Data& dat, const Priors& priors) {
+  double alpha_proposal = std::exp(randn<double>() * alpha_prop_sd +
+                                   std::log(alpha_old));
+
+  double rank_dist = rank_dist_sum(dat.rankings, rho_old,
+                                   metric, dat.observation_frequency);
+
+  // Difference between current and proposed alpha
+  double alpha_diff = alpha_old - alpha_proposal;
+
+  // Compute the Metropolis-Hastings ratio
+  double ratio =
+    alpha_diff / dat.n_items * rank_dist +
+    priors.lambda * alpha_diff +
+    sum(dat.observation_frequency) * (
+        get_partition_function(dat.n_items, alpha_old, logz_list, metric) -
+          get_partition_function(dat.n_items, alpha_proposal, logz_list, metric)
+    ) + std::log(alpha_proposal) - std::log(alpha_old);
+
+  // Draw a uniform random number
+  double u = std::log(randu<double>());
+
+  return AlphaRatio{alpha_proposal, ratio > u};
+}
 
 vec make_new_rho(vec current_rho, const mat& rankings, double alpha_old, int leap_size, std::string metric,
                  vec observation_frequency) {

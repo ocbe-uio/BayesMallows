@@ -2,7 +2,6 @@
 #define PARAMETERS_H
 
 #include <RcppArmadillo.h>
-#include "parameterupdates.h"
 #include "misc.h"
 #include "distances.h"
 #include "partitionfuns.h"
