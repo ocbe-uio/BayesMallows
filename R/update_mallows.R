@@ -51,6 +51,7 @@ update_mallows.BayesMallows <- function(
     new_data = new_data,
     smc_options = smc_options,
     compute_options = compute_options,
+    priors = priors,
     initial_values = list(alpha_init = alpha_init, rho_init = rho_init,
                           aug_init = NULL),
     logz_list = model$logz_list,
@@ -63,6 +64,7 @@ update_mallows.BayesMallows <- function(
 
   ret$smc_options <- smc_options
   ret$compute_options <- compute_options
+  ret$priors <- priors
   ret$n_items <- model$n_items
   ret$burnin <- 0
   ret$n_clusters <- 1
@@ -89,6 +91,7 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     new_data = new_data,
     smc_options = model$smc_options,
     compute_options = model$compute_options,
+    priors = model$priors,
     initial_values = list(alpha_init = alpha_init, rho_init = rho_init,
                           aug_init = aug_init),
     logz_list = model$logz_list,

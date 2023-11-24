@@ -118,8 +118,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_smc
-Rcpp::List run_smc(Rcpp::List data, Rcpp::List new_data, Rcpp::List smc_options, Rcpp::List compute_options, Rcpp::List initial_values, Rcpp::List logz_list, const std::string& metric, const double lambda);
-RcppExport SEXP _BayesMallows_run_smc(SEXP dataSEXP, SEXP new_dataSEXP, SEXP smc_optionsSEXP, SEXP compute_optionsSEXP, SEXP initial_valuesSEXP, SEXP logz_listSEXP, SEXP metricSEXP, SEXP lambdaSEXP) {
+Rcpp::List run_smc(Rcpp::List data, Rcpp::List new_data, Rcpp::List smc_options, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List initial_values, Rcpp::List logz_list, const std::string& metric);
+RcppExport SEXP _BayesMallows_run_smc(SEXP dataSEXP, SEXP new_dataSEXP, SEXP smc_optionsSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP initial_valuesSEXP, SEXP logz_listSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -127,11 +127,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::List >::type new_data(new_dataSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type smc_options(smc_optionsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type compute_options(compute_optionsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type priors(priorsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type initial_values(initial_valuesSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type logz_list(logz_listSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
-    Rcpp::traits::input_parameter< const double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_smc(data, new_data, smc_options, compute_options, initial_values, logz_list, metric, lambda));
+    rcpp_result_gen = Rcpp::wrap(run_smc(data, new_data, smc_options, compute_options, priors, initial_values, logz_list, metric));
     return rcpp_result_gen;
 END_RCPP
 }
