@@ -1,4 +1,4 @@
-# BayesMallows (development versions)
+# BayesMallows 1.5.0
 
 * Bug in augmentation with intransitive pairwise preferences has been fixed. 
   (https://github.com/ocbe-uio/BayesMallows/issues/345)
