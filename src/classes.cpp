@@ -59,7 +59,8 @@ SMCParameters::SMCParameters(
   rho_samples { Rcpp::as<arma::mat>(initial_values["rho_init"]) },
   alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
   leap_size { Rcpp::as<unsigned int>(compute_options["leap_size"]) },
-  metric { verify_metric(Rcpp::as<std::string>(model["metric"])) }
+  metric { verify_metric(Rcpp::as<std::string>(model["metric"])) },
+  norm_wgt { ones(n_particles) }
 {}
 
 Augmentation::Augmentation(
@@ -437,3 +438,4 @@ void SMCAugmentation::augment_partial(
     }
   }
 }
+

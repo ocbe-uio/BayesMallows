@@ -26,18 +26,14 @@ Rcpp::List  run_smc(
   Priors pris{priors};
   SMCAugmentation aug{dat, pars, smc_options, initial_values};
 
-  double effective_sample_size;
-
   aug.augment_partial(pars, dat);
-
-  vec norm_wgt(pars.n_particles);
   smc_mallows_new_users_reweight(
-    effective_sample_size, norm_wgt, aug.augmented_data, dat.new_rankings, pars.rho_samples,
+    pars.effective_sample_size, pars.norm_wgt, aug.augmented_data, dat.new_rankings, pars.rho_samples,
     pars.alpha_samples, logz_list, dat.num_new_obs, aug.aug_prob,
     aug.any_missing, pars.metric);
 
   smc_mallows_new_users_resample(
-    pars.rho_samples, pars.alpha_samples, aug.augmented_data, norm_wgt,
+    pars.rho_samples, pars.alpha_samples, aug.augmented_data, pars.norm_wgt,
     aug.any_missing);
 
   for (int ii = 0; ii < pars.n_particles; ++ii) {
@@ -75,7 +71,7 @@ Rcpp::List  run_smc(
     Rcpp::Named("rho_samples") = pars.rho_samples,
     Rcpp::Named("alpha_samples") = pars.alpha_samples,
     Rcpp::Named("augmented_rankings") = aug.augmented_data,
-    Rcpp::Named("ESS") = effective_sample_size
+    Rcpp::Named("ESS") = pars.effective_sample_size
   );
 
   return particle_history;

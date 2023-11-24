@@ -31,13 +31,6 @@ struct Data {
 
 };
 
-struct SMCData : Data {
-  SMCData(const Rcpp::List& data, const Rcpp::List& new_data,
-          const Rcpp::List& compute_options);
-
-  arma::mat new_rankings;
-  const unsigned int num_new_obs;
-};
 
 
 struct Priors {
@@ -94,22 +87,7 @@ private:
 
 };
 
-struct SMCParameters {
-  SMCParameters(
-    const Rcpp::List& model,
-    const Rcpp::List& smc_options,
-    const Rcpp::List& compute_options,
-    const Rcpp::List& initial_values);
-  ~SMCParameters() = default;
 
-  const unsigned int n_particles;
-  const unsigned int mcmc_steps;
-  arma::vec alpha_samples;
-  arma::mat rho_samples;
-  const double alpha_prop_sd;
-  const unsigned int leap_size;
-  const std::string metric;
-};
 
 struct Clustering {
   Clustering(const Parameters& pars, const Rcpp::List& compute_options,
@@ -163,6 +141,35 @@ struct Augmentation {
       const Clustering& clus,
       const Parameters& pars
   );
+};
+
+
+struct SMCData : Data {
+  SMCData(const Rcpp::List& data, const Rcpp::List& new_data,
+          const Rcpp::List& compute_options);
+
+  arma::mat new_rankings;
+  const unsigned int num_new_obs;
+};
+
+
+struct SMCParameters {
+  SMCParameters(
+    const Rcpp::List& model,
+    const Rcpp::List& smc_options,
+    const Rcpp::List& compute_options,
+    const Rcpp::List& initial_values);
+  ~SMCParameters() = default;
+
+  const unsigned int n_particles;
+  const unsigned int mcmc_steps;
+  arma::vec alpha_samples;
+  arma::mat rho_samples;
+  const double alpha_prop_sd;
+  const unsigned int leap_size;
+  const std::string metric;
+  double effective_sample_size{};
+  arma::vec norm_wgt;
 };
 
 struct SMCAugmentation {
