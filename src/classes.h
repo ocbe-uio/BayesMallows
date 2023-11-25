@@ -195,6 +195,8 @@ struct SMCAugmentation {
   );
 
   void update_data(const unsigned int particle_index, SMCData& dat);
+  void update_missing_ranks(const unsigned int particle_index, const SMCData& dat,
+                            const SMCParameters& pars);
 
   void resample(const arma::uvec& index);
   const std::string aug_method;

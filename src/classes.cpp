@@ -471,3 +471,21 @@ void SMCAugmentation::resample(const uvec& index) {
   if(!any_missing) return;
   augmented_data = augmented_data.slices(index);
 }
+
+void SMCAugmentation::update_missing_ranks(
+    const unsigned int particle_index,
+    const SMCData& dat,
+    const SMCParameters& pars) {
+  if(!any_missing) return;
+
+  for (int jj = dat.n_assessors - dat.num_new_obs; jj < dat.n_assessors; ++jj) {
+    augmented_data(span::all, span(jj), span(particle_index)) = make_new_augmentation(
+      augmented_data(span::all, span(jj), span(particle_index)),
+      missing_indicator.col(jj),
+      pars.alpha_samples(particle_index),
+      pars.rho_samples.col(particle_index),
+      pars.metric, aug_method == "pseudo"
+    );
+  }
+
+}

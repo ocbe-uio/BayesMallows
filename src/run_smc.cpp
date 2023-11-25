@@ -32,28 +32,12 @@ Rcpp::List  run_smc(
   pars.resample(index);
   aug.resample(index);
 
-
   for (int ii = 0; ii < pars.n_particles; ++ii) {
-
     for (int kk = 0; kk < pars.mcmc_steps; ++kk) {
       aug.update_data(ii, dat);
       pars.update_rho(ii, dat);
       pars.update_alpha(ii, dat, logz_list, pris);
-
-      if(aug.any_missing) {
-        int num_obs = dat.rankings.n_cols;
-        for (int jj = num_obs - dat.num_new_obs; jj < num_obs; ++jj) {
-
-          aug.augmented_data(span::all, span(jj), span(ii)) = make_new_augmentation(
-            aug.augmented_data(span::all, span(jj), span(ii)),
-            aug.missing_indicator.col(jj),
-            pars.alpha_samples(ii),
-            pars.rho_samples.col(ii),
-            pars.metric, aug.aug_method == "pseudo"
-          );
-        }
-      }
-
+      aug.update_missing_ranks(ii, dat, pars);
     }
   }
 

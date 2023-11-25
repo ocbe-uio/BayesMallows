@@ -13,31 +13,6 @@ using namespace std;
 # include "subset.h"
 
 void i4vec_decrement ( int n, int v[] )
-
-  //****************************************************************************80
-  //
-  //  Purpose:
-  //
-  //    I4VEC_DECREMENT decrements an I4VEC.
-  //
-  //  Licensing:
-  //
-  //    This code is distributed under the GNU LGPL license.
-  //
-  //  Modified:
-  //
-  //    08 January 2015
-  //
-  //  Author:
-  //
-  //    John Burkardt
-  //
-  //  Parameters:
-  //
-  //    Input, int N, the size of the array.
-  //
-  //    Input/output, int V[N], the array to be decremented.
-  //
 {
   int i;
 
@@ -50,35 +25,6 @@ void i4vec_decrement ( int n, int v[] )
 }
 
 int i4_sign ( int i )
-
-  //****************************************************************************80
-  //
-  //  Purpose:
-  //
-  //    I4_SIGN returns the sign of an I4.
-  //
-  //  Discussion:
-  //
-  //    The sign of 0 and all positive integers is taken to be +1.
-  //    The sign of all negative integers is -1.
-  //
-  //  Licensing:
-  //
-  //    This code is distributed under the GNU LGPL license.
-  //
-  //  Modified:
-  //
-  //    06 May 2003
-  //
-  //  Author:
-  //
-  //    John Burkardt
-  //
-  //  Parameters:
-  //
-  //    Input, int I, the integer whose sign is desired.
-  //
-  //    Output, int I4_SIGN, the sign of I.
 {
   if ( i < 0 )
   {
@@ -91,40 +37,6 @@ int i4_sign ( int i )
 }
 
 bool perm0_check ( int n, int p[] )
-
-  //****************************************************************************80
-  //
-  //  Purpose:
-  //
-  //    PERM0_CHECK checks a permutation of ( 0, ..., N-1 ).
-  //
-  //  Discussion:
-  //
-  //    The routine verifies that each of the integers from 0 to
-  //    to N-1 occurs among the N entries of the permutation.
-  //
-  //  Licensing:
-  //
-  //    This code is distributed under the GNU LGPL license.
-  //
-  //  Modified:
-  //
-  //    24 May 2015
-  //
-  //  Author:
-  //
-  //    John Burkardt
-  //
-  //  Parameters:
-  //
-  //    Input, int N, the number of entries.
-  //
-  //    Input, int P[N], the array to check.
-  //
-  //    Output, bool PERM0_CHECK, is
-  //    TRUE if P is a legal permutation of 0,...,N-1.
-  //    FALSE if P is not a legal permuation of 0,...,N-1.
-  //
 {
   bool check;
   int location;
@@ -158,41 +70,6 @@ bool perm0_check ( int n, int p[] )
 }
 
 void perm_ascend ( int n, int a[], int &length, int sub[] )
-
-  //****************************************************************************80
-  //
-  //  Purpose:
-  //
-  //    PERM_ASCEND computes the longest ascending subsequence of permutation.
-  //
-  //  Discussion:
-  //
-  //    Although this routine is intended to be applied to a permutation,
-  //    it will work just as well for an arbitrary vector.
-  //
-  //  Licensing:
-  //
-  //    This code is distributed under the GNU LGPL license.
-  //
-  //  Modified:
-  //
-  //    29 May 2003
-  //
-  //  Author:
-  //
-  //    John Burkardt
-  //
-  //  Parameters:
-  //
-  //    Input, int N, the order of the permutation.
-  //
-  //    Input, int A[N], the permutation to be examined.
-  //
-  //    Output, int &LENGTH, the length of the longest increasing subsequence.
-  //
-  //    Output, int SUB[N], contains in entries 1 through LENGTH
-  //    a longest increasing subsequence of A.
-  //
 {
   int i;
   int j;
@@ -271,33 +148,6 @@ void perm_ascend ( int n, int a[], int &length, int sub[] )
 }
 
 void perm0_mul ( int n, int p1[], int p2[], int p3[] )
-
-  //****************************************************************************80
-  //
-  //  Purpose:
-  //
-  //    PERM0_MUL "multiplies" two permutations of (0,...,N-1).
-  //
-  //  Licensing:
-  //
-  //    This code is distributed under the GNU LGPL license.
-  //
-  //  Modified:
-  //
-  //    08 June 2015
-  //
-  //  Author:
-  //
-  //    John Burkardt
-  //
-  //  Parameters:
-  //
-  //    Input, int N, the order of the permutations.
-  //
-  //    Input, int P1[N], P2[N], the permutations.
-  //
-  //    Output, int P3[N], the product permutation.
-  //
 {
   int i;
 
@@ -326,33 +176,6 @@ void perm0_mul ( int n, int p1[], int p2[], int p3[] )
 }
 
 int *perm0_inverse ( int n, int p1[] )
-
-  //****************************************************************************80
-  //
-  //  Purpose:
-  //
-  //    PERM0_INVERSE inverts a permutation of (0,...,N-1).
-  //
-  //  Licensing:
-  //
-  //    This code is distributed under the GNU LGPL license.
-  //
-  //  Modified:
-  //
-  //    08 June 2015
-  //
-  //  Author:
-  //
-  //    John Burkardt
-  //
-  //  Parameters:
-  //
-  //    Input, int N, the number of objects being permuted.
-  //
-  //    Input, int P1[N], the permutation.
-  //
-  //    Output, int PERM0_INVERSE[N], the inverse permutation.
-  //
 {
   int i;
   int i0;
@@ -363,17 +186,11 @@ int *perm0_inverse ( int n, int p1[] )
 
   if ( n <= 0 )
   {
-    //cerr << "\n";
-    //cerr << "PERM0_INVERSE - Fatal error!\n";
-    //cerr << "  Input value of N = " << n << "\n";
     Rcpp::stop("error");
   }
 
   if ( !perm0_check ( n, p1 ) )
   {
-    //cerr << "\n";
-    //cerr << "PERM0_INVERSE - Fatal error!\n";
-    //cerr << "  PERM0_CHECK rejects permutation.\n";
     Rcpp::stop("error");
   }
 
@@ -430,43 +247,6 @@ int *perm0_inverse ( int n, int p1[] )
 }
 
 int perm0_distance ( int n, int a[], int b[] )
-
-  //****************************************************************************80
-  //
-  //  Purpose:
-  //
-  //    PERM0_DISTANCE computes the distance of two permutations of (0,...,N-1).
-  //
-  //  Discussion:
-  //
-  //    The distance is known as the Ulam metric.
-  //
-  //    If we let N be the order of the permutations A and B, and L(P) be
-  //    the length of the longest ascending subsequence of a permutation P,
-  //    then the Ulam metric distance between A and B is
-  //
-  //      N - L ( A * inverse ( B ) ).
-  //
-  //  Licensing:
-  //
-  //    This code is distributed under the GNU LGPL license.
-  //
-  //  Modified:
-  //
-  //    29 May 2003
-  //
-  //  Author:
-  //
-  //    John Burkardt
-  //
-  //  Parameters:
-  //
-  //    Input, int N, the order of the permutation.
-  //
-  //    Input, int A[N], B[N], the permutations to be examined.
-  //
-  //    Output, int PERM0_DISTANCE, the Ulam metric distance between A and B.
-  //
 {
   int *binv;
   int *c;
