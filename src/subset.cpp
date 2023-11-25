@@ -181,7 +181,6 @@ int *perm0_inverse ( int n, int p1[] )
   int i0;
   int i1;
   int i2;
-  int is;
   int *p2;
 
   if ( n <= 0 )
@@ -200,8 +199,6 @@ int *perm0_inverse ( int n, int p1[] )
     p2[i] = p1[i] + 1;
   }
 
-  is = 1;
-
   for ( i = 1; i <= n; i++ )
   {
     i1 = p2[i-1];
@@ -213,8 +210,7 @@ int *perm0_inverse ( int n, int p1[] )
       i1 = i2;
     }
 
-    is = - i4_sign ( p2[i-1] );
-    p2[i-1] = abs ( p2[i-1] ) * i4_sign ( is );
+    p2[i-1] = abs ( p2[i-1] ) * i4_sign ( - p2[i-1] );
   }
 
   for ( i = 1; i <= n; i++ )
