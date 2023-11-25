@@ -194,6 +194,8 @@ struct SMCAugmentation {
       const SMCData& dat
   );
 
+  void update_data(const unsigned int particle_index, SMCData& dat);
+
   void resample(const arma::uvec& index);
   const std::string aug_method;
   arma::vec aug_prob;

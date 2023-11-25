@@ -454,6 +454,12 @@ void SMCAugmentation::augment_partial(
   }
 }
 
+void SMCAugmentation::update_data(
+    const unsigned int particle_index, SMCData& dat) {
+  if(!any_missing) return;
+  dat.rankings = augmented_data.slice(particle_index);
+}
+
 uvec SMCParameters::draw_resampling_index() {
   return sample(regspace<uvec>(0, n_particles - 1), n_particles, true, norm_wgt);
 }
