@@ -11,8 +11,16 @@ void set_up_missing(arma::mat& rankings, arma::umat& missing_indicator);
 
 void initialize_missing_ranks(arma::mat& rankings, const arma::umat& missing_indicator);
 
+struct PseudoProposal{
+  PseudoProposal(const arma::vec& rankings, const double& probability) :
+  rankings { rankings }, probability { probability } {}
+  ~PseudoProposal() = default;
 
-Rcpp::List make_pseudo_proposal(
+  arma::vec rankings;
+  double probability;
+};
+
+PseudoProposal make_pseudo_proposal(
     arma::uvec unranked_items, arma::vec rankings, const double& alpha,
     const arma::vec& rho,
     const std::string metric, const bool forward = true

@@ -440,15 +440,13 @@ void SMCAugmentation::augment_partial(
         aug_prob(ii) = divide_by_fact(aug_prob(ii), unranked_items.n_elem);
 
       } else {
-        Rcpp::List pprop = make_pseudo_proposal(
+        PseudoProposal pprop = make_pseudo_proposal(
           unranked_items, augmented_data(span::all, span(jj), span(ii)),
           alpha, rho, pars.metric
         );
 
-        vec ar = pprop["proposal"];
-        augmented_data(span::all, span(jj), span(ii)) = ar;
-        double prob = pprop["probability"];
-        aug_prob(ii) *= prob;
+        augmented_data(span::all, span(jj), span(ii)) = pprop.rankings;
+        aug_prob(ii) *= pprop.probability;
       }
     }
   }

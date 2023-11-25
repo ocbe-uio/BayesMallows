@@ -44,19 +44,16 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
   // Sample an augmentation proposal
   if(pseudo) {
     uvec unranked_items = shuffle(find(missing_indicator == 1));
-    Rcpp::List pprop = make_pseudo_proposal(
+    auto pprop = make_pseudo_proposal(
       unranked_items, rankings, alpha, rho, metric, true
     );
 
-    Rcpp::List bprop = make_pseudo_proposal(
+    PseudoProposal bprop = make_pseudo_proposal(
       unranked_items, rankings, alpha, rho, metric, false);
-    double bprob = bprop["probability"];
 
-    vec ar = pprop["proposal"];
-    proposal = ar;
-    double prob = pprop["probability"];
-
-    log_hastings_correction = -std::log(prob) + std::log(bprob);
+    proposal = pprop.rankings;
+    log_hastings_correction = -std::log(pprop.probability) +
+      std::log(bprop.probability);
 
   } else {
     proposal = propose_augmentation(rankings, missing_indicator);
@@ -80,7 +77,7 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
 }
 
 
-Rcpp::List make_pseudo_proposal(
+PseudoProposal make_pseudo_proposal(
     uvec unranked_items, vec rankings, const double& alpha, const vec& rho,
     const std::string metric, const bool forward
 ) {
@@ -111,8 +108,5 @@ Rcpp::List make_pseudo_proposal(
     rankings(unranked_items) = setdiff(available_rankings, available_rankings(span(ranking_chosen)));
   }
 
-  return Rcpp::List::create(
-    Rcpp::Named("proposal") = rankings,
-    Rcpp::Named("probability") = prob
-  );
+  return PseudoProposal(rankings, prob);
 }
