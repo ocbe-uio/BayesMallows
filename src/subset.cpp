@@ -2,10 +2,11 @@
 // These functions are downloaded from http://people.sc.fsu.edu/~jburkardt/cpp_src/subset/subset.html
 // and have been modified to work with R and Rcpp.
 
-# include <Rcpp.h>
+# include <RcppArmadillo.h>
 # include <cstdlib>
 # include <cstring>
 # include <ctime>
+#include "setdiff.h"
 
 
 using namespace std;
@@ -22,40 +23,6 @@ void i4vec_decrement ( int n, int v[] )
   }
 
   return;
-}
-
-
-bool perm0_check ( int n, int p[] )
-{
-  bool check;
-  int location;
-  int value;
-
-  check = true;
-
-  for ( value = 0; value < n; value++ )
-  {
-    check = false;
-
-    for ( location = 0; location < n; location++ )
-    {
-      if ( p[location] == value )
-      {
-        check = true;
-        break;
-      }
-    }
-
-    if ( ! check )
-    {
-      Rcpp::Rcout << "\n";
-      Rcpp::Rcout << "PERM0_CHECK - Warning!\n";
-      Rcpp::Rcout << "  Permutation is missing value " << value << "\n";
-      break;
-    }
-  }
-
-  return check;
 }
 
 void perm_ascend ( int n, int a[], int &length, int sub[] )
@@ -139,23 +106,6 @@ void perm_ascend ( int n, int a[], int &length, int sub[] )
 void perm0_mul ( int n, int p1[], int p2[], int p3[] )
 {
   int i;
-
-  if ( !perm0_check ( n, p1 ) )
-  {
-    //cerr << "\n";
-    //cerr << "PERM0_MUL - Fatal error!\n";
-    //cerr << "  PERM0_CHECK rejects permutation.\n";
-    Rcpp::stop("error");
-  }
-
-  if ( !perm0_check ( n, p2 ) )
-  {
-    //cerr << "\n";
-    //cerr << "PERM0_MUL - Fatal error!\n";
-    //cerr << "  PERM0_CHECK rejects permutation.\n";
-    Rcpp::stop("error");
-  }
-
   for ( i = 0; i < n; i++ )
   {
     p3[i] = p2[p1[i]];
@@ -173,11 +123,6 @@ int *perm0_inverse ( int n, int p1[] )
   int *p2;
 
   if ( n <= 0 )
-  {
-    Rcpp::stop("error");
-  }
-
-  if ( !perm0_check ( n, p1 ) )
   {
     Rcpp::stop("error");
   }
