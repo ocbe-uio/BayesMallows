@@ -12,15 +12,8 @@ This is a resubmission, containing many bug fixes and added functionality.
 
 We got 
 
-1 NOTE, 0 WARNINGs, 0 ERRORs.
+0 NOTEs, 0 WARNINGs, 0 ERRORs.
 
-The note was, slightly dependent on platform
-
-* checking installed package size ... NOTE
-  installed size is 23.3Mb
-  sub-directories of 1Mb or more:
-    doc    1.7Mb
-    libs  20.8Mb
 
 ## Downstream Dependencies
 The package has one downstream dependency, the package PlackettLuce. This package is not affected by this change, as it does not use any of its functions.
