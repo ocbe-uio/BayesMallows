@@ -53,25 +53,12 @@ double spearman_distance(const vec& r1, const vec& r2){
 }
 
 double ulam_distance(const vec& r1, const vec& r2){
-  int N = r1.n_elem;
 
   ivec a = conv_to<ivec>::from(r1) - 1;
   ivec b = conv_to<ivec>::from(r2) - 1;
 
-  int *p1 = (int*) calloc(N, sizeof (int));
-  int *p2 = (int*) calloc(N, sizeof (int));
+  auto distance = perm0_distance ( a, b );
 
-  int distance;
-
-  for(int i = 0; i < N; ++i){
-    p1[i] = static_cast<int>(as_scalar(a(i)));
-    p2[i] = static_cast<int>(as_scalar(b(i)));
-  }
-
-  distance = perm0_distance ( a, b );
-
-  free(p1);
-  free(p2);
   return static_cast<double>(distance);
 }
 
