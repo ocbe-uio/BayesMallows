@@ -53,13 +53,6 @@ int perm_ascend ( const arma::ivec& a)
     }
   }
 
-  int j = top(length-1);
-
-  for ( int i{length-1}; 1 <= i; i-- )
-  {
-    j = top_prev(j-1);
-  }
-
   return length;
 }
 
@@ -71,23 +64,19 @@ arma::ivec perm0_mul ( const arma::ivec& p1, const arma::ivec& p2)
   return p3;
 }
 
-arma::ivec perm0_inverse ( const arma::ivec& p1 )
-{
-  int i;
-  int i0;
-  int i1;
-  int i2;
+arma::ivec perm0_inverse ( const arma::ivec& p1 ) {
+
   int n = p1.size();
 
   arma::ivec p2 = p1 + 1;
 
-  for ( i = 1; i <= n; i++ )
+  for ( int i{1}; i <= n; i++ )
   {
-    i1 = p2(i-1);
+    int i1 = p2(i-1);
 
     while ( i < i1 )
     {
-      i2 = p2(i1-1);
+      int i2 = p2(i1-1);
       p2(i1-1) = - i2;
       i1 = i2;
     }
@@ -95,23 +84,20 @@ arma::ivec perm0_inverse ( const arma::ivec& p1 )
     p2(i-1) = abs ( p2(i-1) ) * ((- p2(i-1) < 0) ? -1 : 1);
   }
 
-  for ( i = 1; i <= n; i++ )
+  for ( int i{1}; i <= n; i++ )
   {
-    i1 = - p2(i-1);
+    int i1 = - p2(i-1);
 
     if ( 0 <= i1 )
     {
-      i0 = i;
+      int i0 = i;
 
       for ( ; ; )
       {
-        i2 = p2(i1-1);
+        int i2 = p2(i1-1);
         p2[i1-1] = i0;
 
-        if ( i2 < 0 )
-        {
-          break;
-        }
+        if ( i2 < 0 ) break;
 
         i0 = i1;
         i1 = i2;
