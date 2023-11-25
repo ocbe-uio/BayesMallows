@@ -13,7 +13,7 @@ using namespace std;
 
 # include "subset.h"
 
-int perm_ascend ( const arma::ivec& a, int sub[] )
+int perm_ascend ( const arma::ivec& a)
 {
   int length{};
   int i;
@@ -38,10 +38,6 @@ int perm_ascend ( const arma::ivec& a, int sub[] )
   for ( i = 0; i < n; i++ )
   {
     top_prev[i] = 0;
-  }
-  for ( i = 0; i < n; i++ )
-  {
-    sub[i] = 0;
   }
 
   for ( i = 1; i <= n; i++ )
@@ -76,12 +72,10 @@ int perm_ascend ( const arma::ivec& a, int sub[] )
   }
 
   j = top[length-1];
-  sub[length-1] = a(j-1);
 
   for ( i = length-1; 1 <= i; i-- )
   {
     j = top_prev[j-1];
-    sub[i-1] = a(j-1);
   }
 
   delete [] top;
@@ -152,19 +146,10 @@ arma::ivec perm0_inverse ( const arma::ivec& p1 )
 int perm0_distance ( const arma::ivec& a, const arma::ivec& b )
 {
 
-  int *sub;
-
   int n = a.size();
-
-  sub = new int[n];
-
   arma::ivec binv = perm0_inverse ( b );
-
   arma::ivec c = perm0_mul ( a, binv);
-
-  int length = perm_ascend ( c, sub );
-
-  delete [] sub;
+  int length = perm_ascend ( c);
 
   return n - length;
 }
