@@ -1,27 +1,21 @@
 // SUBSET is a C++ library of Combinatorial Subroutines developed by John Burkardt, distributed under GPL.
 // These functions are downloaded from http://people.sc.fsu.edu/~jburkardt/cpp_src/subset/subset.html
-// and have been modified to work with R and Rcpp.
+// and have been modified considerably to use RcppArmadillo rather than C style arrays.
 
 # include <RcppArmadillo.h>
-# include <cstdlib>
-# include <cstring>
-# include <ctime>
 #include "setdiff.h"
 
+using namespace arma;
 
-using namespace std;
-
-# include "subset.h"
-
-int perm_ascend ( const arma::ivec& a)
+int perm_ascend ( const ivec& a)
 {
   int length{};
   int n = a.size();
 
   if ( n <= 0 ) return length;
 
-  arma::ivec top(n, arma::fill::zeros);
-  arma::ivec top_prev(n, arma::fill::zeros);
+  ivec top(n, fill::zeros);
+  ivec top_prev(n, fill::zeros);
 
   for ( int i{1}; i <= n; i++ )
   {
@@ -41,7 +35,7 @@ int perm_ascend ( const arma::ivec& a)
       k = length;
     }
 
-    top[k-1] = i;
+    top(k-1) = i;
 
     if ( 1 < k )
     {
@@ -56,19 +50,19 @@ int perm_ascend ( const arma::ivec& a)
   return length;
 }
 
-arma::ivec perm0_mul ( const arma::ivec& p1, const arma::ivec& p2)
+ivec perm0_mul ( const ivec& p1, const ivec& p2)
 {
   int n = p1.size();
-  arma::ivec p3(n);
+  ivec p3(n);
   for ( size_t i{}; i < n; i++ ) p3(i) = p2(p1(i));
   return p3;
 }
 
-arma::ivec perm0_inverse ( const arma::ivec& p1 ) {
+ivec perm0_inverse ( const ivec& p1 ) {
 
   int n = p1.size();
 
-  arma::ivec p2 = p1 + 1;
+  ivec p2 = p1 + 1;
 
   for ( int i{1}; i <= n; i++ )
   {
@@ -81,7 +75,7 @@ arma::ivec perm0_inverse ( const arma::ivec& p1 ) {
       i1 = i2;
     }
 
-    p2(i-1) = abs ( p2(i-1) ) * ((- p2(i-1) < 0) ? -1 : 1);
+    p2(i-1) = std::abs ( p2(i-1) ) * ((- p2(i-1) < 0) ? -1 : 1);
   }
 
   for ( int i{1}; i <= n; i++ )
@@ -95,7 +89,7 @@ arma::ivec perm0_inverse ( const arma::ivec& p1 ) {
       for ( ; ; )
       {
         int i2 = p2(i1-1);
-        p2[i1-1] = i0;
+        p2(i1-1) = i0;
 
         if ( i2 < 0 ) break;
 
@@ -108,12 +102,12 @@ arma::ivec perm0_inverse ( const arma::ivec& p1 ) {
   return p2 - 1;
 }
 
-int perm0_distance ( const arma::ivec& a, const arma::ivec& b )
+int perm0_distance ( const ivec& a, const ivec& b )
 {
 
   int n = a.size();
-  arma::ivec binv = perm0_inverse ( b );
-  arma::ivec c = perm0_mul ( a, binv);
+  ivec binv = perm0_inverse ( b );
+  ivec c = perm0_mul ( a, binv);
   int length = perm_ascend ( c);
 
   return n - length;
