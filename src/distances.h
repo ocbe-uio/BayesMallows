@@ -1,8 +1,7 @@
 #ifndef DISTANCES_H
 #define DISTANCES_H
 
-
-
+int perm0_distance ( const arma::ivec& a, const arma::ivec& b );
 double get_rank_distance(arma::vec, arma::vec, std::string);
 double rank_dist_sum(const arma::mat&, const arma::vec&, const std::string&, const arma::vec&);
 

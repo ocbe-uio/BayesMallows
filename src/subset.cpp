@@ -7,8 +7,7 @@
 
 using namespace arma;
 
-int perm_ascend ( const ivec& a)
-{
+int perm_ascend ( const ivec& a) {
   int length{};
   int n = a.size();
 
@@ -17,32 +16,25 @@ int perm_ascend ( const ivec& a)
   ivec top(n, fill::zeros);
   ivec top_prev(n, fill::zeros);
 
-  for ( int i{1}; i <= n; i++ )
-  {
+  for ( int i{1}; i <= n; i++ ) {
     int k = 0;
-    for ( int j{1}; j <= length; j++ )
-    {
-      if ( a(i-1) <= a(top(j-1)-1) )
-      {
+    for ( int j{1}; j <= length; j++ ) {
+      if ( a(i-1) <= a(top(j-1)-1) ) {
         k = j;
         break;
       }
     }
 
-    if ( k == 0 )
-    {
+    if ( k == 0 ) {
       length = length + 1;
       k = length;
     }
 
     top(k-1) = i;
 
-    if ( 1 < k )
-    {
+    if ( 1 < k ) {
       top_prev(i-1) = top(k-2);
-    }
-    else
-    {
+    } else {
       top_prev(i-1) = 0;
     }
   }
@@ -50,8 +42,7 @@ int perm_ascend ( const ivec& a)
   return length;
 }
 
-ivec perm0_mul ( const ivec& p1, const ivec& p2)
-{
+ivec perm0_mul ( const ivec& p1, const ivec& p2) {
   int n = p1.size();
   ivec p3(n);
   for ( size_t i{}; i < n; i++ ) p3(i) = p2(p1(i));
@@ -61,15 +52,12 @@ ivec perm0_mul ( const ivec& p1, const ivec& p2)
 ivec perm0_inverse ( const ivec& p1 ) {
 
   int n = p1.size();
-
   ivec p2 = p1 + 1;
 
-  for ( int i{1}; i <= n; i++ )
-  {
+  for ( int i{1}; i <= n; i++ ) {
     int i1 = p2(i-1);
 
-    while ( i < i1 )
-    {
+    while ( i < i1 ) {
       int i2 = p2(i1-1);
       p2(i1-1) = - i2;
       i1 = i2;
@@ -78,16 +66,13 @@ ivec perm0_inverse ( const ivec& p1 ) {
     p2(i-1) = std::abs ( p2(i-1) ) * ((- p2(i-1) < 0) ? -1 : 1);
   }
 
-  for ( int i{1}; i <= n; i++ )
-  {
+  for ( int i{1}; i <= n; i++ ) {
     int i1 = - p2(i-1);
 
-    if ( 0 <= i1 )
-    {
+    if ( 0 <= i1 ) {
       int i0 = i;
 
-      for ( ; ; )
-      {
+      for ( ; ; ) {
         int i2 = p2(i1-1);
         p2(i1-1) = i0;
 
@@ -102,8 +87,7 @@ ivec perm0_inverse ( const ivec& p1 ) {
   return p2 - 1;
 }
 
-int perm0_distance ( const ivec& a, const ivec& b )
-{
+int perm0_distance ( const ivec& a, const ivec& b ) {
 
   int n = a.size();
   ivec binv = perm0_inverse ( b );
