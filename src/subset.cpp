@@ -16,37 +16,19 @@ using namespace std;
 int perm_ascend ( const arma::ivec& a)
 {
   int length{};
-  int i;
-  int j;
-  int k;
-  int *top;
-  int *top_prev;
   int n = a.size();
 
-  if ( n <= 0 )
-  {
-    return length;
-  }
+  if ( n <= 0 ) return length;
 
-  top = new int[n];
-  for ( i = 0; i < n; i++ )
-  {
-    top[i] = 0;
-  }
+  arma::ivec top(n, arma::fill::zeros);
+  arma::ivec top_prev(n, arma::fill::zeros);
 
-  top_prev = new int[n];
-  for ( i = 0; i < n; i++ )
+  for ( int i{1}; i <= n; i++ )
   {
-    top_prev[i] = 0;
-  }
-
-  for ( i = 1; i <= n; i++ )
-  {
-    k = 0;
-
-    for ( j = 1; j <= length; j++ )
+    int k = 0;
+    for ( int j{1}; j <= length; j++ )
     {
-      if ( a(i-1) <= a(top[j-1]-1) )
+      if ( a(i-1) <= a(top(j-1)-1) )
       {
         k = j;
         break;
@@ -63,23 +45,20 @@ int perm_ascend ( const arma::ivec& a)
 
     if ( 1 < k )
     {
-      top_prev[i-1] = top[k-2];
+      top_prev(i-1) = top(k-2);
     }
     else
     {
-      top_prev[i-1] = 0;
+      top_prev(i-1) = 0;
     }
   }
 
-  j = top[length-1];
+  int j = top(length-1);
 
-  for ( i = length-1; 1 <= i; i-- )
+  for ( int i{length-1}; 1 <= i; i-- )
   {
-    j = top_prev[j-1];
+    j = top_prev(j-1);
   }
-
-  delete [] top;
-  delete [] top_prev;
 
   return length;
 }
