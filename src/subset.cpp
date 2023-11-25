@@ -13,20 +13,9 @@ using namespace std;
 
 # include "subset.h"
 
-void i4vec_decrement ( int n, int v[] )
+int perm_ascend ( const arma::ivec& a, int sub[] )
 {
-  int i;
-
-  for ( i = 0; i < n; i++ )
-  {
-    v[i] = v[i] - 1;
-  }
-
-  return;
-}
-
-void perm_ascend ( const arma::ivec& a, int &length, int sub[] )
-{
+  int length{};
   int i;
   int j;
   int k;
@@ -36,8 +25,7 @@ void perm_ascend ( const arma::ivec& a, int &length, int sub[] )
 
   if ( n <= 0 )
   {
-    length = 0;
-    return;
+    return length;
   }
 
   top = new int[n];
@@ -55,8 +43,6 @@ void perm_ascend ( const arma::ivec& a, int &length, int sub[] )
   {
     sub[i] = 0;
   }
-
-  length = 0;
 
   for ( i = 1; i <= n; i++ )
   {
@@ -101,7 +87,7 @@ void perm_ascend ( const arma::ivec& a, int &length, int sub[] )
   delete [] top;
   delete [] top_prev;
 
-  return;
+  return length;
 }
 
 arma::ivec perm0_mul ( const arma::ivec& p1, const arma::ivec& p2)
@@ -166,10 +152,7 @@ arma::ivec perm0_inverse ( const arma::ivec& p1 )
 int perm0_distance ( const arma::ivec& a, const arma::ivec& b )
 {
 
-
-  int length;
   int *sub;
-  int value;
 
   int n = a.size();
 
@@ -179,12 +162,9 @@ int perm0_distance ( const arma::ivec& a, const arma::ivec& b )
 
   arma::ivec c = perm0_mul ( a, binv);
 
-  perm_ascend ( c, length, sub );
-
+  int length = perm_ascend ( c, sub );
 
   delete [] sub;
 
-  value = n - length;
-
-  return value;
+  return n - length;
 }
