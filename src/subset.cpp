@@ -24,17 +24,6 @@ void i4vec_decrement ( int n, int v[] )
   return;
 }
 
-int i4_sign ( int i )
-{
-  if ( i < 0 )
-  {
-    return (-1);
-  }
-  else
-  {
-    return 1;
-  }
-}
 
 bool perm0_check ( int n, int p[] )
 {
