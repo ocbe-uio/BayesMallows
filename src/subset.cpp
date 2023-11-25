@@ -103,50 +103,45 @@ void perm_ascend ( int n, int a[], int &length, int sub[] )
   return;
 }
 
-void perm0_mul ( const arma::ivec& p1, int p2[], int p3[] )
+void perm0_mul ( const arma::ivec& p1, const arma::ivec& p2, int p3[] )
 {
   int i;
   int n = p1.size();
   for ( i = 0; i < n; i++ )
   {
-    p3[i] = p2[p1(i)];
+    p3[i] = p2(p1(i));
   }
 
   return;
 }
 
-int *perm0_inverse ( const arma::ivec& p1 )
+arma::ivec perm0_inverse ( const arma::ivec& p1 )
 {
   int i;
   int i0;
   int i1;
   int i2;
-  int *p2;
   int n = p1.size();
 
-  p2 = new int[n];
-  for ( i = 0; i < n; i++ )
-  {
-    p2[i] = p1(i) + 1;
-  }
+  arma::ivec p2 = p1 + 1;
 
   for ( i = 1; i <= n; i++ )
   {
-    i1 = p2[i-1];
+    i1 = p2(i-1);
 
     while ( i < i1 )
     {
-      i2 = p2[i1-1];
-      p2[i1-1] = - i2;
+      i2 = p2(i1-1);
+      p2(i1-1) = - i2;
       i1 = i2;
     }
 
-    p2[i-1] = abs ( p2[i-1] ) * ((- p2[i-1] < 0) ? -1 : 1);
+    p2(i-1) = abs ( p2(i-1) ) * ((- p2(i-1) < 0) ? -1 : 1);
   }
 
   for ( i = 1; i <= n; i++ )
   {
-    i1 = - p2[i-1];
+    i1 = - p2(i-1);
 
     if ( 0 <= i1 )
     {
@@ -154,7 +149,7 @@ int *perm0_inverse ( const arma::ivec& p1 )
 
       for ( ; ; )
       {
-        i2 = p2[i1-1];
+        i2 = p2(i1-1);
         p2[i1-1] = i0;
 
         if ( i2 < 0 )
@@ -168,14 +163,12 @@ int *perm0_inverse ( const arma::ivec& p1 )
     }
   }
 
-  i4vec_decrement ( n, p2 );
-
-  return p2;
+  return p2 - 1;
 }
 
 int perm0_distance ( const arma::ivec& a, const arma::ivec& b )
 {
-  int *binv;
+
   int *c;
 
   int length;
@@ -186,13 +179,12 @@ int perm0_distance ( const arma::ivec& a, const arma::ivec& b )
   c = new int[n];
   sub = new int[n];
 
-  binv = perm0_inverse ( b );
+  arma::ivec binv = perm0_inverse ( b );
 
   perm0_mul ( a, binv, c );
 
   perm_ascend ( n, c, length, sub );
 
-  delete [] binv;
   delete [] c;
   delete [] sub;
 
