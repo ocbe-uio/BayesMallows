@@ -1,7 +1,6 @@
 #ifndef SUBSET_H
 #define SUBSET_H
 
-using namespace std;
-int perm0_distance ( int n, int a[], int b[] );
+int perm0_distance ( const arma::ivec& a, const arma::ivec& b );
 
 #endif

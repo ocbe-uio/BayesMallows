@@ -68,7 +68,7 @@ double ulam_distance(const vec& r1, const vec& r2){
     p2[i] = static_cast<int>(as_scalar(b(i)));
   }
 
-  distance = perm0_distance ( N, p1, p2 );
+  distance = perm0_distance ( a, b );
 
   free(p1);
   free(p2);

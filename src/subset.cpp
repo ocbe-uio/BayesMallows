@@ -103,34 +103,31 @@ void perm_ascend ( int n, int a[], int &length, int sub[] )
   return;
 }
 
-void perm0_mul ( int n, int p1[], int p2[], int p3[] )
+void perm0_mul ( const arma::ivec& p1, int p2[], int p3[] )
 {
   int i;
+  int n = p1.size();
   for ( i = 0; i < n; i++ )
   {
-    p3[i] = p2[p1[i]];
+    p3[i] = p2[p1(i)];
   }
 
   return;
 }
 
-int *perm0_inverse ( int n, int p1[] )
+int *perm0_inverse ( const arma::ivec& p1 )
 {
   int i;
   int i0;
   int i1;
   int i2;
   int *p2;
-
-  if ( n <= 0 )
-  {
-    Rcpp::stop("error");
-  }
+  int n = p1.size();
 
   p2 = new int[n];
   for ( i = 0; i < n; i++ )
   {
-    p2[i] = p1[i] + 1;
+    p2[i] = p1(i) + 1;
   }
 
   for ( i = 1; i <= n; i++ )
@@ -176,7 +173,7 @@ int *perm0_inverse ( int n, int p1[] )
   return p2;
 }
 
-int perm0_distance ( int n, int a[], int b[] )
+int perm0_distance ( const arma::ivec& a, const arma::ivec& b )
 {
   int *binv;
   int *c;
@@ -185,12 +182,13 @@ int perm0_distance ( int n, int a[], int b[] )
   int *sub;
   int value;
 
+  int n = a.size();
   c = new int[n];
   sub = new int[n];
 
-  binv = perm0_inverse ( n, b );
+  binv = perm0_inverse ( b );
 
-  perm0_mul ( n, a, binv, c );
+  perm0_mul ( a, binv, c );
 
   perm_ascend ( n, c, length, sub );
 
