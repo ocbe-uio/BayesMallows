@@ -1,10 +1,10 @@
 #include "classes.h"
+#include "missing_data.h"
 #include "parameterupdates.h"
 #include "misc.h"
-#include "distances.h"
 #include "partitionfuns.h"
-#include "missing_data.h"
 #include "sample.h"
+#include "distances.h"
 #include "pairwise_comparisons.h"
 
 using namespace arma;
@@ -156,7 +156,13 @@ Parameters::Parameters(
 
     rho.set_size(n_items, n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / rho_thinning)));
     Rcpp::Nullable<mat> rho_init = initial_values["rho_init"];
-    rho.slice(0) = initialize_rho(n_items, n_clusters, rho_init);
+    if(rho_init.isNotNull()){
+      rho.slice(0) = repmat(Rcpp::as<mat>(rho_init), 1, n_clusters);
+    } else {
+      for (int i = 0; i < n_clusters; ++i) {
+        rho.slice(0).col(i) = randperm<vec>(n_items) + 1;
+      }
+    }
     rho_old = rho(span::all, span::all, span(0));
 
     if(error_model == "bernoulli"){
@@ -289,11 +295,8 @@ void Clustering::update_cluster_probs(const Parameters& pars, const Priors& pris
   vec cluster_probs(pars.n_clusters);
 
   for(int i = 0; i < pars.n_clusters; ++i){
-    // Find the parameter for this cluster and provide it to the gamma distribution
     cluster_probs(i) = R::rgamma(sum(current_cluster_assignment == i) + pris.psi, 1.0);
   }
-  // Finally, normalize cluster_probs with 1-norm.
-  // result now comes from Dirichlet(tau_k(0), ..., tau_k(n_clusters))
   current_cluster_probs = normalise(cluster_probs, 1);
 }
 

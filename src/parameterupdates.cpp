@@ -8,19 +8,6 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// Initialize latent ranks as provided by rho_init, or randomly:
-arma::mat initialize_rho(int n_items, int n_cols,
-                         Rcpp::Nullable<arma::mat> rho_init){
-  if(rho_init.isNotNull()){
-    return repmat(Rcpp::as<mat>(rho_init), 1, n_cols);
-  } else {
-    mat rho_samples(n_items, n_cols);
-    for (int i = 0; i < n_cols; ++i) {
-      rho_samples.col(i) = randperm<vec>(n_items) + 1;
-    }
-    return rho_samples;
-  }
-}
 
 AlphaRatio make_new_alpha(const double& alpha_old, const vec& rho_old,
                           const double& alpha_prop_sd, const std::string& metric,
