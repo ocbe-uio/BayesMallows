@@ -65,6 +65,6 @@ ggplot(estimates, aes(x = alpha, y = logz_estimate, color = type)) +
 # Say we choose to use the importance sampling estimate with 1e4 Monte Carlo samples:
 model_fit <- compute_mallows(
   setup_rank_data(potato_visual),
-  model = set_model_options(metric = "spearman"),
+  model_options = set_model_options(metric = "spearman"),
   logz_estimate = fit2)
 

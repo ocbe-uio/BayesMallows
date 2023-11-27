@@ -1,4 +1,4 @@
-tidy_mcmc <- function(fits, data, model, compute_options) {
+tidy_mcmc <- function(fits, data, model_options, compute_options) {
   fit <- list()
   fit$save_aug <- compute_options$save_aug
 
@@ -32,14 +32,14 @@ tidy_mcmc <- function(fits, data, model, compute_options) {
 
   fit$cluster_assignment <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_cluster_assignment(
-      fits[[i]]$cluster_assignment, i, model$n_clusters, fits[[i]]$n_assessors,
+      fits[[i]]$cluster_assignment, i, model_options$n_clusters, fits[[i]]$n_assessors,
       compute_options$nmc
     )
   }))
 
   fit$cluster_probs <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_cluster_probabilities(
-      fits[[i]]$cluster_probs, i, model$n_clusters,
+      fits[[i]]$cluster_probs, i, model_options$n_clusters,
       compute_options$nmc
     )
   }))
@@ -60,13 +60,13 @@ tidy_mcmc <- function(fits, data, model, compute_options) {
     tidy_error_probability(fits[[i]]$theta, i)
   }))
 
-  fit$n_clusters <- model$n_clusters
+  fit$n_clusters <- model_options$n_clusters
   fit$items <- items
   fit$n_items <- data$n_items
   fit$n_assessors <- fits[[1]]$n_assessors
 
   fit$nmc <- compute_options$nmc
-  fit$metric <- model$metric
+  fit$metric <- model_options$metric
   fit$burnin <- compute_options$burnin
 
   return(fit)

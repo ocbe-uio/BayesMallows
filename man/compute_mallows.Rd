@@ -6,7 +6,7 @@
 \usage{
 compute_mallows(
   data,
-  model = set_model_options(),
+  model_options = set_model_options(),
   compute_options = set_compute_options(),
   priors = set_priors(),
   initial_values = set_initial_values(),
@@ -19,7 +19,7 @@ compute_mallows(
 \item{data}{An object of class \code{"BayesMallowsData"} returned from
 \code{\link[=setup_rank_data]{setup_rank_data()}}.}
 
-\item{model}{An object of class \code{"BayesMallowsModelOptions"} returned
+\item{model_options}{An object of class \code{"BayesMallowsModelOptions"} returned
 from \code{\link[=set_model_options]{set_model_options()}}.}
 
 \item{compute_options}{An object of class \code{"BayesMallowsComputeOptions"}
@@ -144,7 +144,7 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
   # We start with computing a 3-cluster solution
   model_fit <- compute_mallows(
     data = setup_rank_data(sushi_rankings),
-    model = set_model_options(n_clusters = 3),
+    model_options = set_model_options(n_clusters = 3),
     compute_options = set_compute_options(nmc = 10000),
     verbose = TRUE)
   # We then assess convergence of the scale parameter alpha
@@ -211,14 +211,14 @@ m <- compute_mallows(
   # the cluster probabilites
   system.time(m <- compute_mallows(
     setup_rank_data(rankings = sushi_rankings),
-    model = set_model_options(n_clusters = 6),
+    model_options = set_model_options(n_clusters = 6),
     compute_options = set_compute_options(nmc = 2000, save_ind_clus = FALSE),
     verbose = TRUE))
   # With this options, compute_mallows will save cluster_probs2.csv,
   # cluster_probs3.csv, ..., cluster_probs[nmc].csv.
   system.time(m <- compute_mallows(
     setup_rank_data(rankings = sushi_rankings),
-    model = set_model_options(n_clusters = 6),
+    model_options = set_model_options(n_clusters = 6),
     compute_options = set_compute_options(nmc = 2000, save_ind_clus = TRUE),
     verbose = TRUE))
 

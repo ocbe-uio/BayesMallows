@@ -10,7 +10,7 @@ test_that("compute_mallows is correct for complete data", {
     set.seed(123)
     mod_bmm <- compute_mallows(
       data = setup_rank_data(potato_visual),
-      model = set_model_options(metric = expectations$metric[[i]]),
+      model_options = set_model_options(metric = expectations$metric[[i]]),
       compute_options = set_compute_options(nmc = 10000, burnin = 1000)
     )
 
@@ -40,7 +40,7 @@ test_that("compute_mallows is correct for pairwise preferences", {
 
     mod_bmm <- compute_mallows(
       data = setup_rank_data(preferences = beach_preferences),
-      model = set_model_options(metric = expectations$metric[[i]]),
+      model_options = set_model_options(metric = expectations$metric[[i]]),
       compute_options = set_compute_options(
         nmc = 10000, burnin = 1000, alpha_prop_sd = .1)
     )
@@ -101,7 +101,7 @@ test_that("compute_mallows is correct for top-k ranks", {
     set.seed(123)
     mod_bmm <- compute_mallows(
       data = setup_rank_data(dat),
-      model = set_model_options(metric = expectations$metric[[i]]),
+      model_options = set_model_options(metric = expectations$metric[[i]]),
       compute_options = set_compute_options(nmc = 200000, burnin = 100000)
     )
 

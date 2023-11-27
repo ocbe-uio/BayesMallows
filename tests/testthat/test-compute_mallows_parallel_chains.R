@@ -133,7 +133,7 @@ test_that("compute_mallows error model works", {
   expect_s3_class(
     compute_mallows(
       data = dat,
-      model = set_model_options(error_model = "bernoulli"),
+      model_options = set_model_options(error_model = "bernoulli"),
       compute_options = set_compute_options(nmc = 10),
       cl = cl
     ),
@@ -172,7 +172,7 @@ test_that("compute_mallows runs with the right distances", {
     expect_s3_class(
       compute_mallows(
         data = dat,
-        model = set_model_options(metric = metric),
+        model_options = set_model_options(metric = metric),
         compute_options = set_compute_options(nmc = 3), cl = cl
       ), "BayesMallows"
     )

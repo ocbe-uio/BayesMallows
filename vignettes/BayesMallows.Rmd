@@ -107,7 +107,7 @@ By default, `compute_mallows` uses the footrule distance, but the user can also 
 ```r
 bmm <- compute_mallows(
   data = complete_data, 
-  model = set_model_options(metric = "spearman"),
+  model_options = set_model_options(metric = "spearman"),
   compute_options = set_compute_options(nmc = 21000, burnin = 1000)
 )
 ```
@@ -444,7 +444,7 @@ Having chosen 5 mixture components, we go on to fit a final model, still running
 ```r
 bmm <- compute_mallows(
   data = sushi_data,
-  model = set_model_options(n_cluster = 5),
+  model_options = set_model_options(n_cluster = 5),
   compute_options = set_compute_options(
     nmc = 11000, burnin = 1000, clus_thinning = 10, rho_thinning = 10)
 )

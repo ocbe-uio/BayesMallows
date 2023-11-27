@@ -27,7 +27,7 @@ test_that("compute_mallows_mixtures works", {
   set.seed(123)
   mixture_model <- compute_mallows(
     data = dat,
-    model = set_model_options(n_clusters = 5),
+    model_options = set_model_options(n_clusters = 5),
     compute_options = set_compute_options(include_wcd = TRUE, nmc = 10)
   )
 
@@ -47,7 +47,7 @@ test_that("compute_mallows_mixtures works", {
   set.seed(123)
   mixture_model1 <- compute_mallows(
     data = dat,
-    model = set_model_options(n_clusters = 5),
+    model_options = set_model_options(n_clusters = 5),
     compute_options = set_compute_options(include_wcd = TRUE, nmc = 1000),
     priors = set_priors(psi = 100)
   )
@@ -55,7 +55,7 @@ test_that("compute_mallows_mixtures works", {
   set.seed(123)
   mixture_model2 <- compute_mallows(
     data = dat,
-    model = set_model_options(n_clusters = 5),
+    model_options = set_model_options(n_clusters = 5),
     compute_options = set_compute_options(include_wcd = TRUE, nmc = 1000),
     priors = set_priors(psi = 1)
   )

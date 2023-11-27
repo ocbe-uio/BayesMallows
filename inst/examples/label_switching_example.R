@@ -10,14 +10,14 @@
   # the cluster probabilites
   system.time(m <- compute_mallows(
     setup_rank_data(rankings = sushi_rankings),
-    model = set_model_options(n_clusters = 6),
+    model_options = set_model_options(n_clusters = 6),
     compute_options = set_compute_options(nmc = 2000, save_ind_clus = FALSE),
     verbose = TRUE))
   # With this options, compute_mallows will save cluster_probs2.csv,
   # cluster_probs3.csv, ..., cluster_probs[nmc].csv.
   system.time(m <- compute_mallows(
     setup_rank_data(rankings = sushi_rankings),
-    model = set_model_options(n_clusters = 6),
+    model_options = set_model_options(n_clusters = 6),
     compute_options = set_compute_options(nmc = 2000, save_ind_clus = TRUE),
     verbose = TRUE))
 

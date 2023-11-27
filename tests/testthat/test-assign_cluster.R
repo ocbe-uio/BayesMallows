@@ -20,7 +20,7 @@ test_that("assign_cluster works", {
   set.seed(123)
   m <- compute_mallows(
     data = setup_rank_data(potato_visual),
-    model = set_model_options(n_clusters = 3),
+    model_options = set_model_options(n_clusters = 3),
     compute_options = set_compute_options(nmc = 10)
   )
 

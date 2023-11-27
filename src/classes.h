@@ -38,7 +38,7 @@ struct Priors {
 };
 
 struct Parameters {
-  Parameters(const Rcpp::List& model,
+  Parameters(const Rcpp::List& model_options,
              const Rcpp::List& compute_options,
              const Rcpp::List& initial_values,
              const unsigned int n_items);
@@ -148,7 +148,7 @@ struct SMCData : Data {
 
 struct SMCParameters {
   SMCParameters(
-    const Rcpp::List& model,
+    const Rcpp::List& model_options,
     const Rcpp::List& smc_options,
     const Rcpp::List& compute_options,
     const Rcpp::List& initial_values);

@@ -11,6 +11,7 @@ update_mallows(model, new_data, ...)
 \method{update_mallows}{BayesMallows}(
   model,
   new_data,
+  model_options = set_model_options(),
   smc_options = set_smc_options(),
   compute_options = set_compute_options(),
   priors = model$priors,
@@ -25,6 +26,9 @@ update_mallows(model, new_data, ...)
 \item{new_data}{Object returned from \code{\link[=setup_rank_data]{setup_rank_data()}} containing new data.}
 
 \item{...}{Optional arguments. Currently not used.}
+
+\item{model_options}{An object of class \code{"BayesMallowsModelOptions"} returned
+from \code{\link[=set_model_options]{set_model_options()}}.}
 
 \item{smc_options}{SMC specific options returned from \code{\link[=set_smc_options]{set_smc_options()}}.}
 

@@ -140,7 +140,7 @@ test_that("compute_mallows error model works", {
   expect_message(
     compute_mallows(
       data = setup_rank_data(preferences = preferences),
-      model = set_model_options(error_model = "bernoulli"),
+      model_options = set_model_options(error_model = "bernoulli"),
       compute_options = set_compute_options(nmc = 10)
     ),
     "Preferences are intransitive."
@@ -164,7 +164,7 @@ test_that("compute_mallows runs with the right distances", {
   for (metric in c("footrule", "spearman", "cayley", "kendall", "ulam", "hamming")) {
     expect_s3_class(
       compute_mallows(dat,
-        model = set_model_options(metric = metric),
+        model_options = set_model_options(metric = metric),
         compute_options = set_compute_options(nmc = 3)
       ), "BayesMallows"
     )

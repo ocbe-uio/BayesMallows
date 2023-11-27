@@ -63,7 +63,7 @@ plot(model_fit, parameter = "rho",
   # example
   model_fit <- compute_mallows(
     setup_rank_data(sushi_rankings),
-    model = set_model_options(n_clusters = 5))
+    model_options = set_model_options(n_clusters = 5))
   model_fit$burnin <- 1000
   # We can then plot the posterior distributions of the cluster probabilities
   plot(model_fit, parameter = "cluster_probs")

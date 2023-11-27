@@ -27,7 +27,7 @@
 #' @param data An object of class `"BayesMallowsData"` returned from
 #'   [setup_rank_data()].
 #'
-#' @param model An object of class `"BayesMallowsModelOptions"` returned
+#' @param model_options An object of class `"BayesMallowsModelOptions"` returned
 #'   from [set_model_options()].
 #'
 #' @param compute_options An object of class `"BayesMallowsComputeOptions"`
@@ -70,7 +70,7 @@
 #'
 compute_mallows <- function(
     data,
-    model = set_model_options(),
+    model_options = set_model_options(),
     compute_options = set_compute_options(),
     priors = set_priors(),
     initial_values = set_initial_values(),
@@ -78,14 +78,14 @@ compute_mallows <- function(
     verbose = FALSE,
     cl = NULL) {
   validate_class(data, "BayesMallowsData")
-  validate_class(model, "BayesMallowsModelOptions")
+  validate_class(model_options, "BayesMallowsModelOptions")
   validate_class(compute_options, "BayesMallowsComputeOptions")
   validate_class(priors, "BayesMallowsPriors")
   validate_class(initial_values, "BayesMallowsInitialValues")
-  validate_preferences(data, model)
+  validate_preferences(data, model_options)
   validate_initial_values(initial_values, data)
 
-  logz_list <- prepare_partition_function(logz_estimate, model$metric, data$n_items)
+  logz_list <- prepare_partition_function(logz_estimate, model_options$metric, data$n_items)
   prompt_save_files(compute_options)
 
   if (is.null(cl)) {
@@ -94,7 +94,7 @@ compute_mallows <- function(
   } else {
     parallel::clusterExport(cl = cl,
       varlist = c(
-        "data", "model", "compute_options", "priors", "initial_values",
+        "data", "model_options", "compute_options", "priors", "initial_values",
         "logz_list", "verbose"),
       envir = environment()
     )
@@ -111,7 +111,7 @@ compute_mallows <- function(
     }
     run_mcmc(
       data = data,
-      model = model,
+      model_options = model_options,
       compute_options = compute_options,
       priors = priors,
       initial_values = initial_values,
@@ -124,7 +124,7 @@ compute_mallows <- function(
     print("Metropolis-Hastings algorithm completed. Post-processing data.")
   }
 
-  fit <- tidy_mcmc(fits, data, model, compute_options)
+  fit <- tidy_mcmc(fits, data, model_options, compute_options)
   fit$logz_list <- logz_list
   fit$priors <- priors
 

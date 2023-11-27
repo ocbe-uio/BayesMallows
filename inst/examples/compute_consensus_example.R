@@ -17,7 +17,7 @@ compute_consensus(model_fit, type = "MAP")
   # We use the sushi example data. See the documentation of compute_mallows for a more elaborate
   # example
   model_fit <- compute_mallows(setup_rank_data(sushi_rankings),
-                               model = set_model_options(n_clusters = 5))
+                               model_options = set_model_options(n_clusters = 5))
   # Keeping the burnin at 1000, we can compute the consensus ranking per cluster
   model_fit$burnin <- 1000
   cp_consensus_df <- compute_consensus(model_fit, type = "CP")

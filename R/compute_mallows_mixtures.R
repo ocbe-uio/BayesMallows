@@ -26,7 +26,7 @@
 compute_mallows_mixtures <- function(
     n_clusters,
     data,
-    model = set_model_options(),
+    model_options = set_model_options(),
     compute_options = set_compute_options(),
     priors = set_priors(),
     initial_values = set_initial_values(),
@@ -39,7 +39,7 @@ compute_mallows_mixtures <- function(
     lapplyfun <- lapply
   } else {
     varlist <- c(
-      "data", "model", "compute_options", "priors", "initial_values",
+      "data", "model_options", "compute_options", "priors", "initial_values",
       "logz_estimate", "verbose"
     )
 
@@ -50,9 +50,9 @@ compute_mallows_mixtures <- function(
   }
 
   models <- lapplyfun(n_clusters, function(x) {
-    model$n_clusters <- x
+    model_options$n_clusters <- x
     compute_mallows(
-      data = data, model = model, compute_options = compute_options,
+      data = data, model_options = model_options, compute_options = compute_options,
       priors = priors, initial_values = initial_values, verbose = verbose
     )
   })

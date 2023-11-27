@@ -53,7 +53,7 @@ SMCData::SMCData(
 {}
 
 SMCParameters::SMCParameters(
-  const Rcpp::List& model,
+  const Rcpp::List& model_options,
   const Rcpp::List& smc_options,
   const Rcpp::List& compute_options,
   const Rcpp::List& initial_values
@@ -64,7 +64,7 @@ SMCParameters::SMCParameters(
   rho_samples { Rcpp::as<arma::mat>(initial_values["rho_init"]) },
   alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
   leap_size { Rcpp::as<unsigned int>(compute_options["leap_size"]) },
-  metric { verify_metric(Rcpp::as<std::string>(model["metric"])) },
+  metric { verify_metric(Rcpp::as<std::string>(model_options["metric"])) },
   norm_wgt { ones(n_particles) }
 {}
 
@@ -135,14 +135,14 @@ Priors::Priors(
 }
 
 Parameters::Parameters(
-  const Rcpp::List& model,
+  const Rcpp::List& model_options,
   const Rcpp::List& compute_options,
   const Rcpp::List& initial_values,
   const unsigned int n_items) :
-  n_clusters { Rcpp::as<int>(model["n_clusters"]) },
+  n_clusters { Rcpp::as<int>(model_options["n_clusters"]) },
   nmc { Rcpp::as<int>(compute_options["nmc"]) },
-  metric { verify_metric(Rcpp::as<std::string>(model["metric"])) },
-  error_model { verify_error_model(Rcpp::as<std::string>(model["error_model"])) },
+  metric { verify_metric(Rcpp::as<std::string>(model_options["metric"])) },
+  error_model { verify_error_model(Rcpp::as<std::string>(model_options["error_model"])) },
   alpha_jump { Rcpp::as<int>(compute_options["alpha_jump"]) },
   alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
   leap_size { Rcpp::as<int>(compute_options["leap_size"]) },

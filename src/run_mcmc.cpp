@@ -12,7 +12,7 @@ using namespace arma;
 
 // [[Rcpp::export]]
 Rcpp::List run_mcmc(Rcpp::List data,
-                    Rcpp::List model,
+                    Rcpp::List model_options,
                     Rcpp::List compute_options,
                     Rcpp::List priors,
                     Rcpp::List initial_values,
@@ -23,7 +23,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
   Data dat{data};
   Priors pris{priors};
-  Parameters pars{model, compute_options, initial_values, dat.n_items};
+  Parameters pars{model_options, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};
   Augmentation aug{dat, compute_options};
 

@@ -80,7 +80,7 @@ compute_posterior_intervals(model_fit, parameter = "rho")
   # example
   model_fit <- compute_mallows(
     setup_rank_data(sushi_rankings),
-    model = set_model_options(n_clusters = 5))
+    model_options = set_model_options(n_clusters = 5))
   # Keeping the burnin at 1000, we can compute the posterior intervals of the cluster probabilities
   compute_posterior_intervals(model_fit, burnin = 1000,
                               parameter = "cluster_probs")

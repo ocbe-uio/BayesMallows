@@ -31,7 +31,7 @@ test_that("assess_convergence fails when it should", {
 
   m <- compute_mallows(
     dat,
-    model = set_model_options(n_clusters = 2),
+    model_options = set_model_options(n_clusters = 2),
     compute_options = set_compute_options(nmc = 10, save_aug = FALSE)
   )
   expect_error(assess_convergence(m, parameter = "Rtilde"))
@@ -39,7 +39,7 @@ test_that("assess_convergence fails when it should", {
 
   m <- compute_mallows(
     data = setup_rank_data(preferences = beach_preferences),
-    model = set_model_options(error_model = "bernoulli"),
+    model_options = set_model_options(error_model = "bernoulli"),
     compute_options = set_compute_options(nmc = 10)
   )
   expect_s3_class(assess_convergence(m, parameter = "theta"), "ggplot")
@@ -64,7 +64,7 @@ test_that("assess_convergence fails when it should", {
   )
   m <- compute_mallows(
     setup_rank_data(testdat),
-    model = set_model_options(n_clusters = 2),
+    model_options = set_model_options(n_clusters = 2),
     compute_options = set_compute_options(nmc = 5, save_aug = TRUE)
   )
   expect_equal(
@@ -99,7 +99,7 @@ test_that("assess_convergence works with mixtures", {
 
   m <- compute_mallows(
     data = setup_rank_data(potato_visual),
-    model = set_model_options(n_clusters = 2),
+    model_options = set_model_options(n_clusters = 2),
     compute_options = set_compute_options(nmc = 10)
   )
   plt <- assess_convergence(m, parameter = "cluster_probs")

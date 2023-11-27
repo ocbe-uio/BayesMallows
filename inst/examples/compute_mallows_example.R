@@ -66,7 +66,7 @@ subset(get_transitive_closure(beach_data), assessor %in% c(1, 2) &
   # We start with computing a 3-cluster solution
   model_fit <- compute_mallows(
     data = setup_rank_data(sushi_rankings),
-    model = set_model_options(n_clusters = 3),
+    model_options = set_model_options(n_clusters = 3),
     compute_options = set_compute_options(nmc = 10000),
     verbose = TRUE)
   # We then assess convergence of the scale parameter alpha

@@ -7,7 +7,7 @@
 compute_mallows_mixtures(
   n_clusters,
   data,
-  model = set_model_options(),
+  model_options = set_model_options(),
   compute_options = set_compute_options(),
   priors = set_priors(),
   initial_values = set_initial_values(),
@@ -22,7 +22,7 @@ compute_mallows_mixtures(
 \item{data}{An object of class \code{"BayesMallowsData"} returned from
 \code{\link[=setup_rank_data]{setup_rank_data()}}.}
 
-\item{model}{An object of class \code{"BayesMallowsModelOptions"} returned
+\item{model_options}{An object of class \code{"BayesMallowsModelOptions"} returned
 from \code{\link[=set_model_options]{set_model_options()}}.}
 
 \item{compute_options}{An object of class \code{"BayesMallowsComputeOptions"}
@@ -84,7 +84,7 @@ when calling \code{compute_mallows_mixtures}.
   # Rerun with 5 clusters
   mixture_model <- compute_mallows(
     rankings = sushi_rankings,
-    model = set_model_options(n_clusters = 5),
+    model_options = set_model_options(n_clusters = 5),
     compute_options = set_compute_options(include_wcd = TRUE))
   # Delete the models object to free some memory
   rm(models)

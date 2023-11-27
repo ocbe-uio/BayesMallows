@@ -24,7 +24,7 @@ test_that("compute posterior intervals works", {
   set.seed(22)
   m <- compute_mallows(
     setup_rank_data(potato_visual),
-    model = set_model_options(n_clusters = 2),
+    model_options = set_model_options(n_clusters = 2),
     compute_options = set_compute_options(nmc = 10)
   )
   expect_snapshot(

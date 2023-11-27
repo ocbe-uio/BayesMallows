@@ -46,7 +46,7 @@ selecting the number of mixture.
   # Rerun with 5 clusters
   mixture_model <- compute_mallows(
     rankings = sushi_rankings,
-    model = set_model_options(n_clusters = 5),
+    model_options = set_model_options(n_clusters = 5),
     compute_options = set_compute_options(include_wcd = TRUE))
   # Delete the models object to free some memory
   rm(models)
