@@ -25,6 +25,7 @@ This vignette contains update syntax for the code examples in @sorensen2020, sin
 
 ```{r}
 library(BayesMallows)
+set.seed(123)
 ```
 
 
@@ -144,7 +145,7 @@ Assessor 1 has performed only one direct comparison involving beach 2, in which 
 
 ## Convergence diagnostics
 
-As with the potato data, we can do a test run to assess the convergence of the MCMC algorithm. This time we use the `beach_data` object that we generated above, based on the stated preferences. We also set \code{save\_aug = TRUE} to save the augmented rankings in each MCMC step, hence letting us assess the convergence of the augmented rankings.
+As with the potato data, we can do a test run to assess the convergence of the MCMC algorithm. This time we use the `beach_data` object that we generated above, based on the stated preferences. We also set `save_aug = TRUE` to save the augmented rankings in each MCMC step, hence letting us assess the convergence of the augmented rankings.
 
 ```{r}
 bmm_test <- compute_mallows(
