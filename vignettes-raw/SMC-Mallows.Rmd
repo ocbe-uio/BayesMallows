@@ -23,6 +23,7 @@ knitr::opts_chunk$set(
 
 ```{r}
 library(BayesMallows)
+set.seed(123)
 ```
 
 
@@ -140,7 +141,8 @@ data_batch2 <- sushi_rankings[301:600, ]
 We can now update the initial model, without rerunning the full Metropolis-Hastings algorithm, by calling `update_mallows()`. This function uses the sequential Monte Carlo algorithm described above, and extracts a thinned sample of size `n_particles` from `model1` as initial values.
 
 ```{r}
-model2 <- update_mallows(model1, new_rankings = data_batch2, n_particles = 1000)
+model2 <- update_mallows(model1, new_data = setup_rank_data(data_batch2), 
+                         smc_options = set_smc_options(n_particles = 1000))
 ```
 
 Next, assume we get yet another set of rankings later, now of size 1000.
@@ -152,7 +154,7 @@ data_batch3 <- sushi_rankings[601:1600, ]
 We can re-update the model.
 
 ```{r}
-model3 <- update_mallows(model2, new_rankings = data_batch2)
+model3 <- update_mallows(model2, new_data = setup_rank_data(data_batch3))
 ```
 
 Below is a comparison of the posterior intervals of the dispersion parameter for each model. Note how the intervals get increasingly narrower as more data is added.
@@ -241,7 +243,8 @@ data_batch2 <- data_partial[101:200, ]
 We can now update the initial model, using sequential Monte Carlo:
 
 ```{r}
-model2 <- update_mallows(model1, new_rankings = data_batch2, n_particles = 1000)
+model2 <- update_mallows(model1, new_data = setup_rank_data(data_batch2), 
+                         smc_options = set_smc_options(n_particles = 1000))
 ```
 
 We can study model output as before:
@@ -262,7 +265,7 @@ data_batch3 <- sushi_rankings[201:300, ]
 ```
 
 ```{r}
-model3 <- update_mallows(model2, new_rankings = data_batch3)
+model3 <- update_mallows(model2, new_data = setup_rank_data(data_batch3))
 ```
 
 ```{r, smc_second_updated_posterior_partial, out.height="4cm", fig.cap="Posterior distribution of scale parameter after updating the model based on new rankings."}
