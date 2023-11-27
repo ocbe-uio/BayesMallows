@@ -48,13 +48,14 @@ we have the following \code{df}:
 2 \tab 5 \tab 3\cr
 }}
 
-\item{observation_frequency}{A vector of observation frequencies (weights) to apply do
-each row in \code{rankings}. This can speed up computation if a large number of
-assessors share the same rank pattern. Defaults to \code{NULL}, which means that
-each row of \code{rankings} is multiplied by 1. If provided, \code{observation_frequency} must
-have the same number of elements as there are rows in \code{rankings}, and
-\code{rankings} cannot be \code{NULL}. See \code{\link[=compute_observation_frequency]{compute_observation_frequency()}} for a convenience
-function for computing it.}
+\item{observation_frequency}{A vector of observation frequencies (weights) to
+apply do each row in \code{rankings}. This can speed up computation if a large
+number of assessors share the same rank pattern. Defaults to \code{NULL}, which
+means that each row of \code{rankings} is multiplied by 1. If provided,
+\code{observation_frequency} must have the same number of elements as there are
+rows in \code{rankings}, and \code{rankings} cannot be \code{NULL}. See
+\code{\link[=compute_observation_frequency]{compute_observation_frequency()}} for a convenience function for computing
+it.}
 
 \item{validate_rankings}{Logical specifying whether the rankings provided (or
 generated from \code{preferences}) should be validated. Defaults to \code{TRUE}.
@@ -89,8 +90,11 @@ generated for each assessor, and one of them is picked at random.}
 when all possible orderings are computed, i.e., when \code{random=TRUE}.
 Defaults to \code{8L}.}
 
-\item{user_ids}{Optional vector of user IDs. Only used by
-\code{\link[=update_mallows]{update_mallows()}}.}
+\item{user_ids}{Optional vector of user IDs. Defaults to \code{NULL}, and only
+used by \code{\link[=update_mallows]{update_mallows()}}. If provided, new data can consist of updated
+partial rankings from users already in the dataset, as described in Section
+6 of
+\insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.}
 }
 \value{
 An object of class \code{"BayesMallowsData"}, to be provided in the \code{data}

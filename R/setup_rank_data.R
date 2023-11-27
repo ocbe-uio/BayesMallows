@@ -30,16 +30,20 @@
 #' 2 \tab 5 \tab 3\cr
 #' }
 #'
-#' @param user_ids Optional vector of user IDs. Only used by
-#'   [update_mallows()].
+#' @param user_ids Optional vector of user IDs. Defaults to `NULL`, and only
+#'   used by [update_mallows()]. If provided, new data can consist of updated
+#'   partial rankings from users already in the dataset, as described in Section
+#'   6 of
+#'   \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
 #'
-#' @param observation_frequency A vector of observation frequencies (weights) to apply do
-#'   each row in `rankings`. This can speed up computation if a large number of
-#'   assessors share the same rank pattern. Defaults to `NULL`, which means that
-#'   each row of `rankings` is multiplied by 1. If provided, `observation_frequency` must
-#'   have the same number of elements as there are rows in `rankings`, and
-#'   `rankings` cannot be `NULL`. See [compute_observation_frequency()] for a convenience
-#'   function for computing it.
+#' @param observation_frequency A vector of observation frequencies (weights) to
+#'   apply do each row in `rankings`. This can speed up computation if a large
+#'   number of assessors share the same rank pattern. Defaults to `NULL`, which
+#'   means that each row of `rankings` is multiplied by 1. If provided,
+#'   `observation_frequency` must have the same number of elements as there are
+#'   rows in `rankings`, and `rankings` cannot be `NULL`. See
+#'   [compute_observation_frequency()] for a convenience function for computing
+#'   it.
 #'
 #' @param validate_rankings Logical specifying whether the rankings provided (or
 #'   generated from `preferences`) should be validated. Defaults to `TRUE`.
