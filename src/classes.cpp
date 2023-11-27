@@ -180,6 +180,7 @@ Parameters::Parameters(
 Clustering::Clustering(const Parameters& pars,
                        const Rcpp::List& compute_options,
                        const unsigned int n_assessors) :
+  index { regspace<uvec>(0, pars.n_clusters - 1) },
   clustering {pars.n_clusters > 1},
   clus_thinning { Rcpp::as<unsigned int>(compute_options["clus_thinning"]) },
   include_wcd { Rcpp::as<bool>(compute_options["include_wcd"]) },
@@ -324,7 +325,7 @@ void Clustering::update_cluster_labels(
 
     // Normalize with 1-norm
     assignment_prob.row(i) = normalise(probs, 1);
-    new_cluster_assignment(span(i)) = sample(regspace<uvec>(0, probs.n_elem - 1), 1, false, assignment_prob.row(i).t());
+    new_cluster_assignment(span(i)) = sample(index, 1, false, assignment_prob.row(i).t());
   }
 
   if(save_ind_clus){
@@ -340,9 +341,8 @@ void Clustering::update_wcd(const int t){
   int n_clusters = dist_mat.n_cols;
   vec wcd(n_clusters);
 
-  uvec inds = regspace<uvec>(0, n_clusters - 1);
   for(int i = 0; i < n_clusters; ++i){
-    mat dist_vec = dist_mat.submat(find(current_cluster_assignment == i), inds.subvec(i, i));
+    mat dist_vec = dist_mat.submat(find(current_cluster_assignment == i), index.subvec(i, i));
     wcd(i) = accu(dist_vec);
   }
 

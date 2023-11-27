@@ -94,6 +94,7 @@ struct Clustering {
   arma::uvec current_cluster_assignment;
   arma::mat within_cluster_distance;
   arma::mat dist_mat;
+  const arma::uvec index;
 
   const bool clustering;
   const unsigned int clus_thinning;
