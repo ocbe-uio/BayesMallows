@@ -29,14 +29,6 @@ set.seed(123)
 
 This vignette describes the `SMC-Mallows` functions of the package. These use Sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. We use an alternative data augmentation method, called the pseudolikelihood approach, when we are using the footrule and Spearman distance functions instead of using an independent sampler. For an in-depth treatment of the implemented methodology, see @steinSequentialInferenceMallows2023. 
 
-The main functions for estimating Bayesian Mallows models using SMC are listed below:
-
-| Function Name                | Description |
-|:-----------------------------|:--------------------------------------------|
-| `run_smc` |  Runs the SMC algorithm for case where we observe full rankings as new observational data. |
-| `smc_mallows_new_item_rank` | Runs the SMC algorithm for case where we observe updated partial rankings as from existing users. |
-| `smc_mallows_update` | Update existing models when new data arrive. |
-
 
 ## Methodology
 

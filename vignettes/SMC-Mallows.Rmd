@@ -17,18 +17,11 @@ vignette: >
 
 ```r
 library(BayesMallows)
+set.seed(123)
 ```
 
 
 This vignette describes the `SMC-Mallows` functions of the package. These use Sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. We use an alternative data augmentation method, called the pseudolikelihood approach, when we are using the footrule and Spearman distance functions instead of using an independent sampler. For an in-depth treatment of the implemented methodology, see @steinSequentialInferenceMallows2023. 
-
-The main functions for estimating Bayesian Mallows models using SMC are listed below:
-
-| Function Name                | Description |
-|:-----------------------------|:--------------------------------------------|
-| `run_smc` |  Runs the SMC algorithm for case where we observe full rankings as new observational data. |
-| `smc_mallows_new_item_rank` | Runs the SMC algorithm for case where we observe updated partial rankings as from existing users. |
-| `smc_mallows_update` | Update existing models when new data arrive. |
 
 
 ## Methodology
@@ -153,7 +146,8 @@ We can now update the initial model, without rerunning the full Metropolis-Hasti
 
 
 ```r
-model2 <- update_mallows(model1, new_rankings = data_batch2, n_particles = 1000)
+model2 <- update_mallows(model1, new_data = setup_rank_data(data_batch2), 
+                         smc_options = set_smc_options(n_particles = 1000))
 ```
 
 Next, assume we get yet another set of rankings later, now of size 1000.
@@ -167,7 +161,7 @@ We can re-update the model.
 
 
 ```r
-model3 <- update_mallows(model2, new_rankings = data_batch2)
+model3 <- update_mallows(model2, new_data = setup_rank_data(data_batch3))
 ```
 
 Below is a comparison of the posterior intervals of the dispersion parameter for each model. Note how the intervals get increasingly narrower as more data is added.
@@ -180,9 +174,9 @@ rbind(
   compute_posterior_intervals(model3)
 )
 #>   parameter  mean median conf_level          hpdi central_interval
-#> 1     alpha 1.770  1.767       95 % [1.621,1.943]    [1.612,1.943]
-#> 2     alpha 1.771  1.766       95 % [1.633,1.912]    [1.634,1.914]
-#> 3     alpha 1.784  1.784       95 % [1.670,1.883]    [1.682,1.897]
+#> 1     alpha 1.774  1.769       95 % [1.603,1.924]    [1.611,1.938]
+#> 2     alpha 1.776  1.778       95 % [1.632,1.951]    [1.614,1.936]
+#> 3     alpha 1.708  1.719       95 % [1.507,1.847]    [1.507,1.870]
 ```
 
 We can use all the same functions to look at posterior summaries as we do for models computed using Metropolis-Hastings. Here is a plot of the posterior for the dispersion parameter:
@@ -204,27 +198,27 @@ Next are the CP consensus and the MAP consensus [@vitelli2018]:
 compute_consensus(model3)
 #>    ranking          item cumprob
 #> 1        1    fatty tuna   1.000
-#> 2        2    salmon roe   0.995
-#> 3        3          tuna   1.000
-#> 4        4        shrimp   0.966
-#> 5        5       sea eel   0.999
-#> 6        6     tuna roll   0.594
-#> 7        7         squid   0.996
+#> 2        2          tuna   0.597
+#> 3        3    salmon roe   1.000
+#> 4        4        shrimp   1.000
+#> 5        5       sea eel   1.000
+#> 6        6         squid   0.939
+#> 7        7     tuna roll   1.000
 #> 8        8    sea urchin   1.000
 #> 9        9           egg   1.000
 #> 10      10 cucumber roll   1.000
 compute_consensus(model3, type = "MAP")
 #>    map_ranking          item probability
-#> 1            1    fatty tuna       0.571
-#> 2            2    salmon roe       0.571
-#> 3            3          tuna       0.571
-#> 4            4        shrimp       0.571
-#> 5            5       sea eel       0.571
-#> 6            6     tuna roll       0.571
-#> 7            7         squid       0.571
-#> 8            8    sea urchin       0.571
-#> 9            9           egg       0.571
-#> 10          10 cucumber roll       0.571
+#> 1            1    fatty tuna       0.562
+#> 2            2          tuna       0.562
+#> 3            3    salmon roe       0.562
+#> 4            4        shrimp       0.562
+#> 5            5       sea eel       0.562
+#> 6            6         squid       0.562
+#> 7            7     tuna roll       0.562
+#> 8            8    sea urchin       0.562
+#> 9            9           egg       0.562
+#> 10          10 cucumber roll       0.562
 ```
 
 
@@ -307,7 +301,8 @@ We can now update the initial model, using sequential Monte Carlo:
 
 
 ```r
-model2 <- update_mallows(model1, new_rankings = data_batch2, n_particles = 1000)
+model2 <- update_mallows(model1, new_data = setup_rank_data(data_batch2), 
+                         smc_options = set_smc_options(n_particles = 1000))
 ```
 
 We can study model output as before:
@@ -342,7 +337,7 @@ data_batch3 <- sushi_rankings[201:300, ]
 
 
 ```r
-model3 <- update_mallows(model2, new_rankings = data_batch3)
+model3 <- update_mallows(model2, new_data = setup_rank_data(data_batch3))
 ```
 
 
