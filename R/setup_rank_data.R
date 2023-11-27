@@ -30,6 +30,9 @@
 #' 2 \tab 5 \tab 3\cr
 #' }
 #'
+#' @param user_ids Optional vector of user IDs. Only used by
+#'   [update_mallows()].
+#'
 #' @param observation_frequency A vector of observation frequencies (weights) to apply do
 #'   each row in `rankings`. This can speed up computation if a large number of
 #'   assessors share the same rank pattern. Defaults to `NULL`, which means that
@@ -110,6 +113,7 @@
 setup_rank_data <- function(
     rankings = NULL,
     preferences = NULL,
+    users_ids = NULL,
     observation_frequency = NULL,
     validate_rankings = TRUE,
     na_action = "augment",

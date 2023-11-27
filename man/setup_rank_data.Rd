@@ -7,6 +7,7 @@
 setup_rank_data(
   rankings = NULL,
   preferences = NULL,
+  users_ids = NULL,
   observation_frequency = NULL,
   validate_rankings = TRUE,
   na_action = "augment",
@@ -87,6 +88,9 @@ generated for each assessor, and one of them is picked at random.}
 \item{random_limit}{Integer specifying the maximum number of items allowed
 when all possible orderings are computed, i.e., when \code{random=TRUE}.
 Defaults to \code{8L}.}
+
+\item{user_ids}{Optional vector of user IDs. Only used by
+\code{\link[=update_mallows]{update_mallows()}}.}
 }
 \value{
 An object of class \code{"BayesMallowsData"}, to be provided in the \code{data}
