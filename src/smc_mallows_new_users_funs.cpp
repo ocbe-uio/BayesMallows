@@ -18,6 +18,7 @@ void reweight_new_users(
     const SMCData& dat,
     const Rcpp::List& logz_list
 ){
+  if(dat.num_new_obs == 0) return;
   vec log_inc_wgt(pars.n_particles);
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
 

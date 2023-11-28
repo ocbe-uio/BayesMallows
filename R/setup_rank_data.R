@@ -188,6 +188,7 @@ setup_rank_data <- function(
   }
 
   constraints <- generate_constraints(preferences, n_items, cl)
+  consistent <- NULL
 
   #####
 

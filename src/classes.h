@@ -144,6 +144,7 @@ struct SMCData : Data {
 
   arma::mat new_rankings;
   const unsigned int num_new_obs;
+  arma::umat consistent;
 };
 
 

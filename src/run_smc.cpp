@@ -21,6 +21,7 @@ Rcpp::List  run_smc(
 ) {
 
   SMCData dat{data, new_data};
+
   SMCParameters pars{model_options, smc_options, compute_options, initial_values};
   Priors pris{priors};
   SMCAugmentation aug{dat, smc_options, initial_values, pars.n_particles};

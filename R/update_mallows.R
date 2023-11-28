@@ -80,8 +80,6 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     updated_users <- intersect(model$data$user_ids, new_data$user_ids)
     new_users <- setdiff(new_data$user_ids, model$data$user_ids)
 
-
-
     rankings <- rbind(
       model$data$rankings[old_users, , drop = FALSE],
       new_data$rankings[c(updated_users, new_users), , drop = FALSE]
@@ -92,11 +90,26 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     data <- setup_rank_data(rankings = rankings, user_ids = user_ids)
     new_data <- setup_rank_data(rankings = rankings[new_users, , drop = FALSE],
                                 user_ids = new_users)
+
+    if(!is.null(model$augmented_rankings)) {
+      consistent <- matrix(TRUE, nrow = nrow(rankings), ncol = model$smc_options$n_particles)
+      for(uu in updated_users) {
+        index <- which(rownames(rankings) == uu)
+        to_compare <- as.numeric(na.omit(rankings[index, ]))
+
+        consistent[index, ] <- apply(model$augmented_rankings[, index, ], 2, function(ar) {
+          all(ar[ar %in% to_compare] == to_compare)
+        })
+      }
+      consistent <- consistent * 1L
+    }
+
   } else {
     rankings <- rbind(model$data$rankings, new_data$rankings)
     data <- setup_rank_data(
       rankings = rankings,
       user_ids = seq_len(nrow(rankings)))
+    consistent <- NULL
   }
 
   ret <- run_smc(

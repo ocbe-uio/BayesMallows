@@ -50,7 +50,13 @@ SMCData::SMCData(
 ) : Data(data),
   new_rankings { Rcpp::as<mat>(new_data["rankings"]).t() },
   num_new_obs { new_rankings.n_cols }
-{}
+{
+    Rcpp::Nullable<umat> consistent_init = Rcpp::as<Rcpp::Nullable<umat>>(data["consistent"]);
+    if(consistent_init.isNotNull()) {
+      consistent = Rcpp::as<umat>(consistent_init);
+    }
+
+}
 
 SMCParameters::SMCParameters(
   const Rcpp::List& model_options,
@@ -428,7 +434,7 @@ void SMCAugmentation::augment_partial(
     const SMCData& dat
 ){
 
-  if(!any_missing) return;
+  if(!any_missing || dat.num_new_obs == 0) return;
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
     for (size_t user = dat.n_assessors - dat.num_new_obs; user < dat.n_assessors; ++user) {
       uvec unranked_items = shuffle(find(missing_indicator.col(user) == 1));
