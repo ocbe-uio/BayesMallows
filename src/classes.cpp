@@ -49,14 +49,9 @@ SMCData::SMCData(
   const Rcpp::List& new_data
 ) : Data(data),
   new_rankings { Rcpp::as<mat>(new_data["rankings"]).t() },
-  num_new_obs { new_rankings.n_cols }
-{
-    Rcpp::Nullable<umat> consistent_init = Rcpp::as<Rcpp::Nullable<umat>>(data["consistent"]);
-    if(consistent_init.isNotNull()) {
-      consistent = Rcpp::as<umat>(consistent_init);
-    }
-
-}
+  num_new_obs { new_rankings.n_cols },
+  consistent {Rcpp::as<umat>(new_data["consistent"])}
+{}
 
 SMCParameters::SMCParameters(
   const Rcpp::List& model_options,
@@ -429,6 +424,30 @@ void Augmentation::update_missing_ranks(
   }
 }
 
+void SMCAugmentation::rank_worker(
+    const size_t particle, const size_t user,
+    const SMCParameters& pars
+) {
+  uvec unranked_items = shuffle(find(missing_indicator.col(user) == 1));
+
+  if (aug_method != "pseudo") {
+    augmented_data(span::all, span(user), span(particle)) =
+      propose_augmentation(augmented_data(span::all, span(user), span(particle)),
+                           missing_indicator.col(user));
+
+    aug_prob(particle) = divide_by_fact(aug_prob(particle), unranked_items.n_elem);
+
+  } else {
+    PseudoProposal pprop = make_pseudo_proposal(
+      unranked_items, augmented_data(span::all, span(user), span(particle)),
+      pars.alpha_samples(particle), pars.rho_samples.col(particle), pars.metric
+    );
+
+    augmented_data(span::all, span(user), span(particle)) = pprop.rankings;
+    aug_prob(particle) *= pprop.probability;
+  }
+}
+
 void SMCAugmentation::augment_partial(
     const SMCParameters& pars,
     const SMCData& dat
@@ -437,24 +456,7 @@ void SMCAugmentation::augment_partial(
   if(!any_missing || dat.num_new_obs == 0) return;
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
     for (size_t user = dat.n_assessors - dat.num_new_obs; user < dat.n_assessors; ++user) {
-      uvec unranked_items = shuffle(find(missing_indicator.col(user) == 1));
-
-      if (aug_method != "pseudo") {
-        augmented_data(span::all, span(user), span(particle)) =
-          propose_augmentation(augmented_data(span::all, span(user), span(particle)),
-                               missing_indicator.col(user));
-
-        aug_prob(particle) = divide_by_fact(aug_prob(particle), unranked_items.n_elem);
-
-      } else {
-        PseudoProposal pprop = make_pseudo_proposal(
-          unranked_items, augmented_data(span::all, span(user), span(particle)),
-          pars.alpha_samples(particle), pars.rho_samples.col(particle), pars.metric
-        );
-
-        augmented_data(span::all, span(user), span(particle)) = pprop.rankings;
-        aug_prob(particle) *= pprop.probability;
-      }
+      rank_worker(particle, user, pars);
     }
   }
 }
@@ -493,6 +495,20 @@ void SMCAugmentation::update_missing_ranks(
       pars.rho_samples.col(particle_index),
       pars.metric, aug_method == "pseudo"
     );
+  }
+
+}
+
+void SMCAugmentation::correct_items(
+    const SMCParameters& pars, const SMCData& dat) {
+  if(dat.consistent.is_empty()) return;
+
+  for(size_t particle{}; particle < pars.n_particles; particle++) {
+    for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
+      if(!dat.consistent(user, particle)) {
+        rank_worker(particle, user, pars);
+      }
+    }
   }
 
 }

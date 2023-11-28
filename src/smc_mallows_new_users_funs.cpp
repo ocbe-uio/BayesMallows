@@ -26,15 +26,15 @@ void reweight_new_users(
       dat.n_items, pars.alpha_samples(particle), logz_list, pars.metric
     );
 
-    mat rankings = !aug.any_missing ? dat.rankings :
+    mat new_rankings = !aug.any_missing ? dat.new_rankings :
       aug.augmented_data(
         span::all,
         span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1),
         span(particle));
 
     double log_likelihood = -pars.alpha_samples(particle) / dat.n_items *
-      rank_dist_sum(rankings, pars.rho_samples.col(particle), pars.metric,
-                    dat.observation_frequency);
+      rank_dist_sum(new_rankings, pars.rho_samples.col(particle), pars.metric,
+                    dat.observation_frequency(span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1)));
 
     log_inc_wgt(particle) = log_likelihood - dat.num_new_obs * log_z_alpha -
       log(aug.aug_prob(particle));

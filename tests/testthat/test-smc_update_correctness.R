@@ -29,12 +29,12 @@ test_that("update_mallows is correct for new rankings", {
   # Posterior mean of alpha should be the same in both SMC methods, and close to BMM
   expect_equal(mean(mod_smc_next$alpha$value),
     mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-    tolerance = 0.05
+    tolerance = 0.01
   )
 
   expect_equal(sd(mod_smc_next$alpha$value),
     sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-    tolerance = 0.2
+    tolerance = 0.05
   )
 
   # Is there any disagreement between the methods about the ranking of the items?
@@ -77,12 +77,12 @@ test_that("update_mallows is correct for new rankings", {
   # Posterior mean of alpha should be the same in both SMC methods, and close to BMM
   expect_equal(mean(mod_smc_next$alpha$value),
     mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 200]),
-    tolerance = 0.01
+    tolerance = 0.001
   )
 
   expect_equal(sd(mod_smc_next$alpha$value),
     sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 200]),
-    tolerance = 0.1
+    tolerance = 0.02
   )
 
   bmm_consensus <- compute_consensus(mod_bmm)
@@ -95,7 +95,7 @@ test_that("update_mallows is correct for new rankings", {
       as.numeric(as.factor(smc_consensus$item)),
       metric = "ulam"
     ),
-    1
+    0
   )
 })
 
@@ -129,28 +129,26 @@ test_that("update_mallows is correct for new partial rankings", {
   for (aug in c("uniform", "pseudo")) {
     mod_smc <- update_mallows(
       model = mod_init,
-      new_data = setup_rank_data(rankings = dat[5:20, ],
-                                 user_ids = user_ids[5:20]),
+      new_data = setup_rank_data(rankings = dat[5:20, ]),
       smc_options = set_smc_options(
         n_particles = 10000, mcmc_steps = 10, aug_method = aug)
     )
 
     mod_smc_next <- update_mallows(
       model = mod_smc,
-      new_data = setup_rank_data(rankings = dat[21:36, ],
-                                 user_ids = user_ids[21:36])
+      new_data = setup_rank_data(rankings = dat[21:36, ])
     )
 
     expect_equal(
       mean(mod_smc_next$alpha$value),
       mean(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
-      tolerance = ifelse(aug == "uniform", .2, .05)
+      tolerance = .02
     )
 
     expect_equal(
       sd(mod_smc_next$alpha$value),
       sd(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
-      tolerance = .2
+      tolerance = .1
     )
 
     bmm_consensus <- compute_consensus(bmm_mod)

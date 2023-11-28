@@ -101,7 +101,7 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
           all(ar[ar %in% to_compare] == to_compare)
         })
       }
-      consistent <- consistent * 1L
+      data$consistent <- consistent * 1L
     }
 
   } else {
@@ -109,7 +109,6 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     data <- setup_rank_data(
       rankings = rankings,
       user_ids = seq_len(nrow(rankings)))
-    consistent <- NULL
   }
 
   ret <- run_smc(

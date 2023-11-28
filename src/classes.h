@@ -144,7 +144,7 @@ struct SMCData : Data {
 
   arma::mat new_rankings;
   const unsigned int num_new_obs;
-  arma::umat consistent;
+  const arma::umat consistent;
 };
 
 
@@ -191,10 +191,9 @@ struct SMCAugmentation {
     const unsigned int n_particles);
   ~SMCAugmentation() = default;
 
-  void augment_partial(
-      const SMCParameters& pars,
-      const SMCData& dat
-  );
+  void augment_partial(const SMCParameters& pars, const SMCData& dat);
+  void correct_items(const SMCParameters& pars, const SMCData& dat);
+  void rank_worker(const size_t particle, const size_t user, const SMCParameters& pars);
 
   void update_data(const unsigned int particle_index, SMCData& dat);
   void update_missing_ranks(const unsigned int particle_index, const SMCData& dat,
