@@ -38,14 +38,6 @@ update_mallows.BayesMallows <- function(
     priors = model$priors,
     ...) {
 
-
-  if (smc_options$aug_method == "pseudo" && !model$metric %in% c("footrule", "spearman")) {
-    stop(
-      "pseudolikelihood aug_method only possible for metrics 'footrule' ",
-      "and 'spearman'."
-    )
-  }
-
   alpha_init <- extract_alpha_init(model, smc_options$n_particles)
   rho_init <- extract_rho_init(model, smc_options$n_particles)
 
@@ -61,9 +53,7 @@ update_mallows.BayesMallows <- function(
     logz_list = model$logz_list
   )
 
-  tidy_parameters <- tidy_smc(ret, model$items)
-  ret$alpha <- tidy_parameters$alpha
-  ret$rho <- tidy_parameters$rho
+  ret <- c(ret, tidy_smc(ret, model$items))
 
   ret$model_options <- model_options
   ret$smc_options <- smc_options
@@ -85,10 +75,27 @@ update_mallows.BayesMallows <- function(
 #' @rdname update_mallows
 update_mallows.SMCMallows <- function(model, new_data, ...) {
 
-  data <- setup_rank_data(rankings = rbind(model$data$rankings, new_data$rankings))
-  alpha_init <- model$alpha_samples
-  rho_init <- model$rho_samples
-  aug_init <- model$augmented_rankings
+  if(!is.null(new_data$user_ids) && !is.null(model$data$user_ids)) {
+    old_users <- setdiff(model$data$user_ids, new_data$user_ids)
+    updated_users <- intersect(model$data$user_ids, new_data$user_ids)
+    new_users <- setdiff(new_data$user_ids, model$data$user_ids)
+
+    rankings <- rbind(
+      model$data$rankings[old_users, , drop = FALSE],
+      new_data$rankings[c(updated_users, new_users), , drop = FALSE]
+    )
+
+    user_ids <- c(old_users, updated_users, new_users)
+
+    data <- setup_rank_data(rankings = rankings, user_ids = user_ids)
+    new_data <- setup_rank_data(rankings = rankings[new_users, , drop = FALSE],
+                                user_ids = new_users)
+  } else {
+    rankings <- rbind(model$data$rankings, new_data$rankings)
+    data <- setup_rank_data(
+      rankings = rankings,
+      user_ids = seq_len(nrow(rankings)))
+  }
 
   ret <- run_smc(
     data = data,
@@ -97,8 +104,10 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     smc_options = model$smc_options,
     compute_options = model$compute_options,
     priors = model$priors,
-    initial_values = list(alpha_init = alpha_init, rho_init = rho_init,
-                          aug_init = aug_init),
+    initial_values = list(
+      alpha_init = model$alpha_samples,
+      rho_init = model$rho_samples,
+      aug_init = model$augmented_rankings),
     logz_list = model$logz_list
   )
 

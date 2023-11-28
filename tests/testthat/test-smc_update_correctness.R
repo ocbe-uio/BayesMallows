@@ -1,5 +1,7 @@
 test_that("update_mallows is correct for new rankings", {
   triple_potato <- rbind(potato_visual, potato_visual, potato_visual)
+  rownames(triple_potato) <- seq_len(nrow(triple_potato))
+  user_ids <- rownames(triple_potato)
 
   set.seed(123)
 
@@ -15,13 +17,13 @@ test_that("update_mallows is correct for new rankings", {
 
   mod_smc <- update_mallows(
     model = mod_init,
-    new_data = setup_rank_data(rankings = triple_potato[5:20, ]),
+    new_data = setup_rank_data(rankings = triple_potato[5:20, ], user_ids = user_ids[5:20]),
     smc_options = set_smc_options(n_particles = 10000, mcmc_steps = 15)
   )
 
   mod_smc_next <- update_mallows(
     model = mod_smc,
-    new_data = setup_rank_data(rankings = triple_potato[21:36, ])
+    new_data = setup_rank_data(rankings = triple_potato[21:36, ], user_ids = user_ids[21:36])
   )
 
   # Posterior mean of alpha should be the same in both SMC methods, and close to BMM
@@ -159,4 +161,35 @@ test_that("update_mallows is correct for new partial rankings", {
       ifelse(aug == "uniform", 3, 1)
     )
   }
+})
+
+
+test_that("update_mallows is correct for new partial rankings", {
+  skip()
+
+  set.seed(123)
+  user_ids <- rownames(potato_visual)
+  dat0 <- potato_visual
+  dat0[] <- ifelse(runif(length(dat0)) > .5, NA_real_, dat0)
+
+  mod0 <- compute_mallows(
+    data = setup_rank_data(rankings = dat0),
+    compute_options = set_compute_options(nmc = 10000, burnin = 5000)
+    )
+
+  dat1 <- potato_visual
+  dat1 <- ifelse(is.na(dat0) & runif(length(dat1)) > .5, NA_real_, dat1)
+
+  mod1 <- update_mallows(
+    model = mod0,
+    new_data = setup_rank_data(rankings = dat1, user_ids = user_ids)
+    )
+
+  dat2 <- potato_visual
+  dat2 <- ifelse(is.na(dat1) & runif(length(dat2)) > .5, NA_real_, dat2)
+
+  # mod2 <- update_mallows(
+  #   model = mod1,
+  #   new_data = setup_rank_data(rankings = dat2, user_ids = user_ids)
+  # )
 })

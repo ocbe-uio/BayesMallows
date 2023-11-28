@@ -117,7 +117,7 @@
 setup_rank_data <- function(
     rankings = NULL,
     preferences = NULL,
-    users_ids = NULL,
+    user_ids = NULL,
     observation_frequency = NULL,
     validate_rankings = TRUE,
     na_action = "augment",
