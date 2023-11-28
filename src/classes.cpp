@@ -435,8 +435,6 @@ void SMCAugmentation::rank_worker(
       propose_augmentation(augmented_data(span::all, span(user), span(particle)),
                            missing_indicator.col(user));
 
-    aug_prob(particle) = divide_by_fact(aug_prob(particle), unranked_items.n_elem);
-
   } else {
     PseudoProposal pprop = make_pseudo_proposal(
       unranked_items, augmented_data(span::all, span(user), span(particle)),
