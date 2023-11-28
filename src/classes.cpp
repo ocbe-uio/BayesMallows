@@ -435,6 +435,7 @@ void SMCAugmentation::augment_partial(
     for (size_t user{}; user < dat.n_assessors; ++user) {
       if(user < dat.n_assessors - dat.num_new_obs) {
         if(dat.consistent.is_empty()) continue;
+        if(dat.consistent(user, particle) == 1) continue;
       }
 
       uvec unranked_items = shuffle(find(missing_indicator.col(user) == 1));
