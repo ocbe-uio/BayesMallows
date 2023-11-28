@@ -80,6 +80,8 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     updated_users <- intersect(model$data$user_ids, new_data$user_ids)
     new_users <- setdiff(new_data$user_ids, model$data$user_ids)
 
+
+
     rankings <- rbind(
       model$data$rankings[old_users, , drop = FALSE],
       new_data$rankings[c(updated_users, new_users), , drop = FALSE]

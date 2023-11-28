@@ -429,27 +429,25 @@ void SMCAugmentation::augment_partial(
 ){
 
   if(!any_missing) return;
-  for (int ii{}; ii < pars.n_particles; ++ii) {
-    double alpha = pars.alpha_samples(ii);
-    vec rho = pars.rho_samples.col(ii);
-    for (int jj = dat.n_assessors - dat.num_new_obs; jj < dat.n_assessors; ++jj) {
-      uvec unranked_items = shuffle(find(missing_indicator.col(jj) == 1));
+  for (size_t particle{}; particle < pars.n_particles; ++particle) {
+    for (size_t user = dat.n_assessors - dat.num_new_obs; user < dat.n_assessors; ++user) {
+      uvec unranked_items = shuffle(find(missing_indicator.col(user) == 1));
 
       if (aug_method != "pseudo") {
-        augmented_data(span::all, span(jj), span(ii)) =
-          propose_augmentation(augmented_data(span::all, span(jj), span(ii)),
-                               missing_indicator.col(jj));
+        augmented_data(span::all, span(user), span(particle)) =
+          propose_augmentation(augmented_data(span::all, span(user), span(particle)),
+                               missing_indicator.col(user));
 
-        aug_prob(ii) = divide_by_fact(aug_prob(ii), unranked_items.n_elem);
+        aug_prob(particle) = divide_by_fact(aug_prob(particle), unranked_items.n_elem);
 
       } else {
         PseudoProposal pprop = make_pseudo_proposal(
-          unranked_items, augmented_data(span::all, span(jj), span(ii)),
-          alpha, rho, pars.metric
+          unranked_items, augmented_data(span::all, span(user), span(particle)),
+          pars.alpha_samples(particle), pars.rho_samples.col(particle), pars.metric
         );
 
-        augmented_data(span::all, span(jj), span(ii)) = pprop.rankings;
-        aug_prob(ii) *= pprop.probability;
+        augmented_data(span::all, span(user), span(particle)) = pprop.rankings;
+        aug_prob(particle) *= pprop.probability;
       }
     }
   }
