@@ -466,7 +466,7 @@ void SMCAugmentation::reweight(
         span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1),
         span(particle));
 
-      double new_user_contribution = -pars.alpha_samples(particle) / dat.n_items *
+      new_user_contribution = -pars.alpha_samples(particle) / dat.n_items *
         rank_dist_sum(new_rankings, pars.rho_samples.col(particle), pars.metric,
                       dat.observation_frequency(span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1)));
     }

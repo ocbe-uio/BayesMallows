@@ -7,7 +7,7 @@
 setup_rank_data(
   rankings = NULL,
   preferences = NULL,
-  users_ids = NULL,
+  user_ids = NULL,
   observation_frequency = NULL,
   validate_rankings = TRUE,
   na_action = "augment",
@@ -47,6 +47,12 @@ we have the following \code{df}:
 1 \tab 5 \tab 1\cr
 2 \tab 5 \tab 3\cr
 }}
+
+\item{user_ids}{Optional vector of user IDs. Defaults to \code{NULL}, and only
+used by \code{\link[=update_mallows]{update_mallows()}}. If provided, new data can consist of updated
+partial rankings from users already in the dataset, as described in Section
+6 of
+\insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.}
 
 \item{observation_frequency}{A vector of observation frequencies (weights) to
 apply do each row in \code{rankings}. This can speed up computation if a large
@@ -89,12 +95,6 @@ generated for each assessor, and one of them is picked at random.}
 \item{random_limit}{Integer specifying the maximum number of items allowed
 when all possible orderings are computed, i.e., when \code{random=TRUE}.
 Defaults to \code{8L}.}
-
-\item{user_ids}{Optional vector of user IDs. Defaults to \code{NULL}, and only
-used by \code{\link[=update_mallows]{update_mallows()}}. If provided, new data can consist of updated
-partial rankings from users already in the dataset, as described in Section
-6 of
-\insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.}
 }
 \value{
 An object of class \code{"BayesMallowsData"}, to be provided in the \code{data}
