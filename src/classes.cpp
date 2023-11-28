@@ -458,17 +458,21 @@ void SMCAugmentation::reweight(
       }
     }
 
-    const mat new_rankings = !any_missing ? dat.new_rankings :
+    double new_user_contribution{};
+    if(dat.num_new_obs > 0) {
+      const mat new_rankings = !any_missing ? dat.new_rankings :
       augmented_data(
         span::all,
         span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1),
         span(particle));
 
-    double log_likelihood = -pars.alpha_samples(particle) / dat.n_items *
-      rank_dist_sum(new_rankings, pars.rho_samples.col(particle), pars.metric,
-                    dat.observation_frequency(span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1)));
+      double new_user_contribution = -pars.alpha_samples(particle) / dat.n_items *
+        rank_dist_sum(new_rankings, pars.rho_samples.col(particle), pars.metric,
+                      dat.observation_frequency(span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1)));
+    }
 
-    log_inc_wgt(particle) = log_likelihood + item_correction_contribution -
+
+    log_inc_wgt(particle) = new_user_contribution + item_correction_contribution -
       dat.num_new_obs * log_z_alpha - log(aug_prob(particle));
   }
 
