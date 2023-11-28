@@ -26,7 +26,6 @@ Rcpp::List  run_smc(
   Priors pris{priors};
   SMCAugmentation aug{dat, smc_options, initial_values, pars.n_particles};
 
-  aug.correct_items(pars, dat);
   aug.augment_partial(pars, dat);
   reweight_new_users(pars, aug, dat, logz_list);
 

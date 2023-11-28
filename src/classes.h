@@ -192,9 +192,6 @@ struct SMCAugmentation {
   ~SMCAugmentation() = default;
 
   void augment_partial(const SMCParameters& pars, const SMCData& dat);
-  void correct_items(const SMCParameters& pars, const SMCData& dat);
-  void rank_worker(const size_t particle, const size_t user, const SMCParameters& pars);
-
   void update_data(const unsigned int particle_index, SMCData& dat);
   void update_missing_ranks(const unsigned int particle_index, const SMCData& dat,
                             const SMCParameters& pars);
