@@ -1,6 +1,5 @@
 #include <RcppArmadillo.h>
 #include "missing_data.h"
-#include "smc_mallows_new_users.h"
 #include "parameterupdates.h"
 #include "classes.h"
 
@@ -26,8 +25,7 @@ Rcpp::List  run_smc(
   Priors pris{priors};
   SMCAugmentation aug{dat, smc_options, initial_values, pars.n_particles};
 
-  aug.augment_partial(pars, dat);
-  reweight_new_users(pars, aug, dat, logz_list);
+  aug.reweight(pars, dat, logz_list);
 
   uvec index = pars.draw_resampling_index();
   pars.resample(index);

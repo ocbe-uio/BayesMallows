@@ -191,6 +191,7 @@ struct SMCAugmentation {
     const unsigned int n_particles);
   ~SMCAugmentation() = default;
 
+  void reweight(SMCParameters& pars, const SMCData& dat, const Rcpp::List& logz_list);
   void augment_partial(const SMCParameters& pars, const SMCData& dat);
   void update_data(const unsigned int particle_index, SMCData& dat);
   void update_missing_ranks(const unsigned int particle_index, const SMCData& dat,

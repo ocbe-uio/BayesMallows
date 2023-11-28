@@ -424,6 +424,38 @@ void Augmentation::update_missing_ranks(
   }
 }
 
+void SMCAugmentation::reweight(
+  SMCParameters& pars,
+  const SMCData& dat,
+  const Rcpp::List& logz_list
+) {
+  augment_partial(pars, dat);
+
+  vec log_inc_wgt(pars.n_particles);
+  for (size_t particle{}; particle < pars.n_particles; ++particle) {
+
+    const double log_z_alpha = get_partition_function(
+      dat.n_items, pars.alpha_samples(particle), logz_list, pars.metric
+    );
+
+    mat new_rankings = !any_missing ? dat.new_rankings :
+      augmented_data(
+        span::all,
+        span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1),
+        span(particle));
+
+    double log_likelihood = -pars.alpha_samples(particle) / dat.n_items *
+      rank_dist_sum(new_rankings, pars.rho_samples.col(particle), pars.metric,
+                    dat.observation_frequency(span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1)));
+
+    log_inc_wgt(particle) = log_likelihood - dat.num_new_obs * log_z_alpha -
+      log(aug_prob(particle));
+  }
+
+  pars.norm_wgt = normalize_weights(log_inc_wgt);
+  pars.effective_sample_size = 1 / std::pow(norm(pars.norm_wgt, 2), 2);
+
+}
 
 void SMCAugmentation::augment_partial(
     const SMCParameters& pars,
@@ -432,6 +464,7 @@ void SMCAugmentation::augment_partial(
 
   if(!any_missing) return;
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
+
     for (size_t user{}; user < dat.n_assessors; ++user) {
       if(user < dat.n_assessors - dat.num_new_obs) {
         if(dat.consistent.is_empty()) continue;
