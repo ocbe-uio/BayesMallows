@@ -437,8 +437,28 @@ void SMCAugmentation::reweight(
     const double log_z_alpha = get_partition_function(
       dat.n_items, pars.alpha_samples(particle), logz_list, pars.metric
     );
+    double item_correction_contribution{};
+    if(!dat.consistent.is_empty()) {
+      for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
+        if(dat.consistent(user, particle) == 0) {
+          vec previous_augmented_ranking = augmented_data(span::all, span(user), span(particle - 1));
+          vec current_augmented_ranking = augmented_data(span::all, span(user), span(particle));
 
-    mat new_rankings = !any_missing ? dat.new_rankings :
+          double previous_distance = get_rank_distance(
+            previous_augmented_ranking, pars.rho_samples.col(particle),
+            pars.metric);
+          double current_distance = get_rank_distance(
+            current_augmented_ranking, pars.rho_samples.col(particle),
+            pars.metric);
+
+          item_correction_contribution -= pars.alpha_samples(particle) / dat.n_items *
+            (current_distance - previous_distance);
+
+        }
+      }
+    }
+
+    const mat new_rankings = !any_missing ? dat.new_rankings :
       augmented_data(
         span::all,
         span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1),
@@ -448,8 +468,8 @@ void SMCAugmentation::reweight(
       rank_dist_sum(new_rankings, pars.rho_samples.col(particle), pars.metric,
                     dat.observation_frequency(span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1)));
 
-    log_inc_wgt(particle) = log_likelihood - dat.num_new_obs * log_z_alpha -
-      log(aug_prob(particle));
+    log_inc_wgt(particle) = log_likelihood + item_correction_contribution -
+      dat.num_new_obs * log_z_alpha - log(aug_prob(particle));
   }
 
   pars.norm_wgt = normalize_weights(log_inc_wgt);
