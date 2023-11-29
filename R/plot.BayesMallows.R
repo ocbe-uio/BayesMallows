@@ -21,6 +21,7 @@
 #' @param ... Other arguments passed to `plot` (not used).
 #'
 #' @export
+#' @importFrom stats density
 #'
 #' @example /inst/examples/plot.BayesMallows_example.R
 #' @family posterior quantities

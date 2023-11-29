@@ -1,58 +1,10 @@
 # BayesMallows (development versions)
 
+# BayesMallows 1.5.0
 
-## Major breaking changes
-
-* The number of arguments to compute_mallows() has been reduced from 29 to 9, by
-  creating new functions for setting up data objects, model parameters, 
-  computational options, initial values, and priors. See the introductory 
-  vignette to get started.
-* The function compute_mallows_mixtures() now takes the same arguments as
-  compute_mallows(), rather than simpy forwarding the arguments with an 
-  ellipsis (...).
-  
-
-## Changes to sequential Monte Carlo methods
-
-* BREAKING CHANGE: "C" argument removed from plot.SMCMallows() since clustering
-  is currently not supported for these models.
-* BREAKING CHANGE: argument "mcmc_kernel_app" renamed to "mcmc_steps", to 
-  better explain what it is doing.
-* BREAKING CHANGE: argument "nmc" to plot.SMCMallows has been removed because it
-  is now a part of the objects of class "SMCMallows", and hence does not need to
-  be explicitly provided.
-* BREAKING CHANGE: argument "burnin" to plot.SMCMallows has been removed because
-  burnin is not relevant with sequential Monte Carlo.
-* BREAKING CHANGE: arguments "timesteps" and "n_items" to 
-  smc_mallows_new_item_rank() have been removed, since they are given by the 
-  dimension of the rankings argument.
-* function smc_mallows_update() has been added, which allows updating existing
-  models as new data arrive.
-* BREAKING CHANGE: Argument "N" in SMC Mallows functions has been change to 
-  "n_particles".
-* BREAKING CHANGE: Argument "Time" in SMC Mallows functions has been changed to
-  "timesteps", to better describe what it means.
-* BREAKING CHANGE: smc_mallows_new_users() no longer takes the argument 
-  "n_items", as it is given by the number of columns in its "rankings" argument.
-* BREAKING CHANGE: Functions smc_mallows_new_users() and 
-  smc_mallows_new_item_rank() are now wrappers in R, which call the underlying 
-  C++ functions. These functions are now able to compute the partition function
-  automatically, not requiring the user to do this manually. As a consequence,
-  the argument "cardinalities" has been removed, and the argument 
-  "logz_estimate" has changed its expectation, to be consistent with the use
-  in compute_mallows().
-* BREAKING CHANGE: compute_rho_consensus() for SMC Mallows has been deprecated 
-  in favor of compute_consensus().
-* BREAKING CHANGE: compute_posterior_intervals_rho() and compute_posterior_intervals_alpha()
-  for SMC Mallows have been deprecated in factor of 
-  compute_posterior_intervals() with argument parameter = "rho" and
-  parameter = "alpha".
-* Plot title "Implemented SMC scheme" removed from plot.SMCMallows() with 
-  argument parameter = "alpha".
-
-
-## Other changes
-
+* Bug in plot.BayesMallows for posterior distribution with 'parameter = "rho"'
+  has been fixed. Thanks to Lorenzo Zuccato for points out the issue. 
+  (https://github.com/ocbe-uio/BayesMallows/issues/342)
 * Argument obs_freq to internal function rmallows() is removed, as it is not 
   being used. Thanks to Lorenzo Zuccato for pointing this our 
   (https://github.com/ocbe-uio/BayesMallows/issues/337).
