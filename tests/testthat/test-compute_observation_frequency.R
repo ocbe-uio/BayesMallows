@@ -21,13 +21,7 @@ test_that("compute_observation_frequency works", {
       13, 15, 14, 13, 12, 13, 9, 10, 8, 10, 10, 9, 12, 14, 12, 14,
       14, 11, 14, 17, 9, 14, 11, 13, 14, 11, 13, 12, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1, 1
-    ), .Dim = c(12L, 21L), .Dimnames = list(
-      NULL,
-      c(
-        "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "freq"
-      )
-    ))
+    ), .Dim = c(12L, 21L))
   )
 
   set.seed(9988)
@@ -57,24 +51,19 @@ test_that("compute_observation_frequency works", {
       13, 15, 14, 13, 12, 13, 9, 10, 8, 10, 10, 9, 12, 14, 12, 14,
       14, 11, 14, 17, 9, 14, 11, 13, 14, 11, 13, 12, 98, 33, 88, 49,
       21, 97, 59, 45, 91, 98, 48, 23
-    ), .Dim = c(12L, 21L), .Dimnames = list(
-      NULL, c(
-        "", "", "", "", "", "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", "freq"
-      )
-    ))
+    ), .Dim = c(12L, 21L))
   )
 
+  mat[mat < 10] <- NA
   expect_equal(
-    compute_observation_frequency(rankings = potato_visual[2, ]),
+    compute_observation_frequency(rankings = mat)[, 21],
+    c(98, 48, 23, 91, 98, 33, 88, 49, 21, 97, 59, 45))
+
+  expect_equal(
+    compute_observation_frequency(rankings = potato_visual[2, , drop = FALSE]),
     structure(c(
       10, 18, 19, 17, 11, 15, 6, 20, 4, 3, 13, 1, 2, 7,
       16, 8, 5, 12, 9, 14, 1
-    ), .Dim = c(1L, 21L), .Dimnames = list(
-      NULL, c(
-        "", "", "", "", "", "", "", "", "", "", "", "", "",
-        "", "", "", "", "", "", "", "freq"
-      )
-    ))
+    ), .Dim = c(1L, 21L))
   )
 })

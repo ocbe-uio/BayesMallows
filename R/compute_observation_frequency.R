@@ -12,16 +12,21 @@
 #' @export
 #' @family rank functions
 #'
-#' @example /inst/examples/rank_freq_distr_example.R
+#' @example /inst/examples/compute_observation_frequency_example.R
 #'
 compute_observation_frequency <- function(rankings) {
-  if (!is.matrix(rankings)) {
-    rankings <- matrix(rankings, nrow = 1)
-  }
+  if(!is.matrix(rankings)) stop("rankings must be a matrix")
 
   rankings[is.na(rankings)] <- 0
-  out <- unit_to_freq(data = rankings)
-  out[out == 0] <- NA
+  counts <- table(apply(rankings, 1, paste, collapse = ","))
 
-  return(out)
+  ret <- cbind(
+    do.call(rbind,
+            lapply(strsplit(names(counts), split = ","), as.numeric)),
+    as.numeric(counts)
+  )
+  ret[ret == 0] <- NA
+  ret
+
 }
+
