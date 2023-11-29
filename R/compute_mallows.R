@@ -24,19 +24,19 @@
 #'   `compute_mallows` can also compute mixtures of Mallows models, for
 #'   clustering of assessors with similar preferences.
 #'
-#' @param data An object of class `"BayesMallowsData"` returned from
+#' @param data An object of class "BayesMallowsData" returned from
 #'   [setup_rank_data()].
 #'
-#' @param model_options An object of class `"BayesMallowsModelOptions"` returned
+#' @param model_options An object of class "BayesMallowsModelOptions" returned
 #'   from [set_model_options()].
 #'
-#' @param compute_options An object of class `"BayesMallowsComputeOptions"`
+#' @param compute_options An object of class "BayesMallowsComputeOptions"
 #'   returned from [set_compute_options()].
 #'
-#' @param priors An object of class `"BayesMallowsPriors"` returned from
+#' @param priors An object of class "BayesMallowsPriors" returned from
 #'   [set_priors()].
 #'
-#' @param initial_values An object of class `"BayesMallowsInitialValues"` returned
+#' @param initial_values An object of class "BayesMallowsInitialValues" returned
 #'   from [set_initial_values()].
 #'
 #' @param logz_estimate Estimate of the partition function, computed with
@@ -56,7 +56,7 @@
 #'   provided, chains will be run in parallel, one on each node of `cl`.
 #'
 #'
-#' @return A list of class BayesMallows.
+#' @return An object of class BayesMallows.
 #'
 #' @references \insertAllCited{}
 #'

@@ -1,20 +1,21 @@
 #' Update a Bayesian Mallows model with new users
 #'
 #' Update a Bayesian Mallows model estimated using the Metropolis-Hastings
-#' algorithm in [compute_mallows()] using the sequential Monte Carlo
-#' algorithm described in
-#' \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}. This
-#' is useful when new data arrives, and is typically more computationally
-#' efficient than running Metropolis-Hastings from scratch.
+#' algorithm in [compute_mallows()] using the sequential Monte Carlo algorithm
+#' described in
+#' \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
 #'
-#' @param model A model object.
-#' @param new_data Object returned from [setup_rank_data()] containing new data.
-#' @param model_options An object of class `"BayesMallowsModelOptions"` returned
+#' @param model A model object of class "BayesMallows" returned from
+#'   [compute_mallows()].
+#' @param new_data An object of class "BayesMallowsData" returned from
+#'   [setup_rank_data()]. The object should contain the new data being provided.
+#' @param model_options An object of class "BayesMallowsModelOptions" returned
 #'   from [set_model_options()].
-#' @param smc_options SMC specific options returned from [set_smc_options()].
-#' @param compute_options An object of class `"BayesMallowsComputeOptions"`
+#' @param smc_options An object of class "SMCOptions" returned from
+#'   [set_smc_options()].
+#' @param compute_options An object of class "BayesMallowsComputeOptions"
 #'   returned from [set_compute_options()].
-#' @param priors An object of class `"BayesMallowsPriors"` returned from
+#' @param priors An object of class "BayesMallowsPriors" returned from
 #'   [set_priors()]. Defaults to the priors used in `model`.
 #' @param ... Optional arguments. Currently not used.
 #'

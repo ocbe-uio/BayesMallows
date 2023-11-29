@@ -21,21 +21,24 @@ update_mallows(model, new_data, ...)
 \method{update_mallows}{SMCMallows}(model, new_data, ...)
 }
 \arguments{
-\item{model}{A model object.}
+\item{model}{A model object of class "BayesMallows" returned from
+\code{\link[=compute_mallows]{compute_mallows()}}.}
 
-\item{new_data}{Object returned from \code{\link[=setup_rank_data]{setup_rank_data()}} containing new data.}
+\item{new_data}{An object of class "BayesMallowsData" returned from
+\code{\link[=setup_rank_data]{setup_rank_data()}}. The object should contain the new data being provided.}
 
 \item{...}{Optional arguments. Currently not used.}
 
-\item{model_options}{An object of class \code{"BayesMallowsModelOptions"} returned
+\item{model_options}{An object of class "BayesMallowsModelOptions" returned
 from \code{\link[=set_model_options]{set_model_options()}}.}
 
-\item{smc_options}{SMC specific options returned from \code{\link[=set_smc_options]{set_smc_options()}}.}
+\item{smc_options}{An object of class "SMCOptions" returned from
+\code{\link[=set_smc_options]{set_smc_options()}}.}
 
-\item{compute_options}{An object of class \code{"BayesMallowsComputeOptions"}
+\item{compute_options}{An object of class "BayesMallowsComputeOptions"
 returned from \code{\link[=set_compute_options]{set_compute_options()}}.}
 
-\item{priors}{An object of class \code{"BayesMallowsPriors"} returned from
+\item{priors}{An object of class "BayesMallowsPriors" returned from
 \code{\link[=set_priors]{set_priors()}}. Defaults to the priors used in \code{model}.}
 }
 \value{
@@ -43,11 +46,9 @@ An updated model, of class "SMCMallows".
 }
 \description{
 Update a Bayesian Mallows model estimated using the Metropolis-Hastings
-algorithm in \code{\link[=compute_mallows]{compute_mallows()}} using the sequential Monte Carlo
-algorithm described in
-\insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}. This
-is useful when new data arrives, and is typically more computationally
-efficient than running Metropolis-Hastings from scratch.
+algorithm in \code{\link[=compute_mallows]{compute_mallows()}} using the sequential Monte Carlo algorithm
+described in
+\insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
 }
 \seealso{
 Other modeling: 

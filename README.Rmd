@@ -77,7 +77,7 @@ plot(fit)
 ```
 
 
-For more examples, please our [R Journal paper](https://journal.r-project.org/archive/2020/RJ-2020-026/index.html), and the function documentation. The use of parallel chains are described in [this vignette](https://ocbe-uio.github.io/BayesMallows/articles/parallel_chains.html).
+For more examples, please see our [R Journal paper](https://journal.r-project.org/archive/2020/RJ-2020-026/index.html), and the function documentation. The use of parallel chains are described in [this vignette](https://ocbe-uio.github.io/BayesMallows/articles/parallel_chains.html).
 
 ### Sequential Monte Carlo Algorithm
 

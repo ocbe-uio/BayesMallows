@@ -72,7 +72,7 @@ plot(fit)
 
 ![](man/figures/README-unnamed-chunk-6-1.png)<!-- -->
 
-For more examples, please our [R Journal
+For more examples, please see our [R Journal
 paper](https://journal.r-project.org/archive/2020/RJ-2020-026/index.html),
 and the function documentation. The use of parallel chains are described
 in [this

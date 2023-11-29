@@ -19,19 +19,19 @@ compute_mallows_mixtures(
 \arguments{
 \item{n_clusters}{Integer vector specifying the number of clusters to use.}
 
-\item{data}{An object of class \code{"BayesMallowsData"} returned from
+\item{data}{An object of class "BayesMallowsData" returned from
 \code{\link[=setup_rank_data]{setup_rank_data()}}.}
 
-\item{model_options}{An object of class \code{"BayesMallowsModelOptions"} returned
+\item{model_options}{An object of class "BayesMallowsModelOptions" returned
 from \code{\link[=set_model_options]{set_model_options()}}.}
 
-\item{compute_options}{An object of class \code{"BayesMallowsComputeOptions"}
+\item{compute_options}{An object of class "BayesMallowsComputeOptions"
 returned from \code{\link[=set_compute_options]{set_compute_options()}}.}
 
-\item{priors}{An object of class \code{"BayesMallowsPriors"} returned from
+\item{priors}{An object of class "BayesMallowsPriors" returned from
 \code{\link[=set_priors]{set_priors()}}.}
 
-\item{initial_values}{An object of class \code{"BayesMallowsInitialValues"} returned
+\item{initial_values}{An object of class "BayesMallowsInitialValues" returned
 from \code{\link[=set_initial_values]{set_initial_values()}}.}
 
 \item{logz_estimate}{Estimate of the partition function, computed with

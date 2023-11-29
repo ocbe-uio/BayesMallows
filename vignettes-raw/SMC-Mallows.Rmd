@@ -261,6 +261,8 @@ Another setting supported is when existing users update their partial rankings. 
 
 The main methodological issue in this case, is that the augmented rankings at the previous SMC timepoint may be in conflict with the new rankings. In this case, the augmented rankings must be corrected, as described in Chapter 6 of @steinSequentialInferenceMallows2023. We provide an example again with the sushi data.
 
+
+
 We assume that the initial batch of data contains top-3 rankings provided by the first 100 users.
 
 ```{r}
@@ -269,11 +271,20 @@ sushi_reduced <- sushi_rankings[1:100, ]
 data_batch1 <- ifelse(sushi_reduced > 3, NA_real_, sushi_reduced)
 ```
 
+To keep track of existing users updating their preferences, we also need a user ID in this case. Currently, this is implemented by providing row names to the ranking matrix.
+
+```{r}
+rownames(data_batch1) <- seq_len(nrow(data_batch1))
+head(data_batch1)
+```
+
+
 We fit the standard Metropolis-Hastings algorithm to these data, yielding a starting point.
 
 ```{r}
 mod_init <- compute_mallows(
-  data = setup_rank_data(rankings = data_batch1)
+  data = setup_rank_data(rankings = data_batch1, 
+                         user_ids = rownames(data_batch1))
 )
 ```
 
@@ -288,8 +299,11 @@ Next, assume we receive top-5 rankings from the same users. We now update the mo
 
 ```{r}
 data_batch2 <- ifelse(sushi_reduced > 5, NA_real_, sushi_reduced)
-model2 <- update_mallows(mod_init, 
-                         new_data = setup_rank_data(rankings = data_batch2))
+rownames(data_batch2) <- seq_len(nrow(data_batch2))
+model2 <- update_mallows(
+  mod_init, 
+  new_data = setup_rank_data(rankings = data_batch2, 
+                             user_ids = rownames(data_batch2)))
 ```
 
 We can plot the posterior distributions of $\alpha$ before and after.
@@ -306,6 +320,7 @@ Next, assume we receive top-8 rankings from the same users.
 
 ```{r}
 data_batch3 <- ifelse(sushi_reduced > 8, NA_real_, sushi_reduced)
+rownames(data_batch3) <- seq_len(nrow(data_batch3))
 ```
 
 Before proceeding, it is instructive to study why this situation needs special care. Below are the augmented rankings for user 1 in particle 1:
@@ -334,7 +349,9 @@ Luckily, this happens automatically in our implementation, so we can update the 
 
 ```{r}
 model3 <- update_mallows(
-  mod_init, new_data = setup_rank_data(rankings = data_batch3))
+  mod_init, 
+  new_data = setup_rank_data(rankings = data_batch3, 
+                             user_ids = rownames(data_batch3)))
 ```
 
 Next we plot the posterior:
@@ -343,12 +360,20 @@ Next we plot the posterior:
 plot(model3) + ggtitle("Posterior of dispersion parameter after data batch 3")
 ```
 
-Now assume we get a batch of new users, without missing ranks. These can be treated just as the other ones.
+Now assume we get a batch of new users, without missing ranks. These can be treated just as the other ones, but we need new user IDs.
 
 ```{r}
 data_batch4 <- sushi_rankings[500:600, ]
+rownames(data_batch4) <- as.character(500:600)
+head(data_batch4)
+```
+
+
+```{r}
 model4 <- update_mallows(
-  model3, new_data = setup_rank_data(rankings = data_batch4))
+  model = model3, 
+  new_data = setup_rank_data(rankings = data_batch4, 
+                             user_ids = rownames(data_batch4)))
 ```
 
 Here is the posterior for this model.
