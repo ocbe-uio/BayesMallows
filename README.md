@@ -7,11 +7,10 @@
 [![R-CMD-check](https://github.com/ocbe-uio/BayesMallows/workflows/R-CMD-check/badge.svg)](https://github.com/ocbe-uio/BayesMallows/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/ocbe-uio/BayesMallows/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ocbe-uio/BayesMallows?branch=master)
-[![CodeFactor](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/badge/develop)](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/overview/develop)
+[![CodeFactor](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/badge/master)](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/overview/master)
 
 This package provides a general framework for analyzing rank and
-preference data based on the Bayesian Mallows model first described in
-Vitelli et al. ([2018](#ref-vitelli2018)).
+preference data based on the Bayesian Mallows model.
 
 ## Installation
 
@@ -34,13 +33,19 @@ To get started, load the package with
 
 ``` r
 library(BayesMallows)
+set.seed(123)
 ```
 
 The package comes with several example datasets. The simplest one
 contains 12 persons’ assessments of the weights of 20 potatoes, either
 by visual inspection (`potato_visual`) or by lifting the potatoes and
-comparing their relative weights by hand (`potato_weighing`). To fit a
-Bayesian Mallows model on the `potato_visual` dataset, we do
+comparing their relative weights by hand (`potato_weighing`).
+
+### Metropolis-Hastings Algorithm
+
+To fit a Bayesian Mallows model on the `potato_visual` dataset using the
+Metropolis-Hastings algorithm first described in Vitelli et al.
+([2018](#ref-vitelli2018)), we do
 
 ``` r
 potato_data <- setup_rank_data(potato_visual)
@@ -61,7 +66,8 @@ Setting the burnin to 500, we obtain a plot of the posterior
 distribution of the scale parameter with:
 
 ``` r
-plot(fit, burnin = 500)
+fit$burnin <- 500
+plot(fit)
 ```
 
 ![](man/figures/README-unnamed-chunk-6-1.png)<!-- -->
@@ -71,6 +77,34 @@ paper](https://journal.r-project.org/archive/2020/RJ-2020-026/index.html),
 and the function documentation. The use of parallel chains are described
 in [this
 vignette](https://ocbe-uio.github.io/BayesMallows/articles/parallel_chains.html).
+
+### Sequential Monte Carlo Algorithm
+
+The package also supports updating a Bayesian Mallows model using
+sequential Monte Carlo, with the algorithm described in Stein
+([2023](#ref-steinSequentialInferenceMallows2023)). For example, in
+order to update the model fitted above with the potato ranks based on
+comparing their relative weights by hand, we do
+
+``` r
+new_data <- setup_rank_data(rankings = potato_weighing)
+updated_fit <- update_mallows(model = fit, new_data = new_data)
+```
+
+We can go on to plot the posterior distribution of the scale parameter
+for this updated model.
+
+``` r
+plot(updated_fit)
+```
+
+![](man/figures/README-unnamed-chunk-8-1.png)<!-- -->
+
+Sequential Monte Carlo can typically be useful when new data arrives in
+batches, as it does not require the Metropolis-Hastings algorithm to be
+rerun. See [this
+vignette](https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html)
+for more information.
 
 ## The Bayesian Mallows Model
 
