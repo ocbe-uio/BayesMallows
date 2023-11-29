@@ -99,7 +99,7 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
       consistent <- matrix(TRUE, nrow = nrow(rankings), ncol = model$smc_options$n_particles)
       for (uu in updated_users) {
         index <- which(rownames(rankings) == uu)
-        to_compare <- as.numeric(na.omit(rankings[index, ]))
+        to_compare <- as.numeric(stats::na.omit(rankings[index, ]))
 
         consistent[index, ] <- apply(model$augmented_rankings[, index, ], 2, function(ar) {
           all(ar[ar %in% to_compare] == to_compare)
