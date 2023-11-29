@@ -260,6 +260,123 @@ plot(model3)
 
 Another setting supported is when existing users update their partial rankings. For example, users can initially give top-5 rankings, and subsequently update these to top-10 rankings, top-20 rankings, etc. Another setting is when there are ranks missing at random, and the users subsequently provide these rankings. 
 
-The main methodological issue in this case, is that the augmented rankings at the previous SMC timepoint may be in conflict with the new rankings. In this case, the augmented rankings must be corrected, as described in Chapter 6 of @steinSequentialInferenceMallows2023.
+The main methodological issue in this case, is that the augmented rankings at the previous SMC timepoint may be in conflict with the new rankings. In this case, the augmented rankings must be corrected, as described in Chapter 6 of @steinSequentialInferenceMallows2023. We provide an example again with the sushi data.
+
+We assume that the initial batch of data contains top-3 rankings provided by the first 100 users.
+
+```{r}
+set.seed(123)
+sushi_reduced <- sushi_rankings[1:100, ]
+data_batch1 <- ifelse(sushi_reduced > 3, NA_real_, sushi_reduced)
+```
+
+We fit the standard Metropolis-Hastings algorithm to these data, yielding a starting point.
+
+```{r}
+mod_init <- compute_mallows(
+  data = setup_rank_data(rankings = data_batch1)
+)
+```
+
+Convergence seems to be quick, and we set the burnin to 300.
+
+```{r, sushi_updated_batch1_burnin, out.height="4cm", fig.cap="Trace plot for initial run on sushi batch 1."}
+assess_convergence(mod_init)
+mod_init$burnin <- 300
+```
+
+Next, assume we receive top-5 rankings from the same users. We now update the model using SMC.
+
+```{r}
+data_batch2 <- ifelse(sushi_reduced > 5, NA_real_, sushi_reduced)
+model2 <- update_mallows(mod_init, 
+                         new_data = setup_rank_data(rankings = data_batch2))
+```
+
+We can plot the posterior distributions of $\alpha$ before and after.
+
+```{r, sushi_updated_batch1_posterior, out.height="4cm", fig.cap="Posterior after sushi batch 1."}
+plot(mod_init) + ggtitle("Posterior of dispersion parameter after data batch 1")
+```
+
+```{r, sushi_updated_batch2_posterior, out.height="4cm", fig.cap="Posterior after sushi batch 2."}
+plot(model2) + ggtitle("Posterior of dispersion parameter after data batch 2")
+```
+
+Next, assume we receive top-8 rankings from the same users. 
+
+```{r}
+data_batch3 <- ifelse(sushi_reduced > 8, NA_real_, sushi_reduced)
+```
+
+Before proceeding, it is instructive to study why this situation needs special care. Below are the augmented rankings for user 1 in particle 1:
+
+```{r}
+(v1 <- model2$augmented_rankings[, 1, 1])
+```
+
+Next, we show the data provided by user 1 in `data_batch3`:
+
+```{r}
+(v2a <- unname(data_batch3[1, ]))
+```
+
+By compare the non-missing ranks, we can check if they are consistent or not:
+
+```{r}
+(v2b <- v2a[!is.na(v2a)])
+v1[v1 %in% v2b]
+all(v1[v1 %in% v2b] == v2b)
+```
+
+The provided data are not consistent with the augmented rankings in this case. This means that the augmented rankings for user 1 in particle 1 need to be corrected by the algorithm.
+
+Luckily, this happens automatically in our implementation, so we can update the model again.
+
+```{r}
+model3 <- update_mallows(
+  mod_init, new_data = setup_rank_data(rankings = data_batch3))
+```
+
+Next we plot the posterior:
+
+```{r, sushi_updated_batch3_posterior, out.height="4cm", fig.cap="Posterior after sushi batch 3."}
+plot(model3) + ggtitle("Posterior of dispersion parameter after data batch 3")
+```
+
+Now assume we get a batch of new users, without missing ranks. These can be treated just as the other ones.
+
+```{r}
+data_batch4 <- sushi_rankings[500:600, ]
+model4 <- update_mallows(
+  model3, new_data = setup_rank_data(rankings = data_batch4))
+```
+
+Here is the posterior for this model.
+
+```{r, sushi_updated_batch4_posterior, out.height="4cm", fig.cap="Posterior after sushi batch 4."}
+plot(model4) + ggtitle("Posterior of dispersion parameter after data batch 4")
+```
+
+We can confirm that the implementation is sensible by giving the complete data to `compute_mallows`:
+
+```{r}
+full_data <- rbind(data_batch3, data_batch4)
+mod_bmm <- compute_mallows(data = setup_rank_data(rankings = full_data))
+```
+
+
+The trace plot indicates good convergence, and we set the burnin to 300.
+
+```{r, sushi_updated_burnin, out.height="4cm", fig.cap="Trace plot for MCMC run on sushi data."}
+assess_convergence(mod_bmm)
+```
+
+We see that the posterior is close to the one of `model4`:
+
+```{r, sushi_updated_bmm_posterior, out.height="4cm", fig.cap="Posterior for MCMC on sushi data."}
+plot(mod_bmm, burnin = 300)
+```
+
 
 ## References
