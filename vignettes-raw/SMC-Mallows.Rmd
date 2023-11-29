@@ -1,9 +1,8 @@
 ---
 title: "Sequential Monte Carlo for the Bayesian Mallows model"
-output: 
-  rmarkdown::html_vignette:
-    fig_width: 6
-    fig_height: 4
+output: rmarkdown::html_vignette
+pkgdown:
+  as_is: true
 bibliography: ../inst/REFERENCES.bib
 link-citations: yes
 vignette: >
@@ -28,7 +27,7 @@ set.seed(123)
 ```
 
 
-This vignette describes sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. This vignette focuses on the code. For an in-depth treatment of the implemented methodology, see @steinSequentialInferenceMallows2023 which is available [here](https://eprints.lancs.ac.uk/id/eprint/195759/). 
+This vignette describes sequential Monte Carlo (SMC) algorithms to provide updated approximations to the posterior distribution of a single Mallows model. We consider scenarios where we receive sequential information in the form of complete rankings, partial rankings and updated rankings from existing individuals who have previously provided a (partial) ranking. This vignette focuses on the code. For an in-depth treatment of the implemented methodology, see @steinSequentialInferenceMallows2023 which is available <a href="https://eprints.lancs.ac.uk/id/eprint/195759/" target="_blank">here</a>. 
 
 
 ## New users with complete rankings
@@ -321,7 +320,7 @@ Next, we show the data provided by user 1 in `data_batch3`:
 (v2a <- unname(data_batch3[1, ]))
 ```
 
-By compare the non-missing ranks, we can check if they are consistent or not:
+By comparing the non-missing ranks, we can check if they are consistent or not:
 
 ```{r}
 (v2b <- v2a[!is.na(v2a)])
