@@ -1,4 +1,4 @@
-# BayesMallows (development versions)
+# BayesMallows 1.5.0
 
 * Bug in plot.BayesMallows for posterior distribution with 'parameter = "rho"'
   has been fixed. Thanks to Lorenzo Zuccato for points out the issue. 
