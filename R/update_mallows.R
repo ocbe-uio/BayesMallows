@@ -37,7 +37,6 @@ update_mallows.BayesMallows <- function(
     compute_options = set_compute_options(),
     priors = model$priors,
     ...) {
-
   alpha_init <- extract_alpha_init(model, smc_options$n_particles)
   rho_init <- extract_rho_init(model, smc_options$n_particles)
 
@@ -48,8 +47,10 @@ update_mallows.BayesMallows <- function(
     smc_options = smc_options,
     compute_options = compute_options,
     priors = priors,
-    initial_values = list(alpha_init = alpha_init, rho_init = rho_init,
-                          aug_init = NULL),
+    initial_values = list(
+      alpha_init = alpha_init, rho_init = rho_init,
+      aug_init = NULL
+    ),
     logz_list = model$logz_list
   )
 
@@ -74,8 +75,7 @@ update_mallows.BayesMallows <- function(
 #' @export
 #' @rdname update_mallows
 update_mallows.SMCMallows <- function(model, new_data, ...) {
-
-  if(!is.null(new_data$user_ids) && !is.null(model$data$user_ids)) {
+  if (!is.null(new_data$user_ids) && !is.null(model$data$user_ids)) {
     old_users <- setdiff(model$data$user_ids, new_data$user_ids)
     updated_users <- intersect(model$data$user_ids, new_data$user_ids)
     new_users <- setdiff(new_data$user_ids, model$data$user_ids)
@@ -88,12 +88,14 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     user_ids <- c(old_users, updated_users, new_users)
 
     data <- setup_rank_data(rankings = rankings, user_ids = user_ids)
-    new_data <- setup_rank_data(rankings = rankings[new_users, , drop = FALSE],
-                                user_ids = new_users)
+    new_data <- setup_rank_data(
+      rankings = rankings[new_users, , drop = FALSE],
+      user_ids = new_users
+    )
 
-    if(!is.null(model$augmented_rankings)) {
+    if (!is.null(model$augmented_rankings)) {
       consistent <- matrix(TRUE, nrow = nrow(rankings), ncol = model$smc_options$n_particles)
-      for(uu in updated_users) {
+      for (uu in updated_users) {
         index <- which(rownames(rankings) == uu)
         to_compare <- as.numeric(na.omit(rankings[index, ]))
 
@@ -103,12 +105,12 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
       }
       data$consistent <- consistent * 1L
     }
-
   } else {
     rankings <- rbind(model$data$rankings, new_data$rankings)
     data <- setup_rank_data(
       rankings = rankings,
-      user_ids = seq_len(nrow(rankings)))
+      user_ids = seq_len(nrow(rankings))
+    )
   }
 
   ret <- run_smc(
@@ -121,7 +123,8 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     initial_values = list(
       alpha_init = model$alpha_samples,
       rho_init = model$rho_samples,
-      aug_init = model$augmented_rankings),
+      aug_init = model$augmented_rankings
+    ),
     logz_list = model$logz_list
   )
 
@@ -150,15 +153,20 @@ tidy_smc <- function(ret, items) {
 
 extract_alpha_init <- function(model, n_particles) {
   thinned_inds <- floor(
-    seq(from = model$burnin + 1, to = ncol(model$alpha_samples),
-        length.out = n_particles))
-  model$alpha_samples[1,  thinned_inds, drop = TRUE]
+    seq(
+      from = model$burnin + 1, to = ncol(model$alpha_samples),
+      length.out = n_particles
+    )
+  )
+  model$alpha_samples[1, thinned_inds, drop = TRUE]
 }
 
 extract_rho_init <- function(model, n_particles) {
   thinned_inds <- floor(
-    seq(from = model$burnin + 1, to = dim(model$rho_samples)[[3]],
-        length.out = n_particles))
+    seq(
+      from = model$burnin + 1, to = dim(model$rho_samples)[[3]],
+      length.out = n_particles
+    )
+  )
   model$rho_samples[, 1, thinned_inds, drop = TRUE]
 }
-

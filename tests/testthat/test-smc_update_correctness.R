@@ -131,7 +131,8 @@ test_that("update_mallows is correct for new partial rankings", {
       model = mod_init,
       new_data = setup_rank_data(rankings = dat[5:20, ]),
       smc_options = set_smc_options(
-        n_particles = 10000, mcmc_steps = 10, aug_method = aug)
+        n_particles = 10000, mcmc_steps = 10, aug_method = aug
+      )
     )
 
     mod_smc_next <- update_mallows(
@@ -167,7 +168,6 @@ test_that("update_mallows is correct for new partial rankings", {
 
 
 test_that("update_mallows is correct for new partial rankings", {
-
   set.seed(123)
   user_ids <- rownames(potato_visual)
   dat0 <- potato_visual
@@ -176,7 +176,7 @@ test_that("update_mallows is correct for new partial rankings", {
   mod0 <- compute_mallows(
     data = setup_rank_data(rankings = dat0),
     compute_options = set_compute_options(nmc = 10000, burnin = 5000)
-    )
+  )
 
   dat1 <- potato_visual
   dat1 <- ifelse(is.na(dat0) & runif(length(dat1)) > .5, NA_real_, dat1)
@@ -185,7 +185,7 @@ test_that("update_mallows is correct for new partial rankings", {
     model = mod0,
     new_data = setup_rank_data(rankings = dat1, user_ids = user_ids),
     smc_options = set_smc_options(n_particles = 10000, mcmc_steps = 10)
-    )
+  )
 
   mod_bmm1 <- compute_mallows(
     data = setup_rank_data(rankings = dat1),
@@ -209,7 +209,7 @@ test_that("update_mallows is correct for new partial rankings", {
   mod_bmm <- compute_mallows(
     data = setup_rank_data(rankings = dat2),
     compute_options = set_compute_options(nmc = 50000)
-    )
+  )
 
   expect_equal(
     mean(mod2$alpha$value),
@@ -222,7 +222,6 @@ test_that("update_mallows is correct for new partial rankings", {
     sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 5000]),
     tolerance = .1
   )
-
 })
 
 
@@ -285,5 +284,4 @@ test_that("update_mallows is correct for new top-k rankings", {
     sd(mod_bmm2$alpha$value[mod_bmm2$alpha$iteration > 5000]),
     tolerance = .1
   )
-
 })

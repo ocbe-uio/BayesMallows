@@ -26,5 +26,4 @@ test_that("assign_cluster works", {
 
   asc <- assign_cluster(m, burnin = 7)
   asc <- asc[order(as.integer(asc$assessor)), ]
-
 })

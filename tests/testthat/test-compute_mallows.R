@@ -244,7 +244,4 @@ test_that("compute_mallows treats observation_frequency properly", {
     ret$new_assessor <- NULL
     ret
   }))
-
-
 })
-

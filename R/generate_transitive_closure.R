@@ -4,7 +4,7 @@ generate_transitive_closure <- function(preferences, cl = NULL) {
   }
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
-  if(!is.numeric(preferences$assessor)) {
+  if (!is.numeric(preferences$assessor)) {
     stop("assessor column in preferences must be numeric")
   }
 
@@ -18,8 +18,10 @@ generate_transitive_closure <- function(preferences, cl = NULL) {
     }
   }
   prefs <- lapplyfun(seq_along(prefs), function(i) {
-    cbind(assessor = as.numeric(names(prefs)[[i]]),
-          .generate_transitive_closure(as.matrix(prefs[[i]])))
+    cbind(
+      assessor = as.numeric(names(prefs)[[i]]),
+      .generate_transitive_closure(as.matrix(prefs[[i]]))
+    )
   })
 
   prefs <- do.call(rbind.data.frame, prefs)

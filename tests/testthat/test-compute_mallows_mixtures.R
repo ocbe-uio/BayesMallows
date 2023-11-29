@@ -64,5 +64,4 @@ test_that("compute_mallows_mixtures works", {
     max(mixture_model1$cluster_probs$value),
     max(mixture_model2$cluster_probs$value)
   )
-
 })

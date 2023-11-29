@@ -1,4 +1,3 @@
-
 generate_initial_ranking <- function(
     preferences, n_items, cl = NULL, shuffle_unranked = FALSE,
     random = FALSE, random_limit = 8L) {
@@ -37,8 +36,10 @@ generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
 }
 
 
-.S3method("generate_initial_ranking", "BayesMallowsTransitiveClosure",
-          generate_initial_ranking.BayesMallowsTransitiveClosure)
+.S3method(
+  "generate_initial_ranking", "BayesMallowsTransitiveClosure",
+  generate_initial_ranking.BayesMallowsTransitiveClosure
+)
 
 generate_initial_ranking.BayesMallowsIntransitive <- function(
     preferences, n_items, cl = NULL, shuffle_unranked = FALSE,
@@ -50,8 +51,10 @@ generate_initial_ranking.BayesMallowsIntransitive <- function(
   rankings <- matrix(rankings, ncol = n_items, nrow = n_assessors, byrow = TRUE)
 }
 
-.S3method("generate_initial_ranking", "BayesMallowsIntransitive",
-          generate_initial_ranking.BayesMallowsIntransitive)
+.S3method(
+  "generate_initial_ranking", "BayesMallowsIntransitive",
+  generate_initial_ranking.BayesMallowsIntransitive
+)
 
 create_ranks <- function(mat, n_items, shuffle_unranked, random) {
   if (!random) {

@@ -26,4 +26,3 @@ exp_d_ham <- function(alpha, n_items) {
     sum(((exp(alpha) - 1)^idx) / factorial(idx))
   return(out)
 }
-
