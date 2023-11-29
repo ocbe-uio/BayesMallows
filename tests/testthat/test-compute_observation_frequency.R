@@ -57,7 +57,8 @@ test_that("compute_observation_frequency works", {
   mat[mat < 10] <- NA
   expect_equal(
     compute_observation_frequency(rankings = mat)[, 21],
-    c(98, 48, 23, 91, 98, 33, 88, 49, 21, 97, 59, 45))
+    c(98, 48, 23, 91, 98, 33, 88, 49, 21, 97, 59, 45)
+  )
 
   expect_equal(
     compute_observation_frequency(rankings = potato_visual[2, , drop = FALSE]),

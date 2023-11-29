@@ -15,18 +15,18 @@
 #' @example /inst/examples/compute_observation_frequency_example.R
 #'
 compute_observation_frequency <- function(rankings) {
-  if(!is.matrix(rankings)) stop("rankings must be a matrix")
+  if (!is.matrix(rankings)) stop("rankings must be a matrix")
 
   rankings[is.na(rankings)] <- 0
   counts <- table(apply(rankings, 1, paste, collapse = ","))
 
   ret <- cbind(
-    do.call(rbind,
-            lapply(strsplit(names(counts), split = ","), as.numeric)),
+    do.call(
+      rbind,
+      lapply(strsplit(names(counts), split = ","), as.numeric)
+    ),
     as.numeric(counts)
   )
   ret[ret == 0] <- NA
   ret
-
 }
-
