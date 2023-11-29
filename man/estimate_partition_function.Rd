@@ -13,8 +13,7 @@ estimate_partition_function(
   degree,
   n_iterations,
   K,
-  cl = NULL,
-  seed = NULL
+  cl = NULL
 )
 }
 \arguments{
@@ -50,8 +49,6 @@ asymptotic approximation of the partition function. Only used when
 \item{cl}{Optional computing cluster used for parallelization, returned
 from \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}. Only used when
 \code{method = "importance_sampling"}.}
-
-\item{seed}{Optional random number seed.}
 }
 \value{
 A vector of length \code{degree} which can be supplied to the

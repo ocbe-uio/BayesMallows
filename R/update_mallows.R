@@ -6,7 +6,8 @@
 #' \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
 #'
 #' @param model A model object of class "BayesMallows" returned from
-#'   [compute_mallows()].
+#'   [compute_mallows()] or an object of class "SMCMallows" returned from
+#'   this function.
 #' @param new_data An object of class "BayesMallowsData" returned from
 #'   [setup_rank_data()]. The object should contain the new data being provided.
 #' @param model_options An object of class "BayesMallowsModelOptions" returned

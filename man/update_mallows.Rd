@@ -22,7 +22,8 @@ update_mallows(model, new_data, ...)
 }
 \arguments{
 \item{model}{A model object of class "BayesMallows" returned from
-\code{\link[=compute_mallows]{compute_mallows()}}.}
+\code{\link[=compute_mallows]{compute_mallows()}} or an object of class "SMCMallows" returned from
+this function.}
 
 \item{new_data}{An object of class "BayesMallowsData" returned from
 \code{\link[=setup_rank_data]{setup_rank_data()}}. The object should contain the new data being provided.}

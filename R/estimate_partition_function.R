@@ -95,7 +95,6 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
 #' from [parallel::makeCluster()]. Defaults to `NULL`. Only used when
 #' `method = "importance_sampling"`.
 #'
-#' @param seed Optional random number seed.
 #'
 #' @export
 #'
@@ -106,8 +105,7 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
 #'
 estimate_partition_function <- function(method = "importance_sampling",
                                         alpha_vector, n_items, metric,
-                                        nmc, degree, n_iterations, K, cl = NULL,
-                                        seed = NULL) {
+                                        nmc, degree, n_iterations, K, cl = NULL) {
   stopifnot(degree < length(alpha_vector))
 
   if (method == "importance_sampling") {
@@ -119,12 +117,12 @@ estimate_partition_function <- function(method = "importance_sampling",
         nmc_vec[i] <- nmc_vec[i] + 1
         if (i > length(cl)) break
       }
-      parallel::clusterExport(cl, c("alpha_vector", "n_items", "metric", "seed"),
+      parallel::clusterExport(cl, c("alpha_vector", "n_items", "metric"),
         envir = environment()
       )
+      parallel::clusterSetRNGStream(cl)
 
       estimates <- parallel::parLapply(cl, nmc_vec, function(x) {
-        if (!is.null(seed)) set.seed(seed)
         compute_importance_sampling_estimate(
           alpha_vector = alpha_vector, n_items = n_items,
           metric = metric, nmc = x
@@ -133,7 +131,6 @@ estimate_partition_function <- function(method = "importance_sampling",
 
       log_z <- rowMeans(do.call(cbind, estimates))
     } else {
-      if (!is.null(seed)) set.seed(seed)
       log_z <- as.numeric(
         compute_importance_sampling_estimate(
           alpha_vector = alpha_vector, n_items = n_items,
