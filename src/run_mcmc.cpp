@@ -56,7 +56,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
   if(clus.clustering){
     clus.update_cluster_probs(pars, pris);
-    clus.update_cluster_labels(t, dat, pars, logz_list);
+    clus.update_cluster_labels(t, dat, pars, logz_list, gen);
 
     if(t % clus.clus_thinning == 0){
       ++cluster_assignment_index;

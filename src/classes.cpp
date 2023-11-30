@@ -301,7 +301,8 @@ void Clustering::update_cluster_labels(
     const int t,
     const Data& dat,
     const Parameters& pars,
-    const Rcpp::List& logz_list
+    const Rcpp::List& logz_list,
+    std::mt19937& gen
 ){
   uvec new_cluster_assignment(dat.n_assessors);
   mat assignment_prob(dat.n_assessors, pars.n_clusters);
@@ -313,13 +314,13 @@ void Clustering::update_cluster_labels(
   }
 
   for(int i = 0; i < dat.n_assessors; ++i){
-    // Exponentiate to get unnormalized prob relative to max
     rowvec probs = exp(assignment_prob.row(i) -
       max(assignment_prob.row(i)));
 
-    // Normalize with 1-norm
     assignment_prob.row(i) = normalise(probs, 1);
-    new_cluster_assignment(span(i)) = sample(index, 1, false, assignment_prob.row(i).t());
+    std::discrete_distribution<> d(assignment_prob.row(i).begin(),
+                                   assignment_prob.row(i).end());
+    new_cluster_assignment(i) = d(gen);
   }
 
   if(save_ind_clus){

@@ -91,7 +91,8 @@ struct Clustering {
   void update_cluster_probs(const Parameters& pars, const Priors& pris);
   void update_cluster_labels(const int t, const Data& dat,
                              const Parameters& pars,
-                             const Rcpp::List& logz_list);
+                             const Rcpp::List& logz_list,
+                             std::mt19937& gen);
 
   void update_wcd(const int t);
   void update_dist_mat(const Data& dat, const Parameters& pars);
