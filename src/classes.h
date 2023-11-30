@@ -40,11 +40,10 @@ struct Parameters {
   ~Parameters() = default;
 
   void update_shape(int t, const Data& dat, const Priors& priors);
-  void update_rho(int cluster_index, int t, int& rho_index,
-                  const Data& dat);
+  void update_rho(int t, int& rho_index, const Data& dat,
+                  const arma::uvec& cluster_assignment);
 
   void update_alpha(
-      int cluster_index,
       int alpha_index,
       const Data& dat,
       const Rcpp::List& logz_list,
@@ -62,6 +61,7 @@ struct Parameters {
   const std::string metric;
   const std::string error_model;
   const int alpha_jump;
+  const arma::uvec element_indices;
 
 private:
   const double alpha_prop_sd;

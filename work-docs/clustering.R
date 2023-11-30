@@ -14,8 +14,16 @@ plot_elbow(models, burnin = 1000)
 # Rerun with 5 clusters
 mixture_model <- compute_mallows(
   data = setup_rank_data(rankings = sushi_rankings),
-  model_options = set_model_options(n_clusters = 5),
-  compute_options = set_compute_options(include_wcd = TRUE))
-# Delete the models object to free some memory
-rm(models)
-# Check the trace plot
+  compute_options = set_compute_options(nmc = 700),
+  model_options = set_model_options(n_clusters = 5))
+
+
+apply(mixture_model$alpha_samples, 1, mean)
+
+mixture_model$cluster_assignment %>%
+  as_tibble() %>%
+  group_by(value) %>%
+  summarise(n())
+
+compute_consensus(mixture_model, burnin = 200)
+plot(mixture_model, parameter = "cluster_probs", burnin = 200)

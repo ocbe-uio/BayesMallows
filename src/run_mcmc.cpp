@@ -27,7 +27,8 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
   clus.update_dist_mat(dat, pars);
 
-  int alpha_index = 0, rho_index = 0, aug_index = 0, cluster_assignment_index = 0;
+  int alpha_index = 0, rho_index = 0, aug_index = 0,
+    cluster_assignment_index = 0;
 
   for(size_t t{1}; t < pars.nmc; ++t){
     if (t % 1000 == 0) {
@@ -39,16 +40,11 @@ Rcpp::List run_mcmc(Rcpp::List data,
     }
 
     pars.update_shape(t, dat, pris);
-
-    for(int i = 0; i < pars.n_clusters; ++i){
-      pars.update_rho(i, t, rho_index, dat);
-    }
+    pars.update_rho(t, rho_index, dat, clus.current_cluster_assignment);
 
     if(t % pars.alpha_jump == 0) {
       ++alpha_index;
-      for(int i = 0; i < pars.n_clusters; ++i){
-        pars.update_alpha(i, alpha_index, dat, logz_list, pris);
-      }
+      pars.update_alpha(alpha_index, dat, logz_list, pris);
       pars.alpha_old = pars.alpha.col(alpha_index);
     }
 
@@ -64,7 +60,6 @@ Rcpp::List run_mcmc(Rcpp::List data,
   }
 
   clus.update_wcd(t);
-
   aug.update_missing_ranks(dat, clus, pars);
   aug.augment_pairwise(t, dat, pars, clus);
 

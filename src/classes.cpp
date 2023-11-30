@@ -133,7 +133,8 @@ Parameters::Parameters(
   alpha_jump { Rcpp::as<int>(compute_options["alpha_jump"]) },
   alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
   leap_size { Rcpp::as<int>(compute_options["leap_size"]) },
-  rho_thinning { Rcpp::as<int>(compute_options["rho_thinning"]) }
+  rho_thinning { Rcpp::as<int>(compute_options["rho_thinning"]) },
+  element_indices { regspace<uvec>(0, n_items - 1) }
   {
     alpha.set_size(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
     double alpha_init = initial_values["alpha_init"];
@@ -184,15 +185,21 @@ Clustering::Clustering(const Parameters& pars,
     update_wcd(0);
 }
 
-void Parameters::update_rho(int cluster_index, int t, int& rho_index,
-                            const Data& dat) {
-  vec rho_cluster = rho_old.col(cluster_index);
-  rho_old.col(cluster_index) = make_new_rho(rho_cluster, dat.rankings, alpha_old(cluster_index),
-              leap_size, metric, dat.observation_frequency);
+void Parameters::update_rho(int t, int& rho_index, const Data& dat,
+                            const uvec& current_cluster_assignment) {
+  for(int i{}; i < n_clusters; ++i){
+    mat cluster_rankings = dat.rankings.submat(
+      element_indices,
+      find(current_cluster_assignment == i));
 
-  if(t % rho_thinning == 0){
-    if(cluster_index == 0) ++rho_index;
-    rho.slice(rho_index).col(cluster_index) = rho_old.col(cluster_index);
+    vec rho_cluster = rho_old.col(i);
+    rho_old.col(i) = make_new_rho(rho_cluster, cluster_rankings, alpha_old(i),
+                leap_size, metric, dat.observation_frequency);
+
+    if(t % rho_thinning == 0){
+      if(i == 0) ++rho_index;
+      rho.slice(rho_index).col(i) = rho_old.col(i);
+    }
   }
 }
 
@@ -235,20 +242,21 @@ void Parameters::update_shape(int t, const Data& dat,
 }
 
 void Parameters::update_alpha(
-    int cluster_index,
     int alpha_index,
     const Data& dat,
     const Rcpp::List& logz_list,
     const Priors& priors) {
 
-  AlphaRatio test = make_new_alpha(
-    alpha_old(cluster_index), rho_old.col(cluster_index),
-    alpha_prop_sd, metric, logz_list, dat, priors);
+  for(int i = 0; i < n_clusters; ++i) {
+    AlphaRatio test = make_new_alpha(
+      alpha_old(i), rho_old.col(i),
+      alpha_prop_sd, metric, logz_list, dat, priors);
 
-  if(test.accept){
-    alpha(cluster_index, alpha_index) = test.proposal;
-  } else {
-    alpha(cluster_index, alpha_index) = alpha_old(cluster_index);
+    if(test.accept){
+      alpha(i, alpha_index) = test.proposal;
+    } else {
+      alpha(i, alpha_index) = alpha_old(i);
+    }
   }
 }
 
@@ -323,11 +331,11 @@ void Clustering::update_wcd(const int t){
 }
 
 void Clustering::update_dist_mat(const Data& dat, const Parameters& pars){
-  if(!clustering & !include_wcd) return;
-
-  for(int i = 0; i < pars.n_clusters; ++i)
-    dist_mat.col(i) = rank_dist_vec(dat.rankings, pars.rho_old.col(i),
-                 pars.metric, dat.observation_frequency);
+  if(clustering | include_wcd) {
+    for(int i = 0; i < pars.n_clusters; ++i)
+      dist_mat.col(i) = rank_dist_vec(dat.rankings, pars.rho_old.col(i),
+                   pars.metric, dat.observation_frequency);
+  }
 }
 
 void Augmentation::augment_pairwise(
