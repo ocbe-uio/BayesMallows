@@ -9,7 +9,6 @@
 
 using namespace arma;
 
-
 static std::string verify_metric(const std::string input) {
   bool check = (input.compare("footrule") == 0) ||
     (input.compare("spearman") == 0) ||
@@ -32,7 +31,6 @@ static std::string verify_error_model(const std::string input) {
   return input;
 }
 
-
 Data::Data(
   const Rcpp::List& data
 ) :
@@ -40,9 +38,7 @@ Data::Data(
   constraints { Rcpp::as<Rcpp::List>(data["constraints"]) },
   n_assessors { rankings.n_cols },
   n_items { rankings.n_rows },
-  observation_frequency { Rcpp::as<vec>(data["observation_frequency"]) }
-  {
-  }
+  observation_frequency { Rcpp::as<vec>(data["observation_frequency"]) } {}
 
 SMCData::SMCData(
   const Rcpp::List& data,
@@ -50,8 +46,7 @@ SMCData::SMCData(
 ) : Data(data),
   new_rankings { Rcpp::as<mat>(new_data["rankings"]).t() },
   num_new_obs { new_rankings.n_cols },
-  consistent {Rcpp::as<umat>(new_data["consistent"])}
-{}
+  consistent {Rcpp::as<umat>(new_data["consistent"])} {}
 
 SMCParameters::SMCParameters(
   const Rcpp::List& model_options,
@@ -66,8 +61,7 @@ SMCParameters::SMCParameters(
   alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
   leap_size { Rcpp::as<unsigned int>(compute_options["leap_size"]) },
   metric { verify_metric(Rcpp::as<std::string>(model_options["metric"])) },
-  norm_wgt { ones(n_particles) }
-{}
+  norm_wgt { ones(n_particles) } {}
 
 Augmentation::Augmentation(
   Data& dat,
@@ -89,9 +83,7 @@ Augmentation::Augmentation(
     augmented_data.set_size(dat.n_items, dat.n_assessors,
                             std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
     augmented_data.slice(0) = dat.rankings;
-  }
-
-  }
+  }}
 
 SMCAugmentation::SMCAugmentation(
   SMCData& dat,
@@ -104,7 +96,6 @@ SMCAugmentation::SMCAugmentation(
   any_missing { !is_finite(dat.rankings) },
   aug_init { Rcpp::as<Rcpp::Nullable<arma::cube>>(initial_values["aug_init"])}
   {
-
     if(any_missing){
       set_up_missing(dat.rankings, missing_indicator);
       augmented_data.set_size(dat.n_items, dat.n_assessors, n_particles);
@@ -121,8 +112,6 @@ SMCAugmentation::SMCAugmentation(
           span::all) = Rcpp::as<cube>(aug_init);
       }
     }
-
-
   }
 
 Priors::Priors(
@@ -130,10 +119,7 @@ Priors::Priors(
 ) : lambda { verify_positive(Rcpp::as<double>(priors["lambda"])) },
   kappa_1 { Rcpp::as<unsigned int>(priors["kappa_1"]) },
   kappa_2 { Rcpp::as<unsigned int>(priors["kappa_2"]) },
-  psi { Rcpp::as<unsigned int>(priors["psi"]) }
-  {
-
-}
+  psi { Rcpp::as<unsigned int>(priors["psi"]) } {}
 
 Parameters::Parameters(
   const Rcpp::List& model_options,
@@ -149,7 +135,6 @@ Parameters::Parameters(
   leap_size { Rcpp::as<int>(compute_options["leap_size"]) },
   rho_thinning { Rcpp::as<int>(compute_options["rho_thinning"]) }
   {
-
     alpha.set_size(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
     double alpha_init = initial_values["alpha_init"];
     alpha.col(0).fill(alpha_init);
@@ -177,7 +162,6 @@ Parameters::Parameters(
     }
   }
 
-
 Clustering::Clustering(const Parameters& pars,
                        const Rcpp::List& compute_options,
                        const unsigned int n_assessors) :
@@ -185,9 +169,7 @@ Clustering::Clustering(const Parameters& pars,
   clustering {pars.n_clusters > 1},
   clus_thinning { Rcpp::as<unsigned int>(compute_options["clus_thinning"]) },
   include_wcd { Rcpp::as<bool>(compute_options["include_wcd"]) },
-  save_ind_clus { Rcpp::as<bool>(compute_options["save_ind_clus"]) }
-{
-
+  save_ind_clus { Rcpp::as<bool>(compute_options["save_ind_clus"]) } {
     int n_cluster_assignments = pars.n_clusters > 1 ? std::ceil(static_cast<double>(pars.nmc * 1.0 / clus_thinning)) : 1;
     cluster_probs.set_size(pars.n_clusters, n_cluster_assignments);
     cluster_probs.col(0).fill(1.0 / pars.n_clusters);
@@ -208,7 +190,6 @@ void Parameters::update_rho(int cluster_index, int t, int& rho_index,
   rho_old.col(cluster_index) = make_new_rho(rho_cluster, dat.rankings, alpha_old(cluster_index),
               leap_size, metric, dat.observation_frequency);
 
-  // Save rho if appropriate
   if(t % rho_thinning == 0){
     if(cluster_index == 0) ++rho_index;
     rho.slice(rho_index).col(cluster_index) = rho_old.col(cluster_index);
@@ -217,8 +198,7 @@ void Parameters::update_rho(int cluster_index, int t, int& rho_index,
 
 void SMCParameters::update_rho(
     const unsigned int particle_index,
-    const SMCData& dat
-) {
+    const SMCData& dat) {
   rho_samples.col(particle_index) = make_new_rho(
     rho_samples.col(particle_index), dat.rankings,
     alpha_samples(particle_index), leap_size, metric,
@@ -227,9 +207,7 @@ void SMCParameters::update_rho(
 
 void Parameters::update_shape(int t, const Data& dat,
                               const Priors& priors) {
-
   if(error_model != "bernoulli") return;
-
   int sum_1{};
   int sum_2{};
   for(int i = 0; i < dat.n_assessors; ++i){
@@ -291,9 +269,7 @@ void SMCParameters::update_alpha(
   }
 }
 
-
 void Clustering::update_cluster_probs(const Parameters& pars, const Priors& pris){
-
   vec cluster_probs(pars.n_clusters);
 
   for(int i = 0; i < pars.n_clusters; ++i){
@@ -308,9 +284,7 @@ void Clustering::update_cluster_labels(
     const Parameters& pars,
     const Rcpp::List& logz_list
 ){
-
   uvec new_cluster_assignment(dat.n_assessors);
-
   mat assignment_prob(dat.n_assessors, pars.n_clusters);
   for(int i = 0; i < pars.n_clusters; ++i){
     // Compute the logarithm of the unnormalized probability
@@ -333,7 +307,6 @@ void Clustering::update_cluster_labels(
     assignment_prob.save(std::string("cluster_probs") + std::to_string(t + 1) + std::string(".csv"), csv_ascii);
   }
   current_cluster_assignment = new_cluster_assignment;
-
 }
 
 void Clustering::update_wcd(const int t){
@@ -346,12 +319,10 @@ void Clustering::update_wcd(const int t){
     mat dist_vec = dist_mat.submat(find(current_cluster_assignment == i), index.subvec(i, i));
     wcd(i) = accu(dist_vec);
   }
-
   within_cluster_distance.col(t) = wcd;
 }
 
 void Clustering::update_dist_mat(const Data& dat, const Parameters& pars){
-
   if(!clustering & !include_wcd) return;
 
   for(int i = 0; i < pars.n_clusters; ++i)
@@ -359,21 +330,17 @@ void Clustering::update_dist_mat(const Data& dat, const Parameters& pars){
                  pars.metric, dat.observation_frequency);
 }
 
-
 void Augmentation::augment_pairwise(
     const unsigned int t,
     Data& dat,
     const Parameters& pars,
     const Clustering& clus
 ){
-
   if(!augpair) return;
   for(int i = 0; i < dat.n_assessors; ++i) {
     vec proposal;
-    // Summed difference over error function before and after proposal
     int g_diff = 0;
 
-    // Sample a proposal, depending on the error model
     if(pars.error_model == "none"){
       proposal = propose_pairwise_augmentation(dat.rankings.col(i), Rcpp::as<Rcpp::List>(dat.constraints[i]));
     } else if(pars.error_model == "bernoulli"){
@@ -382,8 +349,6 @@ void Augmentation::augment_pairwise(
       Rcpp::stop("error_model must be 'none' or 'bernoulli'");
     }
 
-    // Finally, decide whether to accept the proposal or not
-    // Draw a uniform random number
     double u = std::log(randu<double>());
 
     // Find which cluster the assessor belongs to
@@ -403,16 +368,13 @@ void Augmentation::augment_pairwise(
   }
 }
 
-
 void Augmentation::update_missing_ranks(
     Data& dat,
     const Clustering& clus,
     const Parameters& pars) {
-
   if(!any_missing) return;
 
   for(int i = 0; i < dat.n_assessors; ++i){
-
     int cluster = clus.current_cluster_assignment(i);
 
     dat.rankings.col(i) = make_new_augmentation(
@@ -420,7 +382,6 @@ void Augmentation::update_missing_ranks(
       pars.alpha_old(cluster), pars.rho_old.col(cluster),
       pars.metric
     );
-
   }
 }
 
@@ -471,21 +432,18 @@ void SMCAugmentation::reweight(
                       dat.observation_frequency(span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1)));
     }
 
-
     log_inc_wgt(particle) = new_user_contribution + item_correction_contribution -
       dat.num_new_obs * log_z_alpha - log(aug_prob(particle));
   }
 
   pars.norm_wgt = normalize_weights(log_inc_wgt);
   pars.effective_sample_size = 1 / std::pow(norm(pars.norm_wgt, 2), 2);
-
 }
 
 void SMCAugmentation::augment_partial(
     const SMCParameters& pars,
     const SMCData& dat
 ){
-
   if(!any_missing) return;
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
 
@@ -550,5 +508,4 @@ void SMCAugmentation::update_missing_ranks(
       pars.metric, aug_method == "pseudo"
     );
   }
-
 }

@@ -3,7 +3,6 @@
 
 #include <RcppArmadillo.h>
 
-
 template <typename T>
 static T verify_positive(const T input) {
   if(input < 0) {
@@ -11,7 +10,6 @@ static T verify_positive(const T input) {
   }
   return input;
 }
-
 
 struct Data {
   Data(const Rcpp::List& data);
@@ -22,10 +20,7 @@ struct Data {
   const unsigned int n_assessors;
   const unsigned int n_items;
   const arma::vec observation_frequency;
-
 };
-
-
 
 struct Priors {
   Priors(const Rcpp::List& priors);
@@ -62,26 +57,17 @@ struct Parameters {
   arma::vec shape_1;
   arma::vec shape_2;
   arma::vec theta;
-
   const int n_clusters;
   const int nmc;
   const std::string metric;
   const std::string error_model;
-
-  const int get_alpha_jump() {
-    return alpha_jump;
-  }
+  const int alpha_jump;
 
 private:
-
-  const int alpha_jump;
   const double alpha_prop_sd;
   const int leap_size;
   const int rho_thinning;
-
 };
-
-
 
 struct Clustering {
   Clustering(const Parameters& pars, const Rcpp::List& compute_options,
@@ -108,8 +94,6 @@ struct Clustering {
 
   void update_wcd(const int t);
   void update_dist_mat(const Data& dat, const Parameters& pars);
-
-
 };
 
 struct Augmentation {
@@ -138,15 +122,12 @@ struct Augmentation {
   );
 };
 
-
 struct SMCData : Data {
   SMCData(const Rcpp::List& data, const Rcpp::List& new_data);
-
   arma::mat new_rankings;
   const unsigned int num_new_obs;
   const arma::umat consistent;
 };
-
 
 struct SMCParameters {
   SMCParameters(
@@ -176,11 +157,8 @@ struct SMCParameters {
   const std::string metric;
   double effective_sample_size{};
   arma::vec norm_wgt;
-
   arma::uvec draw_resampling_index();
   void resample(const arma::uvec& index);
-
-
 };
 
 struct SMCAugmentation {
@@ -204,10 +182,5 @@ struct SMCAugmentation {
   arma::cube augmented_data;
   arma::umat missing_indicator;
   Rcpp::Nullable<arma::cube> aug_init;
-
 };
-
-
-
 #endif
-

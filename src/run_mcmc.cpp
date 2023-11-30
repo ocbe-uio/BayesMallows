@@ -19,8 +19,6 @@ Rcpp::List run_mcmc(Rcpp::List data,
                     Rcpp::List logz_list,
                     bool verbose = false
                       ){
-
-
   Data dat{data};
   Priors pris{priors};
   Parameters pars{model_options, compute_options, initial_values, dat.n_items};
@@ -46,7 +44,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
       pars.update_rho(i, t, rho_index, dat);
     }
 
-    if(t % pars.get_alpha_jump() == 0) {
+    if(t % pars.alpha_jump == 0) {
       ++alpha_index;
       for(int i = 0; i < pars.n_clusters; ++i){
         pars.update_alpha(i, alpha_index, dat, logz_list, pris);
@@ -76,7 +74,6 @@ Rcpp::List run_mcmc(Rcpp::List data,
   }
 
   clus.update_dist_mat(dat, pars);
-
   }
 
   // Return everything that might be of interest

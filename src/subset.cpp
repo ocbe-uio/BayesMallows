@@ -50,7 +50,6 @@ ivec perm0_mul ( const ivec& p1, const ivec& p2) {
 }
 
 ivec perm0_inverse ( const ivec& p1 ) {
-
   int n = p1.size();
   ivec p2 = p1 + 1;
 
@@ -62,33 +61,26 @@ ivec perm0_inverse ( const ivec& p1 ) {
       p2(i1-1) = - i2;
       i1 = i2;
     }
-
     p2(i-1) = std::abs ( p2(i-1) ) * ((- p2(i-1) < 0) ? -1 : 1);
   }
 
   for ( int i{1}; i <= n; i++ ) {
     int i1 = - p2(i-1);
-
     if ( 0 <= i1 ) {
       int i0 = i;
-
       for ( ; ; ) {
         int i2 = p2(i1-1);
         p2(i1-1) = i0;
-
         if ( i2 < 0 ) break;
-
         i0 = i1;
         i1 = i2;
       }
     }
   }
-
   return p2 - 1;
 }
 
 int perm0_distance ( const ivec& a, const ivec& b ) {
-
   int n = a.size();
   ivec binv = perm0_inverse ( b );
   ivec c = perm0_mul ( a, binv);
