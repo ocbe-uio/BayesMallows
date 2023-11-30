@@ -131,8 +131,8 @@ Parameters::Parameters(
   metric { verify_metric(Rcpp::as<std::string>(model_options["metric"])) },
   error_model { verify_error_model(Rcpp::as<std::string>(model_options["error_model"])) },
   alpha_jump { Rcpp::as<int>(compute_options["alpha_jump"]) },
-  alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
   element_indices { regspace<uvec>(0, n_items - 1) },
+  alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
   leap_size { Rcpp::as<int>(compute_options["leap_size"]) },
   rho_thinning { Rcpp::as<int>(compute_options["rho_thinning"]) }
   {

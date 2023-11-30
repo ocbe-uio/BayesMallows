@@ -3,7 +3,6 @@
 // and have been modified considerably to use RcppArmadillo rather than C style arrays.
 
 # include <RcppArmadillo.h>
-#include "setdiff.h"
 
 using namespace arma;
 

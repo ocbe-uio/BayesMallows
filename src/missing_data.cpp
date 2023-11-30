@@ -1,5 +1,5 @@
 #include <RcppArmadillo.h>
-#include "setdiff.h"
+#include <algorithm>
 #include "distances.h"
 #include "missing_data.h"
 #include "misc.h"
@@ -8,6 +8,18 @@
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
+
+vec setdiff(const vec& x, const vec& y){
+  vec xs = sort(x);
+  vec ys = sort(y);
+
+  std::vector<double> diff;
+  std::set_difference(xs.begin(), xs.end(),
+                      ys.begin(), ys.end(),
+                      std::inserter(diff, diff.begin()));
+
+  return conv_to<vec>::from(diff);
+}
 
 vec propose_augmentation(const vec& ranks, const uvec& indicator){
   vec proposal = ranks;
