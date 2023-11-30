@@ -3,6 +3,12 @@ library(tidyverse)
 n_clusters <- c(4, 8)
 models <- compute_mallows_mixtures(
   n_clusters = n_clusters, data = setup_rank_data(sushi_rankings))
+
+assess_convergence(models)
+assess_convergence(models, parameter = "rho")
+assess_convergence(models, parameter = "cluster_probs", items = 1:2)
+
+
 # models is a list in which each element is an object of class BayesMallows,
 # returned from compute_mallows
 # We can create an elbow plot
@@ -14,9 +20,12 @@ plot_elbow(models, burnin = 1000)
 # Rerun with 5 clusters
 mixture_model <- compute_mallows(
   data = setup_rank_data(rankings = sushi_rankings),
-  compute_options = set_compute_options(nmc = 700),
+  compute_options = set_compute_options(nmc = 2000),
   model_options = set_model_options(n_clusters = 5))
 
+assess_convergence(mixture_model)
+assess_convergence(mixture_model, parameter = "rho")
+assess_convergence(mixture_model, parameter = "cluster_probs")
 
 apply(mixture_model$alpha_samples, 1, mean)
 

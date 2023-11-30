@@ -47,7 +47,8 @@ struct Parameters {
       int alpha_index,
       const Data& dat,
       const Rcpp::List& logz_list,
-      const Priors& priors);
+      const Priors& priors,
+      const arma::uvec& current_cluster_assignment);
 
   arma::mat alpha;
   arma::vec alpha_old;

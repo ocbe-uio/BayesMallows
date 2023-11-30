@@ -2,19 +2,34 @@
 % Please edit documentation in R/assess_convergence.R
 \name{assess_convergence}
 \alias{assess_convergence}
+\alias{assess_convergence.BayesMallows}
+\alias{assess_convergence.BayesMallowsMixtures}
 \title{Trace Plots from Metropolis-Hastings Algorithm}
 \usage{
-assess_convergence(
+assess_convergence(model_fit, ...)
+
+\method{assess_convergence}{BayesMallows}(
   model_fit,
-  parameter = "alpha",
+  parameter = c("alpha", "rho", "Rtilde", "cluster_probs", "theta"),
   items = NULL,
-  assessors = NULL
+  assessors = NULL,
+  ...
+)
+
+\method{assess_convergence}{BayesMallowsMixtures}(
+  model_fit,
+  parameter = c("alpha", "rho", "cluster_probs"),
+  items = NULL,
+  assessors = NULL,
+  ...
 )
 }
 \arguments{
 \item{model_fit}{A fitted model object of class \code{BayesMallows} returned from
 \code{\link[=compute_mallows]{compute_mallows()}} or an object of class \code{BayesMallowsMixtures}
 returned from \code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}}.}
+
+\item{...}{Other arguments passed on to other methods. Currently not used.}
 
 \item{parameter}{Character string specifying which parameter to plot. Available
 options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"},

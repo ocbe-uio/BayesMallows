@@ -12,23 +12,26 @@ using namespace arma;
 AlphaRatio make_new_alpha(const double& alpha_old, const vec& rho_old,
                           const double& alpha_prop_sd, const std::string& metric,
                           const Rcpp::List& logz_list,
-                          const Data& dat, const Priors& priors) {
+                          const arma::mat& rankings,
+                          const arma::vec& observation_frequency,
+                          const double& n_items,
+                          const Priors& priors) {
   double alpha_proposal = std::exp(randn<double>() * alpha_prop_sd +
                                    std::log(alpha_old));
 
-  double rank_dist = rank_dist_sum(dat.rankings, rho_old,
-                                   metric, dat.observation_frequency);
+  double rank_dist = rank_dist_sum(
+    rankings, rho_old, metric, observation_frequency);
 
   // Difference between current and proposed alpha
   double alpha_diff = alpha_old - alpha_proposal;
 
   // Compute the Metropolis-Hastings ratio
   double ratio =
-    alpha_diff / dat.n_items * rank_dist +
+    alpha_diff / n_items * rank_dist +
     priors.lambda * alpha_diff +
-    sum(dat.observation_frequency) * (
-        get_partition_function(dat.n_items, alpha_old, logz_list, metric) -
-          get_partition_function(dat.n_items, alpha_proposal, logz_list, metric)
+    sum(observation_frequency) * (
+        get_partition_function(n_items, alpha_old, logz_list, metric) -
+          get_partition_function(n_items, alpha_proposal, logz_list, metric)
     ) + std::log(alpha_proposal) - std::log(alpha_old);
 
   // Draw a uniform random number

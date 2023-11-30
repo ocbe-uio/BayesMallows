@@ -132,9 +132,9 @@ Parameters::Parameters(
   error_model { verify_error_model(Rcpp::as<std::string>(model_options["error_model"])) },
   alpha_jump { Rcpp::as<int>(compute_options["alpha_jump"]) },
   alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
+  element_indices { regspace<uvec>(0, n_items - 1) },
   leap_size { Rcpp::as<int>(compute_options["leap_size"]) },
-  rho_thinning { Rcpp::as<int>(compute_options["rho_thinning"]) },
-  element_indices { regspace<uvec>(0, n_items - 1) }
+  rho_thinning { Rcpp::as<int>(compute_options["rho_thinning"]) }
   {
     alpha.set_size(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
     double alpha_init = initial_values["alpha_init"];
@@ -188,13 +188,15 @@ Clustering::Clustering(const Parameters& pars,
 void Parameters::update_rho(int t, int& rho_index, const Data& dat,
                             const uvec& current_cluster_assignment) {
   for(int i{}; i < n_clusters; ++i){
-    mat cluster_rankings = dat.rankings.submat(
-      element_indices,
-      find(current_cluster_assignment == i));
+    const uvec cluster_indicator = find(current_cluster_assignment == i);
+    const mat cluster_rankings = dat.rankings.submat(
+      element_indices, cluster_indicator);
+    const vec cluster_frequency =
+      dat.observation_frequency.elem(cluster_indicator);
 
     vec rho_cluster = rho_old.col(i);
     rho_old.col(i) = make_new_rho(rho_cluster, cluster_rankings, alpha_old(i),
-                leap_size, metric, dat.observation_frequency);
+                leap_size, metric, cluster_frequency);
 
     if(t % rho_thinning == 0){
       if(i == 0) ++rho_index;
@@ -245,12 +247,20 @@ void Parameters::update_alpha(
     int alpha_index,
     const Data& dat,
     const Rcpp::List& logz_list,
-    const Priors& priors) {
+    const Priors& priors,
+    const uvec& current_cluster_assignment) {
 
   for(int i = 0; i < n_clusters; ++i) {
+    const uvec cluster_indicator = find(current_cluster_assignment == i);
+    const mat cluster_rankings = dat.rankings.submat(
+      element_indices, cluster_indicator);
+    const vec cluster_frequency =
+      dat.observation_frequency.elem(cluster_indicator);
+
     AlphaRatio test = make_new_alpha(
       alpha_old(i), rho_old.col(i),
-      alpha_prop_sd, metric, logz_list, dat, priors);
+      alpha_prop_sd, metric, logz_list, cluster_rankings,
+      cluster_frequency, dat.n_items, priors);
 
     if(test.accept){
       alpha(i, alpha_index) = test.proposal;
@@ -269,7 +279,8 @@ void SMCParameters::update_alpha(
   AlphaRatio test = make_new_alpha(
     alpha_samples(particle_index),
     rho_samples.col(particle_index),
-    alpha_prop_sd, metric, logz_list, dat, priors
+    alpha_prop_sd, metric, logz_list,
+    dat.rankings, dat.observation_frequency, dat.n_items, priors
   );
 
   if(test.accept){

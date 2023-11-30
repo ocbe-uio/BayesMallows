@@ -44,7 +44,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
 
     if(t % pars.alpha_jump == 0) {
       ++alpha_index;
-      pars.update_alpha(alpha_index, dat, logz_list, pris);
+      pars.update_alpha(alpha_index, dat, logz_list, pris, clus.current_cluster_assignment);
       pars.alpha_old = pars.alpha.col(alpha_index);
     }
 
@@ -71,7 +71,6 @@ Rcpp::List run_mcmc(Rcpp::List data,
   clus.update_dist_mat(dat, pars);
   }
 
-  // Return everything that might be of interest
   return Rcpp::List::create(
     Rcpp::Named("rho") = pars.rho,
     Rcpp::Named("alpha") = pars.alpha,

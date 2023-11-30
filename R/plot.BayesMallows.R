@@ -25,7 +25,8 @@
 #'
 #' @example /inst/examples/plot.BayesMallows_example.R
 #' @family posterior quantities
-plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha", items = NULL, ...) {
+plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha",
+                              items = NULL, ...) {
   parameter <- match.arg(
     parameter,
     c("alpha", "rho", "cluster_probs", "cluster_assignment", "theta")
