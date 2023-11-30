@@ -16,8 +16,13 @@ Rcpp::List  run_smc(
   Rcpp::List compute_options,
   Rcpp::List priors,
   Rcpp::List initial_values,
-  Rcpp::List logz_list
+  Rcpp::List logz_list,
+  const int seed
 ) {
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  gen.seed(seed);
 
   SMCData dat{data, new_data};
 
@@ -25,7 +30,7 @@ Rcpp::List  run_smc(
   Priors pris{priors};
   SMCAugmentation aug{dat, smc_options, initial_values, pars.n_particles};
 
-  aug.reweight(pars, dat, logz_list);
+  aug.reweight(pars, dat, logz_list, gen);
 
   uvec index = pars.draw_resampling_index();
   pars.resample(index);
@@ -36,7 +41,7 @@ Rcpp::List  run_smc(
       aug.update_data(ii, dat);
       pars.update_rho(ii, dat);
       pars.update_alpha(ii, dat, logz_list, pris);
-      aug.update_missing_ranks(ii, dat, pars);
+      aug.update_missing_ranks(ii, dat, pars, gen);
     }
   }
 

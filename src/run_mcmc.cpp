@@ -17,8 +17,14 @@ Rcpp::List run_mcmc(Rcpp::List data,
                     Rcpp::List priors,
                     Rcpp::List initial_values,
                     Rcpp::List logz_list,
+                    const int seed,
                     bool verbose = false
                       ){
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  gen.seed(seed);
+
   Data dat{data};
   Priors pris{priors};
   Parameters pars{model_options, compute_options, initial_values, dat.n_items};
@@ -60,7 +66,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   }
 
   clus.update_wcd(t);
-  aug.update_missing_ranks(dat, clus, pars);
+  aug.update_missing_ranks(dat, clus, pars, gen);
   aug.augment_pairwise(t, dat, pars, clus);
 
   if(aug.save_aug & (t % aug.aug_thinning == 0)){

@@ -119,7 +119,8 @@ struct Augmentation {
   void update_missing_ranks(
       Data& dat,
       const Clustering& clus,
-      const Parameters& pars
+      const Parameters& pars,
+      std::mt19937& gen
   );
 };
 
@@ -170,11 +171,11 @@ struct SMCAugmentation {
     const unsigned int n_particles);
   ~SMCAugmentation() = default;
 
-  void reweight(SMCParameters& pars, const SMCData& dat, const Rcpp::List& logz_list);
-  void augment_partial(const SMCParameters& pars, const SMCData& dat);
+  void reweight(SMCParameters& pars, const SMCData& dat, const Rcpp::List& logz_list, std::mt19937& gen);
+  void augment_partial(const SMCParameters& pars, const SMCData& dat, std::mt19937& gen);
   void update_data(const unsigned int particle_index, SMCData& dat);
   void update_missing_ranks(const unsigned int particle_index, const SMCData& dat,
-                            const SMCParameters& pars);
+                            const SMCParameters& pars, std::mt19937& gen);
 
   void resample(const arma::uvec& index);
   const std::string aug_method;

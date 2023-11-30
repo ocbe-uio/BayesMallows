@@ -390,7 +390,8 @@ void Augmentation::augment_pairwise(
 void Augmentation::update_missing_ranks(
     Data& dat,
     const Clustering& clus,
-    const Parameters& pars) {
+    const Parameters& pars,
+    std::mt19937& gen) {
   if(!any_missing) return;
 
   for(int i = 0; i < dat.n_assessors; ++i){
@@ -399,7 +400,7 @@ void Augmentation::update_missing_ranks(
     dat.rankings.col(i) = make_new_augmentation(
       dat.rankings.col(i), missing_indicator.col(i),
       pars.alpha_old(cluster), pars.rho_old.col(cluster),
-      pars.metric
+      pars.metric, gen
     );
   }
 }
@@ -407,9 +408,10 @@ void Augmentation::update_missing_ranks(
 void SMCAugmentation::reweight(
   SMCParameters& pars,
   const SMCData& dat,
-  const Rcpp::List& logz_list
+  const Rcpp::List& logz_list,
+  std::mt19937& gen
 ) {
-  augment_partial(pars, dat);
+  augment_partial(pars, dat, gen);
 
   vec log_inc_wgt(pars.n_particles);
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
@@ -461,7 +463,8 @@ void SMCAugmentation::reweight(
 
 void SMCAugmentation::augment_partial(
     const SMCParameters& pars,
-    const SMCData& dat
+    const SMCData& dat,
+    std::mt19937& gen
 ){
   if(!any_missing) return;
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
@@ -482,7 +485,8 @@ void SMCAugmentation::augment_partial(
       } else {
         PseudoProposal pprop = make_pseudo_proposal(
           unranked_items, augmented_data(span::all, span(user), span(particle)),
-          pars.alpha_samples(particle), pars.rho_samples.col(particle), pars.metric
+          pars.alpha_samples(particle), pars.rho_samples.col(particle), pars.metric,
+          gen
         );
 
         augmented_data(span::all, span(user), span(particle)) = pprop.rankings;
@@ -515,7 +519,8 @@ void SMCAugmentation::resample(const uvec& index) {
 void SMCAugmentation::update_missing_ranks(
     const unsigned int particle_index,
     const SMCData& dat,
-    const SMCParameters& pars) {
+    const SMCParameters& pars,
+    std::mt19937& gen) {
   if(!any_missing) return;
 
   for (int jj = dat.n_assessors - dat.num_new_obs; jj < dat.n_assessors; ++jj) {
@@ -524,7 +529,7 @@ void SMCAugmentation::update_missing_ranks(
       missing_indicator.col(jj),
       pars.alpha_samples(particle_index),
       pars.rho_samples.col(particle_index),
-      pars.metric, aug_method == "pseudo"
+      pars.metric, gen, aug_method == "pseudo"
     );
   }
 }

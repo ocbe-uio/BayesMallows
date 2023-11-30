@@ -3,7 +3,6 @@
 #include "distances.h"
 #include "missing_data.h"
 #include "misc.h"
-#include "sample.h"
 
 using namespace arma;
 
@@ -50,18 +49,19 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator) {
 
 vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
                           const double& alpha, const vec& rho,
-                          const std::string& metric, bool pseudo) {
+                          const std::string& metric, std::mt19937& gen,
+                          bool pseudo) {
   double log_hastings_correction = 0;
   vec proposal{};
   // Sample an augmentation proposal
   if(pseudo) {
     uvec unranked_items = shuffle(find(missing_indicator == 1));
     auto pprop = make_pseudo_proposal(
-      unranked_items, rankings, alpha, rho, metric, true
+      unranked_items, rankings, alpha, rho, metric, gen, true
     );
 
     PseudoProposal bprop = make_pseudo_proposal(
-      unranked_items, rankings, alpha, rho, metric, false);
+      unranked_items, rankings, alpha, rho, metric, gen, false);
 
     proposal = pprop.rankings;
     log_hastings_correction = -std::log(pprop.probability) +
@@ -88,10 +88,9 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
   }
 }
 
-
 PseudoProposal make_pseudo_proposal(
     uvec unranked_items, vec rankings, const double& alpha, const vec& rho,
-    const std::string metric, const bool forward
+    const std::string metric, std::mt19937& gen, const bool forward
 ) {
 
   int n_items = rankings.n_elem;
@@ -108,7 +107,8 @@ PseudoProposal make_pseudo_proposal(
     }
     vec sample_probs = normalize_weights(log_numerator);
     if(forward) {
-      rankings(span(item_to_rank)) = sample(available_rankings, 1, false, sample_probs);
+      std::discrete_distribution<> d(sample_probs.begin(), sample_probs.end());
+      rankings(item_to_rank) = available_rankings(d(gen));
     }
 
     int ranking_chosen = as_scalar(find(rankings(item_to_rank) == available_rankings));

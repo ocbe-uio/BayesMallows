@@ -53,7 +53,8 @@ update_mallows.BayesMallows <- function(
       alpha_init = alpha_init, rho_init = rho_init,
       aug_init = NULL
     ),
-    logz_list = model$logz_list
+    logz_list = model$logz_list,
+    seed = sample.int(.Machine$integer.max, 1)
   )
 
   ret <- c(ret, tidy_smc(ret, model$items))
@@ -127,7 +128,8 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
       rho_init = model$rho_samples,
       aug_init = model$augmented_rankings
     ),
-    logz_list = model$logz_list
+    logz_list = model$logz_list,
+    seed = sample.int(.Machine$integer.max, 1)
   )
 
   tidy_parameters <- tidy_smc(ret, model$items)
