@@ -27,7 +27,6 @@ test_that("compute_mallows is correct for complete data", {
   }
 })
 
-
 test_that("compute_mallows is correct for pairwise preferences", {
   expectations <- data.frame(
     metric = c("footrule", "kendall"),
@@ -59,7 +58,6 @@ test_that("compute_mallows is correct for pairwise preferences", {
     )
   }
 })
-
 
 test_that("augmented rankings obey transitive closure", {
   beach_data <- setup_rank_data(
@@ -118,4 +116,39 @@ test_that("compute_mallows is correct for top-k ranks", {
       tolerance = .2
     )
   }
+})
+
+test_that("compute_mallows is correct with clustering", {
+  skip_on_cran()
+
+  cl <- parallel::makeCluster(min(parallel::detectCores(), 3))
+  models <- compute_mallows_mixtures(
+    n_clusters = c(1, 5, 10),
+    data = setup_rank_data(sushi_rankings),
+    compute_options = set_compute_options(nmc = 5000, include_wcd = TRUE),
+    cl = cl)
+  parallel::stopCluster(cl)
+
+  wcd_means <- vapply(models, function(x) {
+    mean(x$within_cluster_distance$value[
+      x$within_cluster_distance$iteration > 1000])
+  }, 1)
+
+  expect_equal(
+    wcd_means, sort(wcd_means, decreasing = TRUE)
+  )
+
+  mixture_model <- compute_mallows(
+    data = setup_rank_data(rankings = sushi_rankings),
+    compute_options = set_compute_options(nmc = 2000, burnin = 500),
+    model_options = set_model_options(n_clusters = 5))
+
+  dat <- mixture_model$alpha[mixture_model$alpha$iteration > 500, ]
+  aggdat <- aggregate(value ~ cluster, data = dat, FUN = mean)
+
+  expect_gte(
+    max(aggdat$value) - min(aggdat$value),
+    1
+  )
+
 })

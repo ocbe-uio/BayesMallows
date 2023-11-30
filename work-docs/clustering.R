@@ -6,7 +6,7 @@ models <- compute_mallows_mixtures(
 
 assess_convergence(models)
 assess_convergence(models, parameter = "rho")
-assess_convergence(models, parameter = "cluster_probs", items = 1:2)
+assess_convergence(models, parameter = "cluster_probs")
 
 
 # models is a list in which each element is an object of class BayesMallows,
@@ -36,3 +36,4 @@ mixture_model$cluster_assignment %>%
 
 compute_consensus(mixture_model, burnin = 200)
 plot(mixture_model, parameter = "cluster_probs", burnin = 200)
+plot_top_k(mixture_model, burnin = 200)
