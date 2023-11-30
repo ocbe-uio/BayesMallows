@@ -119,8 +119,7 @@ test_that("compute_mallows is correct for top-k ranks", {
 })
 
 test_that("compute_mallows is correct with clustering", {
-  skip()
-
+  skip_on_cran()
   cl <- parallel::makeCluster(min(parallel::detectCores(), 3))
   models <- compute_mallows_mixtures(
     n_clusters = c(1, 5, 10),
