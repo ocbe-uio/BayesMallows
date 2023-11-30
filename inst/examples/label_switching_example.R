@@ -1,33 +1,37 @@
+# CHEKING FOR LABEL SWITCHING
 \dontrun{
   # This example shows how to assess if label switching happens in BayesMallows
   # We start by creating a directory in which csv files with individual
   # cluster probabilities should be saved in each step of the MCMC algorithm
+  # NOTE: For computational efficiency, we use much fewer MCMC iterations than one
+  # would normally do.
   dir.create("./test_label_switch")
   # Next, we go into this directory
   setwd("./test_label_switch/")
   # For comparison, we run compute_mallows with and without saving the cluster
   # probabilities The purpose of this is to assess the time it takes to save
-  # the cluster probabilites
+  # the cluster probabilites.
   system.time(m <- compute_mallows(
     setup_rank_data(rankings = sushi_rankings),
-    model_options = set_model_options(n_clusters = 6),
-    compute_options = set_compute_options(nmc = 2000, save_ind_clus = FALSE),
+    model_options = set_model_options(n_clusters = 3),
+    compute_options = set_compute_options(nmc = 500, save_ind_clus = FALSE),
     verbose = TRUE))
   # With this options, compute_mallows will save cluster_probs2.csv,
   # cluster_probs3.csv, ..., cluster_probs[nmc].csv.
   system.time(m <- compute_mallows(
     setup_rank_data(rankings = sushi_rankings),
-    model_options = set_model_options(n_clusters = 6),
-    compute_options = set_compute_options(nmc = 2000, save_ind_clus = TRUE),
+    model_options = set_model_options(n_clusters = 3),
+    compute_options = set_compute_options(nmc = 500, save_ind_clus = TRUE),
     verbose = TRUE))
 
   # Next, we check convergence of alpha
   assess_convergence(m)
 
-  # We set the burnin to 1000
-  burnin <- 1000
+  # We set the burnin to 200
+  burnin <- 200
 
-  # Find all files that were saved. Note that the first file saved is cluster_probs2.csv
+  # Find all files that were saved. Note that the first file saved is
+  # cluster_probs2.csv
   cluster_files <- list.files(pattern = "cluster\\_probs[[:digit:]]+\\.csv")
 
   # Check the size of the files that were saved.
@@ -35,34 +39,39 @@
 
   # Find the iteration each file corresponds to, by extracting its number
   iteration_number <- as.integer(
-    gsub("(^[a-zA-Z\\_\\.]*)([0-9]+)([a-zA-Z\\_\\.]+$)", "\\2",
-         cluster_files, perl = TRUE))
+    regmatches(x = cluster_files,m = regexpr(pattern = "[0-9]+", cluster_files)
+               ))
   # Remove all files before burnin
   file.remove(cluster_files[iteration_number <= burnin])
   # Update the vector of files, after the deletion
   cluster_files <- list.files(pattern = "cluster\\_probs[[:digit:]]+\\.csv")
   # Create 3d array, with dimensions (iterations, assessors, clusters)
-  prob_array <- array(dim = c(length(cluster_files), m$n_assessors, m$n_clusters))
+  prob_array <- array(
+    dim = c(length(cluster_files), m$n_assessors, m$n_clusters))
   # Read each file, adding to the right element of the array
   for(i in seq_along(cluster_files)){
     prob_array[i, , ] <- as.matrix(
       read.csv(cluster_files[[i]], header = FALSE))
   }
 
-
-  # Create an integer array of latent allocations, as this is required by label.switching
+  # Create an integer array of latent allocations, as this is required by
+  # label.switching
   z <- subset(m$cluster_assignment, iteration > burnin)
   z$value <- as.integer(gsub("Cluster ", "", z$value))
-  z <- stats::reshape(z, direction = "wide", idvar = "iteration", timevar = "assessor")
+  z$chain <- NULL
+  z <- reshape(z, direction = "wide", idvar = "iteration", timevar = "assessor")
   z$iteration <- NULL
   z <- as.matrix(z)
 
   # Now apply Stephen's algorithm
   library(label.switching)
-  ls <- label.switching("STEPHENS", z = z, K = m$n_clusters, p = prob_array)
+  switch_check <- label.switching("STEPHENS", z = z,
+                                  K = m$n_clusters, p = prob_array)
 
   # Check the proportion of cluster assignments that were switched
-  mean(apply(ls$permutations$STEPHENS, 1, function(x) !all.equal(x, seq(1, m$n_clusters))))
+  mean(apply(switch_check$permutations$STEPHENS, 1, function(x) {
+    !all(x == seq(1, m$n_clusters, by = 1))
+  }))
 
   # Remove the rest of the csv files
   file.remove(cluster_files)
