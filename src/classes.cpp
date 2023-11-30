@@ -314,12 +314,9 @@ void Clustering::update_cluster_labels(
   }
 
   for(int i = 0; i < dat.n_assessors; ++i){
-    rowvec probs = exp(assignment_prob.row(i) -
-      max(assignment_prob.row(i)));
-
-    assignment_prob.row(i) = normalise(probs, 1);
-    std::discrete_distribution<> d(assignment_prob.row(i).begin(),
-                                   assignment_prob.row(i).end());
+    rowvec probs = exp(assignment_prob.row(i) - max(assignment_prob.row(i)));
+    if(save_ind_clus) assignment_prob.row(i) = normalise(probs, 1);
+    std::discrete_distribution<> d(probs.begin(), probs.end());
     new_cluster_assignment(i) = d(gen);
   }
 
