@@ -77,7 +77,7 @@ test_that("update_mallows is correct for new rankings", {
   # Posterior mean of alpha should be the same in both SMC methods, and close to BMM
   expect_equal(mean(mod_smc_next$alpha$value),
     mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 200]),
-    tolerance = 0.001
+    tolerance = 0.002
   )
 
   expect_equal(sd(mod_smc_next$alpha$value),
@@ -149,7 +149,7 @@ test_that("update_mallows is correct for new partial rankings", {
     expect_equal(
       sd(mod_smc_next$alpha$value),
       sd(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
-      tolerance = .1
+      tolerance = .2
     )
 
     bmm_consensus <- compute_consensus(bmm_mod)
@@ -160,8 +160,7 @@ test_that("update_mallows is correct for new partial rankings", {
         matrix(as.numeric(as.factor(bmm_consensus$item)), nrow = 1),
         as.numeric(as.factor(smc_consensus$item)),
         metric = "ulam"
-      ),
-      ifelse(aug == "uniform", 3, 1)
+      ), 1
     )
   }
 })

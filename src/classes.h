@@ -159,7 +159,7 @@ struct SMCParameters {
   const std::string metric;
   double effective_sample_size{};
   arma::vec norm_wgt;
-  arma::uvec draw_resampling_index();
+  arma::uvec draw_resampling_index(std::mt19937& gen);
   void resample(const arma::uvec& index);
 };
 

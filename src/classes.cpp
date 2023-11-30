@@ -502,8 +502,11 @@ void SMCAugmentation::update_data(
   dat.rankings = augmented_data.slice(particle_index);
 }
 
-uvec SMCParameters::draw_resampling_index() {
-  return sample(regspace<uvec>(0, n_particles - 1), n_particles, true, norm_wgt);
+uvec SMCParameters::draw_resampling_index(std::mt19937& gen) {
+  std::discrete_distribution<> d(norm_wgt.begin(), norm_wgt.end());
+  uvec ret(n_particles);
+  for(size_t i{}; i < n_particles; i++) ret(i) = d(gen);
+  return ret;
 }
 
 void SMCParameters::resample(const uvec& index) {

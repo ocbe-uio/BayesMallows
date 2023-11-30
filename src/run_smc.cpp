@@ -32,7 +32,7 @@ Rcpp::List  run_smc(
 
   aug.reweight(pars, dat, logz_list, gen);
 
-  uvec index = pars.draw_resampling_index();
+  uvec index = pars.draw_resampling_index(gen);
   pars.resample(index);
   aug.resample(index);
 
