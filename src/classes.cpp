@@ -145,7 +145,7 @@ Parameters::Parameters(
     if(rho_init.isNotNull()){
       rho.slice(0) = repmat(Rcpp::as<mat>(rho_init), 1, n_clusters);
     } else {
-      for (int i = 0; i < n_clusters; ++i) {
+      for (size_t i{}; i < n_clusters; ++i) {
         rho.slice(0).col(i) = randperm<vec>(n_items) + 1;
       }
     }
@@ -187,7 +187,7 @@ Clustering::Clustering(const Parameters& pars,
 void Parameters::update_rho(int t, int& rho_index, const Data& dat,
                             const uvec& current_cluster_assignment,
                             std::mt19937& gen) {
-  for(int i{}; i < n_clusters; ++i){
+  for(size_t i{}; i < n_clusters; ++i){
     const uvec cluster_indicator = find(current_cluster_assignment == i);
     const mat cluster_rankings = dat.rankings.submat(
       element_indices, cluster_indicator);
@@ -251,7 +251,7 @@ void Parameters::update_alpha(
     const uvec& current_cluster_assignment,
     std::mt19937& gen) {
 
-  for(int i = 0; i < n_clusters; ++i) {
+  for(size_t i{}; i < n_clusters; ++i) {
     const uvec cluster_indicator = find(current_cluster_assignment == i);
     const mat cluster_rankings = dat.rankings.submat(
       element_indices, cluster_indicator);
@@ -294,7 +294,7 @@ void SMCParameters::update_alpha(
 void Clustering::update_cluster_probs(const Parameters& pars, const Priors& pris){
   vec cluster_probs(pars.n_clusters);
 
-  for(int i = 0; i < pars.n_clusters; ++i){
+  for(size_t i{}; i < pars.n_clusters; ++i){
     cluster_probs(i) = R::rgamma(sum(current_cluster_assignment == i) + pris.psi, 1.0);
   }
   current_cluster_probs = normalise(cluster_probs, 1);
@@ -309,7 +309,7 @@ void Clustering::update_cluster_labels(
 ){
   uvec new_cluster_assignment(dat.n_assessors);
   mat assignment_prob(dat.n_assessors, pars.n_clusters);
-  for(int i = 0; i < pars.n_clusters; ++i){
+  for(size_t i{}; i < pars.n_clusters; ++i){
     // Compute the logarithm of the unnormalized probability
     assignment_prob.col(i) = std::log(cluster_probs(i)) -
       pars.alpha_old(i) / dat.n_items * dist_mat.col(i) -
@@ -335,7 +335,7 @@ void Clustering::update_wcd(const int t){
   int n_clusters = dist_mat.n_cols;
   vec wcd(n_clusters);
 
-  for(int i = 0; i < n_clusters; ++i){
+  for(size_t i{}; i < n_clusters; ++i){
     mat dist_vec = dist_mat.submat(find(current_cluster_assignment == i), index.subvec(i, i));
     wcd(i) = accu(dist_vec);
   }
@@ -344,7 +344,7 @@ void Clustering::update_wcd(const int t){
 
 void Clustering::update_dist_mat(const Data& dat, const Parameters& pars){
   if(clustering | include_wcd) {
-    for(int i = 0; i < pars.n_clusters; ++i)
+    for(size_t i{}; i < pars.n_clusters; ++i)
       dist_mat.col(i) = rank_dist_vec(dat.rankings, pars.rho_old.col(i),
                    pars.metric, dat.observation_frequency);
   }

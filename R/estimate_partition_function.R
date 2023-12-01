@@ -71,7 +71,7 @@ estimate_partition_function <- function(
       estimates <- parallel::parLapply(cl, n_iterations_vec, function(x) {
         compute_importance_sampling_estimate(
           alpha_vector = alpha_vector, n_items = n_items,
-          metric = metric, n_iterations = x
+          metric = metric, nmc = x
         )
       })
 

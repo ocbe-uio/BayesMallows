@@ -26,7 +26,6 @@ test_that("update_mallows is correct for new rankings", {
     new_data = setup_rank_data(rankings = triple_potato[21:36, ])
   )
 
-  # Posterior mean of alpha should be the same in both SMC methods, and close to BMM
   expect_equal(mean(mod_smc_next$alpha$value),
     mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
     tolerance = 0.01
@@ -37,11 +36,9 @@ test_that("update_mallows is correct for new rankings", {
     tolerance = 0.1
   )
 
-  # Is there any disagreement between the methods about the ranking of the items?
   bmm_consensus <- compute_consensus(mod_bmm)
   smc_consensus <- compute_consensus(mod_smc_next)
 
-  # No items should be in disagreement
   expect_lte(
     compute_rank_distance(
       matrix(as.numeric(as.factor(bmm_consensus$item)), nrow = 1),

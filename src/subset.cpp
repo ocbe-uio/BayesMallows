@@ -49,10 +49,10 @@ ivec perm0_mul ( const ivec& p1, const ivec& p2) {
 }
 
 ivec perm0_inverse ( const ivec& p1 ) {
-  const unsigned int n = p1.size();
+  int n = p1.size();
   ivec p2 = p1 + 1;
 
-  for ( size_t i{1}; i <= n; i++ ) {
+  for ( int i{1}; i <= n; i++ ) {
     int i1 = p2(i-1);
 
     while ( i < i1 ) {
@@ -63,7 +63,7 @@ ivec perm0_inverse ( const ivec& p1 ) {
     p2(i-1) = std::abs ( p2(i-1) ) * ((- p2(i-1) < 0) ? -1 : 1);
   }
 
-  for ( size_t i{1}; i <= n; i++ ) {
+  for ( int i{1}; i <= n; i++ ) {
     int i1 = - p2(i-1);
     if ( 0 <= i1 ) {
       int i0 = i;
