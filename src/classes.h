@@ -59,8 +59,8 @@ struct Parameters {
   arma::vec shape_1;
   arma::vec shape_2;
   arma::vec theta;
-  const int n_clusters;
-  const int nmc;
+  const unsigned int n_clusters;
+  const unsigned int nmc;
   const std::string metric;
   const std::string error_model;
   const int alpha_jump;

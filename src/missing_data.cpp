@@ -101,7 +101,7 @@ PseudoProposal make_pseudo_proposal(
     int item_to_rank = unranked_items(0);
 
     vec log_numerator(available_rankings.n_elem);
-    for(int ll{}; ll < available_rankings.n_elem; ll++) {
+    for(size_t ll{}; ll < available_rankings.n_elem; ll++) {
       log_numerator(ll) = -alpha / n_items *
         get_rank_distance(rho(span(item_to_rank)), available_rankings(span(ll)), metric);
     }

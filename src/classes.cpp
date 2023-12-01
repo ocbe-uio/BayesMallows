@@ -99,7 +99,7 @@ SMCAugmentation::SMCAugmentation(
       set_up_missing(dat.rankings, missing_indicator);
       augmented_data.set_size(dat.n_items, dat.n_assessors, n_particles);
 
-      for(int i{}; i < n_particles; i++) {
+      for(size_t i{}; i < n_particles; i++) {
         augmented_data.slice(i) = dat.rankings;
         initialize_missing_ranks(augmented_data.slice(i), missing_indicator);
       }
@@ -125,8 +125,8 @@ Parameters::Parameters(
   const Rcpp::List& compute_options,
   const Rcpp::List& initial_values,
   const unsigned int n_items) :
-  n_clusters { Rcpp::as<int>(model_options["n_clusters"]) },
-  nmc { Rcpp::as<int>(compute_options["nmc"]) },
+  n_clusters { Rcpp::as<unsigned int>(model_options["n_clusters"]) },
+  nmc { Rcpp::as<unsigned int>(compute_options["nmc"]) },
   metric { verify_metric(Rcpp::as<std::string>(model_options["metric"])) },
   error_model { verify_error_model(Rcpp::as<std::string>(model_options["error_model"])) },
   alpha_jump { Rcpp::as<int>(compute_options["alpha_jump"]) },
@@ -219,18 +219,18 @@ void Parameters::update_shape(int t, const Data& dat,
   if(error_model != "bernoulli") return;
   int sum_1{};
   int sum_2{};
-  for(int i = 0; i < dat.n_assessors; ++i){
+  for(size_t i = 0; i < dat.n_assessors; ++i){
     Rcpp::List assessor_constraints = Rcpp::as<Rcpp::List>(dat.constraints[i]);
-    for(int j = 0; j < dat.n_items; ++j) {
+    for(size_t j = 0; j < dat.n_items; ++j) {
       uvec items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[j]);
       uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[j]);
 
-      for(unsigned int k = 0; k < items_above.n_elem; ++k){
+      for(size_t k = 0; k < items_above.n_elem; ++k){
         int g = (as_scalar(dat.rankings.col(i).row(j)) < as_scalar(dat.rankings.col(i).row(items_above(k) - 1)));
         sum_1 += g;
         sum_2 += 1 - g;
       }
-      for(unsigned int k = 0; k < items_below.n_elem; ++k){
+      for(size_t k = 0; k < items_below.n_elem; ++k){
         int g = (as_scalar(dat.rankings.col(i).row(j)) > as_scalar(dat.rankings.col(i).row(items_below(k) - 1)));
         sum_1 += g;
         sum_2 += 1 - g;
@@ -316,7 +316,7 @@ void Clustering::update_cluster_labels(
       get_partition_function(dat.n_items, pars.alpha_old(i), logz_list, pars.metric);
   }
 
-  for(int i = 0; i < dat.n_assessors; ++i){
+  for(size_t i = 0; i < dat.n_assessors; ++i){
     rowvec probs = exp(assignment_prob.row(i) - max(assignment_prob.row(i)));
     if(save_ind_clus) assignment_prob.row(i) = normalise(probs, 1);
     std::discrete_distribution<> d(probs.begin(), probs.end());
@@ -357,7 +357,7 @@ void Augmentation::augment_pairwise(
     const Clustering& clus
 ){
   if(!augpair) return;
-  for(int i = 0; i < dat.n_assessors; ++i) {
+  for(size_t i = 0; i < dat.n_assessors; ++i) {
     vec proposal;
     int g_diff = 0;
 
@@ -395,7 +395,7 @@ void Augmentation::update_missing_ranks(
     std::mt19937& gen) {
   if(!any_missing) return;
 
-  for(int i = 0; i < dat.n_assessors; ++i){
+  for(size_t i = 0; i < dat.n_assessors; ++i){
     int cluster = clus.current_cluster_assignment(i);
 
     dat.rankings.col(i) = make_new_augmentation(
@@ -526,7 +526,7 @@ void SMCAugmentation::update_missing_ranks(
     std::mt19937& gen) {
   if(!any_missing) return;
 
-  for (int jj = dat.n_assessors - dat.num_new_obs; jj < dat.n_assessors; ++jj) {
+  for (unsigned int jj = dat.n_assessors - dat.num_new_obs; jj < dat.n_assessors; ++jj) {
     augmented_data(span::all, span(jj), span(particle_index)) = make_new_augmentation(
       augmented_data(span::all, span(jj), span(particle_index)),
       missing_indicator.col(jj),

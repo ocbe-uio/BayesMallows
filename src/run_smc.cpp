@@ -36,8 +36,8 @@ Rcpp::List  run_smc(
   pars.resample(index);
   aug.resample(index);
 
-  for (int ii = 0; ii < pars.n_particles; ++ii) {
-    for (int kk = 0; kk < pars.mcmc_steps; ++kk) {
+  for (size_t ii{}; ii < pars.n_particles; ++ii) {
+    for (size_t kk{}; kk < pars.mcmc_steps; ++kk) {
       aug.update_data(ii, dat);
       pars.update_rho(ii, dat, gen);
       pars.update_alpha(ii, dat, logz_list, pris, gen);

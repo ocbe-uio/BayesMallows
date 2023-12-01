@@ -81,10 +81,10 @@ vec propose_swap(const vec& ranking, const Rcpp::List& assessor_constraints,
   uvec items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[ind1]);
   uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[ind1]);
 
-  for(unsigned int j = 0; j < items_above.n_elem; ++j){
+  for(size_t j = 0; j < items_above.n_elem; ++j){
     g_diff += (proposal(items_above[j] - 1) > proposal(ind1)) - (ranking(items_above[j] - 1) > ranking(ind1));
   }
-  for(unsigned int j = 0; j < items_below.n_elem; ++j){
+  for(size_t j = 0; j < items_below.n_elem; ++j){
     g_diff += (proposal(items_below[j] - 1) < proposal(ind1)) - (ranking(items_below[j] - 1) < ranking(ind1));
   }
 
@@ -92,10 +92,10 @@ vec propose_swap(const vec& ranking, const Rcpp::List& assessor_constraints,
   items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[ind2]);
   items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[ind2]);
 
-  for(unsigned int j = 0; j < items_above.n_elem; ++j){
+  for(size_t j = 0; j < items_above.n_elem; ++j){
     g_diff += (proposal(items_above[j] - 1) > proposal(ind1)) - (ranking(items_above[j] - 1) > ranking(ind1));
   }
-  for(unsigned int j = 0; j < items_below.n_elem; ++j){
+  for(size_t j = 0; j < items_below.n_elem; ++j){
     g_diff += (proposal(items_below[j] - 1) < proposal(ind1)) - (ranking(items_below[j] - 1) < ranking(ind1));
   }
   return proposal;
