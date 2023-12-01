@@ -22,29 +22,30 @@ set_compute_options(
 \arguments{
 \item{nmc}{Integer specifying the number of iteration of the
 Metropolis-Hastings algorithm to run. Defaults to \code{2000}. See
-\code{\link[=assess_convergence]{assess_convergence()}} for tools to check convergence of the
-Markov chain.}
+\code{\link[=assess_convergence]{assess_convergence()}} for tools to check convergence of the Markov chain.}
 
 \item{burnin}{Integer defining the number of samples to discard. Defaults to
 \code{NULL}, which means that burn-in is not set.}
 
-\item{alpha_prop_sd}{Numeric value specifying the standard deviation of the
-lognormal proposal distribution used for \eqn{\alpha} in the
-Metropolis-Hastings algorithm. Defaults to \code{0.1}.}
+\item{alpha_prop_sd}{Numeric value specifying the \eqn{\sigma}
+parameter of the lognormal proposal distribution used for \eqn{\alpha} in
+the Metropolis-Hastings algorithm. The logarithm of the proposed samples
+will have standard deviation given by \code{alpha_prop_sd}. Defaults to \code{0.1}.}
 
 \item{leap_size}{Integer specifying the step size of the leap-and-shift
-proposal distribution. Defaults to 1.}
-
-\item{swap_leap}{Integer specifying the step size of the Swap proposal.
+proposal distribution used for proposed new latent ranks \eqn{rho}.
 Defaults to 1.}
+
+\item{swap_leap}{Integer specifying the step size of the swap proposal
+used for augmentation with pairwise preference data. Defaults to 1.}
 
 \item{alpha_jump}{Integer specifying how many times to sample \eqn{\rho}
 between each sampling of \eqn{\alpha}. In other words, how many times to
 jump over \eqn{\alpha} while sampling \eqn{\rho}, and possibly other
 parameters like augmented ranks \eqn{\tilde{R}} or cluster assignments
-\eqn{z}. Setting \code{alpha_jump} to a high number can speed up
-computation time, by reducing the number of times the partition function
-for the Mallows model needs to be computed. Defaults to \code{1}.}
+\eqn{z}. Setting \code{alpha_jump} to a high number can speed up computation
+time, by reducing the number of times the partition function for the
+Mallows model needs to be computed. Defaults to \code{1}.}
 
 \item{aug_thinning}{Integer specifying the thinning for saving augmented
 data. Only used when \code{save_aug = TRUE}. Defaults to \code{1}.}
@@ -52,33 +53,30 @@ data. Only used when \code{save_aug = TRUE}. Defaults to \code{1}.}
 \item{clus_thinning}{Integer specifying the thinning to be applied to cluster
 assignments and cluster probabilities. Defaults to \code{1}.}
 
-\item{rho_thinning}{Integer specifying the thinning of \code{rho} to be
-performed in the Metropolis- Hastings algorithm. Defaults to \code{1}.
-\code{compute_mallows} save every \code{rho_thinning}th value of
-\eqn{\rho}.}
+\item{rho_thinning}{Integer specifying the thinning of \code{rho} to be performed
+in the Metropolis- Hastings algorithm. Defaults to \code{1}. \code{compute_mallows}
+save every \code{rho_thinning}th value of \eqn{\rho}.}
 
 \item{include_wcd}{Logical indicating whether to store the within-cluster
 distances computed during the Metropolis-Hastings algorithm. Defaults to
-\code{FALSE}. Setting \code{include_wcd = TRUE} is useful when deciding the
-number of mixture components to include, and is required by
-\code{\link[=plot_elbow]{plot_elbow()}}.}
+\code{FALSE}. Setting \code{include_wcd = TRUE} is useful when deciding the number of
+mixture components to include, and is required by \code{\link[=plot_elbow]{plot_elbow()}}.}
 
 \item{save_aug}{Logical specifying whether or not to save the augmented
-rankings every \code{aug_thinning}th iteration, for the case of missing
-data or pairwise preferences. Defaults to \code{FALSE}. Saving augmented
-data is useful for predicting the rankings each assessor would give to the
-items not yet ranked, and is required by \code{\link[=plot_top_k]{plot_top_k()}}.}
+rankings every \code{aug_thinning}th iteration, for the case of missing data or
+pairwise preferences. Defaults to \code{FALSE}. Saving augmented data is useful
+for predicting the rankings each assessor would give to the items not yet
+ranked, and is required by \code{\link[=plot_top_k]{plot_top_k()}}.}
 
 \item{save_ind_clus}{Whether or not to save the individual cluster
-probabilities in each step. This results in csv files
-\code{cluster_probs1.csv}, \code{cluster_probs2.csv}, ..., being saved in
-the calling directory. This option may slow down the code considerably, but
-is necessary for detecting label switching using Stephen's algorithm.}
+probabilities in each step. This results in csv files \code{cluster_probs1.csv},
+\code{cluster_probs2.csv}, ..., being saved in the calling directory. This
+option may slow down the code considerably, but is necessary for detecting
+label switching using Stephen's algorithm.}
 }
 \value{
-An object of class \code{"BayesMallowsComputeOptions"}, to be
-provided in the \code{compute_options} argument to
-\code{\link[=compute_mallows]{compute_mallows()}}.
+An object of class \code{"BayesMallowsComputeOptions"}, to be provided in
+the \code{compute_options} argument to \code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \description{
 Specify options for Metropolis-Hastings algorithms
