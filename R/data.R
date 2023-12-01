@@ -34,3 +34,11 @@
 #' @family datasets
 #' @references \insertAllCited{}
 "sushi_rankings"
+
+#' Simulated clustering data
+#'
+#' Simulated dataset of 60 complete rankings of five items, with three
+#' different clusters.
+#'
+#' @family datasets
+"cluster_data"

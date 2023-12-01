@@ -1,3 +1,39 @@
+# SIMULATED CLUSTER DATA
+set.seed(1)
+n_clusters <- seq(from = 1, to = 5)
+models <- compute_mallows_mixtures(
+  n_clusters = n_clusters, data = setup_rank_data(cluster_data),
+  compute_options = set_compute_options(nmc = 10000, include_wcd = TRUE))
+
+# There is good convergence for 1, 2, and 3 cluster, but not for 4 or 5.
+# Also note that there seems to be label switching around the 7000th iteration
+# for the 2-cluster solution.
+assess_convergence(models)
+# We can create an elbow plot, suggesting that there are three clusters, exactly
+# as simulated.
+plot_elbow(models, burnin = 1000)
+
+# We now fit a model with three clusters
+mixture_model <- compute_mallows(
+  data = setup_rank_data(cluster_data),
+  model_options = set_model_options(n_clusters = 3),
+  compute_options = set_compute_options(nmc = 5000))
+
+# The trace plot for this model looks good. It seems to converge quickly.
+assess_convergence(mixture_model)
+# We set the burnin to 500
+mixture_model$burnin <- 500
+
+# We can now look at posterior quantities
+# Posterior of scale parameter alpha
+plot(mixture_model)
+plot(mixture_model, parameter = "rho", items = 4:5)
+# There is around 33 % probability of being in each cluster, in agreemeent
+# with the data simulating mechanism
+plot(mixture_model, parameter = "cluster_probs")
+# We can also look at a cluster assignment plot
+plot(mixture_model, parameter = "cluster_assignment")
+
 # DETERMINING THE NUMBER OF CLUSTERS IN THE SUSHI EXAMPLE DATA
 \dontrun{
   # Let us look at any number of clusters from 1 to 10

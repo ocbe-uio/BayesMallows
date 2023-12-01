@@ -21,6 +21,7 @@ to inspected the potatoes visually. 12 assessors ranked 20 potatoes.
 \seealso{
 Other datasets: 
 \code{\link{beach_preferences}},
+\code{\link{cluster_data}},
 \code{\link{potato_true_ranking}},
 \code{\link{potato_weighing}},
 \code{\link{sushi_rankings}}
