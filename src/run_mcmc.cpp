@@ -46,11 +46,12 @@ Rcpp::List run_mcmc(Rcpp::List data,
     }
 
     pars.update_shape(t, dat, pris);
-    pars.update_rho(t, rho_index, dat, clus.current_cluster_assignment);
+    pars.update_rho(t, rho_index, dat, clus.current_cluster_assignment, gen);
 
     if(t % pars.alpha_jump == 0) {
       ++alpha_index;
-      pars.update_alpha(alpha_index, dat, logz_list, pris, clus.current_cluster_assignment);
+      pars.update_alpha(alpha_index, dat, logz_list, pris,
+                        clus.current_cluster_assignment, gen);
       pars.alpha_old = pars.alpha.col(alpha_index);
     }
 

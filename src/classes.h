@@ -41,14 +41,16 @@ struct Parameters {
 
   void update_shape(int t, const Data& dat, const Priors& priors);
   void update_rho(int t, int& rho_index, const Data& dat,
-                  const arma::uvec& cluster_assignment);
+                  const arma::uvec& cluster_assignment,
+                  std::mt19937& gen);
 
   void update_alpha(
       int alpha_index,
       const Data& dat,
       const Rcpp::List& logz_list,
       const Priors& priors,
-      const arma::uvec& current_cluster_assignment);
+      const arma::uvec& current_cluster_assignment,
+      std::mt19937& gen);
 
   arma::mat alpha;
   arma::vec alpha_old;
@@ -144,11 +146,13 @@ struct SMCParameters {
       const unsigned int particle_index,
       const SMCData& dat,
       const Rcpp::List& logz_list,
-      const Priors& priors);
+      const Priors& priors,
+      std::mt19937& gen);
 
   void update_rho(
     const unsigned int particle_index,
-    const SMCData& dat
+    const SMCData& dat,
+    std::mt19937& gen
   );
 
   const unsigned int n_particles;

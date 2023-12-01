@@ -10,7 +10,6 @@ vec normalize_weights(const vec& log_inc_wgt){
   return exp(log_inc_wgt - log_sum_exp);
 }
 
-// Truncated beta distribution
 double rtruncbeta(int shape1, int shape2, double trunc = 1) {
   int i = 0;
   double x;

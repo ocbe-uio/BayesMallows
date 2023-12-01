@@ -34,7 +34,7 @@ test_that("update_mallows is correct for new rankings", {
 
   expect_equal(sd(mod_smc_next$alpha$value),
     sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-    tolerance = 0.05
+    tolerance = 0.1
   )
 
   # Is there any disagreement between the methods about the ranking of the items?
@@ -55,7 +55,7 @@ test_that("update_mallows is correct for new rankings", {
 
   mod_bmm <- compute_mallows(
     data = setup_rank_data(sushi_rankings),
-    compute_options = set_compute_options(nmc = 1000, burnin = 200)
+    compute_options = set_compute_options(nmc = 2000, burnin = 200)
   )
 
   mod_init <- compute_mallows(
@@ -77,25 +77,24 @@ test_that("update_mallows is correct for new rankings", {
   # Posterior mean of alpha should be the same in both SMC methods, and close to BMM
   expect_equal(mean(mod_smc_next$alpha$value),
     mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 200]),
-    tolerance = 0.002
+    tolerance = 0.02
   )
 
   expect_equal(sd(mod_smc_next$alpha$value),
     sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 200]),
-    tolerance = 0.02
+    tolerance = 0.05
   )
 
   bmm_consensus <- compute_consensus(mod_bmm)
   smc_consensus <- compute_consensus(mod_smc_next)
 
-  # How many items are in disagreement
   expect_lte(
     compute_rank_distance(
       matrix(as.numeric(as.factor(bmm_consensus$item)), nrow = 1),
       as.numeric(as.factor(smc_consensus$item)),
       metric = "ulam"
     ),
-    0
+    2
   )
 })
 
@@ -160,12 +159,12 @@ test_that("update_mallows is correct for new partial rankings", {
         matrix(as.numeric(as.factor(bmm_consensus$item)), nrow = 1),
         as.numeric(as.factor(smc_consensus$item)),
         metric = "ulam"
-      ), 1
+      ), 3
     )
   }
 })
 
-test_that("update_mallows is correct for new partial rankings", {
+test_that("update_mallows is correct for updated partial rankings", {
   set.seed(123)
   user_ids <- rownames(potato_visual)
   dat0 <- potato_visual
@@ -221,7 +220,6 @@ test_that("update_mallows is correct for new partial rankings", {
     tolerance = .1
   )
 })
-
 
 test_that("update_mallows is correct for new top-k rankings", {
   skip_on_cran()

@@ -185,7 +185,8 @@ Clustering::Clustering(const Parameters& pars,
 }
 
 void Parameters::update_rho(int t, int& rho_index, const Data& dat,
-                            const uvec& current_cluster_assignment) {
+                            const uvec& current_cluster_assignment,
+                            std::mt19937& gen) {
   for(int i{}; i < n_clusters; ++i){
     const uvec cluster_indicator = find(current_cluster_assignment == i);
     const mat cluster_rankings = dat.rankings.submat(
@@ -195,7 +196,7 @@ void Parameters::update_rho(int t, int& rho_index, const Data& dat,
 
     vec rho_cluster = rho_old.col(i);
     rho_old.col(i) = make_new_rho(rho_cluster, cluster_rankings, alpha_old(i),
-                leap_size, metric, cluster_frequency);
+                leap_size, metric, cluster_frequency, gen);
 
     if(t % rho_thinning == 0){
       if(i == 0) ++rho_index;
@@ -206,11 +207,11 @@ void Parameters::update_rho(int t, int& rho_index, const Data& dat,
 
 void SMCParameters::update_rho(
     const unsigned int particle_index,
-    const SMCData& dat) {
+    const SMCData& dat, std::mt19937& gen) {
   rho_samples.col(particle_index) = make_new_rho(
     rho_samples.col(particle_index), dat.rankings,
     alpha_samples(particle_index), leap_size, metric,
-    dat.observation_frequency);
+    dat.observation_frequency, gen);
 }
 
 void Parameters::update_shape(int t, const Data& dat,
@@ -247,7 +248,8 @@ void Parameters::update_alpha(
     const Data& dat,
     const Rcpp::List& logz_list,
     const Priors& priors,
-    const uvec& current_cluster_assignment) {
+    const uvec& current_cluster_assignment,
+    std::mt19937& gen) {
 
   for(int i = 0; i < n_clusters; ++i) {
     const uvec cluster_indicator = find(current_cluster_assignment == i);
@@ -259,7 +261,7 @@ void Parameters::update_alpha(
     AlphaRatio test = make_new_alpha(
       alpha_old(i), rho_old.col(i),
       alpha_prop_sd, metric, logz_list, cluster_rankings,
-      cluster_frequency, dat.n_items, priors);
+      cluster_frequency, dat.n_items, priors, gen);
 
     if(test.accept){
       alpha(i, alpha_index) = test.proposal;
@@ -273,13 +275,15 @@ void SMCParameters::update_alpha(
     const unsigned int particle_index,
     const SMCData& dat,
     const Rcpp::List& logz_list,
-    const Priors& priors) {
+    const Priors& priors,
+    std::mt19937& gen) {
 
   AlphaRatio test = make_new_alpha(
     alpha_samples(particle_index),
     rho_samples.col(particle_index),
     alpha_prop_sd, metric, logz_list,
-    dat.rankings, dat.observation_frequency, dat.n_items, priors
+    dat.rankings, dat.observation_frequency,
+    dat.n_items, priors, gen
   );
 
   if(test.accept){
@@ -432,7 +436,6 @@ void SMCAugmentation::reweight(
 
           item_correction_contribution -= pars.alpha_samples(particle) / dat.n_items *
             (current_distance - previous_distance);
-
         }
       }
     }
