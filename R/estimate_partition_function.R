@@ -54,10 +54,11 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
 
 #' Estimate Partition Function
 #'
-#' Estimate the logarithm of the partition function of the Mallows rank model. Choose
-#' between the importance sampling algorithm described in
-#' \insertCite{vitelli2018}{BayesMallows} and the IPFP algorithm for computing an
-#' asymptotic approximation described in \insertCite{mukherjee2016}{BayesMallows}.
+#' Estimate the logarithm of the partition function of the Mallows rank model.
+#' Choose between the importance sampling algorithm described in
+#' \insertCite{vitelli2018}{BayesMallows} and the IPFP algorithm for computing
+#' an asymptotic approximation described in
+#' \insertCite{mukherjee2016}{BayesMallows}.
 #'
 #' @param method Character string specifying the method to use in order to
 #'   estimate the logarithm of the partition function. Available options are
@@ -69,31 +70,29 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
 #' @param n_items Integer specifying the number of items.
 #'
 #' @param metric Character string specifying the distance measure to use.
-#'   Available options are `"footrule"` and `"spearman"` when
-#'   `method = "asymptotic"` and in addition `"cayley"`, `"hamming"`,
-#'   `"kendall"`, and `"ulam"` when `method = "importance_sampling"`.
+#'   Available options are `"footrule"` and `"spearman"` when `method =
+#'   "asymptotic"` and in addition `"cayley"`, `"hamming"`, `"kendall"`, and
+#'   `"ulam"` when `method = "importance_sampling"`.
 #'
-#' @param nmc Integer specifying the number of Monte Carlo samples to use in the
-#'   importance sampling. Only used when `method = "importance_sampling"`.
+#' @param n_iterations Integer specifying the number of iterations to use. When
+#'   `method = "importance_sampling"`, this is the number of Monte Carlo samples
+#'   to generate. When `method = "asymptotic"`, on the other hand, it represents
+#'   the number of iterations of the IPFP algorithm.
 #'
 #' @param degree Integer specifying the degree of the polynomial used to
 #'   estimate \eqn{\log(\alpha)} from the grid of values provided by the
 #'   importance sampling estimate.
 #'
-#' @param n_iterations Integer specifying the number of iterations to use in the
-#'   asymptotic approximation of the partition function. Only used when
-#'   `method = "asymptotic"`.
-#'
-#' @param K Integer specifying the parameter \eqn{K} in the
-#' asymptotic approximation of the partition function. Only used when
-#' `method = "asymptotic"`.
+#' @param K Integer specifying the parameter \eqn{K} in the asymptotic
+#'   approximation of the partition function. Only used when `method =
+#'   "asymptotic"`.
 #'
 #' @return A vector of length `degree` which can be supplied to the
 #'   `logz_estimate` argument of [compute_mallows()].
 #'
-#' @param cl Optional computing cluster used for parallelization, returned
-#' from [parallel::makeCluster()]. Defaults to `NULL`. Only used when
-#' `method = "importance_sampling"`.
+#' @param cl Optional computing cluster used for parallelization, returned from
+#'   [parallel::makeCluster()]. Defaults to `NULL`. Only used when `method =
+#'   "importance_sampling"`.
 #'
 #'
 #' @export
@@ -103,18 +102,20 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
 #' @example /inst/examples/estimate_partition_function_example.R
 #' @family preprocessing
 #'
-estimate_partition_function <- function(method = "importance_sampling",
-                                        alpha_vector, n_items, metric,
-                                        nmc, degree, n_iterations, K, cl = NULL) {
+estimate_partition_function <- function(
+    method = c("importance_sampling", "asymptotic"),
+    alpha_vector, n_items, metric,
+    n_iterations, degree, K, cl = NULL) {
   stopifnot(degree < length(alpha_vector))
+  method <- match.arg(method, c("importance_sampling", "asymptotic"))
 
   if (method == "importance_sampling") {
     if (!is.null(cl)) {
-      # Split nmc into each cluster
-      nmc_vec <- rep(floor(nmc / length(cl)), length(cl))
+      # Split n_iterations into each cluster
+      n_iterations_vec <- rep(floor(n_iterations / length(cl)), length(cl))
       i <- 1
-      while (sum(nmc_vec) != nmc) {
-        nmc_vec[i] <- nmc_vec[i] + 1
+      while (sum(n_iterations_vec) != n_iterations) {
+        n_iterations_vec[i] <- n_iterations_vec[i] + 1
         if (i > length(cl)) break
       }
       parallel::clusterExport(cl, c("alpha_vector", "n_items", "metric"),
@@ -122,10 +123,10 @@ estimate_partition_function <- function(method = "importance_sampling",
       )
       parallel::clusterSetRNGStream(cl)
 
-      estimates <- parallel::parLapply(cl, nmc_vec, function(x) {
+      estimates <- parallel::parLapply(cl, n_iterations_vec, function(x) {
         compute_importance_sampling_estimate(
           alpha_vector = alpha_vector, n_items = n_items,
-          metric = metric, nmc = x
+          metric = metric, n_iterations = x
         )
       })
 
@@ -134,7 +135,7 @@ estimate_partition_function <- function(method = "importance_sampling",
       log_z <- as.numeric(
         compute_importance_sampling_estimate(
           alpha_vector = alpha_vector, n_items = n_items,
-          metric = metric, nmc = nmc
+          metric = metric, nmc = n_iterations
         )
       )
     }

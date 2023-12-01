@@ -5,13 +5,12 @@
 \title{Estimate Partition Function}
 \usage{
 estimate_partition_function(
-  method = "importance_sampling",
+  method = c("importance_sampling", "asymptotic"),
   alpha_vector,
   n_items,
   metric,
-  nmc,
-  degree,
   n_iterations,
+  degree,
   K,
   cl = NULL
 )
@@ -27,38 +26,34 @@ compute the importance sampling estimate.}
 \item{n_items}{Integer specifying the number of items.}
 
 \item{metric}{Character string specifying the distance measure to use.
-Available options are \code{"footrule"} and \code{"spearman"} when
-\code{method = "asymptotic"} and in addition \code{"cayley"}, \code{"hamming"},
-\code{"kendall"}, and \code{"ulam"} when \code{method = "importance_sampling"}.}
+Available options are \code{"footrule"} and \code{"spearman"} when \code{method = "asymptotic"} and in addition \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+\code{"ulam"} when \code{method = "importance_sampling"}.}
 
-\item{nmc}{Integer specifying the number of Monte Carlo samples to use in the
-importance sampling. Only used when \code{method = "importance_sampling"}.}
+\item{n_iterations}{Integer specifying the number of iterations to use. When
+\code{method = "importance_sampling"}, this is the number of Monte Carlo samples
+to generate. When \code{method = "asymptotic"}, on the other hand, it represents
+the number of iterations of the IPFP algorithm.}
 
 \item{degree}{Integer specifying the degree of the polynomial used to
 estimate \eqn{\log(\alpha)} from the grid of values provided by the
 importance sampling estimate.}
 
-\item{n_iterations}{Integer specifying the number of iterations to use in the
-asymptotic approximation of the partition function. Only used when
-\code{method = "asymptotic"}.}
+\item{K}{Integer specifying the parameter \eqn{K} in the asymptotic
+approximation of the partition function. Only used when \code{method = "asymptotic"}.}
 
-\item{K}{Integer specifying the parameter \eqn{K} in the
-asymptotic approximation of the partition function. Only used when
-\code{method = "asymptotic"}.}
-
-\item{cl}{Optional computing cluster used for parallelization, returned
-from \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}. Only used when
-\code{method = "importance_sampling"}.}
+\item{cl}{Optional computing cluster used for parallelization, returned from
+\code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}. Only used when \code{method = "importance_sampling"}.}
 }
 \value{
 A vector of length \code{degree} which can be supplied to the
 \code{logz_estimate} argument of \code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \description{
-Estimate the logarithm of the partition function of the Mallows rank model. Choose
-between the importance sampling algorithm described in
-\insertCite{vitelli2018}{BayesMallows} and the IPFP algorithm for computing an
-asymptotic approximation described in \insertCite{mukherjee2016}{BayesMallows}.
+Estimate the logarithm of the partition function of the Mallows rank model.
+Choose between the importance sampling algorithm described in
+\insertCite{vitelli2018}{BayesMallows} and the IPFP algorithm for computing
+an asymptotic approximation described in
+\insertCite{mukherjee2016}{BayesMallows}.
 }
 \examples{
 # IMPORTANCE SAMPLING
@@ -73,7 +68,7 @@ degree <- 10
 fit1 <- estimate_partition_function(method = "importance_sampling",
                                       alpha_vector = alpha_vector,
                                       n_items = n_items, metric = metric,
-                                      nmc = 1e3, degree = degree)
+                                      n_iterations = 1e3, degree = degree)
 # A vector of polynomial regression coefficients is returned
 fit1
 
@@ -81,7 +76,7 @@ fit1
 fit2 <- estimate_partition_function(method = "importance_sampling",
                                     alpha_vector = alpha_vector,
                                     n_items = n_items, metric = metric,
-                                    nmc = 1e4, degree = degree)
+                                    n_iterations = 1e4, degree = degree)
 
 # ASYMPTOTIC APPROXIMATION
 # We can also compute an estimate using the asymptotic approximation
@@ -106,8 +101,6 @@ compute_fit <- function(fit, type){
     )
   }))
 }
-
-
 
 estimates <- rbind(
   compute_fit(fit1, type = "Importance Sampling 1e3"),

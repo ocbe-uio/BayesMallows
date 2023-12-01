@@ -10,7 +10,7 @@ degree <- 10
 fit1 <- estimate_partition_function(method = "importance_sampling",
                                       alpha_vector = alpha_vector,
                                       n_items = n_items, metric = metric,
-                                      nmc = 1e3, degree = degree)
+                                      n_iterations = 1e3, degree = degree)
 # A vector of polynomial regression coefficients is returned
 fit1
 
@@ -18,7 +18,7 @@ fit1
 fit2 <- estimate_partition_function(method = "importance_sampling",
                                     alpha_vector = alpha_vector,
                                     n_items = n_items, metric = metric,
-                                    nmc = 1e4, degree = degree)
+                                    n_iterations = 1e4, degree = degree)
 
 # ASYMPTOTIC APPROXIMATION
 # We can also compute an estimate using the asymptotic approximation
@@ -43,8 +43,6 @@ compute_fit <- function(fit, type){
     )
   }))
 }
-
-
 
 estimates <- rbind(
   compute_fit(fit1, type = "Importance Sampling 1e3"),
