@@ -103,6 +103,8 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha",
 #' @return A plot of the posterior distributions
 #' @export
 #' @family posterior quantities
+#' @example /inst/examples/update_mallows_example.R
+#'
 plot.SMCMallows <- function(
     x, parameter = "alpha", items = NULL, ...) {
   parameter <- match.arg(parameter, c("alpha", "rho"))

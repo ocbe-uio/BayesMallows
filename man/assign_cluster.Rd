@@ -15,30 +15,41 @@ assign_cluster(
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
 \code{\link[=compute_mallows]{compute_mallows()}}.}
 
-\item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-provided if \code{model_fit$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
+\item{burnin}{A numeric value specifying the number of iterations to discard
+as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
+\code{model_fit$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
 
-\item{soft}{A logical specifying whether to perform soft or
-hard clustering. If \code{soft=TRUE}, all cluster probabilities
-are returned, whereas if \code{soft=FALSE}, only the maximum a
-posterior (MAP) cluster probability is returned, per assessor. In the
-case of a tie between two or more cluster assignments, a random cluster
-is taken as MAP estimate.}
+\item{soft}{A logical specifying whether to perform soft or hard clustering.
+If \code{soft=TRUE}, all cluster probabilities are returned, whereas if
+\code{soft=FALSE}, only the maximum a posterior (MAP) cluster probability is
+returned, per assessor. In the case of a tie between two or more cluster
+assignments, a random cluster is taken as MAP estimate.}
 
-\item{expand}{A logical specifying whether or not to expand the rowset
-of each assessor to also include clusters for which the assessor has
-0 a posterior assignment probability. Only used when \code{soft = TRUE}. Defaults
-to \code{FALSE}.}
+\item{expand}{A logical specifying whether or not to expand the rowset of
+each assessor to also include clusters for which the assessor has 0 a
+posterior assignment probability. Only used when \code{soft = TRUE}. Defaults to
+\code{FALSE}.}
 }
 \value{
-A dataframe. If \code{soft = FALSE}, it has one row per assessor, and columns \code{assessor},
-\code{probability} and \code{map_cluster}. If \code{soft = TRUE}, it has \code{n_cluster}
-rows per assessor, and the additional column \code{cluster}.
+A dataframe. If \code{soft = FALSE}, it has one row per assessor, and
+columns \code{assessor}, \code{probability} and \code{map_cluster}. If \code{soft = TRUE}, it
+has \code{n_cluster} rows per assessor, and the additional column \code{cluster}.
 }
 \description{
 Assign assessors to clusters by finding the cluster with highest
 posterior probability.
+}
+\examples{
+# Fit a model with three clusters to the simulated example data
+set.seed(1)
+mixture_model <- compute_mallows(
+  data = setup_rank_data(cluster_data),
+  model_options = set_model_options(n_clusters = 3),
+  compute_options = set_compute_options(nmc = 5000, burnin = 1000))
+
+head(assign_cluster(mixture_model))
+head(assign_cluster(mixture_model, soft = FALSE))
+
 }
 \seealso{
 Other posterior quantities: 

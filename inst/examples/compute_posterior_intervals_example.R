@@ -1,11 +1,8 @@
-# The example datasets potato_visual and potato_weighing contain complete
-# rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
-# model:
-model_fit <- compute_mallows(setup_rank_data(potato_visual))
+set.seed(1)
+model_fit <- compute_mallows(
+  setup_rank_data(potato_visual),
+  compute_options = set_compute_options(nmc = 3000, burnin = 1000))
 
-# Se the documentation to compute_mallows for how to assess the convergence of the algorithm
-# Having chosen burin = 1000, we compute posterior intervals
-model_fit$burnin <- 1000
 # First we compute the interval for alpha
 compute_posterior_intervals(model_fit, parameter = "alpha")
 # We can reduce the number decimals
@@ -17,15 +14,12 @@ compute_posterior_intervals(model_fit, parameter = "rho")
 
 \dontrun{
   # Posterior intervals of cluster probabilities
-  # We can run a mixture of Mallows models, using the n_clusters argument
-  # We use the sushi example data. See the documentation of compute_mallows for a more elaborate
-  # example
   model_fit <- compute_mallows(
     setup_rank_data(sushi_rankings),
     model_options = set_model_options(n_clusters = 5))
-  # Keeping the burnin at 1000, we can compute the posterior intervals of the cluster probabilities
-  compute_posterior_intervals(model_fit, burnin = 1000,
-                              parameter = "cluster_probs")
+
+  compute_posterior_intervals(
+    model_fit, burnin = 1000, parameter = "cluster_probs")
 }
 
 

@@ -1,10 +1,9 @@
 #' @title Compute Consensus Ranking
 #' @description Compute the consensus ranking using either cumulative
-#' probability (CP) or maximum a posteriori (MAP) consensus
-#' \insertCite{vitelli2018}{BayesMallows}. For mixture models, the
-#' consensus is given for each mixture. Consensus of augmented ranks
-#' can also be computed
-#' for each assessor, by setting `parameter = "Rtilde"`.
+#'   probability (CP) or maximum a posteriori (MAP) consensus
+#'   \insertCite{vitelli2018}{BayesMallows}. For mixture models, the consensus
+#'   is given for each mixture. Consensus of augmented ranks can also be
+#'   computed for each assessor, by setting `parameter = "Rtilde"`.
 #'
 #' @param model_fit A model fit.
 #' @param type Character string specifying which consensus to compute. Either
@@ -16,8 +15,8 @@
 #'   the consensus. Defaults to `"rho"`. Available options are `"rho"` and
 #'   `"Rtilde"`, with the latter giving consensus rankings for augmented ranks.
 #' @param assessors When `parameter = "rho"`, this integer vector is used to
-#'   define the assessors for which to compute the augmented ranking. #'
-#'   Defaults to `1L`, which yields augmented rankings for assessor 1.
+#'   define the assessors for which to compute the augmented ranking. Defaults
+#'   to `1L`, which yields augmented rankings for assessor 1.
 #' @param ... Other arguments passed on to other methods. Currently not used.
 #'
 #' @references \insertAllCited{}
@@ -33,8 +32,8 @@ compute_consensus <- function(model_fit, ...) {
 #' @export
 #' @rdname compute_consensus
 compute_consensus.BayesMallows <- function(
-    model_fit, type = "CP", burnin = model_fit$burnin, parameter = "rho",
-    assessors = 1L, ...) {
+    model_fit, type = c("CP", "MAP"), burnin = model_fit$burnin,
+    parameter = "rho", assessors = 1L, ...) {
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
@@ -110,7 +109,8 @@ compute_consensus.BayesMallows <- function(
 
 #' @export
 #' @rdname compute_consensus
-compute_consensus.SMCMallows <- function(model_fit, type = "CP", ...) {
+compute_consensus.SMCMallows <- function(
+    model_fit, type = c("CP", "MAP"), ...) {
   model_fit$burnin <- 0
   model_fit$nmc <- model_fit$n_particles
   NextMethod("compute_consensus")
