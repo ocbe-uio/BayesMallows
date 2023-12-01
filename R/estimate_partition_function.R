@@ -79,10 +79,6 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
 #'   to generate. When `method = "asymptotic"`, on the other hand, it represents
 #'   the number of iterations of the IPFP algorithm.
 #'
-#' @param degree Integer specifying the degree of the polynomial used to
-#'   estimate \eqn{\log(\alpha)} from the grid of values provided by the
-#'   importance sampling estimate.
-#'
 #' @param K Integer specifying the parameter \eqn{K} in the asymptotic
 #'   approximation of the partition function. Only used when `method =
 #'   "asymptotic"`.
@@ -105,8 +101,8 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
 estimate_partition_function <- function(
     method = c("importance_sampling", "asymptotic"),
     alpha_vector, n_items, metric,
-    n_iterations, degree, K, cl = NULL) {
-  stopifnot(degree < length(alpha_vector))
+    n_iterations, K, cl = NULL) {
+  degree <- min(10, length(alpha_vector))
   method <- match.arg(method, c("importance_sampling", "asymptotic"))
 
   if (method == "importance_sampling") {

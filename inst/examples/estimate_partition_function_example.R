@@ -4,13 +4,12 @@
 alpha_vector <- seq(from = 0, to = 10, by = 0.5)
 n_items <- 20
 metric <- "spearman"
-degree <- 10
 
 # We start with 1e3 Monte Carlo samples
 fit1 <- estimate_partition_function(method = "importance_sampling",
                                       alpha_vector = alpha_vector,
                                       n_items = n_items, metric = metric,
-                                      n_iterations = 1e3, degree = degree)
+                                      n_iterations = 1e3)
 # A vector of polynomial regression coefficients is returned
 fit1
 
@@ -18,7 +17,7 @@ fit1
 fit2 <- estimate_partition_function(method = "importance_sampling",
                                     alpha_vector = alpha_vector,
                                     n_items = n_items, metric = metric,
-                                    n_iterations = 1e4, degree = degree)
+                                    n_iterations = 1e4)
 
 # ASYMPTOTIC APPROXIMATION
 # We can also compute an estimate using the asymptotic approximation
@@ -29,7 +28,7 @@ fit3 <- estimate_partition_function(method = "asymptotic",
                                     alpha_vector = alpha_vector,
                                     n_items = n_items, metric = metric,
                                     n_iterations = n_iterations,
-                                    K = K, degree = degree)
+                                    K = K)
 
 # We write a little function for storing the estimates in a dataframe
 powers <- seq(from = 0, to = degree, by = 1)
