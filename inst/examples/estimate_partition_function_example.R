@@ -21,14 +21,10 @@ fit2 <- estimate_partition_function(method = "importance_sampling",
 
 # ASYMPTOTIC APPROXIMATION
 # We can also compute an estimate using the asymptotic approximation
-K <- 20
-n_iterations <- 50
-
 fit3 <- estimate_partition_function(method = "asymptotic",
                                     alpha_vector = alpha_vector,
                                     n_items = n_items, metric = metric,
-                                    n_iterations = n_iterations,
-                                    K = K)
+                                    n_iterations = 50)
 
 # We write a little function for storing the estimates in a dataframe
 powers <- seq(from = 0, to = degree, by = 1)

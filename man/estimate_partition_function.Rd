@@ -10,7 +10,7 @@ estimate_partition_function(
   n_items,
   metric,
   n_iterations,
-  K,
+  K = 20,
   cl = NULL
 )
 }
@@ -34,7 +34,7 @@ to generate. When \code{method = "asymptotic"}, on the other hand, it represents
 the number of iterations of the IPFP algorithm.}
 
 \item{K}{Integer specifying the parameter \eqn{K} in the asymptotic
-approximation of the partition function. Only used when \code{method = "asymptotic"}.}
+approximation of the partition function. Only used when \code{method = "asymptotic"}. Defaults to 20.}
 
 \item{cl}{Optional computing cluster used for parallelization, returned from
 \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}. Only used when \code{method = "importance_sampling"}.}

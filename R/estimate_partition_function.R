@@ -81,7 +81,7 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
 #'
 #' @param K Integer specifying the parameter \eqn{K} in the asymptotic
 #'   approximation of the partition function. Only used when `method =
-#'   "asymptotic"`.
+#'   "asymptotic"`. Defaults to 20.
 #'
 #' @return A vector of length `degree` which can be supplied to the
 #'   `logz_estimate` argument of [compute_mallows()].
@@ -101,7 +101,7 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
 estimate_partition_function <- function(
     method = c("importance_sampling", "asymptotic"),
     alpha_vector, n_items, metric,
-    n_iterations, K, cl = NULL) {
+    n_iterations, K = 20, cl = NULL) {
   degree <- min(10, length(alpha_vector))
   method <- match.arg(method, c("importance_sampling", "asymptotic"))
 
