@@ -17,6 +17,11 @@ A dataframe with transitive closure, if there is any.
 A simple method for showing any transitive closure computed by
 \code{\link[=setup_rank_data]{setup_rank_data()}}.
 }
+\examples{
+dat <- setup_rank_data(preferences = beach_preferences)
+head(get_transitive_closure(dat))
+
+}
 \seealso{
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
