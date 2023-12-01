@@ -19,7 +19,6 @@ True ranking of the weights of 20 potatoes.
 \seealso{
 Other datasets: 
 \code{\link{beach_preferences}},
-\code{\link{potato_partial}},
 \code{\link{potato_visual}},
 \code{\link{potato_weighing}},
 \code{\link{sushi_rankings}}

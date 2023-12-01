@@ -34,14 +34,3 @@
 #' @family datasets
 #' @references \insertAllCited{}
 "sushi_rankings"
-
-#' Updated partial rankings of potatoes
-#'
-#' Simulated dataset based on \code{\link{potato_visual}}, in which 50 % of the
-#' potatoes are initially unranked. Through ten subsequent timesteps, more
-#' ranks are added each time, given complete rankings at time 11.
-#'
-#' @family datasets
-#' @references \insertRef{liu2019}{BayesMallows}
-#'
-"potato_partial"
