@@ -20,8 +20,6 @@
 #'   `prob`, where each row states the probability that the given assessor
 #'   rates the given item among top-\eqn{k}.
 #'
-#' @seealso [plot_top_k()]
-#'
 #' @example /inst/examples/plot_top_k_example.R
 #' @family posterior quantities
 predict_top_k <- function(model_fit, burnin = model_fit$burnin, k = 3) {

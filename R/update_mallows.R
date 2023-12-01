@@ -23,8 +23,9 @@
 #' @return An updated model, of class "SMCMallows".
 #' @export
 #'
-#'
 #' @family modeling
+#'
+#' @example /inst/examples/update_mallows_example.R
 #'
 update_mallows <- function(model, new_data, ...) {
   UseMethod("update_mallows")

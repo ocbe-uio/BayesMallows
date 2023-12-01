@@ -19,8 +19,6 @@
 #'
 #' @export
 #'
-#' @seealso [compute_mallows()]
-#'
 #' @example /inst/examples/compute_mallows_mixtures_example.R
 #' @family posterior quantities
 plot_elbow <- function(..., burnin = NULL) {

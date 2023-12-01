@@ -41,8 +41,6 @@ Assign assessors to clusters by finding the cluster with highest
 posterior probability.
 }
 \seealso{
-\code{\link[=compute_mallows]{compute_mallows()}} for an example where this function is used.
-
 Other posterior quantities: 
 \code{\link{compute_consensus}()},
 \code{\link{compute_posterior_intervals}()},

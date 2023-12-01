@@ -128,8 +128,6 @@ plot(mixture_model, parameter = "cluster_assignment")
 
 }
 \seealso{
-\code{\link[=compute_mallows]{compute_mallows()}}
-
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
 \code{\link{compute_consensus}()},

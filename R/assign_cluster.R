@@ -26,8 +26,6 @@
 #' `probability` and `map_cluster`. If `soft = TRUE`, it has `n_cluster`
 #' rows per assessor, and the additional column `cluster`.
 #'
-#' @seealso [compute_mallows()] for an example where this function is used.
-#'
 #' @export
 #'
 #' @family posterior quantities

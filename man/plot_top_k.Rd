@@ -52,8 +52,6 @@ preferences.
 }
 }
 \seealso{
-\code{\link[=predict_top_k]{predict_top_k()}}
-
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
 \code{\link{compute_consensus}()},

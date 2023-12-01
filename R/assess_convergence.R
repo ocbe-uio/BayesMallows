@@ -22,11 +22,10 @@
 #'
 #' @param ... Other arguments passed on to other methods. Currently not used.
 #'
-#'
-#' @seealso [compute_mallows()], [plot.BayesMallows()]
-#'
 #' @export
 #' @family diagnostics
+#'
+#' @example /inst/examples/assess_convergence_example.R
 assess_convergence <- function(model_fit, ...) {
   UseMethod("assess_convergence")
 }

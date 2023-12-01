@@ -17,8 +17,6 @@
 #' and the plot of assessors, respectively. This argument is passed on to
 #' [cowplot::plot_grid()].
 #'
-#' @seealso [predict_top_k()]
-#'
 #' @export
 #'
 #' @example /inst/examples/plot_top_k_example.R
