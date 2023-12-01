@@ -119,6 +119,19 @@ test_that("compute_mallows is correct for top-k ranks", {
 })
 
 test_that("compute_mallows is correct with clustering", {
+  set.seed(1)
+  mixture_model <- compute_mallows(
+    data = setup_rank_data(cluster_data),
+    model_options = set_model_options(n_clusters = 3),
+    compute_options = set_compute_options(nmc = 5000))
+
+  aggdat <- aggregate(value ~ cluster, data = mixture_model$alpha, FUN = mean)
+  expect_gt(max(aggdat$value) - min(aggdat$value), 1)
+
+  aggdat <- aggregate(value ~ cluster, data = mixture_model$cluster_probs,
+                      FUN = mean)
+  expect_true(all(aggdat$value < .5))
+
   skip_on_cran()
   cl <- parallel::makeCluster(2)
   models <- compute_mallows_mixtures(
