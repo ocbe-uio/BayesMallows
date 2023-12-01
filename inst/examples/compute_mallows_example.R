@@ -2,8 +2,10 @@
 # The example datasets potato_visual and potato_weighing contain complete
 # rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
 # model:
+set.seed(1)
 model_fit <- compute_mallows(
-  data = setup_rank_data(rankings = potato_visual)
+  data = setup_rank_data(rankings = potato_visual),
+  compute_options = set_compute_options(nmc = 5000)
   )
 
 # We study the trace plot of the parameters
