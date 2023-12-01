@@ -8,7 +8,7 @@ get_mallows_loglik(
   rho,
   alpha,
   weights,
-  metric,
+  metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
   rankings,
   observation_frequency = NULL,
   log = TRUE

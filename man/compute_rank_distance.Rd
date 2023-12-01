@@ -4,7 +4,12 @@
 \alias{compute_rank_distance}
 \title{Distance between a set of rankings and a given rank sequence}
 \usage{
-compute_rank_distance(rankings, rho, metric, observation_frequency = 1)
+compute_rank_distance(
+  rankings,
+  rho,
+  metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
+  observation_frequency = 1
+)
 }
 \arguments{
 \item{rankings}{A matrix of size \eqn{N \times n_{items}} of

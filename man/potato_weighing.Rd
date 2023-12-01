@@ -3,8 +3,7 @@
 \docType{data}
 \name{potato_weighing}
 \alias{potato_weighing}
-\title{Result of ranking potatoes by weight, where the assessors were
-allowed to lift the potatoes. 12 assessors ranked 20 potatoes.}
+\title{Potato weights assessed by hand}
 \format{
 An object of class \code{matrix} (inherits from \code{array}) with 12 rows and 20 columns.
 }

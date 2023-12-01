@@ -3,7 +3,7 @@
 \docType{data}
 \name{sushi_rankings}
 \alias{sushi_rankings}
-\title{Sushi Rankings}
+\title{Sushi rankings}
 \format{
 An object of class \code{matrix} (inherits from \code{array}) with 5000 rows and 10 columns.
 }
@@ -11,8 +11,8 @@ An object of class \code{matrix} (inherits from \code{array}) with 5000 rows and
 sushi_rankings
 }
 \description{
-Complete rankings of 10 types of sushi from
-5000 assessors \insertCite{kamishima2003}{BayesMallows}.
+Complete rankings of 10 types of sushi from 5000 assessors
+\insertCite{kamishima2003}{BayesMallows}.
 }
 \references{
 \insertAllCited{}

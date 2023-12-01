@@ -4,7 +4,11 @@
 \alias{compute_expected_distance}
 \title{Expected value of metrics under a Mallows rank model}
 \usage{
-compute_expected_distance(alpha, n_items, metric)
+compute_expected_distance(
+  alpha,
+  n_items,
+  metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam")
+)
 }
 \arguments{
 \item{alpha}{Non-negative scalar specifying the scale (precision) parameter

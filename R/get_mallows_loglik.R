@@ -31,11 +31,17 @@
 #' @example inst/examples/get_mallows_loglik_example.R
 #' @family rank functions
 #'
-get_mallows_loglik <- function(rho, alpha, weights, metric,
-                               rankings, observation_frequency = NULL, log = TRUE) {
-  if (!is.matrix(rankings)) {
-    rankings <- matrix(rankings, nrow = 1)
-  }
+get_mallows_loglik <- function(
+    rho, alpha, weights,
+    metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
+    rankings, observation_frequency = NULL, log = TRUE) {
+
+  metric <- match.arg(metric, c(
+    "footrule", "spearman", "cayley", "hamming",
+    "kendall", "ulam"
+  ))
+  if (!is.matrix(rankings)) rankings <- matrix(rankings, nrow = 1)
+
 
   if (!is.null(observation_frequency)) {
     if (nrow(rankings) != length(observation_frequency)) {

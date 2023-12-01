@@ -16,7 +16,13 @@
 #' @family rank functions
 #'
 #' @example /inst/examples/expected_dist_example.R
-compute_expected_distance <- function(alpha, n_items, metric) {
+compute_expected_distance <- function(
+    alpha,
+    n_items,
+    metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam")
+    ) {
+  metric <- match.arg(metric, c("footrule", "spearman", "cayley",
+                                "hamming", "kendall", "ulam"))
   if (n_items < 1 | floor(n_items) != n_items) {
     stop("Number of items must be a positive integer")
   }
@@ -48,7 +54,6 @@ compute_expected_distance <- function(alpha, n_items, metric) {
       } else {
         card <- pfd$values[[1]]
       }
-
 
       out <- exp(
         log_expected_dist(

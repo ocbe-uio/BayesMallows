@@ -3,7 +3,7 @@
 \docType{data}
 \name{beach_preferences}
 \alias{beach_preferences}
-\title{Beach Preferences}
+\title{Beach preferences}
 \format{
 An object of class \code{data.frame} with 1442 rows and 3 columns.
 }
