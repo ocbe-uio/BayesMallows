@@ -332,7 +332,7 @@ void Clustering::update_cluster_labels(
 void Clustering::update_wcd(const int t){
   if(!include_wcd) return;
 
-  int n_clusters = dist_mat.n_cols;
+  const unsigned int n_clusters = dist_mat.n_cols;
   vec wcd(n_clusters);
 
   for(size_t i{}; i < n_clusters; ++i){
