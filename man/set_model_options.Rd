@@ -4,34 +4,38 @@
 \alias{set_model_options}
 \title{Set options for Bayesian Mallows model}
 \usage{
-set_model_options(metric = "footrule", n_clusters = 1, error_model = "none")
+set_model_options(
+  metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
+  n_clusters = 1,
+  error_model = c("none", "bernoulli")
+)
 }
 \arguments{
 \item{metric}{A character string specifying the distance metric to use in the
-Bayesian Mallows Model. Available options are \code{"footrule"},
-\code{"spearman"}, \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
-\code{"ulam"}. The distance given by \code{metric} is also used to compute
-within-cluster distances, when \code{include_wcd = TRUE}.}
+Bayesian Mallows Model. Available options are \code{"footrule"}, \code{"spearman"},
+\code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and \code{"ulam"}. The distance given by
+\code{metric} is also used to compute within-cluster distances, when
+\code{include_wcd = TRUE}.}
 
 \item{n_clusters}{Integer specifying the number of clusters, i.e., the number
-of mixture components to use. Defaults to \code{1L}, which means no
-clustering is performed. See \code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}} for a
-convenience function for computing several models with varying numbers of
-mixtures.}
+of mixture components to use. Defaults to \code{1L}, which means no clustering
+is performed. See \code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}} for a convenience function
+for computing several models with varying numbers of mixtures.}
 
 \item{error_model}{Character string specifying which model to use for
-inconsistent rankings. Defaults to \code{"none"}, which means that
-inconsistent rankings are not allowed. At the moment, the only available
-other option is \code{"bernoulli"}, which means that the Bernoulli error
-model is used. See \insertCite{crispino2019;textual}{BayesMallows} for a
-definition of the Bernoulli model.}
+inconsistent rankings. Defaults to \code{"none"}, which means that inconsistent
+rankings are not allowed. At the moment, the only available other option is
+\code{"bernoulli"}, which means that the Bernoulli error model is used. See
+\insertCite{crispino2019;textual}{BayesMallows} for a definition of the
+Bernoulli model.}
 }
 \value{
-An object of class \code{"BayesMallowsModelOptions"}, to be provided
-in the \code{model} argument to \code{\link[=compute_mallows]{compute_mallows()}}.
+An object of class \code{"BayesMallowsModelOptions"}, to be provided in
+the \code{model_options} argument to \code{\link[=compute_mallows]{compute_mallows()}},
+\code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}}, or \code{\link[=update_mallows]{update_mallows()}}.
 }
 \description{
-Set options for Bayesian Mallows model
+Specify various model options for the Bayesian Mallows model.
 }
 \seealso{
 Other preprocessing: 

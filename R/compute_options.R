@@ -1,4 +1,8 @@
-#' Specify options for Metropolis-Hastings algorithms
+#' @title Specify options for computation
+#'
+#' @description
+#' Set parameters related to the Metropolis-Hastings algorithm.
+#'
 #'
 #' @param nmc Integer specifying the number of iteration of the
 #'   Metropolis-Hastings algorithm to run. Defaults to `2000`. See
@@ -57,7 +61,8 @@
 #'
 #'
 #' @return An object of class `"BayesMallowsComputeOptions"`, to be provided in
-#'   the `compute_options` argument to [compute_mallows()].
+#'   the `compute_options` argument to [compute_mallows()],
+#'   [compute_mallows_mixtures()], or [update_mallows()].
 #' @export
 #'
 #' @family preprocessing

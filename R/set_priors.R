@@ -1,26 +1,31 @@
-#' Set prior parameters for Bayesian Mallows model
+#' @title Set prior parameters for Bayesian Mallows model
+#'
+#' @description
+#' Set values related to the prior distributions for the Bayesian Mallows
+#' model.
 #'
 #' @param lambda Strictly positive numeric value specifying the rate parameter
 #'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
-#'   to `0.001`. When `n_cluster > 1`, each mixture component
-#'   \eqn{\alpha_{c}} has the same prior distribution.
+#'   to `0.001`. When `n_cluster > 1`, each mixture component \eqn{\alpha_{c}}
+#'   has the same prior distribution.
 #'
 #' @param psi Positive integer specifying the concentration parameter \eqn{\psi}
 #'   of the Dirichlet prior distribution used for the cluster probabilities
 #'   \eqn{\tau_{1}, \tau_{2}, \dots, \tau_{C}}, where \eqn{C} is the value of
-#'   `n_clusters`. Defaults to `10L`. When `n_clusters = 1`, this
-#'   argument is not used.
+#'   `n_clusters`. Defaults to `10L`. When `n_clusters = 1`, this argument is
+#'   not used.
 #'
-#' @param kappa_1 First shape parameter of the truncate Beta prior used for
-#'   \eqn{theta} in the Bernoulli error model. Defaults to 1.0. See
+#' @param kappa_1 First shape parameter of the truncated beta prior used for
+#'   \eqn{\theta} in the Bernoulli error model. Defaults to 1.0. See
 #'   \insertCite{crispino2019}{BayesMallows} for details.
 #'
-#' @param kappa_2 Second shape parameter of the truncate Beta prior used for
-#'   \eqn{theta} in the Bernoulli error model. Defaults to 1.0. See
+#' @param kappa_2 Second shape parameter of the truncate beta prior used for
+#'   \eqn{\theta} in the Bernoulli error model. Defaults to 1.0. See
 #'   \insertCite{crispino2019}{BayesMallows} for details.
 #'
 #' @return An object of class `"BayesMallowsPriors"`, to be provided in the
-#'   `priors` argument to [compute_mallows()].
+#'   `priors` argument to [compute_mallows()], [compute_mallows_mixtures()], or
+#'   [update_mallows()].
 #' @export
 #'
 #' @family preprocessing

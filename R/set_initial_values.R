@@ -1,4 +1,8 @@
-#' Set initial values of scale parameter and modal ranking
+#' @title Set initial values of scale parameter and modal ranking
+#'
+#' @description
+#' Set initial values used by the Metropolis-Hastings algorithm.
+#'
 #'
 #' @param rho_init Numeric vector specifying the initial value of the latent
 #'   consensus ranking \eqn{\rho}. Defaults to NULL, which means that the
@@ -16,7 +20,9 @@
 #'
 #'
 #' @return An object of class `"BayesMallowsInitialValues"`, to be
-#'   provided to the `initial_values` argument of [compute_mallows()].
+#'   provided to the `initial_values` argument of [compute_mallows()] or
+#'   [compute_mallows_mixtures()].
+#'
 #' @export
 #'
 #' @family preprocessing

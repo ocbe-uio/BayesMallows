@@ -4,7 +4,11 @@
 \alias{set_smc_options}
 \title{Set SMC compute options}
 \usage{
-set_smc_options(n_particles = 1000, aug_method = "pseudo", mcmc_steps = 5)
+set_smc_options(
+  n_particles = 1000,
+  aug_method = c("pseudo", "uniform"),
+  mcmc_steps = 5
+)
 }
 \arguments{
 \item{n_particles}{Integer specifying the number of particles.}

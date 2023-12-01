@@ -9,29 +9,31 @@ set_priors(lambda = 0.001, psi = 10, kappa_1 = 1, kappa_2 = 1)
 \arguments{
 \item{lambda}{Strictly positive numeric value specifying the rate parameter
 of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
-to \code{0.001}. When \code{n_cluster > 1}, each mixture component
-\eqn{\alpha_{c}} has the same prior distribution.}
+to \code{0.001}. When \code{n_cluster > 1}, each mixture component \eqn{\alpha_{c}}
+has the same prior distribution.}
 
 \item{psi}{Positive integer specifying the concentration parameter \eqn{\psi}
 of the Dirichlet prior distribution used for the cluster probabilities
 \eqn{\tau_{1}, \tau_{2}, \dots, \tau_{C}}, where \eqn{C} is the value of
-\code{n_clusters}. Defaults to \code{10L}. When \code{n_clusters = 1}, this
-argument is not used.}
+\code{n_clusters}. Defaults to \code{10L}. When \code{n_clusters = 1}, this argument is
+not used.}
 
-\item{kappa_1}{First shape parameter of the truncate Beta prior used for
-\eqn{theta} in the Bernoulli error model. Defaults to 1.0. See
+\item{kappa_1}{First shape parameter of the truncated beta prior used for
+\eqn{\theta} in the Bernoulli error model. Defaults to 1.0. See
 \insertCite{crispino2019}{BayesMallows} for details.}
 
-\item{kappa_2}{Second shape parameter of the truncate Beta prior used for
-\eqn{theta} in the Bernoulli error model. Defaults to 1.0. See
+\item{kappa_2}{Second shape parameter of the truncate beta prior used for
+\eqn{\theta} in the Bernoulli error model. Defaults to 1.0. See
 \insertCite{crispino2019}{BayesMallows} for details.}
 }
 \value{
 An object of class \code{"BayesMallowsPriors"}, to be provided in the
-\code{priors} argument to \code{\link[=compute_mallows]{compute_mallows()}}.
+\code{priors} argument to \code{\link[=compute_mallows]{compute_mallows()}}, \code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}}, or
+\code{\link[=update_mallows]{update_mallows()}}.
 }
 \description{
-Set prior parameters for Bayesian Mallows model
+Set values related to the prior distributions for the Bayesian Mallows
+model.
 }
 \seealso{
 Other preprocessing: 

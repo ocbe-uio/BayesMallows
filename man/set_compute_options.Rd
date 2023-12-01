@@ -2,7 +2,7 @@
 % Please edit documentation in R/compute_options.R
 \name{set_compute_options}
 \alias{set_compute_options}
-\title{Specify options for Metropolis-Hastings algorithms}
+\title{Specify options for computation}
 \usage{
 set_compute_options(
   nmc = 2000,
@@ -76,10 +76,11 @@ label switching using Stephen's algorithm.}
 }
 \value{
 An object of class \code{"BayesMallowsComputeOptions"}, to be provided in
-the \code{compute_options} argument to \code{\link[=compute_mallows]{compute_mallows()}}.
+the \code{compute_options} argument to \code{\link[=compute_mallows]{compute_mallows()}},
+\code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}}, or \code{\link[=update_mallows]{update_mallows()}}.
 }
 \description{
-Specify options for Metropolis-Hastings algorithms
+Set parameters related to the Metropolis-Hastings algorithm.
 }
 \seealso{
 Other preprocessing: 

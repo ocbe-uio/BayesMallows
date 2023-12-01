@@ -1,4 +1,7 @@
-#' Prepare rank or preference data for further analyses
+#' @title Setup rank data
+#'
+#' @description
+#' Prepare rank or preference data for further analyses.
 #'
 #' @param rankings A matrix of ranked items, of size `n_assessors x n_items`.
 #'   See [create_ranking()] if you have an ordered set of items that need to be

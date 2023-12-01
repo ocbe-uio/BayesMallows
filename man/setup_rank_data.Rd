@@ -2,7 +2,7 @@
 % Please edit documentation in R/setup_rank_data.R
 \name{setup_rank_data}
 \alias{setup_rank_data}
-\title{Prepare rank or preference data for further analyses}
+\title{Setup rank data}
 \usage{
 setup_rank_data(
   rankings = NULL,
@@ -101,7 +101,7 @@ An object of class \code{"BayesMallowsData"}, to be provided in the \code{data}
 argument to \code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \description{
-Prepare rank or preference data for further analyses
+Prepare rank or preference data for further analyses.
 }
 \note{
 Setting \code{random=TRUE} means that all possible orderings of each

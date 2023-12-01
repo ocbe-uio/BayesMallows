@@ -22,10 +22,11 @@ element of which becomes an initial value for the given chain.}
 }
 \value{
 An object of class \code{"BayesMallowsInitialValues"}, to be
-provided to the \code{initial_values} argument of \code{\link[=compute_mallows]{compute_mallows()}}.
+provided to the \code{initial_values} argument of \code{\link[=compute_mallows]{compute_mallows()}} or
+\code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}}.
 }
 \description{
-Set initial values of scale parameter and modal ranking
+Set initial values used by the Metropolis-Hastings algorithm.
 }
 \seealso{
 Other preprocessing: 
