@@ -80,7 +80,7 @@ fit3 <- estimate_partition_function(method = "asymptotic",
                                     n_iterations = 50)
 
 # We write a little function for storing the estimates in a dataframe
-powers <- seq(from = 0, to = degree, by = 1)
+powers <- seq(from = 0, by = 1, length.out = length(fit1))
 
 compute_fit <- function(fit, type){
   do.call(rbind, lapply(alpha_vector, function(alpha){
