@@ -15,41 +15,40 @@ plot_top_k(
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
 \code{\link[=compute_mallows]{compute_mallows()}}.}
 
-\item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. Defaults to \code{model_fit$burnin}, and must be
-provided if \code{model_fit$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
+\item{burnin}{A numeric value specifying the number of iterations to discard
+as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
+\code{model_fit$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{k}{Integer specifying the k in top-\eqn{k}.}
 
-\item{rel_widths}{The relative widths of the plots of \code{rho} per cluster
-and the plot of assessors, respectively. This argument is passed on to
+\item{rel_widths}{The relative widths of the plots of \code{rho} per cluster and
+the plot of assessors, respectively. This argument is passed on to
 \code{\link[cowplot:plot_grid]{cowplot::plot_grid()}}.}
 }
 \description{
-Plot the posterior probability, per item, of being ranked among the top-\eqn{k}
-for each assessor. This plot is useful when the data take the form of pairwise
-preferences.
+Plot the posterior probability, per item, of being ranked among the
+top-\eqn{k} for each assessor. This plot is useful when the data take the
+form of pairwise preferences.
 }
 \examples{
-\dontrun{
-  # We use the example dataset with beach preferences. Se the documentation to
-  # compute_mallows for how to assess the convergence of the algorithm
-  # We need to save the augmented data, so setting this option to TRUE
-  model_fit <- compute_mallows(preferences = beach_preferences,
-                               save_aug = TRUE)
-  # We set burnin = 1000
-  model_fit$burnin <- 1000
-  # By default, the probability of being top-3 is plotted
-  plot_top_k(model_fit)
-  # We can also plot the probability of being top-5, for each item
-  plot_top_k(model_fit, k = 5)
-  # We get the underlying numbers with predict_top_k
-  probs <- predict_top_k(model_fit)
-  # To find all items ranked top-3 by assessors 1-3 with probability more than 80 \%,
-  # we do
-  subset(probs, assessor \%in\% 1:3 & prob > 0.8)
+set.seed(1)
+# We use the example dataset with beach preferences. Se the documentation to
+# compute_mallows for how to assess the convergence of the algorithm
+# We need to save the augmented data, so setting this option to TRUE
+model_fit <- compute_mallows(
+  data = setup_rank_data(preferences = beach_preferences),
+  compute_options = set_compute_options(nmc = 1000, burnin = 500,
+                                        save_aug = TRUE))
+# By default, the probability of being top-3 is plotted
+plot_top_k(model_fit)
+# We can also plot the probability of being top-5, for each item
+plot_top_k(model_fit, k = 5)
+# We get the underlying numbers with predict_top_k
+probs <- predict_top_k(model_fit)
+# To find all items ranked top-3 by assessors 1-3 with probability more than 80 \%,
+# we do
+subset(probs, assessor \%in\% 1:3 & prob > 0.8)
 
-}
 }
 \seealso{
 Other posterior quantities: 
@@ -61,7 +60,6 @@ Other posterior quantities:
 \code{\link{plot.SMCMallows}()},
 \code{\link{plot_elbow}()},
 \code{\link{predict_top_k}()},
-\code{\link{print.BayesMallowsMixtures}()},
 \code{\link{print.BayesMallows}()}
 }
 \concept{posterior quantities}

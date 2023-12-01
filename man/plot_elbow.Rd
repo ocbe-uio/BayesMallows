@@ -137,7 +137,6 @@ Other posterior quantities:
 \code{\link{plot.SMCMallows}()},
 \code{\link{plot_top_k}()},
 \code{\link{predict_top_k}()},
-\code{\link{print.BayesMallowsMixtures}()},
 \code{\link{print.BayesMallows}()}
 }
 \concept{posterior quantities}

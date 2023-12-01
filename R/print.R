@@ -2,7 +2,6 @@
 #'
 #' The default print method for a `BayesMallows` object.
 #'
-#'
 #' @param x An object of type `BayesMallows`, returned from
 #'   [compute_mallows()].
 #'
@@ -12,13 +11,20 @@
 #'
 #' @family posterior quantities
 print.BayesMallows <- function(x, ...) {
-  # Note, the first argument must be named x, otherwise R CMD CHECK will
-  # issue a warning. This is because print.BayesMallows must have the same
-  # required arguments as base::print.
-
-  if (is.null(x$n_items) || is.null(x$n_assessors)) {
-    stop("BayesMallows object must have elements n_items and n_assessors.")
-  }
   cat("Bayesian Mallows Model with", x$n_items, "items and", x$n_assessors, "assessors.\n")
   cat("Use functions assess_convergence() or plot() to visualize the object.")
+}
+
+#' @rdname print.BayesMallows
+#' @export
+print.BayesMallowsMixtures <- function(x, ...) {
+  cat("Bayesian Mallows Mixtures Model with", length(x), "clusters.\n")
+  cat("Use functions assess_convergence() or plot_elbow() to analyze.\n")
+}
+
+#' @rdname print.BayesMallows
+#' @export
+print.SMCMallows <- function(x, ...) {
+  cat("Bayesian Mallows Model with", x$n_items, "items fitted with sequential Monte Carlo.\n")
+  cat("Use the plot() to visualize the object.")
 }
