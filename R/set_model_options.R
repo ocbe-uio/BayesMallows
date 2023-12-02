@@ -35,7 +35,6 @@ set_model_options <- function(
     metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
     n_clusters = 1,
     error_model = c("none", "bernoulli")) {
-
   metric <- match.arg(metric, c(
     "footrule", "spearman", "cayley", "hamming",
     "kendall", "ulam"

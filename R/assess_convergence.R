@@ -38,10 +38,10 @@ assess_convergence.BayesMallows <- function(
     items = NULL,
     assessors = NULL,
     ...) {
-
   parameter <- match.arg(
     parameter,
-    c("alpha", "rho", "Rtilde", "cluster_probs", "theta"))
+    c("alpha", "rho", "Rtilde", "cluster_probs", "theta")
+  )
 
   if (parameter == "alpha") {
     trace_alpha(model_fit$alpha, FALSE)
@@ -66,7 +66,6 @@ assess_convergence.BayesMallowsMixtures <- function(
     items = NULL,
     assessors = NULL,
     ...) {
-
   parameter <- match.arg(parameter, c("alpha", "rho", "cluster_probs"))
 
   if (parameter == "alpha") {

@@ -35,7 +35,8 @@
 #' mixture_model <- compute_mallows(
 #'   data = setup_rank_data(cluster_data),
 #'   model_options = set_model_options(n_clusters = 3),
-#'   compute_options = set_compute_options(nmc = 5000, burnin = 1000))
+#'   compute_options = set_compute_options(nmc = 5000, burnin = 1000)
+#' )
 #'
 #' head(assign_cluster(mixture_model))
 #' head(assign_cluster(mixture_model, soft = FALSE))

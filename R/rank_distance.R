@@ -32,7 +32,7 @@ compute_rank_distance <- function(
   if (!is.matrix(rankings)) rankings <- matrix(rankings, nrow = 1)
 
   stopifnot(length(observation_frequency) == 1 ||
-              length(observation_frequency) == nrow(rankings))
+    length(observation_frequency) == nrow(rankings))
 
   if (length(observation_frequency) == 1) {
     observation_frequency <- rep(observation_frequency, nrow(rankings))

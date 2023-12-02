@@ -123,13 +123,16 @@ test_that("compute_mallows is correct with clustering", {
   mixture_model <- compute_mallows(
     data = setup_rank_data(cluster_data),
     model_options = set_model_options(n_clusters = 3),
-    compute_options = set_compute_options(nmc = 5000))
+    compute_options = set_compute_options(nmc = 5000)
+  )
 
   aggdat <- aggregate(value ~ cluster, data = mixture_model$alpha, FUN = mean)
   expect_gt(max(aggdat$value) - min(aggdat$value), 1)
 
-  aggdat <- aggregate(value ~ cluster, data = mixture_model$cluster_probs,
-                      FUN = mean)
+  aggdat <- aggregate(value ~ cluster,
+    data = mixture_model$cluster_probs,
+    FUN = mean
+  )
   expect_true(all(aggdat$value < .5))
 
   skip_on_cran()
@@ -138,12 +141,14 @@ test_that("compute_mallows is correct with clustering", {
     n_clusters = c(1, 5, 10),
     data = setup_rank_data(sushi_rankings),
     compute_options = set_compute_options(nmc = 5000, include_wcd = TRUE),
-    cl = cl)
+    cl = cl
+  )
   parallel::stopCluster(cl)
 
   wcd_means <- vapply(models, function(x) {
     mean(x$within_cluster_distance$value[
-      x$within_cluster_distance$iteration > 1000])
+      x$within_cluster_distance$iteration > 1000
+    ])
   }, 1)
 
   expect_equal(
@@ -153,7 +158,8 @@ test_that("compute_mallows is correct with clustering", {
   mixture_model <- compute_mallows(
     data = setup_rank_data(rankings = sushi_rankings),
     compute_options = set_compute_options(nmc = 2000, burnin = 500),
-    model_options = set_model_options(n_clusters = 5))
+    model_options = set_model_options(n_clusters = 5)
+  )
 
   dat <- mixture_model$alpha[mixture_model$alpha$iteration > 500, ]
   aggdat <- aggregate(value ~ cluster, data = dat, FUN = mean)
@@ -162,5 +168,4 @@ test_that("compute_mallows is correct with clustering", {
     max(aggdat$value) - min(aggdat$value),
     1
   )
-
 })

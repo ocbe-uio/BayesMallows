@@ -19,10 +19,11 @@
 compute_expected_distance <- function(
     alpha,
     n_items,
-    metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam")
-    ) {
-  metric <- match.arg(metric, c("footrule", "spearman", "cayley",
-                                "hamming", "kendall", "ulam"))
+    metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam")) {
+  metric <- match.arg(metric, c(
+    "footrule", "spearman", "cayley",
+    "hamming", "kendall", "ulam"
+  ))
   if (n_items < 1 | floor(n_items) != n_items) {
     stop("Number of items must be a positive integer")
   }

@@ -35,7 +35,6 @@ get_mallows_loglik <- function(
     rho, alpha, weights,
     metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
     rankings, observation_frequency = NULL, log = TRUE) {
-
   metric <- match.arg(metric, c(
     "footrule", "spearman", "cayley", "hamming",
     "kendall", "ulam"

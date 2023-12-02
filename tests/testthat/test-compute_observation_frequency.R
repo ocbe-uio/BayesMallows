@@ -4,7 +4,8 @@ test_that("compute_observation_frequency works", {
   )
 
   mat <- matrix(c(rep(1:3, 5), rep(3:1, 10), rep(c(1, 3, 2), 2)),
-                byrow = TRUE, ncol = 3)
+    byrow = TRUE, ncol = 3
+  )
 
   freq <- compute_observation_frequency(rankings = mat)[, 4]
   expect_equal(freq, c(5, 2, 10))
