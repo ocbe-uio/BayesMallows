@@ -34,7 +34,7 @@ Data::Data(
   const Rcpp::List& data
 ) :
   rankings { Rcpp::as<mat>(data["rankings"]).t() },
-  constraints { Rcpp::as<Rcpp::List>(data["constraints"]) },
+  constraints ( Rcpp::as<Rcpp::List>(data["constraints"]) ),
   n_assessors { rankings.n_cols },
   n_items { rankings.n_rows },
   observation_frequency { Rcpp::as<vec>(data["observation_frequency"]) } {}

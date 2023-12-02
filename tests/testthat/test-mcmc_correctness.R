@@ -14,15 +14,15 @@ test_that("compute_mallows is correct for complete data", {
     )
 
     expect_equal(
-      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
+      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 20000]),
       expectations$mean[[i]],
       tolerance = .1
     )
 
     expect_equal(
-      sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
+      sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 20000]),
       expectations$sd[[i]],
-      tolerance = ifelse(i == 2, .2, .1)
+      tolerance = .1
     )
   }
 })
