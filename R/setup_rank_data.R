@@ -146,10 +146,6 @@ setup_rank_data <- function(
     error = function(e) {
       ret <- preferences
       class(ret) <- c("BayesMallowsIntransitive", class(ret))
-      message(
-        "Preferences are intransitive. Make sure to run compute_mallows() ",
-        "with an appropriate error model."
-      )
       ret
     }
   )
