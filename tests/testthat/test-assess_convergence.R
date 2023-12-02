@@ -9,6 +9,22 @@ test_that("assess_convergence.BayesMallows works for alpha and rho", {
   p <- assess_convergence(mod, parameter = "rho", items = 1:4)
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "item")
+
+  expect_message(
+    p <- assess_convergence(mod, parameter = "rho"),
+    "Items not provided by user. Picking 5 at random."
+  )
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "item")
+
+  mod <- compute_mallows(setup_rank_data(matrix(c(1, 1, 2, 2), ncol = 2)),
+                         compute_options = set_compute_options(nmc = 5))
+
+  p1 <- assess_convergence(mod, parameter = "rho")
+  p2 <- assess_convergence(mod, parameter = "rho", items = 1:2)
+  p3 <- assess_convergence(mod, parameter = "rho", items = 2:1)
+  expect_equal(p1$labels, p2$labels)
+  expect_equal(p1$labels, p3$labels)
 })
 
 test_that("assess_convergence.BayesMallows works for Rtilde", {
