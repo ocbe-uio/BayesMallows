@@ -18,7 +18,7 @@ assess_convergence(model_fit, ...)
 
 \method{assess_convergence}{BayesMallowsMixtures}(
   model_fit,
-  parameter = c("alpha", "rho", "cluster_probs"),
+  parameter = c("alpha", "cluster_probs"),
   items = NULL,
   assessors = NULL,
   ...
@@ -26,26 +26,26 @@ assess_convergence(model_fit, ...)
 }
 \arguments{
 \item{model_fit}{A fitted model object of class \code{BayesMallows} returned from
-\code{\link[=compute_mallows]{compute_mallows()}} or an object of class \code{BayesMallowsMixtures}
-returned from \code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}}.}
+\code{\link[=compute_mallows]{compute_mallows()}} or an object of class \code{BayesMallowsMixtures} returned
+from \code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}}.}
 
 \item{...}{Other arguments passed on to other methods. Currently not used.}
 
-\item{parameter}{Character string specifying which parameter to plot. Available
-options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"},
-\code{"cluster_probs"}, or \code{"theta"}.}
+\item{parameter}{Character string specifying which parameter to plot.
+Available options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"}, \code{"cluster_probs"}, or
+\code{"theta"}.}
 
-\item{items}{The items to study in the diagnostic plot for \code{rho}. Either
-a vector of item names, corresponding to \code{model_fit$items} or a
-vector of indices. If NULL, five items are selected randomly. Only used when
+\item{items}{The items to study in the diagnostic plot for \code{rho}. Either a
+vector of item names, corresponding to \code{model_fit$items} or a vector of
+indices. If NULL, five items are selected randomly. Only used when
 \code{parameter = "rho"} or \code{parameter = "Rtilde"}.}
 
-\item{assessors}{Numeric vector specifying the assessors to study in
-the diagnostic plot for \code{"Rtilde"}.}
+\item{assessors}{Numeric vector specifying the assessors to study in the
+diagnostic plot for \code{"Rtilde"}.}
 }
 \description{
-\code{assess_convergence} provides trace plots for the parameters of the
-Mallows Rank model, in order to study the convergence of the Metropolis-Hastings
+\code{assess_convergence} provides trace plots for the parameters of the Mallows
+Rank model, in order to study the convergence of the Metropolis-Hastings
 algorithm.
 }
 \examples{

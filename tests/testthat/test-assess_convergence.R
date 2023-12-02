@@ -63,3 +63,26 @@ test_that("assess_convergence.BayesMallows fails properly", {
     assess_convergence(mod, parameter = "alfa"),
     "'arg' should be one of")
 })
+
+test_that("assess_convergence.BayesMallowsMixtures works", {
+  n_clusters <- seq(from = 1, to = 3)
+  models <- compute_mallows_mixtures(
+    n_clusters = n_clusters, data = setup_rank_data(cluster_data),
+    compute_options = set_compute_options(nmc = 100, include_wcd = TRUE))
+
+  p <- assess_convergence(models)
+  expect_equal(p$labels$linetype, "Chain")
+  expect_equal(p$labels$colour, "Cluster")
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$group, "interaction(chain, cluster)")
+
+  expect_error(
+    assess_convergence(models, parameter = "rho", items = 1:4),
+    "'arg' should be one of")
+
+  p <- assess_convergence(models, parameter = "cluster_probs")
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "cluster")
+
+})
+
