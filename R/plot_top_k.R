@@ -88,7 +88,7 @@ plot_top_k <- function(
       ggplot2::theme(legend.position = "none")
 
     if (model_fit$n_clusters > 1) {
-      rho_plot <- rho_plot + ggplot2::facet_wrap(~ .data$cluster)
+      p <- p + ggplot2::facet_wrap(~ .data$cluster)
     }
     p
   }
