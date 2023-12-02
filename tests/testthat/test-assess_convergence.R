@@ -6,6 +6,15 @@ test_that("assess_convergence.BayesMallows works for alpha and rho", {
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$group, "interaction(chain, cluster)")
 
+  expect_error(
+    p <- assess_convergence(mod, parameter = "rho", items = 33:34),
+    "numeric items vector must contain indices between 1 and the number of items"
+  )
+  expect_error(
+    p <- assess_convergence(mod, parameter = "rho", items = letters[1:3]),
+    "unknown items provided"
+  )
+
   p <- assess_convergence(mod, parameter = "rho", items = 1:4)
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "item")
@@ -45,10 +54,11 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "item")
 
+
   expect_message(
     p <- assess_convergence(mod, parameter = "Rtilde", assessors = 1:4),
-    "Items not provided by user. Picking 5 at random."
-  )
+    "Items not provided by user. Picking 5 at random.")
+
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "item")
 
@@ -56,6 +66,26 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "item")
 
+  mod <- compute_mallows(
+    setup_rank_data(preferences = subset(beach_preferences, assessor <= 3)),
+    compute_options = set_compute_options(nmc = 50, save_aug = TRUE))
+
+  expect_message(
+    p <- assess_convergence(mod, parameter = "Rtilde"),
+    "Items not provided by user. Picking 5 at random.")
+
+  mod <- compute_mallows(
+    setup_rank_data(
+      preferences =
+        subset(beach_preferences, bottom_item <= 3 & top_item <= 3)),
+    compute_options = set_compute_options(nmc = 50, save_aug = TRUE))
+
+  expect_snapshot(p <- assess_convergence(mod, parameter = "Rtilde"))
+
+  expect_error(
+    assess_convergence(mod, assessors = 100:103, parameter = "Rtilde"),
+    "assessors vector must contain numeric indices between 1 and the number of assessors"
+  )
 })
 
 test_that("assess_convergence.BayesMallows works for cluster_probs", {

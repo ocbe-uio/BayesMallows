@@ -113,6 +113,14 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1) {
     items <- sample.int(model_fit$n_items, 5)
   } else if (is.null(items) && model_fit$n_items > 0) {
     items <- seq.int(from = 1, to = model_fit$n_items)
+  } else if (!is.null(items)) {
+    if(is.numeric(items) &&
+       length(setdiff(items, seq_len(model_fit$n_item))) > 0) {
+      stop("numeric items vector must contain indices between 1 and the number of items")
+    }
+    if(is.character(items) && length(setdiff(items, model_fit$items) > 0)) {
+      stop("unknown items provided")
+    }
   }
 
   if (!is.character(items)) {
