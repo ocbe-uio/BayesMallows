@@ -36,6 +36,22 @@ test_that("assess_convergence.BayesMallows works for cluster_probs", {
   expect_equal(p$labels$colour, "cluster")
 })
 
+test_that("assess_convergence.BayesMallows works for theta", {
+  preferences <- data.frame(
+    assessor = c(1, 1, 2, 2),
+    bottom_item = c(1, 2, 1, 2),
+    top_item = c(2, 1, 2, 3)
+  )
+  mod <- compute_mallows(
+    data = setup_rank_data(preferences = preferences),
+    model_options = set_model_options(error_model = "bernoulli"),
+    compute_options = set_compute_options(nmc = 10)
+  )
+
+  p <- assess_convergence(mod, parameter = "theta")
+  expect_equal(p$labels$x, "Iteration")
+})
+
 test_that("assess_convergence.BayesMallows fails properly", {
   mod <- compute_mallows(setup_rank_data(potato_visual),
                          compute_options = set_compute_options(nmc = 3))
@@ -46,6 +62,4 @@ test_that("assess_convergence.BayesMallows fails properly", {
   expect_error(
     assess_convergence(mod, parameter = "alfa"),
     "'arg' should be one of")
-
-
 })
