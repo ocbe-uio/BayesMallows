@@ -37,6 +37,25 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
 
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "item")
+
+  expect_message(
+    p <- assess_convergence(mod, parameter = "Rtilde", items = 1:4),
+    "Assessors not provided by user. Picking 5 at random."
+  )
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "item")
+
+  expect_message(
+    p <- assess_convergence(mod, parameter = "Rtilde", assessors = 1:4),
+    "Items not provided by user. Picking 5 at random."
+  )
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "item")
+
+  expect_snapshot(p <- assess_convergence(mod, parameter = "Rtilde"))
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "item")
+
 })
 
 test_that("assess_convergence.BayesMallows works for cluster_probs", {
@@ -46,8 +65,11 @@ test_that("assess_convergence.BayesMallows works for cluster_probs", {
     model_options = set_model_options(n_clusters = 3)
     )
 
-  p <- assess_convergence(mod, parameter = "cluster_probs")
+  p <- assess_convergence(mod, parameter = "rho", items = 1:3)
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "item")
 
+  p <- assess_convergence(mod, parameter = "cluster_probs")
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "cluster")
 })
