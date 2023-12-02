@@ -13,20 +13,24 @@
 #'
 #' @param k Integer specifying the k in top-\eqn{k}.
 #'
-#' @param rel_widths The relative widths of the plots of `rho` per cluster and
-#'   the plot of assessors, respectively. This argument is passed on to
-#'   [cowplot::plot_grid()].
+#' @param plot_level Character of length one. `plot_level = "assessor"` gives a
+#'   plot of the individual probability for each assessor of giving a
+#'   top-\eqn{k} rank to each item. `plot_level = "item` gives a plot of the
+#'   "population level" probability for each item of being ranked top-\eqn{k}.
 #'
 #' @export
 #'
 #' @example /inst/examples/plot_top_k_example.R
 #' @family posterior quantities
-plot_top_k <- function(model_fit, burnin = model_fit$burnin, k = 3,
-                       rel_widths = c(model_fit$n_clusters, 10)) {
+plot_top_k <- function(
+    model_fit, burnin = model_fit$burnin, k = 3,
+    plot_level = c("assessor", "item")) {
+  plot_level <- match.arg(plot_level, c("assessor", "item"))
   validate_top_k(model_fit, burnin)
 
   # Extract post burn-in rows with value <= k
-  rho <- model_fit$rho[model_fit$rho$iteration > burnin & model_fit$rho$value <= k, , drop = FALSE]
+  rho <- model_fit$rho[model_fit$rho$iteration > burnin &
+                         model_fit$rho$value <= k, , drop = FALSE]
   n_samples <- length(unique(rho$iteration))
   # Factors are not needed in this case
   rho$item <- as.character(rho$item)
@@ -66,25 +70,26 @@ plot_top_k <- function(model_fit, burnin = model_fit$burnin, k = 3,
   # Sorting the items according to their probability in rho
   rankings$item <- factor(rankings$item, levels = item_ordering)
 
-  assessor_plot <- ggplot2::ggplot(rankings, ggplot2::aes(.data$assessor, .data$item)) +
-    ggplot2::geom_tile(ggplot2::aes(fill = .data$prob), colour = "white") +
-    ggplot2::xlab("Assessor") +
-    ggplot2::theme(
-      legend.title = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_blank(),
-      axis.ticks.y = ggplot2::element_blank()
-    )
+  if(plot_level == "assessor") {
+    ggplot2::ggplot(rankings, ggplot2::aes(.data$assessor, .data$item)) +
+      ggplot2::geom_tile(ggplot2::aes(fill = .data$prob), colour = "white") +
+      ggplot2::xlab("Assessor") +
+      ggplot2::theme(
+        legend.title = ggplot2::element_blank(),
+        axis.title.y = ggplot2::element_blank(),
+        axis.text.y = ggplot2::element_blank(),
+        axis.ticks.y = ggplot2::element_blank()
+      )
+  } else if (plot_level == "item") {
+    p <- ggplot2::ggplot(rho, ggplot2::aes(.data$cluster, .data$item)) +
+      ggplot2::geom_tile(ggplot2::aes(fill = .data$prob), colour = "white") +
+      ggplot2::ylab("Item") +
+      ggplot2::xlab(expression(rho)) +
+      ggplot2::theme(legend.position = "none")
 
-  rho_plot <- ggplot2::ggplot(rho, ggplot2::aes(.data$cluster, .data$item)) +
-    ggplot2::geom_tile(ggplot2::aes(fill = .data$prob), colour = "white") +
-    ggplot2::ylab("Item") +
-    ggplot2::xlab(expression(rho)) +
-    ggplot2::theme(legend.position = "none")
-
-  if (model_fit$n_clusters > 1) {
-    rho_plot <- rho_plot + ggplot2::facet_wrap(~ .data$cluster)
+    if (model_fit$n_clusters > 1) {
+      rho_plot <- rho_plot + ggplot2::facet_wrap(~ .data$cluster)
+    }
+    p
   }
-
-  cowplot::plot_grid(rho_plot, assessor_plot, rel_widths = rel_widths)
 }
