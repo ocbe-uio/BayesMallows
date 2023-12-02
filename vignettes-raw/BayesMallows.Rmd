@@ -239,7 +239,7 @@ Keeping in mind that the ranking of beaches is based on sparse pairwise preferen
 plot_top_k(bmm_beaches)
 ```
 
-The left part of the plot shows the beaches ranked according to their CP consensus, and the probability $P\left(\rho_{i} \leq 3 \right)$ for each beach $i$. The right part of the plot shows, for each beach as indicated on the left axis, the probability that assessor $j$ ranks the beach among top-3. For example, we see that assessor 1 has a very low probability of ranking beach 9 among her top-3, while assessor 3 has a very high probability of doing this.
+The plot shows, for each beach as indicated on the left axis, the probability that assessor $j$ ranks the beach among top-3. For example, we see that assessor 1 has a very low probability of ranking beach 9 among her top-3, while assessor 3 has a very high probability of doing this.
 
 The function `predict_top_k` returns a dataframe with all the underlying probabilities. For example, in order to find all the beaches that are among the top-3 of assessors 1-5 with more than 90 \% probability, we would do:
 
