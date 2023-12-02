@@ -86,6 +86,11 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
     assess_convergence(mod, assessors = 100:103, parameter = "Rtilde"),
     "assessors vector must contain numeric indices between 1 and the number of assessors"
   )
+
+  expect_error(
+    assess_convergence(mod, parameter = "theta"),
+    "Theta not available. Run compute_mallows with error_model = 'bernoulli'."
+  )
 })
 
 test_that("assess_convergence.BayesMallows works for cluster_probs", {
