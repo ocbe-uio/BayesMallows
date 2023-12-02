@@ -35,3 +35,17 @@ test_that("assess_convergence.BayesMallows works for cluster_probs", {
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "cluster")
 })
+
+test_that("assess_convergence.BayesMallows fails properly", {
+  mod <- compute_mallows(setup_rank_data(potato_visual),
+                         compute_options = set_compute_options(nmc = 3))
+  expect_error(
+    assess_convergence(mod, parameter = "Rtilde"),
+    "Please rerun")
+
+  expect_error(
+    assess_convergence(mod, parameter = "alfa"),
+    "'arg' should be one of")
+
+
+})
