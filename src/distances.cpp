@@ -35,7 +35,6 @@ double hamming_distance(const vec& r1, const vec& r2){
 double kendall_distance(const vec& r1, const vec& r2){
   double distance = 0;
   int n = r1.n_elem;
-
   for(int i = 0; i < n; ++i){
     for(int j = 0; j < i; ++j){
       if (((r1(j) > r1(i)) && (r2(j) < r2(i)) ) || ((r1(j) < r1(i)) && (r2(j) > r2(i)))) {
@@ -43,7 +42,6 @@ double kendall_distance(const vec& r1, const vec& r2){
       }
     }
   }
-
   return distance;
 }
 
@@ -52,12 +50,9 @@ double spearman_distance(const vec& r1, const vec& r2){
 }
 
 double ulam_distance(const vec& r1, const vec& r2){
-
   ivec a = conv_to<ivec>::from(r1) - 1;
   ivec b = conv_to<ivec>::from(r2) - 1;
-
   auto distance = perm0_distance ( a, b );
-
   return static_cast<double>(distance);
 }
 
@@ -66,7 +61,6 @@ double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
   if (r1.n_elem != r2.n_elem){
     Rcpp::stop("r1 and r2 must have the same length");
   }
-
   if (metric == "cayley") {
     return cayley_distance(r1, r2);
   } else if(metric == "footrule") {
@@ -96,7 +90,6 @@ arma::vec rank_dist_vec(const arma::mat& rankings,
                         const arma::vec& observation_frequency){
   int n = rankings.n_cols;
   vec result = zeros(n);
-
   for(int i = 0; i < n; ++i){
     result(i) = get_rank_distance(rankings.col(i), rho, metric) * observation_frequency(i);
   }

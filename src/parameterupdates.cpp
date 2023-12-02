@@ -65,5 +65,4 @@ vec make_new_rho(vec current_rho, const mat& rankings, double alpha_old,
   } else {
     return(current_rho);
   }
-
 }

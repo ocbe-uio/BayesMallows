@@ -20,19 +20,15 @@ Rcpp::List run_mcmc(Rcpp::List data,
                     const int seed,
                     bool verbose = false
                       ){
-
   std::random_device rd;
   std::mt19937 gen(rd());
   gen.seed(seed);
-
   Data dat{data};
   Priors pris{priors};
   Parameters pars{model_options, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};
   Augmentation aug{dat, compute_options};
-
   clus.update_dist_mat(dat, pars);
-
   int alpha_index = 0, rho_index = 0, aug_index = 0,
     cluster_assignment_index = 0;
 

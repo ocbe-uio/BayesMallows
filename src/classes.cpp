@@ -76,7 +76,6 @@ Augmentation::Augmentation(
     set_up_missing(dat.rankings, missing_indicator);
     initialize_missing_ranks(dat.rankings, missing_indicator);
   }
-
   if(save_aug){
     unsigned int nmc = Rcpp::as<unsigned int>(compute_options["nmc"]);
     augmented_data.set_size(dat.n_items, dat.n_assessors,
@@ -88,8 +87,7 @@ SMCAugmentation::SMCAugmentation(
   SMCData& dat,
   const Rcpp::List& smc_options,
   const Rcpp::List& initial_values,
-  const unsigned int n_particles
-) :
+  const unsigned int n_particles) :
   aug_method { Rcpp::as<std::string>(smc_options["aug_method"]) },
   aug_prob { arma::ones(n_particles) },
   any_missing { !is_finite(dat.rankings) },
@@ -103,7 +101,6 @@ SMCAugmentation::SMCAugmentation(
         augmented_data.slice(i) = dat.rankings;
         initialize_missing_ranks(augmented_data.slice(i), missing_indicator);
       }
-
       if(aug_init.isNotNull()) {
         augmented_data(
           span::all,
