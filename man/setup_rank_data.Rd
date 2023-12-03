@@ -82,7 +82,7 @@ transitive closure based on preferences, returned from
 \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}.}
 
 \item{shuffle_unranked}{Logical specifying whether or not to randomly
-permuted unranked items in the initial ranking. When
+permute unranked items in the initial ranking. When
 \code{shuffle_unranked=TRUE} and \code{random=FALSE}, all unranked items for each
 assessor are randomly permuted. Otherwise, the first ordering returned by
 \code{igraph::topo_sort()} is returned.}

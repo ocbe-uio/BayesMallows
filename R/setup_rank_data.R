@@ -67,7 +67,7 @@
 #'   [parallel::makeCluster()]. Defaults to `NULL`.
 #'
 #' @param shuffle_unranked Logical specifying whether or not to randomly
-#'   permuted unranked items in the initial ranking. When
+#'   permute unranked items in the initial ranking. When
 #'   `shuffle_unranked=TRUE` and `random=FALSE`, all unranked items for each
 #'   assessor are randomly permuted. Otherwise, the first ordering returned by
 #'   `igraph::topo_sort()` is returned.
@@ -134,11 +134,6 @@ setup_rank_data <- function(
     stop("Either rankings or preferences (or both) must be provided.")
   }
 
-  if (is.null(rankings)) {
-    n_items <- max(preferences[, c("bottom_item", "top_item")])
-  } else {
-    n_items <- ncol(rankings)
-  }
   preferences <- tryCatch(
     {
       generate_transitive_closure(preferences, cl)
@@ -150,7 +145,6 @@ setup_rank_data <- function(
     }
   )
 
-  # Check if there are NAs in rankings, if it is provided
   if (!is.null(rankings)) {
     if (na_action == "fail" && any(is.na(rankings))) {
       stop("rankings matrix contains NA values")
@@ -163,7 +157,7 @@ setup_rank_data <- function(
     }
   } else {
     rankings <- generate_initial_ranking(
-      preferences, n_items, cl, shuffle_unranked, random, random_limit
+      preferences, cl, shuffle_unranked, random, random_limit
     )
   }
 
@@ -184,7 +178,7 @@ setup_rank_data <- function(
     stop("invalid permutations provided in rankings matrix")
   }
 
-  constraints <- generate_constraints(preferences, n_items, cl)
+  constraints <- generate_constraints(preferences, ncol(rankings), cl)
   consistent <- matrix(integer(0))
 
   ret <- as.list(environment())

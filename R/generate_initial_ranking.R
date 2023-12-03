@@ -1,14 +1,14 @@
 generate_initial_ranking <- function(
-    preferences, n_items, cl = NULL, shuffle_unranked = FALSE,
+    preferences, cl = NULL, shuffle_unranked = FALSE,
     random = FALSE, random_limit = 8L) {
   UseMethod("generate_initial_ranking")
 }
 
 generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
-    preferences, n_items, cl = NULL, shuffle_unranked = FALSE, random = FALSE,
+    preferences, cl = NULL, shuffle_unranked = FALSE, random = FALSE,
     random_limit = 8L) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
-
+  n_items <- max(preferences[, c("bottom_item", "top_item")])
   if (n_items > random_limit && random) {
     stop(paste(
       "Number of items exceeds the limit for generation of random permutations,\n",
@@ -16,11 +16,8 @@ generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
     ))
   }
 
-  if (n_items < max(preferences[, c("bottom_item", "top_item")])) {
-    stop("Too few items specified. Please see documentation Note about labeling of items.\n")
-  }
-
-  prefs <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE], preferences$assessor)
+  prefs <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE],
+                 preferences$assessor)
   if (is.null(cl)) {
     do.call(rbind, lapply(
       prefs, function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
@@ -42,8 +39,9 @@ generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
 )
 
 generate_initial_ranking.BayesMallowsIntransitive <- function(
-    preferences, n_items, cl = NULL, shuffle_unranked = FALSE,
+    preferences, cl = NULL, shuffle_unranked = FALSE,
     random = FALSE, random_limit = 8L) {
+  n_items <- max(preferences[, c("bottom_item", "top_item")])
   n_assessors <- length(unique(preferences$assessor))
   rankings <- replicate(n_assessors, sample(x = n_items, size = n_items),
     simplify = "numeric"
