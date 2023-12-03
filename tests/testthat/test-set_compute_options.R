@@ -9,4 +9,19 @@ test_that("set_compute_options works", {
   expect_error(set_compute_options(clus_thinning = 1e6))
   expect_error(set_compute_options(rho_thinning = 1e6))
   expect_error(set_compute_options(alpha_jump = 1e6))
+
+  f <- file()
+  write("yes", f)
+  options("ask_opts.con" = f)
+  s <- set_compute_options(save_ind_clus = TRUE)
+  close(f)
+  expect_equal(s$save_ind_clus, TRUE)
+
+  f <- file()
+  write("no", f)
+  options("ask_opts.con" = f)
+  expect_error(
+    set_compute_options(save_ind_clus = TRUE),
+    "quitting")
+  close(f)
 })

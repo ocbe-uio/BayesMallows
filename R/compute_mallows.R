@@ -85,8 +85,8 @@ compute_mallows <- function(
   validate_preferences(data, model_options)
   validate_initial_values(initial_values, data)
 
-  logz_list <- prepare_partition_function(logz_estimate, model_options$metric, data$n_items)
-  prompt_save_files(compute_options)
+  logz_list <- prepare_partition_function(
+    logz_estimate, model_options$metric, data$n_items)
 
   if (is.null(cl)) {
     lapplyfun <- lapply
