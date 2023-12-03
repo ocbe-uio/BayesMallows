@@ -153,9 +153,6 @@ setup_rank_data <- function(
 
   if (!is.null(observation_frequency)) {
     validate_positive_vector(observation_frequency)
-    if (is.null(rankings)) {
-      stop("rankings matrix must be provided when observation_frequency are provided")
-    }
     if (nrow(rankings) != length(observation_frequency)) {
       stop("observation_frequency must be of same length as the number of rows in rankings")
     }

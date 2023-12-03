@@ -101,7 +101,8 @@ trace_alpha <- function(m, clusters) {
     p <- p +
       ggplot2::theme(legend.position = "none") +
       ggplot2::facet_wrap(ggplot2::vars(.data$n_clusters),
-        labeller = ggplot2::as_labeller(cluster_labeler_function), scales = "free_y"
+        labeller = ggplot2::as_labeller(cluster_labeler_function),
+        scales = "free_y"
       )
   }
   return(p)
