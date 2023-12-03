@@ -1,14 +1,13 @@
 generate_transitive_closure <- function(preferences, cl = NULL) {
-  if (is.null(preferences)) {
-    return(NULL)
-  }
+  if (is.null(preferences)) return(NULL)
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
   if (!is.numeric(preferences$assessor)) {
     stop("assessor column in preferences must be numeric")
   }
 
-  prefs <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE], preferences$assessor)
+  prefs <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE],
+                 preferences$assessor)
 
   if (is.null(cl)) {
     lapplyfun <- lapply
@@ -31,17 +30,13 @@ generate_transitive_closure <- function(preferences, cl = NULL) {
     by.x = c("assessor", "bottom_item", "top_item"),
     by.y = c("assessor", "top_item", "bottom_item")
   )
-
   if (nrow(check) > 0) {
-    stop(
-      "Cannot compute transitive closure, but that is fine. Just make ",
-      "sure you run compute_mallows with argument error_model='bernoulli'"
-    )
+    class(preferences) <- c("BayesMallowsIntransitive", class(preferences))
+    return(preferences)
+  } else {
+    class(prefs) <- c("BayesMallowsTransitiveClosure", class(prefs))
+    return(prefs)
   }
-
-  class(prefs) <- c("BayesMallowsTransitiveClosure", class(prefs))
-
-  return(prefs)
 }
 
 
@@ -49,7 +44,6 @@ generate_transitive_closure <- function(preferences, cl = NULL) {
   # This line was an answer to StackOverflow question 51794127
   my_set <- do.call(sets::set, apply(mat, 1, sets::as.tuple))
 
-  # Next I compute the transitive closure:
   r <- relations::endorelation(graph = my_set)
   tc <- relations::transitive_closure(r)
   incidence <- relations::relation_incidence(tc)

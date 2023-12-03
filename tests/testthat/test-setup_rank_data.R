@@ -85,4 +85,10 @@ test_that("setup_rank_data works for preferences", {
 
   expect_false(all(dat1$rankings == dat2$rankings))
   expect_equal(dim(dat1$rankings), dim(dat2$rankings))
+
+  prefdat$assessor <- as.character(prefdat$assessor)
+  expect_error(
+    setup_rank_data(preferences = prefdat),
+    "assessor column in preferences must be numeric")
+
 })

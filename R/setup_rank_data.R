@@ -123,7 +123,7 @@ setup_rank_data <- function(
     user_ids = NULL,
     observation_frequency = NULL,
     validate_rankings = TRUE,
-    na_action = "augment",
+    na_action = c("augment", "fail", "omit"),
     cl = NULL,
     shuffle_unranked = FALSE,
     random = FALSE,
@@ -134,17 +134,7 @@ setup_rank_data <- function(
     stop("Either rankings or preferences (or both) must be provided.")
   }
 
-  preferences <- tryCatch(
-    {
-      generate_transitive_closure(preferences, cl)
-    },
-    error = function(e) {
-      ret <- preferences
-      class(ret) <- c("BayesMallowsIntransitive", class(ret))
-      ret
-    }
-  )
-
+  preferences <- generate_transitive_closure(preferences, cl)
   if (!is.null(rankings)) {
     if (na_action == "fail" && any(is.na(rankings))) {
       stop("rankings matrix contains NA values")
@@ -177,8 +167,8 @@ setup_rank_data <- function(
     !all(apply(rankings, 1, validate_permutation))) {
     stop("invalid permutations provided in rankings matrix")
   }
-
-  constraints <- generate_constraints(preferences, ncol(rankings), cl)
+  n_items <- ncol(rankings)
+  constraints <- generate_constraints(preferences, n_items, cl)
   consistent <- matrix(integer(0))
 
   ret <- as.list(environment())

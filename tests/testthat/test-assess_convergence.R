@@ -1,5 +1,6 @@
 test_that("assess_convergence.BayesMallows works for alpha and rho", {
-  mod <- compute_mallows(setup_rank_data(potato_visual),
+  mod <- compute_mallows(
+    data = setup_rank_data(potato_visual),
     compute_options = set_compute_options(nmc = 50)
   )
   p <- assess_convergence(mod)
