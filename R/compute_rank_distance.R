@@ -20,7 +20,7 @@
 #' @references \insertAllCited
 #' @family rank functions
 #'
-#' @example /inst/examples/rank_distance_example.R
+#' @example /inst/examples/compute_rank_distance_example.R
 compute_rank_distance <- function(
     rankings, rho,
     metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
