@@ -30,7 +30,7 @@ plot_top_k <- function(
 
   # Extract post burn-in rows with value <= k
   rho <- model_fit$rho[model_fit$rho$iteration > burnin &
-                         model_fit$rho$value <= k, , drop = FALSE]
+    model_fit$rho$value <= k, , drop = FALSE]
   n_samples <- length(unique(rho$iteration))
   # Factors are not needed in this case
   rho$item <- as.character(rho$item)
@@ -70,7 +70,7 @@ plot_top_k <- function(
   # Sorting the items according to their probability in rho
   rankings$item <- factor(rankings$item, levels = item_ordering)
 
-  if(plot_level == "assessor") {
+  if (plot_level == "assessor") {
     ggplot2::ggplot(rankings, ggplot2::aes(.data$assessor, .data$item)) +
       ggplot2::geom_tile(ggplot2::aes(fill = .data$prob), colour = "white") +
       ggplot2::xlab("Assessor") +

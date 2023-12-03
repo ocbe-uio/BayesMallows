@@ -1,6 +1,7 @@
 test_that("assess_convergence.BayesMallows works for alpha and rho", {
   mod <- compute_mallows(setup_rank_data(potato_visual),
-                         compute_options = set_compute_options(nmc = 50))
+    compute_options = set_compute_options(nmc = 50)
+  )
   p <- assess_convergence(mod)
 
   expect_equal(p$labels$x, "Iteration")
@@ -27,7 +28,8 @@ test_that("assess_convergence.BayesMallows works for alpha and rho", {
   expect_equal(p$labels$colour, "item")
 
   mod <- compute_mallows(setup_rank_data(matrix(c(1, 1, 2, 2), ncol = 2)),
-                         compute_options = set_compute_options(nmc = 5))
+    compute_options = set_compute_options(nmc = 5)
+  )
 
   p1 <- assess_convergence(mod, parameter = "rho")
   p2 <- assess_convergence(mod, parameter = "rho", items = 1:2)
@@ -39,10 +41,13 @@ test_that("assess_convergence.BayesMallows works for alpha and rho", {
 test_that("assess_convergence.BayesMallows works for Rtilde", {
   mod <- compute_mallows(
     setup_rank_data(preferences = beach_preferences),
-    compute_options = set_compute_options(nmc = 50, save_aug = TRUE))
+    compute_options = set_compute_options(nmc = 50, save_aug = TRUE)
+  )
 
   p <- assess_convergence(
-    mod, parameter = "Rtilde", items = 1:4, assessors = 1:4)
+    mod,
+    parameter = "Rtilde", items = 1:4, assessors = 1:4
+  )
 
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "item")
@@ -57,7 +62,8 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
 
   expect_message(
     p <- assess_convergence(mod, parameter = "Rtilde", assessors = 1:4),
-    "Items not provided by user. Picking 5 at random.")
+    "Items not provided by user. Picking 5 at random."
+  )
 
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "item")
@@ -68,17 +74,21 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
 
   mod <- compute_mallows(
     setup_rank_data(preferences = subset(beach_preferences, assessor <= 3)),
-    compute_options = set_compute_options(nmc = 50, save_aug = TRUE))
+    compute_options = set_compute_options(nmc = 50, save_aug = TRUE)
+  )
 
   expect_message(
     p <- assess_convergence(mod, parameter = "Rtilde"),
-    "Items not provided by user. Picking 5 at random.")
+    "Items not provided by user. Picking 5 at random."
+  )
 
   mod <- compute_mallows(
     setup_rank_data(
       preferences =
-        subset(beach_preferences, bottom_item <= 3 & top_item <= 3)),
-    compute_options = set_compute_options(nmc = 50, save_aug = TRUE))
+        subset(beach_preferences, bottom_item <= 3 & top_item <= 3)
+    ),
+    compute_options = set_compute_options(nmc = 50, save_aug = TRUE)
+  )
 
   expect_snapshot(p <- assess_convergence(mod, parameter = "Rtilde"))
 
@@ -98,7 +108,7 @@ test_that("assess_convergence.BayesMallows works for cluster_probs", {
     setup_rank_data(rankings = cluster_data),
     compute_options = set_compute_options(nmc = 50),
     model_options = set_model_options(n_clusters = 3)
-    )
+  )
 
   p <- assess_convergence(mod, parameter = "rho", items = 1:3)
   expect_equal(p$labels$x, "Iteration")
@@ -127,21 +137,25 @@ test_that("assess_convergence.BayesMallows works for theta", {
 
 test_that("assess_convergence.BayesMallows fails properly", {
   mod <- compute_mallows(setup_rank_data(potato_visual),
-                         compute_options = set_compute_options(nmc = 3))
+    compute_options = set_compute_options(nmc = 3)
+  )
   expect_error(
     assess_convergence(mod, parameter = "Rtilde"),
-    "Please rerun")
+    "Please rerun"
+  )
 
   expect_error(
     assess_convergence(mod, parameter = "alfa"),
-    "'arg' should be one of")
+    "'arg' should be one of"
+  )
 })
 
 test_that("assess_convergence.BayesMallowsMixtures works", {
   n_clusters <- seq(from = 1, to = 3)
   models <- compute_mallows_mixtures(
     n_clusters = n_clusters, data = setup_rank_data(cluster_data),
-    compute_options = set_compute_options(nmc = 100, include_wcd = TRUE))
+    compute_options = set_compute_options(nmc = 100, include_wcd = TRUE)
+  )
 
   p <- assess_convergence(models)
   expect_equal(p$labels$linetype, "Chain")
@@ -151,11 +165,10 @@ test_that("assess_convergence.BayesMallowsMixtures works", {
 
   expect_error(
     assess_convergence(models, parameter = "rho", items = 1:4),
-    "'arg' should be one of")
+    "'arg' should be one of"
+  )
 
   p <- assess_convergence(models, parameter = "cluster_probs")
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "cluster")
-
 })
-
