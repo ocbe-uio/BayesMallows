@@ -10,7 +10,7 @@ setup_rank_data(
   user_ids = NULL,
   observation_frequency = NULL,
   validate_rankings = TRUE,
-  na_action = "augment",
+  na_action = c("augment", "fail", "omit"),
   cl = NULL,
   shuffle_unranked = FALSE,
   random = FALSE,
