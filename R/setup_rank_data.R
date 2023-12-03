@@ -158,7 +158,7 @@ setup_rank_data <- function(
 
     if (na_action == "omit" && any(is.na(rankings))) {
       keeps <- apply(rankings, 1, function(x) !any(is.na(x)))
-      print(paste("Omitting", sum(keeps), "rows from rankings due to NA values"))
+      print(paste("Omitting", sum(!keeps), "row(s) from rankings due to NA values"))
       rankings <- rankings[keeps, , drop = FALSE]
     }
   } else {
@@ -167,7 +167,6 @@ setup_rank_data <- function(
     )
   }
 
-  # Check if observation_frequency are provided
   if (!is.null(observation_frequency)) {
     validate_positive_vector(observation_frequency)
     if (is.null(rankings)) {
@@ -180,7 +179,6 @@ setup_rank_data <- function(
     observation_frequency <- rep(1, nrow(rankings))
   }
 
-  # Check that all rows of rankings are proper permutations
   if (validate_rankings &&
     !all(apply(rankings, 1, validate_permutation))) {
     stop("invalid permutations provided in rankings matrix")
@@ -188,8 +186,6 @@ setup_rank_data <- function(
 
   constraints <- generate_constraints(preferences, n_items, cl)
   consistent <- matrix(integer(0))
-
-  #####
 
   ret <- as.list(environment())
   class(ret) <- "BayesMallowsData"
