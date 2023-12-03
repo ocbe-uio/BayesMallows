@@ -81,7 +81,7 @@ set_compute_options <- function(
     save_aug = FALSE,
     save_ind_clus = FALSE) {
   validate_integer(nmc)
-  if(!is.null(burnin)) validate_integer(burnin)
+  if (!is.null(burnin)) validate_integer(burnin)
   validate_positive(alpha_prop_sd)
   validate_integer(leap_size)
   validate_integer(swap_leap)
@@ -93,7 +93,7 @@ set_compute_options <- function(
   validate_logical(save_aug)
   validate_logical(save_ind_clus)
 
-  if(!is.null(burnin)) check_larger(nmc, burnin)
+  if (!is.null(burnin)) check_larger(nmc, burnin)
   check_larger(nmc, alpha_jump)
   check_larger(nmc, aug_thinning)
   check_larger(nmc, clus_thinning)

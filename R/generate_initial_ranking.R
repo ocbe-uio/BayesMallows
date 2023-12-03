@@ -16,8 +16,10 @@ generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
     ))
   }
 
-  prefs <- split(preferences[, c("bottom_item", "top_item"), drop = FALSE],
-                 preferences$assessor)
+  prefs <- split(
+    preferences[, c("bottom_item", "top_item"), drop = FALSE],
+    preferences$assessor
+  )
   if (is.null(cl)) {
     do.call(rbind, lapply(
       prefs, function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
