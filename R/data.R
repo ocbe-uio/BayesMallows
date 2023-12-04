@@ -48,3 +48,14 @@
 #'
 #' @family datasets
 "cluster_data"
+
+#' @title Simulated intransitive pairwise preferences
+#'
+#' @description Simulated dataset based on the [potato_visual] data. Based on
+#'   the rankings in [potato_visual], a complete set of pairwise preferences
+#'   were generated. Next, each pair of preferences was reversed with
+#'   probability 0.1, following the Bernoulli error model of
+#'   in \insertCite{crispino2019}{BayesMallows}.
+#'
+#' @family datasets
+"bernoulli_data"

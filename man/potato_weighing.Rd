@@ -20,6 +20,7 @@ allowed to lift the potatoes. 12 assessors ranked 20 potatoes.
 \seealso{
 Other datasets: 
 \code{\link{beach_preferences}},
+\code{\link{bernoulli_data}},
 \code{\link{cluster_data}},
 \code{\link{potato_true_ranking}},
 \code{\link{potato_visual}},

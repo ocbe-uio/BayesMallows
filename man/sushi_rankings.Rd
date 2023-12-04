@@ -20,6 +20,7 @@ Complete rankings of 10 types of sushi from 5000 assessors
 \seealso{
 Other datasets: 
 \code{\link{beach_preferences}},
+\code{\link{bernoulli_data}},
 \code{\link{cluster_data}},
 \code{\link{potato_true_ranking}},
 \code{\link{potato_visual}},
