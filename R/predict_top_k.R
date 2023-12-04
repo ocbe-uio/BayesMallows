@@ -28,19 +28,20 @@ predict_top_k <- function(model_fit, burnin = model_fit$burnin, k = 3) {
 }
 
 .predict_top_k <- function(model_fit, burnin, k) {
-  rankings <- model_fit$augmented_data[model_fit$augmented_data$iteration > burnin &
-    model_fit$augmented_data$value <= k, , drop = FALSE]
+  rankings <- model_fit$augmented_data[
+    model_fit$augmented_data$iteration > burnin &
+      model_fit$augmented_data$value <= k, ,
+    drop = FALSE
+  ]
 
   n_samples <- length(unique(rankings$iteration))
-  rankings$item <- as.character(rankings$item)
   rankings <- aggregate(
     list(prob = rankings$iteration),
     by = list(assessor = rankings$assessor, item = rankings$item),
     FUN = function(x) length(x) / n_samples, drop = FALSE
   )
   rankings$prob[is.na(rankings$prob)] <- 0
-
-  rankings[order(rankings$assessor, rankings$item), ]
+  rankings
 }
 
 

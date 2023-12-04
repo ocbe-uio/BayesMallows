@@ -4,12 +4,7 @@
 \alias{plot_top_k}
 \title{Plot Top-k Rankings with Pairwise Preferences}
 \usage{
-plot_top_k(
-  model_fit,
-  burnin = model_fit$burnin,
-  k = 3,
-  plot_level = c("assessor", "item")
-)
+plot_top_k(model_fit, burnin = model_fit$burnin, k = 3)
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
@@ -20,11 +15,6 @@ as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
 \code{model_fit$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{k}{Integer specifying the k in top-\eqn{k}.}
-
-\item{plot_level}{Character of length one. \code{plot_level = "assessor"} gives a
-plot of the individual probability for each assessor of giving a
-top-\eqn{k} rank to each item. \verb{plot_level = "item} gives a plot of the
-"population level" probability for each item of being ranked top-\eqn{k}.}
 }
 \description{
 Plot the posterior probability, per item, of being ranked among the
@@ -43,8 +33,6 @@ model_fit <- compute_mallows(
 # By default, the probability of being top-3 is plotted
 # The default plot gives the probability for each assessor
 plot_top_k(model_fit)
-# We can also plot for each item
-plot_top_k(model_fit, plot_level = "item")
 # We can also plot the probability of being top-5, for each item
 plot_top_k(model_fit, k = 5)
 # We get the underlying numbers with predict_top_k
@@ -60,8 +48,9 @@ model_fit <- compute_mallows(
   compute_options = set_compute_options(
     nmc = 1000, burnin = 500, save_aug = TRUE)
   )
-# In the item level plot, we now get one column per cluster
-plot_top_k(model_fit, plot_level = "item")
+# The modal ranking in general differs between clusters, but the plot still
+# represents the posterior distribution of each user's augmented rankings.
+plot_top_k(model_fit)
 }
 \seealso{
 Other posterior quantities: 

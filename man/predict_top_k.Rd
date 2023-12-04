@@ -39,8 +39,6 @@ model_fit <- compute_mallows(
 # By default, the probability of being top-3 is plotted
 # The default plot gives the probability for each assessor
 plot_top_k(model_fit)
-# We can also plot for each item
-plot_top_k(model_fit, plot_level = "item")
 # We can also plot the probability of being top-5, for each item
 plot_top_k(model_fit, k = 5)
 # We get the underlying numbers with predict_top_k
@@ -56,8 +54,9 @@ model_fit <- compute_mallows(
   compute_options = set_compute_options(
     nmc = 1000, burnin = 500, save_aug = TRUE)
   )
-# In the item level plot, we now get one column per cluster
-plot_top_k(model_fit, plot_level = "item")
+# The modal ranking in general differs between clusters, but the plot still
+# represents the posterior distribution of each user's augmented rankings.
+plot_top_k(model_fit)
 }
 \seealso{
 Other posterior quantities: 

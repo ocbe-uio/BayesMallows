@@ -97,7 +97,7 @@ set_compute_options <- function(
   check_larger(nmc, clus_thinning)
   check_larger(nmc, rho_thinning)
 
-  if(save_ind_clus) prompt_save_files(nmc)
+  if (save_ind_clus) prompt_save_files(nmc)
 
   ret <- as.list(environment())
   class(ret) <- "BayesMallowsComputeOptions"
@@ -107,8 +107,11 @@ set_compute_options <- function(
 prompt_save_files <- function(nmc) {
   con <- getOption("ask_opts.con", stdin())
   print(
-    paste(nmc, "csv files will be saved in your current working directory.",
-          "Proceed? (yes/no): "))
+    paste(
+      nmc, "csv files will be saved in your current working directory.",
+      "Proceed? (yes/no): "
+    )
+  )
   response <- readLines(con = con, n = 1)
   if (tolower(response) %in% c("n", "no")) stop("quitting")
 }

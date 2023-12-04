@@ -22,6 +22,7 @@ test_that("set_compute_options works", {
   options("ask_opts.con" = f)
   expect_error(
     set_compute_options(save_ind_clus = TRUE),
-    "quitting")
+    "quitting"
+  )
   close(f)
 })
