@@ -123,3 +123,17 @@ observation_frequency <- sample.int(n = 5, size = nrow(potato_visual), replace =
 m <- compute_mallows(
   setup_rank_data(rankings = potato_visual, observation_frequency = observation_frequency))
 
+# INTRANSITIVE PAIRWISE PREFERENCES
+set.seed(1234)
+mod <- compute_mallows(
+  setup_rank_data(preferences = bernoulli_data),
+  compute_options = set_compute_options(nmc = 5000),
+  model_options = set_model_options(error_model = "bernoulli")
+)
+
+assess_convergence(mod)
+assess_convergence(mod, parameter = "theta")
+mod$burnin <- 3000
+
+plot(mod)
+plot(mod, parameter = "theta")
