@@ -25,7 +25,8 @@ test_that("sample_mallows works with all distances", {
         metric = m, diagnostic = TRUE,
         items_to_plot = 1:4
       ),
-      "to see the next plot")
+      "to see the next plot"
+    )
     close(f)
   }
 })
