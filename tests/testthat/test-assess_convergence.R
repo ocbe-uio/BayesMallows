@@ -4,7 +4,6 @@ test_that("assess_convergence.BayesMallows works for alpha and rho", {
     compute_options = set_compute_options(nmc = 50)
   )
   p <- assess_convergence(mod)
-
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$group, "interaction(chain, cluster)")
 

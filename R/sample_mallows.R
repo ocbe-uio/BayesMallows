@@ -117,8 +117,9 @@ sample_mallows <- function(rho0, alpha0, n_samples,
       ggplot2::ggtitle("Autocorrelation of Rank Values")
 
     print(ac_plot)
-    invisible(readline(prompt = "Press [enter] to see the next plot"))
-
+    con <- getOption("ask_opts.con", stdin())
+    print("Press [enter] to see the next plot")
+    response <- readLines(con = con, n = 1)
     colnames(samples) <- seq(from = 1, to = n_items, by = 1)
     diagnostic <- as.data.frame(samples)
     diagnostic$iteration <- seq_len(nrow(diagnostic))

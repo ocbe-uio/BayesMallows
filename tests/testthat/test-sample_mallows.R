@@ -6,27 +6,30 @@ rho0 <- seq(from = 1, to = n_items, by = 1)
 # Set the scale
 alpha0 <- 10
 
-for (m in c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam")) {
-  samples <- sample_mallows(
-    rho0 = rho0, alpha0 = alpha0, n_samples = 100,
-    burnin = 1000, thinning = 1000, metric = m, leap_size = 1
-  )
-  test_that(
-    "sample_mallows returns correct values",
-    {
-      expect_true(mean(samples[, 1]) < mean(samples[, n_items]))
-    }
-  )
+test_that("sample_mallows works with all distances", {
+  for (m in c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam")) {
+    print(m)
+    samples <- sample_mallows(
+      rho0 = rho0, alpha0 = alpha0, n_samples = 200,
+      burnin = 1000, thinning = 100, metric = m, leap_size = 1
+    )
+    expect_true(mean(samples[, 1]) < mean(samples[, n_items]))
+    expect_true(inherits(samples, "matrix"))
 
-  test_that(
-    "sample_mallows returns matrix",
-    {
-      expect_true(inherits(samples, "matrix"))
-    }
-  )
-}
+    f <- file()
+    write("\n", f)
+    options("ask_opts.con" = f)
+    expect_output(
+      sample_mallows(
+        rho0 = rho0, alpha0 = alpha0, n_samples = 1000,
+        metric = m, diagnostic = TRUE,
+        items_to_plot = 1:4
+      ),
+      "to see the next plot")
+    close(f)
+  }
+})
 
-# Check that an improper ranking yields error message
 test_that(
   "sample_mallows handles wrong input correctly",
   {
