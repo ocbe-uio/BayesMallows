@@ -180,17 +180,25 @@ test_that("compute_mallows is correct with Bernoulli error", {
 
   expect_equal(
     mean(mod$alpha$value[mod$alpha$iteration > 3000]),
-    12.65, tolerance = .01)
+    12.65,
+    tolerance = .01
+  )
 
   expect_equal(
     sd(mod$alpha$value[mod$alpha$iteration > 3000]),
-    1.38, tolerance = .1)
+    1.38,
+    tolerance = .1
+  )
 
   expect_equal(
     mean(mod$theta$value[mod$theta$iteration > 3000]),
-    0.14, tolerance = .1)
+    0.14,
+    tolerance = .1
+  )
 
   expect_equal(
     sd(mod$theta$value[mod$theta$iteration > 3000]),
-    0.01, tolerance = 1)
+    0.01,
+    tolerance = 1
+  )
 })

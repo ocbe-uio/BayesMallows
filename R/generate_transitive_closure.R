@@ -1,5 +1,7 @@
 generate_transitive_closure <- function(preferences, cl = NULL) {
-  if (is.null(preferences)) return(NULL)
+  if (is.null(preferences)) {
+    return(NULL)
+  }
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
   if (!is.numeric(preferences$assessor)) {
