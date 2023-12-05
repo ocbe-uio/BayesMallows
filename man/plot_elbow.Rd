@@ -32,9 +32,9 @@ set.seed(1)
 n_clusters <- seq(from = 1, to = 5)
 models <- compute_mallows_mixtures(
   n_clusters = n_clusters, data = setup_rank_data(cluster_data),
-  compute_options = set_compute_options(nmc = 10000, include_wcd = TRUE))
+  compute_options = set_compute_options(nmc = 2000, include_wcd = TRUE))
 
-# There is good convergence for 1, 2, and 3 cluster, but not for 4 or 5.
+# There is good convergence for 1, 2, and 3 cluster, but not for 5.
 # Also note that there seems to be label switching around the 7000th iteration
 # for the 2-cluster solution.
 assess_convergence(models)
@@ -46,7 +46,7 @@ plot_elbow(models, burnin = 1000)
 mixture_model <- compute_mallows(
   data = setup_rank_data(cluster_data),
   model_options = set_model_options(n_clusters = 3),
-  compute_options = set_compute_options(nmc = 5000))
+  compute_options = set_compute_options(nmc = 2000))
 
 # The trace plot for this model looks good. It seems to converge quickly.
 assess_convergence(mixture_model)
