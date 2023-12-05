@@ -1,6 +1,6 @@
 #include <Rmath.h>
+#include <RcppArmadilloExtensions/sample.h>
 #include "classes.h"
-#include "sample.h"
 #include "distances.h"
 #include "partitionfuns.h"
 #include "leapandshift.h"
@@ -64,8 +64,13 @@ AlphaRatio make_new_alpha(
   return AlphaRatio{alpha_proposal, ratio > std::log(R::unif_rand())};
 }
 
-vec make_new_rho(vec current_rho, const mat& rankings, double alpha_old,
-                 int leap_size, std::string metric, vec observation_frequency) {
+vec make_new_rho(
+    vec current_rho,
+    const mat& rankings,
+    double alpha_old,
+    int leap_size,
+    std::string metric,
+    vec observation_frequency) {
 
   vec rho_proposal;
   uvec indices;
@@ -270,7 +275,7 @@ uvec SMCParameters::draw_resampling_index() {
   vec norm_wgt = exp(log_inc_wgt - max(log_inc_wgt) -
     log(sum(exp(log_inc_wgt - max(log_inc_wgt)))));
 
-  return sample(inds, log_inc_wgt.size(), true, norm_wgt);
+  return Rcpp::RcppArmadillo::sample(inds, log_inc_wgt.size(), true, norm_wgt);
 }
 
 void SMCParameters::resample(const uvec& index) {
@@ -289,13 +294,15 @@ void SMCAugmentation::update_missing_ranks(
     const SMCParameters& pars) {
   if(!any_missing) return;
 
-  for (unsigned int jj = dat.n_assessors - dat.num_new_obs; jj < dat.n_assessors; ++jj) {
-    augmented_data(span::all, span(jj), span(particle_index)) = make_new_augmentation(
-      augmented_data(span::all, span(jj), span(particle_index)),
-      missing_indicator.col(jj),
-      pars.alpha_samples(particle_index),
-      pars.rho_samples.col(particle_index),
-      pars.metric, aug_method == "pseudo"
+  for (unsigned int jj = dat.n_assessors - dat.num_new_obs;
+       jj < dat.n_assessors; ++jj) {
+    augmented_data(span::all, span(jj), span(particle_index)) =
+      make_new_augmentation(
+        augmented_data(span::all, span(jj), span(particle_index)),
+        missing_indicator.col(jj),
+        pars.alpha_samples(particle_index),
+        pars.rho_samples.col(particle_index),
+        pars.metric, aug_method == "pseudo"
     );
   }
 }
