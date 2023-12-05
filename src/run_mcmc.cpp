@@ -1,9 +1,4 @@
 #include <RcppArmadillo.h>
-#include "misc.h"
-#include "distances.h"
-#include "missing_data.h"
-#include "pairwise_comparisons.h"
-#include "parameterupdates.h"
 #include "classes.h"
 
 using namespace arma;
@@ -17,12 +12,8 @@ Rcpp::List run_mcmc(Rcpp::List data,
                     Rcpp::List priors,
                     Rcpp::List initial_values,
                     Rcpp::List logz_list,
-                    const int seed,
                     bool verbose = false
                       ){
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  gen.seed(seed);
   Data dat{data};
   Priors pris{priors};
   Parameters pars{model_options, compute_options, initial_values, dat.n_items};
@@ -42,18 +33,18 @@ Rcpp::List run_mcmc(Rcpp::List data,
     }
 
     pars.update_shape(t, dat, pris);
-    pars.update_rho(t, rho_index, dat, clus.current_cluster_assignment, gen);
+    pars.update_rho(t, rho_index, dat, clus.current_cluster_assignment);
 
     if(t % pars.alpha_jump == 0) {
       ++alpha_index;
       pars.update_alpha(alpha_index, dat, logz_list, pris,
-                        clus.current_cluster_assignment, gen);
+                        clus.current_cluster_assignment);
       pars.alpha_old = pars.alpha.col(alpha_index);
     }
 
   if(clus.clustering){
     clus.update_cluster_probs(pars, pris);
-    clus.update_cluster_labels(t, dat, pars, logz_list, gen);
+    clus.update_cluster_labels(t, dat, pars, logz_list);
 
     if(t % clus.clus_thinning == 0){
       ++cluster_assignment_index;
@@ -63,7 +54,7 @@ Rcpp::List run_mcmc(Rcpp::List data,
   }
 
   clus.update_wcd(t);
-  aug.update_missing_ranks(dat, clus, pars, gen);
+  aug.update_missing_ranks(dat, clus, pars);
   aug.augment_pairwise(t, dat, pars, clus);
 
   if(aug.save_aug & (t % aug.aug_thinning == 0)){

@@ -1,22 +1,17 @@
-#include <Rcpp.h>
-using namespace Rcpp;
-
-struct Data {
-  Data(List data) :
-  constraints { as<List>(data["constraints"]) } {}
-  ~Data() = default;
-
-  const List constraints;
-};
+#include <RcppArmadillo.h>
+#include <Rmath.h>
+using namespace arma;
 
 // [[Rcpp::export]]
-int foo(List dat) {
-  Data dd {dat};
-  int result = dd.constraints.length();
-  return result;
+uvec rmn(vec probs) {
+  int k = probs.size();
+  ivec ans(k);
+  R::rmultinom(1, probs.begin(), k, ans.begin());
+  uvec ret = find(ans == 1);
+  return(ret);
 }
 
+
 /*** R
-data <- list(a = rnorm(100), constraints = NULL, b = letters)
-foo(data)
+rmn(c(.005, 0, .005, .99))
 */

@@ -45,7 +45,7 @@ test_that("update_mallows is correct for new rankings", {
       as.numeric(as.factor(smc_consensus$item)),
       metric = "ulam"
     ),
-    1
+    2
   )
 
   set.seed(123)

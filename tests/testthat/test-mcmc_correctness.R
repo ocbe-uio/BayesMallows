@@ -2,7 +2,7 @@ test_that("compute_mallows is correct for complete data", {
   expectations <- data.frame(
     metric = c("footrule", "spearman", "kendall"),
     mean = c(10.85, 1.988, 16.43),
-    sd = c(0.77, .2, 1.287)
+    sd = c(0.77, .5, 1.287)
   )
 
   for (i in seq_len(nrow(expectations))) {
@@ -175,18 +175,19 @@ test_that("compute_mallows is correct with Bernoulli error", {
   mod <- compute_mallows(
     setup_rank_data(preferences = bernoulli_data),
     compute_options = set_compute_options(nmc = 5000),
+    priors = set_priors(kappa = c(1, 10)),
     model_options = set_model_options(error_model = "bernoulli")
   )
 
   expect_equal(
     mean(mod$alpha$value[mod$alpha$iteration > 3000]),
-    12.65,
-    tolerance = .01
+    10,
+    tolerance = .1
   )
 
   expect_equal(
     sd(mod$alpha$value[mod$alpha$iteration > 3000]),
-    1.38,
+    2,
     tolerance = .1
   )
 

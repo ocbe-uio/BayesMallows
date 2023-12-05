@@ -119,7 +119,6 @@ compute_mallows <- function(
       priors = priors,
       initial_values = initial_values,
       logz_list = logz_list,
-      seed = sample.int(.Machine$integer.max, 1),
       verbose = verbose
     )
   })

@@ -4,7 +4,7 @@
 \alias{set_priors}
 \title{Set prior parameters for Bayesian Mallows model}
 \usage{
-set_priors(lambda = 0.001, psi = 10, kappa_1 = 1, kappa_2 = 1)
+set_priors(lambda = 0.001, psi = 10, kappa = c(1, 3))
 }
 \arguments{
 \item{lambda}{Strictly positive numeric value specifying the rate parameter
@@ -18,12 +18,11 @@ of the Dirichlet prior distribution used for the cluster probabilities
 \code{n_clusters}. Defaults to \code{10L}. When \code{n_clusters = 1}, this argument is
 not used.}
 
-\item{kappa_1}{First shape parameter of the truncated beta prior used for
-\eqn{\theta} in the Bernoulli error model. Defaults to 1.0. See
-\insertCite{crispino2019}{BayesMallows} for details.}
-
-\item{kappa_2}{Second shape parameter of the truncate beta prior used for
-\eqn{\theta} in the Bernoulli error model. Defaults to 1.0. See
+\item{kappa}{Hyperparameters of the truncated Beta prior used for error
+probability \eqn{\theta} in the Bernoulli error model. The prior has the
+form \eqn{\pi(\theta) = \theta^{\kappa_{1}} (1 - \theta)^{\kappa_{2}}}.
+Defaults to \code{c(1, 3)}, which means that the \eqn{\theta} is a priori
+expected to be closer to zero than to 0.5. See
 \insertCite{crispino2019}{BayesMallows} for details.}
 }
 \value{
@@ -32,8 +31,8 @@ An object of class \code{"BayesMallowsPriors"}, to be provided in the
 \code{\link[=update_mallows]{update_mallows()}}.
 }
 \description{
-Set values related to the prior distributions for the Bayesian Mallows
-model.
+Set values related to the prior distributions for the Bayesian
+Mallows model.
 }
 \seealso{
 Other preprocessing: 

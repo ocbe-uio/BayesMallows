@@ -27,8 +27,7 @@ struct Priors {
   ~Priors() = default;
 
   const double lambda;
-  const unsigned int kappa_1;
-  const unsigned int kappa_2;
+  const arma::ivec kappa;
   const unsigned int psi;
 };
 
@@ -41,16 +40,14 @@ struct Parameters {
 
   void update_shape(int t, const Data& dat, const Priors& priors);
   void update_rho(int t, int& rho_index, const Data& dat,
-                  const arma::uvec& cluster_assignment,
-                  std::mt19937& gen);
+                  const arma::uvec& cluster_assignment);
 
   void update_alpha(
       int alpha_index,
       const Data& dat,
       const Rcpp::List& logz_list,
       const Priors& priors,
-      const arma::uvec& current_cluster_assignment,
-      std::mt19937& gen);
+      const arma::uvec& current_cluster_assignment);
 
   arma::mat alpha;
   arma::vec alpha_old;
@@ -93,8 +90,7 @@ struct Clustering {
   void update_cluster_probs(const Parameters& pars, const Priors& pris);
   void update_cluster_labels(const int t, const Data& dat,
                              const Parameters& pars,
-                             const Rcpp::List& logz_list,
-                             std::mt19937& gen);
+                             const Rcpp::List& logz_list);
 
   void update_wcd(const int t);
   void update_dist_mat(const Data& dat, const Parameters& pars);
@@ -122,8 +118,7 @@ struct Augmentation {
   void update_missing_ranks(
       Data& dat,
       const Clustering& clus,
-      const Parameters& pars,
-      std::mt19937& gen
+      const Parameters& pars
   );
 };
 
@@ -146,13 +141,11 @@ struct SMCParameters {
       const unsigned int particle_index,
       const SMCData& dat,
       const Rcpp::List& logz_list,
-      const Priors& priors,
-      std::mt19937& gen);
+      const Priors& priors);
 
   void update_rho(
     const unsigned int particle_index,
-    const SMCData& dat,
-    std::mt19937& gen
+    const SMCData& dat
   );
 
   const unsigned int n_particles;
@@ -162,9 +155,8 @@ struct SMCParameters {
   const double alpha_prop_sd;
   const unsigned int leap_size;
   const std::string metric;
-  double effective_sample_size{};
-  arma::vec norm_wgt;
-  arma::uvec draw_resampling_index(std::mt19937& gen);
+  arma::vec log_inc_wgt;
+  arma::uvec draw_resampling_index();
   void resample(const arma::uvec& index);
 };
 
@@ -176,11 +168,11 @@ struct SMCAugmentation {
     const unsigned int n_particles);
   ~SMCAugmentation() = default;
 
-  void reweight(SMCParameters& pars, const SMCData& dat, const Rcpp::List& logz_list, std::mt19937& gen);
-  void augment_partial(const SMCParameters& pars, const SMCData& dat, std::mt19937& gen);
+  void reweight(SMCParameters& pars, const SMCData& dat, const Rcpp::List& logz_list);
+  void augment_partial(const SMCParameters& pars, const SMCData& dat);
   void update_data(const unsigned int particle_index, SMCData& dat);
   void update_missing_ranks(const unsigned int particle_index, const SMCData& dat,
-                            const SMCParameters& pars, std::mt19937& gen);
+                            const SMCParameters& pars);
 
   void resample(const arma::uvec& index);
   const std::string aug_method;
