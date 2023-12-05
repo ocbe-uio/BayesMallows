@@ -19,6 +19,7 @@ test_that("sample_mallows works with all distances", {
     f <- file()
     write("\n", f)
     options("ask_opts.con" = f)
+    pdf(NULL)
     expect_output(
       sample_mallows(
         rho0 = rho0, alpha0 = alpha0, n_samples = 1000,
@@ -27,6 +28,7 @@ test_that("sample_mallows works with all distances", {
       ),
       "to see the next plot"
     )
+    dev.off()
     close(f)
   }
 })
