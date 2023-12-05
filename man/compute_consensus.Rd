@@ -12,12 +12,12 @@ compute_consensus(model_fit, ...)
   model_fit,
   type = c("CP", "MAP"),
   burnin = model_fit$burnin,
-  parameter = "rho",
+  parameter = c("rho", "Rtilde"),
   assessors = 1L,
   ...
 )
 
-\method{compute_consensus}{SMCMallows}(model_fit, type = c("CP", "MAP"), ...)
+\method{compute_consensus}{SMCMallows}(model_fit, type = c("CP", "MAP"), parameter = "rho", ...)
 }
 \arguments{
 \item{model_fit}{A model fit.}

@@ -33,15 +33,11 @@ compute_consensus <- function(model_fit, ...) {
 #' @rdname compute_consensus
 compute_consensus.BayesMallows <- function(
     model_fit, type = c("CP", "MAP"), burnin = model_fit$burnin,
-    parameter = "rho", assessors = 1L, ...) {
-  if (is.null(burnin)) {
-    stop("Please specify the burnin.")
-  }
+    parameter = c("rho", "Rtilde"), assessors = 1L, ...) {
+  if (is.null(burnin)) stop("Please specify the burnin.")
   stopifnot(burnin < model_fit$nmc)
-
   type <- match.arg(type, c("CP", "MAP"))
-
-  stopifnot(inherits(model_fit, "BayesMallows"))
+  parameter <- match.arg(parameter, c("rho", "Rtilde"))
 
   if (parameter == "Rtilde" &&
     !inherits(model_fit$augmented_data, "data.frame")) {
@@ -49,40 +45,17 @@ compute_consensus.BayesMallows <- function(
   }
 
   if (parameter == "rho") {
-    # Filter out the pre-burnin iterations
     df <- model_fit$rho[model_fit$rho$iteration > burnin, , drop = FALSE]
-
-    # Find the problem dimensions
-    n_rows <- length(unique(paste(df$item, df$cluster)))
-
-    # Check that there are rows.
-    stopifnot(n_rows > 0)
-
-    # Check that the number of rows are consistent with the information in
-    # the model object
-    stopifnot(model_fit$n_clusters * model_fit$n_items == n_rows)
-
     if (type == "CP") {
       df <- cpc_bm(df)
     } else if (type == "MAP") {
       df <- cpm_bm(df)
     }
   } else if (parameter == "Rtilde") {
-    # Filter out the pre-burnin iterations and get the right assessors
-    df <- model_fit$augmented_data[model_fit$augmented_data$iteration > burnin &
+    df <- model_fit$augmented_data[
+      model_fit$augmented_data$iteration > burnin &
       model_fit$augmented_data$assessor %in% assessors, , drop = FALSE]
 
-    # Find the problem dimensions
-    n_rows <- length(unique(paste(df$assessor, df$item)))
-
-    # Check that there are rows.
-    stopifnot(n_rows > 0)
-
-    # Check that the number of rows are consistent with the information in
-    # the model object
-    stopifnot(length(assessors) * model_fit$n_items == n_rows)
-
-    # Treat assessors as clusters
     names(df)[names(df) == "assessor"] <- "cluster"
     class(df) <- c("consensus_BayesMallows", "tbl_df", "tbl", "data.frame")
 
@@ -93,13 +66,9 @@ compute_consensus.BayesMallows <- function(
     }
 
     if ("cluster" %in% names(df)) {
-      names(df)[names(df) == "cluster"] <- "assessor"
+      df$assessor <- as.numeric(df$cluster)
+      df$cluster <- NULL
     }
-  }
-
-  # If there is only one cluster, we drop the cluster column
-  if (length(unique(df$cluster)) == 1) {
-    df$cluster <- NULL
   }
 
   row.names(df) <- NULL
@@ -110,7 +79,8 @@ compute_consensus.BayesMallows <- function(
 #' @export
 #' @rdname compute_consensus
 compute_consensus.SMCMallows <- function(
-    model_fit, type = c("CP", "MAP"), ...) {
+    model_fit, type = c("CP", "MAP"), parameter = "rho", ...) {
+  parameter <- match.arg(parameter, "rho")
   model_fit$burnin <- 0
   model_fit$nmc <- model_fit$n_particles
   NextMethod("compute_consensus")
@@ -199,17 +169,12 @@ aggregate_map_consensus <- function(df, n_samples) {
 }
 
 cpc_bm <- function(df) {
-  # Count per item, cluster, and value
   df <- aggregate_cp_consensus(df)
-  # Find the CP consensus per cluster, using the find_cpc function
   df <- find_cpc(df)
-
-  df <- df[order(df$cluster, df$ranking), ]
-  df
+  df[order(df$cluster, df$ranking), ]
 }
 
 cpm_bm <- function(df) {
-  # Store the total number of iterations after burnin
   n_samples <- length(unique(df$iteration))
 
   # Reshape to get items along columns
