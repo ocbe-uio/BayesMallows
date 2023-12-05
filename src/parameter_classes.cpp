@@ -121,7 +121,7 @@ Parameters::Parameters(
   error_model { verify_error_model(Rcpp::as<std::string>(model_options["error_model"])) },
   alpha_jump { Rcpp::as<int>(compute_options["alpha_jump"]) },
   element_indices { regspace<uvec>(0, n_items - 1) },
-  alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
+  alpha_prop_sd { Rcpp::as<double>(compute_options["alpha_prop_sd"]) },
   leap_size { Rcpp::as<int>(compute_options["leap_size"]) },
   rho_thinning { Rcpp::as<int>(compute_options["rho_thinning"]) }
   {
@@ -162,7 +162,7 @@ SMCParameters::SMCParameters(
   mcmc_steps { Rcpp::as<unsigned int>(smc_options["mcmc_steps"]) },
   alpha_samples { Rcpp::as<arma::vec>(initial_values["alpha_init"]) },
   rho_samples { Rcpp::as<arma::mat>(initial_values["rho_init"]) },
-  alpha_prop_sd { verify_positive(Rcpp::as<double>(compute_options["alpha_prop_sd"])) },
+  alpha_prop_sd { Rcpp::as<double>(compute_options["alpha_prop_sd"]) },
   leap_size { Rcpp::as<unsigned int>(compute_options["leap_size"]) },
   metric { verify_metric(Rcpp::as<std::string>(model_options["metric"])) },
   log_inc_wgt { zeros(n_particles) } {}

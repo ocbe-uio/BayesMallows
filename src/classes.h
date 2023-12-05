@@ -3,14 +3,6 @@
 
 #include <RcppArmadillo.h>
 
-template <typename T>
-static T verify_positive(const T input) {
-  if(input < 0) {
-    Rcpp::stop("Positive value required.\n");
-  }
-  return input;
-}
-
 struct Data {
   Data(const Rcpp::List& data);
   ~Data() = default;
@@ -23,7 +15,10 @@ struct Data {
 };
 
 struct Priors {
-  Priors(const Rcpp::List& priors);
+  Priors(
+    const Rcpp::List& priors
+  ) : lambda { priors["lambda"] }, kappa(priors["kappa"]),
+  psi { priors["psi"] } {}
   ~Priors() = default;
 
   const double lambda;
@@ -168,11 +163,23 @@ struct SMCAugmentation {
     const unsigned int n_particles);
   ~SMCAugmentation() = default;
 
-  void reweight(SMCParameters& pars, const SMCData& dat, const Rcpp::List& logz_list);
-  void augment_partial(const SMCParameters& pars, const SMCData& dat);
-  void update_data(const unsigned int particle_index, SMCData& dat);
-  void update_missing_ranks(const unsigned int particle_index, const SMCData& dat,
-                            const SMCParameters& pars);
+  void reweight(
+      SMCParameters& pars,
+      const SMCData& dat,
+      const Rcpp::List& logz_list);
+
+  void augment_partial(
+      const SMCParameters& pars,
+      const SMCData& dat);
+
+  void update_data(
+      const unsigned int particle_index,
+      SMCData& dat);
+
+  void update_missing_ranks(
+      const unsigned int particle_index,
+      const SMCData& dat,
+      const SMCParameters& pars);
 
   void resample(const arma::uvec& index);
   const std::string aug_method;
