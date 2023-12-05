@@ -206,6 +206,7 @@ set.seed(1234)
 mod <- compute_mallows(
   setup_rank_data(preferences = bernoulli_data),
   compute_options = set_compute_options(nmc = 5000),
+  priors = set_priors(kappa = c(1, 10)),
   model_options = set_model_options(error_model = "bernoulli")
 )
 
