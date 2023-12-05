@@ -13,11 +13,11 @@ fit1 <- estimate_partition_function(method = "importance_sampling",
 # A vector of polynomial regression coefficients is returned
 fit1
 
-# Now let us recompute with 1e4 Monte Carlo samples
+# Now let us recompute with 2e3 Monte Carlo samples
 fit2 <- estimate_partition_function(method = "importance_sampling",
                                     alpha_vector = alpha_vector,
                                     n_items = n_items, metric = metric,
-                                    n_iterations = 1e4)
+                                    n_iterations = 2e3)
 
 # ASYMPTOTIC APPROXIMATION
 # We can also compute an estimate using the asymptotic approximation
@@ -41,7 +41,7 @@ compute_fit <- function(fit, type){
 
 estimates <- rbind(
   compute_fit(fit1, type = "Importance Sampling 1e3"),
-  compute_fit(fit2, type = "Importance Sampling 1e4"),
+  compute_fit(fit2, type = "Importance Sampling 2e3"),
   compute_fit(fit3, type = "Asymptotic")
   )
 
@@ -59,5 +59,6 @@ ggplot(estimates, aes(x = alpha, y = logz_estimate, color = type)) +
 model_fit <- compute_mallows(
   setup_rank_data(potato_visual),
   model_options = set_model_options(metric = "spearman"),
+  compute_options = set_compute_options(nmc = 200),
   logz_estimate = fit2)
 
