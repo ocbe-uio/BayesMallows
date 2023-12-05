@@ -46,14 +46,11 @@ assign_cluster <- function(
   if (is.null(burnin)) {
     stop("Please specify the burnin.")
   }
-  if (is.null(model_fit$cluster_assignment)) {
-    stop("No cluster assignments.")
-  }
   stopifnot(burnin < model_fit$nmc)
 
-  df <- model_fit$cluster_assignment[model_fit$cluster_assignment$iteration > burnin, , drop = FALSE]
+  df <- model_fit$cluster_assignment[
+    model_fit$cluster_assignment$iteration > burnin, , drop = FALSE]
 
-  # Compute the probability of each iteration
   df <- aggregate(
     list(count = df$iteration),
     list(assessor = df$assessor, cluster = df$value),
@@ -67,7 +64,6 @@ assign_cluster <- function(
     x
   }))
 
-  # Compute the MAP estimate per assessor
   map <- do.call(rbind, lapply(split(df, f = df$assessor), function(x) {
     x <- x[x$probability == max(x$probability), , drop = FALSE]
     x <- x[1, , drop = FALSE] # in case of ties
@@ -76,7 +72,6 @@ assign_cluster <- function(
     x
   }))
 
-  # Join map back onto df
   df <- merge(df, map, by = "assessor")
 
   if (!soft) {
