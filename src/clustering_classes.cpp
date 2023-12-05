@@ -9,9 +9,9 @@ Clustering::Clustering(const Parameters& pars,
                        const unsigned int n_assessors) :
   index { regspace<uvec>(0, pars.n_clusters - 1) },
   clustering {pars.n_clusters > 1},
-  clus_thinning { Rcpp::as<unsigned int>(compute_options["clus_thinning"]) },
-  include_wcd { Rcpp::as<bool>(compute_options["include_wcd"]) },
-  save_ind_clus { Rcpp::as<bool>(compute_options["save_ind_clus"]) } {
+  clus_thinning { compute_options["clus_thinning"] },
+  include_wcd { compute_options["include_wcd"] },
+  save_ind_clus { compute_options["save_ind_clus"] } {
     int n_cluster_assignments = pars.n_clusters > 1 ?
     std::ceil(static_cast<double>(pars.nmc * 1.0 / clus_thinning)) : 1;
     cluster_probs.set_size(pars.n_clusters, n_cluster_assignments);

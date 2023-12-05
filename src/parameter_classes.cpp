@@ -7,28 +7,6 @@
 #include "missing_data.h"
 using namespace arma;
 
-static std::string verify_metric(const std::string input) {
-  bool check = (input.compare("footrule") == 0) ||
-    (input.compare("spearman") == 0) ||
-    (input.compare("cayley") == 0) ||
-    (input.compare("kendall") == 0) ||
-    (input.compare("ulam") == 0) ||
-    (input.compare("hamming") == 0);
-  if(!check) {
-    Rcpp::stop("Unknown metric.\n");
-  }
-  return input;
-}
-
-static std::string verify_error_model(const std::string input) {
-  bool check = (input.compare("none") == 0) ||
-    (input.compare("bernoulli") == 0);
-  if(!check) {
-    Rcpp::stop("Unknown error model.\n");
-  }
-  return input;
-}
-
 struct AlphaRatio{
   AlphaRatio(double proposal, bool accept) :
   proposal {proposal}, accept {accept} {}
@@ -115,15 +93,15 @@ Parameters::Parameters(
   const Rcpp::List& compute_options,
   const Rcpp::List& initial_values,
   const unsigned int n_items) :
-  n_clusters { Rcpp::as<unsigned int>(model_options["n_clusters"]) },
-  nmc { Rcpp::as<unsigned int>(compute_options["nmc"]) },
-  metric { verify_metric(Rcpp::as<std::string>(model_options["metric"])) },
-  error_model { verify_error_model(Rcpp::as<std::string>(model_options["error_model"])) },
-  alpha_jump { Rcpp::as<int>(compute_options["alpha_jump"]) },
+  n_clusters { model_options["n_clusters"] },
+  nmc { compute_options["nmc"] },
+  metric(model_options["metric"]),
+  error_model(model_options["error_model"]),
+  alpha_jump { compute_options["alpha_jump"] },
   element_indices { regspace<uvec>(0, n_items - 1) },
-  alpha_prop_sd { Rcpp::as<double>(compute_options["alpha_prop_sd"]) },
-  leap_size { Rcpp::as<int>(compute_options["leap_size"]) },
-  rho_thinning { Rcpp::as<int>(compute_options["rho_thinning"]) }
+  alpha_prop_sd { compute_options["alpha_prop_sd"] },
+  leap_size { compute_options["leap_size"] },
+  rho_thinning { compute_options["rho_thinning"] }
   {
     alpha.set_size(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
     double alpha_init = initial_values["alpha_init"];
@@ -158,13 +136,13 @@ SMCParameters::SMCParameters(
   const Rcpp::List& compute_options,
   const Rcpp::List& initial_values
 ) :
-  n_particles { Rcpp::as<unsigned int>(smc_options["n_particles"]) },
-  mcmc_steps { Rcpp::as<unsigned int>(smc_options["mcmc_steps"]) },
-  alpha_samples { Rcpp::as<arma::vec>(initial_values["alpha_init"]) },
-  rho_samples { Rcpp::as<arma::mat>(initial_values["rho_init"]) },
-  alpha_prop_sd { Rcpp::as<double>(compute_options["alpha_prop_sd"]) },
-  leap_size { Rcpp::as<unsigned int>(compute_options["leap_size"]) },
-  metric { verify_metric(Rcpp::as<std::string>(model_options["metric"])) },
+  n_particles { smc_options["n_particles"] },
+  mcmc_steps { smc_options["mcmc_steps"] },
+  alpha_samples(initial_values["alpha_init"]) ,
+  rho_samples(initial_values["rho_init"]),
+  alpha_prop_sd { compute_options["alpha_prop_sd"] },
+  leap_size { compute_options["leap_size"] },
+  metric(model_options["metric"]),
   log_inc_wgt { zeros(n_particles) } {}
 
 void Parameters::update_rho(

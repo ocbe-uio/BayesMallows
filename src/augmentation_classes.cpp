@@ -11,9 +11,9 @@ Augmentation::Augmentation(
 ) :
   augpair { dat.constraints.length() > 0 },
   any_missing { !is_finite(dat.rankings) },
-  save_aug { Rcpp::as<bool>(compute_options["save_aug"]) },
-  aug_thinning { Rcpp::as<unsigned int>(compute_options["aug_thinning"]) },
-  swap_leap { Rcpp::as<unsigned int>(compute_options["swap_leap"]) } {
+  save_aug { compute_options["save_aug"] },
+  aug_thinning { compute_options["aug_thinning"] },
+  swap_leap { compute_options["swap_leap"] } {
 
     if(any_missing){
       set_up_missing(dat.rankings, missing_indicator);
@@ -31,10 +31,10 @@ SMCAugmentation::SMCAugmentation(
   const Rcpp::List& smc_options,
   const Rcpp::List& initial_values,
   const unsigned int n_particles) :
-  aug_method { Rcpp::as<std::string>(smc_options["aug_method"]) },
+  aug_method(smc_options["aug_method"]),
   aug_prob { arma::ones(n_particles) },
   any_missing { !is_finite(dat.rankings) },
-  aug_init { Rcpp::as<Rcpp::Nullable<arma::cube>>(initial_values["aug_init"])}
+  aug_init(initial_values["aug_init"])
   {
     if(any_missing){
       set_up_missing(dat.rankings, missing_indicator);

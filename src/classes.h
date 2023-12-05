@@ -27,10 +27,11 @@ struct Priors {
 };
 
 struct Parameters {
-  Parameters(const Rcpp::List& model_options,
-             const Rcpp::List& compute_options,
-             const Rcpp::List& initial_values,
-             const unsigned int n_items);
+  Parameters(
+    const Rcpp::List& model_options,
+    const Rcpp::List& compute_options,
+    const Rcpp::List& initial_values,
+    const unsigned int n_items);
   ~Parameters() = default;
 
   void update_shape(int t, const Data& dat, const Priors& priors);
