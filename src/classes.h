@@ -1,6 +1,4 @@
-#ifndef PARAMETERS_H
-#define PARAMETERS_H
-
+#pragma once
 #include <RcppArmadillo.h>
 
 struct Data {
@@ -190,4 +188,3 @@ struct SMCAugmentation {
   arma::umat missing_indicator;
   Rcpp::Nullable<arma::cube> aug_init;
 };
-#endif

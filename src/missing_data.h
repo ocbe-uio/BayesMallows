@@ -1,5 +1,4 @@
-#ifndef MISSING_H
-#define MISSING_H
+#pragma once
 
 arma::vec propose_augmentation(
     const arma::vec& ranks,
@@ -40,6 +39,3 @@ PseudoProposal make_pseudo_proposal(
     const std::string metric,
     const bool forward = true
 );
-
-
-#endif
