@@ -54,17 +54,13 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha",
       stop("No cluster assignments.")
     }
 
-    # First get one cluster per assessor, and sort these
     df <- assign_cluster(x, burnin = burnin, soft = FALSE, expand = FALSE)
     df <- df[order(df$map_cluster), ]
     assessor_order <- df$assessor
 
-    # Next, rerun with soft=TRUE to get the probability of all clusters
     df <- assign_cluster(x, burnin = burnin, soft = TRUE, expand = TRUE)
-    # Then order the assessors according to assessor_order
     df$assessor <- factor(df$assessor, levels = assessor_order)
 
-    # Now make a plot
     ggplot2::ggplot(df, ggplot2::aes(.data$assessor, .data$cluster)) +
       ggplot2::geom_tile(ggplot2::aes(fill = .data$probability)) +
       ggplot2::theme(
@@ -78,15 +74,11 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha",
     if (is.null(x$theta)) {
       stop("Please run compute_mallows with error_model = 'bernoulli'.")
     }
-
     df <- x$theta[x$theta$iteration > burnin, , drop = FALSE]
-
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
       ggplot2::xlab(expression(theta)) +
       ggplot2::ylab("Posterior density")
-
-
     return(p)
   }
 }
