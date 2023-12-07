@@ -96,10 +96,7 @@ test_that("update_mallows is correct for new rankings", {
 })
 
 test_that("update_mallows is correct for new partial rankings", {
-  skip_on_cran()
-
   set.seed(123)
-
   dat0 <- t(apply(potato_visual, 1, function(x) {
     inds <- sample(length(x), 2)
     x[inds] <- NA
@@ -219,8 +216,6 @@ test_that("update_mallows is correct for updated partial rankings", {
 })
 
 test_that("update_mallows is correct for new top-k rankings", {
-  skip_on_cran()
-
   dat0 <- ifelse(potato_visual > 10, NA_real_, potato_visual)
   dat1 <- ifelse(potato_visual > 12, NA_real_, potato_visual)
   dat2 <- ifelse(potato_visual > 14, NA_real_, potato_visual)
