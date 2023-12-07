@@ -123,10 +123,6 @@ compute_mallows <- function(
     )
   })
 
-  if (verbose) {
-    print("Metropolis-Hastings algorithm completed. Post-processing data.")
-  }
-
   fit <- tidy_mcmc(fits, data, model_options, compute_options)
   fit$logz_list <- logz_list
   fit$priors <- priors
