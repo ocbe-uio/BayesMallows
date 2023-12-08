@@ -28,7 +28,7 @@ heat_plot <- function(model_fit, burnin = model_fit$burnin, ...) {
   if (model_fit$n_clusters != 1)
     stop("heat_plot only works for a single cluster")
 
-  item_order <- compute_consensus(model_fit, ...)[["item"]]
+  item_order <- unique(compute_consensus(model_fit, ...)[["item"]])
 
   posterior_ranks <- model_fit$rho[
     model_fit$rho$iteration > burnin, , drop = FALSE]
