@@ -19,7 +19,7 @@ compute_posterior_intervals(model_fit, ...)
 
 \method{compute_posterior_intervals}{SMCMallows}(
   model_fit,
-  parameter = "alpha",
+  parameter = c("alpha", "rho"),
   level = 0.95,
   decimals = 3L,
   ...
