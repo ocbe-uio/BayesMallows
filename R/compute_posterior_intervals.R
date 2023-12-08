@@ -94,9 +94,10 @@ compute_posterior_intervals.BayesMallows <- function(
 #' @export
 #' @rdname compute_posterior_intervals
 compute_posterior_intervals.SMCMallows <- function(
-    model_fit, parameter = "alpha", level = 0.95,
+    model_fit, parameter = c("alpha", "rho"), level = 0.95,
     decimals = 3L, ...) {
   model_fit$burnin <- 0
+  parameter <- match.arg(parameter, c("alpha", "rho"))
   NextMethod("compute_posterior_intervals")
 }
 
@@ -107,8 +108,8 @@ compute_central_interval <- function(values, level, decimals) {
       names = FALSE
     )
   )
-  paste0("[", paste(format(round(central, decimals), nsmall = decimals),
-                    collapse = ","), "]")
+  interval <- format(round(central, decimals), nsmall = decimals)
+  paste0("[", paste(trimws(interval), collapse = ","), "]")
 }
 
 # This function is derived from HDInterval::hdiVector
@@ -120,7 +121,7 @@ compute_continuous_hpdi <- function(values, level, decimals) {
   upper <- values[(floor(n * level) + 1):n]
   ind <- which.min(upper - lower)
   hpdi <- format(round(c(lower[ind], upper[ind]), decimals), nsmall = decimals)
-  paste0("[", paste(hpdi, collapse = ","), "]")
+  paste0("[", paste(trimws(hpdi), collapse = ","), "]")
 }
 
 compute_discrete_hpdi <- function(x, level) {

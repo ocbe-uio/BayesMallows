@@ -40,6 +40,7 @@ update_mallows.BayesMallows <- function(
     compute_options = set_compute_options(),
     priors = model$priors,
     ...) {
+  if(is.null(model$burnin)) stop("Burnin must be set.")
   alpha_init <- extract_alpha_init(model, smc_options$n_particles)
   rho_init <- extract_rho_init(model, smc_options$n_particles)
 
