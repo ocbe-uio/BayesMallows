@@ -31,7 +31,6 @@ parallel::stopCluster(cl)
 test_that("compute_mallows fails properly", {
   expect_error(
     compute_mallows(data = potato_visual),
-    "data must be an object of class BayesMallowsData")
-
-
+    "data must be an object of class BayesMallowsData"
+  )
 })

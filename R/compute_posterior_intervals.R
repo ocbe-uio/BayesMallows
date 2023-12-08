@@ -62,7 +62,8 @@ compute_posterior_intervals.BayesMallows <- function(
         cluster = unique(x$cluster),
         mean = format(round(mean(x$value), decimals), nsmall = decimals),
         median = format(round(stats::median(x$value), decimals),
-                        nsmall = decimals),
+          nsmall = decimals
+        ),
         hpdi = compute_continuous_hpdi(x$value, level, decimals),
         central_interval = compute_central_interval(x$value, level, decimals)
       )
