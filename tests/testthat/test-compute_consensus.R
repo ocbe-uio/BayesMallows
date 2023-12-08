@@ -2,14 +2,15 @@ test_that("compute_consensus fails properly", {
   mod <- compute_mallows(
     setup_rank_data(potato_visual),
     compute_options = set_compute_options(nmc = 10)
-    )
+  )
   expect_error(compute_consensus(mod), "Please specify the burnin")
   mod$burnin <- 11
   expect_error(compute_consensus(mod), "burnin < model_fit")
   mod$burnin <- 2
   expect_error(
     compute_consensus(mod, parameter = "Rtilde"),
-    "For augmented ranks, please refit model")
+    "For augmented ranks, please refit model"
+  )
 
   dat <- potato_visual
   dat[c(1, 13, 14, 23)] <- NA
@@ -20,7 +21,8 @@ test_that("compute_consensus fails properly", {
 
   expect_error(
     compute_consensus(mod, parameter = "Rtilde"),
-    "For augmented ranks, please refit")
+    "For augmented ranks, please refit"
+  )
 })
 
 test_that("compute_consensus.BayesMallows works", {
@@ -42,7 +44,9 @@ test_that("compute_consensus.BayesMallows works", {
   expect_equal(unique(a1$assessor), 2)
   expect_equal(dim(a1), c(15, 4))
   a2 <- compute_consensus(
-    mod, parameter = "Rtilde", type = "MAP", assessors = 3)
+    mod,
+    parameter = "Rtilde", type = "MAP", assessors = 3
+  )
   expect_equal(unique(a2$assessor), 3)
   expect_equal(length(unique(a2$probability)), 1)
 })
@@ -52,24 +56,27 @@ test_that("compute_consensus.SMCMallows works", {
   data_first_batch <- potato_visual[1:4, ]
   mod_init <- compute_mallows(
     data = setup_rank_data(data_first_batch),
-    compute_options = set_compute_options(nmc = 200, burnin = 50))
+    compute_options = set_compute_options(nmc = 200, burnin = 50)
+  )
 
   data_second_batch <- potato_visual[5:8, ]
   mod_second <- update_mallows(
     model = mod_init,
     new_data = setup_rank_data(rankings = data_second_batch),
     smc_options = set_smc_options(n_particles = 30)
-    )
+  )
 
   expect_equal(dim(compute_consensus(mod_second)), c(20, 4))
 
   data_third_batch <- potato_visual[9:12, ]
   mod_final <- update_mallows(
-    model = mod_second, new_data = setup_rank_data(rankings = data_third_batch))
+    model = mod_second, new_data = setup_rank_data(rankings = data_third_batch)
+  )
 
   expect_error(
     compute_consensus(mod_final, parameter = "Rtilde"),
-    "'arg' should be")
+    "'arg' should be"
+  )
 
   a1 <- compute_consensus(mod_final, type = "MAP")
   expect_equal(length(unique(a1$probability)), 1)

@@ -19,6 +19,9 @@ compute_posterior_intervals(model_fit, parameter = "rho")
     model_options = set_model_options(n_clusters = 5))
 
   compute_posterior_intervals(
+    model_fit, burnin = 1000, parameter = "alpha")
+
+  compute_posterior_intervals(
     model_fit, burnin = 1000, parameter = "cluster_probs")
 }
 

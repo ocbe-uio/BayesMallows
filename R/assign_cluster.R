@@ -49,7 +49,9 @@ assign_cluster <- function(
   stopifnot(burnin < model_fit$nmc)
 
   df <- model_fit$cluster_assignment[
-    model_fit$cluster_assignment$iteration > burnin, , drop = FALSE]
+    model_fit$cluster_assignment$iteration > burnin, ,
+    drop = FALSE
+  ]
 
   df <- aggregate(
     list(count = df$iteration),

@@ -11,7 +11,7 @@ compute_posterior_intervals(model_fit, ...)
 \method{compute_posterior_intervals}{BayesMallows}(
   model_fit,
   burnin = model_fit$burnin,
-  parameter = "alpha",
+  parameter = c("alpha", "rho", "cluster_probs"),
   level = 0.95,
   decimals = 3L,
   ...
@@ -52,8 +52,7 @@ Compute posterior intervals of parameters of interest.
 This function computes both the Highest Posterior Density Interval (HPDI),
 which may be discontinuous for bimodal distributions, and
 the central posterior interval, which is simply defined by the quantiles of the posterior
-distribution. The HPDI intervals are computed using the \code{HDInterval} package
-\insertCite{meredith2018}{BayesMallows}.
+distribution.
 }
 \examples{
 set.seed(1)
@@ -75,6 +74,9 @@ compute_posterior_intervals(model_fit, parameter = "rho")
   model_fit <- compute_mallows(
     setup_rank_data(sushi_rankings),
     model_options = set_model_options(n_clusters = 5))
+
+  compute_posterior_intervals(
+    model_fit, burnin = 1000, parameter = "alpha")
 
   compute_posterior_intervals(
     model_fit, burnin = 1000, parameter = "cluster_probs")

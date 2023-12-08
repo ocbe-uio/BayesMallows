@@ -2,12 +2,11 @@ test_that("assign_cluster fails properly", {
   mod <- compute_mallows(
     setup_rank_data(potato_visual),
     compute_options = set_compute_options(nmc = 10)
-    )
+  )
 
   expect_error(assign_cluster(mod), "Please specify the burnin.")
   mod$burnin <- 11
   expect_error(assign_cluster(mod), "burnin < model_fit")
-
 })
 
 test_that("assign_cluster works", {
@@ -16,7 +15,7 @@ test_that("assign_cluster works", {
     setup_rank_data(cluster_data),
     model_options = set_model_options(n_clusters = 3),
     compute_options = set_compute_options(nmc = 300, burnin = 50)
-    )
+  )
 
   a1 <- assign_cluster(mod, soft = FALSE, expand = FALSE)
   expect_equal(dim(a1), c(60, 3))
@@ -30,7 +29,8 @@ test_that("assign_cluster works", {
 
   expect_equal(
     dim(assign_cluster(mod, soft = FALSE, expand = TRUE)),
-    c(60, 3))
+    c(60, 3)
+  )
 
   a3 <- assign_cluster(mod, soft = TRUE, expand = TRUE)
   agg3 <- aggregate(probability ~ assessor, a3, sum)
@@ -44,5 +44,4 @@ test_that("assign_cluster works", {
 
   expect_equal(dim(assign_cluster(mod)), c(60, 4))
   expect_equal(dim(assign_cluster(mod, expand = TRUE)), c(180, 4))
-
 })

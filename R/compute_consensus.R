@@ -54,7 +54,9 @@ compute_consensus.BayesMallows <- function(
   } else if (parameter == "Rtilde") {
     df <- model_fit$augmented_data[
       model_fit$augmented_data$iteration > burnin &
-      model_fit$augmented_data$assessor %in% assessors, , drop = FALSE]
+        model_fit$augmented_data$assessor %in% assessors, ,
+      drop = FALSE
+    ]
 
     names(df)[names(df) == "assessor"] <- "cluster"
     class(df) <- c("consensus_BayesMallows", "tbl_df", "tbl", "data.frame")
