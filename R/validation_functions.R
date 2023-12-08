@@ -1,7 +1,7 @@
 validate_class <- function(argument, class) {
   if (!inherits(argument, class)) {
     stop(paste0(
-      deparse(substitute(argument)), "must be an object of class ",
+      deparse(substitute(argument)), " must be an object of class ",
       class, "."
     ))
   }
@@ -63,7 +63,7 @@ validate_initial_values <- function(initial_values, data) {
       stop("initial value rho must be a ranking")
     }
     if (length(initial_values$rho) != data$n_items) {
-      stop("initial value rho must have one value per item")
+      stop("initial value for rho must have one value per item")
     }
   }
 }
