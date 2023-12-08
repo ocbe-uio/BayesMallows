@@ -32,7 +32,7 @@ SMCAugmentation::SMCAugmentation(
   const Rcpp::List& initial_values,
   const unsigned int n_particles) :
   aug_method(smc_options["aug_method"]),
-  aug_prob { arma::ones(n_particles) },
+  log_aug_prob { arma::zeros(n_particles) },
   any_missing { !is_finite(dat.rankings) },
   aug_init(initial_values["aug_init"])
   {
@@ -113,6 +113,7 @@ void SMCAugmentation::reweight(
     const Rcpp::List& logz_list
 ) {
   augment_partial(pars, dat);
+
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
     const double log_z_alpha = get_partition_function(
       dat.n_items, pars.alpha_samples(particle), logz_list, pars.metric
@@ -151,7 +152,7 @@ void SMCAugmentation::reweight(
 
     pars.log_inc_wgt(particle) =
       new_user_contribution + item_correction_contribution -
-      dat.num_new_obs * log_z_alpha - log(aug_prob(particle));
+      dat.num_new_obs * log_z_alpha - log_aug_prob(particle);
   }
 }
 
@@ -180,9 +181,8 @@ void SMCAugmentation::augment_partial(
           unranked_items, augmented_data(span::all, span(user), span(particle)),
           pars.alpha_samples(particle), pars.rho_samples.col(particle), pars.metric
         );
-
         augmented_data(span::all, span(user), span(particle)) = pprop.rankings;
-        aug_prob(particle) *= pprop.probability;
+        log_aug_prob(particle) += log(pprop.probability);
       }
     }
   }

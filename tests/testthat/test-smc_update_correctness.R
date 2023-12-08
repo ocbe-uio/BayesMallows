@@ -273,3 +273,30 @@ test_that("update_mallows is correct for new top-k rankings", {
     tolerance = .1
   )
 })
+
+test_that("update_mallows does not suffer from numerical overflow", {
+  set.seed(1)
+  data_batch1 <- sushi_rankings[1:100, ]
+  mod1 <- compute_mallows(
+    data = setup_rank_data(data_batch1),
+    compute_options = set_compute_options(burnin = 200)
+  )
+
+  data_batch2 <- sushi_rankings[101:200, ]
+  data_batch2[data_batch2 > 3] <- NA
+  mod2 <- update_mallows(
+    mod1,
+    new_data = setup_rank_data(data_batch2, user_ids = 1:100),
+    smc_options = set_smc_options(n_particles = 50, aug_method = "pseudo")
+  )
+
+  expect_equal(mean(mod2$alpha$value), 1.724819, tolerance = 1e-4)
+
+  mod2 <- update_mallows(
+    mod1,
+    new_data = setup_rank_data(data_batch2, user_ids = 1:100),
+    smc_options = set_smc_options(n_particles = 50, aug_method = "uniform")
+  )
+
+  expect_equal(mean(mod2$alpha$value), 1.33697, tolerance = 1e-4)
+})
