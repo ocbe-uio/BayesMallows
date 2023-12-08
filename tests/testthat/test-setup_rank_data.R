@@ -1,8 +1,12 @@
 test_that("setup_rank_data works with rankings", {
+  expect_error(setup_rank_data(), "Either rankings or preferences")
+
   expect_error(
-    setup_rank_data(),
-    "Either rankings or preferences"
-  )
+    setup_rank_data(
+      potato_visual,
+      observation_frequency =
+        seq(from = -2, length.out = nrow(potato_visual), by = 1)),
+    "observation_frequency must be a vector of strictly positive numbers")
 
   rr <- potato_visual
   rr[1, 1] <- NA

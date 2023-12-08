@@ -1,7 +1,7 @@
 validate_class <- function(argument, class) {
   if (!inherits(argument, class)) {
-    stop(paste(
-      deparse(substitute(argument)), "must be an object of class",
+    stop(paste0(
+      deparse(substitute(argument)), "must be an object of class ",
       class, "."
     ))
   }
