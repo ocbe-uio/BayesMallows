@@ -66,3 +66,10 @@ test_that("compute_mallows fails properly", {
     "initial value for rho must have one value per item"
   )
 })
+
+test_that("compute_mallows is platform independent", {
+  library(BayesMallows)
+  set.seed(1)
+  mod <- compute_mallows(setup_rank_data(potato_visual))
+  expect_equal(mod$alpha$value[1998], 10.2957693664896)
+})
