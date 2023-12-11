@@ -4,34 +4,33 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 double cayley_logz(const int& n_items, const double& alpha) {
-  double res = 0;
-
+  double res{};
   for(int i = 1; i < n_items; ++i){
-    res += std::log( 1 + i * std::exp(static_cast<double>(- alpha / n_items ) ));
+    res += std::log(1.0 + i * std::exp(- alpha / n_items));
   }
   return res;
 }
 
 double hamming_logz(const int& n_items, const double& alpha){
-  double res = 0;
-
+  double res{};
   for(int i = 0; i < (n_items + 1); ++i){
-    res += tgamma(n_items + 1) * std::exp(-alpha) *
-      std::pow((std::exp(static_cast<double>(alpha / n_items)) - 1), static_cast<double>(i)) / tgamma(i + 1);
+    res += tgamma(n_items + 1.0) * std::exp(-alpha) *
+      std::pow((std::exp(alpha / n_items) - 1.0), i) / tgamma(i + 1.0);
   }
-
   return std::log(res);
 }
 
 double kendall_logz(const int& n_items, const double& alpha){
   double res = 0;
   for(int i = 1; i < (n_items + 1); ++i){
-    res += std::log( ( 1 - std::exp(static_cast<double>(-i * alpha / n_items) ) )/(1 - std::exp(static_cast<double>(-alpha / n_items ))));
+    res += std::log((1.0 - std::exp(-i * alpha / n_items)) /
+      (1.0 - std::exp(-alpha / n_items)));
   }
   return res;
 }
 
-double exact_logz(const int& n_items, const double& alpha, const std::string& metric){
+double exact_logz(
+    const int& n_items, const double& alpha, const std::string& metric){
   if(metric == "cayley"){
     return cayley_logz(n_items, alpha);
   } else if(metric == "hamming"){
@@ -43,21 +42,18 @@ double exact_logz(const int& n_items, const double& alpha, const std::string& me
   }
 }
 
-// Helper to compute the importance sampling smoothed fit
 double compute_is_fit(double alpha, vec fit){
-  // The partition function
   double logZ = 0;
   int n_items = fit.n_elem;
-
   for(int i = 0; i < n_items; ++i){
-    logZ += std::pow(alpha, static_cast<double>(i)) * fit(i);
+    logZ += std::pow(alpha, i) * fit(i);
   }
   return(logZ);
 }
 
 vec find_cardinalities(const int& n_items, const std::string& metric){
   if(metric == "footrule"){
-    return(regspace(0, 2, std::floor(std::pow(static_cast<double>(n_items), 2.) / 2)));
+    return(regspace(0, 2, std::floor(std::pow(n_items, 2.) / 2)));
   } else if (metric == "spearman"){
     return(regspace(0, 2, 2 * R::choose(n_items + 1., 3.)));
   } else if (metric == "ulam"){
@@ -72,16 +68,6 @@ double logz_cardinalities(const double& alpha, const int& n_items, const vec& ca
   return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
 }
 
-//' Compute the logarithm of the expected distance of metrics for a Mallows rank model
-//'
-//' @param n_items Number of items.
-//' @param alpha The value of the alpha parameter.
-//' @param cardinalities Number of occurrences for each unique distance.
-//' Applicable for Footrule and Spearman distance.
-//' @param metric A string. Available options are \code{"ulam"}, \code{"footrule"} and \code{"spearman"}.
-//' @return A scalar, the logarithm of the partition function.
-//' @noRd
-//'
 // [[Rcpp::export]]
 double log_expected_dist(const double& alpha, const int& n_items,
                          const arma::vec& cardinalities, const std::string& metric){
@@ -90,23 +76,6 @@ double log_expected_dist(const double& alpha, const int& n_items,
     -std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
 }
 
-
-
-//' Compute the logarithm of the partition function for a Mallows rank model
-//'
-//' @param n_items Number of items.
-//' @param alpha The value of the alpha parameter.
-//' @param cardinalities Number of occurrences for each unique distance.
-//' Applicable for Footrule and Spearman distance. Defaults to \code{R_NilValue}.
-//' @param logz_estimate Precomputed importance sampling fit.
-//' @param metric A string. Available options are \code{"footrule"},
-//' \code{"kendall"}, \code{"spearman"}, \code{"cayley"}, \code{"hamming"}, and \code{"ulam"}.
-//' Defaults to \code{"footrule"}.
-//' @return A scalar, the logarithm of the partition function.
-//' @noRd
-//'
-//' @references \insertAllCited{}
-//'
 // [[Rcpp::export]]
 double get_partition_function(int n_items, double alpha,
                               const Rcpp::List& logz_list,

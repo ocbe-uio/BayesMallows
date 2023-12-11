@@ -30,6 +30,14 @@ parallel::stopCluster(cl)
 
 test_that("compute_mallows fails properly", {
   expect_error(
+    compute_mallows(
+      data = setup_rank_data(
+        cbind(potato_visual, potato_visual + 20, potato_visual + 40)),
+      model_options = set_model_options(metric = "spearman")
+      ),
+    "Partition function not available.")
+
+  expect_error(
     compute_mallows(data = potato_visual),
     "data must be an object of class BayesMallowsData"
   )
