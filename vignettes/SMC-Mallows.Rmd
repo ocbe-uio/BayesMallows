@@ -171,11 +171,11 @@ rbind(
   compute_posterior_intervals(model3),
   compute_posterior_intervals(model4)
 )
-#>   parameter  mean median conf_level          hpdi central_interval
-#> 1     alpha 1.774  1.769       95 % [1.603,1.924]    [1.611,1.938]
-#> 2     alpha 1.776  1.778       95 % [1.632,1.951]    [1.614,1.936]
-#> 3     alpha 1.752  1.752       95 % [1.670,1.825]    [1.673,1.831]
-#> 4     alpha 1.707  1.707       95 % [1.667,1.753]    [1.667,1.753]
+#>   parameter  mean median          hpdi central_interval
+#> 1     alpha 1.771  1.766 [1.601,1.919]    [1.610,1.933]
+#> 2     alpha 1.776  1.775 [1.596,1.924]    [1.602,1.930]
+#> 3     alpha 1.752  1.751 [1.672,1.827]    [1.678,1.832]
+#> 4     alpha 1.706  1.708 [1.665,1.749]    [1.663,1.748]
 ```
 
 As an assurance that the implementation is correct, we can compare the final model to what we get by running `compute_mallows` on the complete dataset:
@@ -219,9 +219,9 @@ rbind(
   compute_posterior_intervals(mod_bmm),
   compute_posterior_intervals(model4)
 )
-#>   parameter  mean median conf_level          hpdi central_interval
-#> 1     alpha 1.713  1.713       95 % [1.676,1.753]    [1.669,1.750]
-#> 2     alpha 1.707  1.707       95 % [1.667,1.753]    [1.667,1.753]
+#>   parameter  mean median          hpdi central_interval
+#> 1     alpha 1.710  1.710 [1.667,1.755]    [1.663,1.753]
+#> 2     alpha 1.706  1.708 [1.665,1.749]    [1.663,1.748]
 ```
 
 The cumulative probability consensus is also in good agrement:
@@ -229,29 +229,29 @@ The cumulative probability consensus is also in good agrement:
 
 ```r
 compute_consensus(model4)
-#>    ranking          item cumprob
-#> 1        1    fatty tuna   1.000
-#> 2        2    salmon roe   1.000
-#> 3        3          tuna   1.000
-#> 4        4        shrimp   1.000
-#> 5        5       sea eel   1.000
-#> 6        6     tuna roll   0.878
-#> 7        7         squid   1.000
-#> 8        8    sea urchin   1.000
-#> 9        9           egg   1.000
-#> 10      10 cucumber roll   1.000
+#>      cluster ranking          item cumprob
+#> 1  Cluster 1       1    fatty tuna   1.000
+#> 2  Cluster 1       2    salmon roe   1.000
+#> 3  Cluster 1       3          tuna   1.000
+#> 4  Cluster 1       4        shrimp   1.000
+#> 5  Cluster 1       5       sea eel   1.000
+#> 6  Cluster 1       6     tuna roll   0.896
+#> 7  Cluster 1       7         squid   1.000
+#> 8  Cluster 1       8    sea urchin   1.000
+#> 9  Cluster 1       9           egg   1.000
+#> 10 Cluster 1      10 cucumber roll   1.000
 compute_consensus(mod_bmm)
-#>    ranking          item cumprob
-#> 1        1    fatty tuna  1.0000
-#> 2        2    salmon roe  1.0000
-#> 3        3          tuna  1.0000
-#> 4        4        shrimp  1.0000
-#> 5        5       sea eel  1.0000
-#> 6        6     tuna roll  0.9995
-#> 7        7         squid  1.0000
-#> 8        8    sea urchin  1.0000
-#> 9        9           egg  1.0000
-#> 10      10 cucumber roll  1.0000
+#>      cluster ranking          item cumprob
+#> 1  Cluster 1       1    fatty tuna 1.00000
+#> 2  Cluster 1       2    salmon roe 0.99425
+#> 3  Cluster 1       3          tuna 1.00000
+#> 4  Cluster 1       4        shrimp 1.00000
+#> 5  Cluster 1       5       sea eel 1.00000
+#> 6  Cluster 1       6     tuna roll 0.99200
+#> 7  Cluster 1       7         squid 1.00000
+#> 8  Cluster 1       8    sea urchin 1.00000
+#> 9  Cluster 1       9           egg 1.00000
+#> 10 Cluster 1      10 cucumber roll 1.00000
 ```
 
 
@@ -484,7 +484,7 @@ Before proceeding, it is instructive to study why this situation needs special c
 
 ```r
 (v1 <- model2$augmented_rankings[, 1, 1])
-#>  [1]  2  9 10  3  4  1  5  8  6  7
+#>  [1]  2  8  9  3  4  1  5  7  6 10
 ```
 
 Next, we show the data provided by user 1 in `data_batch3`:
@@ -502,9 +502,9 @@ By comparing the non-missing ranks, we can check if they are consistent or not:
 (v2b <- v2a[!is.na(v2a)])
 #> [1] 2 8 3 4 1 5 7 6
 v1[v1 %in% v2b]
-#> [1] 2 3 4 1 5 8 6 7
+#> [1] 2 8 3 4 1 5 7 6
 all(v1[v1 %in% v2b] == v2b)
-#> [1] FALSE
+#> [1] TRUE
 ```
 
 The provided data are not consistent with the augmented rankings in this case. This means that the augmented rankings for user 1 in particle 1 need to be corrected by the algorithm.

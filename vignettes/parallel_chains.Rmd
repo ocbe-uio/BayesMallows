@@ -184,29 +184,29 @@ We can also compute posterior intervals in the usual way:
 
 ```r
 compute_posterior_intervals(fit, parameter = "alpha")
-#>   parameter  mean median conf_level          hpdi central_interval
-#> 1     alpha 4.802  4.799       95 % [4.205,5.356]    [4.220,5.388]
+#>   parameter  mean median          hpdi central_interval
+#> 1     alpha 4.826  4.817 [4.293,5.401]    [4.297,5.410]
 ```
 
 
 ```r
 compute_posterior_intervals(fit, parameter = "rho")
-#>       item parameter mean median conf_level    hpdi central_interval
-#> 1   Item 1       rho    7      7       95 %     [7]            [6,7]
-#> 2   Item 2       rho   15     15       95 %    [15]             [15]
-#> 3   Item 3       rho    3      3       95 %   [3,4]            [3,4]
-#> 4   Item 4       rho   12     11       95 % [11,13]          [11,14]
-#> 5   Item 5       rho    9      9       95 %  [8,10]           [8,10]
-#> 6   Item 6       rho    2      2       95 %   [1,2]            [1,2]
-#> 7   Item 7       rho    9      8       95 %  [8,10]           [8,10]
-#> 8   Item 8       rho   12     12       95 % [11,13]          [11,14]
-#> 9   Item 9       rho    1      1       95 %   [1,2]            [1,2]
-#> 10 Item 10       rho    6      6       95 %   [6,7]            [5,7]
-#> 11 Item 11       rho    4      4       95 %   [3,5]            [3,5]
-#> 12 Item 12       rho   13     14       95 % [12,14]          [12,14]
-#> 13 Item 13       rho   10     10       95 %  [9,10]           [8,10]
-#> 14 Item 14       rho   13     13       95 % [11,14]          [11,14]
-#> 15 Item 15       rho    5      5       95 %   [4,5]            [4,6]
+#>    parameter    item mean median    hpdi central_interval
+#> 1        rho  Item 1    7      7     [7]            [6,7]
+#> 2        rho  Item 2   15     15    [15]             [15]
+#> 3        rho  Item 3    3      3   [3,4]            [3,4]
+#> 4        rho  Item 4   12     11 [11,14]          [11,14]
+#> 5        rho  Item 5    9      8  [8,10]           [8,10]
+#> 6        rho  Item 6    2      2   [1,2]            [1,2]
+#> 7        rho  Item 7    9      9  [8,10]           [8,10]
+#> 8        rho  Item 8   12     12 [11,14]          [11,14]
+#> 9        rho  Item 9    1      1   [1,2]            [1,2]
+#> 10       rho Item 10    6      6   [5,6]            [5,7]
+#> 11       rho Item 11    4      4   [3,4]            [3,5]
+#> 12       rho Item 12   13     13 [12,14]          [12,14]
+#> 13       rho Item 13   10     10  [8,10]           [8,10]
+#> 14       rho Item 14   13     13 [11,14]          [11,14]
+#> 15       rho Item 15    5      5   [4,6]            [4,6]
 ```
 
 And we can compute the consensus ranking:
@@ -214,43 +214,43 @@ And we can compute the consensus ranking:
 
 ```r
 compute_consensus(fit)
-#>    ranking    item   cumprob
-#> 1        1  Item 9 0.8855303
-#> 2        2  Item 6 1.0000000
-#> 3        3  Item 3 0.6949242
-#> 4        4 Item 11 0.9486364
-#> 5        5 Item 15 0.9671212
-#> 6        6 Item 10 0.9585606
-#> 7        7  Item 1 1.0000000
-#> 8        8  Item 7 0.5685606
-#> 9        9  Item 5 0.8887879
-#> 10      10 Item 13 1.0000000
-#> 11      11  Item 4 0.5375758
-#> 12      12  Item 8 0.6871212
-#> 13      13 Item 14 0.6205303
-#> 14      14 Item 12 0.9887879
-#> 15      15  Item 2 1.0000000
+#>      cluster ranking    item   cumprob
+#> 1  Cluster 1       1  Item 9 0.8937121
+#> 2  Cluster 1       2  Item 6 0.9984848
+#> 3  Cluster 1       3  Item 3 0.7614394
+#> 4  Cluster 1       4 Item 11 0.9613636
+#> 5  Cluster 1       5 Item 15 0.9419697
+#> 6  Cluster 1       6 Item 10 0.9698485
+#> 7  Cluster 1       7  Item 1 1.0000000
+#> 8  Cluster 1       8  Item 5 0.5118939
+#> 9  Cluster 1       9  Item 7 0.9307576
+#> 10 Cluster 1      10 Item 13 1.0000000
+#> 11 Cluster 1      11  Item 4 0.5151515
+#> 12 Cluster 1      12  Item 8 0.8043182
+#> 13 Cluster 1      13 Item 12 0.5931818
+#> 14 Cluster 1      14 Item 14 0.9892424
+#> 15 Cluster 1      15  Item 2 1.0000000
 ```
 
 
 ```r
 compute_consensus(fit, type = "MAP")
-#>    map_ranking    item probability
-#> 1            1  Item 9   0.2812121
-#> 2            2  Item 6   0.2812121
-#> 3            3  Item 3   0.2812121
-#> 4            4 Item 11   0.2812121
-#> 5            5 Item 15   0.2812121
-#> 6            6 Item 10   0.2812121
-#> 7            7  Item 1   0.2812121
-#> 8            8  Item 7   0.2812121
-#> 9            9  Item 5   0.2812121
-#> 10          10 Item 13   0.2812121
-#> 11          11  Item 4   0.2812121
-#> 12          12 Item 14   0.2812121
-#> 13          13  Item 8   0.2812121
-#> 14          14 Item 12   0.2812121
-#> 15          15  Item 2   0.2812121
+#>      cluster map_ranking    item probability
+#> 1  Cluster 1           1  Item 9   0.2281818
+#> 2  Cluster 1           2  Item 6   0.2281818
+#> 3  Cluster 1           3  Item 3   0.2281818
+#> 4  Cluster 1           4 Item 11   0.2281818
+#> 5  Cluster 1           5 Item 15   0.2281818
+#> 6  Cluster 1           6 Item 10   0.2281818
+#> 7  Cluster 1           7  Item 1   0.2281818
+#> 8  Cluster 1           8  Item 7   0.2281818
+#> 9  Cluster 1           9  Item 5   0.2281818
+#> 10 Cluster 1          10 Item 13   0.2281818
+#> 11 Cluster 1          11  Item 4   0.2281818
+#> 12 Cluster 1          12  Item 8   0.2281818
+#> 13 Cluster 1          13 Item 12   0.2281818
+#> 14 Cluster 1          14 Item 14   0.2281818
+#> 15 Cluster 1          15  Item 2   0.2281818
 ```
 
 We can compute the probability of being top-$k$, here for $k=4$:
