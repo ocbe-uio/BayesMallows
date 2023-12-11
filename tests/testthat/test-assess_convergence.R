@@ -62,6 +62,7 @@ test_that("assess_convergence and plot works for alpha and rho", {
 })
 
 test_that("assess_convergence.BayesMallows works for Rtilde", {
+  set.seed(123)
   mod <- compute_mallows(
     setup_rank_data(preferences = beach_preferences),
     compute_options = set_compute_options(nmc = 50, save_aug = TRUE)
@@ -74,6 +75,9 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
 
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "item")
+  expect_error(
+    plot(mod, burnin = 10, parameter = "Rtilde"),
+    "'arg' should be one of")
 
   expect_message(
     p <- assess_convergence(mod, parameter = "Rtilde", items = 1:4),
@@ -81,7 +85,6 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
   )
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "item")
-
 
   expect_message(
     p <- assess_convergence(mod, parameter = "Rtilde", assessors = 1:4),
@@ -127,9 +130,10 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
 })
 
 test_that("assess_convergence.BayesMallows works for cluster_probs", {
+  set.seed(11)
   mod <- compute_mallows(
     setup_rank_data(rankings = cluster_data),
-    compute_options = set_compute_options(nmc = 50),
+    compute_options = set_compute_options(nmc = 50, burnin = 10),
     model_options = set_model_options(n_clusters = 3)
   )
 
@@ -137,12 +141,21 @@ test_that("assess_convergence.BayesMallows works for cluster_probs", {
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "item")
 
+  p <- plot(mod, parameter = "cluster_probs")
+  expect_equal(dim(p$data), c(120, 4))
+  expect_s3_class(p, "ggplot")
+
   p <- assess_convergence(mod, parameter = "cluster_probs")
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "cluster")
+
+  p <- plot(mod, parameter = "cluster_assignment")
+  expect_s3_class(p, "ggplot")
+  expect_equal(dim(p$data), c(180, 4))
 })
 
 test_that("assess_convergence.BayesMallows works for theta", {
+  set.seed(123)
   preferences <- data.frame(
     assessor = c(1, 1, 2, 2),
     bottom_item = c(1, 2, 1, 2),
@@ -151,11 +164,14 @@ test_that("assess_convergence.BayesMallows works for theta", {
   mod <- compute_mallows(
     data = setup_rank_data(preferences = preferences),
     model_options = set_model_options(error_model = "bernoulli"),
-    compute_options = set_compute_options(nmc = 10)
+    compute_options = set_compute_options(nmc = 10, burnin = 2)
   )
 
   p <- assess_convergence(mod, parameter = "theta")
   expect_equal(p$labels$x, "Iteration")
+
+  p <- plot(mod, parameter = "theta")
+  expect_equal(dim(p$data), c(8, 3))
 })
 
 test_that("assess_convergence.BayesMallows fails properly", {
