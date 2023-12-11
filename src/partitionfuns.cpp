@@ -5,7 +5,7 @@ using namespace arma;
 // [[Rcpp::depends(RcppArmadillo)]]
 double cayley_logz(const int& n_items, const double& alpha) {
   double res{};
-  for(int i = 1; i < n_items; ++i){
+  for(int i{1}; i < n_items; ++i){
     res += std::log(1.0 + i * std::exp(- alpha / n_items));
   }
   return res;
@@ -13,7 +13,7 @@ double cayley_logz(const int& n_items, const double& alpha) {
 
 double hamming_logz(const int& n_items, const double& alpha){
   double res{};
-  for(int i = 0; i < (n_items + 1); ++i){
+  for(int i{}; i < (n_items + 1); ++i){
     res += tgamma(n_items + 1.0) * std::exp(-alpha) *
       std::pow((std::exp(alpha / n_items) - 1.0), i) / tgamma(i + 1.0);
   }
@@ -21,8 +21,8 @@ double hamming_logz(const int& n_items, const double& alpha){
 }
 
 double kendall_logz(const int& n_items, const double& alpha){
-  double res = 0;
-  for(int i = 1; i < (n_items + 1); ++i){
+  double res{};
+  for(int i{1}; i < (n_items + 1); ++i){
     res += std::log((1.0 - std::exp(-i * alpha / n_items)) /
       (1.0 - std::exp(-alpha / n_items)));
   }
@@ -45,7 +45,7 @@ double exact_logz(
 double compute_is_fit(double alpha, vec fit){
   double logZ = 0;
   int n_items = fit.n_elem;
-  for(int i = 0; i < n_items; ++i){
+  for(int i{}; i < n_items; ++i){
     logZ += std::pow(alpha, i) * fit(i);
   }
   return(logZ);
@@ -63,23 +63,27 @@ vec find_cardinalities(const int& n_items, const std::string& metric){
   }
 }
 
-double logz_cardinalities(const double& alpha, const int& n_items, const vec& cardinalities, const std::string& metric){
+double logz_cardinalities(
+    const double& alpha, const int& n_items,
+    const vec& cardinalities, const std::string& metric){
   vec distances = find_cardinalities(n_items, metric);
   return std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
 }
 
 // [[Rcpp::export]]
-double log_expected_dist(const double& alpha, const int& n_items,
-                         const arma::vec& cardinalities, const std::string& metric){
+double log_expected_dist(
+    const double& alpha, const int& n_items,
+    const arma::vec& cardinalities, const std::string& metric){
   vec distances = find_cardinalities(n_items, metric);
   return std::log(sum(distances % cardinalities % exp(-alpha * distances / n_items)))
     -std::log(sum(cardinalities % exp(-alpha * distances / n_items)));
 }
 
 // [[Rcpp::export]]
-double get_partition_function(int n_items, double alpha,
-                              const Rcpp::List& logz_list,
-                              std::string metric = "footrule"){
+double get_partition_function(
+    int n_items, double alpha,
+    const Rcpp::List& logz_list,
+    std::string metric = "footrule"){
   Rcpp::Nullable<vec> cardinalities = logz_list["cardinalities"];
   Rcpp::Nullable<vec> logz_estimate = logz_list["logz_estimate"];
 
