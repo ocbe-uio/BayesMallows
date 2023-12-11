@@ -1,4 +1,5 @@
 test_that("assess_convergence and plot works for alpha and rho", {
+  set.seed(123)
   mod <- compute_mallows(
     data = setup_rank_data(potato_visual),
     compute_options = set_compute_options(nmc = 50)
@@ -19,7 +20,7 @@ test_that("assess_convergence and plot works for alpha and rho", {
   expect_equal(p$labels$y, "Posterior probability")
   expect_equal(p$labels$x, "rank")
   p <- plot(mod, burnin = 3, parameter = "rho", items = 1)
-  expect_equal(dim(p$data), c(2, 5))
+  expect_equal(dim(p$data), c(4, 5))
   expect_error(
     plot(mod, burnin = 3, parameter = "rho", items = 33),
     "Unknown items.")
