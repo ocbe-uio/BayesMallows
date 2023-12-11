@@ -1,3 +1,4 @@
+#include <Rmath.h>
 #include "classes.h"
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
@@ -70,7 +71,7 @@ void Augmentation::augment_pairwise(
       Rcpp::stop("error_model must be 'none' or 'bernoulli'");
     }
 
-    double u = std::log(randu<double>());
+    double u = std::log(R::runif(0, 1));
 
     // Find which cluster the assessor belongs to
     int cluster = clus.current_cluster_assignment(i);

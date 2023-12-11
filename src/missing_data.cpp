@@ -72,7 +72,7 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
 
 
   // Draw a uniform random number
-  double u = std::log(randu<double>());
+  double u = std::log(R::runif(0, 1));
 
   int n_items = rho.n_elem;
 
