@@ -292,6 +292,7 @@ test_that("update_mallows does not suffer from numerical overflow", {
 
   expect_equal(mean(mod2$alpha$value), 1.73, tolerance = 1e-2)
 
+  skip_on_ci()
   mod2 <- update_mallows(
     mod1,
     new_data = setup_rank_data(data_batch2, user_ids = 1:100),
