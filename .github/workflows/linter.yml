@@ -60,6 +60,7 @@ jobs:
               "vignettes-raw",
               "R/RcppExports.R",
               "vignettes/parallel_chains.Rmd",
+              "work-docs",
               "vignettes/SMC-Mallows.Rmd" = 19
             )
             style_rules <- list(

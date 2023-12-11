@@ -14,7 +14,6 @@ Augmentation::Augmentation(
   save_aug { compute_options["save_aug"] },
   aug_thinning { compute_options["aug_thinning"] },
   swap_leap { compute_options["swap_leap"] } {
-
     if(any_missing){
       set_up_missing(dat.rankings, missing_indicator);
       initialize_missing_ranks(dat.rankings, missing_indicator);
@@ -162,7 +161,6 @@ void SMCAugmentation::augment_partial(
 ){
   if(!any_missing) return;
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
-
     for (size_t user{}; user < dat.n_assessors; ++user) {
       if(user < dat.n_assessors - dat.num_new_obs) {
         if(dat.consistent.is_empty()) continue;
