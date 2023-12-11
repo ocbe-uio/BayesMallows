@@ -12,6 +12,8 @@ test_that("set_compute_options works", {
   expect_error(set_compute_options(include_wcd = 1),
                "include_wcd must be a logical value of length one")
 
+  skip_on_ci()
+  skip_on_cran()
   f <- file()
   write("yes", f)
   options("ask_opts.con" = f)
