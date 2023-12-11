@@ -3,14 +3,14 @@
 
 // [[Rcpp::export]]
 arma::uvec test() {
-  arma::vec probs(5);
-  probs.fill(.2);
-  arma::uvec inds = arma::regspace<arma::uvec>(0, 4);
+  arma::vec probs(20);
+  probs.fill(.05);
+  arma::uvec inds = arma::regspace<arma::uvec>(0, 19);
   return Rcpp::RcppArmadillo::sample(inds, inds.size(), true, probs);
 }
 
 
 /*** R
-set.seed(1)
+set.seed(3)
 test()
 */
