@@ -45,11 +45,11 @@ SMCAugmentation::SMCAugmentation(
         initialize_missing_ranks(augmented_data.slice(i), missing_indicator);
       }
       if(aug_init.isNotNull()) {
-        Rcpp::Rcout << "notnull" << std::endl;
         augmented_data(
           span::all,
           span(0, dat.rankings.n_cols - dat.new_rankings.n_cols - 1),
           span::all) = Rcpp::as<cube>(aug_init);
+
       }
     }
   }
