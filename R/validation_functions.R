@@ -8,7 +8,7 @@ validate_class <- function(argument, class) {
 }
 
 validate_integer <- function(argument) {
-  if (!is.numeric(argument) || argument < 1 || (round(argument) != argument)) {
+  if (!is.numeric(argument) || argument < 0 || (round(argument) != argument)) {
     stop(paste(deparse(substitute(argument)), "must be a positive integer"))
   }
 }
