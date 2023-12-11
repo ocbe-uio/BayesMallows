@@ -12,21 +12,25 @@ test_that("assess_convergence and plot works for alpha and rho", {
   expect_equal(p$labels$y, "Posterior density")
   expect_equal(p$labels$x, expression(alpha))
   expect_error(
-    plot(mod, burnin = 10, parameter = "alfa"), "'arg' should be one of")
+    plot(mod, burnin = 10, parameter = "alfa"), "'arg' should be one of"
+  )
   expect_error(plot(mod, burnin = 51), "burnin must be <= nmc")
   expect_message(
     p <- plot(mod, burnin = 3, parameter = "rho"),
-    "Items not provided by user. Picking 5 at random.")
+    "Items not provided by user. Picking 5 at random."
+  )
   expect_equal(p$labels$y, "Posterior probability")
   expect_equal(p$labels$x, "rank")
   p <- plot(mod, burnin = 3, parameter = "rho", items = 1)
   expect_equal(dim(p$data), c(4, 5))
   expect_error(
     plot(mod, burnin = 3, parameter = "rho", items = 33),
-    "Unknown items.")
+    "Unknown items."
+  )
   expect_error(
     plot(mod, burnin = 3, parameter = "rho", items = "A1"),
-    "Unknown items.")
+    "Unknown items."
+  )
   p <- plot(mod, burnin = 3, parameter = "rho", items = c("P3", "P5"))
   expect_equal(dim(p$data), c(6, 5))
 
@@ -77,7 +81,8 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
   expect_equal(p$labels$colour, "item")
   expect_error(
     plot(mod, burnin = 10, parameter = "Rtilde"),
-    "'arg' should be one of")
+    "'arg' should be one of"
+  )
 
   expect_message(
     p <- assess_convergence(mod, parameter = "Rtilde", items = 1:4),

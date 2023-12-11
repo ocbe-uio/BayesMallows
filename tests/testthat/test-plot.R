@@ -4,13 +4,15 @@ test_that("plot.SMCMallows works", {
 
   mod_init <- compute_mallows(
     data = setup_rank_data(data_first_batch),
-    compute_options = set_compute_options(nmc = 100, burnin = 0))
+    compute_options = set_compute_options(nmc = 100, burnin = 0)
+  )
 
   data_second_batch <- potato_visual[5:8, ]
   mod_second <- update_mallows(
     model = mod_init,
     new_data = setup_rank_data(rankings = data_second_batch),
-    smc_options = set_smc_options(n_particles = 10))
+    smc_options = set_smc_options(n_particles = 10)
+  )
 
   p <- plot(mod_second)
   expect_s3_class(p, "ggplot")
@@ -19,11 +21,13 @@ test_that("plot.SMCMallows works", {
   expect_equal(dim(p$data), c(16, 5))
   expect_message(
     p <- plot(mod_second, parameter = "rho"),
-    "Items not provided by user. Picking 5 at random.")
+    "Items not provided by user. Picking 5 at random."
+  )
 
   data_third_batch <- potato_visual[9:12, ]
   mod_final <- update_mallows(
-    model = mod_second, new_data = setup_rank_data(rankings = data_third_batch))
+    model = mod_second, new_data = setup_rank_data(rankings = data_third_batch)
+  )
 
   p <- plot(mod_final)
   expect_equal(p$labels$y, "Posterior density")
@@ -36,5 +40,6 @@ test_that("plot.SMCMallows works", {
 
   expect_error(
     plot(mod_final, parameter = "theta"),
-    "'arg' should be one of")
+    "'arg' should be one of"
+  )
 })

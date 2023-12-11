@@ -25,19 +25,24 @@ heat_plot <- function(model_fit, burnin = model_fit$burnin, ...) {
   if (is.null(burnin)) stop("Please specify the burnin.")
   if (model_fit$nmc <= burnin) stop("burnin must be <= nmc")
   if (is.null(model_fit$burnin)) model_fit$burnin <- burnin
-  if (model_fit$n_clusters != 1)
+  if (model_fit$n_clusters != 1) {
     stop("heat_plot only works for a single cluster")
+  }
 
   item_order <- unique(compute_consensus(model_fit, ...)[["item"]])
 
   posterior_ranks <- model_fit$rho[
-    model_fit$rho$iteration > burnin, , drop = FALSE]
+    model_fit$rho$iteration > burnin, ,
+    drop = FALSE
+  ]
   posterior_ranks$probability <- 1
   posterior_ranks$iteration <- NULL
   heatplot_data <- aggregate(posterior_ranks[, "probability", drop = FALSE],
-    by = list(cluster = posterior_ranks$cluster,
-              item = posterior_ranks$item,
-              value = posterior_ranks$value),
+    by = list(
+      cluster = posterior_ranks$cluster,
+      item = posterior_ranks$item,
+      value = posterior_ranks$value
+    ),
     FUN = function(x) sum(x) / (model_fit$nmc - burnin)
   )
 
@@ -51,12 +56,14 @@ heat_plot <- function(model_fit, burnin = model_fit$burnin, ...) {
   )
   heatplot_expanded <- merge(
     heatplot_expanded, heatplot_data,
-    by = c("cluster", "item", "value"), all.x = TRUE)
+    by = c("cluster", "item", "value"), all.x = TRUE
+  )
   heatplot_expanded$probability[is.na(heatplot_expanded$probability)] <- 0
 
   ggplot2::ggplot(
     heatplot_expanded,
-    ggplot2::aes(x = .data$item, y = .data$value, fill = .data$probability)) +
+    ggplot2::aes(x = .data$item, y = .data$value, fill = .data$probability)
+  ) +
     ggplot2::geom_tile() +
     ggplot2::labs(fill = "Probability") +
     ggplot2::xlab("Item") +

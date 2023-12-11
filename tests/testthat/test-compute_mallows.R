@@ -39,19 +39,22 @@ test_that("compute_mallows fails properly", {
   )
   expect_error(
     compute_mallows(setup_rank_data(preferences = prefs)),
-    "Intransitive pairwise comparisons. Please specify an error model.")
+    "Intransitive pairwise comparisons. Please specify an error model."
+  )
 
   expect_error(
     compute_mallows(
       data = setup_rank_data(potato_visual),
       initial_values = set_initial_values(rho_init = rnorm(20))
     ),
-    "rho_init must be a proper permutation")
+    "rho_init must be a proper permutation"
+  )
 
   expect_error(
     compute_mallows(
       data = setup_rank_data(potato_visual),
       initial_values = set_initial_values(rho_init = 1:3)
     ),
-    "initial value for rho must have one value per item")
+    "initial value for rho must have one value per item"
+  )
 })

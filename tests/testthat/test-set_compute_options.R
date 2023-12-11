@@ -9,8 +9,10 @@ test_that("set_compute_options works", {
   expect_error(set_compute_options(clus_thinning = 1e6))
   expect_error(set_compute_options(rho_thinning = 1e6))
   expect_error(set_compute_options(alpha_jump = 1e6))
-  expect_error(set_compute_options(include_wcd = 1),
-               "include_wcd must be a logical value of length one")
+  expect_error(
+    set_compute_options(include_wcd = 1),
+    "include_wcd must be a logical value of length one"
+  )
 
   skip_on_ci()
   skip_on_cran()
