@@ -131,6 +131,10 @@ plot_rho <- function(x, items, burnin = 0) {
     items <- sample.int(x$n_items, 5)
   } else if (is.null(items) && x$n_items > 0) {
     items <- seq.int(from = 1, to = x$n_items)
+  } else if (!is.null(items)) {
+    if(!all(items %in% x$items) && !all(items %in% seq_along(x$items))) {
+      stop("Unknown items.")
+    }
   }
 
   if (!is.character(items)) {
