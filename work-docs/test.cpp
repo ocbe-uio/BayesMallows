@@ -1,17 +1,13 @@
 #include <RcppArmadillo.h>
-#include <Rmath.h>
-using namespace arma;
+// [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-uvec rmn(vec probs) {
-  int k = probs.size();
-  ivec ans(k);
-  R::rmultinom(1, probs.begin(), k, ans.begin());
-  uvec ret = find(ans == 1);
-  return(ret);
+arma::vec test() {
+  return arma::randu(1);
 }
 
 
 /*** R
-rmn(c(.005, 0, .005, .99))
+set.seed(1)
+test()
 */
