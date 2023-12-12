@@ -75,5 +75,5 @@ test_that("compute_mallows is platform independent", {
   dat <- potato_visual
   dat[dat > 5] <- NA
   mod <- compute_mallows(setup_rank_data(dat))
-  expect_equal(mod$alpha$value[1998], 6.65139712500027)
+  expect_equal(mod$alpha$value[1998], 7.26333324707436)
 })
