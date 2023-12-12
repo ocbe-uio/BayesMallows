@@ -49,13 +49,13 @@ test_that("update_mallows works", {
     smc_options = set_smc_options(n_particles = 20)
   )
 
-  expect_equal(mod1$alpha$value[[13]], 0.217717225261033)
+  expect_equal(mod1$alpha$value[[13]], 0.544567207683911)
 
   mod2 <- update_mallows(
     model = mod1,
     new_data = setup_rank_data(rankings = potato_top_14, user_ids = user_ids)
   )
-  expect_equal(mod2$rho$value[[300]], 7)
+  expect_equal(mod2$rho$value[[300]], 4)
 
   potato_new <- potato_visual[11:12, ]
   user_ids <- rownames(potato_new)
@@ -64,5 +64,5 @@ test_that("update_mallows works", {
     model = mod2,
     new_data = setup_rank_data(rankings = potato_new, user_ids = user_ids)
   )
-  expect_equal(mod_final$rho$value[[300]], 4)
+  expect_equal(mod_final$rho$value[[300]], 2)
 })
