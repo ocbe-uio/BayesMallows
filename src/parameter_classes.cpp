@@ -1,5 +1,4 @@
 #include <Rmath.h>
-#include <RcppArmadilloExtensions/sample.h>
 #include "classes.h"
 #include "distances.h"
 #include "partitionfuns.h"
@@ -249,10 +248,12 @@ void SMCParameters::update_alpha(
 }
 
 uvec SMCParameters::draw_resampling_index() {
-  uvec inds = regspace<uvec>(0, log_inc_wgt.size() - 1);
+  Rcpp::IntegerVector inds = Rcpp::seq(0, log_inc_wgt.size() - 1);
   vec norm_wgt = exp(log_inc_wgt - max(log_inc_wgt) -
     log(sum(exp(log_inc_wgt - max(log_inc_wgt)))));
-  return Rcpp::RcppArmadillo::sample(inds, log_inc_wgt.size(), true, norm_wgt);
+  Rcpp::NumericVector probs = Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(norm_wgt));
+  Rcpp::IntegerVector result = Rcpp::sample(inds, log_inc_wgt.size(), true, probs);
+  return Rcpp::as<arma::uvec>(result);
 }
 
 void SMCParameters::resample(const uvec& index) {
