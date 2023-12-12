@@ -6,8 +6,8 @@ test_that("compute_mallows works with seed in parallel", {
     compute_options = set_compute_options(nmc = 10),
     cl = cl
   )
-  expect_equal(mod$rho$value[[145]], 4)
-  expect_equal(mod$rho$value[[89]], 3)
+  expect_equal(mod$rho$value[[145]], 7)
+  expect_equal(mod$rho$value[[89]], 14)
 })
 
 test_that("compute_mallows works with initial values and clusters", {
@@ -70,7 +70,7 @@ test_that("compute_mallows fails properly", {
 test_that("compute_mallows is platform independent", {
   set.seed(1)
   mod <- compute_mallows(setup_rank_data(potato_visual))
-  expect_equal(mod$alpha$value[1998], 10.2957693664896)
+  expect_equal(mod$alpha$value[1998], 10.2019196814125)
 
   dat <- potato_visual
   dat[dat > 5] <- NA

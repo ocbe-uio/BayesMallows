@@ -22,7 +22,10 @@ vec setdiff(const vec& x, const vec& y){
 
 vec propose_augmentation(const vec& ranks, const uvec& indicator){
   vec proposal = ranks;
-  proposal(find(indicator == 1)) = shuffle(ranks(find(indicator == 1)));
+  vec mutable_ranks = ranks(find(indicator == 1));
+  Rcpp::IntegerVector inds = Rcpp::sample(mutable_ranks.size(), mutable_ranks.size()) - 1;
+  arma::uvec inds_arma = Rcpp::as<uvec>(Rcpp::wrap(inds));
+  proposal(find(indicator == 1)) = mutable_ranks(inds_arma);
   return proposal;
 }
 
@@ -39,9 +42,12 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator) {
     vec rank_vector = rankings.col(i);
     vec present_ranks = rank_vector(find(missing_indicator.col(i) == 0));
     uvec missing_inds = find(missing_indicator.col(i) == 1);
-    vec new_ranks = shuffle(setdiff(regspace<vec>(1, rank_vector.n_elem),
-                                    present_ranks));
+    vec a = setdiff(
+      regspace<vec>(1, rank_vector.n_elem), present_ranks);
 
+    Rcpp::IntegerVector inds = Rcpp::sample(a.size(), a.size()) - 1;
+    uvec inds_arma = Rcpp::as<uvec>(Rcpp::wrap(inds));
+    vec new_ranks = a.elem(inds_arma);
     rank_vector(missing_inds) = new_ranks;
     rankings.col(i) = rank_vector;
   }
