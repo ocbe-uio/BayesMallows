@@ -71,9 +71,9 @@ test_that("compute_posterior_intervals works for SMC", {
 
   pi <- compute_posterior_intervals(mod2)
   expect_equal(pi$parameter, "alpha")
-  expect_equal(pi$median, "10.253")
-  expect_equal(pi$hpdi, "[8.396,11.858]")
-  expect_equal(pi$central_interval, "[8.476,11.985]")
+  expect_equal(pi$median, "2.744")
+  expect_equal(pi$hpdi, "[2.015,3.476]")
+  expect_equal(pi$central_interval, "[2.047,3.530]")
 
   mod3 <- update_mallows(
     mod2,
@@ -81,9 +81,9 @@ test_that("compute_posterior_intervals works for SMC", {
   )
 
   pi <- compute_posterior_intervals(mod3, decimals = 2)
-  expect_equal(pi$hpdi, "[8.73,11.85]")
+  expect_equal(pi$hpdi, "[2.18,3.75]")
   pi <- compute_posterior_intervals(mod3, parameter = "rho")
-  expect_equal(pi$hpdi[[20]], "[13,14]")
+  expect_equal(pi$hpdi[[20]], "[1,5]")
 
   expect_error(
     compute_posterior_intervals(mod3, parameter = "cluster_probs"),

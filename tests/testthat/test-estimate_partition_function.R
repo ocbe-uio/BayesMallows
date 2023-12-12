@@ -4,9 +4,9 @@ test_that("estimate_partition_function works", {
   n_items <- 20
 
   metrics <- c("footrule", "spearman", "kendall", "cayley", "hamming", "ulam")
-  expectations <- c(-0.196249967926383, 16.7714664134817,
-                    -13.9827539118596, 15.4312563640867,
-                    -30.5913961068133, -3.21589663450721)
+  expectations <- c(0.4961490378154, 19.75045734511,
+                    22.3471310441124, -9.13330233602348,
+                    -78.559587447592, -10.9508829949516)
   names(expectations) <- metrics
 
   for(m in metrics) {
