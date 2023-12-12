@@ -58,11 +58,10 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
                           const std::string& metric, bool pseudo) {
   double log_hastings_correction = 0;
   vec proposal{};
-  // Sample an augmentation proposal
   if(pseudo) {
-    uvec unranked_items = find(missing_indicator == 1);
-    Rcpp::IntegerVector a = Rcpp::sample(unranked_items.size(), unranked_items.size()) - 1;
-    unranked_items = Rcpp::as<uvec>(Rcpp::wrap(a));
+    uvec a = find(missing_indicator == 1);
+    Rcpp::IntegerVector b = Rcpp::sample(a.size(), a.size()) - 1;
+    uvec unranked_items = a(Rcpp::as<uvec>(Rcpp::wrap(b)));
 
     auto pprop = make_pseudo_proposal(
       unranked_items, rankings, alpha, rho, metric, true

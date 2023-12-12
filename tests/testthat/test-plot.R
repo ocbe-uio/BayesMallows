@@ -35,8 +35,8 @@ test_that("plot.SMCMallows works", {
 
   p <- plot(mod_final, parameter = "rho", items = c("P19", "P8"))
   expect_s3_class(p, "ggplot")
-  expect_equal(dim(p$data), c(8, 5))
-  expect_equal(as.character(unique(p$data$item)), c("P19", "P8"))
+  expect_equal(dim(p$data), c(7, 5))
+  expect_equal(as.character(unique(p$data$item)), c("P8", "P19"))
 
   expect_error(
     plot(mod_final, parameter = "theta"),

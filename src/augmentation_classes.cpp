@@ -169,9 +169,9 @@ void SMCAugmentation::augment_partial(
         if(dat.consistent(user, particle) == 1) continue;
       }
 
-      uvec unranked_items = find(missing_indicator.col(user) == 1);
-      Rcpp::IntegerVector a = Rcpp::sample(unranked_items.size(), unranked_items.size()) - 1;
-      unranked_items = Rcpp::as<uvec>(Rcpp::wrap(a));
+      uvec a = find(missing_indicator.col(user) == 1);
+      Rcpp::IntegerVector b = Rcpp::sample(a.size(), a.size()) - 1;
+      uvec unranked_items = a(Rcpp::as<uvec>(Rcpp::wrap(b)));
 
       if (aug_method != "pseudo") {
         augmented_data(span::all, span(user), span(particle)) =

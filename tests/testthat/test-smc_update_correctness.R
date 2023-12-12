@@ -166,8 +166,7 @@ test_that("update_mallows is correct for updated partial rankings", {
 
   mod0 <- compute_mallows(
     data = setup_rank_data(rankings = dat0),
-    compute_options = set_compute_options(nmc = 100, burnin = 0)
-  )
+    compute_options = set_compute_options(nmc = 5000, burnin = 2500))
 
   dat1 <- potato_visual
   dat1 <- ifelse(is.na(dat0) & runif(length(dat1)) > .5, NA_real_, dat1)
@@ -175,19 +174,17 @@ test_that("update_mallows is correct for updated partial rankings", {
   mod1 <- update_mallows(
     model = mod0,
     new_data = setup_rank_data(rankings = dat1, user_ids = user_ids),
-    smc_options = set_smc_options(n_particles = 10000, mcmc_steps = 10)
+    smc_options = set_smc_options(aug_method = "pseudo")
   )
 
   mod_bmm1 <- compute_mallows(
     data = setup_rank_data(rankings = dat1),
-    compute_options = set_compute_options(nmc = 50000)
-  )
+    compute_options = set_compute_options(nmc = 10000, burnin = 4000))
 
   expect_equal(
     mean(mod1$alpha$value),
-    mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 5000]),
-    tolerance = .1
-  )
+    mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 4000]),
+    tolerance = .1)
 
   dat2 <- potato_visual
   dat2 <- ifelse(is.na(dat1) & runif(length(dat2)) > .5, NA_real_, dat2)
@@ -215,62 +212,65 @@ test_that("update_mallows is correct for updated partial rankings", {
   )
 })
 
-test_that("update_mallows is correct for new top-k rankings", {
-  dat0 <- ifelse(potato_visual > 10, NA_real_, potato_visual)
-  dat1 <- ifelse(potato_visual > 12, NA_real_, potato_visual)
-  dat2 <- ifelse(potato_visual > 14, NA_real_, potato_visual)
-
-  set.seed(123)
+test_that("update_mallows is correct for updated partial rankings", {
+  set.seed(1)
   user_ids <- rownames(potato_visual)
+  dat0 <- potato_visual
+  dat0[] <- ifelse(runif(length(dat0)) > .5, NA_real_, dat0)
 
   mod0 <- compute_mallows(
     data = setup_rank_data(rankings = dat0),
-    compute_options = set_compute_options(nmc = 10000, burnin = 5000)
+    compute_options = set_compute_options(nmc = 5000, burnin = 2500)
   )
+
+  dat1 <- potato_visual
+  dat1 <- ifelse(is.na(dat0) & runif(length(dat1)) > .5, NA_real_, dat1)
 
   mod1 <- update_mallows(
     model = mod0,
-    new_data = setup_rank_data(rankings = dat1, user_ids = user_ids),
-    smc_options = set_smc_options(n_particles = 10000, mcmc_steps = 10)
+    new_data = setup_rank_data(rankings = dat1, user_ids = user_ids)
   )
 
   mod_bmm1 <- compute_mallows(
     data = setup_rank_data(rankings = dat1),
-    compute_options = set_compute_options(nmc = 50000)
+    compute_options = set_compute_options(nmc = 5000, burnin = 2500)
   )
 
   expect_equal(
     mean(mod1$alpha$value),
-    mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 5000]),
+    mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 3000]),
     tolerance = .1
   )
 
   expect_equal(
     sd(mod1$alpha$value),
-    sd(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 5000]),
-    tolerance = .1
+    sd(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 3000]),
+    tolerance = .05
   )
+
+  dat2 <- potato_visual
+  dat2 <- ifelse(is.na(dat1) & runif(length(dat2)) > .5, NA_real_, dat2)
 
   mod2 <- update_mallows(
     model = mod1,
     new_data = setup_rank_data(rankings = dat2, user_ids = user_ids)
   )
 
-  mod_bmm2 <- compute_mallows(
+  mod_bmm <- compute_mallows(
     data = setup_rank_data(rankings = dat2),
-    compute_options = set_compute_options(nmc = 50000)
+    compute_options = set_compute_options(nmc = 5000)
   )
 
   expect_equal(
     mean(mod2$alpha$value),
-    mean(mod_bmm2$alpha$value[mod_bmm2$alpha$iteration > 5000]),
+    mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 3000]),
     tolerance = .1
   )
 
   expect_equal(
     sd(mod2$alpha$value),
-    sd(mod_bmm2$alpha$value[mod_bmm2$alpha$iteration > 5000]),
-    tolerance = .1
+    sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 3000]),
+    tolerance = .05
   )
 })
 
@@ -290,7 +290,7 @@ test_that("update_mallows does not suffer from numerical overflow", {
     smc_options = set_smc_options(n_particles = 50, aug_method = "pseudo")
   )
 
-  expect_equal(mean(mod2$alpha$value), 1.73, tolerance = 1e-2)
+  expect_equal(mean(mod2$alpha$value), 1.789443, tolerance = 1e-4)
 
   mod2 <- update_mallows(
     mod1,
@@ -298,5 +298,5 @@ test_that("update_mallows does not suffer from numerical overflow", {
     smc_options = set_smc_options(n_particles = 50, aug_method = "uniform")
   )
 
-  expect_equal(mean(mod2$alpha$value), 1.4, tolerance = 1e-1)
+  expect_equal(mean(mod2$alpha$value), 1.501483, tolerance = 1e-4)
 })
