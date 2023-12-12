@@ -1,12 +1,12 @@
-#include <RcppArmadillo.h>
-// [[Rcpp::depends(RcppArmadillo)]]
+#include <Rcpp.h>
 
 // [[Rcpp::export]]
-int test() {
-  return arma::randi<int>(arma::distr_param(1, 20));
+Rcpp::IntegerVector test(int size) {
+  return Rcpp::sample(10, 1);
 }
 
 /*** R
 set.seed(1)
-mean(replicate(1e6, test()))
+test(100)
+#apply(sapply(1:100, function(i) test(100)), 1, mean)
 */

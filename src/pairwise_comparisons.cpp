@@ -39,8 +39,8 @@ vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor
   // Extract the constraints for this particular assessor
   uvec constrained_items = Rcpp::as<uvec>(assessor_constraints[0]);
 
-  // Sample an integer between 1 and n_items
-  int item = randi<int>(distr_param(0, n_items - 1));
+  Rcpp::IntegerVector a = Rcpp::sample(n_items, 1) - 1;
+  int item = a(0);
 
   // Left and right limits of the interval we draw ranks from
   // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
@@ -49,7 +49,9 @@ vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor
 
   // Now complete the leap step by sampling a new proposal uniformly between
   // left_limit + 1 and right_limit - 1
-  int proposed_rank = randi<int>(distr_param(left_limit + 1, right_limit - 1));
+  Rcpp::IntegerVector b = Rcpp::seq(left_limit + 1, right_limit - 1);
+  Rcpp::IntegerVector d = Rcpp::sample(b, 1);
+  int proposed_rank = d(0);
 
   // Assign the proposal to the (item-1)th item
   vec proposal = ranking;
@@ -68,7 +70,8 @@ vec propose_swap(const vec& ranking, const Rcpp::List& assessor_constraints,
   int n_items = ranking.n_elem;
 
   // Draw a random number, representing an item
-  int u = randi<int>(distr_param(1, n_items - swap_leap));
+  Rcpp::IntegerVector a = Rcpp::sample(n_items - swap_leap, 1);
+  int u = a(0);
 
   int ind1 = as_scalar(find(ranking == u));
   int ind2 = as_scalar(find(ranking == (u + swap_leap)));

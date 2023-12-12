@@ -37,14 +37,16 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
 
   // Leap 1
   // 1, sample u randomly between 1 and n_items
-  int u = randi<int>(distr_param(0, n_items - 1));
+  Rcpp::IntegerVector a = Rcpp::sample(n_items, 1) - 1;
+  int u = a(0);
 
   // 2, compute the set S for sampling the new rank
   support = join_cols(regspace(std::max(1.0, rho(u) - leap_size), 1, rho(u) - 1),
     regspace(rho(u) + 1, 1, std::min(n_items * 1.0, rho(u) + leap_size)));
 
   // 3. assign a random element of the support set, this completes the leap step
-  int index = randi<int>(distr_param(0, support.n_elem-1));
+  Rcpp::IntegerVector b = Rcpp::sample(support.n_elem, 1) - 1;
+  int index = b(0);
   // Picked element index-1 from the support set
   rho_proposal(u) = support(index);
 

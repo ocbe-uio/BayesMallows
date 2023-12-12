@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include <Rmath.h>
 #include "distances.h"
 
 using namespace arma;
@@ -39,10 +40,13 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       double log_q = 0;
 
       // n_items random uniform numbers
-      vec u = log(randu(n_items));
+      vec u(n_items);
+      for(size_t i{}; i < n_items; i++) u(i) = std::log(R::runif(0, 1));
 
       // Loop over possible values given to item j in random order
-      ivec myind = randperm<ivec>(n_items);
+      Rcpp::IntegerVector a = Rcpp::seq(0, n_items - 1);
+      a = Rcpp::sample(a, n_items);
+      ivec myind = Rcpp::as<ivec>(Rcpp::wrap(a));
 
       for(int j = 0; j < n_items; ++j){
         int jj = myind(j);

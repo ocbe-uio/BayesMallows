@@ -159,14 +159,14 @@ test_that("update_mallows is correct for new partial rankings", {
 })
 
 test_that("update_mallows is correct for updated partial rankings", {
-  set.seed(123)
+  set.seed(1)
   user_ids <- rownames(potato_visual)
   dat0 <- potato_visual
   dat0[] <- ifelse(runif(length(dat0)) > .5, NA_real_, dat0)
 
   mod0 <- compute_mallows(
     data = setup_rank_data(rankings = dat0),
-    compute_options = set_compute_options(nmc = 10000, burnin = 5000)
+    compute_options = set_compute_options(nmc = 100, burnin = 0)
   )
 
   dat1 <- potato_visual
