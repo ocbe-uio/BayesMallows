@@ -41,7 +41,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
 
       // n_items random uniform numbers
       vec u(n_items);
-      for(size_t i{}; i < n_items; i++) u(i) = std::log(R::runif(0, 1));
+      for(int i{}; i < n_items; i++) u(i) = std::log(R::runif(0, 1));
 
       // Loop over possible values given to item j in random order
       Rcpp::IntegerVector a = Rcpp::seq(0, n_items - 1);
