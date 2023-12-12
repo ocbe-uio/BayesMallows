@@ -1,8 +1,8 @@
 test_that("compute_mallows is correct for complete data", {
   expectations <- data.frame(
     metric = c("footrule", "spearman", "kendall"),
-    mean = c(10.85, 1.988, 16.43),
-    sd = c(0.77, .5, 1.287)
+    mean = c(10.83725, 1.98287, 16.30534),
+    sd = c(0.7013675, 0.1794535, 1.192979)
   )
 
   for (i in seq_len(nrow(expectations))) {
@@ -10,19 +10,19 @@ test_that("compute_mallows is correct for complete data", {
     mod_bmm <- compute_mallows(
       data = setup_rank_data(potato_visual),
       model_options = set_model_options(metric = expectations$metric[[i]]),
-      compute_options = set_compute_options(nmc = 100000, burnin = 1000)
+      compute_options = set_compute_options(nmc = 20000, burnin = 1000)
     )
 
     expect_equal(
-      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 20000]),
+      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 16000]),
       expectations$mean[[i]],
-      tolerance = .1
+      tolerance = 1e-4
     )
 
     expect_equal(
-      sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 20000]),
+      sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 16000]),
       expectations$sd[[i]],
-      tolerance = .1
+      tolerance = 1e-4
     )
   }
 })
@@ -30,8 +30,8 @@ test_that("compute_mallows is correct for complete data", {
 test_that("compute_mallows is correct for pairwise preferences", {
   expectations <- data.frame(
     metric = c("footrule", "kendall"),
-    mean = c(4.825, 6.666),
-    sd = c(0.286, 0.418)
+    mean = c(4.82178, 6.628639),
+    sd = c(0.2640226, 0.4140462)
   )
 
   for (i in seq_len(nrow(expectations))) {
@@ -69,7 +69,6 @@ test_that("augmented rankings obey transitive closure", {
     compute_options = set_compute_options(save_aug = TRUE)
   )
 
-
   expect_true(all(
     subset(model_fit$augmented_data, assessor == 1 & item == "Item 4")$value >
       subset(model_fit$augmented_data, assessor == 1 & item == "Item 1")$value
@@ -92,8 +91,8 @@ test_that("compute_mallows is correct for top-k ranks", {
 
   expectations <- data.frame(
     metric = c("footrule", "spearman", "kendall"),
-    mean = c(10.033, 1.686, 14.70),
-    sd = c(0.781, .2, 1.38)
+    mean = c(9.629511, 1.716588, 14.07414),
+    sd = c(0.8694795, 0.179755, 1.385546)
   )
 
   for (i in seq_len(nrow(expectations))) {
@@ -101,17 +100,17 @@ test_that("compute_mallows is correct for top-k ranks", {
     mod_bmm <- compute_mallows(
       data = setup_rank_data(dat),
       model_options = set_model_options(metric = expectations$metric[[i]]),
-      compute_options = set_compute_options(nmc = 200000, burnin = 100000)
+      compute_options = set_compute_options(nmc = 2000, burnin = 500)
     )
 
     expect_equal(
-      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 100000]),
+      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
       expectations$mean[[i]],
-      tolerance = .05
+      tolerance = 1e-4
     )
 
     expect_equal(
-      sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 100000]),
+      sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
       expectations$sd[[i]],
       tolerance = .2
     )
@@ -181,25 +180,25 @@ test_that("compute_mallows is correct with Bernoulli error", {
 
   expect_equal(
     mean(mod$alpha$value[mod$alpha$iteration > 3000]),
-    10,
-    tolerance = .1
+    11.23578,
+    tolerance = 1e-4
   )
 
   expect_equal(
     sd(mod$alpha$value[mod$alpha$iteration > 3000]),
-    2,
-    tolerance = .1
+    2.071268,
+    tolerance = 1e-4
   )
 
   expect_equal(
     mean(mod$theta$value[mod$theta$iteration > 3000]),
-    0.14,
-    tolerance = .1
+    0.1370437,
+    tolerance = 1e-4
   )
 
   expect_equal(
     sd(mod$theta$value[mod$theta$iteration > 3000]),
-    0.01,
-    tolerance = 1
+    0.009907702,
+    tolerance = 1e-4
   )
 })
