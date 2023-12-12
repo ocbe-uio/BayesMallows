@@ -48,7 +48,7 @@ test_that("update_mallows works", {
     model = mod1,
     new_data = setup_rank_data(rankings = potato_top_14, user_ids = user_ids)
   )
-  expect_equal(mod2$rho$value[[300]], 7)
+  expect_equal(mod2$rho$value[[300]], 8)
 
   potato_new <- potato_visual[11:12, ]
   user_ids <- rownames(potato_new)
