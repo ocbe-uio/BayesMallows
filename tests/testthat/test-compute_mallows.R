@@ -32,10 +32,12 @@ test_that("compute_mallows fails properly", {
   expect_error(
     compute_mallows(
       data = setup_rank_data(
-        cbind(potato_visual, potato_visual + 20, potato_visual + 40)),
-      model_options = set_model_options(metric = "spearman")
+        cbind(potato_visual, potato_visual + 20, potato_visual + 40)
       ),
-    "Partition function not available.")
+      model_options = set_model_options(metric = "spearman")
+    ),
+    "Partition function not available."
+  )
 
   expect_error(
     compute_mallows(data = potato_visual),

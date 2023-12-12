@@ -4,18 +4,21 @@ test_that("estimate_partition_function works", {
   n_items <- 20
 
   metrics <- c("footrule", "spearman", "kendall", "cayley", "hamming", "ulam")
-  expectations <- c(0.4961490378154, 19.75045734511,
-                    22.3471310441124, -9.13330233602348,
-                    -78.559587447592, -10.9508829949516)
+  expectations <- c(
+    0.4961490378154, 19.75045734511,
+    22.3471310441124, -9.13330233602348,
+    -78.559587447592, -10.9508829949516
+  )
   names(expectations) <- metrics
 
-  for(m in metrics) {
+  for (m in metrics) {
     fit <- estimate_partition_function(
       method = "importance_sampling",
       alpha_vector = alpha_vector,
       n_items = n_items,
       metric = m,
-      n_iterations = 1e3)
+      n_iterations = 1e3
+    )
     expect_equal(fit[[5]], expectations[[m]])
   }
 

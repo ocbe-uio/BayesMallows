@@ -166,7 +166,8 @@ test_that("update_mallows is correct for updated partial rankings", {
 
   mod0 <- compute_mallows(
     data = setup_rank_data(rankings = dat0),
-    compute_options = set_compute_options(nmc = 5000, burnin = 2500))
+    compute_options = set_compute_options(nmc = 5000, burnin = 2500)
+  )
 
   dat1 <- potato_visual
   dat1 <- ifelse(is.na(dat0) & runif(length(dat1)) > .5, NA_real_, dat1)
@@ -179,12 +180,14 @@ test_that("update_mallows is correct for updated partial rankings", {
 
   mod_bmm1 <- compute_mallows(
     data = setup_rank_data(rankings = dat1),
-    compute_options = set_compute_options(nmc = 10000, burnin = 4000))
+    compute_options = set_compute_options(nmc = 10000, burnin = 4000)
+  )
 
   expect_equal(
     mean(mod1$alpha$value),
     mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 4000]),
-    tolerance = .1)
+    tolerance = .1
+  )
 
   dat2 <- potato_visual
   dat2 <- ifelse(is.na(dat1) & runif(length(dat2)) > .5, NA_real_, dat2)
