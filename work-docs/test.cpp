@@ -1,19 +1,16 @@
-#include <Rcpp.h>
-using namespace Rcpp;
-
+#include <RcppArmadilloExtensions/sample.h>
+// [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-IntegerVector test(int size) {
-  return sample(size, size) - 1;
+arma::uvec test() {
+  arma::vec probs(20);
+  probs.fill(.05);
+  arma::uvec inds = arma::regspace<arma::uvec>(0, 19);
+  return Rcpp::RcppArmadillo::sample(inds, inds.size(), true, probs);
 }
 
 
-// You can include R code blocks in C++ files processed with sourceCpp
-// (useful for testing and development). The R code will be automatically
-// run after the compilation.
-//
-
 /*** R
-set.seed(1)
-test(10)
+set.seed(3)
+test()
 */
