@@ -20,7 +20,6 @@ Rcpp::List  run_smc(
   SMCParameters pars{model_options, smc_options, compute_options, initial_values};
   Priors pris{priors};
   SMCAugmentation aug{dat, smc_options, initial_values, pars.n_particles};
-  Rcpp::Rcout << "aug = " << aug.augmented_data << std::endl;
   aug.reweight(pars, dat, logz_list);
   uvec index = pars.draw_resampling_index();
   pars.resample(index);

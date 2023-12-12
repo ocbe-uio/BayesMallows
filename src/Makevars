@@ -2,3 +2,5 @@ CXX_STD = CXX17
 CC=ccache clang -Qunused-arguments
 CXX=ccache clang++ -Qunused-arguments
 CCACHE_CPP2=yes
+CPPFLAGS=-Xclang -fopenmp
+LIBS=-lomp
