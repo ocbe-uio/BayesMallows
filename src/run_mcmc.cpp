@@ -6,14 +6,14 @@ using namespace arma;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-Rcpp::List run_mcmc(Rcpp::List data,
-                    Rcpp::List model_options,
-                    Rcpp::List compute_options,
-                    Rcpp::List priors,
-                    Rcpp::List initial_values,
-                    Rcpp::List logz_list,
-                    bool verbose = false
-                      ){
+Rcpp::List run_mcmc(
+    Rcpp::List data,
+    Rcpp::List model_options,
+    Rcpp::List compute_options,
+    Rcpp::List priors,
+    Rcpp::List initial_values,
+    Rcpp::List logz_list,
+    bool verbose = false){
   Data dat{data};
   Priors pris{priors};
   Parameters pars{model_options, compute_options, initial_values, dat.n_items};
