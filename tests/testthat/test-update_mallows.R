@@ -14,7 +14,7 @@ test_that("update_mallows works", {
     smc_options = set_smc_options(n_particles = 10))
 
   pi <- compute_posterior_intervals(mod_second)
-  expect_equal(pi$hpdi, "[0.251,0.522]")
+  expect_equal(pi$hpdi, "[0.331,0.771]")
   expect_equal(mod_second$alpha$value[[9]], 0.401166865941831)
 
   data_third_batch <- potato_visual[9:12, ]
