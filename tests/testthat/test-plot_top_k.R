@@ -3,7 +3,16 @@ test_that("predict_top_k works", {
   model_fit <- compute_mallows(
     data = setup_rank_data(preferences = beach_preferences),
     compute_options = set_compute_options(
-      nmc = 1000, burnin = 0, save_aug = TRUE))
+      nmc = 100, burnin = 0, save_aug = TRUE))
 
-  tail(predict_top_k(model_fit))
+  ptk <- predict_top_k(model_fit)
+  expect_equal(ptk$prob[[900]], .08)
+  expect_equal(dim(ptk), c(900, 3))
+
+  p <- plot_top_k(model_fit)
+  expect_equal(dim(p$data), c(900, 3))
+  expect_equal(p$labels$fill, "Prob.")
+  expect_equal(p$labels$y, "Item")
+  expect_equal(p$labels$x, "Assessor")
+  expect_s3_class(p, "ggplot")
 })
