@@ -43,15 +43,6 @@ update_mallows.BayesMallows <- function(
   if (is.null(model$burnin)) stop("Burnin must be set.")
   alpha_init <- extract_alpha_init(model, smc_options$n_particles)
   rho_init <- extract_rho_init(model, smc_options$n_particles)
-  aug_init <- array(
-    dim = c(ncol(new_data$rankings), nrow(new_data$rankings), smc_options$n_particles))
-  for(i in seq_len(smc_options$n_particles)) {
-    aug_init[, , i] <- apply(new_data$rankings, 1, function(x) {
-      available <- setdiff(seq_along(x), x[!is.na(x)])
-      x[is.na(x)] <- sample(available)
-      x
-    })
-  }
 
   ret <- run_smc(
     data = new_data,
@@ -62,7 +53,7 @@ update_mallows.BayesMallows <- function(
     priors = priors,
     initial_values = list(
       alpha_init = alpha_init, rho_init = rho_init,
-      aug_init = aug_init
+      aug_init = NULL
     ),
     logz_list = model$logz_list
   )
