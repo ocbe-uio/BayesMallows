@@ -27,6 +27,7 @@ reference:
 - title: Partition functions
   desc: Tools related to computing or estimating the partition function of the
     Mallows model with various distances.
+  contents:
   - has_concept("partition function")
 
 - title: Datasets
