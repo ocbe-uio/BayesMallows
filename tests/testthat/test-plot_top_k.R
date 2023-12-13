@@ -22,4 +22,12 @@ test_that("predict_top_k works", {
 
   expect_error(predict_top_k(model_fit), "Please set save_aug = TRUE")
   expect_error(plot_top_k(model_fit), "Please set save_aug = TRUE")
+
+  model_fit <- compute_mallows(
+    data = setup_rank_data(preferences = beach_preferences),
+    compute_options = set_compute_options(nmc = 10))
+
+  expect_error(predict_top_k(model_fit), "Please specify the burnin.")
+  model_fit$burnin <- 1e7
+  expect_error(predict_top_k(model_fit), "burnin < model_fit")
 })
