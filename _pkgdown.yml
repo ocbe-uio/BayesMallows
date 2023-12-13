@@ -24,6 +24,11 @@ reference:
   contents:
   - has_concept("rank functions")
 
+- title: Partition functions
+  desc: Tools related to computing or estimating the partition function of the
+    Mallows model with various distances.
+  - has_concept("partition function")
+
 - title: Datasets
   desc: Example datasets included in the package.
   contents:

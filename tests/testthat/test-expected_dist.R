@@ -10,16 +10,12 @@ test_that("expected dist works", {
 
 test_that("expected dist fails when it should", {
   expect_error(
-    compute_expected_distance(10, 15, "spearman"),
-    "Given number of items currently not available for the specified metric"
-  )
-  expect_error(
     compute_expected_distance(10, 150, "footrule"),
-    "Given number of items currently not available for the specified metric"
+    "Not available for requested number of items."
   )
   expect_error(
     compute_expected_distance(10, 150, "ulam"),
-    "Given number of items currently not available for the specified metric"
+    "Not available for requested number of items."
   )
   expect_error(
     compute_expected_distance(10, -2, "spearman"),

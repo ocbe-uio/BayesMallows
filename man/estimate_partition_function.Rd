@@ -120,14 +120,8 @@ model_fit <- compute_mallows(
 \insertAllCited{}
 }
 \seealso{
-Other preprocessing: 
-\code{\link{get_cardinalities}()},
-\code{\link{get_transitive_closure}()},
-\code{\link{set_compute_options}()},
-\code{\link{set_initial_values}()},
-\code{\link{set_model_options}()},
-\code{\link{set_priors}()},
-\code{\link{set_smc_options}()},
-\code{\link{setup_rank_data}()}
+Other partition function: 
+\code{\link{footrule_cardinalities}},
+\code{\link{get_cardinalities}()}
 }
-\concept{preprocessing}
+\concept{partition function}

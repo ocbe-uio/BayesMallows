@@ -59,17 +59,7 @@ get_mallows_loglik <- function(
   N <- sum(observation_frequency)
 
   if (metric %in% c("ulam", "footrule", "spearman")) {
-    pfd <- partition_function_data[
-      partition_function_data$metric == metric &
-        partition_function_data$n_items == n_items &
-        partition_function_data$type == "cardinalities", ,
-      drop = FALSE
-    ]
-    if (nrow(pfd) == 0) {
-      stop("Given number of items currently not available for the specified metric")
-    } else {
-      card <- pfd$values[[1]]
-    }
+    card <- get_cardinalities(n_items, metric)$value
   } else if (metric %in% c("kendall", "cayley", "hamming")) {
     card <- NULL
   }

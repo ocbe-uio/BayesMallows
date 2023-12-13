@@ -44,18 +44,7 @@ compute_expected_distance <- function(
       out <- exp_d_ham(alpha, n_items)
     }
     if (metric %in% c("ulam", "footrule", "spearman")) {
-      pfd <- partition_function_data[
-        partition_function_data$metric == metric &
-          partition_function_data$n_items == n_items &
-          partition_function_data$type == "cardinalities", ,
-        drop = FALSE
-      ]
-      if (nrow(pfd) == 0) {
-        stop("Given number of items currently not available for the specified metric")
-      } else {
-        card <- pfd$values[[1]]
-      }
-
+      card <- get_cardinalities(n_items, metric)$value
       out <- exp(
         log_expected_dist(
           alpha = alpha * n_items,

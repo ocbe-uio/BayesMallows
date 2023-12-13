@@ -42,7 +42,7 @@
 #' @references \insertAllCited{}
 #'
 #' @example /inst/examples/estimate_partition_function_example.R
-#' @family preprocessing
+#' @family partition function
 #'
 estimate_partition_function <- function(
     method = c("importance_sampling", "asymptotic"),
@@ -118,36 +118,22 @@ estimate_partition_function <- function(
 prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
   ret <- list(cardinalities = NULL, logz_estimate = NULL)
   class(ret) <- "BayesMallowsPartitionFunction"
-  # First, has the user supplied an estimate?
+
   if (!is.null(logz_estimate)) {
     ret$logz_estimate <- logz_estimate
     return(ret)
   }
 
-  # Second, do we have a sequence?
-  relevant_params <- partition_function_data[partition_function_data$n_items == n_items &
-    partition_function_data$metric == metric &
-    partition_function_data$type == "cardinalities", , drop = FALSE]
-
-  if (nrow(relevant_params) == 1) {
-    ret$cardinalities <- unlist(relevant_params$values)
-    return(ret)
-  }
-
-  # Third, do we have an importance sampling estimate?
-  relevant_params <- partition_function_data[partition_function_data$n_items == n_items &
-    partition_function_data$metric == metric &
-    partition_function_data$type == "importance_sampling", , drop = FALSE]
-
-  if (nrow(relevant_params) == 1) {
-    ret$logz_estimate <- unlist(relevant_params$values)
-    return(ret)
-  }
-
-  # Fifth, can we compute the partition function in our C++ code?
   if (metric %in% c("cayley", "hamming", "kendall")) {
     return(ret)
   }
 
-  stop("Partition function not available. Please compute an estimate using estimate_partition_function().")
+  tryCatch({
+      relevant_params <- get_cardinalities(n_items, metric)
+      ret$cardinalities <- relevant_params$value
+      return(ret)
+    },
+  error = function(e) {
+    stop("Partition function not available. Please compute an estimate using estimate_partition_function().")
+  })
 }

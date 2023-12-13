@@ -116,6 +116,6 @@ test_that("get_mallows_loglik works", {
       metric = "spearman",
       rankings = do.call(rbind, replicate(3, list(1:100), simplify = "list"))
     ),
-    "Given number of items currently not available for the specified metric"
+    "Not available for requested number of items."
   )
 })

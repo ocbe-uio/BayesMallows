@@ -1,8 +1,8 @@
 test_that("compute_mallows is correct for complete data", {
   expectations <- data.frame(
     metric = c("footrule", "spearman", "kendall"),
-    mean = c(10.83725, 1.98287, 16.30534),
-    sd = c(0.7013675, 0.1794535, 1.192979)
+    mean = c(10.83725, 2.362491, 16.30534),
+    sd = c(0.7013675, 0.2393723, 1.192979)
   )
 
   for (i in seq_len(nrow(expectations))) {
@@ -91,8 +91,8 @@ test_that("compute_mallows is correct for top-k ranks", {
 
   expectations <- data.frame(
     metric = c("footrule", "spearman", "kendall"),
-    mean = c(9.629511, 1.716588, 14.07414),
-    sd = c(0.8694795, 0.179755, 1.385546)
+    mean = c(9.629511, 1.978859, 14.07414),
+    sd = c(0.8694795, 0.3140762, 1.385546)
   )
 
   for (i in seq_len(nrow(expectations))) {

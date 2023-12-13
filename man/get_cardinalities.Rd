@@ -4,18 +4,18 @@
 \alias{get_cardinalities}
 \title{Get cardinalities for each distance}
 \usage{
-get_cardinalities(n_items, metric = c("footrule", "spearman"))
+get_cardinalities(n_items, metric = c("footrule", "spearman", "ulam"))
 }
 \arguments{
 \item{n_items}{Number of items.}
 
-\item{metric}{Distance function.}
+\item{metric}{Distance function, one of "footrule", "spearman", or "ulam".}
 }
 \value{
-A dataframe with two columns, \code{distance} which contains each
-distance in the support set at the current number of items, i.e.,
-\eqn{d_{m}}, and \code{value} which contains the number of values at this
-particular distances, i.e., \eqn{N_{m,n}}.
+A dataframe with two columns, \code{distance} which contains each distance
+in the support set at the current number of items, i.e., \eqn{d_{m}}, and
+\code{value} which contains the number of values at this particular distances,
+i.e., \eqn{N_{m,n}}.
 }
 \description{
 The partition function for the Mallows model can be defined in a
@@ -24,11 +24,16 @@ computationally efficient manner as
   \mathcal{D}_{n}} N_{m,n} e^{-(\alpha/n) d_{m}}}.
 In this equation, \eqn{\mathcal{D}_{n}} a set containing all possible
 distances at the given number of items, and \eqn{d_{m}} is on element of
-this set. Finally, \eqn{N_{m,n}} is the number of possible
-configurations of the items that give the particular distance. See
+this set. Finally, \eqn{N_{m,n}} is the number of possible configurations
+of the items that give the particular distance. See
 \insertCite{irurozki2016;textual}{BayesMallows},
 \insertCite{vitelli2018;textual}{BayesMallows}, and
 \insertCite{crispino2023;textual}{BayesMallows} for details.
+
+For footrule distance, the cardinalities come from entry A062869 in the
+On-Line Encyclopedia of Integer Sequences (OEIS)
+\insertCite{oeis}{BayesMallows}. For Spearman distance, they come from
+entry A175929, and for Ulam distance from entry A126065.
 }
 \examples{
 # Extract the cardinalities for four items with footrule distance
@@ -54,14 +59,8 @@ sum(apply(perms, 1, function(x) exp(-alpha / n_items * sum((x - 1:4)^2))))
 \insertAllCited{}
 }
 \seealso{
-Other preprocessing: 
+Other partition function: 
 \code{\link{estimate_partition_function}()},
-\code{\link{get_transitive_closure}()},
-\code{\link{set_compute_options}()},
-\code{\link{set_initial_values}()},
-\code{\link{set_model_options}()},
-\code{\link{set_priors}()},
-\code{\link{set_smc_options}()},
-\code{\link{setup_rank_data}()}
+\code{\link{footrule_cardinalities}}
 }
-\concept{preprocessing}
+\concept{partition function}
