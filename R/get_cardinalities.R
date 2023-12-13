@@ -24,21 +24,27 @@
 #'
 #' @references \insertAllCited{}
 #'
-#' @examples
-#' # Extract the cardinalities for four items with footrule distance
-#' n_items <- 4
-#' dat <- get_cardinalities(n_items)
-#' # Compute the partition function at alpha = 2
-#' alpha <- 2
-#' sum(dat$value * exp(-alpha / n_items * dat$distance))
+#' @example inst/examples/get_cardinalities_example.R
 #' @family preprocessing
-get_cardinalities <- function(n_items, metric = "footrule") {
-  metric <- match.arg(metric, "footrule")
+get_cardinalities <- function(
+    n_items,
+    metric = c("footrule", "spearman", "ulam")) {
+  metric <- match.arg(metric, c("footrule", "spearman", "ulam"))
 
   if(metric == "footrule") {
     if(n_items > length(footrule_cardinalities)) {
       stop("Not available for requested number of items.")
     }
     as.data.frame(footrule_cardinalities[[n_items]])
+  } else if(metric == "spearman") {
+    if(n_items > length(spearman_cardinalities)) {
+      stop("Not available for requested number of items.")
+    }
+    as.data.frame(spearman_cardinalities[[n_items]])
+  } else if(metric == "ulam") {
+    if(n_items > length(ulam_cardinalities)) {
+      stop("Not available for requested number of items.")
+    }
+    as.data.frame(ulam_cardinalities[[n_items]])
   }
 }
