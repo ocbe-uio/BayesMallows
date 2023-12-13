@@ -121,6 +121,7 @@ model_fit <- compute_mallows(
 }
 \seealso{
 Other preprocessing: 
+\code{\link{get_cardinalities}()},
 \code{\link{get_transitive_closure}()},
 \code{\link{set_compute_options}()},
 \code{\link{set_initial_values}()},

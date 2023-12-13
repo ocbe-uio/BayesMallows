@@ -37,6 +37,7 @@ Mallows model.
 \seealso{
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
+\code{\link{get_cardinalities}()},
 \code{\link{get_transitive_closure}()},
 \code{\link{set_compute_options}()},
 \code{\link{set_initial_values}()},

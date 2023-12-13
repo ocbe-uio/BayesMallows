@@ -32,6 +32,7 @@ dim(get_transitive_closure(dat))
 \seealso{
 Other preprocessing: 
 \code{\link{estimate_partition_function}()},
+\code{\link{get_cardinalities}()},
 \code{\link{set_compute_options}()},
 \code{\link{set_initial_values}()},
 \code{\link{set_model_options}()},
