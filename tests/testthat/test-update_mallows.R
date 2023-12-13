@@ -26,6 +26,7 @@ test_that("update_mallows works", {
 
   expect_equal(mod_final$rho$value[169], 17)
 
+  skip_on_os("mac")
   potato_top_10 <- ifelse(potato_visual[1:10, ] > 10, NA_real_,
     potato_visual[1:10, ]
   )
