@@ -23,9 +23,8 @@ Clustering::Clustering(const Parameters& pars,
     current_cluster_assignment = cluster_assignment.col(0);
 
     dist_mat.set_size(n_assessors, pars.n_clusters);
-
-    within_cluster_distance.set_size(pars.n_clusters,
-                                     include_wcd ? pars.nmc : 1);
+    within_cluster_distance.set_size(
+      pars.n_clusters, include_wcd ? pars.nmc : 1);
     update_wcd(0);
   }
 

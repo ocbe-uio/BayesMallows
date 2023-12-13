@@ -41,11 +41,12 @@ plot_elbow <- function(..., burnin = NULL) {
       }
     }
 
-    if (is.null(x$within_cluster_distance)) {
+    if (length(unique(x$within_cluster_distance$iteration)) != x$nmc) {
       stop("To get an elbow plot, set include_wcd=TRUE in compute_mallows")
     }
 
-    df <- x$within_cluster_distance[x$within_cluster_distance$iteration > x$burnin, , drop = FALSE]
+    df <- x$within_cluster_distance[
+      x$within_cluster_distance$iteration > x$burnin, , drop = FALSE]
 
     if (nrow(df) <= 0) stop("burnin must be strictly smaller than the number of MCMC samples")
 
