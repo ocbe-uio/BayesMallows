@@ -40,3 +40,28 @@ test_that("estimate_partition_function works", {
   )
   expect_equal(fit[[4]], -41.9129447085325)
 })
+
+test_that("estimate_partition_function works in parallel", {
+  cl <- parallel::makeCluster(2)
+  set.seed(1)
+  alpha_vector <- seq(from = 0, to = 10, by = 0.5)
+
+  fit <- estimate_partition_function(
+    method = "importance_sampling",
+    alpha_vector = alpha_vector,
+    n_items = 34,
+    metric = "kendall",
+    n_iterations = 1e3,
+    cl = cl
+  )
+  expect_equal(fit[[3]], 33.4259948749862)
+  parallel::stopCluster(cl)
+
+  mod <- compute_mallows(
+    data = setup_rank_data(t(replicate(3, sample(34)))),
+    model_options = set_model_options(metric = "kendall"),
+    compute_options = set_compute_options(nmc = 10),
+    logz_estimate = fit
+  )
+  expect_s3_class(mod, "BayesMallows")
+})
