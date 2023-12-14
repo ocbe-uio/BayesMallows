@@ -46,7 +46,9 @@ plot_elbow <- function(..., burnin = NULL) {
     }
 
     df <- x$within_cluster_distance[
-      x$within_cluster_distance$iteration > x$burnin, , drop = FALSE]
+      x$within_cluster_distance$iteration > x$burnin, ,
+      drop = FALSE
+    ]
 
     if (nrow(df) <= 0) stop("burnin must be strictly smaller than the number of MCMC samples")
 

@@ -1,10 +1,12 @@
-values <- read.delim("https://oeis.org/A062869/b062869.txt", sep = " ",
-                     col.names = paste0("V", 1:2),
-                     colClasses = c("NULL", "numeric"))$V2
+values <- read.delim("https://oeis.org/A062869/b062869.txt",
+  sep = " ",
+  col.names = paste0("V", 1:2),
+  colClasses = c("NULL", "numeric")
+)$V2
 n_items <- seq(from = 1, to = 50, by = 1)
 
 footrule_cardinalities <- list()
-for(n in n_items) {
+for (n in n_items) {
   distances <- seq(from = 0, to = floor(n^2 / 2), by = 2)
   footrule_cardinalities[[n]] <- list(
     distance = distances,

@@ -128,12 +128,14 @@ prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
     return(ret)
   }
 
-  tryCatch({
+  tryCatch(
+    {
       relevant_params <- get_cardinalities(n_items, metric)
       ret$cardinalities <- relevant_params$value
       return(ret)
     },
-  error = function(e) {
-    stop("Partition function not available. Please compute an estimate using estimate_partition_function().")
-  })
+    error = function(e) {
+      stop("Partition function not available. Please compute an estimate using estimate_partition_function().")
+    }
+  )
 }

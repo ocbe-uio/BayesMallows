@@ -35,18 +35,18 @@ get_cardinalities <- function(
     metric = c("footrule", "spearman", "ulam")) {
   metric <- match.arg(metric, c("footrule", "spearman", "ulam"))
 
-  if(metric == "footrule") {
-    if(n_items > length(footrule_cardinalities)) {
+  if (metric == "footrule") {
+    if (n_items > length(footrule_cardinalities)) {
       stop("Not available for requested number of items.")
     }
     as.data.frame(footrule_cardinalities[[n_items]])
-  } else if(metric == "spearman") {
-    if(n_items > length(spearman_cardinalities)) {
+  } else if (metric == "spearman") {
+    if (n_items > length(spearman_cardinalities)) {
       stop("Not available for requested number of items.")
     }
     as.data.frame(spearman_cardinalities[[n_items]])
-  } else if(metric == "ulam") {
-    if(n_items > length(ulam_cardinalities)) {
+  } else if (metric == "ulam") {
+    if (n_items > length(ulam_cardinalities)) {
       stop("Not available for requested number of items.")
     }
     as.data.frame(ulam_cardinalities[[n_items]])
