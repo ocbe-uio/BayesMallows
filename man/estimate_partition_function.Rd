@@ -48,7 +48,12 @@ Estimate the logarithm of the partition function of the Mallows rank model.
 Choose between the importance sampling algorithm described in
 \insertCite{vitelli2018}{BayesMallows} and the IPFP algorithm for computing
 an asymptotic approximation described in
-\insertCite{mukherjee2016}{BayesMallows}.
+\insertCite{mukherjee2016}{BayesMallows}. Note that exact partition functions
+can be computed efficiently for Cayley, Hamming and Kendall distances with
+any number of items, for footrule distances with up to 50 items, Spearman
+distance with up to 20 items, and Ulam distance with up to 60 items. This
+function is thus intended for the complement of these cases. See
+\code{\link[=get_cardinalities]{get_cardinalities()}} for details.
 }
 \examples{
 # IMPORTANCE SAMPLING
