@@ -11,8 +11,7 @@
 #'   the mixture weights.
 #' @param metric Character string specifying the distance measure to use.
 #'   Available options are `"kendall"`, `"cayley"`, `"hamming"`,
-#'   `"ulam"` for `n_items<=95`, `"footrule"` for
-#'   `n_items<=50` and `"spearman"` for `n_items<=14`.
+#'   `"ulam"`, `"footrule"`, and `"spearman"`.
 #' @param rankings A matrix with observed rankings in each row.
 #' @param observation_frequency A vector of observation frequencies (weights) to apply to
 #'   each row in `rankings`. This can speed up computation if a large
@@ -40,29 +39,24 @@ get_mallows_loglik <- function(
     "kendall", "ulam"
   ))
   if (!is.matrix(rankings)) rankings <- matrix(rankings, nrow = 1)
-
-
   if (!is.null(observation_frequency)) {
     if (nrow(rankings) != length(observation_frequency)) {
-      stop("observation_frequency must be of same length as the number of rows in rankings")
+      stop(
+        "observation_frequency must be ",
+        "of same length as the number of rows in rankings"
+      )
     }
   } else {
     observation_frequency <- rep(1, nrow(rankings))
   }
 
-  if (!is.matrix(rho)) {
-    rho <- matrix(rho, nrow = 1)
-  }
+  if (!is.matrix(rho)) rho <- matrix(rho, nrow = 1)
 
   n_clusters <- length(weights)
   n_items <- ncol(rankings)
   N <- sum(observation_frequency)
 
-  if (metric %in% c("ulam", "footrule", "spearman")) {
-    card <- get_cardinalities(n_items, metric)$value
-  } else if (metric %in% c("kendall", "cayley", "hamming")) {
-    card <- NULL
-  }
+  pfun_values <- prepare_partition_function(metric, n_items)
 
   loglik <- vapply(
     X = seq_len(n_clusters),
@@ -73,9 +67,8 @@ get_mallows_loglik <- function(
         metric = metric, observation_frequency = observation_frequency
       )) +
         N * get_partition_function(
-          alpha = alpha[g],
-          n_items = n_items, metric = metric,
-          logz_list = list(logz_estimate = NULL, cardinalities = card)
+          alpha = alpha[g], n_items = n_items, metric = metric,
+          pfun_values[, 1], pfun_values[, 2]
         )) * weights[[g]]
     },
     FUN.VALUE = numeric(1)

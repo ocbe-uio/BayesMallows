@@ -12,7 +12,7 @@ Rcpp::List run_mcmc(
     Rcpp::List compute_options,
     Rcpp::List priors,
     Rcpp::List initial_values,
-    Rcpp::List logz_list,
+    arma::mat pfun_values,
     bool verbose = false){
   Data dat{data};
   Priors pris{priors};
@@ -22,6 +22,9 @@ Rcpp::List run_mcmc(
   clus.update_dist_mat(dat, pars);
   int alpha_index = 0, rho_index = 0, aug_index = 0,
     cluster_assignment_index = 0;
+
+  auto pfun = choose_partition_function(
+    dat.n_items, pars.metric, pfun_values.col(0), pfun_values.col(1));
 
   for(size_t t{1}; t < pars.nmc; ++t){
     if (t % 1000 == 0) {
@@ -37,14 +40,14 @@ Rcpp::List run_mcmc(
 
     if(t % pars.alpha_jump == 0) {
       ++alpha_index;
-      pars.update_alpha(alpha_index, dat, logz_list, pris,
+      pars.update_alpha(alpha_index, dat, pfun, pris,
                         clus.current_cluster_assignment);
       pars.alpha_old = pars.alpha.col(alpha_index);
     }
 
   if(clus.clustering){
     clus.update_cluster_probs(pars, pris);
-    clus.update_cluster_labels(t, dat, pars, logz_list);
+    clus.update_cluster_labels(t, dat, pars, pfun);
 
     if(t % clus.clus_thinning == 0){
       ++cluster_assignment_index;
@@ -80,4 +83,5 @@ Rcpp::List run_mcmc(
     Rcpp::Named("n_assessors") = dat.n_assessors,
     Rcpp::Named("observation_frequency") = dat.observation_frequency
   );
+
 }

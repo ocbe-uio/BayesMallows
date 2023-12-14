@@ -1,5 +1,6 @@
 #pragma once
 #include <RcppArmadillo.h>
+#include "partition_functions.h"
 
 struct Data {
   Data(const Rcpp::List& data);
@@ -39,7 +40,7 @@ struct Parameters {
   void update_alpha(
       int alpha_index,
       const Data& dat,
-      const Rcpp::List& logz_list,
+      const std::unique_ptr<PartitionFunction>& pfun,
       const Priors& priors,
       const arma::uvec& current_cluster_assignment);
 
@@ -84,7 +85,7 @@ struct Clustering {
   void update_cluster_probs(const Parameters& pars, const Priors& pris);
   void update_cluster_labels(const int t, const Data& dat,
                              const Parameters& pars,
-                             const Rcpp::List& logz_list);
+                             const std::unique_ptr<PartitionFunction>& pfun);
 
   void update_wcd(const int t);
   void update_dist_mat(const Data& dat, const Parameters& pars);
@@ -134,7 +135,7 @@ struct SMCParameters {
   void update_alpha(
       const unsigned int particle_index,
       const SMCData& dat,
-      const Rcpp::List& logz_list,
+      const std::unique_ptr<PartitionFunction>& pfun,
       const Priors& priors);
 
   void update_rho(
@@ -165,7 +166,7 @@ struct SMCAugmentation {
   void reweight(
       SMCParameters& pars,
       const SMCData& dat,
-      const Rcpp::List& logz_list);
+      const std::unique_ptr<PartitionFunction>& pfun);
 
   void augment_partial(
       const SMCParameters& pars,

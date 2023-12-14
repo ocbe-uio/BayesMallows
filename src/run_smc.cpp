@@ -14,13 +14,15 @@ Rcpp::List  run_smc(
   Rcpp::List compute_options,
   Rcpp::List priors,
   Rcpp::List initial_values,
-  Rcpp::List logz_list
+  arma::mat pfun_values
 ) {
   SMCData dat{data, new_data};
   SMCParameters pars{model_options, smc_options, compute_options, initial_values};
   Priors pris{priors};
   SMCAugmentation aug{dat, smc_options, initial_values, pars.n_particles};
-  aug.reweight(pars, dat, logz_list);
+  auto pfun = choose_partition_function(
+    dat.n_items, pars.metric, pfun_values.col(0), pfun_values.col(1));
+  aug.reweight(pars, dat, pfun);
   uvec index = pars.draw_resampling_index();
   pars.resample(index);
   aug.resample(index);
@@ -29,7 +31,7 @@ Rcpp::List  run_smc(
     for (size_t kk{}; kk < pars.mcmc_steps; ++kk) {
       aug.update_data(ii, dat);
       pars.update_rho(ii, dat);
-      pars.update_alpha(ii, dat, logz_list, pris);
+      pars.update_alpha(ii, dat, pfun, pris);
       aug.update_missing_ranks(ii, dat, pars);
     }
   }

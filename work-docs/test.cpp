@@ -1,19 +1,19 @@
-#include <Rcpp.h>
+#include <memory>
+#include "../src/partition_functions.h"
 using namespace Rcpp;
 
-
 // [[Rcpp::export]]
-IntegerVector test(int size) {
-  return sample(size, size) - 1;
+double logz(double alpha, int n_items, std::string metric,
+            arma::vec distances, arma::vec cardinalities) {
+  auto pfun = choose_partition_function(n_items, metric, distances, cardinalities);
+  return pfun->logz(alpha);
 }
 
-
-// You can include R code blocks in C++ files processed with sourceCpp
-// (useful for testing and development). The R code will be automatically
-// run after the compilation.
-//
-
 /*** R
-set.seed(1)
-test(10)
+library(BayesMallows)
+n_items <- 5
+metric <- "ulam"
+alpha <- 2
+card <- get_cardinalities(n_items, metric)
+logz(2, n_items, metric, card$distance, card$value)
 */

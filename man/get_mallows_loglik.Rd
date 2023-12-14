@@ -27,8 +27,7 @@ the mixture weights.}
 
 \item{metric}{Character string specifying the distance measure to use.
 Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
-\code{"ulam"} for \code{n_items<=95}, \code{"footrule"} for
-\code{n_items<=50} and \code{"spearman"} for \code{n_items<=14}.}
+\code{"ulam"}, \code{"footrule"}, and \code{"spearman"}.}
 
 \item{rankings}{A matrix with observed rankings in each row.}
 

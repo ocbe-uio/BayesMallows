@@ -115,27 +115,18 @@ estimate_partition_function <- function(
   stats::lm(form, data = estimate)$coefficients
 }
 
-prepare_partition_function <- function(logz_estimate = NULL, metric, n_items) {
-  ret <- list(cardinalities = NULL, logz_estimate = NULL)
-  class(ret) <- "BayesMallowsPartitionFunction"
-
-  if (!is.null(logz_estimate)) {
-    ret$logz_estimate <- logz_estimate
-    return(ret)
-  }
-
+prepare_partition_function <- function(metric, n_items) {
   if (metric %in% c("cayley", "hamming", "kendall")) {
-    return(ret)
+    return(matrix(c(0, 0), ncol = 2))
   }
 
   tryCatch(
-    {
-      relevant_params <- get_cardinalities(n_items, metric)
-      ret$cardinalities <- relevant_params$value
-      return(ret)
-    },
+    return(as.matrix(get_cardinalities(n_items, metric))),
     error = function(e) {
-      stop("Partition function not available. Please compute an estimate using estimate_partition_function().")
+      stop(
+        "Partition function not available. ",
+        "Please compute an estimate using estimate_partition_function()."
+      )
     }
   )
 }

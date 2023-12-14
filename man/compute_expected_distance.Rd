@@ -17,8 +17,8 @@ in the Mallows rank model.}
 \item{n_items}{Integer specifying the number of items.}
 
 \item{metric}{Character string specifying the distance measure to use.
-Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"ulam"} for
-\code{n_items<=95}, \code{"footrule"}, and \code{"spearman"}.}
+Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"}, \code{"ulam"},
+\code{"footrule"}, and \code{"spearman"}.}
 }
 \value{
 A scalar providing the expected value of the \code{metric} under the

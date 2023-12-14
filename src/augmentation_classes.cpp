@@ -3,7 +3,6 @@
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
 #include "distances.h"
-#include "partitionfuns.h"
 using namespace arma;
 
 Augmentation::Augmentation(
@@ -109,14 +108,11 @@ void Augmentation::update_missing_ranks(
 void SMCAugmentation::reweight(
     SMCParameters& pars,
     const SMCData& dat,
-    const Rcpp::List& logz_list
+    const std::unique_ptr<PartitionFunction>& pfun
 ) {
   augment_partial(pars, dat);
 
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
-    const double log_z_alpha = get_partition_function(
-      dat.n_items, pars.alpha_samples(particle), logz_list, pars.metric
-    );
     double item_correction_contribution{};
     if(!dat.consistent.is_empty()) {
       for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
@@ -151,7 +147,8 @@ void SMCAugmentation::reweight(
 
     pars.log_inc_wgt(particle) =
       new_user_contribution + item_correction_contribution -
-      dat.num_new_obs * log_z_alpha - log_aug_prob(particle);
+      dat.num_new_obs * pfun->logz(pars.alpha_samples(particle)) -
+      log_aug_prob(particle);
   }
 }
 

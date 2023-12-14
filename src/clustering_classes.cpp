@@ -1,6 +1,5 @@
 #include <Rmath.h>
 #include "classes.h"
-#include "partitionfuns.h"
 #include "distances.h"
 using namespace arma;
 
@@ -44,15 +43,14 @@ void Clustering::update_cluster_labels(
     const int t,
     const Data& dat,
     const Parameters& pars,
-    const Rcpp::List& logz_list
+    const std::unique_ptr<PartitionFunction>& pfun
 ){
   uvec new_cluster_assignment(dat.n_assessors);
   mat assignment_prob(dat.n_assessors, pars.n_clusters);
   for(size_t i{}; i < pars.n_clusters; ++i){
     assignment_prob.col(i) = std::log(cluster_probs(i)) -
       pars.alpha_old(i) / dat.n_items * dist_mat.col(i) -
-      get_partition_function(dat.n_items, pars.alpha_old(i), logz_list,
-                             pars.metric);
+      pfun->logz(pars.alpha_old(i));
   }
 
   for(size_t i = 0; i < dat.n_assessors; ++i){

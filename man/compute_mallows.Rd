@@ -10,7 +10,6 @@ compute_mallows(
   compute_options = set_compute_options(),
   priors = set_priors(),
   initial_values = set_initial_values(),
-  logz_estimate = NULL,
   verbose = FALSE,
   cl = NULL
 )
@@ -30,15 +29,6 @@ returned from \code{\link[=set_compute_options]{set_compute_options()}}.}
 
 \item{initial_values}{An object of class "BayesMallowsInitialValues" returned
 from \code{\link[=set_initial_values]{set_initial_values()}}.}
-
-\item{logz_estimate}{Estimate of the partition function, computed with
-\code{\link[=estimate_partition_function]{estimate_partition_function()}}. Defaults to \code{NULL}, which
-means means that \code{compute_mallows} attempts to compute the
-partition function by using either a pre-defined integer sequence or a
-pre-computed importance sampling estimate. When Cayley, Hamming, or
-Kendall distance is used, the partition function is efficiently
-computed analytically, and hence in these cases the argument is not needed,
-although it will still be used if provided.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed

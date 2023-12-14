@@ -1,7 +1,6 @@
 #include <Rmath.h>
 #include "classes.h"
 #include "distances.h"
-#include "partitionfuns.h"
 #include "leapandshift.h"
 #include "missing_data.h"
 using namespace arma;
@@ -19,7 +18,7 @@ AlphaRatio make_new_alpha(
     const vec& rho_old,
     const double& alpha_prop_sd,
     const std::string& metric,
-    const Rcpp::List& logz_list,
+    const std::unique_ptr<PartitionFunction>& pfun,
     const arma::mat& rankings,
     const arma::vec& observation_frequency,
     const double& n_items,
@@ -33,10 +32,9 @@ AlphaRatio make_new_alpha(
   double ratio =
     alpha_diff / n_items * rank_dist +
     priors.lambda * alpha_diff +
-    sum(observation_frequency) * (
-        get_partition_function(n_items, alpha_old, logz_list, metric) -
-          get_partition_function(n_items, alpha_proposal, logz_list, metric)
-    ) + std::log(alpha_proposal) - std::log(alpha_old);
+    sum(observation_frequency) *
+    (pfun->logz(alpha_old) - pfun->logz(alpha_proposal)) +
+    std::log(alpha_proposal) - std::log(alpha_old);
 
   return AlphaRatio{alpha_proposal, ratio > std::log(R::unif_rand())};
 }
@@ -206,7 +204,7 @@ void Parameters::update_shape(int t, const Data& dat,
 void Parameters::update_alpha(
     int alpha_index,
     const Data& dat,
-    const Rcpp::List& logz_list,
+    const std::unique_ptr<PartitionFunction>& pfun,
     const Priors& priors,
     const uvec& current_cluster_assignment) {
 
@@ -219,7 +217,7 @@ void Parameters::update_alpha(
 
     AlphaRatio test = make_new_alpha(
       alpha_old(i), rho_old.col(i),
-      alpha_prop_sd, metric, logz_list, cluster_rankings,
+      alpha_prop_sd, metric, pfun, cluster_rankings,
       cluster_frequency, dat.n_items, priors);
 
     if(test.accept){
@@ -233,13 +231,13 @@ void Parameters::update_alpha(
 void SMCParameters::update_alpha(
     const unsigned int particle_index,
     const SMCData& dat,
-    const Rcpp::List& logz_list,
+    const std::unique_ptr<PartitionFunction>& pfun,
     const Priors& priors) {
 
   AlphaRatio test = make_new_alpha(
     alpha_samples(particle_index),
     rho_samples.col(particle_index),
-    alpha_prop_sd, metric, logz_list,
+    alpha_prop_sd, metric, pfun,
     dat.rankings, dat.observation_frequency,
     dat.n_items, priors
   );
