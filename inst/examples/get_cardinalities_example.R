@@ -7,7 +7,7 @@ sum(dat$value * exp(-alpha / n_items * dat$distance))
 #'
 # We can confirm that it is correct by enumerating all possible combinations
 all <- expand.grid(1:4, 1:4, 1:4, 1:4)
-perms <- all[apply(all, 1, function(x) {length(unique(x)) == 4}),]
+perms <- all[apply(all, 1, function(x) length(unique(x)) == 4), ]
 sum(apply(perms, 1, function(x) exp(-alpha / n_items * sum(abs(x - 1:4)))))
 
 # We do the same for the Spearman distance
