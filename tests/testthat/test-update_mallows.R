@@ -67,3 +67,37 @@ test_that("update_mallows works", {
   )
   expect_equal(mod_final$rho$value[[300]], 2)
 })
+
+test_that("update_mallows handles estimated partition function", {
+  set.seed(199)
+  dat <- t(replicate(3, sample(22)))
+  fit <- estimate_partition_function(
+    method = "asymptotic",
+    alpha_vector = seq(from = 0, to = 1, by = .1),
+    n_items = 22,
+    metric = "spearman",
+    n_iterations = 50
+  )
+  mod <- compute_mallows(
+    data = setup_rank_data(dat),
+    model_options = set_model_options(metric = "spearman"),
+    compute_options = set_compute_options(nmc = 10, burnin = 0),
+    pfun_estimate = fit
+  )
+  expect_equal(mod$pfun_estimate, fit)
+
+  newdat <- t(replicate(3, sample(22)))
+  mod1 <- update_mallows(
+    model = mod,
+    new_data = setup_rank_data(newdat),
+    smc_options = set_smc_options(n_particles = 5)
+    )
+  expect_equal(mod1$pfun_estimate, fit)
+
+  newdat <- t(replicate(3, sample(22)))
+  mod2 <- update_mallows(
+    model = mod1,
+    new_data = setup_rank_data(newdat)
+  )
+  expect_equal(mod2$pfun_estimate, fit)
+})

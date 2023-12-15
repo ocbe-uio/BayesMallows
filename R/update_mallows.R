@@ -55,7 +55,8 @@ update_mallows.BayesMallows <- function(
       alpha_init = alpha_init, rho_init = rho_init,
       aug_init = NULL
     ),
-    pfun_values = model$pfun_values
+    pfun_values = model$pfun_values,
+    pfun_estimate = model$pfun_estimate
   )
 
   ret <- c(ret, tidy_smc(ret, model$items))
@@ -69,6 +70,7 @@ update_mallows.BayesMallows <- function(
   ret$n_clusters <- 1
   ret$data <- new_data
   ret$pfun_values <- model$pfun_values
+  ret$pfun_estimate <- model$pfun_estimate
   ret$metric <- model$metric
   ret$items <- model$items
   class(ret) <- c("SMCMallows", "BayesMallows")
@@ -130,7 +132,8 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
       rho_init = model$rho_samples,
       aug_init = model$augmented_rankings
     ),
-    pfun_values = model$pfun_values
+    pfun_values = model$pfun_values,
+    pfun_estimate = model$pfun_estimate
   )
 
   tidy_parameters <- tidy_smc(ret, model$items)
