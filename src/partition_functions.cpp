@@ -1,4 +1,3 @@
-#include <memory>
 #include "partition_functions.h"
 
 std::unique_ptr<PartitionFunction> choose_partition_function(
