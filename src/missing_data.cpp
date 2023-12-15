@@ -23,7 +23,8 @@ vec setdiff(const vec& x, const vec& y){
 vec propose_augmentation(const vec& ranks, const uvec& indicator){
   vec proposal = ranks;
   vec mutable_ranks = ranks(find(indicator == 1));
-  Rcpp::IntegerVector inds = Rcpp::sample(mutable_ranks.size(), mutable_ranks.size()) - 1;
+  Rcpp::IntegerVector inds = Rcpp::sample(mutable_ranks.size(),
+                                          mutable_ranks.size()) - 1;
   arma::uvec inds_arma = Rcpp::as<uvec>(Rcpp::wrap(inds));
   proposal(find(indicator == 1)) = mutable_ranks(inds_arma);
   return proposal;
@@ -67,21 +68,17 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
       unranked_items, rankings, alpha, rho, metric, true
     );
 
-    PseudoProposal bprop = make_pseudo_proposal(
+    auto bprop = make_pseudo_proposal(
       unranked_items, rankings, alpha, rho, metric, false);
 
     proposal = pprop.rankings;
     log_hastings_correction = -std::log(pprop.probability) +
       std::log(bprop.probability);
-
   } else {
     proposal = propose_augmentation(rankings, missing_indicator);
   }
 
-
-  // Draw a uniform random number
   double u = std::log(R::runif(0, 1));
-
   int n_items = rho.n_elem;
 
   double ratio = -alpha / n_items *
@@ -123,7 +120,8 @@ PseudoProposal make_pseudo_proposal(
     if(available_rankings.n_elem <= 1) break;
     unranked_items = unranked_items.subvec(1, available_rankings.n_elem - 1);
 
-    rankings(unranked_items) = setdiff(available_rankings, available_rankings(span(ranking_chosen)));
+    rankings(unranked_items) = setdiff(
+      available_rankings, available_rankings(span(ranking_chosen)));
   }
 
   return PseudoProposal(rankings, prob);

@@ -129,6 +129,7 @@ compute_mallows <- function(
 
   fit <- tidy_mcmc(fits, data, model_options, compute_options)
   fit$pfun_values <- pfun_values
+  fit$pfun_estimate <- pfun_estimate
   fit$priors <- priors
   class(fit) <- "BayesMallows"
   return(fit)

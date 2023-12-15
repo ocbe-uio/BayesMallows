@@ -79,3 +79,23 @@ test_that("compute_mallows is platform independent", {
   mod <- compute_mallows(setup_rank_data(dat))
   expect_equal(mod$alpha$value[1998], 7.26333324707436)
 })
+
+
+test_that("compute_mallows works with estimated partition function", {
+  set.seed(199)
+  dat <- t(replicate(3, sample(22)))
+  fit <- estimate_partition_function(
+    method = "asymptotic",
+    alpha_vector = seq(from = 0, to = 1, by = .1),
+    n_items = 22,
+    metric = "spearman",
+    n_iterations = 50
+    )
+  mod <- compute_mallows(
+    data = setup_rank_data(dat),
+    model_options = set_model_options(metric = "spearman"),
+    compute_options = set_compute_options(nmc = 10),
+    pfun_estimate = fit
+  )
+  expect_equal(mod$pfun_estimate, fit)
+})

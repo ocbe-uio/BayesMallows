@@ -56,8 +56,7 @@ double ulam_distance(const vec& r1, const vec& r2){
   return static_cast<double>(distance);
 }
 
-
-double  get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
+double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
   if (r1.n_elem != r2.n_elem){
     Rcpp::stop("r1 and r2 must have the same length");
   }
