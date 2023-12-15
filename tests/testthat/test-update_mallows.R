@@ -90,6 +90,7 @@ test_that("update_mallows handles estimated partition function", {
   mod1 <- update_mallows(
     model = mod,
     new_data = setup_rank_data(newdat),
+    model_options = set_model_options(metric = "spearman"),
     smc_options = set_smc_options(n_particles = 5)
     )
   expect_equal(mod1$pfun_estimate, fit)

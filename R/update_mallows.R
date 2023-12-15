@@ -140,7 +140,6 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
   model$alpha <- tidy_parameters$alpha
   model$rho <- tidy_parameters$rho
   model$augmented_rankings <- ret$augmented_rankings
-  model$ESS <- ret$ESS
   model$data <- data
 
   class(model) <- c("SMCMallows", "BayesMallows")
