@@ -67,7 +67,8 @@ get_mallows_loglik <- function(
         metric = metric
       ) * observation_frequency) +
         N * get_partition_function(
-          alpha = alpha[g], n_items = n_items, metric = metric,pfun_values)) *
+          alpha = alpha[g], n_items = n_items, metric = metric, pfun_values
+        )) *
         weights[[g]]
     },
     FUN.VALUE = numeric(1)

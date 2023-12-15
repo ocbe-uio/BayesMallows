@@ -119,7 +119,9 @@ estimate_partition_function <- function(
 }
 
 prepare_partition_function <- function(metric, n_items) {
-  if (metric %in% c("cayley", "hamming", "kendall")) return(NULL)
+  if (metric %in% c("cayley", "hamming", "kendall")) {
+    return(NULL)
+  }
 
   tryCatch(
     return(as.matrix(get_cardinalities(n_items, metric))),

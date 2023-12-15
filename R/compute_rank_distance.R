@@ -40,5 +40,6 @@ compute_rank_distance <- function(
 
   as.numeric(
     get_rank_distance(rankings = t(rankings), rho = rho, metric = metric) *
-      observation_frequency)
+      observation_frequency
+  )
 }

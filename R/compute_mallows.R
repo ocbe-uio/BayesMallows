@@ -84,13 +84,16 @@ compute_mallows <- function(
   pfun_values <- tryCatch(
     prepare_partition_function(model_options$metric, data$n_items),
     error = function(e) {
-      if(is.null(pfun_estimate)) {
-        stop("Exact partition function not known. Please provide an ",
-             "estimate in argument pfun_estimate.")
+      if (is.null(pfun_estimate)) {
+        stop(
+          "Exact partition function not known. Please provide an ",
+          "estimate in argument pfun_estimate."
+        )
       } else {
         return(NULL)
       }
-    })
+    }
+  )
 
   if (is.null(cl)) {
     lapplyfun <- lapply
