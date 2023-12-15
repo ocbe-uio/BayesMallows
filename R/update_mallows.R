@@ -81,6 +81,66 @@ update_mallows.BayesMallows <- function(
 #' @export
 #' @rdname update_mallows
 update_mallows.SMCMallows <- function(model, new_data, ...) {
+  datlist <- prepare_new_data(model, new_data)
+  ret <- run_smc(
+    data = datlist$data,
+    new_data = datlist$new_data,
+    model_options = model$model_options,
+    smc_options = model$smc_options,
+    compute_options = model$compute_options,
+    priors = model$priors,
+    initial_values = list(
+      alpha_init = model$alpha_samples,
+      rho_init = model$rho_samples,
+      aug_init = model$augmented_rankings
+    ),
+    pfun_values = model$pfun_values,
+    pfun_estimate = model$pfun_estimate
+  )
+
+  tidy_parameters <- tidy_smc(ret, model$items)
+  model$alpha <- tidy_parameters$alpha
+  model$rho <- tidy_parameters$rho
+  model$augmented_rankings <- ret$augmented_rankings
+  model$data <- datlist$data
+
+  class(model) <- c("SMCMallows", "BayesMallows")
+  model
+}
+
+
+tidy_smc <- function(ret, items) {
+  result <- list()
+  result$alpha <- tidy_alpha(matrix(ret$alpha_samples, nrow = 1), 1, 1)
+
+  rho_mat <- array(dim = c(dim(ret$rho_samples)[[1]], 1, dim(ret$rho_samples)[[2]]))
+  rho_mat[, 1, ] <- ret$rho_samples
+  result$rho <- tidy_rho(rho_mat, 1, 1, items)
+
+  result
+}
+
+extract_alpha_init <- function(model, n_particles) {
+  thinned_inds <- floor(
+    seq(
+      from = model$burnin + 1, to = ncol(model$alpha_samples),
+      length.out = n_particles
+    )
+  )
+  model$alpha_samples[1, thinned_inds, drop = TRUE]
+}
+
+extract_rho_init <- function(model, n_particles) {
+  thinned_inds <- floor(
+    seq(
+      from = model$burnin + 1, to = dim(model$rho_samples)[[3]],
+      length.out = n_particles
+    )
+  )
+  model$rho_samples[, 1, thinned_inds, drop = TRUE]
+}
+
+prepare_new_data <- function(model, new_data) {
   if (!is.null(new_data$user_ids) && !is.null(model$data$user_ids)) {
     old_users <- setdiff(model$data$user_ids, new_data$user_ids)
     updated_users <- intersect(model$data$user_ids, new_data$user_ids)
@@ -119,61 +179,5 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
       user_ids = seq_len(nrow(rankings))
     )
   }
-
-  ret <- run_smc(
-    data = data,
-    new_data = new_data,
-    model_options = model$model_options,
-    smc_options = model$smc_options,
-    compute_options = model$compute_options,
-    priors = model$priors,
-    initial_values = list(
-      alpha_init = model$alpha_samples,
-      rho_init = model$rho_samples,
-      aug_init = model$augmented_rankings
-    ),
-    pfun_values = model$pfun_values,
-    pfun_estimate = model$pfun_estimate
-  )
-
-  tidy_parameters <- tidy_smc(ret, model$items)
-  model$alpha <- tidy_parameters$alpha
-  model$rho <- tidy_parameters$rho
-  model$augmented_rankings <- ret$augmented_rankings
-  model$data <- data
-
-  class(model) <- c("SMCMallows", "BayesMallows")
-  model
-}
-
-
-tidy_smc <- function(ret, items) {
-  result <- list()
-  result$alpha <- tidy_alpha(matrix(ret$alpha_samples, nrow = 1), 1, 1)
-
-  rho_mat <- array(dim = c(dim(ret$rho_samples)[[1]], 1, dim(ret$rho_samples)[[2]]))
-  rho_mat[, 1, ] <- ret$rho_samples
-  result$rho <- tidy_rho(rho_mat, 1, 1, items)
-
-  result
-}
-
-extract_alpha_init <- function(model, n_particles) {
-  thinned_inds <- floor(
-    seq(
-      from = model$burnin + 1, to = ncol(model$alpha_samples),
-      length.out = n_particles
-    )
-  )
-  model$alpha_samples[1, thinned_inds, drop = TRUE]
-}
-
-extract_rho_init <- function(model, n_particles) {
-  thinned_inds <- floor(
-    seq(
-      from = model$burnin + 1, to = dim(model$rho_samples)[[3]],
-      length.out = n_particles
-    )
-  )
-  model$rho_samples[, 1, thinned_inds, drop = TRUE]
+  list(data = data, new_data = new_data)
 }
