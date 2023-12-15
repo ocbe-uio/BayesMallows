@@ -10,6 +10,7 @@ compute_mallows(
   compute_options = set_compute_options(),
   priors = set_priors(),
   initial_values = set_initial_values(),
+  pfun_estimate = NULL,
   verbose = FALSE,
   cl = NULL
 )
@@ -29,6 +30,11 @@ returned from \code{\link[=set_compute_options]{set_compute_options()}}.}
 
 \item{initial_values}{An object of class "BayesMallowsInitialValues" returned
 from \code{\link[=set_initial_values]{set_initial_values()}}.}
+
+\item{pfun_estimate}{Object returned from \code{\link[=estimate_partition_function]{estimate_partition_function()}}.
+Defaults to \code{NULL}, and will only be used for footrule, Spearman, or
+Ulam distances when the cardinalities are not available, cf.
+\code{\link[=get_cardinalities]{get_cardinalities()}}.}
 
 \item{verbose}{Logical specifying whether to print out the progress of the
 Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed

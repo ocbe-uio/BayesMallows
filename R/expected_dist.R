@@ -30,11 +30,7 @@ compute_expected_distance <- function(
   if (alpha < 0) {
     stop("alpha must be a non-negative value")
   } else {
-    if (metric %in% c("cayley", "hamming", "kendall")) {
-      get_expected_distance(alpha, n_items, metric, 0, 0)
-    } else if (metric %in% c("ulam", "footrule", "spearman")) {
-      card <- get_cardinalities(n_items, metric)
-      get_expected_distance(alpha, n_items, metric, card$distance, card$value)
-    }
+    pfun_values <- prepare_partition_function(metric, n_items)
+    get_expected_distance(alpha, n_items, metric, pfun_values)
   }
 }

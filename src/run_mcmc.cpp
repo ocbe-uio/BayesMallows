@@ -12,7 +12,8 @@ Rcpp::List run_mcmc(
     Rcpp::List compute_options,
     Rcpp::List priors,
     Rcpp::List initial_values,
-    arma::mat pfun_values,
+    Rcpp::Nullable<arma::mat> pfun_values,
+    Rcpp::Nullable<arma::mat> pfun_estimate,
     bool verbose = false){
   Data dat{data};
   Priors pris{priors};
@@ -24,7 +25,7 @@ Rcpp::List run_mcmc(
     cluster_assignment_index = 0;
 
   auto pfun = choose_partition_function(
-    dat.n_items, pars.metric, pfun_values.col(0), pfun_values.col(1));
+    dat.n_items, pars.metric, pfun_values, pfun_estimate);
 
   for(size_t t{1}; t < pars.nmc; ++t){
     if (t % 1000 == 0) {

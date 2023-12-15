@@ -1,5 +1,6 @@
-#' Estimate Partition Function
+#' @title Estimate Partition Function
 #'
+#' @description
 #' Estimate the logarithm of the partition function of the Mallows rank model.
 #' Choose between the importance sampling algorithm described in
 #' \insertCite{vitelli2018}{BayesMallows} and the IPFP algorithm for computing
@@ -34,12 +35,14 @@
 #'   approximation of the partition function. Only used when `method =
 #'   "asymptotic"`. Defaults to 20.
 #'
-#' @return A vector of length `degree` which can be supplied to the
-#'   `logz_estimate` argument of [compute_mallows()].
-#'
 #' @param cl Optional computing cluster used for parallelization, returned from
 #'   [parallel::makeCluster()]. Defaults to `NULL`. Only used when `method =
 #'   "importance_sampling"`.
+#'
+#'
+#' @return A matrix with two column and number of rows equal the degree of the
+#'   fitted polynomial approximating the partition function. The matrix can be
+#'   supplied to the `pfun_estimate` argument of [compute_mallows()].
 #'
 #'
 #' @export
@@ -93,10 +96,7 @@ estimate_partition_function <- function(
     }
 
     # Compute the estimate at each discrete alpha value
-    estimate <- data.frame(
-      alpha = alpha_vector,
-      log_z = log_z
-    )
+    estimate <- data.frame(alpha = alpha_vector, log_z = log_z)
   } else if (method == "asymptotic") {
     metric <- match.arg(metric, c("footrule", "spearman"))
 
@@ -111,19 +111,15 @@ estimate_partition_function <- function(
     )
   }
 
+  power <- seq(from = 0, to = degree, by = 1)
   form <- stats::as.formula(paste(
-    "log_z ~ ",
-    paste("I( alpha^", seq(from = 1, to = degree, by = 1), ")",
-      collapse = "+"
-    )
+    "log_z ~ 0 + ", paste("I( alpha^", power, ")", collapse = "+")
   ))
-  stats::lm(form, data = estimate)$coefficients
+  matrix(c(power, stats::lm(form, data = estimate)$coefficients), ncol = 2)
 }
 
 prepare_partition_function <- function(metric, n_items) {
-  if (metric %in% c("cayley", "hamming", "kendall")) {
-    return(matrix(c(0, 0), ncol = 2))
-  }
+  if (metric %in% c("cayley", "hamming", "kendall")) return(NULL)
 
   tryCatch(
     return(as.matrix(get_cardinalities(n_items, metric))),

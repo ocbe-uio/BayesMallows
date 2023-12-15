@@ -14,14 +14,13 @@ Rcpp::List  run_smc(
   Rcpp::List compute_options,
   Rcpp::List priors,
   Rcpp::List initial_values,
-  arma::mat pfun_values
-) {
+  Rcpp::Nullable<arma::mat> pfun_values) {
   SMCData dat{data, new_data};
   SMCParameters pars{model_options, smc_options, compute_options, initial_values};
   Priors pris{priors};
   SMCAugmentation aug{dat, smc_options, initial_values, pars.n_particles};
   auto pfun = choose_partition_function(
-    dat.n_items, pars.metric, pfun_values.col(0), pfun_values.col(1));
+    dat.n_items, pars.metric, pfun_values, R_NilValue);
   aug.reweight(pars, dat, pfun);
   uvec index = pars.draw_resampling_index();
   pars.resample(index);

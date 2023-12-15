@@ -30,7 +30,7 @@ compute_mallows_mixtures <- function(
     compute_options = set_compute_options(),
     priors = set_priors(),
     initial_values = set_initial_values(),
-    logz_estimate = NULL,
+    pfun_estimate = NULL,
     verbose = FALSE,
     cl = NULL) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
@@ -40,7 +40,7 @@ compute_mallows_mixtures <- function(
   } else {
     varlist <- c(
       "data", "model_options", "compute_options", "priors", "initial_values",
-      "logz_estimate", "verbose"
+      "pfun_estimate", "verbose"
     )
 
     parallel::clusterExport(cl = cl, varlist = varlist, envir = environment())

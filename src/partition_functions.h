@@ -10,8 +10,9 @@ struct PartitionFunction {
 };
 
 std::unique_ptr<PartitionFunction> choose_partition_function(
-    int n_items, std::string metric, const arma::vec& distances,
-    const arma::vec& cardinalities);
+    int n_items, std::string metric,
+    const Rcpp::Nullable<arma::mat>& pfun_values,
+    const Rcpp::Nullable<arma::mat>& pfun_estimate);
 
 struct Cayley : PartitionFunction {
   Cayley(int n_items) : n_items { n_items } {}
@@ -89,11 +90,10 @@ struct Kendall : PartitionFunction {
 struct Cardinal : PartitionFunction {
   Cardinal(
     int n_items,
-    const arma::vec& distances,
-    const arma::vec& cardinalities) :
+    const arma::mat& pfun_values) :
   n_items { n_items },
-  distances { distances },
-  cardinalities { cardinalities }{}
+  distances { pfun_values.col(0) },
+  cardinalities { pfun_values.col(1) }{}
 
   double logz(double alpha) override {
     return std::log(arma::sum(cardinalities % exp(-alpha / n_items * distances)));
@@ -106,5 +106,28 @@ struct Cardinal : PartitionFunction {
   const int n_items;
   const arma::vec distances;
   const arma::vec cardinalities;
+};
+
+struct Estimated : PartitionFunction {
+  Estimated(
+    int n_items,
+    const arma::mat& pfun_estimate) :
+  n_items { n_items },
+  power { pfun_estimate.col(0) },
+  coefficients { pfun_estimate.col(1) } {}
+
+  double logz(double alpha) override {
+    return arma::sum(
+      arma::pow(alpha + arma::zeros(coefficients.size()), power) % coefficients
+    );
+  }
+  double expected_distance(double alpha) override {
+    Rcpp::stop(
+      "Expected distance not available with estimated partition function.");
+  }
+
+  const int n_items;
+  const arma::vec power;
+  const arma::vec coefficients;
 };
 

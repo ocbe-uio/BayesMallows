@@ -36,7 +36,7 @@ test_that("compute_mallows fails properly", {
       ),
       model_options = set_model_options(metric = "spearman")
     ),
-    "Partition function not available."
+    "Exact partition function not known."
   )
 
   expect_error(

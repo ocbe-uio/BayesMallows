@@ -23,11 +23,11 @@ test_that("expected dist works", {
 test_that("expected dist fails when it should", {
   expect_error(
     compute_expected_distance(10, 150, "footrule"),
-    "Not available for requested number of items."
+    "Partition function not available."
   )
   expect_error(
     compute_expected_distance(10, 150, "ulam"),
-    "Not available for requested number of items."
+    "Partition function not available."
   )
   expect_error(
     compute_expected_distance(10, -2, "spearman"),

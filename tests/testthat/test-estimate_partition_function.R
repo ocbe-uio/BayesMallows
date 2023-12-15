@@ -19,7 +19,7 @@ test_that("estimate_partition_function works", {
       metric = m,
       n_iterations = 1e3
     )
-    expect_equal(fit[[5]], expectations[[m]])
+    expect_equal(fit[5, 2], expectations[[m]])
   }
 
   fit <- estimate_partition_function(
@@ -29,7 +29,7 @@ test_that("estimate_partition_function works", {
     metric = "footrule",
     n_iterations = 50
   )
-  expect_equal(fit[[4]], 0.0151144482198799)
+  expect_equal(fit[4, 2], 0.0151144482198799)
 
   fit <- estimate_partition_function(
     method = "asymptotic",
@@ -38,7 +38,7 @@ test_that("estimate_partition_function works", {
     metric = "spearman",
     n_iterations = 50
   )
-  expect_equal(fit[[4]], -41.9129447085325)
+  expect_equal(fit[4, 2], -41.9129447085325)
 })
 
 test_that("estimate_partition_function works in parallel", {
@@ -50,18 +50,18 @@ test_that("estimate_partition_function works in parallel", {
     method = "importance_sampling",
     alpha_vector = alpha_vector,
     n_items = 34,
-    metric = "kendall",
+    metric = "spearman",
     n_iterations = 1e3,
     cl = cl
   )
-  expect_equal(fit[[3]], 33.4259948749862)
+  expect_equal(fit[3, 2], 140.846380226927)
   parallel::stopCluster(cl)
 
   mod <- compute_mallows(
     data = setup_rank_data(t(replicate(3, sample(34)))),
-    model_options = set_model_options(metric = "kendall"),
+    model_options = set_model_options(metric = "spearman"),
     compute_options = set_compute_options(nmc = 10),
-    logz_estimate = fit
+    pfun_estimate = fit
   )
   expect_s3_class(mod, "BayesMallows")
 })

@@ -56,32 +56,30 @@ BEGIN_RCPP
 END_RCPP
 }
 // get_expected_distance
-double get_expected_distance(double alpha, int n_items, std::string metric, const arma::vec& distances, const arma::vec& cardinalities);
-RcppExport SEXP _BayesMallows_get_expected_distance(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP metricSEXP, SEXP distancesSEXP, SEXP cardinalitiesSEXP) {
+double get_expected_distance(double alpha, int n_items, std::string metric, const Rcpp::Nullable<arma::mat>& pfun_values);
+RcppExport SEXP _BayesMallows_get_expected_distance(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP metricSEXP, SEXP pfun_valuesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type distances(distancesSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type cardinalities(cardinalitiesSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_expected_distance(alpha, n_items, metric, distances, cardinalities));
+    Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::mat>& >::type pfun_values(pfun_valuesSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_expected_distance(alpha, n_items, metric, pfun_values));
     return rcpp_result_gen;
 END_RCPP
 }
 // get_partition_function
-double get_partition_function(double alpha, int n_items, std::string metric, const arma::vec& distances, const arma::vec& cardinalities);
-RcppExport SEXP _BayesMallows_get_partition_function(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP metricSEXP, SEXP distancesSEXP, SEXP cardinalitiesSEXP) {
+double get_partition_function(double alpha, int n_items, std::string metric, const Rcpp::Nullable<arma::mat>& pfun_values);
+RcppExport SEXP _BayesMallows_get_partition_function(SEXP alphaSEXP, SEXP n_itemsSEXP, SEXP metricSEXP, SEXP pfun_valuesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
     Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type distances(distancesSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type cardinalities(cardinalitiesSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_partition_function(alpha, n_items, metric, distances, cardinalities));
+    Rcpp::traits::input_parameter< const Rcpp::Nullable<arma::mat>& >::type pfun_values(pfun_valuesSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_partition_function(alpha, n_items, metric, pfun_values));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -103,8 +101,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_mcmc
-Rcpp::List run_mcmc(Rcpp::List data, Rcpp::List model_options, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List initial_values, arma::mat pfun_values, bool verbose);
-RcppExport SEXP _BayesMallows_run_mcmc(SEXP dataSEXP, SEXP model_optionsSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP initial_valuesSEXP, SEXP pfun_valuesSEXP, SEXP verboseSEXP) {
+Rcpp::List run_mcmc(Rcpp::List data, Rcpp::List model_options, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List initial_values, Rcpp::Nullable<arma::mat> pfun_values, Rcpp::Nullable<arma::mat> pfun_estimate, bool verbose);
+RcppExport SEXP _BayesMallows_run_mcmc(SEXP dataSEXP, SEXP model_optionsSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP initial_valuesSEXP, SEXP pfun_valuesSEXP, SEXP pfun_estimateSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -113,14 +111,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::List >::type compute_options(compute_optionsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type priors(priorsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type initial_values(initial_valuesSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type pfun_values(pfun_valuesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::mat> >::type pfun_values(pfun_valuesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::mat> >::type pfun_estimate(pfun_estimateSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_mcmc(data, model_options, compute_options, priors, initial_values, pfun_values, verbose));
+    rcpp_result_gen = Rcpp::wrap(run_mcmc(data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
 // run_smc
-Rcpp::List run_smc(Rcpp::List data, Rcpp::List new_data, Rcpp::List model_options, Rcpp::List smc_options, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List initial_values, arma::mat pfun_values);
+Rcpp::List run_smc(Rcpp::List data, Rcpp::List new_data, Rcpp::List model_options, Rcpp::List smc_options, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List initial_values, Rcpp::Nullable<arma::mat> pfun_values);
 RcppExport SEXP _BayesMallows_run_smc(SEXP dataSEXP, SEXP new_dataSEXP, SEXP model_optionsSEXP, SEXP smc_optionsSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP initial_valuesSEXP, SEXP pfun_valuesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -132,7 +131,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::List >::type compute_options(compute_optionsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type priors(priorsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type initial_values(initial_valuesSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type pfun_values(pfun_valuesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::mat> >::type pfun_values(pfun_valuesSEXP);
     rcpp_result_gen = Rcpp::wrap(run_smc(data, new_data, model_options, smc_options, compute_options, priors, initial_values, pfun_values));
     return rcpp_result_gen;
 END_RCPP
@@ -144,10 +143,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
     {"_BayesMallows_rank_dist_vec", (DL_FUNC) &_BayesMallows_rank_dist_vec, 4},
     {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 4},
-    {"_BayesMallows_get_expected_distance", (DL_FUNC) &_BayesMallows_get_expected_distance, 5},
-    {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 5},
+    {"_BayesMallows_get_expected_distance", (DL_FUNC) &_BayesMallows_get_expected_distance, 4},
+    {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 4},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},
-    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 7},
+    {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 8},
     {"_BayesMallows_run_smc", (DL_FUNC) &_BayesMallows_run_smc, 8},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}

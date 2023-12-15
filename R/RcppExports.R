@@ -32,12 +32,12 @@ compute_importance_sampling_estimate <- function(alpha_vector, n_items, metric =
     .Call(`_BayesMallows_compute_importance_sampling_estimate`, alpha_vector, n_items, metric, nmc)
 }
 
-get_expected_distance <- function(alpha, n_items, metric, distances, cardinalities) {
-    .Call(`_BayesMallows_get_expected_distance`, alpha, n_items, metric, distances, cardinalities)
+get_expected_distance <- function(alpha, n_items, metric, pfun_values) {
+    .Call(`_BayesMallows_get_expected_distance`, alpha, n_items, metric, pfun_values)
 }
 
-get_partition_function <- function(alpha, n_items, metric, distances, cardinalities) {
-    .Call(`_BayesMallows_get_partition_function`, alpha, n_items, metric, distances, cardinalities)
+get_partition_function <- function(alpha, n_items, metric, pfun_values) {
+    .Call(`_BayesMallows_get_partition_function`, alpha, n_items, metric, pfun_values)
 }
 
 #' Sample from the Mallows distribution.
@@ -64,8 +64,8 @@ rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, 
     .Call(`_BayesMallows_rmallows`, rho0, alpha0, n_samples, burnin, thinning, leap_size, metric)
 }
 
-run_mcmc <- function(data, model_options, compute_options, priors, initial_values, pfun_values, verbose = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, data, model_options, compute_options, priors, initial_values, pfun_values, verbose)
+run_mcmc <- function(data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, verbose = FALSE) {
+    .Call(`_BayesMallows_run_mcmc`, data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, verbose)
 }
 
 run_smc <- function(data, new_data, model_options, smc_options, compute_options, priors, initial_values, pfun_values) {

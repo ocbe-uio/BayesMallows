@@ -40,8 +40,9 @@ approximation of the partition function. Only used when \code{method = "asymptot
 \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}. Only used when \code{method = "importance_sampling"}.}
 }
 \value{
-A vector of length \code{degree} which can be supplied to the
-\code{logz_estimate} argument of \code{\link[=compute_mallows]{compute_mallows()}}.
+A matrix with two column and number of rows equal the degree of the
+fitted polynomial approximating the partition function. The matrix can be
+supplied to the \code{pfun_estimate} argument of \code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \description{
 Estimate the logarithm of the partition function of the Mallows rank model.
@@ -64,61 +65,50 @@ n_items <- 20
 metric <- "spearman"
 
 # We start with 1e3 Monte Carlo samples
-fit1 <- estimate_partition_function(method = "importance_sampling",
-                                      alpha_vector = alpha_vector,
-                                      n_items = n_items, metric = metric,
-                                      n_iterations = 1e3)
-# A vector of polynomial regression coefficients is returned
+fit1 <- estimate_partition_function(
+  method = "importance_sampling", alpha_vector = alpha_vector,
+  n_items = n_items, metric = metric, n_iterations = 1e3)
+# A matrix containing powers of alpha and regression coefficients is returned
 fit1
+# The approximated partition function can hence be obtained:
+estimate1 <-
+  vapply(alpha_vector, function(a) sum(a^fit1[, 1] * fit1[, 2]), numeric(1))
 
 # Now let us recompute with 2e3 Monte Carlo samples
-fit2 <- estimate_partition_function(method = "importance_sampling",
-                                    alpha_vector = alpha_vector,
-                                    n_items = n_items, metric = metric,
-                                    n_iterations = 2e3)
+fit2 <- estimate_partition_function(
+  method = "importance_sampling", alpha_vector = alpha_vector,
+  n_items = n_items, metric = metric, n_iterations = 2e3)
+estimate2 <-
+  vapply(alpha_vector, function(a) sum(a^fit2[, 1] * fit2[, 2]), numeric(1))
 
 # ASYMPTOTIC APPROXIMATION
 # We can also compute an estimate using the asymptotic approximation
-fit3 <- estimate_partition_function(method = "asymptotic",
-                                    alpha_vector = alpha_vector,
-                                    n_items = n_items, metric = metric,
-                                    n_iterations = 50)
+fit3 <- estimate_partition_function(
+  method = "asymptotic", alpha_vector = alpha_vector,
+  n_items = n_items, metric = metric, n_iterations = 50)
+estimate3 <-
+  vapply(alpha_vector, function(a) sum(a^fit3[, 1] * fit3[, 2]), numeric(1))
 
-# We write a little function for storing the estimates in a dataframe
-powers <- seq(from = 0, by = 1, length.out = length(fit1))
+# We can now plot the estimates side-by-side
+plot(alpha_vector, estimate1, type = "l", xlab = expression(alpha),
+     ylab = expression(log(Z(alpha))))
+lines(alpha_vector, estimate2, col = 2)
+lines(alpha_vector, estimate3, col = 3)
+legend(x = 7, y = 40, legend = c("IS,1e3", "IS,2e3", "IPFP"),
+       col = 1:3, lty = 1)
 
-compute_fit <- function(fit, type){
-  do.call(rbind, lapply(alpha_vector, function(alpha){
-    data.frame(
-      type = type,
-      alpha = alpha,
-      logz_estimate = sum(alpha^powers * fit)
-    )
-  }))
-}
-
-estimates <- rbind(
-  compute_fit(fit1, type = "Importance Sampling 1e3"),
-  compute_fit(fit2, type = "Importance Sampling 2e3"),
-  compute_fit(fit3, type = "Asymptotic")
-  )
-
-# We can now plot the two estimates side-by-side
-library(ggplot2)
-ggplot(estimates, aes(x = alpha, y = logz_estimate, color = type)) +
-  geom_line()
 # We see that the two importance sampling estimates, which are unbiased,
 # overlap. The asymptotic approximation seems a bit off. It can be worthwhile
 # to try different values of n_iterations and K.
 
 # When we are happy, we can provide the coefficient vector in the
-# logz_estimate argument to compute_mallows
+# pfun_estimate argument to compute_mallows
 # Say we choose to use the importance sampling estimate with 1e4 Monte Carlo samples:
 model_fit <- compute_mallows(
   setup_rank_data(potato_visual),
   model_options = set_model_options(metric = "spearman"),
   compute_options = set_compute_options(nmc = 200),
-  logz_estimate = fit2)
+  pfun_estimate = fit2)
 
 }
 \references{

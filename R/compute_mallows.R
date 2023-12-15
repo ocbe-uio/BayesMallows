@@ -39,6 +39,11 @@
 #' @param initial_values An object of class "BayesMallowsInitialValues" returned
 #'   from [set_initial_values()].
 #'
+#' @param pfun_estimate Object returned from [estimate_partition_function()].
+#'   Defaults to \code{NULL}, and will only be used for footrule, Spearman, or
+#'   Ulam distances when the cardinalities are not available, cf.
+#'   [get_cardinalities()].
+#'
 #' @param verbose Logical specifying whether to print out the progress of the
 #'   Metropolis-Hastings algorithm. If `TRUE`, a notification is printed
 #'   every 1000th iteration. Defaults to `FALSE`.
@@ -65,6 +70,7 @@ compute_mallows <- function(
     compute_options = set_compute_options(),
     priors = set_priors(),
     initial_values = set_initial_values(),
+    pfun_estimate = NULL,
     verbose = FALSE,
     cl = NULL) {
   validate_class(data, "BayesMallowsData")
@@ -75,7 +81,16 @@ compute_mallows <- function(
   validate_preferences(data, model_options)
   validate_initial_values(initial_values, data)
 
-  pfun_values <- prepare_partition_function(model_options$metric, data$n_items)
+  pfun_values <- tryCatch(
+    prepare_partition_function(model_options$metric, data$n_items),
+    error = function(e) {
+      if(is.null(pfun_estimate)) {
+        stop("Exact partition function not known. Please provide an ",
+             "estimate in argument pfun_estimate.")
+      } else {
+        return(NULL)
+      }
+    })
 
   if (is.null(cl)) {
     lapplyfun <- lapply
@@ -85,7 +100,7 @@ compute_mallows <- function(
       cl = cl,
       varlist = c(
         "data", "model_options", "compute_options", "priors", "initial_values",
-        "pfun_values", "verbose"
+        "pfun_values", "pfun_estimate", "verbose"
       ),
       envir = environment()
     )
@@ -107,6 +122,7 @@ compute_mallows <- function(
       priors = priors,
       initial_values = initial_values,
       pfun_values = pfun_values,
+      pfun_estimate = pfun_estimate,
       verbose = verbose
     )
   })
@@ -114,9 +130,6 @@ compute_mallows <- function(
   fit <- tidy_mcmc(fits, data, model_options, compute_options)
   fit$pfun_values <- pfun_values
   fit$priors <- priors
-
-  # Add class attribute
   class(fit) <- "BayesMallows"
-
   return(fit)
 }
