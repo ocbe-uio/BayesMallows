@@ -61,11 +61,11 @@ get_mallows_loglik <- function(
   loglik <- vapply(
     X = seq_len(n_clusters),
     FUN = function(g) {
-      -(alpha[g] / n_items * sum(rank_dist_vec(
+      -(alpha[g] / n_items * sum(get_rank_distance(
         rankings = t(rankings),
         rho = rho[g, ],
-        metric = metric, observation_frequency = observation_frequency
-      )) +
+        metric = metric
+      ) * observation_frequency) +
         N * get_partition_function(
           alpha = alpha[g], n_items = n_items, metric = metric,pfun_values)) *
         weights[[g]]

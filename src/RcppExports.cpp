@@ -27,17 +27,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rank_dist_vec
-arma::vec rank_dist_vec(const arma::mat& rankings, const arma::vec& rho, const std::string& metric, const arma::vec& observation_frequency);
-RcppExport SEXP _BayesMallows_rank_dist_vec(SEXP rankingsSEXP, SEXP rhoSEXP, SEXP metricSEXP, SEXP observation_frequencySEXP) {
+// get_rank_distance
+arma::vec get_rank_distance(arma::mat rankings, arma::vec rho, std::string metric);
+RcppExport SEXP _BayesMallows_get_rank_distance(SEXP rankingsSEXP, SEXP rhoSEXP, SEXP metricSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type rankings(rankingsSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type rho(rhoSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type metric(metricSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type observation_frequency(observation_frequencySEXP);
-    rcpp_result_gen = Rcpp::wrap(rank_dist_vec(rankings, rho, metric, observation_frequency));
+    Rcpp::traits::input_parameter< arma::mat >::type rankings(rankingsSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< std::string >::type metric(metricSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_rank_distance(rankings, rho, metric));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -138,18 +137,15 @@ BEGIN_RCPP
 END_RCPP
 }
 
-RcppExport SEXP run_testthat_tests(SEXP);
-
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
-    {"_BayesMallows_rank_dist_vec", (DL_FUNC) &_BayesMallows_rank_dist_vec, 4},
+    {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
     {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 4},
     {"_BayesMallows_get_expected_distance", (DL_FUNC) &_BayesMallows_get_expected_distance, 4},
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 4},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 8},
     {"_BayesMallows_run_smc", (DL_FUNC) &_BayesMallows_run_smc, 9},
-    {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
     {NULL, NULL, 0}
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <RcppArmadillo.h>
 #include "partition_functions.h"
+#include "distances.h"
 
 struct Data {
   Data(const Rcpp::List& data);
@@ -35,11 +36,13 @@ struct Parameters {
 
   void update_shape(int t, const Data& dat, const Priors& priors);
   void update_rho(int t, int& rho_index, const Data& dat,
-                  const arma::uvec& cluster_assignment);
+                  const arma::uvec& cluster_assignment,
+                  const std::unique_ptr<Distance>& distfun);
 
   void update_alpha(
       int alpha_index,
       const Data& dat,
+      const std::unique_ptr<Distance>& distfun,
       const std::unique_ptr<PartitionFunction>& pfun,
       const Priors& priors,
       const arma::uvec& current_cluster_assignment);
@@ -53,7 +56,6 @@ struct Parameters {
   arma::vec theta;
   const unsigned int n_clusters;
   const unsigned int nmc;
-  const std::string metric;
   const std::string error_model;
   const int alpha_jump;
   const arma::uvec element_indices;
@@ -88,7 +90,8 @@ struct Clustering {
                              const std::unique_ptr<PartitionFunction>& pfun);
 
   void update_wcd(const int t);
-  void update_dist_mat(const Data& dat, const Parameters& pars);
+  void update_dist_mat(const Data& dat, const Parameters& pars,
+                       const std::unique_ptr<Distance>& distfun);
 };
 
 struct Augmentation {
@@ -108,12 +111,14 @@ struct Augmentation {
       const unsigned int t,
       Data& dat,
       const Parameters& pars,
-      const Clustering& clus);
+      const Clustering& clus,
+      const std::unique_ptr<Distance>& distfun);
 
   void update_missing_ranks(
       Data& dat,
       const Clustering& clus,
-      const Parameters& pars
+      const Parameters& pars,
+      const std::unique_ptr<Distance>& distfun
   );
 };
 
@@ -136,11 +141,13 @@ struct SMCParameters {
       const unsigned int particle_index,
       const SMCData& dat,
       const std::unique_ptr<PartitionFunction>& pfun,
+      const std::unique_ptr<Distance>& distfun,
       const Priors& priors);
 
   void update_rho(
     const unsigned int particle_index,
-    const SMCData& dat
+    const SMCData& dat,
+    const std::unique_ptr<Distance>& distfun
   );
 
   const unsigned int n_particles;
@@ -149,7 +156,6 @@ struct SMCParameters {
   arma::mat rho_samples;
   const double alpha_prop_sd;
   const unsigned int leap_size;
-  const std::string metric;
   arma::vec log_inc_wgt;
   arma::uvec draw_resampling_index();
   void resample(const arma::uvec& index);
@@ -166,11 +172,13 @@ struct SMCAugmentation {
   void reweight(
       SMCParameters& pars,
       const SMCData& dat,
-      const std::unique_ptr<PartitionFunction>& pfun);
+      const std::unique_ptr<PartitionFunction>& pfun,
+      const std::unique_ptr<Distance>& distfun);
 
   void augment_partial(
       const SMCParameters& pars,
-      const SMCData& dat);
+      const SMCData& dat,
+      const std::unique_ptr<Distance>& distfun);
 
   void update_data(
       const unsigned int particle_index,
@@ -179,7 +187,8 @@ struct SMCAugmentation {
   void update_missing_ranks(
       const unsigned int particle_index,
       const SMCData& dat,
-      const SMCParameters& pars);
+      const SMCParameters& pars,
+      const std::unique_ptr<Distance>& distfun);
 
   void resample(const arma::uvec& index);
   const std::string aug_method;

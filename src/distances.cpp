@@ -1,96 +1,26 @@
-#include <RcppArmadillo.h>
 #include "distances.h"
 
-using namespace arma;
-
-// [[Rcpp::depends(RcppArmadillo)]]
-
-double cayley_distance(const vec& r1, const vec& r2){
-  double distance = 0;
-  int n = r1.n_elem;
-  double tmp1;
-  vec tmp2 = r1;
-
-  // This is a C++ translation of Rankcluster::distCayley
-  for(int i = 0; i < n; ++i){
-    if(tmp2(i) != r2(i)) {
-      distance += 1;
-      tmp1 = tmp2(i);
-      tmp2(i) = r2(i);
-      uvec inds = find(tmp2 == r2(i));
-      tmp2.elem(inds).fill(tmp1);
-    }
-  }
-  return distance;
-}
-
-double footrule_distance(const vec& r1, const vec& r2){
-  return norm(r1 - r2, 1);
-}
-
-double hamming_distance(const vec& r1, const vec& r2){
-  return sum(r1 != r2);
-}
-
-double kendall_distance(const vec& r1, const vec& r2){
-  double distance = 0;
-  int n = r1.n_elem;
-  for(int i = 0; i < n; ++i){
-    for(int j = 0; j < i; ++j){
-      if (((r1(j) > r1(i)) && (r2(j) < r2(i)) ) || ((r1(j) < r1(i)) && (r2(j) > r2(i)))) {
-        distance += 1;
-      }
-    }
-  }
-  return distance;
-}
-
-double spearman_distance(const vec& r1, const vec& r2){
-  return std::pow(norm(r1 - r2, 2), 2.0);
-}
-
-double ulam_distance(const vec& r1, const vec& r2){
-  ivec a = conv_to<ivec>::from(r1) - 1;
-  ivec b = conv_to<ivec>::from(r2) - 1;
-  auto distance = perm0_distance ( a, b );
-  return static_cast<double>(distance);
-}
-
-double get_rank_distance(arma::vec r1, arma::vec r2, std::string metric){
-  if (r1.n_elem != r2.n_elem){
-    Rcpp::stop("r1 and r2 must have the same length");
-  }
-  if (metric == "cayley") {
-    return cayley_distance(r1, r2);
+std::unique_ptr<Distance> choose_distance_function(std::string metric) {
+  if(metric == "cayley") {
+    return std::unique_ptr<Distance>{new CayleyDistance{}};
   } else if(metric == "footrule") {
-    return footrule_distance(r1, r2);
-  } else if (metric == "hamming") {
-    return hamming_distance(r1, r2);
+    return std::unique_ptr<Distance>{new FootruleDistance{}};
+  } else if(metric == "hamming") {
+    return std::unique_ptr<Distance>{new HammingDistance{}};
   } else if(metric == "kendall") {
-    return kendall_distance(r1, r2);
-  } else if (metric == "spearman") {
-    return spearman_distance(r1, r2);
-  } else if (metric == "ulam") {
-    return ulam_distance(r1, r2);
+    return std::unique_ptr<Distance>{new KendallDistance{}};
+  } else if(metric == "spearman") {
+    return std::unique_ptr<Distance>{new SpearmanDistance{}};
+  } else if(metric == "ulam") {
+    return std::unique_ptr<Distance>{new UlamDistance{}};
   } else {
-    Rcpp::stop("Inadmissible value of metric.");
+    Rcpp::stop("Unknown metric.");
   }
-}
-
-double rank_dist_sum(const arma::mat& rankings, const arma::vec& rho,
-                     const std::string& metric, const arma::vec& observation_frequency){
-  return sum(rank_dist_vec(rankings, rho, metric, observation_frequency));
 }
 
 // [[Rcpp::export]]
-arma::vec rank_dist_vec(const arma::mat& rankings,
-                        const arma::vec& rho,
-                        const std::string& metric,
-                        const arma::vec& observation_frequency){
-  int n = rankings.n_cols;
-  vec result = zeros(n);
-  for(int i = 0; i < n; ++i){
-    result(i) = get_rank_distance(rankings.col(i), rho, metric) * observation_frequency(i);
-  }
-  return(result);
+arma::vec get_rank_distance(arma::mat rankings, arma::vec rho,
+                           std::string metric) {
+  auto distfun = choose_distance_function(metric);
+  return distfun->d(rankings, rho);
 }

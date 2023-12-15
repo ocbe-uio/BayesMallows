@@ -17,7 +17,7 @@ AlphaRatio make_new_alpha(
     const double& alpha_old,
     const vec& rho_old,
     const double& alpha_prop_sd,
-    const std::string& metric,
+    const std::unique_ptr<Distance>& distfun,
     const std::unique_ptr<PartitionFunction>& pfun,
     const arma::mat& rankings,
     const arma::vec& observation_frequency,
@@ -25,8 +25,7 @@ AlphaRatio make_new_alpha(
     const Priors& priors) {
 
   double alpha_proposal = R::rlnorm(std::log(alpha_old), alpha_prop_sd);
-  double rank_dist = rank_dist_sum(
-    rankings, rho_old, metric, observation_frequency);
+  double rank_dist = sum(distfun->d(rankings, rho_old) % observation_frequency);
   double alpha_diff = alpha_old - alpha_proposal;
 
   double ratio =
@@ -44,7 +43,7 @@ vec make_new_rho(
     const mat& rankings,
     double alpha_old,
     int leap_size,
-    std::string metric,
+    const std::unique_ptr<Distance>& distfun,
     vec observation_frequency) {
 
   vec rho_proposal;
@@ -54,18 +53,15 @@ vec make_new_rho(
 
   leap_and_shift(
     rho_proposal, indices, prob_backward, prob_forward,
-    current_rho, leap_size, !((metric == "cayley") || (metric == "ulam")));
+    current_rho, leap_size, distfun);
 
-  double dist_new = rank_dist_sum(
-    rankings.rows(indices),
-    rho_proposal(indices),
-    metric,
-    observation_frequency);
-  double dist_old = rank_dist_sum(
-    rankings.rows(indices),
-    current_rho(indices),
-    metric,
-    observation_frequency);
+  const arma::mat& r = rankings.rows(indices);
+  double dist_new = arma::sum(
+    distfun->d(r, rho_proposal(indices)) % observation_frequency
+  );
+  double dist_old = arma::sum(
+    distfun->d(r, current_rho(indices)) % observation_frequency
+  );
 
   double ratio = - alpha_old / n_items * (dist_new - dist_old) +
     std::log(prob_backward) - std::log(prob_forward);
@@ -92,7 +88,6 @@ Parameters::Parameters(
   const unsigned int n_items) :
   n_clusters { model_options["n_clusters"] },
   nmc { compute_options["nmc"] },
-  metric(model_options["metric"]),
   error_model(model_options["error_model"]),
   alpha_jump { compute_options["alpha_jump"] },
   element_indices { regspace<uvec>(0, n_items - 1) },
@@ -140,14 +135,15 @@ SMCParameters::SMCParameters(
   rho_samples(initial_values["rho_init"]),
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
   leap_size { compute_options["leap_size"] },
-  metric(model_options["metric"]),
   log_inc_wgt { zeros(n_particles) } {}
 
 void Parameters::update_rho(
     int t,
     int& rho_index,
     const Data& dat,
-    const uvec& current_cluster_assignment) {
+    const uvec& current_cluster_assignment,
+    const std::unique_ptr<Distance>& distfun
+) {
   for(size_t i{}; i < n_clusters; ++i){
     const uvec cluster_indicator = find(current_cluster_assignment == i);
     const mat cluster_rankings = dat.rankings.submat(
@@ -156,7 +152,7 @@ void Parameters::update_rho(
       dat.observation_frequency.elem(cluster_indicator);
     vec rho_cluster = rho_old.col(i);
     rho_old.col(i) = make_new_rho(rho_cluster, cluster_rankings, alpha_old(i),
-                leap_size, metric, cluster_frequency);
+                leap_size, distfun, cluster_frequency);
     if(t % rho_thinning == 0){
       if(i == 0) ++rho_index;
       rho.slice(rho_index).col(i) = rho_old.col(i);
@@ -166,10 +162,11 @@ void Parameters::update_rho(
 
 void SMCParameters::update_rho(
     const unsigned int particle_index,
-    const SMCData& dat) {
+    const SMCData& dat,
+    const std::unique_ptr<Distance>& distfun) {
   rho_samples.col(particle_index) = make_new_rho(
     rho_samples.col(particle_index), dat.rankings,
-    alpha_samples(particle_index), leap_size, metric,
+    alpha_samples(particle_index), leap_size, distfun,
     dat.observation_frequency);
 }
 
@@ -204,6 +201,7 @@ void Parameters::update_shape(int t, const Data& dat,
 void Parameters::update_alpha(
     int alpha_index,
     const Data& dat,
+    const std::unique_ptr<Distance>& distfun,
     const std::unique_ptr<PartitionFunction>& pfun,
     const Priors& priors,
     const uvec& current_cluster_assignment) {
@@ -217,7 +215,7 @@ void Parameters::update_alpha(
 
     AlphaRatio test = make_new_alpha(
       alpha_old(i), rho_old.col(i),
-      alpha_prop_sd, metric, pfun, cluster_rankings,
+      alpha_prop_sd, distfun, pfun, cluster_rankings,
       cluster_frequency, dat.n_items, priors);
 
     if(test.accept){
@@ -232,12 +230,13 @@ void SMCParameters::update_alpha(
     const unsigned int particle_index,
     const SMCData& dat,
     const std::unique_ptr<PartitionFunction>& pfun,
+    const std::unique_ptr<Distance>& distfun,
     const Priors& priors) {
 
   AlphaRatio test = make_new_alpha(
     alpha_samples(particle_index),
     rho_samples.col(particle_index),
-    alpha_prop_sd, metric, pfun,
+    alpha_prop_sd, distfun, pfun,
     dat.rankings, dat.observation_frequency,
     dat.n_items, priors
   );
@@ -268,7 +267,8 @@ void SMCAugmentation::resample(const uvec& index) {
 void SMCAugmentation::update_missing_ranks(
     const unsigned int particle_index,
     const SMCData& dat,
-    const SMCParameters& pars) {
+    const SMCParameters& pars,
+    const std::unique_ptr<Distance>& distfun) {
   if(!any_missing) return;
 
   for (unsigned int jj = dat.n_assessors - dat.num_new_obs;
@@ -279,7 +279,7 @@ void SMCAugmentation::update_missing_ranks(
         missing_indicator.col(jj),
         pars.alpha_samples(particle_index),
         pars.rho_samples.col(particle_index),
-        pars.metric, aug_method == "pseudo"
+        distfun, aug_method == "pseudo"
     );
   }
 }

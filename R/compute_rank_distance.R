@@ -38,8 +38,7 @@ compute_rank_distance <- function(
     observation_frequency <- rep(observation_frequency, nrow(rankings))
   }
 
-  c(rank_dist_vec(
-    rankings = t(rankings), rho = rho,
-    metric = metric, observation_frequency = observation_frequency
-  ))
+  as.numeric(
+    get_rank_distance(rankings = t(rankings), rho = rho, metric = metric) *
+      observation_frequency)
 }

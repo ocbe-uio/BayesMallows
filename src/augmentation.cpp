@@ -29,7 +29,8 @@ void Augmentation::augment_pairwise(
     const unsigned int t,
     Data& dat,
     const Parameters& pars,
-    const Clustering& clus
+    const Clustering& clus,
+    const std::unique_ptr<Distance>& distfun
 ){
   if(!augpair) return;
   for(size_t i = 0; i < dat.n_assessors; ++i) {
@@ -46,9 +47,10 @@ void Augmentation::augment_pairwise(
     double u = std::log(R::runif(0, 1));
     int cluster = clus.current_cluster_assignment(i);
 
-    double ratio = -pars.alpha_old(cluster) / dat.n_items *
-      (get_rank_distance(proposal, pars.rho_old.col(cluster), pars.metric) -
-      get_rank_distance(dat.rankings.col(i), pars.rho_old.col(cluster), pars.metric));
+    const vec& rankings = dat.rankings.col(i);
+    double newdist = distfun->d(proposal, pars.rho_old.col(cluster));
+    double olddist = distfun->d(rankings, pars.rho_old.col(cluster));
+    double ratio = -pars.alpha_old(cluster) / dat.n_items * (newdist - olddist);
 
     if(pars.error_model != "none") {
       ratio += g_diff * std::log(pars.theta(t) / (1 - pars.theta(t)));
@@ -61,7 +63,8 @@ void Augmentation::augment_pairwise(
 void Augmentation::update_missing_ranks(
     Data& dat,
     const Clustering& clus,
-    const Parameters& pars) {
+    const Parameters& pars,
+    const std::unique_ptr<Distance>& distfun) {
   if(!any_missing) return;
 
   for(size_t i = 0; i < dat.n_assessors; ++i){
@@ -69,7 +72,7 @@ void Augmentation::update_missing_ranks(
     dat.rankings.col(i) = make_new_augmentation(
       dat.rankings.col(i), missing_indicator.col(i),
       pars.alpha_old(cluster), pars.rho_old.col(cluster),
-      pars.metric
+      distfun
     );
   }
 }

@@ -32,22 +32,22 @@ SMCAugmentation::SMCAugmentation(
 void SMCAugmentation::reweight(
     SMCParameters& pars,
     const SMCData& dat,
-    const std::unique_ptr<PartitionFunction>& pfun
+    const std::unique_ptr<PartitionFunction>& pfun,
+    const std::unique_ptr<Distance>& distfun
 ) {
   cube previous_augmented_data = augmented_data;
-  augment_partial(pars, dat);
+  augment_partial(pars, dat, distfun);
 
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
     double item_correction_contribution{};
     if(!dat.consistent.is_empty()) {
       for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
         if(dat.consistent(user, particle) == 0) {
-          double previous_distance = get_rank_distance(
-            previous_augmented_data(span::all, span(user), span(particle)),
-            pars.rho_samples.col(particle), pars.metric);
-          double current_distance = get_rank_distance(
-            augmented_data(span::all, span(user), span(particle)),
-            pars.rho_samples.col(particle), pars.metric);
+          const arma::vec& pad = previous_augmented_data(span::all, span(user), span(particle));
+          const arma::vec& cad = augmented_data(span::all, span(user), span(particle));
+          double previous_distance =
+            distfun->d(pad, pars.rho_samples.col(particle));
+          double current_distance = distfun->d(cad, pars.rho_samples.col(particle));
 
           item_correction_contribution -=
             pars.alpha_samples(particle) / dat.n_items *
@@ -64,8 +64,7 @@ void SMCAugmentation::reweight(
         span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1),
         span(particle));
       new_user_contribution = -pars.alpha_samples(particle) / dat.n_items *
-        rank_dist_sum(new_rankings, pars.rho_samples.col(particle), pars.metric,
-                      dat.observation_frequency(span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1)));
+        sum(distfun->d(new_rankings, pars.rho_samples.col(particle)));
     }
 
     pars.log_inc_wgt(particle) =
@@ -77,7 +76,8 @@ void SMCAugmentation::reweight(
 
 void SMCAugmentation::augment_partial(
     const SMCParameters& pars,
-    const SMCData& dat
+    const SMCData& dat,
+    const std::unique_ptr<Distance>& distfun
 ){
   if(!any_missing) return;
   for (size_t particle{}; particle < pars.n_particles; particle++) {
@@ -99,7 +99,7 @@ void SMCAugmentation::augment_partial(
       } else {
         PseudoProposal pprop = make_pseudo_proposal(
           unranked_items, augmented_data(span::all, span(user), span(particle)),
-          pars.alpha_samples(particle), pars.rho_samples.col(particle), pars.metric
+          pars.alpha_samples(particle), pars.rho_samples.col(particle), distfun
         );
         augmented_data(span::all, span(user), span(particle)) = pprop.rankings;
         log_aug_prob(particle) += log(pprop.probability);

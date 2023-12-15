@@ -1,4 +1,5 @@
 #pragma once
+#include "distances.h"
 
 arma::vec propose_augmentation(
     const arma::vec& ranks,
@@ -9,7 +10,7 @@ arma::vec make_new_augmentation(
     const arma::uvec& missing_indicator,
     const double& alpha,
     const arma::vec& rho,
-    const std::string& metric,
+    const std::unique_ptr<Distance>& distfun,
     bool pseudo = false);
 
 void set_up_missing(
@@ -36,6 +37,6 @@ PseudoProposal make_pseudo_proposal(
     arma::vec rankings,
     const double& alpha,
     const arma::vec& rho,
-    const std::string metric,
+    const std::unique_ptr<Distance>& distfun,
     const bool forward = true
 );

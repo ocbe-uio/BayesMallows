@@ -24,8 +24,8 @@ asymptotic_partition_function <- function(alpha_vector, n_items, metric, K, n_it
     .Call(`_BayesMallows_asymptotic_partition_function`, alpha_vector, n_items, metric, K, n_iterations, tol)
 }
 
-rank_dist_vec <- function(rankings, rho, metric, observation_frequency) {
-    .Call(`_BayesMallows_rank_dist_vec`, rankings, rho, metric, observation_frequency)
+get_rank_distance <- function(rankings, rho, metric) {
+    .Call(`_BayesMallows_get_rank_distance`, rankings, rho, metric)
 }
 
 compute_importance_sampling_estimate <- function(alpha_vector, n_items, metric = "footrule", nmc = 1e4L) {

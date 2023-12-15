@@ -8,9 +8,11 @@ using namespace arma;
 
 
 // [[Rcpp::export]]
-arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_items,
-                          std::string metric = "footrule", int nmc = 1e4
+arma::vec compute_importance_sampling_estimate(
+    arma::vec alpha_vector, int n_items,
+    std::string metric = "footrule", int nmc = 1e4
                           ) {
+  auto distfun = choose_distance_function(metric);
   // The dispersion parameter alpha comes as a vector value
   int n_alphas = alpha_vector.n_elem;
 
@@ -77,7 +79,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       }
 
       // Increment the partition function
-      partfun(i) = - alpha / n_items * get_rank_distance(ranks, rho, metric) - log_q;
+      partfun(i) = - alpha / n_items * distfun->d(ranks, rho) - log_q;
     }
     // Average over the Monte Carlo samples
     // Using this trick: https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/

@@ -29,8 +29,7 @@ compute_expected_distance <- function(
 
   if (alpha < 0) {
     stop("alpha must be a non-negative value")
-  } else {
-    pfun_values <- prepare_partition_function(metric, n_items)
-    get_expected_distance(alpha, n_items, metric, pfun_values)
   }
+  pfun_values <- prepare_partition_function(metric, n_items)
+  get_expected_distance(alpha, n_items, metric, pfun_values)
 }

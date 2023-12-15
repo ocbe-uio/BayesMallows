@@ -56,7 +56,8 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator) {
 
 vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
                           const double& alpha, const vec& rho,
-                          const std::string& metric, bool pseudo) {
+                          const std::unique_ptr<Distance>& distfun,
+                          bool pseudo) {
   double log_hastings_correction = 0;
   vec proposal{};
   if(pseudo) {
@@ -65,11 +66,11 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
     uvec unranked_items = a(Rcpp::as<uvec>(Rcpp::wrap(b)));
 
     auto pprop = make_pseudo_proposal(
-      unranked_items, rankings, alpha, rho, metric, true
+      unranked_items, rankings, alpha, rho, distfun, true
     );
 
     auto bprop = make_pseudo_proposal(
-      unranked_items, rankings, alpha, rho, metric, false);
+      unranked_items, rankings, alpha, rho, distfun, false);
 
     proposal = pprop.rankings;
     log_hastings_correction = -std::log(pprop.probability) +
@@ -81,9 +82,10 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
   double u = std::log(R::runif(0, 1));
   int n_items = rho.n_elem;
 
-  double ratio = -alpha / n_items *
-    (get_rank_distance(proposal, rho, metric) -
-    get_rank_distance(rankings, rho, metric)) + log_hastings_correction;
+  double newdist = distfun->d(proposal, rho);
+  double olddist = distfun->d(rankings, rho);
+  double ratio = -alpha / n_items * (newdist - olddist) +
+    log_hastings_correction;
 
   if(ratio > u){
     return proposal;
@@ -94,7 +96,7 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
 
 PseudoProposal make_pseudo_proposal(
     uvec unranked_items, vec rankings, const double& alpha, const vec& rho,
-    const std::string metric, const bool forward
+    const std::unique_ptr<Distance>& distfun, const bool forward
 ) {
   int n_items = rankings.n_elem;
   double prob = 1;
@@ -104,8 +106,9 @@ PseudoProposal make_pseudo_proposal(
 
     vec log_numerator(available_rankings.n_elem);
     for(size_t ll{}; ll < available_rankings.n_elem; ll++) {
+      const arma::vec& v = available_rankings(span(ll));
       log_numerator(ll) = -alpha / n_items *
-        get_rank_distance(rho(span(item_to_rank)), available_rankings(span(ll)), metric);
+        distfun->d(v, rho(span(item_to_rank)));
     }
     vec sample_probs = normalise(exp(log_numerator), 1);
     if(forward) {

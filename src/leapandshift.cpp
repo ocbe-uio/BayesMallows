@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include "distances.h"
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -29,7 +30,8 @@ void shift_step(vec& rho_proposal, const vec& rho,
 
 void leap_and_shift(vec& rho_proposal, uvec& indices,
                     double& prob_backward, double& prob_forward,
-                    const vec& rho, int leap_size, bool reduce_indices){
+                    const vec& rho, int leap_size,
+                    const std::unique_ptr<Distance>& distfun){
   rho_proposal = rho;
   vec support;
   int n_items = rho.n_elem;
@@ -59,8 +61,5 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
     prob_backward = 1.0 / (n_items * support_new);
   }
   shift_step(rho_proposal, rho, u, indices);
-
-  if(!reduce_indices){
-    indices = regspace<uvec>(0, n_items - 1);
-  }
+  distfun->update_leap_and_shift_indices(indices, n_items);
 }

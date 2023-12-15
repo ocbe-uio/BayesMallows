@@ -20,12 +20,13 @@ Rcpp::List run_mcmc(
   Parameters pars{model_options, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};
   Augmentation aug{dat, compute_options};
-  clus.update_dist_mat(dat, pars);
+  std::string metric = model_options["metric"];
+  auto pfun = choose_partition_function(
+    dat.n_items, metric, pfun_values, pfun_estimate);
+  auto distfun = choose_distance_function(metric);
+  clus.update_dist_mat(dat, pars, distfun);
   int alpha_index = 0, rho_index = 0, aug_index = 0,
     cluster_assignment_index = 0;
-
-  auto pfun = choose_partition_function(
-    dat.n_items, pars.metric, pfun_values, pfun_estimate);
 
   for(size_t t{1}; t < pars.nmc; ++t){
     if (t % 1000 == 0) {
@@ -37,11 +38,12 @@ Rcpp::List run_mcmc(
     }
 
     pars.update_shape(t, dat, pris);
-    pars.update_rho(t, rho_index, dat, clus.current_cluster_assignment);
+    pars.update_rho(t, rho_index, dat, clus.current_cluster_assignment,
+                    distfun);
 
     if(t % pars.alpha_jump == 0) {
       ++alpha_index;
-      pars.update_alpha(alpha_index, dat, pfun, pris,
+      pars.update_alpha(alpha_index, dat, distfun, pfun, pris,
                         clus.current_cluster_assignment);
       pars.alpha_old = pars.alpha.col(alpha_index);
     }
@@ -58,15 +60,15 @@ Rcpp::List run_mcmc(
   }
 
   clus.update_wcd(t);
-  aug.update_missing_ranks(dat, clus, pars);
-  aug.augment_pairwise(t, dat, pars, clus);
+  aug.update_missing_ranks(dat, clus, pars, distfun);
+  aug.augment_pairwise(t, dat, pars, clus, distfun);
 
   if(aug.save_aug & (t % aug.aug_thinning == 0)){
     ++aug_index;
     aug.augmented_data.slice(aug_index) = dat.rankings;
   }
 
-  clus.update_dist_mat(dat, pars);
+  clus.update_dist_mat(dat, pars, distfun);
   }
 
   return Rcpp::List::create(

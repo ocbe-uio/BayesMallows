@@ -62,8 +62,7 @@ Suggests:
   label.switching (>= 1.7),
   rmarkdown,
   covr,
-  parallel (>= 3.5.1),
-  xml2
+  parallel (>= 3.5.1)
 VignetteBuilder: knitr, rmarkdown
 RdMacros: Rdpack
 Config/testthat/edition: 3

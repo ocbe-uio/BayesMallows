@@ -84,10 +84,11 @@ void Clustering::update_wcd(const int t){
   within_cluster_distance.col(t) = wcd;
 }
 
-void Clustering::update_dist_mat(const Data& dat, const Parameters& pars){
+void Clustering::update_dist_mat(
+    const Data& dat, const Parameters& pars,
+    const std::unique_ptr<Distance>& distfun){
   if(clustering | include_wcd) {
     for(size_t i{}; i < pars.n_clusters; ++i)
-      dist_mat.col(i) = rank_dist_vec(dat.rankings, pars.rho_old.col(i),
-                   pars.metric, dat.observation_frequency);
+      dist_mat.col(i) = distfun->d(dat.rankings, pars.rho_old.col(i));
   }
 }

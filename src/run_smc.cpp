@@ -21,9 +21,11 @@ Rcpp::List  run_smc(
   SMCParameters pars{model_options, smc_options, compute_options, initial_values};
   Priors pris{priors};
   SMCAugmentation aug{dat, smc_options, initial_values, pars.n_particles};
+  std::string metric = model_options["metric"];
   auto pfun = choose_partition_function(
-    dat.n_items, pars.metric, pfun_values, pfun_estimate);
-  aug.reweight(pars, dat, pfun);
+    dat.n_items, metric, pfun_values, pfun_estimate);
+  auto distfun = choose_distance_function(metric);
+  aug.reweight(pars, dat, pfun, distfun);
   uvec index = pars.draw_resampling_index();
   pars.resample(index);
   aug.resample(index);
@@ -31,9 +33,9 @@ Rcpp::List  run_smc(
   for (size_t ii{}; ii < pars.n_particles; ++ii) {
     for (size_t kk{}; kk < pars.mcmc_steps; ++kk) {
       aug.update_data(ii, dat);
-      pars.update_rho(ii, dat);
-      pars.update_alpha(ii, dat, pfun, pris);
-      aug.update_missing_ranks(ii, dat, pars);
+      pars.update_rho(ii, dat, distfun);
+      pars.update_alpha(ii, dat, pfun, distfun, pris);
+      aug.update_missing_ranks(ii, dat, pars, distfun);
     }
   }
 
