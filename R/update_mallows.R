@@ -98,7 +98,8 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     )
 
     if (!is.null(model$augmented_rankings)) {
-      consistent <- matrix(TRUE, nrow = nrow(rankings), ncol = model$smc_options$n_particles)
+      consistent <- matrix(
+        TRUE, nrow = nrow(rankings), ncol = model$smc_options$n_particles)
       for (uu in updated_users) {
         index <- which(rownames(rankings) == uu)
         to_compare <- as.numeric(stats::na.omit(rankings[index, ]))

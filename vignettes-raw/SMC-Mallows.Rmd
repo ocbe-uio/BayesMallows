@@ -70,9 +70,10 @@ data_batch2 <- sushi_rankings[301:600, ]
 We can now update the initial model, without rerunning the full Metropolis-Hastings algorithm, by calling `update_mallows()`. This function uses the sequential Monte Carlo algorithm of @steinSequentialInferenceMallows2023, and extracts a thinned sample of size `n_particles` from `model1` as initial values.
 
 ```{r}
-model2 <- update_mallows(model = model1, 
-                         new_data = setup_rank_data(data_batch2), 
-                         smc_options = set_smc_options(n_particles = 1000))
+model2 <- update_mallows(
+  model = model1, 
+  new_data = setup_rank_data(data_batch2), 
+  smc_options = set_smc_options(n_particles = 1000))
 ```
 
 All the posterior summary methods can be used for `model2`. For example, we can plot the posterior of $\alpha$.
@@ -110,8 +111,9 @@ Finally, we add a batch with the last data and re-update the model.
 
 ```{r}
 data_batch4 <- sushi_rankings[1601:5000, ]
-model4 <- update_mallows(model3, 
-                         new_data = setup_rank_data(rankings = data_batch4))
+model4 <- update_mallows(
+  model3, 
+  new_data = setup_rank_data(rankings = data_batch4))
 ```
 
 The posterior uncertainty is now very small:
@@ -261,8 +263,6 @@ Another setting supported is when existing users update their partial rankings. 
 
 The main methodological issue in this case, is that the augmented rankings at the previous SMC timepoint may be in conflict with the new rankings. In this case, the augmented rankings must be corrected, as described in Chapter 6 of @steinSequentialInferenceMallows2023. We provide an example again with the sushi data.
 
-
-
 We assume that the initial batch of data contains top-3 rankings provided by the first 100 users.
 
 ```{r}
@@ -283,8 +283,9 @@ We fit the standard Metropolis-Hastings algorithm to these data, yielding a star
 
 ```{r}
 mod_init <- compute_mallows(
-  data = setup_rank_data(rankings = data_batch1, 
-                         user_ids = rownames(data_batch1))
+  data = setup_rank_data(
+    rankings = data_batch1,
+    user_ids = rownames(data_batch1))
 )
 ```
 
@@ -301,9 +302,9 @@ Next, assume we receive top-5 rankings from the same users. We now update the mo
 data_batch2 <- ifelse(sushi_reduced > 5, NA_real_, sushi_reduced)
 rownames(data_batch2) <- seq_len(nrow(data_batch2))
 model2 <- update_mallows(
-  mod_init, 
-  new_data = setup_rank_data(rankings = data_batch2, 
-                             user_ids = rownames(data_batch2)))
+  model = mod_init, 
+  new_data = setup_rank_data(
+    rankings = data_batch2, user_ids = rownames(data_batch2)))
 ```
 
 We can plot the posterior distributions of $\alpha$ before and after.
@@ -349,9 +350,9 @@ Luckily, this happens automatically in our implementation, so we can update the 
 
 ```{r}
 model3 <- update_mallows(
-  mod_init, 
-  new_data = setup_rank_data(rankings = data_batch3, 
-                             user_ids = rownames(data_batch3)))
+  model = mod_init, 
+  new_data = setup_rank_data(
+    rankings = data_batch3, user_ids = rownames(data_batch3)))
 ```
 
 Next we plot the posterior:
@@ -372,8 +373,8 @@ head(data_batch4)
 ```{r}
 model4 <- update_mallows(
   model = model3, 
-  new_data = setup_rank_data(rankings = data_batch4, 
-                             user_ids = rownames(data_batch4)))
+  new_data = setup_rank_data(
+    rankings = data_batch4, user_ids = rownames(data_batch4)))
 ```
 
 Here is the posterior for this model.

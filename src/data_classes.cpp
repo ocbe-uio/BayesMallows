@@ -16,4 +16,4 @@ SMCData::SMCData(
 ) : Data(data),
 new_rankings { Rcpp::as<mat>(new_data["rankings"]).t() },
 num_new_obs { new_rankings.n_cols },
-consistent (new_data["consistent"]) {}
+consistent (data["consistent"]) {}

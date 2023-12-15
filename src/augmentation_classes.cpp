@@ -110,6 +110,7 @@ void SMCAugmentation::reweight(
     const SMCData& dat,
     const std::unique_ptr<PartitionFunction>& pfun
 ) {
+  cube previous_augmented_data = augmented_data;
   augment_partial(pars, dat);
 
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
@@ -117,17 +118,15 @@ void SMCAugmentation::reweight(
     if(!dat.consistent.is_empty()) {
       for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
         if(dat.consistent(user, particle) == 0) {
-          vec previous_augmented_ranking = augmented_data(span::all, span(user), span(particle - 1));
-          vec current_augmented_ranking = augmented_data(span::all, span(user), span(particle));
-
           double previous_distance = get_rank_distance(
-            previous_augmented_ranking, pars.rho_samples.col(particle),
-            pars.metric);
+            previous_augmented_data(span::all, span(user), span(particle)),
+            pars.rho_samples.col(particle), pars.metric);
           double current_distance = get_rank_distance(
-            current_augmented_ranking, pars.rho_samples.col(particle),
-            pars.metric);
+            augmented_data(span::all, span(user), span(particle)),
+            pars.rho_samples.col(particle), pars.metric);
 
-          item_correction_contribution -= pars.alpha_samples(particle) / dat.n_items *
+          item_correction_contribution -=
+            pars.alpha_samples(particle) / dat.n_items *
             (current_distance - previous_distance);
         }
       }
@@ -157,8 +156,8 @@ void SMCAugmentation::augment_partial(
     const SMCData& dat
 ){
   if(!any_missing) return;
-  for (size_t particle{}; particle < pars.n_particles; ++particle) {
-    for (size_t user{}; user < dat.n_assessors; ++user) {
+  for (size_t particle{}; particle < pars.n_particles; particle++) {
+    for (size_t user{}; user < dat.n_assessors; user++) {
       if(user < dat.n_assessors - dat.num_new_obs) {
         if(dat.consistent.is_empty()) continue;
         if(dat.consistent(user, particle) == 1) continue;

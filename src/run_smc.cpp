@@ -15,6 +15,7 @@ Rcpp::List  run_smc(
   Rcpp::List priors,
   Rcpp::List initial_values,
   Rcpp::Nullable<arma::mat> pfun_values) {
+
   SMCData dat{data, new_data};
   SMCParameters pars{model_options, smc_options, compute_options, initial_values};
   Priors pris{priors};
@@ -35,7 +36,6 @@ Rcpp::List  run_smc(
     }
   }
 
-  // return the history of the particles and their values
   Rcpp::List particle_history = Rcpp::List::create(
     Rcpp::Named("rho_samples") = pars.rho_samples,
     Rcpp::Named("alpha_samples") = pars.alpha_samples,
