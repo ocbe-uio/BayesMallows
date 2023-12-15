@@ -12,7 +12,7 @@ struct Distance {
   virtual double d(const arma::vec& r1, const arma::vec& r2) = 0;
   arma::vec d(const arma::mat& r1, const arma::vec& r2) {
     arma::vec result(r1.n_cols);
-    for(int i{}; i < r1.n_cols; i++) {
+    for(size_t i{}; i < r1.n_cols; i++) {
       const arma::vec& v1 = r1.col(i);
       result(i) = d(v1, r2);
     }
@@ -28,7 +28,7 @@ struct CayleyDistance : Distance {
     double distance{};
     arma::vec tmp2 = r1;
 
-    for(int i{}; i < r1.n_elem; ++i){
+    for(size_t i{}; i < r1.n_elem; ++i){
       if(tmp2(i) != r2(i)) {
         distance += 1;
         double tmp1 = tmp2(i);
@@ -65,8 +65,8 @@ struct HammingDistance : Distance {
 struct KendallDistance : Distance {
   double d(const arma::vec& r1, const arma::vec& r2) override {
     double distance{};
-    for(int i = 0; i < r1.n_elem; ++i){
-      for(int j = 0; j < i; ++j){
+    for(size_t i{}; i < r1.n_elem; ++i){
+      for(size_t j{}; j < i; ++j){
         if (((r1(j) > r1(i)) && (r2(j) < r2(i)) ) ||
             ((r1(j) < r1(i)) && (r2(j) > r2(i)))) {
           distance += 1;
