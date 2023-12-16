@@ -55,17 +55,24 @@ get_cardinalities <- function(
 
 #' @title Distances and cardinalities
 #'
-#' @description Lists containing distances and cardinalities for footrule,
-#'   Spearman, and Ulam distances. See [get_cardinalities()] for details.
+#' @description List containing distances and cardinalities for footrule
+#'   distance. See [get_cardinalities()] for details.
 #'
-#' @export
 #' @family partition function
 "footrule_cardinalities"
 
-#' @export
-#' @rdname footrule_cardinalities
+#' @title Distances and cardinalities
+#'
+#' @description List containing distances and cardinalities for Spearman
+#'   distance. See [get_cardinalities()] for details.
+#'
+#' @family partition function
 "spearman_cardinalities"
 
-#' @export
-#' @rdname footrule_cardinalities
+#' @title Distances and cardinalities
+#'
+#' @description List containing distances and cardinalities for Ulam
+#'   distance. See [get_cardinalities()] for details.
+#'
+#' @family partition function
 "ulam_cardinalities"

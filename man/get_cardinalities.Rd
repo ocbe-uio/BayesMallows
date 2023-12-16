@@ -61,6 +61,8 @@ sum(apply(perms, 1, function(x) exp(-alpha / n_items * sum((x - 1:4)^2))))
 \seealso{
 Other partition function: 
 \code{\link{estimate_partition_function}()},
-\code{\link{footrule_cardinalities}}
+\code{\link{footrule_cardinalities}},
+\code{\link{spearman_cardinalities}},
+\code{\link{ulam_cardinalities}}
 }
 \concept{partition function}
