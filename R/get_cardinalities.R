@@ -62,8 +62,10 @@ get_cardinalities <- function(
 #' @family partition function
 "footrule_cardinalities"
 
+#' @export
 #' @rdname footrule_cardinalities
 "spearman_cardinalities"
 
+#' @export
 #' @rdname footrule_cardinalities
 "ulam_cardinalities"
