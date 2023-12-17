@@ -79,7 +79,7 @@ clustering of assessors with similar preferences.
 set.seed(1)
 model_fit <- compute_mallows(
   data = setup_rank_data(rankings = potato_visual),
-  compute_options = set_compute_options(nmc = 5000)
+  compute_options = set_compute_options(nmc = 2000)
   )
 
 # We study the trace plot of the parameters
@@ -192,26 +192,28 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
 #
 # assume each row of potato_visual corresponds to between 1 and 5 assessors, as
 # given by the observation_frequency vector
-set.seed(1234)
-observation_frequency <- sample.int(n = 5, size = nrow(potato_visual), replace = TRUE)
-m <- compute_mallows(
-  setup_rank_data(rankings = potato_visual, observation_frequency = observation_frequency))
+\dontrun{
+  set.seed(1234)
+  observation_frequency <- sample.int(n = 5, size = nrow(potato_visual), replace = TRUE)
+  m <- compute_mallows(
+    setup_rank_data(rankings = potato_visual, observation_frequency = observation_frequency))
 
-# INTRANSITIVE PAIRWISE PREFERENCES
-set.seed(1234)
-mod <- compute_mallows(
-  setup_rank_data(preferences = bernoulli_data),
-  compute_options = set_compute_options(nmc = 5000),
-  priors = set_priors(kappa = c(1, 10)),
-  model_options = set_model_options(error_model = "bernoulli")
-)
+  # INTRANSITIVE PAIRWISE PREFERENCES
+  set.seed(1234)
+  mod <- compute_mallows(
+    setup_rank_data(preferences = bernoulli_data),
+    compute_options = set_compute_options(nmc = 5000),
+    priors = set_priors(kappa = c(1, 10)),
+    model_options = set_model_options(error_model = "bernoulli")
+  )
 
-assess_convergence(mod)
-assess_convergence(mod, parameter = "theta")
-mod$burnin <- 3000
+  assess_convergence(mod)
+  assess_convergence(mod, parameter = "theta")
+  mod$burnin <- 3000
 
-plot(mod)
-plot(mod, parameter = "theta")
+  plot(mod)
+  plot(mod, parameter = "theta")
+}
 # CHEKING FOR LABEL SWITCHING
 \dontrun{
   # This example shows how to assess if label switching happens in BayesMallows

@@ -116,9 +116,6 @@ model_fit <- compute_mallows(
 }
 \seealso{
 Other partition function: 
-\code{\link{footrule_cardinalities}},
-\code{\link{get_cardinalities}()},
-\code{\link{spearman_cardinalities}},
-\code{\link{ulam_cardinalities}}
+\code{\link{get_cardinalities}()}
 }
 \concept{partition function}

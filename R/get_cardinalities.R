@@ -52,27 +52,3 @@ get_cardinalities <- function(
     as.data.frame(ulam_cardinalities[[n_items]])
   }
 }
-
-#' @title Distances and cardinalities
-#'
-#' @description List containing distances and cardinalities for footrule
-#'   distance. See [get_cardinalities()] for details.
-#'
-#' @family partition function
-"footrule_cardinalities"
-
-#' @title Distances and cardinalities
-#'
-#' @description List containing distances and cardinalities for Spearman
-#'   distance. See [get_cardinalities()] for details.
-#'
-#' @family partition function
-"spearman_cardinalities"
-
-#' @title Distances and cardinalities
-#'
-#' @description List containing distances and cardinalities for Ulam
-#'   distance. See [get_cardinalities()] for details.
-#'
-#' @family partition function
-"ulam_cardinalities"
