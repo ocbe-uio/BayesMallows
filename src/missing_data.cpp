@@ -105,12 +105,10 @@ PseudoProposal make_pseudo_proposal(
     vec available_rankings = rankings(unranked_items);
     int item_to_rank = unranked_items(0);
 
-    vec log_numerator(available_rankings.n_elem);
-    for(size_t ll{}; ll < available_rankings.n_elem; ll++) {
-      const arma::vec& v = available_rankings(span(ll));
-      log_numerator(ll) = -alpha / n_items *
-        distfun->d(v, rho(span(item_to_rank)));
-    }
+    double rho_for_item = rho(item_to_rank);
+    vec log_numerator = -alpha / n_items *
+      distfun->d(available_rankings, rho_for_item);
+
     vec sample_probs = normalise(exp(log_numerator), 1);
     if(forward) {
       ivec ans(sample_probs.size());

@@ -18,6 +18,14 @@ struct Distance {
     }
     return result;
   }
+  arma::vec d(const arma::vec& r1, const double r2) {
+    arma::vec v2 = arma::ones(r1.size()) * r2;
+    arma::vec result = arma::zeros(r1.size());
+    for(size_t i{}; i < r1.n_elem; i++) {
+      result(i) = d(arma::vec{r1(i)}, arma::vec{v2(i)});
+    }
+    return result;
+  }
   virtual void update_leap_and_shift_indices(arma::uvec& indices, int n_items) = 0;
 };
 
