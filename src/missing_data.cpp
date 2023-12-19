@@ -55,9 +55,7 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
     Rcpp::IntegerVector b = Rcpp::sample(a.size(), a.size()) - 1;
     uvec unranked_items = a(Rcpp::as<uvec>(Rcpp::wrap(b)));
 
-    pprop = make_pseudo_proposal(
-      unranked_items, rankings, alpha, rho, distfun, true
-    );
+    pprop = make_pseudo_proposal(unranked_items, rankings, alpha, rho, distfun);
 
     log_hastings_correction = -std::log(pprop.probability) + log_aug_prob;
   } else {
@@ -93,7 +91,7 @@ PseudoProposal propose_augmentation(const vec& ranks, const uvec& indicator){
 
 PseudoProposal make_pseudo_proposal(
     uvec unranked_items, vec rankings, const double& alpha, const vec& rho,
-    const std::unique_ptr<Distance>& distfun, const bool forward
+    const std::unique_ptr<Distance>& distfun
 ) {
   int n_items = rankings.n_elem;
   double prob = 1;
@@ -106,11 +104,9 @@ PseudoProposal make_pseudo_proposal(
       distfun->d(available_rankings, rho_for_item);
 
     vec sample_probs = normalise(exp(log_numerator), 1);
-    if(forward) {
-      ivec ans(sample_probs.size());
-      R::rmultinom(1, sample_probs.begin(), sample_probs.size(), ans.begin());
-      rankings(span(item_to_rank)) = available_rankings(find(ans == 1));
-    }
+    ivec ans(sample_probs.size());
+    R::rmultinom(1, sample_probs.begin(), sample_probs.size(), ans.begin());
+    rankings(span(item_to_rank)) = available_rankings(find(ans == 1));
 
     int ranking_chosen = as_scalar(find(rankings(item_to_rank) == available_rankings));
 

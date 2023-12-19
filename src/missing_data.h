@@ -39,6 +39,5 @@ PseudoProposal make_pseudo_proposal(
     arma::vec rankings,
     const double& alpha,
     const arma::vec& rho,
-    const std::unique_ptr<Distance>& distfun,
-    const bool forward = true
+    const std::unique_ptr<Distance>& distfun
 );
