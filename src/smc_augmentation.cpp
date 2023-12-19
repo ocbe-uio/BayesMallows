@@ -93,12 +93,11 @@ void SMCAugmentation::augment_partial(
 
       if (aug_method != "pseudo") {
         augmented_data(span::all, span(user), span(particle)) =
-          propose_augmentation(
+          make_uniform_proposal(
             augmented_data(span::all, span(user), span(particle)),
             missing_indicator.col(user)).rankings;
-
       } else {
-        PseudoProposal pprop = make_pseudo_proposal(
+        RankProposal pprop = make_pseudo_proposal(
           unranked_items, augmented_data(span::all, span(user), span(particle)),
           pars.alpha_samples(particle), pars.rho_samples.col(particle), distfun
         );

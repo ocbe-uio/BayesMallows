@@ -49,7 +49,7 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
                           const std::unique_ptr<Distance>& distfun,
                           double& log_aug_prob, bool pseudo) {
   double log_hastings_correction = 0;
-  PseudoProposal pprop{};
+  RankProposal pprop{};
   if(pseudo) {
     uvec a = find(missing_indicator == 1);
     Rcpp::IntegerVector b = Rcpp::sample(a.size(), a.size()) - 1;
@@ -59,7 +59,7 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
 
     log_hastings_correction = -std::log(pprop.probability) + log_aug_prob;
   } else {
-    pprop = propose_augmentation(rankings, missing_indicator);
+    pprop = make_uniform_proposal(rankings, missing_indicator);
   }
 
   double u = std::log(R::runif(0, 1));
@@ -78,7 +78,7 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
   }
 }
 
-PseudoProposal propose_augmentation(const vec& ranks, const uvec& indicator){
+RankProposal make_uniform_proposal(const vec& ranks, const uvec& indicator){
   vec proposal = ranks;
   uvec missing_inds = find(indicator == 1);
   vec mutable_ranks = ranks(missing_inds);
@@ -86,10 +86,10 @@ PseudoProposal propose_augmentation(const vec& ranks, const uvec& indicator){
                                           mutable_ranks.size()) - 1;
   uvec inds_arma = Rcpp::as<uvec>(Rcpp::wrap(inds));
   proposal(missing_inds) = mutable_ranks(inds_arma);
-  return PseudoProposal(proposal, 1);
+  return RankProposal(proposal, 1);
 }
 
-PseudoProposal make_pseudo_proposal(
+RankProposal make_pseudo_proposal(
     uvec unranked_items, vec rankings, const double& alpha, const vec& rho,
     const std::unique_ptr<Distance>& distfun
 ) {
@@ -118,5 +118,5 @@ PseudoProposal make_pseudo_proposal(
       available_rankings, available_rankings(span(ranking_chosen)));
   }
 
-  return PseudoProposal(rankings, prob);
+  return RankProposal(rankings, prob);
 }

@@ -18,23 +18,23 @@ void initialize_missing_ranks(
     arma::mat& rankings,
     const arma::umat& missing_indicator);
 
-struct PseudoProposal{
-  PseudoProposal() {};
-  PseudoProposal(
+struct RankProposal{
+  RankProposal() {};
+  RankProposal(
     const arma::vec& rankings,
     const double& probability) :
   rankings { rankings }, probability { probability } {}
-  ~PseudoProposal() = default;
+  ~RankProposal() = default;
 
   arma::vec rankings{};
   double probability{};
 };
 
-PseudoProposal propose_augmentation(
+RankProposal make_uniform_proposal(
     const arma::vec& ranks,
     const arma::uvec& indicator);
 
-PseudoProposal make_pseudo_proposal(
+RankProposal make_pseudo_proposal(
     arma::uvec unranked_items,
     arma::vec rankings,
     const double& alpha,

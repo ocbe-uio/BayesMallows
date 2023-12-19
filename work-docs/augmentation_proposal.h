@@ -7,7 +7,7 @@
 // struct AugmentationProposal {
 //   AugmentationProposal() {};
 //   virtual ~AugmentationProposal() = default;
-//   virtual void propose_augmentation() = 0;
+//   virtual void make_uniform_proposal() = 0;
 //
 //   double log_hastings_correction{};
 //   arma::vec proposal{};
@@ -24,7 +24,7 @@
 //
 //
 // struct UniformProposal : AugmentationProposal {
-//   void propose_augmentation(
+//   void make_uniform_proposal(
 //       const arma::vec& ranks, const arma::uvec& indicator) {
 //     unranked_items = arma::find(indicator == 1);
 //     arma::uvec inds = sample_inds(unranked_items);
@@ -37,7 +37,7 @@
 // };
 //
 // struct PseudoLikelihoodProposal : AugmentationProposal {
-//   void propose_augmentation(
+//   void make_uniform_proposal(
 //       const arma::vec& ranks, const arma::uvec& indicator,
 //       const double alpha, const arma::vec& rho,
 //       const std::unique_ptr<Distance>& distfun) {
