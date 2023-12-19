@@ -13,7 +13,8 @@ Augmentation::Augmentation(
   any_missing { !is_finite(dat.rankings) },
   save_aug { compute_options["save_aug"] },
   aug_thinning { compute_options["aug_thinning"] },
-  swap_leap { compute_options["swap_leap"] } {
+  swap_leap { compute_options["swap_leap"] } ,
+  log_aug_prob { zeros(dat.n_assessors) } {
     if(any_missing){
       set_up_missing(dat.rankings, missing_indicator);
       initialize_missing_ranks(dat.rankings, missing_indicator);
@@ -72,7 +73,7 @@ void Augmentation::update_missing_ranks(
     dat.rankings.col(i) = make_new_augmentation(
       dat.rankings.col(i), missing_indicator.col(i),
       pars.alpha_old(cluster), pars.rho_old.col(cluster),
-      distfun
+      distfun, log_aug_prob(i)
     );
   }
 }

@@ -279,7 +279,7 @@ void SMCAugmentation::update_missing_ranks(
         missing_indicator.col(jj),
         pars.alpha_samples(particle_index),
         pars.rho_samples.col(particle_index),
-        distfun, aug_method == "pseudo"
+        distfun, log_aug_prob(jj, particle_index), aug_method == "pseudo"
     );
   }
 }

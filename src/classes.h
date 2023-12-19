@@ -106,6 +106,7 @@ struct Augmentation {
 
   arma::umat missing_indicator{};
   arma::cube augmented_data{};
+  arma::vec log_aug_prob{};
 
   void augment_pairwise(
       const unsigned int t,
