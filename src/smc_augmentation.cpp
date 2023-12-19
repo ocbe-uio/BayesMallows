@@ -9,7 +9,7 @@ SMCAugmentation::SMCAugmentation(
   const Rcpp::List& initial_values,
   const unsigned int n_particles) :
   aug_method(smc_options["aug_method"]),
-  log_aug_prob { arma::zeros(n_particles) },
+  log_aug_prob { arma::zeros(dat.n_assessors, n_particles) },
   any_missing { !is_finite(dat.rankings) },
   aug_init(initial_values["aug_init"])
   {
@@ -70,7 +70,7 @@ void SMCAugmentation::reweight(
     pars.log_inc_wgt(particle) =
       new_user_contribution + item_correction_contribution -
       dat.num_new_obs * pfun->logz(pars.alpha_samples(particle)) -
-      log_aug_prob(particle);
+      sum(log_aug_prob.col(particle));
   }
 }
 
@@ -102,7 +102,7 @@ void SMCAugmentation::augment_partial(
           pars.alpha_samples(particle), pars.rho_samples.col(particle), distfun
         );
         augmented_data(span::all, span(user), span(particle)) = pprop.rankings;
-        log_aug_prob(particle) += log(pprop.probability);
+        log_aug_prob(user, particle) = log(pprop.probability);
       }
     }
   }

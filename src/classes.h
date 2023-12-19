@@ -192,7 +192,7 @@ struct SMCAugmentation {
 
   void resample(const arma::uvec& index);
   const std::string aug_method;
-  arma::vec log_aug_prob;
+  arma::mat log_aug_prob;
   bool any_missing;
   arma::cube augmented_data;
   arma::umat missing_indicator;
