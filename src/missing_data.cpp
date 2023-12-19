@@ -22,11 +22,12 @@ vec setdiff(const vec& x, const vec& y){
 
 vec propose_augmentation(const vec& ranks, const uvec& indicator){
   vec proposal = ranks;
-  vec mutable_ranks = ranks(find(indicator == 1));
+  uvec missing_inds = find(indicator == 1);
+  vec mutable_ranks = ranks(missing_inds);
   Rcpp::IntegerVector inds = Rcpp::sample(mutable_ranks.size(),
                                           mutable_ranks.size()) - 1;
-  arma::uvec inds_arma = Rcpp::as<uvec>(Rcpp::wrap(inds));
-  proposal(find(indicator == 1)) = mutable_ranks(inds_arma);
+  uvec inds_arma = Rcpp::as<uvec>(Rcpp::wrap(inds));
+  proposal(missing_inds) = mutable_ranks(inds_arma);
   return proposal;
 }
 
