@@ -16,9 +16,9 @@ for (n in n_items) {
 }
 
 values <- read.delim("https://oeis.org/A175929/b175929.txt",
-                     sep = " ",
-                     col.names = paste0("V", 1:2),
-                     colClasses = c("NULL", "numeric")
+  sep = " ",
+  col.names = paste0("V", 1:2),
+  colClasses = c("NULL", "numeric")
 )$V2
 n_items <- seq(from = 1, to = 20, by = 1)
 values <- na.omit(values)
@@ -34,9 +34,9 @@ for (n in n_items) {
 }
 
 values <- read.delim("https://oeis.org/A126065/b126065.txt",
-                     sep = " ",
-                     col.names = paste0("V", 1:2),
-                     colClasses = c("NULL", "numeric")
+  sep = " ",
+  col.names = paste0("V", 1:2),
+  colClasses = c("NULL", "numeric")
 )$V2
 n_items <- seq(from = 2, to = 60, by = 1)
 ulam_cardinalities <- list(list(distance = 0, value = 1))
@@ -51,4 +51,6 @@ for (n in n_items) {
 }
 
 usethis::use_data(footrule_cardinalities, spearman_cardinalities,
-                  ulam_cardinalities, internal = TRUE)
+  ulam_cardinalities,
+  internal = TRUE
+)

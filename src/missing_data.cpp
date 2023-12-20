@@ -54,9 +54,7 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
     uvec a = find(missing_indicator == 1);
     Rcpp::IntegerVector b = Rcpp::sample(a.size(), a.size()) - 1;
     uvec unranked_items = a(Rcpp::as<uvec>(Rcpp::wrap(b)));
-
     pprop = make_pseudo_proposal(unranked_items, rankings, alpha, rho, distfun);
-
     log_hastings_correction = -std::log(pprop.probability) + log_aug_prob;
   } else {
     pprop = make_uniform_proposal(rankings, missing_indicator);

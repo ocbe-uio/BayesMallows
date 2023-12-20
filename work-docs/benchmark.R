@@ -39,3 +39,4 @@ system.time({
   )
 })
 # 5.7 seconds
+# 4.7 seconds after refactoring
