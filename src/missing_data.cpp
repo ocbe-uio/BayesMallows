@@ -8,7 +8,7 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-vec setdiff(const vec& x, const vec& y){
+vec setdiff(const vec& x, const vec& y) noexcept {
   vec xs = sort(x);
   vec ys = sort(y);
 
@@ -20,7 +20,7 @@ vec setdiff(const vec& x, const vec& y){
   return conv_to<vec>::from(diff);
 }
 
-void set_up_missing(arma::mat& rankings, arma::umat& missing_indicator) {
+void set_up_missing(arma::mat& rankings, arma::umat& missing_indicator) noexcept {
   rankings.replace(datum::nan, 0);
   missing_indicator = conv_to<umat>::from(rankings);
   missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
@@ -73,7 +73,7 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
   }
 }
 
-RankProposal make_uniform_proposal(const vec& ranks, const uvec& indicator){
+RankProposal make_uniform_proposal(const vec& ranks, const uvec& indicator) noexcept {
   vec proposal = ranks;
   uvec missing_inds = find(indicator == 1);
   vec mutable_ranks = ranks(missing_inds);
@@ -87,7 +87,7 @@ RankProposal make_uniform_proposal(const vec& ranks, const uvec& indicator){
 RankProposal make_pseudo_proposal(
     vec ranks, const uvec& indicator, const double& alpha, const vec& rho,
     const std::unique_ptr<Distance>& distfun
-) {
+) noexcept {
   uvec missing_inds = find(indicator == 1);
   Rcpp::IntegerVector b = Rcpp::sample(missing_inds.size(), missing_inds.size()) - 1;
   uvec unranked_items = missing_inds(Rcpp::as<uvec>(Rcpp::wrap(b)));

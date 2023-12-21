@@ -36,9 +36,6 @@ void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
 vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor_constraints) {
   int n_items = ranking.n_elem;
 
-  // Extract the constraints for this particular assessor
-  uvec constrained_items = Rcpp::as<uvec>(assessor_constraints[0]);
-
   Rcpp::IntegerVector a = Rcpp::sample(n_items, 1) - 1;
   int item = a(0);
 

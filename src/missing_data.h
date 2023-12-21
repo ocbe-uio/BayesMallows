@@ -12,7 +12,7 @@ arma::vec make_new_augmentation(
 
 void set_up_missing(
     arma::mat& rankings,
-    arma::umat& missing_indicator);
+    arma::umat& missing_indicator) noexcept;
 
 void initialize_missing_ranks(
     arma::mat& rankings,
@@ -35,7 +35,7 @@ struct RankProposal{
 
 RankProposal make_uniform_proposal(
     const arma::vec& ranks,
-    const arma::uvec& indicator);
+    const arma::uvec& indicator) noexcept;
 
 RankProposal make_pseudo_proposal(
     arma::vec ranks,
@@ -43,4 +43,4 @@ RankProposal make_pseudo_proposal(
     const double& alpha,
     const arma::vec& rho,
     const std::unique_ptr<Distance>& distfun
-);
+) noexcept;
