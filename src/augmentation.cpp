@@ -38,9 +38,9 @@ void Augmentation::augment_pairwise(
     vec proposal;
     int g_diff = 0;
     if(pars.error_model == "none"){
-      proposal = propose_pairwise_augmentation(dat.rankings.col(i), Rcpp::as<Rcpp::List>(dat.constraints[i]));
+      proposal = propose_pairwise_augmentation(dat.rankings.col(i), dat.constraints[i]);
     } else if(pars.error_model == "bernoulli"){
-      proposal = propose_swap(dat.rankings.col(i), Rcpp::as<Rcpp::List>(dat.constraints[i]), g_diff, swap_leap);
+      proposal = propose_swap(dat.rankings.col(i), dat.constraints[i], g_diff, swap_leap);
     } else {
       Rcpp::stop("error_model must be 'none' or 'bernoulli'");
     }
