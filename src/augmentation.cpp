@@ -9,7 +9,7 @@ Augmentation::Augmentation(
   Data& dat,
   const Rcpp::List& compute_options
 ) :
-  augpair { dat.constraints.length() > 0 },
+  augpair { dat.items_above.size() > 0 },
   any_missing { !is_finite(dat.rankings) },
   save_aug { compute_options["save_aug"] },
   aug_thinning { compute_options["aug_thinning"] },
@@ -20,7 +20,7 @@ Augmentation::Augmentation(
       initialize_missing_ranks(dat.rankings, missing_indicator);
     }
     if(save_aug){
-      unsigned int nmc = Rcpp::as<unsigned int>(compute_options["nmc"]);
+      unsigned int nmc{ compute_options["nmc"] };
       augmented_data.set_size(dat.n_items, dat.n_assessors,
                               std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
       augmented_data.slice(0) = dat.rankings;

@@ -170,16 +170,15 @@ void SMCParameters::update_rho(
     dat.observation_frequency);
 }
 
-void Parameters::update_shape(int t, const Data& dat,
-                              const Priors& priors) {
+void Parameters::update_shape(
+    int t, const Data& dat, const Priors& priors) {
   if(error_model != "bernoulli") return;
   int sum_1{};
   int sum_2{};
   for(size_t i = 0; i < dat.n_assessors; ++i){
-    Rcpp::List assessor_constraints = Rcpp::as<Rcpp::List>(dat.constraints[i]);
     for(size_t j = 0; j < dat.n_items; ++j) {
-      uvec items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[j]);
-      uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[j]);
+      uvec items_above = dat.items_above[i][j];
+      uvec items_below = dat.items_below[i][j];
 
       for(size_t k = 0; k < items_above.n_elem; ++k){
         int g = (as_scalar(dat.rankings.col(i).row(j)) < as_scalar(dat.rankings.col(i).row(items_above(k) - 1)));

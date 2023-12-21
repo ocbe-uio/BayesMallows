@@ -8,7 +8,6 @@ struct Data {
   ~Data() = default;
 
   arma::mat rankings;
-  const Rcpp::List constraints;
   const unsigned int n_assessors;
   const unsigned int n_items;
   const arma::vec observation_frequency;
