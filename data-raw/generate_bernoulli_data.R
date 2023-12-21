@@ -17,8 +17,10 @@ bernoulli_data <- expand.grid(
 
 for (i in seq_len(nrow(bernoulli_data))) {
   r <- rankings[bernoulli_data$assessor[[i]], ]
-  items_to_compare <- c(items[bernoulli_data$comp[[i]], 1],
-                        items[bernoulli_data$comp[[i]], 2])
+  items_to_compare <- c(
+    items[bernoulli_data$comp[[i]], 1],
+    items[bernoulli_data$comp[[i]], 2]
+  )
 
   a <- if (runif(1) > theta) {
     order(r[items_to_compare], decreasing = TRUE)
