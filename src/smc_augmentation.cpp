@@ -87,10 +87,6 @@ void SMCAugmentation::augment_partial(
         if(dat.consistent(user, particle) == 1) continue;
       }
 
-      uvec a = find(missing_indicator.col(user) == 1);
-      Rcpp::IntegerVector b = Rcpp::sample(a.size(), a.size()) - 1;
-      uvec unranked_items = a(Rcpp::as<uvec>(Rcpp::wrap(b)));
-
       if (aug_method != "pseudo") {
         augmented_data(span::all, span(user), span(particle)) =
           make_uniform_proposal(
@@ -98,7 +94,8 @@ void SMCAugmentation::augment_partial(
             missing_indicator.col(user)).rankings;
       } else {
         RankProposal pprop = make_pseudo_proposal(
-          unranked_items, augmented_data(span::all, span(user), span(particle)),
+          augmented_data(span::all, span(user), span(particle)),
+          missing_indicator.col(user),
           pars.alpha_samples(particle), pars.rho_samples.col(particle), distfun
         );
         augmented_data(span::all, span(user), span(particle)) = pprop.rankings;

@@ -22,12 +22,15 @@ struct RankProposal{
   RankProposal() {};
   RankProposal(
     const arma::vec& rankings,
-    const double& probability) :
-  rankings { rankings }, probability { probability } {}
+    const double& probability,
+    const arma::uvec& mutated_items) :
+  rankings { rankings }, probability { probability },
+  mutated_items { mutated_items } {}
   ~RankProposal() = default;
 
   arma::vec rankings{};
   double probability{};
+  arma::uvec mutated_items{};
 };
 
 RankProposal make_uniform_proposal(
@@ -35,8 +38,8 @@ RankProposal make_uniform_proposal(
     const arma::uvec& indicator);
 
 RankProposal make_pseudo_proposal(
-    arma::uvec unranked_items,
-    arma::vec rankings,
+    arma::vec ranks,
+    const arma::uvec& indicator,
     const double& alpha,
     const arma::vec& rho,
     const std::unique_ptr<Distance>& distfun

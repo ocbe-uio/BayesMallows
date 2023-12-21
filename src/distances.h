@@ -10,6 +10,8 @@ struct Distance {
   Distance() {};
   virtual ~Distance() = default;
   virtual double d(const arma::vec& r1, const arma::vec& r2) = 0;
+  virtual double d(const arma::vec& r1, const arma::vec& r2,
+                   const arma::uvec& inds) = 0;
   arma::vec d(const arma::mat& r1, const arma::vec& r2) {
     arma::vec result(r1.n_cols);
     for(size_t i{}; i < r1.n_cols; i++) {
@@ -47,6 +49,9 @@ struct CayleyDistance : Distance {
     }
     return distance;
   }
+  double d(const arma::vec& r1, const arma::vec& r2, const arma::uvec& inds) override {
+    return d(r1, r2);
+  }
   void update_leap_and_shift_indices(arma::uvec& indices, int n_items) override {
     indices = arma::regspace<arma::uvec>(0, n_items - 1);
   }
@@ -56,6 +61,9 @@ struct FootruleDistance : Distance {
   double d(const arma::vec& r1, const arma::vec& r2) override {
     return arma::norm(r1 - r2, 1);
   }
+  double d(const arma::vec& r1, const arma::vec& r2, const arma::uvec& inds) override {
+    return arma::norm(r1(inds) - r2(inds), 1);
+  }
   void update_leap_and_shift_indices(arma::uvec& indices, int n_items) override {
     return;
   }
@@ -64,6 +72,9 @@ struct FootruleDistance : Distance {
 struct HammingDistance : Distance {
   double d(const arma::vec& r1, const arma::vec& r2) override {
     return arma::sum(r1 != r2);
+  }
+  double d(const arma::vec& r1, const arma::vec& r2, const arma::uvec& inds) override {
+    return arma::sum(r1(inds) != r2(inds));
   }
   void update_leap_and_shift_indices(arma::uvec& indices, int n_items) override {
     return;
@@ -83,6 +94,9 @@ struct KendallDistance : Distance {
     }
     return distance;
   }
+  double d(const arma::vec& r1, const arma::vec& r2, const arma::uvec& inds) override {
+    return d(r1, r2);
+  }
   void update_leap_and_shift_indices(arma::uvec& indices, int n_items) override {
     return;
   }
@@ -91,6 +105,9 @@ struct KendallDistance : Distance {
 struct SpearmanDistance : Distance {
   double d(const arma::vec& r1, const arma::vec& r2) override {
     return std::pow(arma::norm(r1 - r2, 2), 2);
+  }
+  double d(const arma::vec& r1, const arma::vec& r2, const arma::uvec& inds) override {
+    return std::pow(arma::norm(r1(inds) - r2(inds), 2), 2);
   }
   void update_leap_and_shift_indices(arma::uvec& indices, int n_items) override {
     return;
@@ -103,6 +120,9 @@ struct UlamDistance : Distance {
     arma::ivec b = arma::conv_to<arma::ivec>::from(r2) - 1;
     auto distance = perm0_distance ( a, b );
     return static_cast<double>(distance);
+  }
+  double d(const arma::vec& r1, const arma::vec& r2, const arma::uvec& inds) override {
+    return d(r1, r2);
   }
   void update_leap_and_shift_indices(arma::uvec& indices, int n_items) override {
     indices = arma::regspace<arma::uvec>(0, n_items - 1);

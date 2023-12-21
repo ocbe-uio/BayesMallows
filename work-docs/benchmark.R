@@ -1,4 +1,4 @@
-
+library(BayesMallows)
 
 set.seed(123)
 dat0 <- t(apply(potato_visual, 1, function(x) {
@@ -38,5 +38,17 @@ system.time({
     new_data = setup_rank_data(rankings = dat[21:36, ])
   )
 })
-# 5.7 seconds
-# 4.7 seconds after refactoring
+# 4.7 seconds
+
+
+set.seed(1)
+beach_data <- setup_rank_data(
+  preferences = beach_preferences
+)
+system.time({
+  model_fit <- compute_mallows(
+    data = beach_data,
+    compute_options = set_compute_options(save_aug = TRUE))
+})
+# 0.447 seconds
+# 0.33 seconds
