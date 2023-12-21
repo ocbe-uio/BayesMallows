@@ -55,6 +55,25 @@ vec propose_pairwise_augmentation(
   return proposal;
 }
 
+int increment_g(
+    const vec& ranking, const vec& proposal,
+    const std::vector<std::vector<unsigned int>>& items_above,
+    const std::vector<std::vector<unsigned int>>& items_below,
+    int ind1, int ind2) {
+  uvec items_above_item = items_above[ind2];
+  uvec items_below_item = items_below[ind2];
+  int result{};
+  for(size_t j = 0; j < items_above_item.size(); ++j){
+    result += (proposal(items_above_item(j) - 1) > proposal(ind1)) -
+      (ranking(items_above_item(j) - 1) > ranking(ind1));
+  }
+  for(size_t j = 0; j < items_below_item.size(); ++j){
+    result += (proposal(items_below_item(j) - 1) < proposal(ind1)) -
+      (ranking(items_below_item(j) - 1) < ranking(ind1));
+  }
+  return result;
+}
+
 vec propose_swap(
     const vec& ranking,
     const std::vector<std::vector<unsigned int>>& items_above,
@@ -68,34 +87,15 @@ vec propose_swap(
 
   int ind1 = as_scalar(find(ranking == u));
   int ind2 = as_scalar(find(ranking == (u + swap_leap)));
-
   vec proposal = ranking;
   proposal(ind1) = ranking(ind2);
   proposal(ind2) = ranking(ind1);
 
-  uvec items_above_item = items_above[ind1];
-  uvec items_below_item = items_below[ind1];
+  g_diff += increment_g(ranking, proposal, items_above,
+                        items_below, ind1, ind1);
+  g_diff += increment_g(ranking, proposal, items_above,
+                        items_below, ind1, ind2);
 
-  for(size_t j = 0; j < items_above_item.size(); ++j){
-    g_diff += (proposal(items_above_item(j) - 1) > proposal(ind1)) -
-      (ranking(items_above_item(j) - 1) > ranking(ind1));
-  }
-  for(size_t j = 0; j < items_below_item.size(); ++j){
-    g_diff += (proposal(items_below_item(j) - 1) < proposal(ind1)) -
-      (ranking(items_below_item(j) - 1) < ranking(ind1));
-  }
-
-  items_above_item = items_above[ind2];
-  items_below_item = items_below[ind2];
-
-  for(size_t j = 0; j < items_above_item.size(); ++j){
-    g_diff += (proposal(items_above_item(j) - 1) > proposal(ind1)) -
-      (ranking(items_above_item(j) - 1) > ranking(ind1));
-  }
-  for(size_t j = 0; j < items_below_item.size(); ++j){
-    g_diff += (proposal(items_below_item(j) - 1) < proposal(ind1)) -
-      (ranking(items_below_item(j) - 1) < ranking(ind1));
-  }
   return proposal;
 }
 
