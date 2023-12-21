@@ -9,31 +9,23 @@ using namespace arma;
 
 
 void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
-                          const Rcpp::List& assessor_constraints,
+                          const uvec& items_above_item,
+                          const uvec& items_below_item,
                           const vec& current_ranking) {
-  // Find the items which are preferred to the given item
-  // Items go from 1, ..., n_items, so must use [item - 1]
-  uvec items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[item - 1]);
-  uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[item - 1]);
-
-  // If there are any items above, we must find the possible rankings
-  if(items_above.n_elem > 0) {
-    // Again subtracting 1 because of zero-first indexing
-    // Find all the rankings of the items that are preferred to *item*
-    vec rankings_above = current_ranking.elem(items_above - 1);
+  if(items_above_item.size() > 0) {
+    vec rankings_above = current_ranking.elem(items_above_item - 1);
     left_limit = max(rankings_above);
   }
 
-  // If there are any items below, we must find the possible rankings
-  if(items_below.n_elem > 0) {
-    // Find all the rankings of the items that are disfavored to *item*
-    vec rankings_below = current_ranking.elem(items_below - 1);
+  if(items_below_item.size() > 0) {
+    vec rankings_below = current_ranking.elem(items_below_item - 1);
     right_limit = min(rankings_below);
   }
-
 }
 
-vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor_constraints) {
+vec propose_pairwise_augmentation(
+    const vec& ranking, const std::vector<std::vector<unsigned int>>& items_above,
+    const std::vector<std::vector<unsigned int>>& items_below) {
   int n_items = ranking.n_elem;
 
   Rcpp::IntegerVector a = Rcpp::sample(n_items, 1) - 1;
@@ -42,7 +34,8 @@ vec propose_pairwise_augmentation(const vec& ranking, const Rcpp::List& assessor
   // Left and right limits of the interval we draw ranks from
   // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
   int left_limit = 0, right_limit = n_items + 1;
-  find_pairwise_limits(left_limit, right_limit, item + 1, assessor_constraints, ranking);
+  find_pairwise_limits(left_limit, right_limit, item, items_above[item],
+                       items_below[item], ranking);
 
   // Now complete the leap step by sampling a new proposal uniformly between
   // left_limit + 1 and right_limit - 1

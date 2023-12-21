@@ -38,7 +38,8 @@ void Augmentation::augment_pairwise(
     vec proposal;
     int g_diff = 0;
     if(pars.error_model == "none"){
-      proposal = propose_pairwise_augmentation(dat.rankings.col(i), dat.constraints[i]);
+      proposal = propose_pairwise_augmentation(
+        dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
     } else if(pars.error_model == "bernoulli"){
       proposal = propose_swap(dat.rankings.col(i), dat.constraints[i], g_diff, swap_leap);
     } else {

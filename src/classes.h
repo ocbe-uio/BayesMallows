@@ -12,6 +12,8 @@ struct Data {
   const unsigned int n_assessors;
   const unsigned int n_items;
   const arma::vec observation_frequency;
+  std::vector<std::vector<std::vector<unsigned int>>> items_above{};
+  std::vector<std::vector<std::vector<unsigned int>>> items_below{};
 };
 
 struct Priors {

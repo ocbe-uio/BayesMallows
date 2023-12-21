@@ -2,13 +2,15 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-int list_of_list_length(List x) {
-  List y = as<List>(x["a"]);
-  return y.length();
+int test(List x) {
+  for(Rcpp::List y : x) {
+    std::vector<double> z(y["number"]);
+    for(auto w : z) Rcpp::Rcout << w << std::endl;
+  }
+  return 0;
 }
 
 /*** R
-ll <- list()
-list_of_list_length(ll)
-
+test(list(list(number = 1, cumber = "some"), list(cumber = "cu", number = rnorm(10))))
+test(list())
 */
