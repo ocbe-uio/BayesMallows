@@ -63,14 +63,13 @@ int increment_g(
   uvec items_above_item = items_above[ind2];
   uvec items_below_item = items_below[ind2];
   int result{};
-  for(size_t j = 0; j < items_above_item.size(); ++j){
-    result += (proposal(items_above_item(j) - 1) > proposal(ind1)) -
-      (ranking(items_above_item(j) - 1) > ranking(ind1));
-  }
-  for(size_t j = 0; j < items_below_item.size(); ++j){
-    result += (proposal(items_below_item(j) - 1) < proposal(ind1)) -
-      (ranking(items_below_item(j) - 1) < ranking(ind1));
-  }
+
+  result += sum((proposal(items_above_item - 1) > proposal(ind1)) -
+    (ranking(items_above_item - 1) > ranking(ind1)));
+
+  result += sum((proposal(items_below_item - 1) < proposal(ind1)) -
+    (ranking(items_below_item - 1) < ranking(ind1)));
+
   return result;
 }
 
