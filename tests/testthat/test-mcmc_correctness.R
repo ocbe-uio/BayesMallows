@@ -170,35 +170,34 @@ test_that("compute_mallows is correct with clustering", {
 })
 
 test_that("compute_mallows is correct with Bernoulli error", {
-  set.seed(1234)
+  set.seed(1)
   mod <- compute_mallows(
     setup_rank_data(preferences = bernoulli_data),
     compute_options = set_compute_options(nmc = 5000),
-    priors = set_priors(kappa = c(1, 10)),
     model_options = set_model_options(error_model = "bernoulli")
   )
 
   expect_equal(
     mean(mod$alpha$value[mod$alpha$iteration > 3000]),
-    11.23578,
+    11.49659,
     tolerance = 1e-4
   )
 
   expect_equal(
     sd(mod$alpha$value[mod$alpha$iteration > 3000]),
-    2.071268,
+    0.8801178,
     tolerance = 1e-4
   )
 
   expect_equal(
     mean(mod$theta$value[mod$theta$iteration > 3000]),
-    0.1370437,
+    0.1116489,
     tolerance = 1e-4
   )
 
   expect_equal(
     sd(mod$theta$value[mod$theta$iteration > 3000]),
-    0.009907702,
+    0.005334915,
     tolerance = 1e-4
   )
 })

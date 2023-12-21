@@ -52,11 +52,12 @@
 #' @title Simulated intransitive pairwise preferences
 #'
 #' @description Simulated dataset based on the [potato_visual] data. Based on
-#'   the rankings in [potato_visual], 100 pairs of items were randomly sampled
-#'   from each assessor. With probability .9, the pairwise preference was in
-#'   agreement with [potato_visual], and with probability .1, they were in
-#'   disagreement. Hence, the data generating mechanism was a Bernoulli error
-#'   model \insertCite{crispino2019}{BayesMallows} with \eqn{\theta=0.1}..
+#'   the rankings in [potato_visual], all n-choose-2 = 190 pairs of items were
+#'   sampled from each assessor. With probability .9, the pairwise
+#'   preference was in agreement with [potato_visual], and with probability .1,
+#'   they were in disagreement. Hence, the data generating mechanism was a
+#'   Bernoulli error model \insertCite{crispino2019}{BayesMallows} with
+#'   \eqn{\theta=0.1}.
 #'
 #' @family datasets
 "bernoulli_data"
