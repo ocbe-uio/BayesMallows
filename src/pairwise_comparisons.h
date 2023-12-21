@@ -1,5 +1,4 @@
-#ifndef PAIRWISE_H
-#define PAIRWISE_H
+#pragma once
 
 arma::vec propose_pairwise_augmentation(
     const arma::vec& ranking,
@@ -12,5 +11,3 @@ arma::vec propose_swap(
     const std::vector<std::vector<unsigned int>>& items_below,
     int& g_diff,
     const int& swap_leap);
-
-#endif
