@@ -41,7 +41,8 @@ void Augmentation::augment_pairwise(
       proposal = propose_pairwise_augmentation(
         dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
     } else if(pars.error_model == "bernoulli"){
-      proposal = propose_swap(dat.rankings.col(i), dat.constraints[i], g_diff, swap_leap);
+      proposal = propose_swap(dat.rankings.col(i), dat.items_above[i],
+                              dat.items_below[i], g_diff, swap_leap);
     } else {
       Rcpp::stop("error_model must be 'none' or 'bernoulli'");
     }

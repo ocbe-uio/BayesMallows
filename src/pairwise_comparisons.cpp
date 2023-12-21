@@ -55,8 +55,11 @@ vec propose_pairwise_augmentation(
   return proposal;
 }
 
-vec propose_swap(const vec& ranking, const Rcpp::List& assessor_constraints,
-                       int& g_diff, const int& swap_leap) {
+vec propose_swap(
+    const vec& ranking,
+    const std::vector<std::vector<unsigned int>>& items_above,
+    const std::vector<std::vector<unsigned int>>& items_below,
+    int& g_diff, const int& swap_leap) {
   int n_items = ranking.n_elem;
 
   // Draw a random number, representing an item
@@ -70,26 +73,28 @@ vec propose_swap(const vec& ranking, const Rcpp::List& assessor_constraints,
   proposal(ind1) = ranking(ind2);
   proposal(ind2) = ranking(ind1);
 
-  // First consider the first item that was switched
-  uvec items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[ind1]);
-  uvec items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[ind1]);
+  uvec items_above_item = items_above[ind1];
+  uvec items_below_item = items_below[ind1];
 
-  for(size_t j = 0; j < items_above.n_elem; ++j){
-    g_diff += (proposal(items_above[j] - 1) > proposal(ind1)) - (ranking(items_above[j] - 1) > ranking(ind1));
+  for(size_t j = 0; j < items_above_item.size(); ++j){
+    g_diff += (proposal(items_above_item(j) - 1) > proposal(ind1)) -
+      (ranking(items_above_item(j) - 1) > ranking(ind1));
   }
-  for(size_t j = 0; j < items_below.n_elem; ++j){
-    g_diff += (proposal(items_below[j] - 1) < proposal(ind1)) - (ranking(items_below[j] - 1) < ranking(ind1));
+  for(size_t j = 0; j < items_below_item.size(); ++j){
+    g_diff += (proposal(items_below_item(j) - 1) < proposal(ind1)) -
+      (ranking(items_below_item(j) - 1) < ranking(ind1));
   }
 
-  // Now consider the second item
-  items_above = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[1])[ind2]);
-  items_below = Rcpp::as<uvec>(Rcpp::as<Rcpp::List>(assessor_constraints[2])[ind2]);
+  items_above_item = items_above[ind2];
+  items_below_item = items_below[ind2];
 
-  for(size_t j = 0; j < items_above.n_elem; ++j){
-    g_diff += (proposal(items_above[j] - 1) > proposal(ind1)) - (ranking(items_above[j] - 1) > ranking(ind1));
+  for(size_t j = 0; j < items_above_item.size(); ++j){
+    g_diff += (proposal(items_above_item(j) - 1) > proposal(ind1)) -
+      (ranking(items_above_item(j) - 1) > ranking(ind1));
   }
-  for(size_t j = 0; j < items_below.n_elem; ++j){
-    g_diff += (proposal(items_below[j] - 1) < proposal(ind1)) - (ranking(items_below[j] - 1) < ranking(ind1));
+  for(size_t j = 0; j < items_below_item.size(); ++j){
+    g_diff += (proposal(items_below_item(j) - 1) < proposal(ind1)) -
+      (ranking(items_below_item(j) - 1) < ranking(ind1));
   }
   return proposal;
 }
