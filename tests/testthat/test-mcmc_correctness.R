@@ -170,34 +170,69 @@ test_that("compute_mallows is correct with clustering", {
 })
 
 test_that("compute_mallows is correct with Bernoulli error", {
-  set.seed(1)
+  set.seed(33)
   mod <- compute_mallows(
     setup_rank_data(preferences = bernoulli_data),
-    compute_options = set_compute_options(nmc = 5000),
+    compute_options = set_compute_options(nmc = 2000, swap_leap = 2),
     model_options = set_model_options(error_model = "bernoulli")
   )
 
   expect_equal(
-    mean(mod$alpha$value[mod$alpha$iteration > 3000]),
-    11.49659,
+    mean(mod$alpha$value[mod$alpha$iteration > 1500]),
+    9.518804,
     tolerance = 1e-4
   )
 
   expect_equal(
-    sd(mod$alpha$value[mod$alpha$iteration > 3000]),
-    0.8801178,
+    sd(mod$alpha$value[mod$alpha$iteration > 1500]),
+    0.7038427,
     tolerance = 1e-4
   )
 
   expect_equal(
-    mean(mod$theta$value[mod$theta$iteration > 3000]),
-    0.1116489,
+    mean(mod$theta$value[mod$theta$iteration > 1500]),
+    0.1023917,
     tolerance = 1e-4
   )
 
   expect_equal(
-    sd(mod$theta$value[mod$theta$iteration > 3000]),
-    0.005334915,
+    sd(mod$theta$value[mod$theta$iteration > 1500]),
+    0.004577318,
+    tolerance = 1e-4
+  )
+})
+
+test_that("compute_mallows is correct with Bernoulli error and partial data", {
+  set.seed(33)
+  mod <- compute_mallows(
+    setup_rank_data(
+      preferences = bernoulli_data[sample(nrow(bernoulli_data), 500), ]
+    ),
+    compute_options = set_compute_options(nmc = 10000, swap_leap = 3),
+    model_options = set_model_options(error_model = "bernoulli")
+  )
+
+  expect_equal(
+    mean(mod$alpha$value[mod$alpha$iteration > 8000]),
+    9.260634,
+    tolerance = 1e-4
+  )
+
+  expect_equal(
+    sd(mod$alpha$value[mod$alpha$iteration > 8000]),
+    0.8246462,
+    tolerance = 1e-4
+  )
+
+  expect_equal(
+    mean(mod$theta$value[mod$theta$iteration > 8000]),
+    0.06693134,
+    tolerance = 1e-4
+  )
+
+  expect_equal(
+    sd(mod$theta$value[mod$theta$iteration > 8000]),
+    0.009311273,
     tolerance = 1e-4
   )
 })

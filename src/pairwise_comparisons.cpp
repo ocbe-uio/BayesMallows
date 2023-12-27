@@ -55,46 +55,37 @@ vec propose_pairwise_augmentation(
   return proposal;
 }
 
-int increment_g(
-    const vec& ranking, const vec& proposal,
-    const std::vector<std::vector<unsigned int>>& items_above,
-    const std::vector<std::vector<unsigned int>>& items_below,
-    int ind1, int ind2) {
-  uvec items_above_item = items_above[ind2];
-  uvec items_below_item = items_below[ind2];
-  int result{};
-
-  result += sum((proposal(items_above_item - 1) > proposal(ind1)) -
-    (ranking(items_above_item - 1) > ranking(ind1)));
-
-  result += sum((proposal(items_below_item - 1) < proposal(ind1)) -
-    (ranking(items_below_item - 1) < ranking(ind1)));
-
-  return result;
-}
-
 vec propose_swap(
     const vec& ranking,
     const std::vector<std::vector<unsigned int>>& items_above,
     const std::vector<std::vector<unsigned int>>& items_below,
     int& g_diff, const int& swap_leap) {
   int n_items = ranking.n_elem;
-
-  // Draw a random number, representing an item
-  Rcpp::IntegerVector a = Rcpp::sample(n_items - swap_leap, 1);
+  Rcpp::IntegerVector l = Rcpp::sample(swap_leap, 1);
+  Rcpp::IntegerVector a = Rcpp::sample(n_items - l(0), 1);
   int u = a(0);
 
   int ind1 = as_scalar(find(ranking == u));
-  int ind2 = as_scalar(find(ranking == (u + swap_leap)));
+  int ind2 = as_scalar(find(ranking == (u + l(0))));
   vec proposal = ranking;
   proposal(ind1) = ranking(ind2);
   proposal(ind2) = ranking(ind1);
 
-  g_diff += increment_g(ranking, proposal, items_above,
-                        items_below, ind1, ind1);
-  g_diff += increment_g(ranking, proposal, items_above,
-                        items_below, ind1, ind2);
+  auto count_error_diff =
+    [&items_above, &items_below, &ranking, &proposal](int ind) {
+    int result{};
+    for(const auto item_above_first : items_above[ind]) {
+      result += (proposal(item_above_first - 1) > proposal(ind)) -
+        (ranking(item_above_first - 1) > ranking(ind));
+    }
+    for(const auto item_below_first : items_below[ind]) {
+      result += (proposal(item_below_first - 1) < proposal(ind)) -
+        (ranking(item_below_first - 1) < ranking(ind));
+    }
+    return result;
+  };
 
+  g_diff += count_error_diff(ind1) + count_error_diff(ind2);
   return proposal;
 }
 

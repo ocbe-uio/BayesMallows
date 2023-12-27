@@ -73,12 +73,11 @@ vec make_new_rho(
   }
 }
 
-double rtruncbeta(int shape1, int shape2, double trunc = .5) {
-  for(size_t i{}; i < 1e8; i++){
-    double x{R::rbeta(shape1, shape2)};
-    if(x < trunc) return x;
-  }
-  Rcpp::stop("Unable to sample from truncated beta distribution.\n");
+double rtruncbeta(double shape1, double shape2, double trunc = .5) {
+  double Fa = R::pbeta(0, shape1, shape2, true, false);
+  double Fb = R::pbeta(trunc, shape1, shape2, true, false);
+  double u = R::runif(Fa, Fb);
+  return R::qbeta(u, shape1, shape2, true, false);
 }
 
 Parameters::Parameters(

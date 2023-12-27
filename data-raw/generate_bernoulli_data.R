@@ -31,5 +31,5 @@ for (i in seq_len(nrow(bernoulli_data))) {
 }
 
 
-bernoulli_data$comparison <- NULL
+bernoulli_data$comp <- NULL
 usethis::use_data(bernoulli_data, overwrite = TRUE)

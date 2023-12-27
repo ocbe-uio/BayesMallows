@@ -5,7 +5,7 @@
 \alias{bernoulli_data}
 \title{Simulated intransitive pairwise preferences}
 \format{
-An object of class \code{data.frame} with 1200 rows and 3 columns.
+An object of class \code{data.frame} with 2280 rows and 3 columns.
 }
 \usage{
 bernoulli_data

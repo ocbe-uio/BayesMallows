@@ -36,7 +36,7 @@ void Augmentation::augment_pairwise(
   if(!augpair) return;
   for(size_t i = 0; i < dat.n_assessors; ++i) {
     vec proposal;
-    int g_diff = 0;
+    int g_diff{};
     if(pars.error_model == "none"){
       proposal = propose_pairwise_augmentation(
         dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
