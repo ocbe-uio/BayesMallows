@@ -9,12 +9,11 @@ Augmentation::Augmentation(
   const Rcpp::List& compute_options
 ) :
   augpair { dat.items_above.size() > 0 },
-  any_missing { !is_finite(dat.rankings) },
   save_aug { compute_options["save_aug"] },
   aug_thinning { compute_options["aug_thinning"] },
   swap_leap { compute_options["swap_leap"] } ,
   log_aug_prob { zeros(dat.n_assessors) } {
-    if(any_missing){
+    if(dat.any_missing){
       set_up_missing(dat.rankings, missing_indicator);
       initialize_missing_ranks(dat.rankings, missing_indicator);
     }
@@ -67,7 +66,7 @@ void Augmentation::update_missing_ranks(
     const Clustering& clus,
     const Parameters& pars,
     const std::unique_ptr<Distance>& distfun) {
-  if(!any_missing) return;
+  if(!dat.any_missing) return;
 
   for(size_t i = 0; i < dat.n_assessors; ++i){
     int cluster = clus.current_cluster_assignment(i);

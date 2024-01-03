@@ -16,6 +16,7 @@ struct Data {
   const arma::vec observation_frequency;
   const triply_nested items_above{};
   const triply_nested items_below{};
+  const bool any_missing;
 };
 
 struct Priors {
@@ -103,7 +104,6 @@ struct Augmentation {
   ~Augmentation() = default;
 
   const bool augpair;
-  const bool any_missing;
   const bool save_aug;
   const unsigned int aug_thinning;
   const unsigned int swap_leap;
@@ -195,10 +195,9 @@ struct SMCAugmentation {
       const SMCParameters& pars,
       const std::unique_ptr<Distance>& distfun);
 
-  void resample(const arma::uvec& index);
+  void resample(const arma::uvec& index, const SMCData& dat);
   const std::string aug_method;
   arma::mat log_aug_prob;
-  bool any_missing;
   arma::cube augmented_data;
   arma::umat missing_indicator;
   Rcpp::Nullable<arma::cube> aug_init;

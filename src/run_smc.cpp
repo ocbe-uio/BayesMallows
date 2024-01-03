@@ -28,7 +28,7 @@ Rcpp::List  run_smc(
   aug.reweight(pars, dat, pfun, distfun);
   uvec index = pars.draw_resampling_index();
   pars.resample(index);
-  aug.resample(index);
+  aug.resample(index, dat);
 
   for (size_t ii{}; ii < pars.n_particles; ++ii) {
     for (size_t kk{}; kk < pars.mcmc_steps; ++kk) {

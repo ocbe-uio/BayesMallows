@@ -23,5 +23,6 @@ Data::Data(
   n_items { rankings.n_rows },
   observation_frequency(data["observation_frequency"]),
   items_above { define_items(data, "items_above") },
-  items_below { define_items(data, "items_below") }
+  items_below { define_items(data, "items_below") },
+  any_missing { !is_finite(rankings) }
   {}

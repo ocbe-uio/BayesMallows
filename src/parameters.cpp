@@ -251,8 +251,8 @@ void SMCParameters::resample(const uvec& index) {
   alpha_samples = alpha_samples.rows(index);
 }
 
-void SMCAugmentation::resample(const uvec& index) {
-  if(!any_missing) return;
+void SMCAugmentation::resample(const uvec& index, const SMCData& dat) {
+  if(!dat.any_missing) return;
   augmented_data = augmented_data.slices(index);
 }
 
@@ -261,7 +261,7 @@ void SMCAugmentation::update_missing_ranks(
     const SMCData& dat,
     const SMCParameters& pars,
     const std::unique_ptr<Distance>& distfun) {
-  if(!any_missing) return;
+  if(!dat.any_missing) return;
 
   for (unsigned int jj = dat.n_assessors - dat.num_new_obs;
        jj < dat.n_assessors; ++jj) {

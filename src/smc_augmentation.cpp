@@ -10,10 +10,9 @@ SMCAugmentation::SMCAugmentation(
   const unsigned int n_particles) :
   aug_method(smc_options["aug_method"]),
   log_aug_prob { arma::zeros(dat.n_assessors, n_particles) },
-  any_missing { !is_finite(dat.rankings) },
   aug_init(initial_values["aug_init"])
   {
-    if(any_missing){
+    if(dat.any_missing){
       set_up_missing(dat.rankings, missing_indicator);
       augmented_data.set_size(dat.n_items, dat.n_assessors, n_particles);
 
@@ -58,7 +57,7 @@ void SMCAugmentation::reweight(
 
     double new_user_contribution{};
     if(dat.num_new_obs > 0) {
-      const mat new_rankings = !any_missing ? dat.new_rankings :
+      const mat new_rankings = !dat.any_missing ? dat.new_rankings :
       augmented_data(
         span::all,
         span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1),
@@ -79,7 +78,7 @@ void SMCAugmentation::augment_partial(
     const SMCData& dat,
     const std::unique_ptr<Distance>& distfun
 ){
-  if(!any_missing) return;
+  if(!dat.any_missing) return;
   for (size_t particle{}; particle < pars.n_particles; particle++) {
     for (size_t user{}; user < dat.n_assessors; user++) {
       if(user < dat.n_assessors - dat.num_new_obs) {
@@ -107,6 +106,6 @@ void SMCAugmentation::augment_partial(
 
 void SMCAugmentation::update_data(
     const unsigned int particle_index, SMCData& dat) {
-  if(!any_missing) return;
+  if(!dat.any_missing) return;
   dat.rankings = augmented_data.slice(particle_index);
 }
