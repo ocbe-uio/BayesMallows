@@ -6,7 +6,7 @@
 \alias{update_mallows.SMCMallows}
 \title{Update a Bayesian Mallows model with new users}
 \usage{
-update_mallows(model, new_data, cl = NULL, ...)
+update_mallows(model, new_data, ..., cl = NULL)
 
 \method{update_mallows}{BayesMallows}(
   model,
@@ -15,11 +15,11 @@ update_mallows(model, new_data, cl = NULL, ...)
   smc_options = set_smc_options(),
   compute_options = set_compute_options(),
   priors = model$priors,
-  cl = NULL,
-  ...
+  ...,
+  cl = NULL
 )
 
-\method{update_mallows}{SMCMallows}(model, new_data, cl = NULL, ...)
+\method{update_mallows}{SMCMallows}(model, new_data, ..., cl = NULL)
 }
 \arguments{
 \item{model}{A model object of class "BayesMallows" returned from
@@ -29,11 +29,11 @@ function.}
 \item{new_data}{An object of class "BayesMallowsData" returned from
 \code{\link[=setup_rank_data]{setup_rank_data()}}. The object should contain the new data being provided.}
 
+\item{...}{Optional arguments. Currently not used.}
+
 \item{cl}{Optional cluster returned from \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. If
 provided, particles will be processed in parallel, distributed across the
 nodes of \code{cl}.}
-
-\item{...}{Optional arguments. Currently not used.}
 
 \item{model_options}{An object of class "BayesMallowsModelOptions" returned
 from \code{\link[=set_model_options]{set_model_options()}}.}

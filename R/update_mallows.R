@@ -18,10 +18,10 @@
 #'   returned from [set_compute_options()].
 #' @param priors An object of class "BayesMallowsPriors" returned from
 #'   [set_priors()]. Defaults to the priors used in `model`.
+#' @param ... Optional arguments. Currently not used.
 #' @param cl Optional cluster returned from [parallel::makeCluster()]. If
 #'   provided, particles will be processed in parallel, distributed across the
 #'   nodes of `cl`.
-#' @param ... Optional arguments. Currently not used.
 #'
 #' @return An updated model, of class "SMCMallows".
 #' @export
@@ -30,7 +30,7 @@
 #'
 #' @example /inst/examples/update_mallows_example.R
 #'
-update_mallows <- function(model, new_data, cl = NULL, ...) {
+update_mallows <- function(model, new_data, ..., cl = NULL) {
   UseMethod("update_mallows")
 }
 
@@ -42,8 +42,8 @@ update_mallows.BayesMallows <- function(
     smc_options = set_smc_options(),
     compute_options = set_compute_options(),
     priors = model$priors,
-    cl = NULL,
-    ...) {
+    ...,
+    cl = NULL) {
   if (is.null(model$burnin)) stop("Burnin must be set.")
 
   if (!is.null(cl)) {
@@ -106,7 +106,7 @@ update_mallows.BayesMallows <- function(
 
 #' @export
 #' @rdname update_mallows
-update_mallows.SMCMallows <- function(model, new_data, cl = NULL, ...) {
+update_mallows.SMCMallows <- function(model, new_data, ..., cl = NULL) {
   datlist <- prepare_new_data(model, new_data)
 
   if (!is.null(cl)) {
