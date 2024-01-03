@@ -28,7 +28,7 @@ arma::vec asymptotic_partition_function(
     arma::vec alpha_vector, int n_items, std::string metric,
     int K, int n_iterations = 1000, double tol = 1e-9){
   mat A = ones<mat>(K, K) / K;
-  double Z0lim = -2 * std::log(static_cast<double>(K)) - accu(A % log(A));
+  double Z0lim = -2 * std::log(K) - accu(A % log(A));
 
   mat B(K, K);
   for(int i = 0; i < K; ++i){
