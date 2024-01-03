@@ -51,7 +51,6 @@
 #' @param cl Optional cluster returned from [parallel::makeCluster()]. If
 #'   provided, chains will be run in parallel, one on each node of `cl`.
 #'
-#'
 #' @return An object of class BayesMallows.
 #'
 #' @references \insertAllCited{}

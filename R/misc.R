@@ -16,3 +16,14 @@ validate_permutation <- function(vec) {
       all(vec[!is.na(vec)] >= 1) && !any(duplicated(vec[!is.na(vec)])))
   }
 }
+
+count_jobs_per_cluster <- function(n_iterations, n_clusters) {
+  # Split n_iterations into each cluster
+  n_iterations_vec <- rep(floor(n_iterations / n_clusters), n_clusters)
+  i <- 1
+  while (sum(n_iterations_vec) != n_iterations) {
+    n_iterations_vec[i] <- n_iterations_vec[i] + 1
+    if (i > n_clusters) break
+  }
+  n_iterations_vec
+}

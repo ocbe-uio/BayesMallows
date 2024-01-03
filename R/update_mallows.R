@@ -6,8 +6,8 @@
 #' \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
 #'
 #' @param model A model object of class "BayesMallows" returned from
-#'   [compute_mallows()] or an object of class "SMCMallows" returned from
-#'   this function.
+#'   [compute_mallows()] or an object of class "SMCMallows" returned from this
+#'   function.
 #' @param new_data An object of class "BayesMallowsData" returned from
 #'   [setup_rank_data()]. The object should contain the new data being provided.
 #' @param model_options An object of class "BayesMallowsModelOptions" returned
@@ -18,6 +18,9 @@
 #'   returned from [set_compute_options()].
 #' @param priors An object of class "BayesMallowsPriors" returned from
 #'   [set_priors()]. Defaults to the priors used in `model`.
+#' @param cl Optional cluster returned from [parallel::makeCluster()]. If
+#'   provided, particles will be processed in parallel, distributed across the
+#'   nodes of `cl`.
 #' @param ... Optional arguments. Currently not used.
 #'
 #' @return An updated model, of class "SMCMallows".
@@ -27,7 +30,7 @@
 #'
 #' @example /inst/examples/update_mallows_example.R
 #'
-update_mallows <- function(model, new_data, ...) {
+update_mallows <- function(model, new_data, cl = NULL, ...) {
   UseMethod("update_mallows")
 }
 
@@ -39,28 +42,58 @@ update_mallows.BayesMallows <- function(
     smc_options = set_smc_options(),
     compute_options = set_compute_options(),
     priors = model$priors,
+    cl = NULL,
     ...) {
   if (is.null(model$burnin)) stop("Burnin must be set.")
-  alpha_init <- extract_alpha_init(model, smc_options$n_particles)
-  rho_init <- extract_rho_init(model, smc_options$n_particles)
 
-  ret <- run_smc(
-    data = new_data,
-    new_data = new_data,
-    model_options = model_options,
-    smc_options = smc_options,
-    compute_options = compute_options,
-    priors = priors,
-    initial_values = list(
-      alpha_init = alpha_init, rho_init = rho_init,
-      aug_init = NULL
-    ),
-    pfun_values = model$pfun_values,
-    pfun_estimate = model$pfun_estimate
-  )
+  if(!is.null(cl)) {
+    n_particles_vec <- count_jobs_per_cluster(smc_options$n_particles, length(cl))
+    parallel::clusterExport(
+      cl = cl,
+      varlist = c(
+        "new_data", "model_options", "smc_options", "compute_options", "priors",
+        "model"
+      ),
+      envir = environment()
+    )
+    parallel::clusterSetRNGStream(cl)
+    lapplyfun <- function(X, FUN, ...) {
+      parallel::parLapply(cl = cl, X = X, fun = FUN, ...)
+    }
+  } else {
+    n_particles_vec <- smc_options$n_particles
+    lapplyfun <- lapply
+  }
+
+  nested_result <- lapplyfun(n_particles_vec, function(n_particles) {
+    alpha_init <- extract_alpha_init(model, n_particles)
+    rho_init <- extract_rho_init(model, n_particles)
+    smc_options$n_particles <- n_particles
+    run_smc(
+      data = new_data,
+      new_data = new_data,
+      model_options = model_options,
+      smc_options = smc_options,
+      compute_options = compute_options,
+      priors = priors,
+      initial_values = list(
+        alpha_init = alpha_init, rho_init = rho_init,
+        aug_init = NULL
+      ),
+      pfun_values = model$pfun_values,
+      pfun_estimate = model$pfun_estimate
+    )
+  })
+
+  ret <- list()
+  ret$rho_samples <- do.call(cbind, lapply(nested_result, function(x) x$rho_samples))
+  ret$alpha_samples <- do.call(cbind, lapply(nested_result, function(x) x$alpha_samples))
+  ret$augmented_rankings <- nested_result[[1]]$augmented_rankings
+  for(nr in nested_result[-1]) {
+    ret$augmented_rankings <- abind(ret$augmented_rankings, nr$augmented_rankings)
+  }
 
   ret <- c(ret, tidy_smc(ret, model$items))
-
   ret$model_options <- model_options
   ret$smc_options <- smc_options
   ret$compute_options <- compute_options
@@ -80,7 +113,7 @@ update_mallows.BayesMallows <- function(
 
 #' @export
 #' @rdname update_mallows
-update_mallows.SMCMallows <- function(model, new_data, ...) {
+update_mallows.SMCMallows <- function(model, new_data, cl = NULL, ...) {
   datlist <- prepare_new_data(model, new_data)
   ret <- run_smc(
     data = datlist$data,

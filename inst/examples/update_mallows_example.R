@@ -71,7 +71,7 @@ mod1 <- update_mallows(
 
 plot(mod1)
 
-# Then, assume we get even more data, this top top-14 rankings:
+# Then, assume we get even more data, this time top-14 rankings:
 mod2 <- update_mallows(
   model = mod1,
   new_data = setup_rank_data(rankings = potato_top_14, user_ids = user_ids)
@@ -88,5 +88,18 @@ mod_final <- update_mallows(
   model = mod2,
   new_data = setup_rank_data(rankings = potato_new, user_ids = user_ids)
 )
+
+plot(mod_final)
+
+# The particles can also be processed in parallel. With a large number of
+# particles or MCMC steps, this can lead to significant speedup.
+library(parallel)
+cl <- makeCluster(2)
+mod_final <- update_mallows(
+  model = mod2,
+  new_data = setup_rank_data(rankings = potato_new, user_ids = user_ids),
+  cl = cl
+)
+stopCluster(cl)
 
 plot(mod_final)

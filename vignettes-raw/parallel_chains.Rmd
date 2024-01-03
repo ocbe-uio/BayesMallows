@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 library(BayesMallows)
 ```
 
-This vignette describes how to run Markov chain Monte Carlo with parallel chains. For an introduction to the "BayesMallows" package, please see @sorensen2020.
+This vignette describes how to run Markov chain Monte Carlo with parallel chains. For an introduction to the "BayesMallows" package, please see [the introductory vignette](https://ocbe-uio.github.io/BayesMallows/articles/BayesMallows.html), which is an updated version of @sorensen2020. For parallel processing of particles with the sequential Monte Carlo algorithm of @steinSequentialInferenceMallows2023, see the [SMC vignette](https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html).
 
 
 ## Why Parallel Chains?

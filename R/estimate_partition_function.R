@@ -66,13 +66,7 @@ estimate_partition_function <- function(
       "kendall", "ulam"
     ))
     if (!is.null(cl)) {
-      # Split n_iterations into each cluster
-      n_iterations_vec <- rep(floor(n_iterations / length(cl)), length(cl))
-      i <- 1
-      while (sum(n_iterations_vec) != n_iterations) {
-        n_iterations_vec[i] <- n_iterations_vec[i] + 1
-        if (i > length(cl)) break
-      }
+      n_iterations_vec <- count_jobs_per_cluster(n_iterations, length(cl))
       parallel::clusterExport(cl, c("alpha_vector", "n_items", "metric"),
         envir = environment()
       )
