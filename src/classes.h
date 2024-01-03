@@ -108,7 +108,7 @@ struct Augmentation {
   const unsigned int aug_thinning;
   const unsigned int swap_leap;
 
-  arma::umat missing_indicator{};
+  const arma::umat missing_indicator{};
   arma::cube augmented_data{};
   arma::vec log_aug_prob{};
 
@@ -197,8 +197,8 @@ struct SMCAugmentation {
 
   void resample(const arma::uvec& index, const SMCData& dat);
   const std::string aug_method;
+  const Rcpp::Nullable<arma::cube> aug_init;
+  const arma::umat missing_indicator;
   arma::mat log_aug_prob;
   arma::cube augmented_data;
-  arma::umat missing_indicator;
-  Rcpp::Nullable<arma::cube> aug_init;
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include "distances.h"
+#include "classes.h"
 
 arma::vec make_new_augmentation(
     const arma::vec& rankings,
@@ -10,12 +11,10 @@ arma::vec make_new_augmentation(
     double& log_aug_prob,
     bool pseudo = false);
 
-void set_up_missing(
-    arma::mat& rankings,
-    arma::umat& missing_indicator) noexcept;
+arma::umat set_up_missing(const Data& dat) noexcept;
 
-void initialize_missing_ranks(
-    arma::mat& rankings,
+arma::mat initialize_missing_ranks(
+    const arma::mat& rankings,
     const arma::umat& missing_indicator);
 
 struct RankProposal{

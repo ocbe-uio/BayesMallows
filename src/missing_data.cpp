@@ -19,14 +19,16 @@ vec setdiff(const vec& x, const vec& y) noexcept {
   return conv_to<vec>::from(diff);
 }
 
-void set_up_missing(arma::mat& rankings, arma::umat& missing_indicator) noexcept {
-  rankings.replace(datum::nan, 0);
-  missing_indicator = conv_to<umat>::from(rankings);
+arma::umat set_up_missing(const Data& dat) noexcept {
+  if(!dat.any_missing) return arma::umat{};
+  arma::umat missing_indicator = conv_to<umat>::from(dat.rankings);
   missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
+  return missing_indicator;
 }
 
-void initialize_missing_ranks(mat& rankings, const umat& missing_indicator) {
+mat initialize_missing_ranks(const mat& rankings, const umat& missing_indicator) {
   int n_assessors = rankings.n_cols;
+  mat init_rank = rankings;
 
   for(int i = 0; i < n_assessors; ++i){
     vec rank_vector = rankings.col(i);
@@ -39,8 +41,9 @@ void initialize_missing_ranks(mat& rankings, const umat& missing_indicator) {
     uvec inds_arma = Rcpp::as<uvec>(Rcpp::wrap(inds));
     vec new_ranks = a.elem(inds_arma);
     rank_vector(missing_inds) = new_ranks;
-    rankings.col(i) = rank_vector;
+    init_rank.col(i) = rank_vector;
   }
+  return init_rank;
 }
 
 vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,

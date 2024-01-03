@@ -12,10 +12,10 @@ Augmentation::Augmentation(
   save_aug { compute_options["save_aug"] },
   aug_thinning { compute_options["aug_thinning"] },
   swap_leap { compute_options["swap_leap"] } ,
+  missing_indicator { set_up_missing(dat) },
   log_aug_prob { zeros(dat.n_assessors) } {
     if(dat.any_missing){
-      set_up_missing(dat.rankings, missing_indicator);
-      initialize_missing_ranks(dat.rankings, missing_indicator);
+      dat.rankings = initialize_missing_ranks(dat.rankings, missing_indicator);
     }
     if(save_aug){
       unsigned int nmc{ compute_options["nmc"] };

@@ -9,16 +9,16 @@ SMCAugmentation::SMCAugmentation(
   const Rcpp::List& initial_values,
   const unsigned int n_particles) :
   aug_method(smc_options["aug_method"]),
-  log_aug_prob { arma::zeros(dat.n_assessors, n_particles) },
-  aug_init(initial_values["aug_init"])
+  aug_init(initial_values["aug_init"]),
+  missing_indicator { set_up_missing(dat) },
+  log_aug_prob { arma::zeros(dat.n_assessors, n_particles) }
   {
     if(dat.any_missing){
-      set_up_missing(dat.rankings, missing_indicator);
       augmented_data.set_size(dat.n_items, dat.n_assessors, n_particles);
 
       for(size_t i{}; i < n_particles; i++) {
-        augmented_data.slice(i) = dat.rankings;
-        initialize_missing_ranks(augmented_data.slice(i), missing_indicator);
+        augmented_data.slice(i) =
+          initialize_missing_ranks(dat.rankings, missing_indicator);
       }
       if(aug_init.isNotNull()) {
         augmented_data(

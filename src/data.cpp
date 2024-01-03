@@ -25,4 +25,6 @@ Data::Data(
   items_above { define_items(data, "items_above") },
   items_below { define_items(data, "items_below") },
   any_missing { !is_finite(rankings) }
-  {}
+  {
+    rankings.replace(datum::nan, 0);
+  }
