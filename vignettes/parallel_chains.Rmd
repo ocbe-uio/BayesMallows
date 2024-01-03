@@ -18,6 +18,7 @@ vignette: >
 
 ```r
 library(BayesMallows)
+set.seed(123)
 ```
 
 This vignette describes how to run Markov chain Monte Carlo with parallel chains. For an introduction to the "BayesMallows" package, please see [the introductory vignette](https://ocbe-uio.github.io/BayesMallows/articles/BayesMallows.html), which is an updated version of @sorensen2020. For parallel processing of particles with the sequential Monte Carlo algorithm of @steinSequentialInferenceMallows2023, see the [SMC vignette](https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html).
@@ -67,11 +68,11 @@ assess_convergence(fit, parameter = "rho", items = 1:3)
 
 ![Trace plot of modal ranking for four chains.](parallel_assess_convergence_rho-1.png)
 
-Based on the convergence plots, we set the burnin to 700. 
+Based on the convergence plots, we set the burnin to 3000. 
 
 
 ```r
-fit$burnin <- 700
+fit$burnin <- 3000
 ```
 
 We can now use all the tools for assessing the posterior distributions as usual. The post-burnin samples for all parallel chains are simply combined, as they should be.
@@ -154,11 +155,11 @@ assess_convergence(fit,
 
 ### Posterior Quantities
 
-Based on the trace plots, the chains seem to be mixing well. We set the burnin to 700 again.
+Based on the trace plots, the chains seem to be mixing well. We set the burnin to 1000.
 
 
 ```r
-fit$burnin <- 700
+fit$burnin <- 1000
 ```
 
 We can now study the posterior distributions. Here is the posterior for $\alpha$. Note that by increasing the `nmc` argument to `compute_mallows` above, the density would appear smoother. In this vignette we have kept it low to reduce the run time.
@@ -185,7 +186,7 @@ We can also compute posterior intervals in the usual way:
 ```r
 compute_posterior_intervals(fit, parameter = "alpha")
 #>   parameter  mean median          hpdi central_interval
-#> 1     alpha 4.852  4.842 [4.292,5.454]    [4.292,5.455]
+#> 1     alpha 4.798  4.793 [4.242,5.373]    [4.235,5.371]
 ```
 
 
@@ -193,20 +194,20 @@ compute_posterior_intervals(fit, parameter = "alpha")
 compute_posterior_intervals(fit, parameter = "rho")
 #>    parameter    item mean median    hpdi central_interval
 #> 1        rho  Item 1    7      7     [7]            [6,7]
-#> 2        rho  Item 2   15     15    [15]             [15]
+#> 2        rho  Item 2   15     15    [15]          [14,15]
 #> 3        rho  Item 3    3      3   [3,4]            [3,4]
-#> 4        rho  Item 4   12     12 [11,14]          [11,14]
+#> 4        rho  Item 4   11     11 [11,13]          [11,13]
 #> 5        rho  Item 5    9      9  [8,10]           [8,10]
 #> 6        rho  Item 6    2      2   [1,2]            [1,2]
 #> 7        rho  Item 7    9      8  [8,10]           [8,10]
-#> 8        rho  Item 8   12     11 [11,14]          [11,14]
+#> 8        rho  Item 8   12     12 [11,13]          [11,14]
 #> 9        rho  Item 9    1      1   [1,2]            [1,2]
 #> 10       rho Item 10    6      6   [5,6]            [5,7]
-#> 11       rho Item 11    4      4   [3,4]            [3,5]
+#> 11       rho Item 11    4      4   [3,5]            [3,5]
 #> 12       rho Item 12   13     13 [12,14]          [11,14]
-#> 13       rho Item 13   10     10  [9,10]           [8,10]
-#> 14       rho Item 14   13     14 [11,14]          [11,14]
-#> 15       rho Item 15    5      5   [5,6]            [4,6]
+#> 13       rho Item 13   10     10  [8,10]           [8,10]
+#> 14       rho Item 14   13     14 [12,14]          [12,14]
+#> 15       rho Item 15    5      5   [4,5]            [4,6]
 ```
 
 And we can compute the consensus ranking:
@@ -215,20 +216,20 @@ And we can compute the consensus ranking:
 ```r
 compute_consensus(fit)
 #>      cluster ranking    item   cumprob
-#> 1  Cluster 1       1  Item 9 0.9204545
+#> 1  Cluster 1       1  Item 9 0.8691667
 #> 2  Cluster 1       2  Item 6 1.0000000
-#> 3  Cluster 1       3  Item 3 0.7213636
-#> 4  Cluster 1       4 Item 11 0.9681061
-#> 5  Cluster 1       5 Item 15 0.9395455
-#> 6  Cluster 1       6 Item 10 0.9615152
+#> 3  Cluster 1       3  Item 3 0.6391667
+#> 4  Cluster 1       4 Item 11 0.9404167
+#> 5  Cluster 1       5 Item 15 0.9559167
+#> 6  Cluster 1       6 Item 10 0.9636667
 #> 7  Cluster 1       7  Item 1 1.0000000
-#> 8  Cluster 1       8  Item 7 0.5833333
-#> 9  Cluster 1       9  Item 5 0.8950758
+#> 8  Cluster 1       8  Item 7 0.5473333
+#> 9  Cluster 1       9  Item 5 0.9255833
 #> 10 Cluster 1      10 Item 13 1.0000000
-#> 11 Cluster 1      11  Item 8 0.5235606
-#> 12 Cluster 1      12  Item 4 0.7127273
-#> 13 Cluster 1      13 Item 12 0.6814394
-#> 14 Cluster 1      14 Item 14 0.9852273
+#> 11 Cluster 1      11  Item 4 0.6924167
+#> 12 Cluster 1      12  Item 8 0.7833333
+#> 13 Cluster 1      13 Item 12 0.6158333
+#> 14 Cluster 1      14 Item 14 0.9958333
 #> 15 Cluster 1      15  Item 2 1.0000000
 ```
 
@@ -236,21 +237,21 @@ compute_consensus(fit)
 ```r
 compute_consensus(fit, type = "MAP")
 #>      cluster map_ranking    item probability
-#> 1  Cluster 1           1  Item 9   0.2075758
-#> 2  Cluster 1           2  Item 6   0.2075758
-#> 3  Cluster 1           3  Item 3   0.2075758
-#> 4  Cluster 1           4 Item 11   0.2075758
-#> 5  Cluster 1           5 Item 15   0.2075758
-#> 6  Cluster 1           6 Item 10   0.2075758
-#> 7  Cluster 1           7  Item 1   0.2075758
-#> 8  Cluster 1           8  Item 7   0.2075758
-#> 9  Cluster 1           9  Item 5   0.2075758
-#> 10 Cluster 1          10 Item 13   0.2075758
-#> 11 Cluster 1          11  Item 8   0.2075758
-#> 12 Cluster 1          12 Item 12   0.2075758
-#> 13 Cluster 1          13  Item 4   0.2075758
-#> 14 Cluster 1          14 Item 14   0.2075758
-#> 15 Cluster 1          15  Item 2   0.2075758
+#> 1  Cluster 1           1  Item 9   0.2683333
+#> 2  Cluster 1           2  Item 6   0.2683333
+#> 3  Cluster 1           3  Item 3   0.2683333
+#> 4  Cluster 1           4 Item 11   0.2683333
+#> 5  Cluster 1           5 Item 15   0.2683333
+#> 6  Cluster 1           6 Item 10   0.2683333
+#> 7  Cluster 1           7  Item 1   0.2683333
+#> 8  Cluster 1           8  Item 7   0.2683333
+#> 9  Cluster 1           9  Item 5   0.2683333
+#> 10 Cluster 1          10 Item 13   0.2683333
+#> 11 Cluster 1          11  Item 4   0.2683333
+#> 12 Cluster 1          12  Item 8   0.2683333
+#> 13 Cluster 1          13 Item 12   0.2683333
+#> 14 Cluster 1          14 Item 14   0.2683333
+#> 15 Cluster 1          15  Item 2   0.2683333
 ```
 
 We can compute the probability of being top-$k$, here for $k=4$:

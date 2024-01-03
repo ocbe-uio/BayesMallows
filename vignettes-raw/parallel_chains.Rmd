@@ -24,6 +24,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(BayesMallows)
+set.seed(123)
 ```
 
 This vignette describes how to run Markov chain Monte Carlo with parallel chains. For an introduction to the "BayesMallows" package, please see [the introductory vignette](https://ocbe-uio.github.io/BayesMallows/articles/BayesMallows.html), which is an updated version of @sorensen2020. For parallel processing of particles with the sequential Monte Carlo algorithm of @steinSequentialInferenceMallows2023, see the [SMC vignette](https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html).
@@ -66,10 +67,10 @@ We can also assess convergence for the latent ranks $\boldsymbol{\rho}$. Since t
 assess_convergence(fit, parameter = "rho", items = 1:3)
 ```
 
-Based on the convergence plots, we set the burnin to 700. 
+Based on the convergence plots, we set the burnin to 3000. 
 
 ```{r}
-fit$burnin <- 700
+fit$burnin <- 3000
 ```
 
 We can now use all the tools for assessing the posterior distributions as usual. The post-burnin samples for all parallel chains are simply combined, as they should be.
@@ -135,10 +136,10 @@ assess_convergence(fit,
 
 ### Posterior Quantities
 
-Based on the trace plots, the chains seem to be mixing well. We set the burnin to 700 again.
+Based on the trace plots, the chains seem to be mixing well. We set the burnin to 1000.
 
 ```{r}
-fit$burnin <- 700
+fit$burnin <- 1000
 ```
 
 We can now study the posterior distributions. Here is the posterior for $\alpha$. Note that by increasing the `nmc` argument to `compute_mallows` above, the density would appear smoother. In this vignette we have kept it low to reduce the run time.
