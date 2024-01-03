@@ -485,7 +485,7 @@ Before proceeding, it is instructive to study why this situation needs special c
 
 ```r
 (v1 <- model2$augmented_rankings[, 1, 1])
-#>  [1]  2  8  6  3  4  1  5  9 10  7
+#>  [1]  2  7  6  3  4  1  5  8  9 10
 ```
 
 Next, we show the data provided by user 1 in `data_batch3`:
@@ -503,7 +503,7 @@ By comparing the non-missing ranks, we can check if they are consistent or not:
 (v2b <- v2a[!is.na(v2a)])
 #> [1] 2 8 3 4 1 5 7 6
 v1[v1 %in% v2b]
-#> [1] 2 8 6 3 4 1 5 7
+#> [1] 2 7 6 3 4 1 5 8
 all(v1[v1 %in% v2b] == v2b)
 #> [1] FALSE
 ```
@@ -601,6 +601,23 @@ plot(mod_bmm, burnin = 300)
 <img src="sushi_updated_bmm_posterior-1.png" alt="Posterior for MCMC on sushi data." height="4cm" />
 <p class="caption">Posterior for MCMC on sushi data.</p>
 </div>
+
+## Parallel processing of particles
+
+Updating the particles is a perfectly parallel problem, and we hence offer the opportunity to perform the computations in parallel. This can sometimes lead to considerable computational speedup, e.g., with partial data that needs to be augmented, so that processing of each particle is relatively slow. We illustrate this for the last model considered in the previous section. The key is the create a cluster using `parallel::makeCluster` and provide this to the `cl` argument of `update_mallows`.
+
+
+```r
+library(parallel)
+cl <- makeCluster(detectCores())
+model4 <- update_mallows(
+  model = model3, 
+  new_data = setup_rank_data(
+    rankings = data_batch4, user_ids = rownames(data_batch4)),
+  cl = cl
+  )
+stopCluster(cl)
+```
 
 
 ## References
