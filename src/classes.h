@@ -14,8 +14,8 @@ struct Data {
   const unsigned int n_assessors;
   const unsigned int n_items;
   const arma::vec observation_frequency;
-  triply_nested items_above{};
-  triply_nested items_below{};
+  const triply_nested items_above{};
+  const triply_nested items_below{};
 };
 
 struct Priors {

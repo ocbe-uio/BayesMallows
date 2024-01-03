@@ -7,7 +7,7 @@ using namespace arma;
 
 struct AlphaRatio{
   AlphaRatio(double proposal, bool accept) :
-  proposal {proposal}, accept {accept} {}
+  proposal { proposal }, accept {accept} {}
   ~AlphaRatio() = default;
   double proposal;
   bool accept;
