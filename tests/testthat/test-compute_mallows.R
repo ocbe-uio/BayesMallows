@@ -2,12 +2,13 @@ cl <- parallel::makeCluster(2)
 test_that("compute_mallows works with seed in parallel", {
   set.seed(1)
   mod <- compute_mallows(
-    setup_rank_data(potato_visual),
+    data = setup_rank_data(potato_visual),
     compute_options = set_compute_options(nmc = 10),
     cl = cl
   )
   expect_equal(mod$rho$value[[145]], 7)
   expect_equal(mod$rho$value[[89]], 14)
+  expect_true(all(apply(mod$rho_samples, 3, validate_permutation)))
 })
 
 test_that("compute_mallows works with initial values and clusters", {

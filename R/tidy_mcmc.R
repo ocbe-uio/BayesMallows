@@ -10,12 +10,12 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
   }
 
   rho_dims <- dim(fits[[1]]$rho)
-  rhos <- lapply(seq_along(fits), function(i) fits[[i]]$rho)
-  fit$rho_samples <- array(
-    as.vector(do.call(rbind, rhos)),
-    dim = c(rho_dims[[1]], rho_dims[[2]], length(fits) * rho_dims[[3]])
-  )
+  fit$rho_samples <- fits[[1]]$rho
+  for (f in fits[-1]) {
+    fit$rho_samples <- abind(fit$rho_samples, f$rho)
+  }
 
+  rhos <- lapply(seq_along(fits), function(i) fits[[i]]$rho)
   fit$rho <- do.call(rbind, lapply(seq_along(rhos), function(i) {
     tidy_rho(rhos[[i]], i, compute_options$rho_thinning, items)
   }))

@@ -96,6 +96,7 @@ test_that("update_mallows is correct for new rankings", {
 })
 
 test_that("update_mallows is correct for new partial rankings", {
+  cl <- parallel::makeCluster(2)
   set.seed(123)
   dat0 <- t(apply(potato_visual, 1, function(x) {
     inds <- sample(length(x), 2)
@@ -108,7 +109,8 @@ test_that("update_mallows is correct for new partial rankings", {
 
   bmm_mod <- compute_mallows(
     data = setup_rank_data(dat),
-    compute_options = set_compute_options(nmc = 10000, burnin = 1000)
+    compute_options = set_compute_options(nmc = 10000, burnin = 1000),
+    cl = cl
   )
 
   mod_init <- compute_mallows(
@@ -116,7 +118,8 @@ test_that("update_mallows is correct for new partial rankings", {
     compute_options = set_compute_options(
       nmc = 10000, burnin = 1000,
       save_aug = TRUE
-    )
+    ),
+    cl = cl
   )
 
   for (aug in c("uniform", "pseudo")) {
@@ -125,12 +128,14 @@ test_that("update_mallows is correct for new partial rankings", {
       new_data = setup_rank_data(rankings = dat[5:20, ]),
       smc_options = set_smc_options(
         n_particles = 10000, mcmc_steps = 10, aug_method = aug
-      )
+      ),
+      cl = cl
     )
 
     mod_smc_next <- update_mallows(
       model = mod_smc,
-      new_data = setup_rank_data(rankings = dat[21:36, ])
+      new_data = setup_rank_data(rankings = dat[21:36, ]),
+      cl = cl
     )
 
     expect_equal(
@@ -156,6 +161,7 @@ test_that("update_mallows is correct for new partial rankings", {
       ), 3
     )
   }
+  parallel::stopCluster(cl)
 })
 
 test_that("update_mallows is correct for updated partial rankings", {

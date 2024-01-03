@@ -46,7 +46,7 @@ update_mallows.BayesMallows <- function(
     ...) {
   if (is.null(model$burnin)) stop("Burnin must be set.")
 
-  if(!is.null(cl)) {
+  if (!is.null(cl)) {
     n_particles_vec <- count_jobs_per_cluster(smc_options$n_particles, length(cl))
     parallel::clusterExport(
       cl = cl,
@@ -85,14 +85,7 @@ update_mallows.BayesMallows <- function(
     )
   })
 
-  ret <- list()
-  ret$rho_samples <- do.call(cbind, lapply(nested_result, function(x) x$rho_samples))
-  ret$alpha_samples <- do.call(cbind, lapply(nested_result, function(x) x$alpha_samples))
-  ret$augmented_rankings <- nested_result[[1]]$augmented_rankings
-  for(nr in nested_result[-1]) {
-    ret$augmented_rankings <- abind(ret$augmented_rankings, nr$augmented_rankings)
-  }
-
+  ret <- unnest_result(nested_result)
   ret <- c(ret, tidy_smc(ret, model$items))
   ret$model_options <- model_options
   ret$smc_options <- smc_options
@@ -115,21 +108,54 @@ update_mallows.BayesMallows <- function(
 #' @rdname update_mallows
 update_mallows.SMCMallows <- function(model, new_data, cl = NULL, ...) {
   datlist <- prepare_new_data(model, new_data)
-  ret <- run_smc(
-    data = datlist$data,
-    new_data = datlist$new_data,
-    model_options = model$model_options,
-    smc_options = model$smc_options,
-    compute_options = model$compute_options,
-    priors = model$priors,
-    initial_values = list(
-      alpha_init = model$alpha_samples,
-      rho_init = model$rho_samples,
-      aug_init = model$augmented_rankings
-    ),
-    pfun_values = model$pfun_values,
-    pfun_estimate = model$pfun_estimate
-  )
+
+  if (!is.null(cl)) {
+    n_particles_vec <- count_jobs_per_cluster(model$smc_options$n_particles, length(cl))
+    particle_inds <- list()
+    for (i in seq_along(n_particles_vec)) {
+      particle_inds[[i]] <- seq(
+        from = max(1, n_particles_vec[i - 1] + 1),
+        to = cumsum(n_particles_vec)[i]
+      )
+    }
+    parallel::clusterExport(
+      cl = cl,
+      varlist = c("model", "datlist"),
+      envir = environment()
+    )
+    parallel::clusterSetRNGStream(cl)
+    lapplyfun <- function(X, FUN, ...) {
+      parallel::parLapply(cl = cl, X = X, fun = FUN, ...)
+    }
+  } else {
+    particle_inds <- list(seq_len(model$smc_options$n_particles))
+    lapplyfun <- lapply
+  }
+
+  nested_result <- lapplyfun(particle_inds, function(pinds) {
+    model$smc_options$n_particles <- length(pinds)
+    if (prod(dim(model$augmented_rankings)) == 0) {
+      aug_init <- model$augmented_rankings
+    } else {
+      aug_init <- model$augmented_rankings[, , pinds]
+    }
+    ret <- run_smc(
+      data = datlist$data,
+      new_data = datlist$new_data,
+      model_options = model$model_options,
+      smc_options = model$smc_options,
+      compute_options = model$compute_options,
+      priors = model$priors,
+      initial_values = list(
+        alpha_init = model$alpha_samples[pinds],
+        rho_init = model$rho_samples[, pinds],
+        aug_init = aug_init
+      ),
+      pfun_values = model$pfun_values,
+      pfun_estimate = model$pfun_estimate
+    )
+  })
+  ret <- unnest_result(nested_result)
 
   tidy_parameters <- tidy_smc(ret, model$items)
   model$alpha <- tidy_parameters$alpha
@@ -141,6 +167,16 @@ update_mallows.SMCMallows <- function(model, new_data, cl = NULL, ...) {
   model
 }
 
+unnest_result <- function(nested_result) {
+  ret <- list()
+  ret$rho_samples <- do.call(cbind, lapply(nested_result, function(x) x$rho_samples))
+  ret$alpha_samples <- do.call(c, lapply(nested_result, function(x) x$alpha_samples))
+  ret$augmented_rankings <- nested_result[[1]]$augmented_rankings
+  for (nr in nested_result[-1]) {
+    ret$augmented_rankings <- abind(ret$augmented_rankings, nr$augmented_rankings)
+  }
+  ret
+}
 
 tidy_smc <- function(ret, items) {
   result <- list()

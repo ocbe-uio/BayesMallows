@@ -70,7 +70,8 @@ test_that("compute_consensus.SMCMallows works", {
 
   data_third_batch <- potato_visual[9:12, ]
   mod_final <- update_mallows(
-    model = mod_second, new_data = setup_rank_data(rankings = data_third_batch)
+    model = mod_second,
+    new_data = setup_rank_data(rankings = data_third_batch)
   )
 
   expect_error(
