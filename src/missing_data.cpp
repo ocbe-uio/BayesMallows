@@ -1,6 +1,5 @@
 #include <RcppArmadillo.h>
 #include <algorithm>
-#include <Rmath.h>
 #include "distances.h"
 #include "missing_data.h"
 

@@ -1,4 +1,3 @@
-#include <Rmath.h>
 #include "distributions.h"
 #include "classes.h"
 #include "distances.h"

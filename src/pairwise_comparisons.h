@@ -1,13 +1,15 @@
 #pragma once
 
+#include "classes.h"
+
 arma::vec propose_pairwise_augmentation(
     const arma::vec& ranking,
-    const std::vector<std::vector<unsigned int>>& items_above,
-    const std::vector<std::vector<unsigned int>> & items_below);
+    const doubly_nested& items_above,
+    const doubly_nested & items_below);
 
 arma::vec propose_swap(
     const arma::vec& ranking,
-    const std::vector<std::vector<unsigned int>>& items_above,
-    const std::vector<std::vector<unsigned int>>& items_below,
+    const doubly_nested& items_above,
+    const doubly_nested& items_below,
     int& g_diff,
     const int& swap_leap);

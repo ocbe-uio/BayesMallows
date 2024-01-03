@@ -1,12 +1,11 @@
 #include <RcppArmadillo.h>
+#include "classes.h"
 #include "leapandshift.h"
 #include "distances.h"
 
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
-
-
 
 void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
                           const uvec& items_above_item,
@@ -24,8 +23,8 @@ void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
 }
 
 vec propose_pairwise_augmentation(
-    const vec& ranking, const std::vector<std::vector<unsigned int>>& items_above,
-    const std::vector<std::vector<unsigned int>>& items_below) {
+    const vec& ranking, const doubly_nested& items_above,
+    const doubly_nested& items_below) {
   int n_items = ranking.n_elem;
 
   Rcpp::IntegerVector a = Rcpp::sample(n_items, 1) - 1;
@@ -57,8 +56,8 @@ vec propose_pairwise_augmentation(
 
 vec propose_swap(
     const vec& ranking,
-    const std::vector<std::vector<unsigned int>>& items_above,
-    const std::vector<std::vector<unsigned int>>& items_below,
+    const doubly_nested& items_above,
+    const doubly_nested& items_below,
     int& g_diff, const int& swap_leap) {
   int n_items = ranking.n_elem;
   Rcpp::IntegerVector l = Rcpp::sample(swap_leap, 1);

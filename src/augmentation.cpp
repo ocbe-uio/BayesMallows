@@ -1,4 +1,3 @@
-#include <Rmath.h>
 #include "classes.h"
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
