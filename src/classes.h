@@ -3,6 +3,9 @@
 #include "partition_functions.h"
 #include "distances.h"
 
+using doubly_nested = std::vector<std::vector<unsigned int>>;
+using triply_nested = std::vector<doubly_nested>;
+
 struct Data {
   Data(const Rcpp::List& data);
   ~Data() = default;
@@ -11,8 +14,8 @@ struct Data {
   const unsigned int n_assessors;
   const unsigned int n_items;
   const arma::vec observation_frequency;
-  std::vector<std::vector<std::vector<unsigned int>>> items_above{};
-  std::vector<std::vector<std::vector<unsigned int>>> items_below{};
+  triply_nested items_above{};
+  triply_nested items_below{};
 };
 
 struct Priors {
