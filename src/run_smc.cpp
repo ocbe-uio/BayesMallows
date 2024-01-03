@@ -1,5 +1,5 @@
 #include <RcppArmadillo.h>
-#include "classes.h"
+#include "smc_classes.h"
 
 using namespace arma;
 

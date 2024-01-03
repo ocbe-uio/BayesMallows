@@ -77,5 +77,3 @@ void Augmentation::update_missing_ranks(
     );
   }
 }
-
-

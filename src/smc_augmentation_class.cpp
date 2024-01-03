@@ -1,6 +1,5 @@
-#include "classes.h"
+#include "smc_classes.h"
 #include "missing_data.h"
-#include "distances.h"
 using namespace arma;
 
 SMCAugmentation::SMCAugmentation(
@@ -108,4 +107,29 @@ void SMCAugmentation::update_data(
     const unsigned int particle_index, SMCData& dat) {
   if(!dat.any_missing) return;
   dat.rankings = augmented_data.slice(particle_index);
+}
+
+void SMCAugmentation::update_missing_ranks(
+    const unsigned int particle_index,
+    const SMCData& dat,
+    const SMCParameters& pars,
+    const std::unique_ptr<Distance>& distfun) {
+  if(!dat.any_missing) return;
+
+  for (unsigned int jj = dat.n_assessors - dat.num_new_obs;
+       jj < dat.n_assessors; ++jj) {
+    augmented_data(span::all, span(jj), span(particle_index)) =
+      make_new_augmentation(
+        augmented_data(span::all, span(jj), span(particle_index)),
+        missing_indicator.col(jj),
+        pars.alpha_samples(particle_index),
+        pars.rho_samples.col(particle_index),
+        distfun, log_aug_prob(jj, particle_index), aug_method == "pseudo"
+      );
+  }
+}
+
+void SMCAugmentation::resample(const uvec& index, const SMCData& dat) {
+  if(!dat.any_missing) return;
+  augmented_data = augmented_data.slices(index);
 }
