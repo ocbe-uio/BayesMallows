@@ -93,13 +93,12 @@ plot(mod_final)
 
 # The particles can also be processed in parallel. With a large number of
 # particles or MCMC steps, this can lead to significant speedup.
-library(parallel)
-cl <- makeCluster(2)
+cl <- parallel::makeCluster(2)
 mod_final <- update_mallows(
   model = mod2,
   new_data = setup_rank_data(rankings = potato_new, user_ids = user_ids),
   cl = cl
 )
-stopCluster(cl)
+parallel::stopCluster(cl)
 
 plot(mod_final)
