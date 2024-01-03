@@ -53,8 +53,3 @@ uvec SMCParameters::draw_resampling_index() {
   Rcpp::IntegerVector result = Rcpp::sample(inds, log_inc_wgt.size(), true, probs);
   return Rcpp::as<arma::uvec>(result);
 }
-
-void SMCParameters::resample(const uvec& index) {
-  rho_samples = rho_samples.cols(index);
-  alpha_samples = alpha_samples.rows(index);
-}

@@ -5,6 +5,14 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
+void resample(SMCParameters& pars, SMCAugmentation& aug, const SMCData& dat) {
+  uvec index = pars.draw_resampling_index();
+  pars.rho_samples = pars.rho_samples.cols(index);
+  pars.alpha_samples = pars.alpha_samples.rows(index);
+  if(!dat.any_missing) return;
+  aug.augmented_data = aug.augmented_data.slices(index);
+}
+
 // [[Rcpp::export]]
 Rcpp::List  run_smc(
   Rcpp::List data,
@@ -26,9 +34,7 @@ Rcpp::List  run_smc(
     dat.n_items, metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(metric);
   aug.reweight(pars, dat, pfun, distfun);
-  uvec index = pars.draw_resampling_index();
-  pars.resample(index);
-  aug.resample(index, dat);
+  resample(pars, aug, dat);
 
   for (size_t ii{}; ii < pars.n_particles; ++ii) {
     for (size_t kk{}; kk < pars.mcmc_steps; ++kk) {

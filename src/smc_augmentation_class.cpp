@@ -128,8 +128,3 @@ void SMCAugmentation::update_missing_ranks(
       );
   }
 }
-
-void SMCAugmentation::resample(const uvec& index, const SMCData& dat) {
-  if(!dat.any_missing) return;
-  augmented_data = augmented_data.slices(index);
-}

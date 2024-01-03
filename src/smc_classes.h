@@ -38,7 +38,6 @@ struct SMCParameters {
   const unsigned int leap_size;
   arma::vec log_inc_wgt;
   arma::uvec draw_resampling_index();
-  void resample(const arma::uvec& index);
 };
 
 struct SMCAugmentation {
