@@ -17,7 +17,7 @@
 #'   will have standard deviation given by `alpha_prop_sd`. Defaults to `0.1`.
 #'
 #' @param leap_size Integer specifying the step size of the leap-and-shift
-#'   proposal distribution used for proposed new latent ranks \eqn{rho}.
+#'   proposal distribution used for proposing new latent ranks \eqn{rho}.
 #'   Defaults to 1.
 #'
 #' @param swap_leap Integer specifying the step size of the swap proposal

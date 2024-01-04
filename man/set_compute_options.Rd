@@ -33,7 +33,7 @@ the Metropolis-Hastings algorithm. The logarithm of the proposed samples
 will have standard deviation given by \code{alpha_prop_sd}. Defaults to \code{0.1}.}
 
 \item{leap_size}{Integer specifying the step size of the leap-and-shift
-proposal distribution used for proposed new latent ranks \eqn{rho}.
+proposal distribution used for proposing new latent ranks \eqn{rho}.
 Defaults to 1.}
 
 \item{swap_leap}{Integer specifying the step size of the swap proposal
