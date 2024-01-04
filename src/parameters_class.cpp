@@ -28,8 +28,8 @@ Parameters::Parameters(
       rho.slice(0) = repmat(Rcpp::as<mat>(rho_init), 1, n_clusters);
     } else {
       for (size_t i{}; i < n_clusters; ++i) {
-        Rcpp::IntegerVector a = Rcpp::sample(n_items, n_items);
-        rho.slice(0).col(i) = Rcpp::as<vec>(Rcpp::wrap(a));
+        ivec a = Rcpp::sample(n_items, n_items);
+        rho.slice(0).col(i) = conv_to<vec>::from(a);
       }
     }
     rho_old = rho(span::all, span::all, span(0));

@@ -16,8 +16,8 @@ Clustering::Clustering(const Parameters& pars,
     cluster_probs.col(0).fill(1.0 / pars.n_clusters);
     current_cluster_probs = cluster_probs.col(0);
     cluster_assignment.set_size(n_assessors, n_cluster_assignments);
-    Rcpp::IntegerVector a = Rcpp::sample(pars.n_clusters, n_assessors, true) - 1;
-    cluster_assignment.col(0) = Rcpp::as<arma::uvec>(Rcpp::wrap(a));
+    ivec a = Rcpp::sample(pars.n_clusters, n_assessors, true) - 1;
+    cluster_assignment.col(0) = conv_to<uvec>::from(a);
     current_cluster_assignment = cluster_assignment.col(0);
 
     dist_mat.set_size(n_assessors, pars.n_clusters);

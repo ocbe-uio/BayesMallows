@@ -50,6 +50,6 @@ uvec SMCParameters::draw_resampling_index() {
   vec norm_wgt = exp(log_inc_wgt - max(log_inc_wgt) -
     log(sum(exp(log_inc_wgt - max(log_inc_wgt)))));
   Rcpp::NumericVector probs = Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(norm_wgt));
-  Rcpp::IntegerVector result = Rcpp::sample(inds, log_inc_wgt.size(), true, probs);
-  return Rcpp::as<arma::uvec>(result);
+  ivec result = Rcpp::sample(inds, log_inc_wgt.size(), true, probs);
+  return conv_to<uvec>::from(result);
 }

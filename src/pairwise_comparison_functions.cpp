@@ -27,7 +27,7 @@ vec propose_pairwise_augmentation(
     const doubly_nested& items_below) {
   int n_items = ranking.n_elem;
 
-  Rcpp::IntegerVector a = Rcpp::sample(n_items, 1) - 1;
+  ivec a = Rcpp::sample(n_items, 1) - 1;
   int item = a(0);
 
   // Left and right limits of the interval we draw ranks from
@@ -39,7 +39,7 @@ vec propose_pairwise_augmentation(
   // Now complete the leap step by sampling a new proposal uniformly between
   // left_limit + 1 and right_limit - 1
   Rcpp::IntegerVector b = Rcpp::seq(left_limit + 1, right_limit - 1);
-  Rcpp::IntegerVector d = Rcpp::sample(b, 1);
+  ivec d = Rcpp::sample(b, 1);
   int proposed_rank = d(0);
 
   // Assign the proposal to the (item-1)th item
@@ -60,8 +60,8 @@ vec propose_swap(
     const doubly_nested& items_below,
     int& g_diff, const int& swap_leap) {
   int n_items = ranking.n_elem;
-  Rcpp::IntegerVector l = Rcpp::sample(swap_leap, 1);
-  Rcpp::IntegerVector a = Rcpp::sample(n_items - l(0), 1);
+  ivec l = Rcpp::sample(swap_leap, 1);
+  ivec a = Rcpp::sample(n_items - l(0), 1);
   int u = a(0);
 
   int ind1 = as_scalar(find(ranking == u));

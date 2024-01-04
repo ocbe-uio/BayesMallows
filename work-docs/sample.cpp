@@ -5,7 +5,8 @@ using namespace arma;
 
 // [[Rcpp::export]]
 uvec foo() {
-  vec a = Rcpp::runif(10, 0, 1);
+  ivec a1 = regspace<ivec>(0, 3);
+  ivec a = Rcpp::sample(a1.size(), 2);
   Rcpp::Rcout << "a = " << a << std::endl;
   uvec b = sort_index(Rcpp::as<vec>(Rcpp::wrap(a)));
   return b;

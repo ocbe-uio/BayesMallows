@@ -45,9 +45,7 @@ arma::vec compute_importance_sampling_estimate(
       for(int i{}; i < n_items; i++) u(i) = std::log(R::runif(0, 1));
 
       // Loop over possible values given to item j in random order
-      Rcpp::IntegerVector a = Rcpp::seq(0, n_items - 1);
-      a = Rcpp::sample(a, n_items);
-      ivec myind = Rcpp::as<ivec>(Rcpp::wrap(a));
+      ivec myind = Rcpp::sample(n_items, n_items) - 1;
 
       for(int j = 0; j < n_items; ++j){
         int jj = myind(j);

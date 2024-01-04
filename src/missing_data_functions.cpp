@@ -37,9 +37,8 @@ mat initialize_missing_ranks(const mat& rankings, const umat& missing_indicator)
     vec a = setdiff(
       regspace<vec>(1, rank_vector.n_elem), present_ranks);
 
-    Rcpp::IntegerVector inds = Rcpp::sample(a.size(), a.size()) - 1;
-    uvec inds_arma = Rcpp::as<uvec>(Rcpp::wrap(inds));
-    vec new_ranks = a.elem(inds_arma);
+    ivec inds = Rcpp::sample(a.size(), a.size()) - 1;
+    vec new_ranks = a.elem(conv_to<uvec>::from(inds));
     rank_vector(missing_inds) = new_ranks;
     init_rank.col(i) = rank_vector;
   }
@@ -81,10 +80,8 @@ RankProposal make_uniform_proposal(const vec& ranks, const uvec& indicator) noex
   vec proposal = ranks;
   uvec missing_inds = find(indicator == 1);
   vec mutable_ranks = ranks(missing_inds);
-  Rcpp::IntegerVector inds = Rcpp::sample(mutable_ranks.size(),
-                                          mutable_ranks.size()) - 1;
-  uvec inds_arma = Rcpp::as<uvec>(Rcpp::wrap(inds));
-  proposal(missing_inds) = mutable_ranks(inds_arma);
+  ivec inds = Rcpp::sample(mutable_ranks.size(), mutable_ranks.size()) - 1;
+  proposal(missing_inds) = mutable_ranks(conv_to<uvec>::from(inds));
   return RankProposal(proposal, 1, missing_inds);
 }
 
