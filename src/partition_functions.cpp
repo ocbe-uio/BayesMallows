@@ -5,17 +5,17 @@ std::unique_ptr<PartitionFunction> choose_partition_function(
     const Rcpp::Nullable<arma::mat>& pfun_values,
     const Rcpp::Nullable<arma::mat>& pfun_estimate) {
   if(metric == "cayley") {
-    return std::unique_ptr<PartitionFunction>{new Cayley{n_items}};
+    return std::make_unique<Cayley>(n_items);
   } else if(metric == "hamming") {
-    return std::unique_ptr<PartitionFunction>{new Hamming{n_items}};
+    return std::make_unique<Hamming>(n_items);
   } else if(metric == "kendall") {
-    return std::unique_ptr<PartitionFunction>{new Kendall{n_items}};
+    return std::make_unique<Kendall>(n_items);
   } else if(pfun_values.isNotNull()) {
-    return std::unique_ptr<PartitionFunction>{
-      new Cardinal{n_items, Rcpp::as<arma::mat>(pfun_values)}};
+    return std::make_unique<Cardinal>(
+      n_items, Rcpp::as<arma::mat>(pfun_values));
   } else if(pfun_estimate.isNotNull()) {
-    return std::unique_ptr<PartitionFunction>{
-      new Estimated{n_items, Rcpp::as<arma::mat>(pfun_estimate)}};
+    return std::make_unique<Estimated>(
+      n_items, Rcpp::as<arma::mat>(pfun_estimate));
   } else {
     Rcpp::stop("Unknown metric.");
   }
