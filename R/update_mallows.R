@@ -48,18 +48,10 @@ update_mallows.BayesMallows <- function(
 
   if (!is.null(cl)) {
     n_particles_vec <- count_jobs_per_cluster(smc_options$n_particles, length(cl))
-    parallel::clusterExport(
-      cl = cl,
-      varlist = c(
-        "new_data", "model_options", "smc_options", "compute_options", "priors",
-        "model"
-      ),
-      envir = environment()
-    )
-    parallel::clusterSetRNGStream(cl)
-    lapplyfun <- function(X, FUN, ...) {
-      parallel::parLapply(cl = cl, X = X, fun = FUN, ...)
-    }
+    lapplyfun <- prepare_cluster(cl, c(
+      "new_data", "model_options", "smc_options", "compute_options", "priors",
+      "model"
+    ))
   } else {
     n_particles_vec <- smc_options$n_particles
     lapplyfun <- lapply
@@ -103,7 +95,6 @@ update_mallows.BayesMallows <- function(
   ret
 }
 
-
 #' @export
 #' @rdname update_mallows
 update_mallows.SMCMallows <- function(model, new_data, ..., cl = NULL) {
@@ -118,15 +109,7 @@ update_mallows.SMCMallows <- function(model, new_data, ..., cl = NULL) {
         to = cumsum(n_particles_vec)[i]
       )
     }
-    parallel::clusterExport(
-      cl = cl,
-      varlist = c("model", "datlist"),
-      envir = environment()
-    )
-    parallel::clusterSetRNGStream(cl)
-    lapplyfun <- function(X, FUN, ...) {
-      parallel::parLapply(cl = cl, X = X, fun = FUN, ...)
-    }
+    lapplyfun <- prepare_cluster(cl, c("model", "datlist"))
   } else {
     particle_inds <- list(seq_len(model$smc_options$n_particles))
     lapplyfun <- lapply

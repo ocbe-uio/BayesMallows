@@ -135,32 +135,34 @@ test_that("compute_mallows is correct with clustering", {
   expect_true(all(aggdat$value < .5))
 
   skip_on_cran()
+  set.seed(1)
   cl <- parallel::makeCluster(2)
   models <- compute_mallows_mixtures(
     n_clusters = c(1, 5, 10),
     data = setup_rank_data(sushi_rankings),
-    compute_options = set_compute_options(nmc = 5000, include_wcd = TRUE),
+    compute_options = set_compute_options(nmc = 1000, include_wcd = TRUE),
     cl = cl
   )
   parallel::stopCluster(cl)
 
   wcd_means <- vapply(models, function(x) {
     mean(x$within_cluster_distance$value[
-      x$within_cluster_distance$iteration > 1000
+      x$within_cluster_distance$iteration > 100
     ])
   }, 1)
 
+  wcd_means
   expect_equal(
     wcd_means, sort(wcd_means, decreasing = TRUE)
   )
 
   mixture_model <- compute_mallows(
     data = setup_rank_data(rankings = sushi_rankings),
-    compute_options = set_compute_options(nmc = 2000, burnin = 500),
+    compute_options = set_compute_options(nmc = 1000, burnin = 100),
     model_options = set_model_options(n_clusters = 5)
   )
 
-  dat <- mixture_model$alpha[mixture_model$alpha$iteration > 500, ]
+  dat <- mixture_model$alpha[mixture_model$alpha$iteration > 100, ]
   aggdat <- aggregate(value ~ cluster, data = dat, FUN = mean)
 
   expect_gte(

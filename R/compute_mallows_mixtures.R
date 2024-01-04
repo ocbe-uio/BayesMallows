@@ -38,15 +38,10 @@ compute_mallows_mixtures <- function(
   if (is.null(cl)) {
     lapplyfun <- lapply
   } else {
-    varlist <- c(
+    lapplyfun <- prepare_cluster(cl, c(
       "data", "model_options", "compute_options", "priors", "initial_values",
       "pfun_estimate", "verbose"
-    )
-
-    parallel::clusterExport(cl = cl, varlist = varlist, envir = environment())
-    lapplyfun <- function(X, FUN, ...) {
-      parallel::parLapply(cl = cl, X = X, fun = FUN, ...)
-    }
+    ))
   }
 
   models <- lapplyfun(n_clusters, function(x) {

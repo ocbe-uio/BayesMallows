@@ -98,18 +98,10 @@ compute_mallows <- function(
     lapplyfun <- lapply
     chain_seq <- 1
   } else {
-    parallel::clusterExport(
-      cl = cl,
-      varlist = c(
-        "data", "model_options", "compute_options", "priors", "initial_values",
-        "pfun_values", "pfun_estimate", "verbose"
-      ),
-      envir = environment()
-    )
-    parallel::clusterSetRNGStream(cl)
-    lapplyfun <- function(X, FUN, ...) {
-      parallel::parLapply(cl = cl, X = X, fun = FUN, ...)
-    }
+    lapplyfun <- prepare_cluster(cl, c(
+      "data", "model_options", "compute_options", "priors", "initial_values",
+      "pfun_values", "pfun_estimate", "verbose"
+    ))
     chain_seq <- seq_along(cl)
   }
 

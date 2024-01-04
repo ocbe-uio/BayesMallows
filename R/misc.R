@@ -27,3 +27,15 @@ count_jobs_per_cluster <- function(n_iterations, n_clusters) {
   }
   n_iterations_vec
 }
+
+prepare_cluster <- function(cl, varlist) {
+  parallel::clusterExport(
+    cl = cl,
+    varlist = varlist,
+    envir = parent.frame()
+  )
+  parallel::clusterSetRNGStream(cl)
+  function(X, FUN, ...) {
+    parallel::parLapply(cl = cl, X = X, fun = FUN, ...)
+  }
+}
