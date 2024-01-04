@@ -50,15 +50,15 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
                           const double& alpha, const vec& rho,
                           const std::unique_ptr<Distance>& distfun,
                           const std::unique_ptr<Distance>& pseudo_aug_distance,
-                          double& log_aug_prob, bool pseudo) {
+                          double& log_aug_prob) {
   double log_hastings_correction = 0;
   RankProposal pprop{};
-  if(pseudo) {
+  if(pseudo_aug_distance == nullptr) {
+    pprop = make_uniform_proposal(rankings, missing_indicator);
+  } else {
     pprop = make_pseudo_proposal(
       rankings, missing_indicator, alpha, rho, pseudo_aug_distance);
     log_hastings_correction = -std::log(pprop.probability) + log_aug_prob;
-  } else {
-    pprop = make_uniform_proposal(rankings, missing_indicator);
   }
 
   double u = std::log(R::runif(0, 1));

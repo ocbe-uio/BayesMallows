@@ -9,7 +9,9 @@ SMCAugmentation::SMCAugmentation(
   const unsigned int n_particles) :
   aug_method(compute_options["aug_method"]),
   pseudo_aug_metric(compute_options["pseudo_aug_metric"]),
-  pseudo_aug_distance(choose_distance_function(pseudo_aug_metric)),
+  pseudo_aug_distance {
+    aug_method == "uniform" ? nullptr : choose_distance_function(pseudo_aug_metric)
+  },
   aug_init(initial_values["aug_init"]),
   missing_indicator { set_up_missing(dat) },
   log_aug_prob { arma::zeros(dat.n_assessors, n_particles) }
@@ -127,7 +129,7 @@ void SMCAugmentation::update_missing_ranks(
         pars.alpha_samples(particle_index),
         pars.rho_samples.col(particle_index),
         distfun, pseudo_aug_distance,
-        log_aug_prob(jj, particle_index), aug_method == "pseudo"
+        log_aug_prob(jj, particle_index)
       );
   }
 }
