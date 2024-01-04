@@ -26,7 +26,6 @@ test_that("update_mallows works", {
 
   expect_equal(mod_final$rho$value[169], 17)
 
-  skip_on_os("mac")
   potato_top_10 <- ifelse(potato_visual[1:10, ] > 10, NA_real_,
     potato_visual[1:10, ]
   )
@@ -51,7 +50,7 @@ test_that("update_mallows works", {
     compute_options = set_compute_options(aug_method = "pseudo")
   )
 
-  expect_equal(mod1$alpha$value[[13]], 0.544567207683911)
+  expect_equal(mod1$alpha$value[[13]], 0.507972736530613)
 
   mod2 <- update_mallows(
     model = mod1,
@@ -66,7 +65,8 @@ test_that("update_mallows works", {
     model = mod2,
     new_data = setup_rank_data(rankings = potato_new, user_ids = user_ids)
   )
-  expect_equal(mod_final$rho$value[[300]], 4)
+  expect_equal(mod_final$rho$value[[300]], 3)
+  expect_equal(mod_final$rho$value[[300]], 3)
 })
 
 test_that("update_mallows handles estimated partition function", {
