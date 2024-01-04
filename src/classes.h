@@ -103,11 +103,6 @@ struct Augmentation {
   Augmentation(Data& dat, const Rcpp::List& compute_options);
   ~Augmentation() = default;
 
-  const bool augpair;
-  const bool save_aug;
-  const unsigned int aug_thinning;
-  arma::cube augmented_data;
-
   void augment_pairwise(
       const unsigned int t,
       Data& dat,
@@ -121,6 +116,11 @@ struct Augmentation {
       const Parameters& pars,
       const std::unique_ptr<Distance>& distfun
   );
+
+  const bool augpair;
+  const bool save_aug;
+  const unsigned int aug_thinning;
+  arma::cube augmented_data;
 
 private:
   const unsigned int swap_leap;

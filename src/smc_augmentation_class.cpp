@@ -7,13 +7,13 @@ SMCAugmentation::SMCAugmentation(
   const Rcpp::List& compute_options,
   const Rcpp::List& initial_values,
   const unsigned int n_particles) :
+  missing_indicator { set_up_missing(dat) },
   aug_method(compute_options["aug_method"]),
   pseudo_aug_metric(compute_options["pseudo_aug_metric"]),
   pseudo_aug_distance {
     aug_method == "uniform" ? nullptr : choose_distance_function(pseudo_aug_metric)
   },
   aug_init(initial_values["aug_init"]),
-  missing_indicator { set_up_missing(dat) },
   log_aug_prob { arma::zeros(dat.n_assessors, n_particles) }
   {
     if(dat.any_missing){
