@@ -76,27 +76,27 @@ struct Clustering {
              const unsigned int n_assessors);
   ~Clustering() = default;
 
+  void update_cluster_probs(const Parameters& pars, const Priors& pris);
+  void update_cluster_labels(const int t, const Data& dat,
+                             const Parameters& pars,
+                             const std::unique_ptr<PartitionFunction>& pfun);
+  void update_wcd(const int t);
+  void update_dist_mat(const Data& dat, const Parameters& pars,
+                       const std::unique_ptr<Distance>& distfun);
+
   arma::mat cluster_probs;
   arma::vec current_cluster_probs;
   arma::umat cluster_assignment;
   arma::uvec current_cluster_assignment;
   arma::mat within_cluster_distance;
-  arma::mat dist_mat;
-  const arma::uvec index;
-
   const bool clustering;
   const unsigned int clus_thinning;
+
+private:
+  const arma::uvec index;
+  arma::mat dist_mat;
   const bool include_wcd;
   const bool save_ind_clus;
-
-  void update_cluster_probs(const Parameters& pars, const Priors& pris);
-  void update_cluster_labels(const int t, const Data& dat,
-                             const Parameters& pars,
-                             const std::unique_ptr<PartitionFunction>& pfun);
-
-  void update_wcd(const int t);
-  void update_dist_mat(const Data& dat, const Parameters& pars,
-                       const std::unique_ptr<Distance>& distfun);
 };
 
 struct Augmentation {

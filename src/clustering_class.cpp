@@ -5,9 +5,9 @@ using namespace arma;
 Clustering::Clustering(const Parameters& pars,
                        const Rcpp::List& compute_options,
                        const unsigned int n_assessors) :
-  index { regspace<uvec>(0, pars.n_clusters - 1) },
   clustering {pars.n_clusters > 1},
   clus_thinning { compute_options["clus_thinning"] },
+  index { regspace<uvec>(0, pars.n_clusters - 1) },
   include_wcd { compute_options["include_wcd"] },
   save_ind_clus { compute_options["save_ind_clus"] } {
     int n_cluster_assignments = pars.n_clusters > 1 ?
