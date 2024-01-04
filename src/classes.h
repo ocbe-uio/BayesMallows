@@ -63,9 +63,9 @@ struct Parameters {
   const unsigned int nmc;
   const std::string error_model;
   const int alpha_jump;
-  const arma::uvec element_indices;
 
 private:
+  const arma::uvec element_indices;
   const double alpha_prop_sd;
   const int leap_size;
   const int rho_thinning;
