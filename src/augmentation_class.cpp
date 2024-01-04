@@ -13,8 +13,8 @@ Augmentation::Augmentation(
   aug_thinning { compute_options["aug_thinning"] },
   swap_leap { compute_options["swap_leap"] } ,
   missing_indicator { set_up_missing(dat) },
-  aug_method(compute_options["aug_method"]),
-  pseudo_aug_metric(compute_options["pseudo_aug_metric"]),
+  aug_method ( compute_options["aug_method"] ),
+  pseudo_aug_metric ( compute_options["pseudo_aug_metric"] ),
   pseudo_aug_distance {
     aug_method == "uniform" ? nullptr : choose_distance_function(pseudo_aug_metric)
   },

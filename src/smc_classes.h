@@ -70,11 +70,15 @@ struct SMCAugmentation {
       const std::unique_ptr<Distance>& distfun);
 
   void resample(const arma::uvec& index, const SMCData& dat);
-  const std::string aug_method;
+
   const std::string pseudo_aug_metric;
   const std::unique_ptr<Distance> pseudo_aug_distance;
   const Rcpp::Nullable<arma::cube> aug_init;
   const arma::umat missing_indicator;
   arma::mat log_aug_prob;
   arma::cube augmented_data;
+
+private:
+  const std::string aug_method;
+
 };

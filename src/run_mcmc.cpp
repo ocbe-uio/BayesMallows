@@ -21,6 +21,7 @@ Rcpp::List run_mcmc(
   Clustering clus{pars, compute_options, dat.n_assessors};
   Augmentation aug{dat, compute_options};
   std::string metric = model_options["metric"];
+
   auto pfun = choose_partition_function(
     dat.n_items, metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(metric);

@@ -106,14 +106,7 @@ struct Augmentation {
   const bool augpair;
   const bool save_aug;
   const unsigned int aug_thinning;
-  const unsigned int swap_leap;
-
-  const arma::umat missing_indicator{};
-  const std::string aug_method;
-  const std::string pseudo_aug_metric;
-  const std::unique_ptr<Distance> pseudo_aug_distance;
-  arma::cube augmented_data{};
-  arma::vec log_aug_prob{};
+  arma::cube augmented_data;
 
   void augment_pairwise(
       const unsigned int t,
@@ -128,5 +121,13 @@ struct Augmentation {
       const Parameters& pars,
       const std::unique_ptr<Distance>& distfun
   );
+
+private:
+  const unsigned int swap_leap;
+  const arma::umat missing_indicator;
+  const std::string aug_method;
+  const std::string pseudo_aug_metric;
+  const std::unique_ptr<Distance> pseudo_aug_distance;
+  arma::vec log_aug_prob;
 };
 
