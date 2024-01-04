@@ -129,7 +129,8 @@ test_that("compute_mallows is correct for top-k ranks", {
       model_options = set_model_options(metric = expectations$metric[[i]]),
       compute_options = set_compute_options(
         nmc = 2000, burnin = 500, aug_method = "pseudo",
-        pseudo_aug_metric = expectations$metric[[i]])
+        pseudo_aug_metric = expectations$metric[[i]]
+      )
     )
 
     expect_equal(

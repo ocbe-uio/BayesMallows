@@ -9,7 +9,8 @@ set_compute_options(
   burnin = NULL,
   alpha_prop_sd = 0.1,
   leap_size = 1,
-  aug_method = c("pseudo", "uniform"),
+  aug_method = c("uniform", "pseudo"),
+  pseudo_aug_metric = c("footrule", "spearman"),
   swap_leap = 1,
   alpha_jump = 1,
   aug_thinning = 1,
@@ -46,6 +47,10 @@ available ranks, see Section 4 in
 Chapter 5 of
 \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows} is
 used instead.}
+
+\item{pseudo_aug_metric}{String defining the metric to be used in the
+pseudo-likelihood proposal. Only used if \code{aug_method = "pseudo"}. Can be
+either "footrule" or "spearman", and defaults to "footrule".}
 
 \item{swap_leap}{Integer specifying the step size of the swap proposal used
 for augmentation with pairwise preference data. Defaults to 1.}
