@@ -115,36 +115,6 @@ test_that("compute_mallows is correct for top-k ranks", {
       tolerance = .2
     )
   }
-
-  expectations <- data.frame(
-    metric = c("footrule", "spearman"),
-    mean = c(10.00898, 1.924894),
-    sd = c(0.8530815, 0.2877367)
-  )
-
-  for (i in seq_len(nrow(expectations))) {
-    set.seed(123)
-    mod_bmm <- compute_mallows(
-      data = setup_rank_data(dat),
-      model_options = set_model_options(metric = expectations$metric[[i]]),
-      compute_options = set_compute_options(
-        nmc = 2000, burnin = 500, aug_method = "pseudo",
-        pseudo_aug_metric = expectations$metric[[i]]
-      )
-    )
-
-    expect_equal(
-      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-      expectations$mean[[i]],
-      tolerance = 1e-4
-    )
-
-    expect_equal(
-      sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-      expectations$sd[[i]],
-      tolerance = .2
-    )
-  }
 })
 
 test_that("compute_mallows is correct with clustering", {

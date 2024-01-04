@@ -47,7 +47,8 @@ test_that("update_mallows works", {
   mod1 <- update_mallows(
     model = mod_init,
     new_data = setup_rank_data(rankings = potato_top_12, user_ids = user_ids),
-    smc_options = set_smc_options(n_particles = 20)
+    smc_options = set_smc_options(n_particles = 20),
+    compute_options = set_compute_options(aug_method = "pseudo")
   )
 
   expect_equal(mod1$alpha$value[[13]], 0.544567207683911)
