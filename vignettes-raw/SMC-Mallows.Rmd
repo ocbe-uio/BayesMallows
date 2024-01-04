@@ -226,11 +226,16 @@ Next, assume we receive 100 more top-5 rankings:
 data_batch2 <- data_partial[101:200, ]
 ```
 
-We now update the initial model, using SMC. One important thing to notice is that be default, a pseudolikelihood proposal developed by @steinSequentialInferenceMallows2023 is used in the Metropolis-Hastings algorithm for augmented rankings. In contrast, `compute_mallows` uses a uniform proposal. This can be adjusted by setting `aug_method = "uniform"` when calling `set_smc_options`.
+We now update the initial model, using SMC. By default, a uniform distribution is used to propose new values of augmented ranks. The pseudo-likelihood proposal developed in @steinSequentialInferenceMallows2023 can be used instead, by setting `aug_method = "pseudo"` in the call to `set_compute_options()`, and we do this here.
 
 ```{r}
-model2 <- update_mallows(model1, new_data = setup_rank_data(data_batch2), 
-                         smc_options = set_smc_options(n_particles = 1000))
+model2 <- update_mallows(
+  model = model1, 
+  new_data = setup_rank_data(data_batch2), 
+  smc_options = set_smc_options(n_particles = 1000),
+  compute_options = set_compute_options(
+    aug_method = "pseudo", pseudo_aug_metric = "footrule")
+  )
 ```
 
 Below is the posterior for $\alpha$:
@@ -304,7 +309,10 @@ rownames(data_batch2) <- seq_len(nrow(data_batch2))
 model2 <- update_mallows(
   model = mod_init, 
   new_data = setup_rank_data(
-    rankings = data_batch2, user_ids = rownames(data_batch2)))
+    rankings = data_batch2, user_ids = rownames(data_batch2)),
+  compute_options = set_compute_options(
+    aug_method = "pseudo", pseudo_aug_metric = "footrule")
+  )
 ```
 
 We can plot the posterior distributions of $\alpha$ before and after.
