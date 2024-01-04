@@ -12,9 +12,9 @@ SMCParameters::SMCParameters(
   mcmc_steps { smc_options["mcmc_steps"] },
   alpha_samples(initial_values["alpha_init"]) ,
   rho_samples(initial_values["rho_init"]),
+  log_inc_wgt { zeros(n_particles) },
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
-  leap_size { compute_options["leap_size"] },
-  log_inc_wgt { zeros(n_particles) } {}
+  leap_size { compute_options["leap_size"] } {}
 
 void SMCParameters::update_rho(
     const unsigned int particle_index,

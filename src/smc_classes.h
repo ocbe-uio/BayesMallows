@@ -34,10 +34,12 @@ struct SMCParameters {
   const unsigned int mcmc_steps;
   arma::vec alpha_samples;
   arma::mat rho_samples;
-  const double alpha_prop_sd;
-  const unsigned int leap_size;
   arma::vec log_inc_wgt;
   arma::uvec draw_resampling_index();
+
+private:
+  const double alpha_prop_sd;
+  const unsigned int leap_size;
 };
 
 struct SMCAugmentation {
