@@ -4,17 +4,10 @@
 \alias{set_smc_options}
 \title{Set SMC compute options}
 \usage{
-set_smc_options(
-  n_particles = 1000,
-  aug_method = c("pseudo", "uniform"),
-  mcmc_steps = 5
-)
+set_smc_options(n_particles = 1000, mcmc_steps = 5)
 }
 \arguments{
 \item{n_particles}{Integer specifying the number of particles.}
-
-\item{aug_method}{Augmentation proposal for use with missing data. One of
-"pseudo" and "uniform".}
 
 \item{mcmc_steps}{Number of MCMC steps to be applied in the resample-move
 step.}

@@ -8,6 +8,7 @@ arma::vec make_new_augmentation(
     const double& alpha,
     const arma::vec& rho,
     const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<Distance>& pseudo_aug_distance,
     double& log_aug_prob,
     bool pseudo = false);
 

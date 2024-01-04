@@ -4,10 +4,12 @@ using namespace arma;
 
 SMCAugmentation::SMCAugmentation(
   SMCData& dat,
-  const Rcpp::List& smc_options,
+  const Rcpp::List& compute_options,
   const Rcpp::List& initial_values,
   const unsigned int n_particles) :
-  aug_method(smc_options["aug_method"]),
+  aug_method(compute_options["aug_method"]),
+  pseudo_aug_metric(compute_options["pseudo_aug_metric"]),
+  pseudo_aug_distance(choose_distance_function(pseudo_aug_metric)),
   aug_init(initial_values["aug_init"]),
   missing_indicator { set_up_missing(dat) },
   log_aug_prob { arma::zeros(dat.n_assessors, n_particles) }
@@ -124,7 +126,8 @@ void SMCAugmentation::update_missing_ranks(
         missing_indicator.col(jj),
         pars.alpha_samples(particle_index),
         pars.rho_samples.col(particle_index),
-        distfun, log_aug_prob(jj, particle_index), aug_method == "pseudo"
+        distfun, pseudo_aug_distance,
+        log_aug_prob(jj, particle_index), aug_method == "pseudo"
       );
   }
 }

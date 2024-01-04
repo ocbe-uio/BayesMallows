@@ -43,7 +43,7 @@ struct SMCParameters {
 struct SMCAugmentation {
   SMCAugmentation(
     SMCData& dat,
-    const Rcpp::List& smc_options,
+    const Rcpp::List& compute_options,
     const Rcpp::List& initial_values,
     const unsigned int n_particles);
   ~SMCAugmentation() = default;
@@ -71,6 +71,8 @@ struct SMCAugmentation {
 
   void resample(const arma::uvec& index, const SMCData& dat);
   const std::string aug_method;
+  const std::string pseudo_aug_metric;
+  const std::unique_ptr<Distance> pseudo_aug_distance;
   const Rcpp::Nullable<arma::cube> aug_init;
   const arma::umat missing_indicator;
   arma::mat log_aug_prob;

@@ -126,9 +126,8 @@ test_that("update_mallows is correct for new partial rankings", {
     mod_smc <- update_mallows(
       model = mod_init,
       new_data = setup_rank_data(rankings = dat[5:20, ]),
-      smc_options = set_smc_options(
-        n_particles = 10000, mcmc_steps = 10, aug_method = aug
-      ),
+      smc_options = set_smc_options(n_particles = 10000, mcmc_steps = 10),
+      compute_options = set_compute_options(aug_method = aug),
       cl = cl
     )
 
@@ -181,7 +180,7 @@ test_that("update_mallows is correct for updated partial rankings", {
   mod1 <- update_mallows(
     model = mod0,
     new_data = setup_rank_data(rankings = dat1, user_ids = user_ids),
-    smc_options = set_smc_options(aug_method = "pseudo")
+    compute_options = set_compute_options(aug_method = "pseudo")
   )
 
   mod_bmm1 <- compute_mallows(
@@ -233,7 +232,8 @@ test_that("update_mallows does not suffer from numerical overflow", {
   mod2 <- update_mallows(
     model = mod1,
     new_data = setup_rank_data(data_batch2, user_ids = 1:100),
-    smc_options = set_smc_options(n_particles = 50, aug_method = "pseudo")
+    smc_options = set_smc_options(n_particles = 50),
+    compute_options = set_compute_options(aug_method = "pseudo")
   )
 
   expect_s3_class(mod2, "SMCMallows")
@@ -241,7 +241,8 @@ test_that("update_mallows does not suffer from numerical overflow", {
   mod2 <- update_mallows(
     model = mod1,
     new_data = setup_rank_data(data_batch2, user_ids = 1:100),
-    smc_options = set_smc_options(n_particles = 50, aug_method = "uniform")
+    smc_options = set_smc_options(n_particles = 50),
+    compute_options = set_compute_options(aug_method = "uniform")
   )
 
   expect_s3_class(mod2, "SMCMallows")

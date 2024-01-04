@@ -109,6 +109,9 @@ struct Augmentation {
   const unsigned int swap_leap;
 
   const arma::umat missing_indicator{};
+  const std::string aug_method;
+  const std::string pseudo_aug_metric;
+  const std::unique_ptr<Distance> pseudo_aug_distance;
   arma::cube augmented_data{};
   arma::vec log_aug_prob{};
 
