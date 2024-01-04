@@ -185,8 +185,10 @@ test_that("update_mallows is correct for updated partial rankings", {
 
   mod_bmm1 <- compute_mallows(
     data = setup_rank_data(rankings = dat1),
-    compute_options = set_compute_options(nmc = 5000, burnin = 2000,
-                                          aug_method = "pseudo")
+    compute_options = set_compute_options(
+      nmc = 5000, burnin = 2000,
+      aug_method = "pseudo"
+    )
   )
 
   expect_equal(
