@@ -26,9 +26,8 @@ arma::umat set_up_missing(const Data& dat) noexcept {
   return missing_indicator;
 }
 
-mat initialize_missing_ranks(const mat& rankings, const umat& missing_indicator) {
+mat initialize_missing_ranks(mat rankings, const umat& missing_indicator) {
   int n_assessors = rankings.n_cols;
-  mat init_rank = rankings;
 
   for(int i = 0; i < n_assessors; ++i){
     vec rank_vector = rankings.col(i);
@@ -40,9 +39,9 @@ mat initialize_missing_ranks(const mat& rankings, const umat& missing_indicator)
     ivec inds = Rcpp::sample(a.size(), a.size()) - 1;
     vec new_ranks = a.elem(conv_to<uvec>::from(inds));
     rank_vector(missing_inds) = new_ranks;
-    init_rank.col(i) = rank_vector;
+    rankings.col(i) = rank_vector;
   }
-  return init_rank;
+  return rankings;
 }
 
 vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,

@@ -14,7 +14,7 @@ arma::vec make_new_augmentation(
 arma::umat set_up_missing(const Data& dat) noexcept;
 
 arma::mat initialize_missing_ranks(
-    const arma::mat& rankings,
+    arma::mat rankings,
     const arma::umat& missing_indicator);
 
 struct RankProposal{
