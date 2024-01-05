@@ -19,14 +19,30 @@ SMCAugmentation::SMCAugmentation(
     if(dat.any_missing){
       augmented_data.set_size(dat.n_items, dat.n_assessors, n_particles);
 
-      for(size_t i{}; i < n_particles; i++) {
-        augmented_data.slice(i) =
-          initialize_missing_ranks(dat.rankings, missing_indicator);
-      }
       if(aug_init.isNotNull()) {
         augmented_data(
           span::all, span(0, dat.rankings.n_cols - dat.num_new_obs - 1), span::all) =
             Rcpp::as<cube>(aug_init);
+
+
+        for(size_t i{}; i < n_particles; i++) {
+          if(dat.num_new_obs == 0) break;
+          augmented_data(
+            span::all,
+            span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1),
+            span(i)
+          ) = initialize_missing_ranks(
+            dat.new_rankings,
+            missing_indicator(
+              span::all,
+              span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1))
+            );
+        }
+      } else {
+        for(size_t i{}; i < n_particles; i++) {
+          augmented_data.slice(i) =
+            initialize_missing_ranks(dat.rankings, missing_indicator);
+        }
       }
     }
   }
