@@ -89,9 +89,8 @@ RankProposal make_pseudo_proposal(
     const std::unique_ptr<Distance>& distfun
 ) noexcept {
   uvec missing_inds = find(indicator == 1);
-  vec a = Rcpp::runif(missing_inds.size(), 0, 1);
-  uvec b = sort_index(a);
-  uvec unranked_items = missing_inds(b);
+  ivec a = Rcpp::sample(missing_inds.size(), missing_inds.size()) - 1;
+  uvec unranked_items = missing_inds(conv_to<uvec>::from(a));
 
   int n_items = ranks.n_elem;
   double prob = 1;

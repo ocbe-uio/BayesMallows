@@ -24,7 +24,6 @@ SMCAugmentation::SMCAugmentation(
           span::all, span(0, dat.rankings.n_cols - dat.num_new_obs - 1), span::all) =
             Rcpp::as<cube>(aug_init);
 
-
         for(size_t i{}; i < n_particles; i++) {
           if(dat.num_new_obs == 0) break;
           augmented_data(
@@ -136,8 +135,7 @@ void SMCAugmentation::update_missing_ranks(
     const std::unique_ptr<Distance>& distfun) {
   if(!dat.any_missing) return;
 
-  for (unsigned int jj = dat.n_assessors - dat.num_new_obs;
-       jj < dat.n_assessors; ++jj) {
+  for (unsigned int jj{}; jj < dat.n_assessors; ++jj) {
     augmented_data(span::all, span(jj), span(particle_index)) =
       make_new_augmentation(
         augmented_data(span::all, span(jj), span(particle_index)),

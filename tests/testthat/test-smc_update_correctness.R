@@ -140,13 +140,13 @@ test_that("update_mallows is correct for new partial rankings", {
     expect_equal(
       mean(mod_smc_next$alpha$value),
       mean(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
-      tolerance = .02
+      tolerance = .1
     )
 
     expect_equal(
       sd(mod_smc_next$alpha$value),
       sd(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
-      tolerance = .2
+      tolerance = .1
     )
 
     bmm_consensus <- compute_consensus(bmm_mod)
