@@ -21,7 +21,7 @@ AlphaRatio make_new_alpha(
     const Priors& priors);
 
 arma::vec make_new_rho(
-    arma::vec current_rho,
+    const arma::vec& current_rho,
     const arma::mat& rankings,
     double alpha_old,
     int leap_size,

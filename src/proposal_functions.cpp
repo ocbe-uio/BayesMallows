@@ -29,7 +29,7 @@ AlphaRatio make_new_alpha(
 }
 
 vec make_new_rho(
-    vec current_rho,
+    const vec& current_rho,
     const mat& rankings,
     double alpha_old,
     int leap_size,
