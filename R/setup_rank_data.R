@@ -1,15 +1,16 @@
 #' @title Setup rank data
 #'
-#' @description
-#' Prepare rank or preference data for further analyses.
+#' @description Prepare rank or preference data for further analyses.
 #'
-#' @param rankings A matrix of ranked items, of size `n_assessors x n_items`.
-#'   See [create_ranking()] if you have an ordered set of items that need to be
-#'   converted to rankings. If `preferences` is provided, `rankings` is an
-#'   optional initial value of the rankings. If `rankings` has column names,
-#'   these are assumed to be the names of the items. `NA` values in rankings are
-#'   treated as missing data and automatically augmented; to change this
-#'   behavior, see the `na_action` argument to [set_model_options()].
+#' @param rankings A matrix of ranked items, of size `n_assessors x n_items`. A
+#'   matrix of zero rows is allowed, and in this case samples from the prior
+#'   distribution are returned. See [create_ranking()] if you have an ordered
+#'   set of items that need to be converted to rankings. If `preferences` is
+#'   provided, `rankings` is an optional initial value of the rankings. If
+#'   `rankings` has column names, these are assumed to be the names of the
+#'   items. `NA` values in rankings are treated as missing data and
+#'   automatically augmented; to change this behavior, see the `na_action`
+#'   argument to [set_model_options()].
 #'
 #' @param preferences A data frame with one row per pairwise comparison, and
 #'   columns `assessor`, `top_item`, and `bottom_item`. Each column contains the
@@ -66,11 +67,11 @@
 #'   transitive closure based on preferences, returned from
 #'   [parallel::makeCluster()]. Defaults to `NULL`.
 #'
-#' @param shuffle_unranked Logical specifying whether or not to randomly
-#'   permute unranked items in the initial ranking. When
-#'   `shuffle_unranked=TRUE` and `random=FALSE`, all unranked items for each
-#'   assessor are randomly permuted. Otherwise, the first ordering returned by
-#'   `igraph::topo_sort()` is returned.
+#' @param shuffle_unranked Logical specifying whether or not to randomly permute
+#'   unranked items in the initial ranking. When `shuffle_unranked=TRUE` and
+#'   `random=FALSE`, all unranked items for each assessor are randomly permuted.
+#'   Otherwise, the first ordering returned by `igraph::topo_sort()` is
+#'   returned.
 #'
 #' @param random Logical specifying whether or not to use a random initial
 #'   ranking. Defaults to `FALSE`. Setting this to `TRUE` means that all

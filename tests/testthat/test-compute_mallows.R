@@ -80,3 +80,11 @@ test_that("compute_mallows is platform independent", {
   mod <- compute_mallows(setup_rank_data(dat))
   expect_equal(mod$alpha$value[1998], 7.26333324707436)
 })
+
+test_that("compute_mallows gives prior samples", {
+  mod <- compute_mallows(
+    data = setup_rank_data(rankings = matrix(nrow = 0, ncol = 10)),
+    compute_options = set_compute_options(nmc = 10)
+  )
+  expect_s3_class(mod, "BayesMallows")
+})

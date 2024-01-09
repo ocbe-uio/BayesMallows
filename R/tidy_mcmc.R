@@ -143,9 +143,11 @@ tidy_cluster_assignment <- function(
   if (n_clusters > 1) {
     cluster_dims <- dim(cluster_assignment)
     value <- paste("Cluster", cluster_assignment)
-  } else {
+  } else if (n_assessors > 1) {
     cluster_dims <- c(n_assessors, nmc)
     value <- paste("Cluster", rep(1, prod(cluster_dims)))
+  } else {
+    return(data.frame())
   }
 
 

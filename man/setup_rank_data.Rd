@@ -18,13 +18,15 @@ setup_rank_data(
 )
 }
 \arguments{
-\item{rankings}{A matrix of ranked items, of size \verb{n_assessors x n_items}.
-See \code{\link[=create_ranking]{create_ranking()}} if you have an ordered set of items that need to be
-converted to rankings. If \code{preferences} is provided, \code{rankings} is an
-optional initial value of the rankings. If \code{rankings} has column names,
-these are assumed to be the names of the items. \code{NA} values in rankings are
-treated as missing data and automatically augmented; to change this
-behavior, see the \code{na_action} argument to \code{\link[=set_model_options]{set_model_options()}}.}
+\item{rankings}{A matrix of ranked items, of size \verb{n_assessors x n_items}. A
+matrix of zero rows is allowed, and in this case samples from the prior
+distribution are returned. See \code{\link[=create_ranking]{create_ranking()}} if you have an ordered
+set of items that need to be converted to rankings. If \code{preferences} is
+provided, \code{rankings} is an optional initial value of the rankings. If
+\code{rankings} has column names, these are assumed to be the names of the
+items. \code{NA} values in rankings are treated as missing data and
+automatically augmented; to change this behavior, see the \code{na_action}
+argument to \code{\link[=set_model_options]{set_model_options()}}.}
 
 \item{preferences}{A data frame with one row per pairwise comparison, and
 columns \code{assessor}, \code{top_item}, and \code{bottom_item}. Each column contains the
@@ -81,11 +83,11 @@ deletes rows with \code{NA}s in them.}
 transitive closure based on preferences, returned from
 \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}.}
 
-\item{shuffle_unranked}{Logical specifying whether or not to randomly
-permute unranked items in the initial ranking. When
-\code{shuffle_unranked=TRUE} and \code{random=FALSE}, all unranked items for each
-assessor are randomly permuted. Otherwise, the first ordering returned by
-\code{igraph::topo_sort()} is returned.}
+\item{shuffle_unranked}{Logical specifying whether or not to randomly permute
+unranked items in the initial ranking. When \code{shuffle_unranked=TRUE} and
+\code{random=FALSE}, all unranked items for each assessor are randomly permuted.
+Otherwise, the first ordering returned by \code{igraph::topo_sort()} is
+returned.}
 
 \item{random}{Logical specifying whether or not to use a random initial
 ranking. Defaults to \code{FALSE}. Setting this to \code{TRUE} means that all
