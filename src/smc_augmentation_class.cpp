@@ -102,7 +102,6 @@ void SMCAugmentation::augment_partial(
         if(dat.consistent.is_empty()) continue;
         if(dat.consistent(user, particle) == 1) continue;
       }
-
       if (pseudo_aug_distance == nullptr) {
         augmented_data(span::all, span(user), span(particle)) =
           make_uniform_proposal(
