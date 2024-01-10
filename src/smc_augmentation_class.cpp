@@ -53,7 +53,7 @@ void SMCAugmentation::reweight(
     const std::unique_ptr<Distance>& distfun
 ) {
   cube previous_augmented_data = augmented_data;
-  augment_partial(pars, dat, distfun);
+  augment_partial(pars, dat);
 
   for (size_t particle{}; particle < pars.n_particles; ++particle) {
     double item_correction_contribution{};
@@ -93,8 +93,7 @@ void SMCAugmentation::reweight(
 
 void SMCAugmentation::augment_partial(
     const SMCParameters& pars,
-    const SMCData& dat,
-    const std::unique_ptr<Distance>& distfun
+    const SMCData& dat
 ){
   if(!dat.any_missing) return;
   for (size_t particle{}; particle < pars.n_particles; particle++) {
@@ -104,7 +103,7 @@ void SMCAugmentation::augment_partial(
         if(dat.consistent(user, particle) == 1) continue;
       }
 
-      if (aug_method != "pseudo") {
+      if (pseudo_aug_distance == nullptr) {
         augmented_data(span::all, span(user), span(particle)) =
           make_uniform_proposal(
             augmented_data(span::all, span(user), span(particle)),
@@ -113,7 +112,8 @@ void SMCAugmentation::augment_partial(
         RankProposal pprop = make_pseudo_proposal(
           augmented_data(span::all, span(user), span(particle)),
           missing_indicator.col(user),
-          pars.alpha_samples(particle), pars.rho_samples.col(particle), distfun
+          pars.alpha_samples(particle), pars.rho_samples.col(particle),
+          pseudo_aug_distance
         );
         augmented_data(span::all, span(user), span(particle)) = pprop.rankings;
         log_aug_prob(user, particle) = log(pprop.probability);

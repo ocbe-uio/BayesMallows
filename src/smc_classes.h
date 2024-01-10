@@ -58,8 +58,7 @@ struct SMCAugmentation {
 
   void augment_partial(
       const SMCParameters& pars,
-      const SMCData& dat,
-      const std::unique_ptr<Distance>& distfun);
+      const SMCData& dat);
 
   void update_data(
       const unsigned int particle_index,
