@@ -30,19 +30,27 @@ Rcpp::List  run_smc(
   aug.reweight(pvec, dat, pfun, distfun);
   pars.resample(pvec);
 
-  for (size_t ii{}; ii < pvec.size(); ++ii) {
-    for (size_t kk{}; kk < pars.mcmc_steps; ++kk) {
-      dat.update_data(pvec[ii]);
-      pars.update_rho(pvec[ii], dat, distfun);
-      pars.update_alpha(pvec[ii], dat, pfun, distfun, pris);
-      aug.update_missing_ranks(pvec[ii], dat, distfun);
+  std::for_each(
+    pvec.begin(), pvec.end(), [
+  pars = std::move(pars), dat = std::move(dat),
+    distfun = std::move(distfun),
+    pfun = std::move(pfun),
+    pris = std::move(pris),
+    aug = std::move(aug)
+    ](Particle& p) mutable {
+      for (size_t kk{}; kk < pars.mcmc_steps; ++kk) {
+        dat.update_data(p);
+        pars.update_rho(p, dat, distfun);
+        pars.update_alpha(p, dat, pfun, distfun, pris);
+        aug.update_missing_ranks(p, dat, distfun);
+      }
     }
-  }
+  );
 
   Rcpp::List particle_history = Rcpp::List::create(
-    Rcpp::Named("rho_samples") = wrapup_rho(pvec, dat),
+    Rcpp::Named("rho_samples") = wrapup_rho(pvec),
     Rcpp::Named("alpha_samples") = wrapup_alpha(pvec),
-    Rcpp::Named("augmented_rankings") = wrapup_augmented_data(pvec, dat)
+    Rcpp::Named("augmented_rankings") = wrapup_augmented_data(pvec)
   );
 
   return particle_history;

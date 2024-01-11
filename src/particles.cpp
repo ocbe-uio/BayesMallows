@@ -73,8 +73,8 @@ std::vector<Particle> initialize_particles(
   return pvec;
 }
 
-mat wrapup_rho(const std::vector<Particle>& pvec, const SMCData& dat) {
-  mat rho_samples(dat.n_items, pvec.size());
+mat wrapup_rho(const std::vector<Particle>& pvec) {
+  mat rho_samples(pvec[0].rho.size(), pvec.size());
   for(size_t i{}; i < pvec.size(); i++) rho_samples.col(i) = pvec[i].rho;
   return rho_samples;
 }
@@ -85,10 +85,12 @@ vec wrapup_alpha(const std::vector<Particle>& pvec) {
   return alpha_samples;
 }
 
-cube wrapup_augmented_data(const std::vector<Particle>& pvec, const SMCData& dat) {
+cube wrapup_augmented_data(const std::vector<Particle>& pvec) {
   cube augmented_data;
-  if(dat.any_missing) {
-    augmented_data.set_size(dat.n_items, dat.n_assessors, pvec.size());
+  if(!pvec[0].augmented_data.is_empty()) {
+    augmented_data.set_size(pvec[0].augmented_data.n_rows,
+                            pvec[0].augmented_data.n_cols,
+                            pvec.size());
     for(size_t i{}; i < pvec.size(); i++) {
       augmented_data.slice(i) = pvec[i].augmented_data;
     }
