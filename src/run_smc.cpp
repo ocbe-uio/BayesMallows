@@ -26,7 +26,7 @@ Rcpp::List  run_smc(
   auto pfun = choose_partition_function(
     dat.n_items, metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(metric);
-  auto pvec = initialize_particles(initial_values, smc_options, aug, dat);
+  auto pvec = initialize_particles(data, initial_values, smc_options, aug, dat);
   aug.reweight(pvec, dat, pfun, distfun);
   pars.resample(pvec);
 

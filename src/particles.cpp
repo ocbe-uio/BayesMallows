@@ -5,9 +5,10 @@ using namespace arma;
 
 Particle::Particle(
   double alpha, const vec& rho, const mat& augmented_data,
-  const unsigned int n_assessors) :
+  const unsigned int n_assessors, const uvec& particle_consistent) :
   alpha (alpha), rho (rho), augmented_data (augmented_data),
-  log_aug_prob (zeros(n_assessors)) {}
+  log_aug_prob (zeros(n_assessors)),
+  consistent(particle_consistent) {}
 
 mat initialize_augmented_data(
     const unsigned int particle_index,
@@ -43,11 +44,13 @@ mat initialize_augmented_data(
 }
 
 std::vector<Particle> initialize_particles(
+    const Rcpp::List& data,
     const Rcpp::List& initial_values,
     const Rcpp::List& smc_options,
     const SMCAugmentation& aug,
     const SMCData& dat
 ) {
+  umat consistent (data["consistent"]);
   const unsigned int n_particles { smc_options["n_particles"] };
   vec alpha_samples(initial_values["alpha_init"]);
   mat rho_samples(initial_values["rho_init"]);
@@ -57,10 +60,12 @@ std::vector<Particle> initialize_particles(
   pvec.reserve(n_particles);
 
   for(size_t i{}; i < n_particles; i++) {
+    uvec particle_consistent;
+    if(!consistent.is_empty()) particle_consistent = consistent.col(i);
     mat augmented_data = initialize_augmented_data(i, dat, aug, aug_init);
     pvec.emplace_back(
       Particle(alpha_samples(i), rho_samples.col(i), augmented_data,
-               dat.n_assessors)
+               dat.n_assessors, particle_consistent)
     );
   }
 

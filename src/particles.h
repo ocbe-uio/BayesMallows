@@ -3,6 +3,7 @@
 #include "smc_classes.h"
 
 std::vector<Particle> initialize_particles(
+    const Rcpp::List& data,
     const Rcpp::List& initial_values,
     const Rcpp::List& smc_options,
     const SMCAugmentation& aug,

@@ -4,7 +4,7 @@
 
 struct Particle {
   Particle(double alpha, const arma::vec& rho, const arma::mat& augmented_data,
-           const unsigned int n_assessors);
+           const unsigned int n_assessors, const arma::uvec& particle_consistent);
   ~Particle() = default;
 
   double alpha;
@@ -12,6 +12,7 @@ struct Particle {
   arma::mat augmented_data;
   double log_inc_wgt{};
   arma::vec log_aug_prob;
+  arma::uvec consistent;
 };
 
 struct SMCData : Data {
@@ -19,7 +20,6 @@ struct SMCData : Data {
   void update_data(const Particle& p);
   arma::mat new_rankings;
   const unsigned int num_new_obs;
-  const arma::umat consistent;
 };
 
 struct SMCParameters {

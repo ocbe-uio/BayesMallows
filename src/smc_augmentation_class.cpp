@@ -30,9 +30,9 @@ void SMCAugmentation::reweight(
 
   for (size_t particle{}; particle < pvec.size(); ++particle) {
     double item_correction_contribution{};
-    if(!dat.consistent.is_empty()) {
+    if(!pvec[particle].consistent.is_empty()) {
       for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
-        if(dat.consistent(user, particle) == 0) {
+        if(pvec[particle].consistent(user) == 0) {
           const arma::vec& pad = previous_augmented_data(span::all, span(user), span(particle));
           const arma::vec& cad = pvec[particle].augmented_data.col(user);
           double previous_distance =
@@ -69,8 +69,8 @@ void SMCAugmentation::augment_partial(
   for (size_t particle{}; particle < pvec.size(); particle++) {
     for (size_t user{}; user < dat.n_assessors; user++) {
       if(user < dat.n_assessors - dat.num_new_obs) {
-        if(dat.consistent.is_empty()) continue;
-        if(dat.consistent(user, particle) == 1) continue;
+        if(pvec[particle].consistent.is_empty()) continue;
+        if(pvec[particle].consistent(user) == 1) continue;
       }
       if (pseudo_aug_distance == nullptr) {
         pvec[particle].augmented_data.col(user) =
