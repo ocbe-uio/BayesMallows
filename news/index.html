@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Inference with the Mallows Model</a>
+    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
   </div>
 </li>
@@ -55,14 +55,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.5.0" id="bayesmallows-150">BayesMallows 1.5.0<a class="anchor" aria-label="anchor" href="#bayesmallows-150"></a></h2>
-<ul><li>Bug in augmentation with intransitive pairwise preferences has been fixed. (<a href="https://github.com/ocbe-uio/BayesMallows/issues/345" class="external-link uri">https://github.com/ocbe-uio/BayesMallows/issues/345</a>)</li>
-<li>Bug in plot.BayesMallows for posterior distribution with ‘parameter = “rho”’ has been fixed. Thanks to Lorenzo Zuccato for points out the issue. (<a href="https://github.com/ocbe-uio/BayesMallows/issues/342" class="external-link uri">https://github.com/ocbe-uio/BayesMallows/issues/342</a>)</li>
+<h2 class="pkg-version" data-toc-text="1.5.0" id="bayesmallows-150">BayesMallows 1.5.0<a class="anchor" aria-label="anchor" href="#bayesmallows-150"></a></h2><p class="text-muted">CRAN release: 2023-11-25</p>
+<ul><li>Bug in plot.BayesMallows for posterior distribution with ‘parameter = “rho”’ has been fixed. Thanks to Lorenzo Zuccato for points out the issue. (<a href="https://github.com/ocbe-uio/BayesMallows/issues/342" class="external-link uri">https://github.com/ocbe-uio/BayesMallows/issues/342</a>)</li>
 <li>Argument obs_freq to internal function rmallows() is removed, as it is not being used. Thanks to Lorenzo Zuccato for pointing this our (<a href="https://github.com/ocbe-uio/BayesMallows/issues/337" class="external-link uri">https://github.com/ocbe-uio/BayesMallows/issues/337</a>).</li>
 <li>Argument save_clus to compute_mallows() has been removed, as it was not used.</li>
 <li>compute_mallows() now supports parallel chains, by providing a ‘cl’ argument. See vignette “MCMC with Parallel Chains” for a tutorial.</li>
-<li>compute_rho_consensus() for SMC Mallows has been deprecated in favor of compute_consensus().</li>
-<li>compute_posterior_intervals_rho() and compute_posterior_intervals_alpha() for SMC Mallows have been deprecated in factor of compute_posterior_intervals() with argument parameter = “rho” and parameter = “alpha”.</li>
 <li>Documentation of functions are now grouped in families.</li>
 <li>lik_db_mix() is now deprecated in favor of get_mallows_loglik()</li>
 <li>Unusued argument removed from internal function augment_pairwise(). Thanks to Lorenzo Zuccato for making us aware of this (<a href="https://github.com/ocbe-uio/BayesMallows/issues/313" class="external-link uri">https://github.com/ocbe-uio/BayesMallows/issues/313</a>).</li>
@@ -222,7 +219,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1.9002" id="bayesmallows-0319002">BayesMallows 0.3.1.9002<a class="anchor" aria-label="anchor" href="#bayesmallows-0319002"></a></h2>
-<ul><li>Added functionality for checking label switching. See <code><a href="../reference/label_switching.html">?label_switching</a></code> for more info.</li>
+<ul><li>Added functionality for checking label switching. See <code>?label_switching</code> for more info.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1.9001" id="bayesmallows-0319001">BayesMallows 0.3.1.9001<a class="anchor" aria-label="anchor" href="#bayesmallows-0319001"></a></h2>

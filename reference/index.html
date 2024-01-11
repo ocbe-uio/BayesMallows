@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Inference with the Mallows Model</a>
+    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
   </div>
 </li>
@@ -54,7 +54,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="modeling-fitting">Modeling fitting<a class="anchor" aria-label="anchor" href="#modeling-fitting"></a></h2>
+      <h2 id="model-estimation">Model estimation<a class="anchor" aria-label="anchor" href="#model-estimation"></a></h2>
       
       <p class="section-desc"></p><p>Functions for estimating the Bayesian Mallows model.</p>
 
@@ -76,19 +76,60 @@
         <dd>Compute Mixtures of Mallows Models</dd>
       </dl><dl><dt>
           
-          <code><a href="smc_mallows_new_item_rank.html">smc_mallows_new_item_rank()</a></code> 
+          <code><a href="update_mallows.html">update_mallows()</a></code> 
         </dt>
-        <dd>SMC-Mallows new item rank</dd>
+        <dd>Update a Bayesian Mallows model with new users</dd>
       </dl><dl><dt>
           
-          <code><a href="smc_mallows_new_users.html">smc_mallows_new_users()</a></code> 
+          <code><a href="assess_convergence.html">assess_convergence()</a></code> 
         </dt>
-        <dd>SMC-Mallows New Users</dd>
+        <dd>Trace Plots from Metropolis-Hastings Algorithm</dd>
+      </dl></div><div class="section level2">
+      <h2 id="preparing-model-estimation">Preparing model estimation<a class="anchor" aria-label="anchor" href="#preparing-model-estimation"></a></h2>
+      
+      <p class="section-desc"></p><p>Functions to run prior to fitting a model.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="get_transitive_closure.html">get_transitive_closure()</a></code> 
+        </dt>
+        <dd>Get transitive closure</dd>
       </dl><dl><dt>
           
-          <code><a href="BayesMallows.html">BayesMallows</a></code> <code><a href="BayesMallows.html">BayesMallows-package</a></code> 
+          <code><a href="set_compute_options.html">set_compute_options()</a></code> 
         </dt>
-        <dd>BayesMallows: Bayesian Preference Learning with the Mallows Rank Model.</dd>
+        <dd>Specify options for computation</dd>
+      </dl><dl><dt>
+          
+          <code><a href="set_initial_values.html">set_initial_values()</a></code> 
+        </dt>
+        <dd>Set initial values of scale parameter and modal ranking</dd>
+      </dl><dl><dt>
+          
+          <code><a href="set_model_options.html">set_model_options()</a></code> 
+        </dt>
+        <dd>Set options for Bayesian Mallows model</dd>
+      </dl><dl><dt>
+          
+          <code><a href="set_priors.html">set_priors()</a></code> 
+        </dt>
+        <dd>Set prior parameters for Bayesian Mallows model</dd>
+      </dl><dl><dt>
+          
+          <code><a href="set_smc_options.html">set_smc_options()</a></code> 
+        </dt>
+        <dd>Set SMC compute options</dd>
+      </dl><dl><dt>
+          
+          <code><a href="setup_rank_data.html">setup_rank_data()</a></code> 
+        </dt>
+        <dd>Setup rank data</dd>
       </dl></div><div class="section level2">
       <h2 id="posterior-quantities">Posterior quantities<a class="anchor" aria-label="anchor" href="#posterior-quantities"></a></h2>
       
@@ -107,34 +148,14 @@
         <dd>Assign Assessors to Clusters</dd>
       </dl><dl><dt>
           
-          <code><a href="compute_consensus.BayesMallows.html">compute_consensus(<i>&lt;BayesMallows&gt;</i>)</a></code> 
-        </dt>
-        <dd>Compute Consensus Ranking</dd>
-      </dl><dl><dt>
-          
           <code><a href="compute_consensus.html">compute_consensus()</a></code> 
         </dt>
         <dd>Compute Consensus Ranking</dd>
       </dl><dl><dt>
           
-          <code><a href="compute_consensus.SMCMallows.html">compute_consensus(<i>&lt;SMCMallows&gt;</i>)</a></code> 
-        </dt>
-        <dd>Compute Consensus Ranking</dd>
-      </dl><dl><dt>
-          
-          <code><a href="compute_posterior_intervals.BayesMallows.html">compute_posterior_intervals(<i>&lt;BayesMallows&gt;</i>)</a></code> 
-        </dt>
-        <dd>Compute posterior intervals</dd>
-      </dl><dl><dt>
-          
           <code><a href="compute_posterior_intervals.html">compute_posterior_intervals()</a></code> 
         </dt>
         <dd>Compute Posterior Intervals</dd>
-      </dl><dl><dt>
-          
-          <code><a href="compute_posterior_intervals.SMCMallows.html">compute_posterior_intervals(<i>&lt;SMCMallows&gt;</i>)</a></code> 
-        </dt>
-        <dd>Compute posterior intervals</dd>
       </dl><dl><dt>
           
           <code><a href="heat_plot.html">heat_plot()</a></code> 
@@ -167,18 +188,54 @@
         <dd>Predict Top-k Rankings with Pairwise Preferences</dd>
       </dl><dl><dt>
           
-          <code><a href="print.BayesMallows.html">print(<i>&lt;BayesMallows&gt;</i>)</a></code> 
+          <code><a href="print.BayesMallows.html">print(<i>&lt;BayesMallows&gt;</i>)</a></code> <code><a href="print.BayesMallows.html">print(<i>&lt;BayesMallowsMixtures&gt;</i>)</a></code> <code><a href="print.BayesMallows.html">print(<i>&lt;SMCMallows&gt;</i>)</a></code> 
         </dt>
         <dd>Print Method for BayesMallows Objects</dd>
+      </dl></div><div class="section level2">
+      <h2 id="rank-functions">Rank functions<a class="anchor" aria-label="anchor" href="#rank-functions"></a></h2>
+      
+      <p class="section-desc"></p><p>Various functions for sampling ranks and working with ranks.</p>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="compute_expected_distance.html">compute_expected_distance()</a></code> 
+        </dt>
+        <dd>Expected value of metrics under a Mallows rank model</dd>
       </dl><dl><dt>
           
-          <code><a href="print.BayesMallowsMixtures.html">print(<i>&lt;BayesMallowsMixtures&gt;</i>)</a></code> 
+          <code><a href="compute_observation_frequency.html">compute_observation_frequency()</a></code> 
         </dt>
-        <dd>Print Method for BayesMallowsMixtures Objects</dd>
+        <dd>Frequency distribution of the ranking sequences</dd>
+      </dl><dl><dt>
+          
+          <code><a href="compute_rank_distance.html">compute_rank_distance()</a></code> 
+        </dt>
+        <dd>Distance between a set of rankings and a given rank sequence</dd>
+      </dl><dl><dt>
+          
+          <code><a href="create_ranking.html">create_ranking()</a></code> <code><a href="create_ranking.html">create_ordering()</a></code> 
+        </dt>
+        <dd>Convert between ranking and ordering.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="get_mallows_loglik.html">get_mallows_loglik()</a></code> 
+        </dt>
+        <dd>Likelihood and log-likelihood evaluation for a Mallows mixture model</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sample_mallows.html">sample_mallows()</a></code> 
+        </dt>
+        <dd>Random Samples from the Mallows Rank Model</dd>
       </dl></div><div class="section level2">
-      <h2 id="preprocessing">Preprocessing<a class="anchor" aria-label="anchor" href="#preprocessing"></a></h2>
+      <h2 id="partition-functions">Partition functions<a class="anchor" aria-label="anchor" href="#partition-functions"></a></h2>
       
-      <p class="section-desc"></p><p>Functions to run prior to fitting a model.</p>
+      <p class="section-desc"></p><p>Tools related to computing or estimating the partition function of the Mallows model with various distances.</p>
 
       
     </div><div id="" class="section level2">
@@ -193,91 +250,9 @@
         <dd>Estimate Partition Function</dd>
       </dl><dl><dt>
           
-          <code><a href="generate_constraints.html">generate_constraints()</a></code> 
+          <code><a href="get_cardinalities.html">get_cardinalities()</a></code> 
         </dt>
-        <dd>Generate Constraint Set from Pairwise Comparisons</dd>
-      </dl><dl><dt>
-          
-          <code><a href="generate_initial_ranking.html">generate_initial_ranking()</a></code> 
-        </dt>
-        <dd>Generate Initial Ranking</dd>
-      </dl><dl><dt>
-          
-          <code><a href="generate_transitive_closure.html">generate_transitive_closure()</a></code> 
-        </dt>
-        <dd>Generate Transitive Closure</dd>
-      </dl><dl><dt>
-          
-          <code><a href="obs_freq.html">obs_freq</a></code> 
-        </dt>
-        <dd>Observation frequencies in the Bayesian Mallows model</dd>
-      </dl><dl><dt>
-          
-          <code><a href="prepare_partition_function.html">prepare_partition_function()</a></code> 
-        </dt>
-        <dd>Prepare partition functions</dd>
-      </dl></div><div class="section level2">
-      <h2 id="diagnostics">Diagnostics<a class="anchor" aria-label="anchor" href="#diagnostics"></a></h2>
-      
-      <p class="section-desc"></p><p>Functions for checking diagnostics of the Monte Carlo algorithms.</p>
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="assess_convergence.html">assess_convergence()</a></code> 
-        </dt>
-        <dd>Trace Plots from Metropolis-Hastings Algorithm</dd>
-      </dl><dl><dt>
-          
-          <code><a href="label_switching.html">label_switching</a></code> 
-        </dt>
-        <dd>Checking for Label Switching in the Mallows Mixture Model</dd>
-      </dl></div><div class="section level2">
-      <h2 id="rank-functions">Rank functions<a class="anchor" aria-label="anchor" href="#rank-functions"></a></h2>
-      
-      <p class="section-desc"></p><p>Various functions for sampling ranks and working with ranks.</p>
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="expected_dist.html">expected_dist()</a></code> 
-        </dt>
-        <dd>Expected value of metrics under a Mallows rank model</dd>
-      </dl><dl><dt>
-          
-          <code><a href="get_mallows_loglik.html">get_mallows_loglik()</a></code> 
-        </dt>
-        <dd>Likelihood and log-likelihood evaluation for a Mallows mixture model</dd>
-      </dl><dl><dt>
-          
-          <code><a href="rank_conversion.html">create_ranking()</a></code> <code><a href="rank_conversion.html">create_ordering()</a></code> 
-        </dt>
-        <dd>Convert between ranking and ordering.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="rank_distance.html">rank_distance()</a></code> 
-        </dt>
-        <dd>Distance between a set of rankings and a given rank sequence</dd>
-      </dl><dl><dt>
-          
-          <code><a href="rank_freq_distr.html">rank_freq_distr()</a></code> 
-        </dt>
-        <dd>Frequency distribution of the ranking sequences</dd>
-      </dl><dl><dt>
-          
-          <code><a href="sample_mallows.html">sample_mallows()</a></code> 
-        </dt>
-        <dd>Random Samples from the Mallows Rank Model</dd>
+        <dd>Get cardinalities for each distance</dd>
       </dl></div><div class="section level2">
       <h2 id="datasets">Datasets<a class="anchor" aria-label="anchor" href="#datasets"></a></h2>
       
@@ -293,7 +268,17 @@
           
           <code><a href="beach_preferences.html">beach_preferences</a></code> 
         </dt>
-        <dd>Beach Preferences</dd>
+        <dd>Beach preferences</dd>
+      </dl><dl><dt>
+          
+          <code><a href="bernoulli_data.html">bernoulli_data</a></code> 
+        </dt>
+        <dd>Simulated intransitive pairwise preferences</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cluster_data.html">cluster_data</a></code> 
+        </dt>
+        <dd>Simulated clustering data</dd>
       </dl><dl><dt>
           
           <code><a href="potato_true_ranking.html">potato_true_ranking</a></code> 
@@ -303,50 +288,17 @@
           
           <code><a href="potato_visual.html">potato_visual</a></code> 
         </dt>
-        <dd>Result of ranking potatoes by weight, where the assessors were only allowed
-to inspected the potatoes visually. 12 assessors ranked 20 potatoes.</dd>
+        <dd>Potato weights assessed visually</dd>
       </dl><dl><dt>
           
           <code><a href="potato_weighing.html">potato_weighing</a></code> 
         </dt>
-        <dd>Result of ranking potatoes by weight, where the assessors were
-allowed to lift the potatoes. 12 assessors ranked 20 potatoes.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="sample_dataset.html">sample_dataset</a></code> 
-        </dt>
-        <dd>A synthetic 3D matrix generated using the sample_mallows function</dd>
+        <dd>Potato weights assessed by hand</dd>
       </dl><dl><dt>
           
           <code><a href="sushi_rankings.html">sushi_rankings</a></code> 
         </dt>
-        <dd>Sushi Rankings</dd>
-      </dl></div><div class="section level2">
-      <h2 id="deprecated">Deprecated<a class="anchor" aria-label="anchor" href="#deprecated"></a></h2>
-      
-      <p class="section-desc"></p><p>Soft-deprecated functions, which will be removed in a future release.</p>
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="compute_posterior_intervals_alpha.html">compute_posterior_intervals_alpha()</a></code> 
-        </dt>
-        <dd>Compute Posterior Intervals Alpha</dd>
-      </dl><dl><dt>
-          
-          <code><a href="compute_posterior_intervals_rho.html">compute_posterior_intervals_rho()</a></code> 
-        </dt>
-        <dd>Compute Posterior Intervals Rho</dd>
-      </dl><dl><dt>
-          
-          <code><a href="compute_rho_consensus.html">compute_rho_consensus()</a></code> 
-        </dt>
-        <dd>Compute rho consensus</dd>
+        <dd>Sushi rankings</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

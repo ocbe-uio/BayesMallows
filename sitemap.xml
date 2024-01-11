@@ -28,7 +28,7 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/BayesMallows.html</loc>
+    <loc>/reference/BayesMallows-package.html</loc>
   </url>
   <url>
     <loc>/reference/assess_convergence.html</loc>
@@ -43,22 +43,16 @@
     <loc>/reference/beach_preferences.html</loc>
   </url>
   <url>
-    <loc>/reference/calculate_backward_probability.html</loc>
+    <loc>/reference/bernoulli_data.html</loc>
   </url>
   <url>
-    <loc>/reference/calculate_forward_probability.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_consensus.BayesMallows.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_consensus.SMCMallows.html</loc>
+    <loc>/reference/cluster_data.html</loc>
   </url>
   <url>
     <loc>/reference/compute_consensus.html</loc>
   </url>
   <url>
-    <loc>/reference/compute_importance_sampling_estimate.html</loc>
+    <loc>/reference/compute_expected_distance.html</loc>
   </url>
   <url>
     <loc>/reference/compute_mallows.html</loc>
@@ -67,61 +61,34 @@
     <loc>/reference/compute_mallows_mixtures.html</loc>
   </url>
   <url>
-    <loc>/reference/compute_posterior_intervals.BayesMallows.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_posterior_intervals.SMCMallows.html</loc>
+    <loc>/reference/compute_observation_frequency.html</loc>
   </url>
   <url>
     <loc>/reference/compute_posterior_intervals.html</loc>
   </url>
   <url>
-    <loc>/reference/compute_posterior_intervals_alpha.html</loc>
+    <loc>/reference/compute_rank_distance.html</loc>
   </url>
   <url>
-    <loc>/reference/compute_posterior_intervals_rho.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_rho_consensus.html</loc>
-  </url>
-  <url>
-    <loc>/reference/correction_kernel.html</loc>
-  </url>
-  <url>
-    <loc>/reference/correction_kernel_pseudo.html</loc>
+    <loc>/reference/create_ranking.html</loc>
   </url>
   <url>
     <loc>/reference/estimate_partition_function.html</loc>
   </url>
   <url>
-    <loc>/reference/expected_dist.html</loc>
-  </url>
-  <url>
-    <loc>/reference/generate_constraints.html</loc>
-  </url>
-  <url>
-    <loc>/reference/generate_initial_ranking.html</loc>
-  </url>
-  <url>
-    <loc>/reference/generate_transitive_closure.html</loc>
+    <loc>/reference/get_cardinalities.html</loc>
   </url>
   <url>
     <loc>/reference/get_mallows_loglik.html</loc>
   </url>
   <url>
-    <loc>/reference/get_rank_distance.html</loc>
+    <loc>/reference/get_transitive_closure.html</loc>
   </url>
   <url>
     <loc>/reference/heat_plot.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/label_switching.html</loc>
-  </url>
-  <url>
-    <loc>/reference/obs_freq.html</loc>
   </url>
   <url>
     <loc>/reference/plot.BayesMallows.html</loc>
@@ -148,42 +115,36 @@
     <loc>/reference/predict_top_k.html</loc>
   </url>
   <url>
-    <loc>/reference/prepare_partition_function.html</loc>
-  </url>
-  <url>
     <loc>/reference/print.BayesMallows.html</loc>
-  </url>
-  <url>
-    <loc>/reference/print.BayesMallowsMixtures.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rank_conversion.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rank_distance.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rank_freq_distr.html</loc>
   </url>
   <url>
     <loc>/reference/rmallows.html</loc>
   </url>
   <url>
-    <loc>/reference/run_mcmc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sample_dataset.html</loc>
-  </url>
-  <url>
     <loc>/reference/sample_mallows.html</loc>
   </url>
   <url>
-    <loc>/reference/smc_mallows_new_item_rank.html</loc>
+    <loc>/reference/set_compute_options.html</loc>
   </url>
   <url>
-    <loc>/reference/smc_mallows_new_users.html</loc>
+    <loc>/reference/set_initial_values.html</loc>
+  </url>
+  <url>
+    <loc>/reference/set_model_options.html</loc>
+  </url>
+  <url>
+    <loc>/reference/set_priors.html</loc>
+  </url>
+  <url>
+    <loc>/reference/set_smc_options.html</loc>
+  </url>
+  <url>
+    <loc>/reference/setup_rank_data.html</loc>
   </url>
   <url>
     <loc>/reference/sushi_rankings.html</loc>
+  </url>
+  <url>
+    <loc>/reference/update_mallows.html</loc>
   </url>
 </urlset>

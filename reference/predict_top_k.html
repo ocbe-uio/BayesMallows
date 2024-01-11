@@ -14,7 +14,7 @@ pairwise preferences."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +31,7 @@ pairwise preferences."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Inference with the Mallows Model</a>
+    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
   </div>
 </li>
@@ -74,14 +74,14 @@ pairwise preferences.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>model_fit</dt>
 <dd><p>An object of type <code>BayesMallows</code>, returned from
-<code><a href="compute_mallows.html">compute_mallows</a></code>.</p></dd>
+<code><a href="compute_mallows.html">compute_mallows()</a></code>.</p></dd>
 
 
 <dt>burnin</dt>
 <dd><p>A numeric value specifying the number of iterations to discard
 as burn-in. Defaults to <code>model_fit$burnin</code>, and must be provided if
 <code>model_fit$burnin</code> does not exist. See
-<code><a href="assess_convergence.html">assess_convergence</a></code>.</p></dd>
+<code><a href="assess_convergence.html">assess_convergence()</a></code>.</p></dd>
 
 
 <dt>k</dt>
@@ -92,52 +92,63 @@ as burn-in. Defaults to <code>model_fit$burnin</code>, and must be provided if
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A dataframe with columns <code>assessor</code>, <code>item</code>, and</p>
-<p></p>
-<p><code>prob</code>, where each row states the probability that the given assessor
-  rates the given item among top-\(k\).</p>
+<p>A dataframe with columns <code>assessor</code>, <code>item</code>, and
+<code>prob</code>, where each row states the probability that the given assessor
+rates the given item among top-\(k\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="plot_top_k.html">plot_top_k</a></code></p>
-<p>Other posterior quantities: 
+    <div class="dont-index"><p>Other posterior quantities: 
 <code><a href="assign_cluster.html">assign_cluster</a>()</code>,
-<code><a href="compute_consensus.BayesMallows.html">compute_consensus.BayesMallows</a>()</code>,
-<code><a href="compute_consensus.SMCMallows.html">compute_consensus.SMCMallows</a>()</code>,
 <code><a href="compute_consensus.html">compute_consensus</a>()</code>,
-<code><a href="compute_posterior_intervals.BayesMallows.html">compute_posterior_intervals.BayesMallows</a>()</code>,
-<code><a href="compute_posterior_intervals.SMCMallows.html">compute_posterior_intervals.SMCMallows</a>()</code>,
 <code><a href="compute_posterior_intervals.html">compute_posterior_intervals</a>()</code>,
 <code><a href="heat_plot.html">heat_plot</a>()</code>,
 <code><a href="plot.BayesMallows.html">plot.BayesMallows</a>()</code>,
 <code><a href="plot.SMCMallows.html">plot.SMCMallows</a>()</code>,
 <code><a href="plot_elbow.html">plot_elbow</a>()</code>,
 <code><a href="plot_top_k.html">plot_top_k</a>()</code>,
-<code><a href="print.BayesMallowsMixtures.html">print.BayesMallowsMixtures</a>()</code>,
 <code><a href="print.BayesMallows.html">print.BayesMallows</a>()</code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="co"># We use the example dataset with beach preferences. Se the documentation to</span></span></span>
-<span class="r-in"><span>  <span class="co"># compute_mallows for how to assess the convergence of the algorithm</span></span></span>
-<span class="r-in"><span>  <span class="co"># We need to save the augmented data, so setting this option to TRUE</span></span></span>
-<span class="r-in"><span>  <span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span>preferences <span class="op">=</span> <span class="va">beach_preferences</span>,</span></span>
-<span class="r-in"><span>                               save_aug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># We set burnin = 1000</span></span></span>
-<span class="r-in"><span>  <span class="va">model_fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
-<span class="r-in"><span>  <span class="co"># By default, the probability of being top-3 is plotted</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="plot_top_k.html">plot_top_k</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># We can also plot the probability of being top-5, for each item</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="plot_top_k.html">plot_top_k</a></span><span class="op">(</span><span class="va">model_fit</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># We get the underlying numbers with predict_top_k</span></span></span>
-<span class="r-in"><span>  <span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu">predict_top_k</span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># To find all items ranked top-3 by assessors 1-3 with probability more than 80 %,</span></span></span>
-<span class="r-in"><span>  <span class="co"># we do</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">probs</span>, <span class="va">assessor</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span> <span class="op">&amp;</span> <span class="va">prob</span> <span class="op">&gt;</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># We use the example dataset with beach preferences. Se the documentation to</span></span></span>
+<span class="r-in"><span><span class="co"># compute_mallows for how to assess the convergence of the algorithm</span></span></span>
+<span class="r-in"><span><span class="co"># We need to save the augmented data, so setting this option to TRUE</span></span></span>
+<span class="r-in"><span><span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>preferences <span class="op">=</span> <span class="va">beach_preferences</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    nmc <span class="op">=</span> <span class="fl">1000</span>, burnin <span class="op">=</span> <span class="fl">500</span>, save_aug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># By default, the probability of being top-3 is plotted</span></span></span>
+<span class="r-in"><span><span class="co"># The default plot gives the probability for each assessor</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot_top_k.html">plot_top_k</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="predict_top_k-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># We can also plot the probability of being top-5, for each item</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot_top_k.html">plot_top_k</a></span><span class="op">(</span><span class="va">model_fit</span>, k <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="predict_top_k-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># We get the underlying numbers with predict_top_k</span></span></span>
+<span class="r-in"><span><span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu">predict_top_k</span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># To find all items ranked top-3 by assessors 1-3 with probability more than 80 %,</span></span></span>
+<span class="r-in"><span><span class="co"># we do</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">probs</span>, <span class="va">assessor</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span> <span class="op">&amp;</span> <span class="va">prob</span> <span class="op">&gt;</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     assessor    item  prob</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 301        1  Item 6 1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 303        3  Item 6 0.994</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 483        3  Item 9 1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 601        1 Item 11 1.000</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co"># We can also plot for clusters</span></span></span>
+<span class="r-in"><span><span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>preferences <span class="op">=</span> <span class="va">beach_preferences</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  model_options <span class="op">=</span> <span class="fu"><a href="set_model_options.html">set_model_options</a></span><span class="op">(</span>n_clusters <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    nmc <span class="op">=</span> <span class="fl">1000</span>, burnin <span class="op">=</span> <span class="fl">500</span>, save_aug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># The modal ranking in general differs between clusters, but the plot still</span></span></span>
+<span class="r-in"><span><span class="co"># represents the posterior distribution of each user's augmented rankings.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plot_top_k.html">plot_top_k</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="predict_top_k-3.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

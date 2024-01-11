@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Inference with the Mallows Model</a>
+    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
   </div>
 </li>
@@ -51,7 +51,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Plot Posterior Distributions</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ocbe-uio/BayesMallows/blob/HEAD/R/plot.BayesMallows.R" class="external-link"><code>R/plot.BayesMallows.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ocbe-uio/BayesMallows/blob/HEAD/R/plot.R" class="external-link"><code>R/plot.R</code></a></small>
       <div class="d-none name"><code>plot.BayesMallows.Rd</code></div>
     </div>
 
@@ -69,13 +69,13 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
 <dd><p>An object of type <code>BayesMallows</code>, returned from
-<code><a href="compute_mallows.html">compute_mallows</a></code>.</p></dd>
+<code><a href="compute_mallows.html">compute_mallows()</a></code>.</p></dd>
 
 
 <dt>burnin</dt>
 <dd><p>A numeric value specifying the number of iterations
 to discard as burn-in. Defaults to <code>x$burnin</code>, and must be
-provided if <code>x$burnin</code> does not exist. See <code><a href="assess_convergence.html">assess_convergence</a></code>.</p></dd>
+provided if <code>x$burnin</code> does not exist. See <code><a href="assess_convergence.html">assess_convergence()</a></code>.</p></dd>
 
 
 <dt>parameter</dt>
@@ -99,68 +99,55 @@ Only used when <code>parameter = "rho"</code>.</p></dd>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other posterior quantities: 
 <code><a href="assign_cluster.html">assign_cluster</a>()</code>,
-<code><a href="compute_consensus.BayesMallows.html">compute_consensus.BayesMallows</a>()</code>,
-<code><a href="compute_consensus.SMCMallows.html">compute_consensus.SMCMallows</a>()</code>,
 <code><a href="compute_consensus.html">compute_consensus</a>()</code>,
-<code><a href="compute_posterior_intervals.BayesMallows.html">compute_posterior_intervals.BayesMallows</a>()</code>,
-<code><a href="compute_posterior_intervals.SMCMallows.html">compute_posterior_intervals.SMCMallows</a>()</code>,
 <code><a href="compute_posterior_intervals.html">compute_posterior_intervals</a>()</code>,
 <code><a href="heat_plot.html">heat_plot</a>()</code>,
 <code><a href="plot.SMCMallows.html">plot.SMCMallows</a>()</code>,
 <code><a href="plot_elbow.html">plot_elbow</a>()</code>,
 <code><a href="plot_top_k.html">plot_top_k</a>()</code>,
 <code><a href="predict_top_k.html">predict_top_k</a>()</code>,
-<code><a href="print.BayesMallowsMixtures.html">print.BayesMallowsMixtures</a>()</code>,
 <code><a href="print.BayesMallows.html">print.BayesMallows</a>()</code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># The example datasets potato_visual and potato_weighing contain complete</span></span></span>
-<span class="r-in"><span><span class="co"># rankings of 20 items, by 12 assessors. We first analyse these using the Mallows</span></span></span>
-<span class="r-in"><span><span class="co"># model:</span></span></span>
-<span class="r-in"><span><span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span><span class="va">potato_visual</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Se the documentation to compute_mallows for how to assess the convergence</span></span></span>
-<span class="r-in"><span><span class="co"># of the algorithm</span></span></span>
-<span class="r-in"><span><span class="co"># We set the burnin = 1000</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span><span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span><span class="va">potato_visual</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">model_fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># By default, the scale parameter "alpha" is plotted</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.BayesMallows-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="co"># We can also plot the latent rankings "rho"</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># By default, a random subset of 5 items are plotted</span></span></span>
-<span class="r-in"><span>  <span class="co"># Specify which items to plot in the items argument.</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>,</span></span>
-<span class="r-in"><span>       items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">6</span>, <span class="fl">9</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># When the ranking matrix has column names, we can also</span></span></span>
-<span class="r-in"><span>  <span class="co"># specify these in the items argument.</span></span></span>
-<span class="r-in"><span>  <span class="co"># In this case, we have the following names:</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">potato_visual</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># We can therefore get the same plot with the following call:</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>,</span></span>
-<span class="r-in"><span>       items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P2"</span>, <span class="st">"P4"</span>, <span class="st">"P6"</span>, <span class="st">"P9"</span>, <span class="st">"P10"</span>, <span class="st">"P20"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co"># We can also plot the latent rankings "rho"</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Items not provided by user. Picking 5 at random.</span>
+<span class="r-plt img"><img src="plot.BayesMallows-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># By default, a random subset of 5 items are plotted</span></span></span>
+<span class="r-in"><span><span class="co"># Specify which items to plot in the items argument.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>,</span></span>
+<span class="r-in"><span>     items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">6</span>, <span class="fl">9</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.BayesMallows-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># When the ranking matrix has column names, we can also</span></span></span>
+<span class="r-in"><span><span class="co"># specify these in the items argument.</span></span></span>
+<span class="r-in"><span><span class="co"># In this case, we have the following names:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">potato_visual</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "P1"  "P2"  "P3"  "P4"  "P5"  "P6"  "P7"  "P8"  "P9"  "P10" "P11" "P12"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "P13" "P14" "P15" "P16" "P17" "P18" "P19" "P20"</span>
+<span class="r-in"><span><span class="co"># We can therefore get the same plot with the following call:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>,</span></span>
+<span class="r-in"><span>     items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P2"</span>, <span class="st">"P4"</span>, <span class="st">"P6"</span>, <span class="st">"P9"</span>, <span class="st">"P10"</span>, <span class="st">"P20"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.BayesMallows-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="co"># Plots of mixture parameters:</span></span></span>
-<span class="r-in"><span>  <span class="co"># We can run a mixture of Mallows models, using the n_clusters argument</span></span></span>
-<span class="r-in"><span>  <span class="co"># We use the sushi example data. See the documentation of compute_mallows for a more elaborate</span></span></span>
-<span class="r-in"><span>  <span class="co"># example</span></span></span>
-<span class="r-in"><span>  <span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span><span class="va">sushi_rankings</span>, n_clusters <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span><span class="va">sushi_rankings</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    model_options <span class="op">=</span> <span class="fu"><a href="set_model_options.html">set_model_options</a></span><span class="op">(</span>n_clusters <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">model_fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
-<span class="r-in"><span>  <span class="co"># We can then plot the posterior distributions of the cluster probabilities</span></span></span>
+<span class="r-in"><span>  <span class="co"># Posterior distributions of the cluster probabilities</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"cluster_probs"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># We can also get a cluster assignment plot, showing the assessors along the horizontal</span></span></span>
-<span class="r-in"><span>  <span class="co"># axis and the clusters along the vertical axis. The color show the probability</span></span></span>
-<span class="r-in"><span>  <span class="co"># of belonging to each clusters. The assessors are sorted along the horizontal</span></span></span>
-<span class="r-in"><span>  <span class="co"># axis according to their maximum a posterior cluster assignment. This plot</span></span></span>
-<span class="r-in"><span>  <span class="co"># illustrates the posterior uncertainty in cluster assignments.</span></span></span>
+<span class="r-in"><span>  <span class="co"># Cluster assignment plot. Color shows the probability of belonging to each</span></span></span>
+<span class="r-in"><span>  <span class="co"># cluster.</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"cluster_assignment"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># See also ?assign_cluster for a function which returns the cluster assignment</span></span></span>
-<span class="r-in"><span>  <span class="co"># back in a dataframe.</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>

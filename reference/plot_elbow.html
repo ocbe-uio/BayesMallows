@@ -14,7 +14,7 @@ selecting the number of mixture."><!-- mathjax --><script src="https://cdnjs.clo
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +31,7 @@ selecting the number of mixture."><!-- mathjax --><script src="https://cdnjs.clo
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Inference with the Mallows Model</a>
+    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
   </div>
 </li>
@@ -73,10 +73,10 @@ selecting the number of mixture.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>...</dt>
-<dd><p>One or more objects returned from <code><a href="compute_mallows.html">compute_mallows</a></code>,
+<dd><p>One or more objects returned from <code><a href="compute_mallows.html">compute_mallows()</a></code>,
 separated by comma, or a list of such objects. Typically, each object
 has been run with a different number of mixtures, as specified in the
-<code>n_clusters</code> argument to <code><a href="compute_mallows.html">compute_mallows</a></code>.</p></dd>
+<code>n_clusters</code> argument to <code><a href="compute_mallows.html">compute_mallows()</a></code>.</p></dd>
 
 
 <dt>burnin</dt>
@@ -95,34 +95,71 @@ with-cluster sum of distances on the vertical axis.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="compute_mallows.html">compute_mallows</a></code></p>
-<p>Other posterior quantities: 
+    <div class="dont-index"><p>Other posterior quantities: 
 <code><a href="assign_cluster.html">assign_cluster</a>()</code>,
-<code><a href="compute_consensus.BayesMallows.html">compute_consensus.BayesMallows</a>()</code>,
-<code><a href="compute_consensus.SMCMallows.html">compute_consensus.SMCMallows</a>()</code>,
 <code><a href="compute_consensus.html">compute_consensus</a>()</code>,
-<code><a href="compute_posterior_intervals.BayesMallows.html">compute_posterior_intervals.BayesMallows</a>()</code>,
-<code><a href="compute_posterior_intervals.SMCMallows.html">compute_posterior_intervals.SMCMallows</a>()</code>,
 <code><a href="compute_posterior_intervals.html">compute_posterior_intervals</a>()</code>,
 <code><a href="heat_plot.html">heat_plot</a>()</code>,
 <code><a href="plot.BayesMallows.html">plot.BayesMallows</a>()</code>,
 <code><a href="plot.SMCMallows.html">plot.SMCMallows</a>()</code>,
 <code><a href="plot_top_k.html">plot_top_k</a>()</code>,
 <code><a href="predict_top_k.html">predict_top_k</a>()</code>,
-<code><a href="print.BayesMallowsMixtures.html">print.BayesMallowsMixtures</a>()</code>,
 <code><a href="print.BayesMallows.html">print.BayesMallows</a>()</code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># DETERMINING THE NUMBER OF CLUSTERS IN THE SUSHI EXAMPLE DATA</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># SIMULATED CLUSTER DATA</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n_clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">1</span>, to <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows_mixtures.html">compute_mallows_mixtures</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n_clusters <span class="op">=</span> <span class="va">n_clusters</span>, data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span><span class="va">cluster_data</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">2000</span>, include_wcd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># There is good convergence for 1, 2, and 3 cluster, but not for 5.</span></span></span>
+<span class="r-in"><span><span class="co"># Also note that there seems to be label switching around the 7000th iteration</span></span></span>
+<span class="r-in"><span><span class="co"># for the 2-cluster solution.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">models</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot_elbow-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># We can create an elbow plot, suggesting that there are three clusters, exactly</span></span></span>
+<span class="r-in"><span><span class="co"># as simulated.</span></span></span>
+<span class="r-in"><span><span class="fu">plot_elbow</span><span class="op">(</span><span class="va">models</span>, burnin <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot_elbow-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We now fit a model with three clusters</span></span></span>
+<span class="r-in"><span><span class="va">mixture_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span><span class="va">cluster_data</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  model_options <span class="op">=</span> <span class="fu"><a href="set_model_options.html">set_model_options</a></span><span class="op">(</span>n_clusters <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The trace plot for this model looks good. It seems to converge quickly.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">mixture_model</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot_elbow-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># We set the burnin to 500</span></span></span>
+<span class="r-in"><span><span class="va">mixture_model</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">500</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We can now look at posterior quantities</span></span></span>
+<span class="r-in"><span><span class="co"># Posterior of scale parameter alpha</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mixture_model</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot_elbow-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mixture_model</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">4</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot_elbow-5.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># There is around 33 % probability of being in each cluster, in agreemeent</span></span></span>
+<span class="r-in"><span><span class="co"># with the data simulating mechanism</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mixture_model</span>, parameter <span class="op">=</span> <span class="st">"cluster_probs"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot_elbow-6.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># We can also look at a cluster assignment plot</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mixture_model</span>, parameter <span class="op">=</span> <span class="st">"cluster_assignment"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot_elbow-7.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># DETERMINING THE NUMBER OF CLUSTERS IN THE SUSHI EXAMPLE DATA</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="co"># Let us look at any number of clusters from 1 to 10</span></span></span>
 <span class="r-in"><span>  <span class="co"># We use the convenience function compute_mallows_mixtures</span></span></span>
 <span class="r-in"><span>  <span class="va">n_clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">1</span>, to <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows_mixtures.html">compute_mallows_mixtures</a></span><span class="op">(</span>n_clusters <span class="op">=</span> <span class="va">n_clusters</span>,</span></span>
-<span class="r-in"><span>                                     rankings <span class="op">=</span> <span class="va">sushi_rankings</span>,</span></span>
-<span class="r-in"><span>                                     include_wcd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows_mixtures.html">compute_mallows_mixtures</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    n_clusters <span class="op">=</span> <span class="va">n_clusters</span>, data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span><span class="va">sushi_rankings</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>include_wcd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># models is a list in which each element is an object of class BayesMallows,</span></span></span>
 <span class="r-in"><span>  <span class="co"># returned from compute_mallows</span></span></span>
 <span class="r-in"><span>  <span class="co"># We can create an elbow plot</span></span></span>
@@ -132,8 +169,10 @@ with-cluster sum of distances on the vertical axis.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># Having chosen the number of clusters, we can now study the final model</span></span></span>
 <span class="r-in"><span>  <span class="co"># Rerun with 5 clusters</span></span></span>
-<span class="r-in"><span>  <span class="va">mixture_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">sushi_rankings</span>, n_clusters <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>                                   include_wcd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">mixture_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    rankings <span class="op">=</span> <span class="va">sushi_rankings</span>,</span></span>
+<span class="r-in"><span>    model_options <span class="op">=</span> <span class="fu"><a href="set_model_options.html">set_model_options</a></span><span class="op">(</span>n_clusters <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>include_wcd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># Delete the models object to free some memory</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">models</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># Set the burnin</span></span></span>
@@ -166,9 +205,11 @@ with-cluster sum of distances on the vertical axis.</p>
 <span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">parallel</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makeCluster</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">n_clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">1</span>, to <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows_mixtures.html">compute_mallows_mixtures</a></span><span class="op">(</span>n_clusters <span class="op">=</span> <span class="va">n_clusters</span>,</span></span>
-<span class="r-in"><span>                                     rankings <span class="op">=</span> <span class="va">sushi_rankings</span>,</span></span>
-<span class="r-in"><span>                                     include_wcd <span class="op">=</span> <span class="cn">TRUE</span>, cl <span class="op">=</span> <span class="va">cl</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows_mixtures.html">compute_mallows_mixtures</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    n_clusters <span class="op">=</span> <span class="va">n_clusters</span>,</span></span>
+<span class="r-in"><span>    rankings <span class="op">=</span> <span class="va">sushi_rankings</span>,</span></span>
+<span class="r-in"><span>    compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>include_wcd <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    cl <span class="op">=</span> <span class="va">cl</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">stopCluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>

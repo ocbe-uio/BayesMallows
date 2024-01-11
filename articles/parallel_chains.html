@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,7 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Inference with the Mallows Model</a>
+    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
   </div>
 </li>
@@ -85,10 +85,14 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ocbe-uio/BayesMallows" class="external-link">BayesMallows</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ocbe-uio/BayesMallows" class="external-link">BayesMallows</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></code></pre></div>
 <p>This vignette describes how to run Markov chain Monte Carlo with
 parallel chains. For an introduction to the “BayesMallows” package,
-please see <span class="citation">Sørensen et al. (<a href="#ref-sorensen2020" role="doc-biblioref">2020</a>)</span>.</p>
+please see <a href="https://ocbe-uio.github.io/BayesMallows/articles/BayesMallows.html" class="external-link">the
+introductory vignette</a>, which is an updated version of <span class="citation">Sørensen et al. (<a href="#ref-sorensen2020" role="doc-biblioref">2020</a>)</span>. For parallel processing of
+particles with the sequential Monte Carlo algorithm of <span class="citation">Stein (<a href="#ref-steinSequentialInferenceMallows2023" role="doc-biblioref">2023</a>)</span>, see the <a href="https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html" class="external-link">SMC
+vignette</a>.</p>
 <div class="section level3">
 <h3 id="why-parallel-chains">Why Parallel Chains?<a class="anchor" aria-label="anchor" href="#why-parallel-chains"></a>
 </h3>
@@ -107,45 +111,53 @@ post-burnin samples scales like <span class="math inline">\(1/K\)</span>.</p></l
 </h3>
 <p>In “BayesMallows” we use the “parallel” package for parallel
 computation. Parallelization is obtained by starting a cluster and
-providing it as an argument. Since the limit to parallelism for
-vignettes being built on CRAN is 2, we here start a cluster spanning two
-cores, but in real applications this number should typically be larger
-(the output from <code><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">parallel::detectCores()</a></code> can be a good
-guide). Note that we also give one initial value of the dispersion
-parameter <span class="math inline">\(\alpha\)</span> to each chain.</p>
+providing it as an argument. Note that we also give one initial value of
+the dispersion parameter <span class="math inline">\(\alpha\)</span> to
+each chain.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">parallel</span><span class="op">)</span></span>
-<span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makeCluster</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makeCluster</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_mallows.html">compute_mallows</a></span><span class="op">(</span></span>
-<span>  rankings <span class="op">=</span> <span class="va">potato_visual</span>, nmc <span class="op">=</span> <span class="fl">5000</span>,</span>
+<span>  data <span class="op">=</span> <span class="fu"><a href="../reference/setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">potato_visual</span><span class="op">)</span>, </span>
+<span>  compute_options <span class="op">=</span> <span class="fu"><a href="../reference/set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span>,</span>
 <span>  cl <span class="op">=</span> <span class="va">cl</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">stopCluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 <p>We can assess convergence in the usual way:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<p><img src="parallel_chains_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<div class="figure">
+<img src="parallel_assess_convergence_alpha-1.png" alt=""><p class="caption">Trace plot of scale parameter for four chains.</p>
+</div>
 <p>We can also assess convergence for the latent ranks <span class="math inline">\(\boldsymbol{\rho}\)</span>. Since the initial
 value of <span class="math inline">\(\boldsymbol{\rho}\)</span> is
 sampled uniformly, the two chains automatically get different initial
 values.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="parallel_chains_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
-<p>Based on the convergence plots, we set the burnin to 700.</p>
+<div class="figure">
+<img src="parallel_assess_convergence_rho-1.png" alt=""><p class="caption">Trace plot of modal ranking for four chains.</p>
+</div>
+<p>Based on the convergence plots, we set the burnin to 3000.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">700</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">3000</span></span></code></pre></div>
 <p>We can now use all the tools for assessing the posterior
 distributions as usual. The post-burnin samples for all parallel chains
 are simply combined, as they should be.</p>
 <p>Below is a plot of the posterior distribution of <span class="math inline">\(\alpha\)</span>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<p><img src="parallel_chains_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
+<div class="figure">
+<img src="parallel_posterior_alpha-1.png" alt=""><p class="caption">Posterior of scale parameter, combing post-burnin
+samples from all chains.</p>
+</div>
 <p>Next is a plot of the posterior distribution of <span class="math inline">\(\boldsymbol{\rho}\)</span>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">4</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span></span></code></pre></div>
-<p><img src="parallel_chains_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<div class="figure">
+<img src="parallel_posterior_rho-1.png" alt=""><p class="caption">Posterior of modal ranking, combing post-burnin
+samples from all chains.</p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="parallel-chains-with-pairwise-preferences">Parallel Chains with Pairwise Preferences<a class="anchor" aria-label="anchor" href="#parallel-chains-with-pairwise-preferences"></a>
@@ -157,20 +169,19 @@ both slow and sticky. We illustrate this with the beach preference data,
 again referring to <span class="citation">Sørensen et al. (<a href="#ref-sorensen2020" role="doc-biblioref">2020</a>)</span> for a
 more thorough introduction to the aspects not directly related to
 parallelism.</p>
-<p>We start by generating the transitive closure:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">beach_tc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_transitive_closure.html">generate_transitive_closure</a></span><span class="op">(</span><span class="va">beach_preferences</span><span class="op">)</span></span></code></pre></div>
-<p>Next we run two parallel chains, letting the package generate random
+<code class="sourceCode R"><span><span class="va">beach_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>preferences <span class="op">=</span> <span class="va">beach_preferences</span><span class="op">)</span></span></code></pre></div>
+<p>We run four parallel chains, letting the package generate random
 initial rankings, but again providing a vector of initial values for
 <span class="math inline">\(\alpha\)</span>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makeCluster</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makeCluster</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_mallows.html">compute_mallows</a></span><span class="op">(</span></span>
-<span>  preferences <span class="op">=</span> <span class="va">beach_tc</span>, nmc <span class="op">=</span> <span class="fl">4000</span>,</span>
-<span>  alpha_init <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>,</span>
-<span>  save_aug <span class="op">=</span> <span class="cn">TRUE</span>, cl <span class="op">=</span> <span class="va">cl</span></span>
+<span>  data <span class="op">=</span> <span class="va">beach_data</span>,</span>
+<span>  compute_options <span class="op">=</span> <span class="fu"><a href="../reference/set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">4000</span>, save_aug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  initial_values <span class="op">=</span> <span class="fu"><a href="../reference/set_initial_values.html">set_initial_values</a></span><span class="op">(</span>alpha_init <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  cl <span class="op">=</span> <span class="va">cl</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Generating initial ranking.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">stopCluster</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="trace-plots">Trace Plots<a class="anchor" aria-label="anchor" href="#trace-plots"></a>
@@ -179,11 +190,17 @@ initial rankings, but again providing a vector of initial values for
 otherwise it seems to mix relatively well.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<p><img src="parallel_chains_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<div class="figure">
+<img src="parallel_assess_converge_prefs_alpha-1.png" alt=""><p class="caption">Trace plot of scale parameter for beach preferences
+data, on four chains.</p>
+</div>
 <p>Here is the convergence plot for <span class="math inline">\(\boldsymbol{\rho}\)</span>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">4</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span></span></code></pre></div>
-<p><img src="parallel_chains_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<div class="figure">
+<img src="parallel_assess_converge_prefs_rho-1.png" alt=""><p class="caption">Trace plot of modal ranking for beach preferences
+data, on four chains.</p>
+</div>
 <p>To avoid overplotting, it’s a good idea to pick a low number of
 assessors and chains. We here look at items 1-3 of assessors 1 and
 2.</p>
@@ -192,15 +209,18 @@ assessors and chains. We here look at items 1-3 of assessors 1 and
 <span>  parameter <span class="op">=</span> <span class="st">"Rtilde"</span>,</span>
 <span>  items <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, assessors <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="parallel_chains_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
+<div class="figure">
+<img src="parallel_assess_convergence_prefs_rtilde-1.png" alt=""><p class="caption">Trace plot of augmented rankings for beach preference
+data, on four chains.</p>
+</div>
 </div>
 <div class="section level4">
 <h4 id="posterior-quantities">Posterior Quantities<a class="anchor" aria-label="anchor" href="#posterior-quantities"></a>
 </h4>
 <p>Based on the trace plots, the chains seem to be mixing well. We set
-the burnin to 700 again.</p>
+the burnin to 1000.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">700</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></code></pre></div>
 <p>We can now study the posterior distributions. Here is the posterior
 for <span class="math inline">\(\alpha\)</span>. Note that by increasing
 the <code>nmc</code> argument to <code>compute_mallows</code> above, the
@@ -208,75 +228,82 @@ density would appear smoother. In this vignette we have kept it low to
 reduce the run time.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<p><img src="parallel_chains_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
+<div class="figure">
+<img src="parallel_beach_prefs_alpha_posterior-1.png" alt=""><p class="caption">Posterior distribution for scale parameter.</p>
+</div>
 <p>We can also look at the posterior for <span class="math inline">\(\boldsymbol{\rho}\)</span>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">6</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span></span></code></pre></div>
-<p><img src="parallel_chains_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
+<div class="figure">
+<img src="parallel_beach_prefs_rho_posterior-1.png" alt=""><p class="caption">Posterior distribution for modal rankings.</p>
+</div>
 <p>We can also compute posterior intervals in the usual way:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">fit</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   parameter mean median conf_level          hpdi central_interval</span></span>
-<span><span class="co">#&gt; 1     alpha 4.82  4.816       95 % [4.262,5.453]    [4.240,5.442]</span></span></code></pre></div>
+<span><span class="co">#&gt;   parameter  mean median          hpdi central_interval</span></span>
+<span><span class="co">#&gt; 1     alpha 4.798  4.793 [4.242,5.373]    [4.235,5.371]</span></span></code></pre></div>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;       item parameter mean median conf_level    hpdi central_interval</span></span>
-<span><span class="co">#&gt; 1   Item 1       rho    7      7       95 %     [7]            [6,7]</span></span>
-<span><span class="co">#&gt; 2   Item 2       rho   15     15       95 %    [15]             [15]</span></span>
-<span><span class="co">#&gt; 3   Item 3       rho    3      3       95 %   [3,4]            [3,4]</span></span>
-<span><span class="co">#&gt; 4   Item 4       rho   11     11       95 % [11,12]          [11,13]</span></span>
-<span><span class="co">#&gt; 5   Item 5       rho    9      9       95 %   [8,9]           [8,10]</span></span>
-<span><span class="co">#&gt; 6   Item 6       rho    2      2       95 %   [1,2]            [1,2]</span></span>
-<span><span class="co">#&gt; 7   Item 7       rho    9      8       95 %  [8,10]           [8,10]</span></span>
-<span><span class="co">#&gt; 8   Item 8       rho   12     12       95 % [11,13]          [11,13]</span></span>
-<span><span class="co">#&gt; 9   Item 9       rho    1      1       95 %   [1,2]            [1,2]</span></span>
-<span><span class="co">#&gt; 10 Item 10       rho    6      6       95 %   [5,6]            [5,7]</span></span>
-<span><span class="co">#&gt; 11 Item 11       rho    4      4       95 %   [3,5]            [3,5]</span></span>
-<span><span class="co">#&gt; 12 Item 12       rho   13     13       95 % [11,14]          [11,14]</span></span>
-<span><span class="co">#&gt; 13 Item 13       rho   10     10       95 %  [9,10]           [9,10]</span></span>
-<span><span class="co">#&gt; 14 Item 14       rho   14     14       95 % [13,14]          [12,14]</span></span>
-<span><span class="co">#&gt; 15 Item 15       rho    5      5       95 %   [4,5]            [4,6]</span></span></code></pre></div>
+<span><span class="co">#&gt;    parameter    item mean median    hpdi central_interval</span></span>
+<span><span class="co">#&gt; 1        rho  Item 1    7      7     [7]            [6,7]</span></span>
+<span><span class="co">#&gt; 2        rho  Item 2   15     15    [15]          [14,15]</span></span>
+<span><span class="co">#&gt; 3        rho  Item 3    3      3   [3,4]            [3,4]</span></span>
+<span><span class="co">#&gt; 4        rho  Item 4   11     11 [11,13]          [11,13]</span></span>
+<span><span class="co">#&gt; 5        rho  Item 5    9      9  [8,10]           [8,10]</span></span>
+<span><span class="co">#&gt; 6        rho  Item 6    2      2   [1,2]            [1,2]</span></span>
+<span><span class="co">#&gt; 7        rho  Item 7    9      8  [8,10]           [8,10]</span></span>
+<span><span class="co">#&gt; 8        rho  Item 8   12     12 [11,13]          [11,14]</span></span>
+<span><span class="co">#&gt; 9        rho  Item 9    1      1   [1,2]            [1,2]</span></span>
+<span><span class="co">#&gt; 10       rho Item 10    6      6   [5,6]            [5,7]</span></span>
+<span><span class="co">#&gt; 11       rho Item 11    4      4   [3,5]            [3,5]</span></span>
+<span><span class="co">#&gt; 12       rho Item 12   13     13 [12,14]          [11,14]</span></span>
+<span><span class="co">#&gt; 13       rho Item 13   10     10  [8,10]           [8,10]</span></span>
+<span><span class="co">#&gt; 14       rho Item 14   13     14 [12,14]          [12,14]</span></span>
+<span><span class="co">#&gt; 15       rho Item 15    5      5   [4,5]            [4,6]</span></span></code></pre></div>
 <p>And we can compute the consensus ranking:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_consensus.html">compute_consensus</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    ranking    item   cumprob</span></span>
-<span><span class="co">#&gt; 1        1  Item 9 0.9098485</span></span>
-<span><span class="co">#&gt; 2        2  Item 6 1.0000000</span></span>
-<span><span class="co">#&gt; 3        3  Item 3 0.7250000</span></span>
-<span><span class="co">#&gt; 4        4 Item 11 0.9081818</span></span>
-<span><span class="co">#&gt; 5        5 Item 15 0.9510606</span></span>
-<span><span class="co">#&gt; 6        6 Item 10 0.9587879</span></span>
-<span><span class="co">#&gt; 7        7  Item 1 1.0000000</span></span>
-<span><span class="co">#&gt; 8        8  Item 7 0.5698485</span></span>
-<span><span class="co">#&gt; 9        9  Item 5 0.9695455</span></span>
-<span><span class="co">#&gt; 10      10 Item 13 1.0000000</span></span>
-<span><span class="co">#&gt; 11      11  Item 4 0.7275758</span></span>
-<span><span class="co">#&gt; 12      12  Item 8 0.7818182</span></span>
-<span><span class="co">#&gt; 13      13 Item 12 0.7887879</span></span>
-<span><span class="co">#&gt; 14      14 Item 14 0.9987879</span></span>
-<span><span class="co">#&gt; 15      15  Item 2 1.0000000</span></span></code></pre></div>
+<span><span class="co">#&gt;      cluster ranking    item   cumprob</span></span>
+<span><span class="co">#&gt; 1  Cluster 1       1  Item 9 0.8691667</span></span>
+<span><span class="co">#&gt; 2  Cluster 1       2  Item 6 1.0000000</span></span>
+<span><span class="co">#&gt; 3  Cluster 1       3  Item 3 0.6391667</span></span>
+<span><span class="co">#&gt; 4  Cluster 1       4 Item 11 0.9404167</span></span>
+<span><span class="co">#&gt; 5  Cluster 1       5 Item 15 0.9559167</span></span>
+<span><span class="co">#&gt; 6  Cluster 1       6 Item 10 0.9636667</span></span>
+<span><span class="co">#&gt; 7  Cluster 1       7  Item 1 1.0000000</span></span>
+<span><span class="co">#&gt; 8  Cluster 1       8  Item 7 0.5473333</span></span>
+<span><span class="co">#&gt; 9  Cluster 1       9  Item 5 0.9255833</span></span>
+<span><span class="co">#&gt; 10 Cluster 1      10 Item 13 1.0000000</span></span>
+<span><span class="co">#&gt; 11 Cluster 1      11  Item 4 0.6924167</span></span>
+<span><span class="co">#&gt; 12 Cluster 1      12  Item 8 0.7833333</span></span>
+<span><span class="co">#&gt; 13 Cluster 1      13 Item 12 0.6158333</span></span>
+<span><span class="co">#&gt; 14 Cluster 1      14 Item 14 0.9958333</span></span>
+<span><span class="co">#&gt; 15 Cluster 1      15  Item 2 1.0000000</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_consensus.html">compute_consensus</a></span><span class="op">(</span><span class="va">fit</span>, type <span class="op">=</span> <span class="st">"MAP"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    map_ranking    item probability</span></span>
-<span><span class="co">#&gt; 1            1  Item 9   0.3315152</span></span>
-<span><span class="co">#&gt; 2            2  Item 6   0.3315152</span></span>
-<span><span class="co">#&gt; 3            3  Item 3   0.3315152</span></span>
-<span><span class="co">#&gt; 4            4 Item 11   0.3315152</span></span>
-<span><span class="co">#&gt; 5            5 Item 15   0.3315152</span></span>
-<span><span class="co">#&gt; 6            6 Item 10   0.3315152</span></span>
-<span><span class="co">#&gt; 7            7  Item 1   0.3315152</span></span>
-<span><span class="co">#&gt; 8            8  Item 7   0.3315152</span></span>
-<span><span class="co">#&gt; 9            9  Item 5   0.3315152</span></span>
-<span><span class="co">#&gt; 10          10 Item 13   0.3315152</span></span>
-<span><span class="co">#&gt; 11          11  Item 4   0.3315152</span></span>
-<span><span class="co">#&gt; 12          12  Item 8   0.3315152</span></span>
-<span><span class="co">#&gt; 13          13 Item 12   0.3315152</span></span>
-<span><span class="co">#&gt; 14          14 Item 14   0.3315152</span></span>
-<span><span class="co">#&gt; 15          15  Item 2   0.3315152</span></span></code></pre></div>
+<span><span class="co">#&gt;      cluster map_ranking    item probability</span></span>
+<span><span class="co">#&gt; 1  Cluster 1           1  Item 9   0.2683333</span></span>
+<span><span class="co">#&gt; 2  Cluster 1           2  Item 6   0.2683333</span></span>
+<span><span class="co">#&gt; 3  Cluster 1           3  Item 3   0.2683333</span></span>
+<span><span class="co">#&gt; 4  Cluster 1           4 Item 11   0.2683333</span></span>
+<span><span class="co">#&gt; 5  Cluster 1           5 Item 15   0.2683333</span></span>
+<span><span class="co">#&gt; 6  Cluster 1           6 Item 10   0.2683333</span></span>
+<span><span class="co">#&gt; 7  Cluster 1           7  Item 1   0.2683333</span></span>
+<span><span class="co">#&gt; 8  Cluster 1           8  Item 7   0.2683333</span></span>
+<span><span class="co">#&gt; 9  Cluster 1           9  Item 5   0.2683333</span></span>
+<span><span class="co">#&gt; 10 Cluster 1          10 Item 13   0.2683333</span></span>
+<span><span class="co">#&gt; 11 Cluster 1          11  Item 4   0.2683333</span></span>
+<span><span class="co">#&gt; 12 Cluster 1          12  Item 8   0.2683333</span></span>
+<span><span class="co">#&gt; 13 Cluster 1          13 Item 12   0.2683333</span></span>
+<span><span class="co">#&gt; 14 Cluster 1          14 Item 14   0.2683333</span></span>
+<span><span class="co">#&gt; 15 Cluster 1          15  Item 2   0.2683333</span></span></code></pre></div>
 <p>We can compute the probability of being top-<span class="math inline">\(k\)</span>, here for <span class="math inline">\(k=4\)</span>:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_top_k.html">plot_top_k</a></span><span class="op">(</span><span class="va">fit</span>, k <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<p><img src="parallel_chains_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
+<div class="figure">
+<img src="parallel_top_k-1.png" alt=""><p class="caption">Probability of being top-4 for beach preference
+data.</p>
+</div>
 </div>
 </div>
 <div class="section level2">
@@ -288,6 +315,10 @@ Sørensen, Øystein, Marta Crispino, Qinghua Liu, and Valeria Vitelli.
 2020. <span>“<span>BayesMallows</span>: <span>An R Package</span> for
 the <span>Bayesian Mallows Model</span>.”</span> <em>The R Journal</em>
 12 (1): 324–42. <a href="https://doi.org/10.32614/RJ-2020-026" class="external-link">https://doi.org/10.32614/RJ-2020-026</a>.
+</div>
+<div id="ref-steinSequentialInferenceMallows2023" class="csl-entry">
+Stein, Anja. 2023. <span>“Sequential <span>Inference</span> with the
+<span>Mallows Model</span>.”</span> PhD thesis, Lancaster University.
 </div>
 </div>
 </div>

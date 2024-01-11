@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Inference with the Mallows Model</a>
+    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
   </div>
 </li>
@@ -51,7 +51,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Plot SMC Posterior Distributions</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ocbe-uio/BayesMallows/blob/HEAD/R/plot.SMCMallows.R" class="external-link"><code>R/plot.SMCMallows.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ocbe-uio/BayesMallows/blob/HEAD/R/plot.R" class="external-link"><code>R/plot.R</code></a></small>
       <div class="d-none name"><code>plot.SMCMallows.Rd</code></div>
     </div>
 
@@ -62,53 +62,18 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for SMCMallows</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
-<span>  <span class="va">x</span>,</span>
-<span>  nmc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">rho_samples</span><span class="op">[</span>, <span class="fl">1</span>, <span class="op">]</span><span class="op">)</span>,</span>
-<span>  burnin <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  parameter <span class="op">=</span> <span class="st">"alpha"</span>,</span>
-<span>  time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">rho_samples</span><span class="op">[</span>, <span class="fl">1</span>, <span class="op">]</span><span class="op">)</span>,</span>
-<span>  C <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  colnames <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  items <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span>, items <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>An object of type <code>SMC-Mallows</code>, returned for example from
-<code><a href="smc_mallows_new_users.html">smc_mallows_new_users</a></code>.</p></dd>
-
-
-<dt>nmc</dt>
-<dd><p>Number of Monte Carlo samples</p></dd>
-
-
-<dt>burnin</dt>
-<dd><p>A numeric value specifying the number of iterations
-to discard as burn-in. Defaults to <code>model_fit$burnin</code>, and must be
-provided if <code>model_fit$burnin</code> does not exist. See
-<code><a href="assess_convergence.html">assess_convergence</a></code>.</p></dd>
+<dd><p>An object of type <code>SMC-Mallows</code>.</p></dd>
 
 
 <dt>parameter</dt>
 <dd><p>Character string defining the parameter to plot. Available
 options are <code>"alpha"</code> and <code>"rho"</code>.</p></dd>
-
-
-<dt>time</dt>
-<dd><p>Integer determining the update slice to plot</p></dd>
-
-
-<dt>C</dt>
-<dd><p>Number of cluster</p></dd>
-
-
-<dt>colnames</dt>
-<dd><p>A vector of item names. If NULL, generic names are generated
-for the items in the ranking.</p></dd>
 
 
 <dt>items</dt>
@@ -130,55 +95,143 @@ five items are selected randomly.</p></dd>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other posterior quantities: 
 <code><a href="assign_cluster.html">assign_cluster</a>()</code>,
-<code><a href="compute_consensus.BayesMallows.html">compute_consensus.BayesMallows</a>()</code>,
-<code><a href="compute_consensus.SMCMallows.html">compute_consensus.SMCMallows</a>()</code>,
 <code><a href="compute_consensus.html">compute_consensus</a>()</code>,
-<code><a href="compute_posterior_intervals.BayesMallows.html">compute_posterior_intervals.BayesMallows</a>()</code>,
-<code><a href="compute_posterior_intervals.SMCMallows.html">compute_posterior_intervals.SMCMallows</a>()</code>,
 <code><a href="compute_posterior_intervals.html">compute_posterior_intervals</a>()</code>,
 <code><a href="heat_plot.html">heat_plot</a>()</code>,
 <code><a href="plot.BayesMallows.html">plot.BayesMallows</a>()</code>,
 <code><a href="plot_elbow.html">plot_elbow</a>()</code>,
 <code><a href="plot_top_k.html">plot_top_k</a>()</code>,
 <code><a href="predict_top_k.html">predict_top_k</a>()</code>,
-<code><a href="print.BayesMallowsMixtures.html">print.BayesMallowsMixtures</a>()</code>,
 <code><a href="print.BayesMallows.html">print.BayesMallows</a>()</code></p></div>
-    </div>
-    <div class="section level2">
-    <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p>Waldir Leoncio</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">994</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># UPDATING A MALLOWS MODEL WITH NEW COMPLETE RANKINGS</span></span></span>
+<span class="r-in"><span><span class="co"># Assume we first only observe the first four rankings in the potato_visual</span></span></span>
+<span class="r-in"><span><span class="co"># dataset</span></span></span>
+<span class="r-in"><span><span class="va">data_first_batch</span> <span class="op">&lt;-</span> <span class="va">potato_visual</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">n_items</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">sushi_rankings</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">metric</span> <span class="op">&lt;-</span> <span class="st">"footrule"</span></span></span>
+<span class="r-in"><span><span class="co"># We start by fitting a model using Metropolis-Hastings</span></span></span>
+<span class="r-in"><span><span class="va">mod_init</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span><span class="va">data_first_batch</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Estimate the logarithm of the partition function of the Mallows rank model</span></span></span>
-<span class="r-in"><span><span class="va">logz_estimate</span> <span class="op">&lt;-</span> <span class="fu"><a href="estimate_partition_function.html">estimate_partition_function</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  method <span class="op">=</span> <span class="st">"importance_sampling"</span>,</span></span>
-<span class="r-in"><span>  alpha_vector <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0</span>, to <span class="op">=</span> <span class="fl">15</span>, by <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>, n_items <span class="op">=</span> <span class="va">n_items</span>,</span></span>
-<span class="r-in"><span>  metric <span class="op">=</span> <span class="va">metric</span>, nmc <span class="op">=</span> <span class="fl">1e2</span>, degree <span class="op">=</span> <span class="fl">10</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Perform the resample-move SMC algorithm</span></span></span>
-<span class="r-in"><span><span class="va">smc_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="smc_mallows_new_users.html">smc_mallows_new_users</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  R_obs <span class="op">=</span> <span class="va">sushi_rankings</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="op">]</span>, type <span class="op">=</span> <span class="st">"complete"</span>, n_items <span class="op">=</span> <span class="va">n_items</span>,</span></span>
-<span class="r-in"><span>  metric <span class="op">=</span> <span class="va">metric</span>, leap_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">floor</a></span><span class="op">(</span><span class="va">n_items</span> <span class="op">/</span> <span class="fl">5</span><span class="op">)</span>, N <span class="op">=</span> <span class="fl">100</span>, Time <span class="op">=</span> <span class="fl">10</span>,</span></span>
-<span class="r-in"><span>  logz_estimate <span class="op">=</span> <span class="va">logz_estimate</span>, mcmc_kernel_app <span class="op">=</span> <span class="fl">5</span>, num_new_obs <span class="op">=</span> <span class="fl">5</span>,</span></span>
-<span class="r-in"><span>  alpha_prop_sd <span class="op">=</span> <span class="fl">0.5</span>, lambda <span class="op">=</span> <span class="fl">0.15</span>, alpha_max <span class="op">=</span> <span class="fl">1e3</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Plot rho</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">smc_test</span>, colnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sushi_rankings</span><span class="op">)</span>, parameter <span class="op">=</span> <span class="st">"rho"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Items not provided by user or more than 5 items in a ranking. Picking 5 at random.</span>
+<span class="r-in"><span><span class="co"># Convergence seems good after no more than 2000 iterations</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">mod_init</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.SMCMallows-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="va">mod_init</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">2000</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Plot alpha</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">smc_test</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Next, assume we receive four more observations</span></span></span>
+<span class="r-in"><span><span class="va">data_second_batch</span> <span class="op">&lt;-</span> <span class="va">potato_visual</span><span class="op">[</span><span class="fl">5</span><span class="op">:</span><span class="fl">8</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We can now update the model using sequential Monte Carlo</span></span></span>
+<span class="r-in"><span><span class="va">mod_second</span> <span class="op">&lt;-</span> <span class="fu"><a href="update_mallows.html">update_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="va">mod_init</span>, new_data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">data_second_batch</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># This model now has a collection of particles approximating the posterior</span></span></span>
+<span class="r-in"><span><span class="co"># distribution after the first and second batch</span></span></span>
+<span class="r-in"><span><span class="co"># We can use all the posterior summary functions as we do for the model</span></span></span>
+<span class="r-in"><span><span class="co"># based on compute_mallows():</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_second</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.SMCMallows-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_second</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.SMCMallows-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">mod_second</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   parameter   mean median           hpdi central_interval</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     alpha 11.414 11.373 [9.181,13.840]   [9.189,13.843]</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Next, assume we receive the third and final batch of data. We can update</span></span></span>
+<span class="r-in"><span><span class="co"># the model again</span></span></span>
+<span class="r-in"><span><span class="va">data_third_batch</span> <span class="op">&lt;-</span> <span class="va">potato_visual</span><span class="op">[</span><span class="fl">9</span><span class="op">:</span><span class="fl">12</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">mod_final</span> <span class="op">&lt;-</span> <span class="fu"><a href="update_mallows.html">update_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="va">mod_second</span>, new_data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">data_third_batch</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We can plot the same things as before</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_final</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.SMCMallows-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="compute_consensus.html">compute_consensus</a></span><span class="op">(</span><span class="va">mod_final</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      cluster ranking item cumprob</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Cluster 1       1  P12   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Cluster 1       2  P13   0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  Cluster 1       3   P9   0.979</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Cluster 1       4  P10   0.549</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Cluster 1       5  P17   0.926</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Cluster 1       6   P7   0.685</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  Cluster 1       7  P14   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  Cluster 1       8  P16   0.939</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  Cluster 1       9   P1   0.483</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 Cluster 1      10   P5   0.700</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 Cluster 1      11  P11   0.964</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 Cluster 1      12  P19   0.996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 Cluster 1      13  P18   0.633</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 Cluster 1      14  P20   0.998</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 Cluster 1      15   P6   0.943</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 Cluster 1      16   P4   0.650</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 Cluster 1      17   P2   0.748</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 Cluster 1      18  P15   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 Cluster 1      19   P3   0.999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 Cluster 1      20   P8   1.000</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># UPDATING A MALLOWS MODEL WITH NEW OR UPDATED PARTIAL RANKINGS</span></span></span>
+<span class="r-in"><span><span class="co"># The sequential Monte Carlo algorithm works for data with missing ranks as</span></span></span>
+<span class="r-in"><span><span class="co"># well. This both includes the case where new users arrive with partial ranks,</span></span></span>
+<span class="r-in"><span><span class="co"># and when previously seen users arrive with more complete data than they had</span></span></span>
+<span class="r-in"><span><span class="co"># previously.</span></span></span>
+<span class="r-in"><span><span class="co"># We illustrate for top-k rankings of the first 10 users in potato_visual</span></span></span>
+<span class="r-in"><span><span class="va">potato_top_10</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">potato_visual</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span> <span class="op">&gt;</span> <span class="fl">10</span>, <span class="cn">NA_real_</span>,</span></span>
+<span class="r-in"><span>                        <span class="va">potato_visual</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">potato_top_12</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">potato_visual</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span> <span class="op">&gt;</span> <span class="fl">12</span>, <span class="cn">NA_real_</span>,</span></span>
+<span class="r-in"><span>                        <span class="va">potato_visual</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">potato_top_14</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">potato_visual</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span> <span class="op">&gt;</span> <span class="fl">14</span>, <span class="cn">NA_real_</span>,</span></span>
+<span class="r-in"><span>                        <span class="va">potato_visual</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We need the rownames as user IDs</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">user_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">potato_visual</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "A1"  "A2"  "A3"  "A4"  "A5"  "A6"  "A7"  "A8"  "A9"  "A10"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># First, users provide top-10 rankings</span></span></span>
+<span class="r-in"><span><span class="va">mod_init</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">potato_top_10</span>, user_ids <span class="op">=</span> <span class="va">user_ids</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Convergence seems fine. We set the burnin to 2000.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">mod_init</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.SMCMallows-5.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="va">mod_init</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">2000</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Next assume the users update their rankings, so we have top-12 instead.</span></span></span>
+<span class="r-in"><span><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="update_mallows.html">update_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="va">mod_init</span>,</span></span>
+<span class="r-in"><span>  new_data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">potato_top_12</span>, user_ids <span class="op">=</span> <span class="va">user_ids</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod1</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.SMCMallows-6.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Then, assume we get even more data, this time top-14 rankings:</span></span></span>
+<span class="r-in"><span><span class="va">mod2</span> <span class="op">&lt;-</span> <span class="fu"><a href="update_mallows.html">update_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="va">mod1</span>,</span></span>
+<span class="r-in"><span>  new_data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">potato_top_14</span>, user_ids <span class="op">=</span> <span class="va">user_ids</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod2</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.SMCMallows-7.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Finally, assume a set of new users arrive, who have complete rankings.</span></span></span>
+<span class="r-in"><span><span class="va">potato_new</span> <span class="op">&lt;-</span> <span class="va">potato_visual</span><span class="op">[</span><span class="fl">11</span><span class="op">:</span><span class="fl">12</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="co"># We need to update the user IDs, to show that these users are different</span></span></span>
+<span class="r-in"><span><span class="op">(</span><span class="va">user_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">potato_new</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "A11" "A12"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">mod_final</span> <span class="op">&lt;-</span> <span class="fu"><a href="update_mallows.html">update_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="va">mod2</span>,</span></span>
+<span class="r-in"><span>  new_data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">potato_new</span>, user_ids <span class="op">=</span> <span class="va">user_ids</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_final</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.SMCMallows-8.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

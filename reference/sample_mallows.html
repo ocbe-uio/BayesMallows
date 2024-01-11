@@ -22,7 +22,7 @@ Vitelli et al. (2018)
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +39,7 @@ Vitelli et al. (2018)
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Inference with the Mallows Model</a>
+    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
   </div>
 </li>
@@ -170,11 +170,11 @@ of autocorrelation. Defaults to 1000L. This argument is passed to
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other rank functions: 
-<code><a href="expected_dist.html">expected_dist</a>()</code>,
-<code><a href="get_mallows_loglik.html">get_mallows_loglik</a>()</code>,
-<code><a href="rank_conversion.html">rank_conversion</a></code>,
-<code><a href="rank_distance.html">rank_distance</a>()</code>,
-<code><a href="rank_freq_distr.html">rank_freq_distr</a>()</code></p></div>
+<code><a href="compute_expected_distance.html">compute_expected_distance</a>()</code>,
+<code><a href="compute_observation_frequency.html">compute_observation_frequency</a>()</code>,
+<code><a href="compute_rank_distance.html">compute_rank_distance</a>()</code>,
+<code><a href="create_ranking.html">create_ranking</a>()</code>,
+<code><a href="get_mallows_loglik.html">get_mallows_loglik</a>()</code></p></div>
     </div>
 
     <div class="section level2">
@@ -195,12 +195,16 @@ of autocorrelation. Defaults to 1000L. This argument is passed to
 <span class="r-in"><span>                       n_samples <span class="op">=</span> <span class="fl">1000</span>, burnin <span class="op">=</span> <span class="fl">1</span>, thinning <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Items not provided by user. Picking 5 at random.</span>
 <span class="r-plt img"><img src="sample_mallows-1.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Press [enter] to see the next plot"</span>
+<span class="r-plt img"><img src="sample_mallows-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># When items_to_plot is not set, 5 items are picked at random. We can change this.</span></span></span>
 <span class="r-in"><span><span class="co"># We can also reduce the number of lags computed in the autocorrelation plots</span></span></span>
 <span class="r-in"><span><span class="va">test</span> <span class="op">&lt;-</span> <span class="fu">sample_mallows</span><span class="op">(</span>rho0 <span class="op">=</span> <span class="va">rho0</span>, alpha0 <span class="op">=</span> <span class="va">alpha0</span>, diagnostic <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                       n_samples <span class="op">=</span> <span class="fl">1000</span>, burnin <span class="op">=</span> <span class="fl">1</span>, thinning <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>                       items_to_plot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">10</span>, <span class="fl">15</span><span class="op">)</span>, max_lag <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="sample_mallows-2.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="sample_mallows-3.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Press [enter] to see the next plot"</span>
+<span class="r-plt img"><img src="sample_mallows-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># From the autocorrelation plot, it looks like we should use</span></span></span>
 <span class="r-in"><span><span class="co"># a thinning of at least 200. We set thinning = 1000 to be safe,</span></span></span>
 <span class="r-in"><span><span class="co"># since the algorithm in any case is fast. The Markov Chain</span></span></span>
@@ -211,11 +215,13 @@ of autocorrelation. Defaults to 1000L. This argument is passed to
 <span class="r-in"><span><span class="co"># The samples matrix now contains 100 rows with rankings of 15 items.</span></span></span>
 <span class="r-in"><span><span class="co"># A good diagnostic, in order to confirm that burnin and thinning are set high</span></span></span>
 <span class="r-in"><span><span class="co"># enough, is to run compute_mallows on the samples</span></span></span>
-<span class="r-in"><span><span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span><span class="va">samples</span>, nmc <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span><span class="va">samples</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># The highest posterior density interval covers alpha0 = 10.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="compute_posterior_intervals.html">compute_posterior_intervals</a></span><span class="op">(</span><span class="va">model_fit</span>, burnin <span class="op">=</span> <span class="fl">2000</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   parameter mean median conf_level           hpdi central_interval</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     alpha 9.84   9.83       95 % [9.338,10.311]   [9.372,10.353]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   parameter  mean median           hpdi central_interval</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     alpha 9.840  9.838 [9.330,10.360]   [9.338,10.373]</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

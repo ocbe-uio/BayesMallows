@@ -50,7 +50,7 @@
     
     <a class="navbar-brand me-2" href="index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="articles/SMC-Mallows.html">Sequential Inference with the Mallows Model</a>
+    <a class="dropdown-item" href="articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="articles/parallel_chains.html">MCMC with Parallel Chains</a>
   </div>
 </li>
@@ -97,8 +97,8 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="bayesmallows">BayesMallows<a class="anchor" aria-label="anchor" href="#bayesmallows"></a>
 </h1></div>
-<p><a href="https://cran.r-project.org/package=BayesMallows" class="external-link"><img src="http://www.r-pkg.org/badges/version/BayesMallows" alt="CRAN_Status_Badge"></a> <a href="https://github.com/ocbe-uio/BayesMallows/actions" class="external-link"><img src="https://github.com/ocbe-uio/BayesMallows/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/ocbe-uio/BayesMallows?branch=master" class="external-link"><img src="https://codecov.io/gh/ocbe-uio/BayesMallows/branch/master/graph/badge.svg" alt="Codecov test coverage"></a> <a href="https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/overview/develop" class="external-link"><img src="https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/badge/develop" alt="CodeFactor"></a></p>
-<p>This package provides a general framework for analyzing rank and preference data based on the Bayesian Mallows model first described in Vitelli et al. (<a href="#ref-vitelli2018">2018</a>).</p>
+<p><a href="https://cran.r-project.org/package=BayesMallows" class="external-link"><img src="http://www.r-pkg.org/badges/version/BayesMallows" alt="CRAN_Status_Badge"></a> <a href="https://github.com/ocbe-uio/BayesMallows/actions" class="external-link"><img src="https://github.com/ocbe-uio/BayesMallows/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/ocbe-uio/BayesMallows?branch=master" class="external-link"><img src="https://codecov.io/gh/ocbe-uio/BayesMallows/branch/master/graph/badge.svg" alt="Codecov test coverage"></a> <a href="https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/overview/master" class="external-link"><img src="https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/badge/master" alt="CodeFactor"></a></p>
+<p>This package provides a general framework for analyzing rank and preference data based on the Bayesian Mallows model.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -108,26 +108,47 @@
 <p>To install the current development version, use</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ocbe-uio/BayesMallows"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ocbe-uio/BayesMallows"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="basic-usage-example">Basic Usage Example<a class="anchor" aria-label="anchor" href="#basic-usage-example"></a>
 </h2>
 <p>To get started, load the package with</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ocbe-uio/BayesMallows" class="external-link">BayesMallows</a></span><span class="op">)</span></span></code></pre></div>
-<p>The package comes with several example datasets. The simplest one contains 12 persons’ assessments of the weights of 20 potatoes, either by visual inspection (<code>potato_visual</code>) or by lifting the potatoes and comparing their relative weights by hand (<code>potato_weighing</code>). To fit a Bayesian Mallows model on the <code>potato_visual</code> dataset, we do</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ocbe-uio/BayesMallows" class="external-link">BayesMallows</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></code></pre></div>
+<p>The package comes with several example datasets. The simplest one contains 12 persons’ assessments of the weights of 20 potatoes, either by visual inspection (<code>potato_visual</code>) or by lifting the potatoes and comparing their relative weights by hand (<code>potato_weighing</code>).</p>
+<div class="section level3">
+<h3 id="metropolis-hastings-algorithm">Metropolis-Hastings Algorithm<a class="anchor" aria-label="anchor" href="#metropolis-hastings-algorithm"></a>
+</h3>
+<p>To fit a Bayesian Mallows model on the <code>potato_visual</code> dataset using the Metropolis-Hastings algorithm first described in Vitelli et al. (<a href="#ref-vitelli2018">2018</a>), we do</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/compute_mallows.html">compute_mallows</a></span><span class="op">(</span><span class="va">potato_visual</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">potato_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span><span class="va">potato_visual</span><span class="op">)</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/compute_mallows.html">compute_mallows</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">potato_data</span><span class="op">)</span></span></code></pre></div>
 <p>Next, we can see a diagnostic plot for the Metropolis-Hastings algorithm with <code><a href="reference/assess_convergence.html">assess_convergence()</a></code>. The plot below is for the scale parameter, which measures the variation between the individual rankings.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-5-1.png"><!-- --></p>
 <p>Setting the burnin to 500, we obtain a plot of the posterior distribution of the scale parameter with:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, burnin <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">500</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-6-1.png"><!-- --></p>
-<p>For more examples, please our <a href="https://journal.r-project.org/archive/2020/RJ-2020-026/index.html" class="external-link">R Journal paper</a>, and the function documentation. The use of parallel chains are described in <a href="https://ocbe-uio.github.io/BayesMallows/articles/parallel_chains.html" class="external-link">this vignette</a>.</p>
+<p>For more examples, please see our <a href="https://ocbe-uio.github.io/BayesMallows/articles/BayesMallows.html" class="external-link">the introductory vignette</a>, and the function documentation. The use of parallel chains are described in <a href="https://ocbe-uio.github.io/BayesMallows/articles/parallel_chains.html" class="external-link">this vignette</a>.</p>
+</div>
+<div class="section level3">
+<h3 id="sequential-monte-carlo-algorithm">Sequential Monte Carlo Algorithm<a class="anchor" aria-label="anchor" href="#sequential-monte-carlo-algorithm"></a>
+</h3>
+<p>The package also supports updating a Bayesian Mallows model using sequential Monte Carlo, with the algorithm described in Stein (<a href="#ref-steinSequentialInferenceMallows2023">2023</a>). For example, in order to update the model fitted above with the potato ranks based on comparing their relative weights by hand, we do</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">new_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">potato_weighing</span><span class="op">)</span></span>
+<span><span class="va">updated_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/update_mallows.html">update_mallows</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">fit</span>, new_data <span class="op">=</span> <span class="va">new_data</span><span class="op">)</span></span></code></pre></div>
+<p>We can go on to plot the posterior distribution of the scale parameter for this updated model.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">updated_fit</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-unnamed-chunk-8-1.png"><!-- --></p>
+<p>Sequential Monte Carlo can typically be useful when new data arrives in batches, as it does not require the Metropolis-Hastings algorithm to be rerun. See <a href="https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html" class="external-link">this vignette</a> for more information.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="the-bayesian-mallows-model">The Bayesian Mallows Model<a class="anchor" aria-label="anchor" href="#the-bayesian-mallows-model"></a>
@@ -153,7 +174,7 @@
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If using the BayesMallows package in academic work, please cite Sørensen et al. (<a href="#ref-sorensen2020">2020</a>), in addition to the relevant methodological papers.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"BayesMallows"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'BayesMallows' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
