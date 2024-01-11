@@ -1,6 +1,0 @@
-sessionInfo()
-Rcpp::sourceCpp("test.cpp")
-data <- list(a = rnorm(100), constraints = NULL, b = letters)
-foo(data)
-data <- list(a = rnorm(100), constraints = letters, b = letters)
-foo(data)
