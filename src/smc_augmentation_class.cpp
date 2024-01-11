@@ -95,29 +95,6 @@ void SMCAugmentation::augment_partial(
       }
     }
   );
-  // for (size_t particle{}; particle < pvec.size(); particle++) {
-  //   for (size_t user{}; user < dat.n_assessors; user++) {
-  //     if(user < dat.n_assessors - dat.num_new_obs) {
-  //       if(pvec[particle].consistent.is_empty()) continue;
-  //       if(pvec[particle].consistent(user) == 1) continue;
-  //     }
-  //     if (pseudo_aug_distance == nullptr) {
-  //       pvec[particle].augmented_data.col(user) =
-  //         make_uniform_proposal(
-  //           pvec[particle].augmented_data.col(user),
-  //           missing_indicator.col(user)).rankings;
-  //     } else {
-  //       RankProposal pprop = make_pseudo_proposal(
-  //         pvec[particle].augmented_data.col(user),
-  //         missing_indicator.col(user),
-  //         pvec[particle].alpha, pvec[particle].rho,
-  //         pseudo_aug_distance
-  //       );
-  //       pvec[particle].augmented_data.col(user) = pprop.rankings;
-  //       pvec[particle].log_aug_prob(user) = log(pprop.probability);
-  //     }
-  //   }
-  // }
 }
 
 void SMCAugmentation::update_missing_ranks(
