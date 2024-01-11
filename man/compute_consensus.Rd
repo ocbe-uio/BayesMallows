@@ -2,31 +2,58 @@
 % Please edit documentation in R/compute_consensus.R
 \name{compute_consensus}
 \alias{compute_consensus}
+\alias{compute_consensus.BayesMallows}
+\alias{compute_consensus.SMCMallows}
 \title{Compute Consensus Ranking}
 \usage{
 compute_consensus(model_fit, ...)
+
+\method{compute_consensus}{BayesMallows}(
+  model_fit,
+  type = c("CP", "MAP"),
+  burnin = model_fit$burnin,
+  parameter = c("rho", "Rtilde"),
+  assessors = 1L,
+  ...
+)
+
+\method{compute_consensus}{SMCMallows}(model_fit, type = c("CP", "MAP"), parameter = "rho", ...)
 }
 \arguments{
 \item{model_fit}{A model fit.}
 
-\item{...}{other arguments passed to methods.}
+\item{...}{Other arguments passed on to other methods. Currently not used.}
+
+\item{type}{Character string specifying which consensus to compute. Either
+\code{"CP"} or \code{"MAP"}. Defaults to \code{"CP"}.}
+
+\item{burnin}{A numeric value specifying the number of iterations to discard
+as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
+\code{model_fit$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
+
+\item{parameter}{Character string defining the parameter for which to compute
+the consensus. Defaults to \code{"rho"}. Available options are \code{"rho"} and
+\code{"Rtilde"}, with the latter giving consensus rankings for augmented ranks.}
+
+\item{assessors}{When \code{parameter = "rho"}, this integer vector is used to
+define the assessors for which to compute the augmented ranking. Defaults
+to \code{1L}, which yields augmented rankings for assessor 1.}
 }
 \description{
 Compute the consensus ranking using either cumulative
 probability (CP) or maximum a posteriori (MAP) consensus
-\insertCite{vitelli2018}{BayesMallows}. For mixture models, the
-consensus is given for each mixture. Consensus of augmented ranks
-can also be computed
-for each assessor, by setting \code{parameter = "Rtilde"}.
+\insertCite{vitelli2018}{BayesMallows}. For mixture models, the consensus
+is given for each mixture. Consensus of augmented ranks can also be
+computed for each assessor, by setting \code{parameter = "Rtilde"}.
 }
 \examples{
 # The example datasets potato_visual and potato_weighing contain complete
-# rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
-# model:
-model_fit <- compute_mallows(potato_visual)
+# rankings of 20 items, by 12 assessors. We first analyse these using the
+# Mallows model:
+model_fit <- compute_mallows(setup_rank_data(potato_visual))
 
-# Se the documentation to compute_mallows for how to assess the convergence of the algorithm
-# Having chosen burin = 1000, we compute posterior intervals
+# Se the documentation to compute_mallows for how to assess the convergence of
+# the algorithm. Having chosen burin = 1000, we compute posterior intervals
 model_fit$burnin <- 1000
 # We then compute the CP consensus.
 compute_consensus(model_fit, type = "CP")
@@ -36,9 +63,11 @@ compute_consensus(model_fit, type = "MAP")
 \dontrun{
   # CLUSTERWISE CONSENSUS
   # We can run a mixture of Mallows models, using the n_clusters argument
-  # We use the sushi example data. See the documentation of compute_mallows for a more elaborate
-  # example
-  model_fit <- compute_mallows(sushi_rankings, n_clusters = 5)
+  # We use the sushi example data. See the documentation of compute_mallows for
+  # a more elaborate example
+  model_fit <- compute_mallows(
+    setup_rank_data(sushi_rankings),
+    model_options = set_model_options(n_clusters = 5))
   # Keeping the burnin at 1000, we can compute the consensus ranking per cluster
   model_fit$burnin <- 1000
   cp_consensus_df <- compute_consensus(model_fit, type = "CP")
@@ -52,35 +81,38 @@ compute_consensus(model_fit, type = "MAP")
 \dontrun{
   # MAP CONSENSUS FOR PAIRWISE PREFENCE DATA
   # We use the example dataset with beach preferences.
-  model_fit <- compute_mallows(preferences = beach_preferences)
+  model_fit <- compute_mallows(setup_rank_data(preferences = beach_preferences))
   # We set burnin = 1000
   model_fit$burnin <- 1000
   # We now compute the MAP consensus
   map_consensus_df <- compute_consensus(model_fit, type = "MAP")
-}
 
-\dontrun{
   # CP CONSENSUS FOR AUGMENTED RANKINGS
   # We use the example dataset with beach preferences.
-  model_fit <- compute_mallows(preferences = beach_preferences, save_aug = TRUE,
-                               aug_thinning = 2, seed = 123L)
+  model_fit <- compute_mallows(
+    setup_rank_data(preferences = beach_preferences),
+    compute_options = set_compute_options(save_aug = TRUE, aug_thinning = 2))
   # We set burnin = 1000
   model_fit$burnin <- 1000
   # We now compute the CP consensus of augmented ranks for assessors 1 and 3
-  cp_consensus_df <- compute_consensus(model_fit, type = "CP",
-                                       parameter = "Rtilde", assessors = c(1L, 3L))
+  cp_consensus_df <- compute_consensus(
+    model_fit, type = "CP", parameter = "Rtilde", assessors = c(1L, 3L))
   # We can also compute the MAP consensus for assessor 2
-  map_consensus_df <- compute_consensus(model_fit, type = "MAP",
-                                        parameter = "Rtilde", assessors = 2L)
+  map_consensus_df <- compute_consensus(
+    model_fit, type = "MAP", parameter = "Rtilde", assessors = 2L)
 
   # Caution!
-  # With very sparse data or with too few iterations, there may be ties in the MAP consensus
-  # This is illustrated below for the case of only 5 post-burnin iterations. Two MAP rankings are
-  # equally likely in this case (and for this seed).
-  model_fit <- compute_mallows(preferences = beach_preferences, nmc = 1005,
-                               save_aug = TRUE, aug_thinning = 1, seed = 123L)
+  # With very sparse data or with too few iterations, there may be ties in the
+  # MAP consensus. This is illustrated below for the case of only 5 post-burnin
+  # iterations. Two MAP rankings are equally likely in this case (and for this
+  # seed).
+  model_fit <- compute_mallows(
+    setup_rank_data(preferences = beach_preferences),
+    compute_options = set_compute_options(
+      nmc = 1005, save_aug = TRUE, aug_thinning = 1))
   model_fit$burnin <- 1000
-  compute_consensus(model_fit, type = "MAP", parameter = "Rtilde", assessors = 2L)
+  compute_consensus(model_fit, type = "MAP", parameter = "Rtilde",
+                    assessors = 2L)
 }
 }
 \references{
@@ -89,10 +121,6 @@ compute_consensus(model_fit, type = "MAP")
 \seealso{
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
-\code{\link{compute_consensus.BayesMallows}()},
-\code{\link{compute_consensus.SMCMallows}()},
-\code{\link{compute_posterior_intervals.BayesMallows}()},
-\code{\link{compute_posterior_intervals.SMCMallows}()},
 \code{\link{compute_posterior_intervals}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},
@@ -100,7 +128,6 @@ Other posterior quantities:
 \code{\link{plot_elbow}()},
 \code{\link{plot_top_k}()},
 \code{\link{predict_top_k}()},
-\code{\link{print.BayesMallowsMixtures}()},
 \code{\link{print.BayesMallows}()}
 }
 \concept{posterior quantities}

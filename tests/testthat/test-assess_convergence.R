@@ -1,77 +1,218 @@
-context("Testing assess_convergence")
-
-test_that("assess_convergence fails when it should", {
-  m <- compute_mallows(potato_visual, nmc = 10)
-  class(m) <- NULL
-  expect_error(assess_convergence(m))
-  expect_error(assess_convergence(m, parameter = "aaa"))
-  expect_error(assess_convergence(m, parameter = "Rtilde"))
-  m <- compute_mallows(potato_visual, nmc = 10, save_aug = TRUE)
-  expect_error(assess_convergence(m, parameter = "theta"), regexp = "Theta not available")
-  expect_error(assess_convergence(m, parameter = "Rtilde", assessors = 1:100))
-  expect_error(assess_convergence(m, parameter = "Rtilde", assessors = c("a", "b")))
-  expect_s3_class(assess_convergence(m), "ggplot")
-  expect_s3_class(assess_convergence(m, parameter = "alpha"), "ggplot")
-  expect_s3_class(assess_convergence(m, parameter = "rho"), "ggplot")
+test_that("assess_convergence and plot works for alpha and rho", {
+  set.seed(123)
+  mod <- compute_mallows(
+    data = setup_rank_data(potato_visual),
+    compute_options = set_compute_options(nmc = 50)
+  )
+  p <- assess_convergence(mod)
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$group, "interaction(chain, cluster)")
+  expect_error(plot(mod), "Please specify the burnin.")
+  p <- plot(mod, burnin = 10)
+  expect_equal(p$labels$y, "Posterior density")
+  expect_equal(p$labels$x, expression(alpha))
+  expect_error(
+    plot(mod, burnin = 10, parameter = "alfa"), "'arg' should be one of"
+  )
+  expect_error(plot(mod, burnin = 51), "burnin must be <= nmc")
   expect_message(
-    assess_convergence(m, parameter = "rho"),
+    p <- plot(mod, burnin = 3, parameter = "rho"),
     "Items not provided by user. Picking 5 at random."
   )
-  expect_error(assess_convergence(m, parameter = "rororo"))
+  expect_equal(p$labels$y, "Posterior probability")
+  expect_equal(p$labels$x, "rank")
+  p <- plot(mod, burnin = 3, parameter = "rho", items = 1)
+  expect_equal(dim(p$data), c(2, 5))
+  expect_error(
+    plot(mod, burnin = 3, parameter = "rho", items = 33),
+    "Unknown items."
+  )
+  expect_error(
+    plot(mod, burnin = 3, parameter = "rho", items = "A1"),
+    "Unknown items."
+  )
+  p <- plot(mod, burnin = 3, parameter = "rho", items = c("P3", "P5"))
+  expect_equal(dim(p$data), c(6, 5))
 
-  m <- compute_mallows(potato_visual, nmc = 10, save_aug = FALSE, n_clusters = 2)
-  expect_error(assess_convergence(m, parameter = "Rtilde"))
+  expect_error(
+    p <- assess_convergence(mod, parameter = "rho", items = 33:34),
+    "numeric items vector must contain indices between 1 and the number of items"
+  )
+  expect_error(
+    p <- assess_convergence(mod, parameter = "rho", items = letters[1:3]),
+    "unknown items provided"
+  )
 
-  m <- compute_mallows(preferences = beach_preferences, nmc = 10, error_model = "bernoulli")
-  expect_s3_class(assess_convergence(m, parameter = "theta"), "ggplot")
+  p <- assess_convergence(mod, parameter = "rho", items = 1:4)
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "item")
 
-  # This one should not give message
-  testdat <- matrix(
-    c(
-      1, 2, 3,
-      2, 1, 3,
-      1, 2, 3
+  expect_message(
+    p <- assess_convergence(mod, parameter = "rho"),
+    "Items not provided by user. Picking 5 at random."
+  )
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "item")
+
+  mod <- compute_mallows(setup_rank_data(matrix(c(1, 1, 2, 2), ncol = 2)),
+    compute_options = set_compute_options(nmc = 5)
+  )
+
+  p1 <- assess_convergence(mod, parameter = "rho")
+  p2 <- assess_convergence(mod, parameter = "rho", items = 1:2)
+  p3 <- assess_convergence(mod, parameter = "rho", items = 2:1)
+  expect_equal(p1$labels, p2$labels)
+  expect_equal(p1$labels, p3$labels)
+})
+
+test_that("assess_convergence.BayesMallows works for Rtilde", {
+  set.seed(123)
+  mod <- compute_mallows(
+    setup_rank_data(preferences = beach_preferences),
+    compute_options = set_compute_options(nmc = 50, save_aug = TRUE)
+  )
+
+  p <- assess_convergence(
+    mod,
+    parameter = "Rtilde", items = 1:4, assessors = 1:4
+  )
+
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "item")
+  expect_error(
+    plot(mod, burnin = 10, parameter = "Rtilde"),
+    "'arg' should be one of"
+  )
+
+  expect_message(
+    p <- assess_convergence(mod, parameter = "Rtilde", items = 1:4),
+    "Assessors not provided by user. Picking 5 at random."
+  )
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "item")
+
+  expect_message(
+    p <- assess_convergence(mod, parameter = "Rtilde", assessors = 1:4),
+    "Items not provided by user. Picking 5 at random."
+  )
+
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "item")
+
+  expect_snapshot(p <- assess_convergence(mod, parameter = "Rtilde"))
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "item")
+
+  mod <- compute_mallows(
+    setup_rank_data(preferences = subset(beach_preferences, assessor <= 3)),
+    compute_options = set_compute_options(nmc = 50, save_aug = TRUE)
+  )
+
+  expect_message(
+    p <- assess_convergence(mod, parameter = "Rtilde"),
+    "Items not provided by user. Picking 5 at random."
+  )
+
+  mod <- compute_mallows(
+    setup_rank_data(
+      preferences =
+        subset(beach_preferences, bottom_item <= 3 & top_item <= 3)
     ),
-    nrow = 3, ncol = 3, byrow = TRUE
+    compute_options = set_compute_options(nmc = 50, save_aug = TRUE)
   )
 
-  m <- compute_mallows(testdat, nmc = 5)
-  expect_equal(
-    assess_convergence(m, parameter = "rho"),
-    assess_convergence(m, parameter = "rho", items = 1:3)
+  expect_snapshot(p <- assess_convergence(mod, parameter = "Rtilde"))
+
+  expect_error(
+    assess_convergence(mod, assessors = 100:103, parameter = "Rtilde"),
+    "assessors vector must contain numeric indices between 1 and the number of assessors"
   )
-  m <- compute_mallows(testdat, nmc = 5, n_clusters = 2, save_aug = TRUE)
-  expect_equal(
-    assess_convergence(m, parameter = "Rtilde"),
-    assess_convergence(m, parameter = "Rtilde", items = 1:3)
+
+  expect_error(
+    assess_convergence(mod, parameter = "theta"),
+    "Theta not available. Run compute_mallows with error_model = 'bernoulli'."
   )
 })
 
-
-test_that("assess_convergence works with mixtures", {
-  m <- compute_mallows_mixtures(n_clusters = 3, rankings = potato_visual, nmc = 10)
-  class(m) <- NULL
-  expect_error(assess_convergence(m))
-  expect_error(assess_convergence(m, parameter = "aaa"))
-  expect_error(assess_convergence(m, parameter = "Rtilde"))
-
-  m <- compute_mallows_mixtures(
-    n_clusters = 3, rankings = potato_visual, nmc = 10,
-    save_aug = TRUE
+test_that("assess_convergence.BayesMallows works for cluster_probs", {
+  set.seed(11)
+  mod <- compute_mallows(
+    setup_rank_data(rankings = cluster_data),
+    compute_options = set_compute_options(nmc = 50, burnin = 10),
+    model_options = set_model_options(n_clusters = 3)
   )
-  expect_s3_class(assess_convergence(m, parameter = "alpha"), "ggplot")
-  expect_error(assess_convergence(m, parameter = "Rtilde"))
-  expect_error(assess_convergence(m, parameter = "Rtilde", assessors = 1:100))
-  expect_error(assess_convergence(m, parameter = "Rtilde", assessors = c("a", "b")))
 
-  expect_s3_class(assess_convergence(m), "ggplot")
-  expect_s3_class(assess_convergence(m, parameter = "rho"), "ggplot")
-  expect_s3_class(assess_convergence(m, parameter = "cluster_probs"), "ggplot")
+  p <- assess_convergence(mod, parameter = "rho", items = 1:3)
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "item")
 
-  m <- compute_mallows(potato_visual, nmc = 10, n_clusters = 2)
-  plt <- assess_convergence(m, parameter = "cluster_probs")
-  expect_s3_class(plt, "ggplot")
-  pdf(NULL)
-  print(plt)
-  dev.off()
+  p <- plot(mod, parameter = "cluster_probs")
+  expect_equal(dim(p$data), c(120, 4))
+  expect_s3_class(p, "ggplot")
+
+  p <- assess_convergence(mod, parameter = "cluster_probs")
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "cluster")
+
+  p <- plot(mod, parameter = "cluster_assignment")
+  expect_s3_class(p, "ggplot")
+  expect_equal(dim(p$data), c(180, 4))
+})
+
+test_that("assess_convergence.BayesMallows works for theta", {
+  set.seed(123)
+  preferences <- data.frame(
+    assessor = c(1, 1, 2, 2),
+    bottom_item = c(1, 2, 1, 2),
+    top_item = c(2, 1, 2, 3)
+  )
+  mod <- compute_mallows(
+    data = setup_rank_data(preferences = preferences),
+    model_options = set_model_options(error_model = "bernoulli"),
+    compute_options = set_compute_options(nmc = 10, burnin = 2)
+  )
+
+  p <- assess_convergence(mod, parameter = "theta")
+  expect_equal(p$labels$x, "Iteration")
+
+  p <- plot(mod, parameter = "theta")
+  expect_equal(dim(p$data), c(8, 3))
+})
+
+test_that("assess_convergence.BayesMallows fails properly", {
+  mod <- compute_mallows(setup_rank_data(potato_visual),
+    compute_options = set_compute_options(nmc = 3)
+  )
+  expect_error(
+    assess_convergence(mod, parameter = "Rtilde"),
+    "Please rerun"
+  )
+
+  expect_error(
+    assess_convergence(mod, parameter = "alfa"),
+    "'arg' should be one of"
+  )
+})
+
+test_that("assess_convergence.BayesMallowsMixtures works", {
+  n_clusters <- seq(from = 1, to = 3)
+  models <- compute_mallows_mixtures(
+    n_clusters = n_clusters, data = setup_rank_data(cluster_data),
+    compute_options = set_compute_options(nmc = 100, include_wcd = TRUE)
+  )
+
+  p <- assess_convergence(models)
+  expect_equal(p$labels$linetype, "Chain")
+  expect_equal(p$labels$colour, "Cluster")
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$group, "interaction(chain, cluster)")
+
+  expect_error(
+    assess_convergence(models, parameter = "rho", items = 1:4),
+    "'arg' should be one of"
+  )
+
+  p <- assess_convergence(models, parameter = "cluster_probs")
+  expect_equal(p$labels$x, "Iteration")
+  expect_equal(p$labels$colour, "cluster")
 })

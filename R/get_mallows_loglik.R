@@ -2,86 +2,74 @@
 #'
 #' @description Compute either the likelihood or the log-likelihood value of the
 #'   Mallows mixture model parameters for a dataset of complete rankings.
-#' @param rho A matrix of size \code{n_clusters x n_items} whose rows are
+#' @param rho A matrix of size `n_clusters x n_items` whose rows are
 #'   permutations of the first n_items integers corresponding to the modal
 #'   rankings of the Mallows mixture components.
-#' @param alpha A vector of \code{n_clusters} non-negative scalar specifying the
+#' @param alpha A vector of `n_clusters` non-negative scalar specifying the
 #'   scale (precision) parameters of the Mallows mixture components.
-#' @param weights A vector of \code{n_clusters} non-negative scalars specifying
+#' @param weights A vector of `n_clusters` non-negative scalars specifying
 #'   the mixture weights.
 #' @param metric Character string specifying the distance measure to use.
-#'   Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
-#'   \code{"ulam"} for \code{n_items<=95}, \code{"footrule"} for
-#'   \code{n_items<=50} and \code{"spearman"} for \code{n_items<=14}.
+#'   Available options are `"kendall"`, `"cayley"`, `"hamming"`,
+#'   `"ulam"`, `"footrule"`, and `"spearman"`.
 #' @param rankings A matrix with observed rankings in each row.
-#' @param obs_freq A vector of observation frequencies (weights) to apply to
-#'   each row in \code{rankings}. This can speed up computation if a large
-#'   number of assessors share the same rank pattern. Defaults to \code{NULL},
-#'   which means that each row of \code{rankings} is multiplied by 1. If
-#'   provided, \code{obs_freq} must have the same number of elements as there
-#'   are rows in \code{rankings}, and \code{rankings} cannot be \code{NULL}.
+#' @param observation_frequency A vector of observation frequencies (weights) to apply to
+#'   each row in `rankings`. This can speed up computation if a large
+#'   number of assessors share the same rank pattern. Defaults to `NULL`,
+#'   which means that each row of `rankings` is multiplied by 1. If
+#'   provided, `observation_frequency` must have the same number of elements as there
+#'   are rows in `rankings`, and `rankings` cannot be `NULL`.
 #' @param log A logical; if TRUE, the log-likelihood value is returned,
-#'   otherwise its exponential. Default is \code{TRUE}.
+#'   otherwise its exponential. Default is `TRUE`.
 #'
 #' @return The likelihood or the log-likelihood value corresponding to one or
 #'   more observed complete rankings under the Mallows mixture rank model with
-#'   distance specified by the \code{metric} argument.
+#'   distance specified by the `metric` argument.
 #' @export
 #'
 #' @example inst/examples/get_mallows_loglik_example.R
 #' @family rank functions
 #'
-get_mallows_loglik <- function(rho, alpha, weights, metric,
-                               rankings, obs_freq = NULL, log = TRUE) {
-  if (!is.matrix(rankings)) {
-    rankings <- matrix(rankings, nrow = 1)
-  }
-
-  if (!is.null(obs_freq)) {
-    if (nrow(rankings) != length(obs_freq)) {
-      stop("obs_freq must be of same length as the number of rows in rankings")
+get_mallows_loglik <- function(
+    rho, alpha, weights,
+    metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
+    rankings, observation_frequency = NULL, log = TRUE) {
+  metric <- match.arg(metric, c(
+    "footrule", "spearman", "cayley", "hamming",
+    "kendall", "ulam"
+  ))
+  if (!is.matrix(rankings)) rankings <- matrix(rankings, nrow = 1)
+  if (!is.null(observation_frequency)) {
+    if (nrow(rankings) != length(observation_frequency)) {
+      stop(
+        "observation_frequency must be ",
+        "of same length as the number of rows in rankings"
+      )
     }
   } else {
-    obs_freq <- rep(1, nrow(rankings))
+    observation_frequency <- rep(1, nrow(rankings))
   }
 
-  if (!is.matrix(rho)) {
-    rho <- matrix(rho, nrow = 1)
-  }
+  if (!is.matrix(rho)) rho <- matrix(rho, nrow = 1)
 
   n_clusters <- length(weights)
   n_items <- ncol(rankings)
-  N <- sum(obs_freq)
+  N <- sum(observation_frequency)
 
-  if (metric %in% c("ulam", "footrule", "spearman")) {
-    pfd <- partition_function_data[
-      partition_function_data$metric == metric &
-        partition_function_data$n_items == n_items &
-        partition_function_data$type == "cardinalities", ,
-      drop = FALSE
-    ]
-    if (nrow(pfd) == 0) {
-      stop("Given number of items currently not available for the specified metric")
-    } else {
-      card <- pfd$values[[1]]
-    }
-  } else if (metric %in% c("kendall", "cayley", "hamming")) {
-    card <- NULL
-  }
+  pfun_values <- prepare_partition_function(metric, n_items)
 
   loglik <- vapply(
     X = seq_len(n_clusters),
     FUN = function(g) {
-      -(alpha[g] / n_items * rank_dist_sum(
+      -(alpha[g] / n_items * sum(get_rank_distance(
         rankings = t(rankings),
         rho = rho[g, ],
-        metric = metric, obs_freq = obs_freq
-      ) +
+        metric = metric
+      ) * observation_frequency) +
         N * get_partition_function(
-          alpha = alpha[g],
-          n_items = n_items, metric = metric,
-          cardinalities = card
-        )) * weights[[g]]
+          alpha = alpha[g], n_items = n_items, metric = metric, pfun_values
+        )) *
+        weights[[g]]
     },
     FUN.VALUE = numeric(1)
   )

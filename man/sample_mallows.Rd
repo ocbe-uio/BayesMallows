@@ -93,7 +93,9 @@ samples <- sample_mallows(rho0 = rho0, alpha0 = alpha0, n_samples = 100,
 # The samples matrix now contains 100 rows with rankings of 15 items.
 # A good diagnostic, in order to confirm that burnin and thinning are set high
 # enough, is to run compute_mallows on the samples
-model_fit <- compute_mallows(samples, nmc = 10000)
+model_fit <- compute_mallows(
+  setup_rank_data(samples),
+  compute_options = set_compute_options(nmc = 10000))
 # The highest posterior density interval covers alpha0 = 10.
 compute_posterior_intervals(model_fit, burnin = 2000, parameter = "alpha")
 
@@ -103,10 +105,10 @@ compute_posterior_intervals(model_fit, burnin = 2000, parameter = "alpha")
 }
 \seealso{
 Other rank functions: 
-\code{\link{expected_dist}()},
-\code{\link{get_mallows_loglik}()},
-\code{\link{rank_conversion}},
-\code{\link{rank_distance}()},
-\code{\link{rank_freq_distr}()}
+\code{\link{compute_expected_distance}()},
+\code{\link{compute_observation_frequency}()},
+\code{\link{compute_rank_distance}()},
+\code{\link{create_ranking}()},
+\code{\link{get_mallows_loglik}()}
 }
 \concept{rank functions}

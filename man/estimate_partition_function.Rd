@@ -5,16 +5,13 @@
 \title{Estimate Partition Function}
 \usage{
 estimate_partition_function(
-  method = "importance_sampling",
+  method = c("importance_sampling", "asymptotic"),
   alpha_vector,
   n_items,
   metric,
-  nmc,
-  degree,
   n_iterations,
-  K,
-  cl = NULL,
-  seed = NULL
+  K = 20,
+  cl = NULL
 )
 }
 \arguments{
@@ -28,122 +25,97 @@ compute the importance sampling estimate.}
 \item{n_items}{Integer specifying the number of items.}
 
 \item{metric}{Character string specifying the distance measure to use.
-Available options are \code{"footrule"} and \code{"spearman"} when
-\code{method = "asymptotic"} and in addition \code{"cayley"}, \code{"hamming"},
-\code{"kendall"}, and \code{"ulam"} when \code{method = "importance_sampling"}.}
+Available options are \code{"footrule"} and \code{"spearman"} when \code{method = "asymptotic"} and in addition \code{"cayley"}, \code{"hamming"}, \code{"kendall"}, and
+\code{"ulam"} when \code{method = "importance_sampling"}.}
 
-\item{nmc}{Integer specifying the number of Monte Carlo samples to use in the
-importance sampling. Only used when \code{method = "importance_sampling"}.}
+\item{n_iterations}{Integer specifying the number of iterations to use. When
+\code{method = "importance_sampling"}, this is the number of Monte Carlo samples
+to generate. When \code{method = "asymptotic"}, on the other hand, it represents
+the number of iterations of the IPFP algorithm.}
 
-\item{degree}{Integer specifying the degree of the polynomial used to
-estimate \eqn{\log(\alpha)} from the grid of values provided by the
-importance sampling estimate.}
+\item{K}{Integer specifying the parameter \eqn{K} in the asymptotic
+approximation of the partition function. Only used when \code{method = "asymptotic"}. Defaults to 20.}
 
-\item{n_iterations}{Integer specifying the number of iterations to use in the
-asymptotic approximation of the partition function. Only used when
-\code{method = "asymptotic"}.}
-
-\item{K}{Integer specifying the parameter \eqn{K} in the
-asymptotic approximation of the partition function. Only used when
-\code{method = "asymptotic"}.}
-
-\item{cl}{Optional computing cluster used for parallelization, returned
-from \code{parallel::makeCluster}. Defaults to \code{NULL}. Only used when
-\code{method = "importance_sampling"}.}
-
-\item{seed}{Optional random number seed.}
+\item{cl}{Optional computing cluster used for parallelization, returned from
+\code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}. Only used when \code{method = "importance_sampling"}.}
 }
 \value{
-A vector of length \code{degree} which can be supplied to the
-  \code{logz_estimate} argument of \code{\link{compute_mallows}}.
+A matrix with two column and number of rows equal the degree of the
+fitted polynomial approximating the partition function. The matrix can be
+supplied to the \code{pfun_estimate} argument of \code{\link[=compute_mallows]{compute_mallows()}}.
 }
 \description{
-Estimate the logarithm of the partition function of the Mallows rank model. Choose
-between the importance sampling algorithm described in
-\insertCite{vitelli2018}{BayesMallows} and the IPFP algorithm for computing an
-asymptotic approximation described in \insertCite{mukherjee2016}{BayesMallows}.
+Estimate the logarithm of the partition function of the Mallows rank model.
+Choose between the importance sampling algorithm described in
+\insertCite{vitelli2018}{BayesMallows} and the IPFP algorithm for computing
+an asymptotic approximation described in
+\insertCite{mukherjee2016}{BayesMallows}. Note that exact partition functions
+can be computed efficiently for Cayley, Hamming and Kendall distances with
+any number of items, for footrule distances with up to 50 items, Spearman
+distance with up to 20 items, and Ulam distance with up to 60 items. This
+function is thus intended for the complement of these cases. See
+\code{\link[=get_cardinalities]{get_cardinalities()}} for details.
 }
 \examples{
-\dontrun{
-  # IMPORTANCE SAMPLING
-  # Let us estimate logZ(alpha) for 20 items with Spearman distance
-  # We create a grid of alpha values from 0 to 10
-  alpha_vector <- seq(from = 0, to = 10, by = 0.5)
-  n_items <- 20
-  metric <- "spearman"
-  degree <- 10
+# IMPORTANCE SAMPLING
+# Let us estimate logZ(alpha) for 20 items with Spearman distance
+# We create a grid of alpha values from 0 to 10
+alpha_vector <- seq(from = 0, to = 10, by = 0.5)
+n_items <- 20
+metric <- "spearman"
 
-  # We start with 1e3 Monte Carlo samples
-  fit1 <- estimate_partition_function(method = "importance_sampling",
-                                        alpha_vector = alpha_vector,
-                                        n_items = n_items, metric = metric,
-                                        nmc = 1e3, degree = degree)
-  # A vector of polynomial regression coefficients is returned
-  fit1
+# We start with 1e3 Monte Carlo samples
+fit1 <- estimate_partition_function(
+  method = "importance_sampling", alpha_vector = alpha_vector,
+  n_items = n_items, metric = metric, n_iterations = 1e3)
+# A matrix containing powers of alpha and regression coefficients is returned
+fit1
+# The approximated partition function can hence be obtained:
+estimate1 <-
+  vapply(alpha_vector, function(a) sum(a^fit1[, 1] * fit1[, 2]), numeric(1))
 
-  # Now let us recompute with 1e4 Monte Carlo samples
-  fit2 <- estimate_partition_function(method = "importance_sampling",
-                                      alpha_vector = alpha_vector,
-                                      n_items = n_items, metric = metric,
-                                      nmc = 1e4, degree = degree)
+# Now let us recompute with 2e3 Monte Carlo samples
+fit2 <- estimate_partition_function(
+  method = "importance_sampling", alpha_vector = alpha_vector,
+  n_items = n_items, metric = metric, n_iterations = 2e3)
+estimate2 <-
+  vapply(alpha_vector, function(a) sum(a^fit2[, 1] * fit2[, 2]), numeric(1))
 
-  # ASYMPTOTIC APPROXIMATION
-  # We can also compute an estimate using the asymptotic approximation
-  K <- 20
-  n_iterations <- 50
+# ASYMPTOTIC APPROXIMATION
+# We can also compute an estimate using the asymptotic approximation
+fit3 <- estimate_partition_function(
+  method = "asymptotic", alpha_vector = alpha_vector,
+  n_items = n_items, metric = metric, n_iterations = 50)
+estimate3 <-
+  vapply(alpha_vector, function(a) sum(a^fit3[, 1] * fit3[, 2]), numeric(1))
 
-  fit3 <- estimate_partition_function(method = "asymptotic",
-                                      alpha_vector = alpha_vector,
-                                      n_items = n_items, metric = metric,
-                                      n_iterations = n_iterations,
-                                      K = K, degree = degree)
+# We can now plot the estimates side-by-side
+plot(alpha_vector, estimate1, type = "l", xlab = expression(alpha),
+     ylab = expression(log(Z(alpha))))
+lines(alpha_vector, estimate2, col = 2)
+lines(alpha_vector, estimate3, col = 3)
+legend(x = 7, y = 40, legend = c("IS,1e3", "IS,2e3", "IPFP"),
+       col = 1:3, lty = 1)
 
-  # We write a little function for storing the estimates in a dataframe
-  powers <- seq(from = 0, to = degree, by = 1)
+# We see that the two importance sampling estimates, which are unbiased,
+# overlap. The asymptotic approximation seems a bit off. It can be worthwhile
+# to try different values of n_iterations and K.
 
-  compute_fit <- function(fit, type){
-    do.call(rbind, lapply(alpha_vector, function(alpha){
-      data.frame(
-        type = type,
-        alpha = alpha,
-        logz_estimate = sum(alpha^powers * fit)
-      )
-    }))
-  }
+# When we are happy, we can provide the coefficient vector in the
+# pfun_estimate argument to compute_mallows
+# Say we choose to use the importance sampling estimate with 1e4 Monte Carlo samples:
+model_fit <- compute_mallows(
+  setup_rank_data(potato_visual),
+  model_options = set_model_options(metric = "spearman"),
+  compute_options = set_compute_options(nmc = 200),
+  pfun_estimate = fit2)
 
-
-
-  estimates <- rbind(
-    compute_fit(fit1, type = "Importance Sampling 1e3"),
-    compute_fit(fit2, type = "Importance Sampling 1e4"),
-    compute_fit(fit3, type = "Asymptotic")
-    )
-
-  # We can now plot the two estimates side-by-side
-  library(ggplot2)
-  ggplot(estimates, aes(x = alpha, y = logz_estimate, color = type)) +
-    geom_line()
-  # We see that the two importance sampling estimates, which are unbiased,
-  # overlap. The asymptotic approximation seems a bit off. It can be worthwhile
-  # to try different values of n_iterations and K.
-
-  # When we are happy, we can provide the coefficient vector in the
-  # logz_estimate argument to compute_mallows
-  # Say we choose to use the importance sampling estimate with 1e4 Monte Carlo samples:
-  model_fit <- compute_mallows(potato_visual, metric = "spearman",
-                               logz_estimate = fit2)
-
-}
 }
 \references{
 \insertAllCited{}
 }
 \seealso{
-Other preprocessing: 
-\code{\link{generate_constraints}()},
-\code{\link{generate_initial_ranking}()},
-\code{\link{generate_transitive_closure}()},
-\code{\link{obs_freq}},
-\code{\link{prepare_partition_function}()}
+Other partition function: 
+\code{\link{get_cardinalities}()}
 }
-\concept{preprocessing}
+\concept{partition function}

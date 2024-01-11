@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+#include "distances.h"
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
@@ -29,47 +30,36 @@ void shift_step(vec& rho_proposal, const vec& rho,
 
 void leap_and_shift(vec& rho_proposal, uvec& indices,
                     double& prob_backward, double& prob_forward,
-                    const vec& rho, int leap_size, bool reduce_indices){
-  // Set proposal equal to current
+                    const vec& rho, int leap_size,
+                    const std::unique_ptr<Distance>& distfun){
   rho_proposal = rho;
-
-  // Help vectors
   vec support;
-
-  // Number of items
-  int n = rho.n_elem;
-
-  // Other helper variables
+  int n_items = rho.n_elem;
   double support_new;
 
   // Leap 1
-  // 1, sample u randomly between 1 and n
-  int u = randi<int>(distr_param(0, n - 1));
+  // 1, sample u randomly between 1 and n_items
+  ivec a = Rcpp::sample(n_items, 1) - 1;
+  int u = a(0);
 
   // 2, compute the set S for sampling the new rank
   support = join_cols(regspace(std::max(1.0, rho(u) - leap_size), 1, rho(u) - 1),
-    regspace(rho(u) + 1, 1, std::min(n * 1.0, rho(u) + leap_size)));
+    regspace(rho(u) + 1, 1, std::min(n_items * 1.0, rho(u) + leap_size)));
 
   // 3. assign a random element of the support set, this completes the leap step
-  int index = randi<int>(distr_param(0, support.n_elem-1));
+  ivec b = Rcpp::sample(support.n_elem, 1) - 1;
+  int index = b(0);
   // Picked element index-1 from the support set
   rho_proposal(u) = support(index);
 
-  // Compute the associated transition probabilities
-  support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) + std::min(n - rho_proposal(u), leap_size * 1.0);
+  support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) + std::min(n_items - rho_proposal(u), leap_size * 1.0);
   if(std::abs(rho_proposal(u) - rho(u)) == 1){
-    // in this case the transition probabilities coincide! (and in fact for leap_size = 1 the L&S is symmetric)
-    prob_forward = 1.0 / (n * support.n_elem) + 1.0 / (n * support_new);
+    prob_forward = 1.0 / (n_items * support.n_elem) + 1.0 / (n_items * support_new);
     prob_backward = prob_forward;
   } else {
-    // P(proposed|current)
-    prob_forward = 1.0 / (n * support.n_elem);
-    // P(current|proposed)
-    prob_backward = 1.0 / (n * support_new);
+    prob_forward = 1.0 / (n_items * support.n_elem);
+    prob_backward = 1.0 / (n_items * support_new);
   }
   shift_step(rho_proposal, rho, u, indices);
-
-  if(!reduce_indices){
-    indices = regspace<uvec>(0, n - 1);
-  }
+  distfun->update_leap_and_shift_indices(indices, n_items);
 }

@@ -8,15 +8,15 @@ heat_plot(model_fit, burnin = model_fit$burnin, ...)
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
-\code{\link{compute_mallows}}.}
+\code{\link[=compute_mallows]{compute_mallows()}}.}
 
 \item{burnin}{A numeric value specifying the number of iterations
 to discard as burn-in. Defaults to \code{x$burnin}, and must be
-provided if \code{x$burnin} does not exist. See \code{\link{assess_convergence}}.}
+provided if \code{x$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{...}{Additional arguments passed on to other methods. In particular,
 \code{type = "CP"} or \code{type = "MAP"} can be passed on to
-\code{\link{compute_consensus}} to determine the order of items along the
+\code{\link[=compute_consensus]{compute_consensus()}} to determine the order of items along the
 horizontal axis.}
 }
 \value{
@@ -28,33 +28,24 @@ horizontal axis and ranking along the vertical axis. The color denotes
 posterior probability.
 }
 \examples{
-# Setting the number of Monte Carlo samples very low for the example to run fast.
-# A real application should run much longer, and have a large burnin.
-model_fit <- compute_mallows(potato_visual, nmc = 500, seed = 1)
-model_fit$burnin <- 100
+set.seed(1)
+model_fit <- compute_mallows(
+  setup_rank_data(potato_visual),
+  compute_options = set_compute_options(nmc = 2000, burnin = 500))
 
 heat_plot(model_fit)
-
-# Items are ordered along the horizontal axis according to the ordering
-# returned by compute_consensus, whose default argument is type="CP".
-
 heat_plot(model_fit, type = "MAP")
 }
 \seealso{
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
-\code{\link{compute_consensus.BayesMallows}()},
-\code{\link{compute_consensus.SMCMallows}()},
 \code{\link{compute_consensus}()},
-\code{\link{compute_posterior_intervals.BayesMallows}()},
-\code{\link{compute_posterior_intervals.SMCMallows}()},
 \code{\link{compute_posterior_intervals}()},
 \code{\link{plot.BayesMallows}()},
 \code{\link{plot.SMCMallows}()},
 \code{\link{plot_elbow}()},
 \code{\link{plot_top_k}()},
 \code{\link{predict_top_k}()},
-\code{\link{print.BayesMallowsMixtures}()},
 \code{\link{print.BayesMallows}()}
 }
 \concept{posterior quantities}

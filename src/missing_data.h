@@ -1,15 +1,45 @@
-#ifndef MISSING_H
-#define MISSING_H
+#pragma once
+#include "distances.h"
+#include "classes.h"
 
+arma::vec make_new_augmentation(
+    const arma::vec& rankings,
+    const arma::uvec& missing_indicator,
+    const double& alpha,
+    const arma::vec& rho,
+    const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<Distance>& pseudo_aug_distance,
+    double& log_aug_prob);
 
-void initialize_missing_ranks(arma::mat& rankings, const arma::umat& missing_indicator,
-                              const arma::uvec& assessor_missing);
+arma::umat set_up_missing(const Data& dat) noexcept;
 
-void update_missing_ranks(arma::mat& rankings, const arma::uvec& current_cluster_assignment,
-                          arma::vec& aug_acceptance,
-                          const arma::umat& missing_indicator,
-                          const arma::uvec& assessor_missing,
-                          const arma::vec& alpha, const arma::mat& rho,
-                          const std::string& metric);
+arma::mat initialize_missing_ranks(
+    arma::mat rankings,
+    const arma::umat& missing_indicator);
 
-#endif
+struct RankProposal{
+  RankProposal() {};
+  RankProposal(
+    const arma::vec& rankings,
+    const double& probability,
+    const arma::uvec& mutated_items) :
+  rankings { rankings }, probability { probability },
+  mutated_items { mutated_items } {}
+  ~RankProposal() = default;
+
+  arma::vec rankings{};
+  double probability{};
+  arma::uvec mutated_items{};
+};
+
+RankProposal make_uniform_proposal(
+    const arma::vec& ranks,
+    const arma::uvec& indicator) noexcept;
+
+RankProposal make_pseudo_proposal(
+    arma::vec ranks,
+    const arma::uvec& indicator,
+    const double& alpha,
+    const arma::vec& rho,
+    const std::unique_ptr<Distance>& distfun
+) noexcept;

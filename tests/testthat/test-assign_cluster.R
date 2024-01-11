@@ -1,85 +1,47 @@
+test_that("assign_cluster fails properly", {
+  mod <- compute_mallows(
+    setup_rank_data(potato_visual),
+    compute_options = set_compute_options(nmc = 10)
+  )
+
+  expect_error(assign_cluster(mod), "Please specify the burnin.")
+  mod$burnin <- 11
+  expect_error(assign_cluster(mod), "burnin < model_fit")
+})
+
 test_that("assign_cluster works", {
-  m <- compute_mallows(potato_visual, nmc = 10)
-
-  expect_error(assign_cluster(m))
-
   set.seed(123)
-  m <- compute_mallows(potato_visual, nmc = 10)
-
-  asc <- assign_cluster(m, burnin = 5)
-  expect_equal(unique(asc$cluster), "Cluster 1")
-  expect_equal(unique(asc$probability), 1)
-  expect_equal(unique(asc$map_cluster), "Cluster 1")
-
-  set.seed(123)
-  m <- compute_mallows(potato_visual, nmc = 10, n_clusters = 3)
-
-  asc <- assign_cluster(m, burnin = 7)
-  asc <- asc[order(as.integer(asc$assessor)), ]
-  expect_equal(
-    round(asc$probability, 4),
-    c(
-      1, 0.6667, 0.3333, 1, 1, 1, 0.3333, 0.6667, 1, 1, 1, 0.6667,
-      0.3333, 0.6667, 0.3333, 1
-    )
+  mod <- compute_mallows(
+    setup_rank_data(cluster_data),
+    model_options = set_model_options(n_clusters = 3),
+    compute_options = set_compute_options(nmc = 300, burnin = 50)
   )
 
-  expect_equal(
-    asc$map_cluster,
-    c(
-      "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2",
-      "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2",
-      "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2",
-      "Cluster 2"
-    )
-  )
-  expect_equal(
-    asc$cluster,
-    c(
-      "Cluster 2", "Cluster 2", "Cluster 3", "Cluster 2", "Cluster 2",
-      "Cluster 2", "Cluster 1", "Cluster 2", "Cluster 2", "Cluster 2",
-      "Cluster 2", "Cluster 2", "Cluster 3", "Cluster 2", "Cluster 3",
-      "Cluster 2"
-    )
-  )
+  a1 <- assign_cluster(mod, soft = FALSE, expand = FALSE)
+  expect_equal(dim(a1), c(60, 3))
+  agg1 <- aggregate(assessor ~ map_cluster, a1, length)
+  expect_equal(agg1$assessor, c(23, 17, 20))
 
-  asc <- assign_cluster(m, burnin = 9, expand = TRUE)
-  asc <- asc[order(as.integer(asc$assessor)), ]
-  expect_equal(
-    round(asc$probability[order(as.integer(asc$assessor))], 4),
-    c(
-      1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1,
-      1, 0, 1, 0
-    )
-  )
+  a2 <- assign_cluster(mod, soft = TRUE, expand = FALSE)
+  expect_equal(ncol(a2), 4)
+  agg2 <- aggregate(probability ~ assessor, a2, sum)
+  expect_equal(mean(agg2$probability), 1)
 
   expect_equal(
-    asc$cluster[order(as.integer(asc$assessor))],
-    c(
-      "Cluster 2", "Cluster 3", "Cluster 2", "Cluster 3", "Cluster 2",
-      "Cluster 3", "Cluster 2", "Cluster 3", "Cluster 2", "Cluster 3",
-      "Cluster 2", "Cluster 3", "Cluster 2", "Cluster 3", "Cluster 2",
-      "Cluster 3", "Cluster 2", "Cluster 3", "Cluster 2", "Cluster 3",
-      "Cluster 2", "Cluster 3", "Cluster 2", "Cluster 3"
-    )
+    dim(assign_cluster(mod, soft = FALSE, expand = TRUE)),
+    c(60, 3)
   )
 
-  expect_equal(
-    asc$map_cluster[order(as.integer(asc$assessor))],
-    c(
-      "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2",
-      "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2",
-      "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2",
-      "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 3", "Cluster 3",
-      "Cluster 2", "Cluster 2", "Cluster 2", "Cluster 2"
-    )
+  a3 <- assign_cluster(mod, soft = TRUE, expand = TRUE)
+  agg3 <- aggregate(probability ~ assessor, a3, sum)
+  expect_equal(mean(agg2$probability), 1)
+
+  mod <- compute_mallows(
+    setup_rank_data(cluster_data),
+    model_options = set_model_options(n_clusters = 3),
+    compute_options = set_compute_options(nmc = 2, burnin = 1)
   )
 
-  asc <- assign_cluster(m, burnin = 8, soft = FALSE)
-  asc <- asc[order(as.integer(asc$assessor)), ]
-  expect_equal(dim(asc), c(12L, 3L))
-  expect_equal(
-    asc$probability,
-    c(1, 0.5, 1, 1, 1, 1, 1, 1, 1, 0.5, 1, 1)
-  )
+  expect_equal(dim(assign_cluster(mod)), c(60, 4))
+  expect_equal(dim(assign_cluster(mod, expand = TRUE)), c(180, 4))
 })

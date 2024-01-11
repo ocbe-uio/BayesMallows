@@ -4,36 +4,107 @@
 \alias{compute_mallows_mixtures}
 \title{Compute Mixtures of Mallows Models}
 \usage{
-compute_mallows_mixtures(n_clusters, ..., cl = NULL)
+compute_mallows_mixtures(
+  n_clusters,
+  data,
+  model_options = set_model_options(),
+  compute_options = set_compute_options(),
+  priors = set_priors(),
+  initial_values = set_initial_values(),
+  pfun_estimate = NULL,
+  verbose = FALSE,
+  cl = NULL
+)
 }
 \arguments{
-\item{n_clusters}{Integer vector specifying the number of clusters
-to use.}
+\item{n_clusters}{Integer vector specifying the number of clusters to use.}
 
-\item{...}{Other named arguments, passed to \code{\link{compute_mallows}}.}
+\item{data}{An object of class "BayesMallowsData" returned from
+\code{\link[=setup_rank_data]{setup_rank_data()}}.}
 
-\item{cl}{Optional computing cluster used for parallelization, returned
-from \code{parallel::makeCluster}. Defaults to \code{NULL}.}
+\item{model_options}{An object of class "BayesMallowsModelOptions" returned
+from \code{\link[=set_model_options]{set_model_options()}}.}
+
+\item{compute_options}{An object of class "BayesMallowsComputeOptions"
+returned from \code{\link[=set_compute_options]{set_compute_options()}}.}
+
+\item{priors}{An object of class "BayesMallowsPriors" returned from
+\code{\link[=set_priors]{set_priors()}}.}
+
+\item{initial_values}{An object of class "BayesMallowsInitialValues" returned
+from \code{\link[=set_initial_values]{set_initial_values()}}.}
+
+\item{pfun_estimate}{Object returned from \code{\link[=estimate_partition_function]{estimate_partition_function()}}.
+Defaults to \code{NULL}, and will only be used for footrule, Spearman, or
+Ulam distances when the cardinalities are not available, cf.
+\code{\link[=get_cardinalities]{get_cardinalities()}}.}
+
+\item{verbose}{Logical specifying whether to print out the progress of the
+Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
+every 1000th iteration. Defaults to \code{FALSE}.}
+
+\item{cl}{Optional cluster returned from \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. If
+provided, chains will be run in parallel, one on each node of \code{cl}.}
 }
 \value{
-A list of Mallows models of class \code{BayesMallowsMixtures}, with one element
-for each number of mixtures that
-was computed. This object can be studied with \code{\link{plot_elbow}}.
+A list of Mallows models of class \code{BayesMallowsMixtures}, with
+one element for each number of mixtures that was computed. This object can
+be studied with \code{\link[=plot_elbow]{plot_elbow()}}.
 }
 \description{
-Convenience function for computing Mallows models with varying
-numbers of mixtures. This is useful for deciding the number of
-mixtures to use in the final model.
+Convenience function for computing Mallows models with varying numbers of
+mixtures. This is useful for deciding the number of mixtures to use in the
+final model.
+}
+\details{
+The \code{n_clusters} argument to \code{\link[=set_model_options]{set_model_options()}} is ignored
+when calling \code{compute_mallows_mixtures}.
 }
 \examples{
+# SIMULATED CLUSTER DATA
+set.seed(1)
+n_clusters <- seq(from = 1, to = 5)
+models <- compute_mallows_mixtures(
+  n_clusters = n_clusters, data = setup_rank_data(cluster_data),
+  compute_options = set_compute_options(nmc = 2000, include_wcd = TRUE))
+
+# There is good convergence for 1, 2, and 3 cluster, but not for 5.
+# Also note that there seems to be label switching around the 7000th iteration
+# for the 2-cluster solution.
+assess_convergence(models)
+# We can create an elbow plot, suggesting that there are three clusters, exactly
+# as simulated.
+plot_elbow(models, burnin = 1000)
+
+# We now fit a model with three clusters
+mixture_model <- compute_mallows(
+  data = setup_rank_data(cluster_data),
+  model_options = set_model_options(n_clusters = 3),
+  compute_options = set_compute_options(nmc = 2000))
+
+# The trace plot for this model looks good. It seems to converge quickly.
+assess_convergence(mixture_model)
+# We set the burnin to 500
+mixture_model$burnin <- 500
+
+# We can now look at posterior quantities
+# Posterior of scale parameter alpha
+plot(mixture_model)
+plot(mixture_model, parameter = "rho", items = 4:5)
+# There is around 33 \% probability of being in each cluster, in agreemeent
+# with the data simulating mechanism
+plot(mixture_model, parameter = "cluster_probs")
+# We can also look at a cluster assignment plot
+plot(mixture_model, parameter = "cluster_assignment")
+
 # DETERMINING THE NUMBER OF CLUSTERS IN THE SUSHI EXAMPLE DATA
 \dontrun{
   # Let us look at any number of clusters from 1 to 10
   # We use the convenience function compute_mallows_mixtures
   n_clusters <- seq(from = 1, to = 10)
-  models <- compute_mallows_mixtures(n_clusters = n_clusters,
-                                     rankings = sushi_rankings,
-                                     include_wcd = TRUE)
+  models <- compute_mallows_mixtures(
+    n_clusters = n_clusters, data = setup_rank_data(sushi_rankings),
+    compute_options = set_compute_options(include_wcd = TRUE))
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows
   # We can create an elbow plot
@@ -43,8 +114,10 @@ mixtures to use in the final model.
 
   # Having chosen the number of clusters, we can now study the final model
   # Rerun with 5 clusters
-  mixture_model <- compute_mallows(rankings = sushi_rankings, n_clusters = 5,
-                                   include_wcd = TRUE)
+  mixture_model <- compute_mallows(
+    rankings = sushi_rankings,
+    model_options = set_model_options(n_clusters = 5),
+    compute_options = set_compute_options(include_wcd = TRUE))
   # Delete the models object to free some memory
   rm(models)
   # Set the burnin
@@ -77,9 +150,11 @@ mixtures to use in the final model.
   library(parallel)
   cl <- makeCluster(detectCores() - 1)
   n_clusters <- seq(from = 1, to = 10)
-  models <- compute_mallows_mixtures(n_clusters = n_clusters,
-                                     rankings = sushi_rankings,
-                                     include_wcd = TRUE, cl = cl)
+  models <- compute_mallows_mixtures(
+    n_clusters = n_clusters,
+    rankings = sushi_rankings,
+    compute_options = set_compute_options(include_wcd = TRUE),
+    cl = cl)
   stopCluster(cl)
 }
 
@@ -89,7 +164,6 @@ mixtures to use in the final model.
 \seealso{
 Other modeling: 
 \code{\link{compute_mallows}()},
-\code{\link{smc_mallows_new_item_rank}()},
-\code{\link{smc_mallows_new_users}()}
+\code{\link{update_mallows}()}
 }
 \concept{modeling}

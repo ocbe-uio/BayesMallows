@@ -1,61 +1,73 @@
-tidy_mcmc <- function(fits, rho_thinning, rankings, alpha_jump,
-                      n_clusters, nmc, aug_thinning, n_items) {
+tidy_mcmc <- function(fits, data, model_options, compute_options) {
   fit <- list()
+  fit$save_aug <- compute_options$save_aug
 
   # Add names of item
-  if (!is.null(colnames(rankings))) {
-    items <- colnames(rankings)
+  if (!is.null(colnames(data$rankings))) {
+    items <- colnames(data$rankings)
   } else {
-    items <- paste("Item", seq(from = 1, to = n_items, by = 1))
+    items <- paste("Item", seq(from = 1, to = data$n_items, by = 1))
   }
 
-  fit$rho <- do.call(rbind, lapply(seq_along(fits), function(i) {
-    tidy_rho(fits[[i]]$rho, i, rho_thinning, items)
+  rho_dims <- dim(fits[[1]]$rho)
+  fit$rho_samples <- fits[[1]]$rho
+  for (f in fits[-1]) {
+    fit$rho_samples <- abind(fit$rho_samples, f$rho)
+  }
+
+  rhos <- lapply(seq_along(fits), function(i) fits[[i]]$rho)
+  fit$rho <- do.call(rbind, lapply(seq_along(rhos), function(i) {
+    tidy_rho(rhos[[i]], i, compute_options$rho_thinning, items)
   }))
 
-  fit$alpha <- do.call(rbind, lapply(seq_along(fits), function(i) {
-    tidy_alpha(fits[[i]]$alpha, i, alpha_jump)
+  alpha_dims <- dim(fits[[1]]$alpha)
+  alphas <- lapply(seq_along(fits), function(i) fits[[i]]$alpha)
+  fit$alpha_samples <- matrix(as.vector(do.call(rbind, alphas)),
+    nrow = alpha_dims[[1]], ncol = length(fits) * alpha_dims[[2]]
+  )
+
+  fit$alpha <- do.call(rbind, lapply(seq_along(alphas), function(i) {
+    tidy_alpha(alphas[[i]], i, compute_options$alpha_jump)
   }))
 
   fit$cluster_assignment <- do.call(rbind, lapply(seq_along(fits), function(i) {
-    tidy_cluster_assignment(fits[[i]]$cluster_assignment, i, n_clusters, fits[[i]]$n_assessors, nmc)
+    tidy_cluster_assignment(
+      fits[[i]]$cluster_assignment, i, model_options$n_clusters, fits[[i]]$n_assessors,
+      compute_options$nmc
+    )
   }))
 
   fit$cluster_probs <- do.call(rbind, lapply(seq_along(fits), function(i) {
-    tidy_cluster_probabilities(fits[[i]]$cluster_probs, i, n_clusters, nmc)
+    tidy_cluster_probabilities(
+      fits[[i]]$cluster_probs, i, model_options$n_clusters,
+      compute_options$nmc
+    )
   }))
 
   fit$within_cluster_distance <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_wcd(fits[[i]]$within_cluster_distance, i)
   }))
 
-  fit$augmented_data <- do.call(rbind, lapply(seq_along(fits), function(i) {
-    tidy_augmented_data(fits[[i]]$augmented_data, i, items, aug_thinning)
-  }))
 
-  fit$aug_acceptance <- lapply(seq_along(fits), function(i) {
-    tidy_augmentation_acceptance(
-      fits[[i]]$aug_acceptance, i, fits[[i]]$any_missing, fits[[i]]$augpair
+  fit$augmented_data <- do.call(rbind, lapply(seq_along(fits), function(i) {
+    tidy_augmented_data(
+      fits[[i]]$augmented_data, i, items,
+      compute_options$aug_thinning
     )
-  })
+  }))
 
   fit$theta <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_error_probability(fits[[i]]$theta, i)
   }))
 
-  fit$n_clusters <- n_clusters
+  fit$n_clusters <- model_options$n_clusters
   fit$items <- items
-  fit$n_items <- n_items
+  fit$n_items <- data$n_items
   fit$n_assessors <- fits[[1]]$n_assessors
-  fit$nmc <- nmc
-  fit$alpha_acceptance <- rowMeans(matrix(
-    vapply(fits, function(x) x$alpha_acceptance, numeric(n_clusters)),
-    nrow = n_clusters
-  ))
-  fit$rho_acceptance <- rowMeans(matrix(
-    vapply(fits, function(x) x$rho_acceptance, numeric(n_clusters)),
-    nrow = n_clusters
-  ))
+
+  fit$nmc <- compute_options$nmc
+  fit$metric <- model_options$metric
+  fit$burnin <- compute_options$burnin
 
   return(fit)
 }
@@ -131,9 +143,11 @@ tidy_cluster_assignment <- function(
   if (n_clusters > 1) {
     cluster_dims <- dim(cluster_assignment)
     value <- paste("Cluster", cluster_assignment)
-  } else {
+  } else if (n_assessors > 1) {
     cluster_dims <- c(n_assessors, nmc)
     value <- paste("Cluster", rep(1, prod(cluster_dims)))
+  } else {
+    return(data.frame())
   }
 
 
@@ -260,20 +274,6 @@ tidy_augmented_data <- function(augmented_data, chain, items, aug_thinning) {
   }
 }
 
-
-tidy_augmentation_acceptance <- function(aug_acceptance, chain, any_missing, augpair) {
-  # Augmentation acceptance
-
-  if (any_missing || augpair) {
-    aug_acceptance <- data.frame(acceptance_rate = c(aug_acceptance))
-    aug_acceptance$assessor <- seq_len(nrow(aug_acceptance))
-    aug_acceptance <- aug_acceptance[, c("assessor", "acceptance_rate")]
-    aug_acceptance$chain <- chain
-    aug_acceptance
-  } else {
-    NULL
-  }
-}
 
 tidy_error_probability <- function(theta, chain) {
   theta_length <- length(theta)
