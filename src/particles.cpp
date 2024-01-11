@@ -8,7 +8,8 @@ Particle::Particle(
   const unsigned int n_assessors, const uvec& particle_consistent) :
   alpha (alpha), rho (rho), augmented_data (augmented_data),
   log_aug_prob (zeros(n_assessors)),
-  consistent(particle_consistent) {}
+  consistent(particle_consistent),
+  previous_distance(zeros(n_assessors)){}
 
 mat initialize_augmented_data(
     const unsigned int particle_index,

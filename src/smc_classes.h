@@ -13,6 +13,7 @@ struct Particle {
   double log_inc_wgt{};
   arma::vec log_aug_prob;
   arma::uvec consistent;
+  arma::vec previous_distance;
 };
 
 struct SMCData : Data {

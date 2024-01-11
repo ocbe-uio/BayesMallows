@@ -15,12 +15,13 @@ void SMCAugmentation::reweight(
     const std::unique_ptr<PartitionFunction>& pfun,
     const std::unique_ptr<Distance>& distfun
 ) {
-  cube previous_augmented_data;
   if(dat.any_missing) {
-    previous_augmented_data.set_size(dat.n_items, dat.n_assessors, pvec.size());
-    for(size_t i{}; i < pvec.size(); i++) {
-      previous_augmented_data.slice(i) = pvec[i].augmented_data;
-    }
+    std::for_each(
+      pvec.begin(), pvec.end(),
+      [distfun = &distfun](Particle& p){
+          p.previous_distance = distfun->get()->d(p.augmented_data, p.rho);
+      }
+    );
   }
 
   if(dat.any_missing) augment_partial(pvec, dat);
@@ -30,14 +31,11 @@ void SMCAugmentation::reweight(
     if(!pvec[particle].consistent.is_empty()) {
       for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
         if(pvec[particle].consistent(user) == 0) {
-          const arma::vec& pad = previous_augmented_data(span::all, span(user), span(particle));
           const arma::vec& cad = pvec[particle].augmented_data.col(user);
-          double previous_distance =
-            distfun->d(pad, pvec[particle].rho);
           double current_distance = distfun->d(cad, pvec[particle].rho);
 
           item_correction_contribution -= pvec[particle].alpha / dat.n_items *
-            (current_distance - previous_distance);
+            (current_distance - pvec[particle].previous_distance(user));
         }
       }
     }
