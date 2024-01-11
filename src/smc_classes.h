@@ -9,33 +9,38 @@ struct SMCData : Data {
   const arma::umat consistent;
 };
 
+struct Particle {
+  Particle(double alpha, const arma::vec& rho);
+  ~Particle() = default;
+
+  double alpha;
+  arma::vec rho;
+  double log_inc_wgt{};
+};
+
 struct SMCParameters {
   SMCParameters(
     const Rcpp::List& model_options,
     const Rcpp::List& smc_options,
-    const Rcpp::List& compute_options,
-    const Rcpp::List& initial_values);
+    const Rcpp::List& compute_options);
   ~SMCParameters() = default;
 
   void update_alpha(
-      const unsigned int particle_index,
+      Particle& p,
       const SMCData& dat,
       const std::unique_ptr<PartitionFunction>& pfun,
       const std::unique_ptr<Distance>& distfun,
       const Priors& priors);
 
   void update_rho(
-      const unsigned int particle_index,
+      Particle& p,
       const SMCData& dat,
       const std::unique_ptr<Distance>& distfun
   );
 
-  const unsigned int n_particles;
+  arma::uvec draw_resampling_index(const std::vector<Particle>& pvec);
+
   const unsigned int mcmc_steps;
-  arma::vec alpha_samples;
-  arma::mat rho_samples;
-  arma::vec log_inc_wgt;
-  arma::uvec draw_resampling_index();
 
 private:
   const double alpha_prop_sd;
