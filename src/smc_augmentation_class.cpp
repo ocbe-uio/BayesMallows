@@ -17,44 +17,53 @@ void SMCAugmentation::reweight(
 ) {
   if(dat.any_missing) {
     std::for_each(
-      pvec.begin(), pvec.end(),
-      [distfun = &distfun](Particle& p){
+      pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
           p.previous_distance = distfun->get()->d(p.augmented_data, p.rho);
-      }
-    );
+      });
+    augment_partial(pvec, dat);
   }
 
-  if(dat.any_missing) augment_partial(pvec, dat);
+  std::for_each(
+    pvec.begin(), pvec.end(),
+    [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
+     any_missing = dat.any_missing, distfun = &distfun, pfun = &pfun,
+     nr = dat.new_rankings]
+    (Particle& p){
+      double item_correction_contribution{};
+      if(!p.consistent.is_empty()) {
+        for(size_t user{}; user < n_assessors - num_new_obs; user++) {
+          if(p.consistent(user) == 0) {
+            const arma::vec& cad = p.augmented_data.col(user);
+            double current_distance = distfun->get()->d(cad, p.rho);
 
-  for (size_t particle{}; particle < pvec.size(); ++particle) {
-    double item_correction_contribution{};
-    if(!pvec[particle].consistent.is_empty()) {
-      for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
-        if(pvec[particle].consistent(user) == 0) {
-          const arma::vec& cad = pvec[particle].augmented_data.col(user);
-          double current_distance = distfun->d(cad, pvec[particle].rho);
-
-          item_correction_contribution -= pvec[particle].alpha / dat.n_items *
-            (current_distance - pvec[particle].previous_distance(user));
+            item_correction_contribution -= p.alpha / p.rho.size() *
+              (current_distance - p.previous_distance(user));
+          }
         }
       }
-    }
 
-    double new_user_contribution{};
-    if(dat.num_new_obs > 0) {
-      const mat new_rankings = !dat.any_missing ? dat.new_rankings :
-      pvec[particle].augmented_data(
-        span::all,
-        span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1));
-      new_user_contribution = -pvec[particle].alpha / dat.n_items *
-        sum(distfun->d(new_rankings, pvec[particle].rho));
-    }
+      double new_user_contribution{};
+      if(num_new_obs > 0) {
+        mat new_rankings;
+        if(any_missing) {
+          new_rankings = p.augmented_data(
+            span::all,
+            span(n_assessors - num_new_obs, n_assessors - 1));
+        } else {
+          new_rankings = nr;
+        }
 
-    pvec[particle].log_inc_wgt =
-      new_user_contribution + item_correction_contribution -
-      dat.num_new_obs * pfun->logz(pvec[particle].alpha) -
-      sum(pvec[particle].log_aug_prob);
-  }
+        new_user_contribution = -p.alpha / p.rho.size() *
+          sum(distfun->get()->d(new_rankings, p.rho));
+      }
+
+      p.log_inc_wgt =
+        new_user_contribution + item_correction_contribution -
+        num_new_obs * pfun->get()->logz(p.alpha) -
+        sum(p.log_aug_prob);
+    }
+  );
+
 }
 
 void SMCAugmentation::augment_partial(
