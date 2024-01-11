@@ -2,27 +2,29 @@
 
 #include "classes.h"
 
+struct Particle {
+  Particle(double alpha, const arma::vec& rho, const arma::mat& augmented_data,
+           const unsigned int n_assessors);
+  ~Particle() = default;
+
+  double alpha;
+  arma::vec rho;
+  arma::mat augmented_data;
+  double log_inc_wgt{};
+  arma::vec log_aug_prob;
+};
+
 struct SMCData : Data {
   SMCData(const Rcpp::List& data, const Rcpp::List& new_data);
+  void update_data(const Particle& p);
   arma::mat new_rankings;
   const unsigned int num_new_obs;
   const arma::umat consistent;
 };
 
-struct Particle {
-  Particle(double alpha, const arma::vec& rho);
-  ~Particle() = default;
-
-  double alpha;
-  arma::vec rho;
-  double log_inc_wgt{};
-};
-
 struct SMCParameters {
   SMCParameters(
-    const Rcpp::List& model_options,
-    const Rcpp::List& smc_options,
-    const Rcpp::List& compute_options);
+    const Rcpp::List& smc_options, const Rcpp::List& compute_options);
   ~SMCParameters() = default;
 
   void update_alpha(
@@ -38,7 +40,8 @@ struct SMCParameters {
       const std::unique_ptr<Distance>& distfun
   );
 
-  arma::uvec draw_resampling_index(const std::vector<Particle>& pvec);
+  Rcpp::IntegerVector draw_resampling_index(const std::vector<Particle>& pvec);
+  void resample(std::vector<Particle>& pvec);
 
   const unsigned int mcmc_steps;
 
@@ -48,42 +51,27 @@ private:
 };
 
 struct SMCAugmentation {
-  SMCAugmentation(
-    SMCData& dat,
-    const Rcpp::List& compute_options,
-    const Rcpp::List& initial_values,
-    const unsigned int n_particles);
+  SMCAugmentation(SMCData& dat, const Rcpp::List& compute_options);
   ~SMCAugmentation() = default;
 
   void reweight(
-      SMCParameters& pars,
+      std::vector<Particle>& pvec,
       const SMCData& dat,
       const std::unique_ptr<PartitionFunction>& pfun,
       const std::unique_ptr<Distance>& distfun);
 
   void augment_partial(
-      const SMCParameters& pars,
+      std::vector<Particle>& pvec,
       const SMCData& dat);
 
-  void update_data(
-      const unsigned int particle_index,
-      SMCData& dat);
-
-  void update_missing_ranks(
-      const unsigned int particle_index,
-      const SMCData& dat,
-      const SMCParameters& pars,
+  void update_missing_ranks(Particle& p, const SMCData& dat,
       const std::unique_ptr<Distance>& distfun);
 
   void resample(const arma::uvec& index, const SMCData& dat);
-
-  arma::cube augmented_data;
+  const arma::umat missing_indicator;
 
 private:
-  const arma::umat missing_indicator;
   const std::string aug_method;
   const std::string pseudo_aug_metric;
   const std::unique_ptr<Distance> pseudo_aug_distance;
-  const Rcpp::Nullable<arma::cube> aug_init;
-  arma::mat log_aug_prob;
 };

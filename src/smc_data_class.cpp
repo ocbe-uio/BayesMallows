@@ -8,3 +8,8 @@ SMCData::SMCData(
 new_rankings { Rcpp::as<mat>(new_data["rankings"]).t() },
 num_new_obs { new_rankings.n_cols },
 consistent (data["consistent"]) {}
+
+void SMCData::update_data(const Particle& p) {
+  if(!any_missing) return;
+  rankings = p.augmented_data;
+}

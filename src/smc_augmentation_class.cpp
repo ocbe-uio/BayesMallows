@@ -4,70 +4,42 @@ using namespace arma;
 
 SMCAugmentation::SMCAugmentation(
   SMCData& dat,
-  const Rcpp::List& compute_options,
-  const Rcpp::List& initial_values,
-  const unsigned int n_particles) :
+  const Rcpp::List& compute_options) :
   missing_indicator { set_up_missing(dat) },
   aug_method(compute_options["aug_method"]),
   pseudo_aug_metric(compute_options["pseudo_aug_metric"]),
   pseudo_aug_distance {
     aug_method == "uniform" ? nullptr : choose_distance_function(pseudo_aug_metric)
-  },
-  aug_init(initial_values["aug_init"]),
-  log_aug_prob { arma::zeros(dat.n_assessors, n_particles) }
-  {
-    if(dat.any_missing){
-      augmented_data.set_size(dat.n_items, dat.n_assessors, n_particles);
-
-      if(aug_init.isNotNull()) {
-        augmented_data(
-          span::all, span(0, dat.rankings.n_cols - dat.num_new_obs - 1), span::all) =
-            Rcpp::as<cube>(aug_init);
-
-        for(size_t i{}; i < n_particles; i++) {
-          if(dat.num_new_obs == 0) break;
-          augmented_data(
-            span::all,
-            span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1),
-            span(i)
-          ) = initialize_missing_ranks(
-            dat.new_rankings,
-            missing_indicator(
-              span::all,
-              span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1))
-            );
-        }
-      } else {
-        for(size_t i{}; i < n_particles; i++) {
-          augmented_data.slice(i) =
-            initialize_missing_ranks(dat.rankings, missing_indicator);
-        }
-      }
-    }
-  }
+  } {}
 
 void SMCAugmentation::reweight(
-    SMCParameters& pars,
+    std::vector<Particle>& pvec,
     const SMCData& dat,
     const std::unique_ptr<PartitionFunction>& pfun,
     const std::unique_ptr<Distance>& distfun
 ) {
-  cube previous_augmented_data = augmented_data;
-  augment_partial(pars, dat);
+  cube previous_augmented_data;
+  if(dat.any_missing) {
+    previous_augmented_data.set_size(dat.n_items, dat.n_assessors, pvec.size());
+    for(size_t i{}; i < pvec.size(); i++) {
+      previous_augmented_data.slice(i) = pvec[i].augmented_data;
+    }
+  }
 
-  for (size_t particle{}; particle < pars.n_particles; ++particle) {
+  if(dat.any_missing) augment_partial(pvec, dat);
+
+  for (size_t particle{}; particle < pvec.size(); ++particle) {
     double item_correction_contribution{};
     if(!dat.consistent.is_empty()) {
       for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
         if(dat.consistent(user, particle) == 0) {
           const arma::vec& pad = previous_augmented_data(span::all, span(user), span(particle));
-          const arma::vec& cad = augmented_data(span::all, span(user), span(particle));
+          const arma::vec& cad = pvec[particle].augmented_data.col(user);
           double previous_distance =
-            distfun->d(pad, pars.rho_samples.col(particle));
-          double current_distance = distfun->d(cad, pars.rho_samples.col(particle));
+            distfun->d(pad, pvec[particle].rho);
+          double current_distance = distfun->d(cad, pvec[particle].rho);
 
-          item_correction_contribution -=
-            pars.alpha_samples(particle) / dat.n_items *
+          item_correction_contribution -= pvec[particle].alpha / dat.n_items *
             (current_distance - previous_distance);
         }
       }
@@ -76,73 +48,59 @@ void SMCAugmentation::reweight(
     double new_user_contribution{};
     if(dat.num_new_obs > 0) {
       const mat new_rankings = !dat.any_missing ? dat.new_rankings :
-      augmented_data(
+      pvec[particle].augmented_data(
         span::all,
-        span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1),
-        span(particle));
-      new_user_contribution = -pars.alpha_samples(particle) / dat.n_items *
-        sum(distfun->d(new_rankings, pars.rho_samples.col(particle)));
+        span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1));
+      new_user_contribution = -pvec[particle].alpha / dat.n_items *
+        sum(distfun->d(new_rankings, pvec[particle].rho));
     }
 
-    pars.log_inc_wgt(particle) =
+    pvec[particle].log_inc_wgt =
       new_user_contribution + item_correction_contribution -
-      dat.num_new_obs * pfun->logz(pars.alpha_samples(particle)) -
-      sum(log_aug_prob.col(particle));
+      dat.num_new_obs * pfun->logz(pvec[particle].alpha) -
+      sum(pvec[particle].log_aug_prob);
   }
 }
 
 void SMCAugmentation::augment_partial(
-    const SMCParameters& pars,
+    std::vector<Particle>& pvec,
     const SMCData& dat
 ){
-  if(!dat.any_missing) return;
-  for (size_t particle{}; particle < pars.n_particles; particle++) {
+  for (size_t particle{}; particle < pvec.size(); particle++) {
     for (size_t user{}; user < dat.n_assessors; user++) {
       if(user < dat.n_assessors - dat.num_new_obs) {
         if(dat.consistent.is_empty()) continue;
         if(dat.consistent(user, particle) == 1) continue;
       }
       if (pseudo_aug_distance == nullptr) {
-        augmented_data(span::all, span(user), span(particle)) =
+        pvec[particle].augmented_data.col(user) =
           make_uniform_proposal(
-            augmented_data(span::all, span(user), span(particle)),
+            pvec[particle].augmented_data.col(user),
             missing_indicator.col(user)).rankings;
       } else {
         RankProposal pprop = make_pseudo_proposal(
-          augmented_data(span::all, span(user), span(particle)),
+          pvec[particle].augmented_data.col(user),
           missing_indicator.col(user),
-          pars.alpha_samples(particle), pars.rho_samples.col(particle),
+          pvec[particle].alpha, pvec[particle].rho,
           pseudo_aug_distance
         );
-        augmented_data(span::all, span(user), span(particle)) = pprop.rankings;
-        log_aug_prob(user, particle) = log(pprop.probability);
+        pvec[particle].augmented_data.col(user) = pprop.rankings;
+        pvec[particle].log_aug_prob(user) = log(pprop.probability);
       }
     }
   }
 }
 
-void SMCAugmentation::update_data(
-    const unsigned int particle_index, SMCData& dat) {
-  if(!dat.any_missing) return;
-  dat.rankings = augmented_data.slice(particle_index);
-}
-
 void SMCAugmentation::update_missing_ranks(
-    const unsigned int particle_index,
+    Particle& p,
     const SMCData& dat,
-    const SMCParameters& pars,
     const std::unique_ptr<Distance>& distfun) {
   if(!dat.any_missing) return;
 
   for (unsigned int jj{}; jj < dat.n_assessors; ++jj) {
-    augmented_data(span::all, span(jj), span(particle_index)) =
+    p.augmented_data.col(jj) =
       make_new_augmentation(
-        augmented_data(span::all, span(jj), span(particle_index)),
-        missing_indicator.col(jj),
-        pars.alpha_samples(particle_index),
-        pars.rho_samples.col(particle_index),
-        distfun, pseudo_aug_distance,
-        log_aug_prob(jj, particle_index)
-      );
+        p.augmented_data.col(jj), missing_indicator.col(jj), p.alpha,
+        p.rho, distfun, pseudo_aug_distance, p.log_aug_prob(jj));
   }
 }

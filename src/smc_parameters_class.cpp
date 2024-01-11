@@ -3,7 +3,6 @@
 using namespace arma;
 
 SMCParameters::SMCParameters(
-  const Rcpp::List& model_options,
   const Rcpp::List& smc_options,
   const Rcpp::List& compute_options
 ) :
@@ -36,13 +35,21 @@ void SMCParameters::update_rho(
     dat.observation_frequency);
 }
 
-uvec SMCParameters::draw_resampling_index(
+Rcpp::IntegerVector SMCParameters::draw_resampling_index(
   const std::vector<Particle>& pvec
 ) {
-  Rcpp::IntegerVector inds = Rcpp::seq(0, log_inc_wgt.size() - 1);
-  vec norm_wgt = exp(log_inc_wgt - max(log_inc_wgt) -
+  Rcpp::NumericVector log_inc_wgt(pvec.size());
+  std::transform(pvec.cbegin(), pvec.cend(), log_inc_wgt.begin(),
+                 [](const Particle& p){ return p.log_inc_wgt; });
+
+  Rcpp::NumericVector probs = exp(log_inc_wgt - max(log_inc_wgt) -
     log(sum(exp(log_inc_wgt - max(log_inc_wgt)))));
-  Rcpp::NumericVector probs = Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(norm_wgt));
-  ivec result = Rcpp::sample(inds, log_inc_wgt.size(), true, probs);
-  return conv_to<uvec>::from(result);
+
+  return Rcpp::sample(log_inc_wgt.size(), log_inc_wgt.size(), true, probs, false);
+}
+
+void SMCParameters::resample(std::vector<Particle>& pvec) {
+  Rcpp::IntegerVector index = draw_resampling_index(pvec);
+  std::vector<Particle> pvec_old = pvec;
+  for(size_t i{}; i < pvec.size(); i++) pvec[i] = pvec_old[index[i]];
 }
