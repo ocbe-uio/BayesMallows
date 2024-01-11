@@ -19,9 +19,6 @@
 #' @param priors An object of class "BayesMallowsPriors" returned from
 #'   [set_priors()]. Defaults to the priors used in `model`.
 #' @param ... Optional arguments. Currently not used.
-#' @param cl Optional cluster returned from [parallel::makeCluster()]. If
-#'   provided, particles will be processed in parallel, distributed across the
-#'   nodes of `cl`.
 #'
 #' @return An updated model, of class "SMCMallows".
 #' @export
@@ -30,7 +27,7 @@
 #'
 #' @example /inst/examples/update_mallows_example.R
 #'
-update_mallows <- function(model, new_data, ..., cl = NULL) {
+update_mallows <- function(model, new_data, ...) {
   UseMethod("update_mallows")
 }
 
@@ -42,42 +39,27 @@ update_mallows.BayesMallows <- function(
     smc_options = set_smc_options(),
     compute_options = set_compute_options(),
     priors = model$priors,
-    ...,
-    cl = NULL) {
+    ...) {
   if (is.null(model$burnin)) stop("Burnin must be set.")
 
-  if (!is.null(cl)) {
-    n_particles_vec <- count_jobs_per_cluster(smc_options$n_particles, length(cl))
-    lapplyfun <- prepare_cluster(cl, c(
-      "new_data", "model_options", "smc_options", "compute_options", "priors",
-      "model"
-    ))
-  } else {
-    n_particles_vec <- smc_options$n_particles
-    lapplyfun <- lapply
-  }
+  alpha_init <- extract_alpha_init(model, smc_options$n_particles)
+  rho_init <- extract_rho_init(model, smc_options$n_particles)
 
-  nested_result <- lapplyfun(n_particles_vec, function(n_particles) {
-    alpha_init <- extract_alpha_init(model, n_particles)
-    rho_init <- extract_rho_init(model, n_particles)
-    smc_options$n_particles <- n_particles
-    run_smc(
-      data = new_data,
-      new_data = new_data,
-      model_options = model_options,
-      smc_options = smc_options,
-      compute_options = compute_options,
-      priors = priors,
-      initial_values = list(
-        alpha_init = alpha_init, rho_init = rho_init,
-        aug_init = NULL
-      ),
-      pfun_values = model$pfun_values,
-      pfun_estimate = model$pfun_estimate
-    )
-  })
+  ret <- run_smc(
+    data = new_data,
+    new_data = new_data,
+    model_options = model_options,
+    smc_options = smc_options,
+    compute_options = compute_options,
+    priors = priors,
+    initial_values = list(
+      alpha_init = alpha_init, rho_init = rho_init,
+      aug_init = NULL
+    ),
+    pfun_values = model$pfun_values,
+    pfun_estimate = model$pfun_estimate
+  )
 
-  ret <- unnest_result(nested_result)
   ret <- c(ret, tidy_smc(ret, model$items))
   ret$model_options <- model_options
   ret$smc_options <- smc_options
@@ -97,49 +79,24 @@ update_mallows.BayesMallows <- function(
 
 #' @export
 #' @rdname update_mallows
-update_mallows.SMCMallows <- function(model, new_data, ..., cl = NULL) {
+update_mallows.SMCMallows <- function(model, new_data, ...) {
   datlist <- prepare_new_data(model, new_data)
 
-  if (!is.null(cl)) {
-    n_particles_vec <- count_jobs_per_cluster(model$smc_options$n_particles, length(cl))
-    particle_inds <- list()
-    for (i in seq_along(n_particles_vec)) {
-      particle_inds[[i]] <- seq(
-        from = max(1, n_particles_vec[i - 1] + 1),
-        to = cumsum(n_particles_vec)[i]
-      )
-    }
-    lapplyfun <- prepare_cluster(cl, c("model", "datlist"))
-  } else {
-    particle_inds <- list(seq_len(model$smc_options$n_particles))
-    lapplyfun <- lapply
-  }
-
-  nested_result <- lapplyfun(particle_inds, function(pinds) {
-    model$smc_options$n_particles <- length(pinds)
-    if (prod(dim(model$augmented_rankings)) == 0) {
-      aug_init <- model$augmented_rankings
-    } else {
-      aug_init <- model$augmented_rankings[, , pinds]
-    }
-    ret <- run_smc(
-      data = datlist$data,
-      new_data = datlist$new_data,
-      model_options = model$model_options,
-      smc_options = model$smc_options,
-      compute_options = model$compute_options,
-      priors = model$priors,
-      initial_values = list(
-        alpha_init = model$alpha_samples[pinds],
-        rho_init = model$rho_samples[, pinds],
-        aug_init = aug_init
-      ),
-      pfun_values = model$pfun_values,
-      pfun_estimate = model$pfun_estimate
-    )
-  })
-  ret <- unnest_result(nested_result)
-
+  ret <- run_smc(
+    data = datlist$data,
+    new_data = datlist$new_data,
+    model_options = model$model_options,
+    smc_options = model$smc_options,
+    compute_options = model$compute_options,
+    priors = model$priors,
+    initial_values = list(
+      alpha_init = model$alpha_samples,
+      rho_init = model$rho_samples,
+      aug_init = model$augmented_rankings
+    ),
+    pfun_values = model$pfun_values,
+    pfun_estimate = model$pfun_estimate
+  )
   tidy_parameters <- tidy_smc(ret, model$items)
   model$alpha <- tidy_parameters$alpha
   model$rho <- tidy_parameters$rho
@@ -148,17 +105,6 @@ update_mallows.SMCMallows <- function(model, new_data, ..., cl = NULL) {
 
   class(model) <- c("SMCMallows", "BayesMallows")
   model
-}
-
-unnest_result <- function(nested_result) {
-  ret <- list()
-  ret$rho_samples <- do.call(cbind, lapply(nested_result, function(x) x$rho_samples))
-  ret$alpha_samples <- do.call(c, lapply(nested_result, function(x) x$alpha_samples))
-  ret$augmented_rankings <- nested_result[[1]]$augmented_rankings
-  for (nr in nested_result[-1]) {
-    ret$augmented_rankings <- abind(ret$augmented_rankings, nr$augmented_rankings)
-  }
-  ret
 }
 
 tidy_smc <- function(ret, items) {
