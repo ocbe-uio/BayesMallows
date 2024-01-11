@@ -27,7 +27,7 @@ void SMCAugmentation::reweight(
     pvec.begin(), pvec.end(),
     [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
      any_missing = dat.any_missing, distfun = &distfun, pfun = &pfun,
-     nr = dat.new_rankings]
+     nr = &dat.new_rankings]
     (Particle& p){
       double item_correction_contribution{};
       if(!p.consistent.is_empty()) {
@@ -50,7 +50,7 @@ void SMCAugmentation::reweight(
             span::all,
             span(n_assessors - num_new_obs, n_assessors - 1));
         } else {
-          new_rankings = nr;
+          new_rankings = *nr;
         }
 
         new_user_contribution = -p.alpha / p.rho.size() *
