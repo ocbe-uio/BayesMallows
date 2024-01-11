@@ -1,82 +1,92 @@
-test_that("compute posterior intervals works", {
-  set.seed(3344)
-  m <- compute_mallows(potato_visual, nmc = 10)
-  expect_error(compute_posterior_intervals(m))
-  expect_error(compute_posterior_intervals(m, burnin = 100))
-  expect_error(compute_posterior_intervals(m, burnin = 7, parameter = "dsdsd"))
-  expect_error(compute_posterior_intervals(m, burnin = 7, level = 1.2))
-  expect_equal(
-    compute_posterior_intervals(m, burnin = 7, level = .05, parameter = "alpha"),
-    structure(list(
-      parameter = "alpha", mean = 0.73, median = 0.744,
-      conf_level = "5 %", hpdi = "[0.699,0.699]", central_interval = "[0.741,0.744]"
-    ), row.names = c(
-      NA,
-      -1L
-    ), class = "data.frame")
+test_that("compute_posterior_intervals works", {
+  set.seed(1234)
+  mod <- compute_mallows(
+    data = setup_rank_data(potato_visual),
+    compute_options = set_compute_options(nmc = 20)
+  )
+  expect_error(compute_posterior_intervals(mod), "Please specify the burnin.")
+  mod$burnin <- 30
+  expect_error(compute_posterior_intervals(mod), "burnin < model_fit")
+
+  mod$burnin <- 10
+  pi <- compute_posterior_intervals(mod)
+  expect_equal(pi$median, "0.861")
+  expect_equal(pi$hpdi, "[0.814,1.083]")
+  expect_equal(pi$central_interval, "[0.819,1.080]")
+
+  pi <- compute_posterior_intervals(mod, decimals = 1)
+  expect_equal(pi$median, "0.9")
+  expect_equal(pi$hpdi, "[0.8,1.1]")
+  expect_equal(pi$central_interval, "[0.8,1.1]")
+
+  pi <- compute_posterior_intervals(mod, decimals = 2, level = .99)
+  expect_equal(pi$median, "0.86")
+  expect_equal(pi$hpdi, "[0.81,1.08]")
+  expect_equal(pi$central_interval, "[0.81,1.08]")
+
+  expect_error(
+    compute_posterior_intervals(mod, parameter = c("alpha", "rho")),
+    "'arg' must be of length 1"
   )
 
-  expect_equal(
-    compute_posterior_intervals(m, burnin = 7, level = .1, parameter = "cluster_probs"),
-    structure(list(
-      parameter = "cluster_probs", mean = 1, median = 1,
-      conf_level = "10 %", hpdi = "[1.000,1.000]", central_interval = "[1.000]"
-    ), row.names = c(
-      NA,
-      -1L
-    ), class = "data.frame")
+  pi <- compute_posterior_intervals(mod, parameter = "rho")
+  expect_equal(pi$hpdi[[10]], "[6,7]")
+  expect_equal(pi$central_interval[[15]], "[1,2]")
+
+  pi <- compute_posterior_intervals(mod, parameter = "rho", level = .6)
+  expect_equal(pi$hpdi[[10]], "[7]")
+  expect_equal(pi$central_interval[[15]], "[1,2]")
+})
+
+test_that("compute_posterior_intervals works with clusters", {
+  set.seed(1234)
+  mod <- compute_mallows(
+    data = setup_rank_data(cluster_data),
+    model_options = set_model_options(n_clusters = 3),
+    compute_options = set_compute_options(nmc = 20, burnin = 10)
   )
 
-  expect_equal(
-    compute_posterior_intervals(m, burnin = 7, level = .01, parameter = "rho"),
-    structure(list(
-      item = structure(1:20, .Label = c(
-        "P1", "P2",
-        "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10", "P11", "P12",
-        "P13", "P14", "P15", "P16", "P17", "P18", "P19", "P20"
-      ), class = "factor"),
-      parameter = c(
-        "rho", "rho", "rho", "rho", "rho", "rho", "rho",
-        "rho", "rho", "rho", "rho", "rho", "rho", "rho", "rho", "rho",
-        "rho", "rho", "rho", "rho"
-      ), mean = c(
-        18, 15, 5, 20, 10,
-        11, 8, 7, 3, 14, 2, 17, 12, 19, 12, 1, 9, 16, 4, 6
-      ), median = c(
-        18,
-        15, 5, 20, 10, 11, 8, 7, 3, 14, 2, 17, 12, 19, 13, 1, 9,
-        16, 4, 6
-      ), conf_level = c(
-        "1 %", "1 %", "1 %", "1 %", "1 %",
-        "1 %", "1 %", "1 %", "1 %", "1 %", "1 %", "1 %", "1 %", "1 %",
-        "1 %", "1 %", "1 %", "1 %", "1 %", "1 %"
-      ), hpdi = c(
-        "[18]",
-        "[15]", "[5]", "[20]", "[10]", "[11]", "[8]", "[7]", "[3]",
-        "[14]", "[2]", "[17]", "[12]", "[19]", "[13]", "[1]", "[9]",
-        "[16]", "[4]", "[6]"
-      ), central_interval = c(
-        "[18]", "[15]",
-        "[5]", "[20]", "[10]", "[11,11]", "[8]", "[7]", "[3]", "[14]",
-        "[2]", "[17]", "[12,12]", "[19]", "[13,13]", "[1]", "[9]",
-        "[16]", "[4]", "[6]"
-      )
-    ), row.names = c(NA, -20L), class = "data.frame")
+  pi <- compute_posterior_intervals(mod)
+  expect_equal(pi$hpdi[[3]], "[0.536,0.766]")
+  expect_equal(pi$central_interval[[2]], "[1.263,1.846]")
+
+  pi <- compute_posterior_intervals(mod, parameter = "rho")
+  expect_equal(unique(pi$cluster), factor(paste("Cluster", 1:3)))
+
+  pi <- compute_posterior_intervals(mod,
+    parameter = "cluster_probs",
+    level = .96, decimals = 4
+  )
+  expect_equal(pi$hpdi[[2]], "[0.3623,0.5374]")
+  expect_equal(pi$central_interval[[1]], "[0.2129,0.3812]")
+})
+
+test_that("compute_posterior_intervals works for SMC", {
+  set.seed(123)
+  mod1 <- compute_mallows(
+    setup_rank_data(potato_visual[1:2, ]),
+    compute_options = set_compute_options(burnin = 200)
+  )
+  mod2 <- update_mallows(mod1, new_data = setup_rank_data(potato_visual[3:9, ]))
+
+  pi <- compute_posterior_intervals(mod2)
+  expect_equal(pi$parameter, "alpha")
+  expect_equal(pi$median, "2.744")
+  expect_equal(pi$hpdi, "[2.015,3.476]")
+  expect_equal(pi$central_interval, "[2.047,3.530]")
+
+  mod3 <- update_mallows(
+    mod2,
+    new_data = setup_rank_data(potato_visual[10:12, ])
   )
 
-  set.seed(22)
-  m <- compute_mallows(potato_visual, nmc = 10, n_clusters = 2)
-  expect_equal(
-    compute_posterior_intervals(m, burnin = 8),
-    structure(list(cluster = structure(1:2, levels = c(
-      "Cluster 1",
-      "Cluster 2"
-    ), class = "factor"), parameter = c("alpha", "alpha"), mean = c(0.605, 1.299), median = c(0.605, 1.299), conf_level = c(
-      "95 %",
-      "95 %"
-    ), hpdi = c("[0.589,0.621]", "[1.246,1.352]"), central_interval = c(
-      "[0.589,0.620]",
-      "[1.249,1.349]"
-    )), row.names = c(NA, -2L), class = "data.frame")
+  pi <- compute_posterior_intervals(mod3, decimals = 2)
+  expect_equal(pi$hpdi, "[2.18,3.75]")
+  pi <- compute_posterior_intervals(mod3, parameter = "rho")
+  expect_equal(pi$hpdi[[20]], "[1,5]")
+
+  expect_error(
+    compute_posterior_intervals(mod3, parameter = "cluster_probs"),
+    "'arg' should be one of"
   )
 })

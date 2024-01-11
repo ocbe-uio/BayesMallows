@@ -3,26 +3,15 @@
 
 using namespace arma;
 
-// via the depends attribute we tell Rcpp to create hooks for
-// RcppArmadillo so that the build process will know what to do
-//
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
-//' Compute importance sampling estimates of log partition function
-//' for footrule and Spearman distances.
-//'
-//' @param alpha_vector Vector of alpha values at which to compute partition function.
-//' @param n_items Integer specifying the number of ranked items.
-//' @param metric Distance measure of the target Mallows distribution. Defaults to \code{footrule}.
-//' @param nmc Number of Monte Carlo samples. Defaults to \code{1e4}.
-//'
-//' @keywords internal
-//'
 // [[Rcpp::export]]
-arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_items,
-                          std::string metric = "footrule", int nmc = 1e4
+arma::vec compute_importance_sampling_estimate(
+    arma::vec alpha_vector, int n_items,
+    std::string metric = "footrule", int nmc = 1e4
                           ) {
+  auto distfun = choose_distance_function(metric);
   // The dispersion parameter alpha comes as a vector value
   int n_alphas = alpha_vector.n_elem;
 
@@ -52,10 +41,11 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       double log_q = 0;
 
       // n_items random uniform numbers
-      vec u = log(randu(n_items));
+      vec u(n_items);
+      for(int i{}; i < n_items; i++) u(i) = std::log(R::runif(0, 1));
 
       // Loop over possible values given to item j in random order
-      ivec myind = randperm<ivec>(n_items);
+      ivec myind = Rcpp::sample(n_items, n_items) - 1;
 
       for(int j = 0; j < n_items; ++j){
         int jj = myind(j);
@@ -86,7 +76,7 @@ arma::vec compute_importance_sampling_estimate(arma::vec alpha_vector, int n_ite
       }
 
       // Increment the partition function
-      partfun(i) = - alpha / n_items * get_rank_distance(ranks, rho, metric) - log_q;
+      partfun(i) = - alpha / n_items * distfun->d(ranks, rho) - log_q;
     }
     // Average over the Monte Carlo samples
     // Using this trick: https://www.xarg.org/2016/06/the-log-sum-exp-trick-in-machine-learning/

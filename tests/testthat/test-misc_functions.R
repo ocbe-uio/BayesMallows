@@ -1,5 +1,3 @@
-context("Testing misc functions")
-
 test_that(
   "validate_permutation is correct",
   {

@@ -54,11 +54,13 @@ jobs:
               "inst/examples/plot_top_k_example.R",
               "inst/examples/plot.BayesMallows_example.R",
               "inst/examples/sample_mallows_example.R",
-              "data-raw/",
+              "data-raw",
               "tests/testthat.R",
-              "tests/",
+              "tests",
+              "vignettes-raw",
               "R/RcppExports.R",
               "vignettes/parallel_chains.Rmd",
+              "work-docs",
               "vignettes/SMC-Mallows.Rmd" = 19
             )
             style_rules <- list(

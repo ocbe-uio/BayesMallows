@@ -7,10 +7,10 @@
 plot_elbow(..., burnin = NULL)
 }
 \arguments{
-\item{...}{One or more objects returned from \code{\link{compute_mallows}},
+\item{...}{One or more objects returned from \code{\link[=compute_mallows]{compute_mallows()}},
 separated by comma, or a list of such objects. Typically, each object
 has been run with a different number of mixtures, as specified in the
-\code{n_clusters} argument to \code{\link{compute_mallows}}.}
+\code{n_clusters} argument to \code{\link[=compute_mallows]{compute_mallows()}}.}
 
 \item{burnin}{The number of iterations to discard as burnin. Either a vector of
 numbers, one for each model, or a single number which is taken to be the burnin for
@@ -27,14 +27,50 @@ consensus for different number of clusters. This function is useful for
 selecting the number of mixture.
 }
 \examples{
+# SIMULATED CLUSTER DATA
+set.seed(1)
+n_clusters <- seq(from = 1, to = 5)
+models <- compute_mallows_mixtures(
+  n_clusters = n_clusters, data = setup_rank_data(cluster_data),
+  compute_options = set_compute_options(nmc = 2000, include_wcd = TRUE))
+
+# There is good convergence for 1, 2, and 3 cluster, but not for 5.
+# Also note that there seems to be label switching around the 7000th iteration
+# for the 2-cluster solution.
+assess_convergence(models)
+# We can create an elbow plot, suggesting that there are three clusters, exactly
+# as simulated.
+plot_elbow(models, burnin = 1000)
+
+# We now fit a model with three clusters
+mixture_model <- compute_mallows(
+  data = setup_rank_data(cluster_data),
+  model_options = set_model_options(n_clusters = 3),
+  compute_options = set_compute_options(nmc = 2000))
+
+# The trace plot for this model looks good. It seems to converge quickly.
+assess_convergence(mixture_model)
+# We set the burnin to 500
+mixture_model$burnin <- 500
+
+# We can now look at posterior quantities
+# Posterior of scale parameter alpha
+plot(mixture_model)
+plot(mixture_model, parameter = "rho", items = 4:5)
+# There is around 33 \% probability of being in each cluster, in agreemeent
+# with the data simulating mechanism
+plot(mixture_model, parameter = "cluster_probs")
+# We can also look at a cluster assignment plot
+plot(mixture_model, parameter = "cluster_assignment")
+
 # DETERMINING THE NUMBER OF CLUSTERS IN THE SUSHI EXAMPLE DATA
 \dontrun{
   # Let us look at any number of clusters from 1 to 10
   # We use the convenience function compute_mallows_mixtures
   n_clusters <- seq(from = 1, to = 10)
-  models <- compute_mallows_mixtures(n_clusters = n_clusters,
-                                     rankings = sushi_rankings,
-                                     include_wcd = TRUE)
+  models <- compute_mallows_mixtures(
+    n_clusters = n_clusters, data = setup_rank_data(sushi_rankings),
+    compute_options = set_compute_options(include_wcd = TRUE))
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows
   # We can create an elbow plot
@@ -44,8 +80,10 @@ selecting the number of mixture.
 
   # Having chosen the number of clusters, we can now study the final model
   # Rerun with 5 clusters
-  mixture_model <- compute_mallows(rankings = sushi_rankings, n_clusters = 5,
-                                   include_wcd = TRUE)
+  mixture_model <- compute_mallows(
+    rankings = sushi_rankings,
+    model_options = set_model_options(n_clusters = 5),
+    compute_options = set_compute_options(include_wcd = TRUE))
   # Delete the models object to free some memory
   rm(models)
   # Set the burnin
@@ -78,9 +116,11 @@ selecting the number of mixture.
   library(parallel)
   cl <- makeCluster(detectCores() - 1)
   n_clusters <- seq(from = 1, to = 10)
-  models <- compute_mallows_mixtures(n_clusters = n_clusters,
-                                     rankings = sushi_rankings,
-                                     include_wcd = TRUE, cl = cl)
+  models <- compute_mallows_mixtures(
+    n_clusters = n_clusters,
+    rankings = sushi_rankings,
+    compute_options = set_compute_options(include_wcd = TRUE),
+    cl = cl)
   stopCluster(cl)
 }
 
@@ -88,22 +128,15 @@ selecting the number of mixture.
 
 }
 \seealso{
-\code{\link{compute_mallows}}
-
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
-\code{\link{compute_consensus.BayesMallows}()},
-\code{\link{compute_consensus.SMCMallows}()},
 \code{\link{compute_consensus}()},
-\code{\link{compute_posterior_intervals.BayesMallows}()},
-\code{\link{compute_posterior_intervals.SMCMallows}()},
 \code{\link{compute_posterior_intervals}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},
 \code{\link{plot.SMCMallows}()},
 \code{\link{plot_top_k}()},
 \code{\link{predict_top_k}()},
-\code{\link{print.BayesMallowsMixtures}()},
 \code{\link{print.BayesMallows}()}
 }
 \concept{posterior quantities}

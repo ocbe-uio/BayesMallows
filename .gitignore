@@ -4,9 +4,9 @@
 .DS_Store
 .Ruserdata
 inst/doc
-work-docs/
 doc
 Meta
 /doc/
 /Meta/
 docs
+work-docs/*smc_updated*

@@ -1,8 +1,8 @@
 #' Convert between ranking and ordering.
 #'
-#' \code{create_ranking} takes a vector or matrix of ordered items \code{orderings} and
+#' `create_ranking` takes a vector or matrix of ordered items `orderings` and
 #' returns a corresponding vector or matrix of ranked items.
-#' \code{create_ordering} takes a vector or matrix of rankings \code{rankings} and
+#' `create_ordering` takes a vector or matrix of rankings `rankings` and
 #' returns a corresponding vector or matrix of ordered items.
 #'
 #' @param orderings A vector or matrix of ordered items. If a matrix, it should be of
@@ -11,7 +11,7 @@
 #' @param rankings A vector or matrix of ranked items. If a matrix, it should be N
 #'   times n, where N is the number of samples and n is the number of items.
 #'
-#' @return A vector or matrix of rankings. Missing orderings coded as \code{NA} are propagated into corresponding missing ranks and vice versa.
+#' @return A vector or matrix of rankings. Missing orderings coded as `NA` are propagated into corresponding missing ranks and vice versa.
 #'
 #' @family rank functions
 #'
@@ -38,10 +38,6 @@
 #' orderings_2 <- create_ordering(rankings)
 #' # Confirm that we get back what we had
 #' all.equal(orderings, orderings_2)
-#' @name rank_conversion
-NULL
-
-#' @describeIn rank_conversion Convert from ordering to ranking.
 #' @export
 create_ranking <- function(orderings) {
   # Check that it is a permutation
@@ -82,7 +78,7 @@ create_ranking <- function(orderings) {
   }
 }
 
-#' @describeIn rank_conversion Convert from ranking to ordering.
+#' @rdname create_ranking
 #' @export
 create_ordering <- function(rankings) {
   create_ranking(rankings)

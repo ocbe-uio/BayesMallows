@@ -22,9 +22,9 @@ knitr::opts_chunk$set(
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BayesMallows)](https://cran.r-project.org/package=BayesMallows)
 [![R-CMD-check](https://github.com/ocbe-uio/BayesMallows/workflows/R-CMD-check/badge.svg)](https://github.com/ocbe-uio/BayesMallows/actions)
 [![Codecov test coverage](https://codecov.io/gh/ocbe-uio/BayesMallows/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ocbe-uio/BayesMallows?branch=master)
-[![CodeFactor](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/badge/develop)](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/overview/develop)
+[![CodeFactor](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/badge/master)](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/overview/master)
 
-This package provides a general framework for analyzing rank and preference data based on the Bayesian Mallows model first described in @vitelli2018.
+This package provides a general framework for analyzing rank and preference data based on the Bayesian Mallows model.
 
 ## Installation
 
@@ -47,12 +47,20 @@ To get started, load the package with
 
 ```{r}
 library(BayesMallows)
+set.seed(123)
 ```
 
-The package comes with several example datasets. The simplest one contains 12 persons' assessments of the weights of 20 potatoes, either by visual inspection (`potato_visual`) or by lifting the potatoes and comparing their relative weights by hand (`potato_weighing`). To fit a Bayesian Mallows model on the `potato_visual` dataset, we do
+
+
+The package comes with several example datasets. The simplest one contains 12 persons' assessments of the weights of 20 potatoes, either by visual inspection (`potato_visual`) or by lifting the potatoes and comparing their relative weights by hand (`potato_weighing`). 
+
+### Metropolis-Hastings Algorithm
+
+To fit a Bayesian Mallows model on the `potato_visual` dataset using the Metropolis-Hastings algorithm first described in @vitelli2018, we do
 
 ```{r}
-fit <- compute_mallows(potato_visual)
+potato_data <- setup_rank_data(potato_visual)
+fit <- compute_mallows(data = potato_data)
 ```
 
 Next, we can see a diagnostic plot for the Metropolis-Hastings algorithm with `assess_convergence()`. The plot below is for the scale parameter, which measures the variation between the individual rankings.
@@ -64,11 +72,30 @@ assess_convergence(fit)
 Setting the burnin to 500, we obtain a plot of the posterior distribution of the scale parameter with:
 
 ```{r}
-plot(fit, burnin = 500)
+fit$burnin <- 500
+plot(fit)
 ```
 
 
-For more examples, please our [R Journal paper](https://journal.r-project.org/archive/2020/RJ-2020-026/index.html), and the function documentation. The use of parallel chains are described in [this vignette](https://ocbe-uio.github.io/BayesMallows/articles/parallel_chains.html).
+For more examples, please see our [the introductory vignette](https://ocbe-uio.github.io/BayesMallows/articles/BayesMallows.html), and the function documentation. The use of parallel chains are described in [this vignette](https://ocbe-uio.github.io/BayesMallows/articles/parallel_chains.html).
+
+### Sequential Monte Carlo Algorithm
+
+The package also supports updating a Bayesian Mallows model using sequential Monte Carlo, with the algorithm described in @steinSequentialInferenceMallows2023. For example, in order to update the model fitted above with the potato ranks based on comparing their relative weights by hand, we do
+
+```{r}
+new_data <- setup_rank_data(rankings = potato_weighing)
+updated_fit <- update_mallows(model = fit, new_data = new_data)
+```
+
+We can go on to plot the posterior distribution of the scale parameter for this updated model.
+
+```{r}
+plot(updated_fit)
+```
+
+Sequential Monte Carlo can typically be useful when new data arrives in batches, as it does not require the Metropolis-Hastings algorithm to be rerun. See [this vignette](https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html) for more information.
+
 
 ## The Bayesian Mallows Model
 

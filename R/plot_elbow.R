@@ -4,22 +4,20 @@
 #' consensus for different number of clusters. This function is useful for
 #' selecting the number of mixture.
 #'
-#' @param ... One or more objects returned from \code{\link{compute_mallows}},
+#' @param ... One or more objects returned from [compute_mallows()],
 #' separated by comma, or a list of such objects. Typically, each object
 #' has been run with a different number of mixtures, as specified in the
-#' \code{n_clusters} argument to \code{\link{compute_mallows}}.
+#' `n_clusters` argument to [compute_mallows()].
 #'
 #' @param burnin The number of iterations to discard as burnin. Either a vector of
 #' numbers, one for each model, or a single number which is taken to be the burnin for
-#' all models. If each model provided has a \code{burnin} element, then this is taken
+#' all models. If each model provided has a `burnin` element, then this is taken
 #' as the default.
 #'
 #' @return A boxplot with the number of clusters on the horizontal axis and the
 #' with-cluster sum of distances on the vertical axis.
 #'
 #' @export
-#'
-#' @seealso \code{\link{compute_mallows}}
 #'
 #' @example /inst/examples/compute_mallows_mixtures_example.R
 #' @family posterior quantities
@@ -43,11 +41,14 @@ plot_elbow <- function(..., burnin = NULL) {
       }
     }
 
-    if (is.null(x$within_cluster_distance)) {
+    if (length(unique(x$within_cluster_distance$iteration)) != x$nmc) {
       stop("To get an elbow plot, set include_wcd=TRUE in compute_mallows")
     }
 
-    df <- x$within_cluster_distance[x$within_cluster_distance$iteration > x$burnin, , drop = FALSE]
+    df <- x$within_cluster_distance[
+      x$within_cluster_distance$iteration > x$burnin, ,
+      drop = FALSE
+    ]
 
     if (nrow(df) <= 0) stop("burnin must be strictly smaller than the number of MCMC samples")
 

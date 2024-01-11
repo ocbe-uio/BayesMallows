@@ -16,3 +16,5 @@ LICENSE
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^vignettes-raw$
+rebuild-long-running-vignettes.R

@@ -3,8 +3,7 @@
 \docType{data}
 \name{potato_visual}
 \alias{potato_visual}
-\title{Result of ranking potatoes by weight, where the assessors were only allowed
-to inspected the potatoes visually. 12 assessors ranked 20 potatoes.}
+\title{Potato weights assessed visually}
 \format{
 An object of class \code{matrix} (inherits from \code{array}) with 12 rows and 20 columns.
 }
@@ -21,9 +20,10 @@ to inspected the potatoes visually. 12 assessors ranked 20 potatoes.
 \seealso{
 Other datasets: 
 \code{\link{beach_preferences}},
+\code{\link{bernoulli_data}},
+\code{\link{cluster_data}},
 \code{\link{potato_true_ranking}},
 \code{\link{potato_weighing}},
-\code{\link{sample_dataset}},
 \code{\link{sushi_rankings}}
 }
 \concept{datasets}
