@@ -26,9 +26,8 @@ Rcpp::List  run_smc(
   auto pfun = choose_partition_function(
     dat.n_items, metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(metric);
-  auto pseudo_aug_distance = aug.aug_method == "uniform" ? nullptr : choose_distance_function(aug.pseudo_aug_metric);
   auto pvec = initialize_particles(data, initial_values, smc_options, aug, dat);
-  aug.reweight(pvec, dat, pfun, distfun, pseudo_aug_distance);
+  aug.reweight(pvec, dat, pfun, distfun);
   pars.resample(pvec);
 
   for (size_t ii{}; ii < pvec.size(); ++ii) {
@@ -36,7 +35,7 @@ Rcpp::List  run_smc(
       dat.update_data(pvec[ii]);
       pars.update_rho(pvec[ii], dat, distfun);
       pars.update_alpha(pvec[ii], dat, pfun, distfun, pris);
-      aug.update_missing_ranks(pvec[ii], dat, distfun, pseudo_aug_distance);
+      aug.update_missing_ranks(pvec[ii], dat, distfun);
     }
   }
 

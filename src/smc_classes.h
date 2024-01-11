@@ -58,17 +58,14 @@ struct SMCAugmentation {
       std::vector<Particle>& pvec,
       const SMCData& dat,
       const std::unique_ptr<PartitionFunction>& pfun,
-      const std::unique_ptr<Distance>& distfun,
-      const std::unique_ptr<Distance>& pseudo_aug_distance);
+      const std::unique_ptr<Distance>& distfun);
 
   void augment_partial(
       std::vector<Particle>& pvec,
-      const SMCData& dat,
-      const std::unique_ptr<Distance>& pseudo_aug_distance);
+      const SMCData& dat);
 
   void update_missing_ranks(Particle& p, const SMCData& dat,
-      const std::unique_ptr<Distance>& distfun,
-      const std::unique_ptr<Distance>& pseudo_aug_distance);
+      const std::unique_ptr<Distance>& distfun);
 
   void resample(const arma::uvec& index, const SMCData& dat);
   const arma::umat missing_indicator;
