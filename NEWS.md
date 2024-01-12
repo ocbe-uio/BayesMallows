@@ -1,5 +1,8 @@
 # BayesMallows (development versions)
 
+* Large refactoring with several breaking changes. See vignettes and 
+  documentation for details.
+
 # BayesMallows 1.5.0
 
 * Bug in plot.BayesMallows for posterior distribution with 'parameter = "rho"'
