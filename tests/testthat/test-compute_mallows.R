@@ -1,236 +1,90 @@
-context("Testing compute_mallows")
-
-test_that("miscellaneous input validation", {
-  namat <- potato_visual
-  namat[c(1, 2, 3), c(7, 9)] <- NA_real_
-  expect_error(compute_mallows(rankings = namat, na_action = "fail"))
-  expect_output(
-    compute_mallows(rankings = namat, nmc = 2, na_action = "omit"),
-    "Omitting 9 rows from rankings due to NA values"
+cl <- parallel::makeCluster(2)
+test_that("compute_mallows works with seed in parallel", {
+  set.seed(1)
+  mod <- compute_mallows(
+    data = setup_rank_data(potato_visual),
+    compute_options = set_compute_options(nmc = 10),
+    cl = cl
   )
-  expect_s3_class(compute_mallows(rankings = namat, na_action = "augment", nmc = 3), "BayesMallows")
-  expect_s3_class(compute_mallows(rankings = namat, nmc = 3), "BayesMallows")
-  expect_error(compute_mallows(nmc = 1000, alpha_prop_sd = 1))
-  expect_error(compute_mallows(rankings = potato_visual, nmc = 100, alpha_jump = 102))
-  expect_error(compute_mallows(rankings = potato_visual, lambda = 0))
-  expect_error(compute_mallows(rankings = potato_visual, lambda = -10))
-  expect_error(compute_mallows(rankings = potato_visual, nmc = 100, rho_thinning = 200))
-  expect_error(compute_mallows(rankings = potato_visual, nmc = 100, aug_thinning = 200))
-  expect_error(compute_mallows(rankings = potato_visual, nmc = -100))
+  expect_equal(mod$rho$value[[145]], 7)
+  expect_equal(mod$rho$value[[89]], 14)
+  expect_true(all(apply(mod$rho_samples, 3, validate_permutation)))
 })
 
-test_that("rho_init is properly validated", {
-  m <- potato_visual
-  expect_error(compute_mallows(rankings = m, rho_init = 1:(ncol(m) - 1)))
-  expect_error(compute_mallows(rankings = m, rho_init = c(potato_true_ranking[-1], 22)))
-  expect_error(compute_mallows(rankings = m, rho_init = c(NA_real_, 2:ncol(m))))
-  expect_error(compute_mallows(rankings = m, obs_freq = -1))
-  expect_error(compute_mallows(rankings = m, obs_freq = 1))
-  expect_error(compute_mallows(rankings = m, obs_freq = 1:11))
-})
-
-test_that("compute_mallows discovers inconsistent rankings", {
-  expect_error(compute_mallows(
-    rankings = matrix(c(
-      1, 2, -3,
-      1, 2, 3
-    ), nrow = 2, byrow = TRUE)
-  ))
-  expect_error(compute_mallows(
-    rankings = matrix(c(
-      1, 2, 3,
-      1, 2, 2
-    ), nrow = 2, byrow = TRUE)
-  ))
-})
-
-
-test_that("compute_mallows error model works", {
-  preferences <- data.frame(
-    assessor = c(1, 1, 2, 2),
-    bottom_item = c(1, 2, 1, 2),
-    top_item = c(2, 1, 2, 3)
+test_that("compute_mallows works with initial values and clusters", {
+  set.seed(1)
+  mod <- compute_mallows(
+    setup_rank_data(potato_visual),
+    model_options = set_model_options(n_clusters = 3),
+    compute_options = set_compute_options(nmc = 10),
+    initial_values = set_initial_values(alpha_init = c(2, 3)),
+    cl = cl
   )
-  expect_error(invisible(capture.output(compute_mallows(preferences = preferences, nmc = 10))))
-  expect_s3_class(
-    compute_mallows(preferences = preferences, error_model = "bernoulli", nmc = 10),
-    "BayesMallows"
+  expect_true(
+    all(subset(mod$alpha, chain == 1 & iteration == 1)$value == 2)
+  )
+  expect_true(
+    all(subset(mod$alpha, chain == 2 & iteration == 1)$value == 3)
   )
 })
+parallel::stopCluster(cl)
 
-test_that("compute_mallows with single missing value works", {
-  dd <- potato_visual
-  dd[1, 1] <- NA
-  dd[2, 3] <- NA
-  m <- compute_mallows(dd, nmc = 4, seed = 123L)
-  expect_equal(
-    m$alpha,
-    structure(list(
-      chain = structure(c(1L, 1L, 1L, 1L), levels = "1", class = "factor"),
-      cluster = structure(c(1L, 1L, 1L, 1L), levels = "Cluster 1", class = "factor"),
-      iteration = c(1, 2, 3, 4), value = c(
-        1, 0.986228529947352,
-        0.834184330130122, 0.81366346172066
-      )
-    ), row.names = c(
-      NA,
-      -4L
-    ), class = "data.frame")
+test_that("compute_mallows fails properly", {
+  expect_error(
+    compute_mallows(
+      data = setup_rank_data(
+        cbind(potato_visual, potato_visual + 20, potato_visual + 40)
+      ),
+      model_options = set_model_options(metric = "spearman")
+    ),
+    "Exact partition function not known."
+  )
+
+  expect_error(
+    compute_mallows(data = potato_visual),
+    "data must be an object of class BayesMallowsData"
+  )
+
+  prefs <- data.frame(
+    assessor = 1, bottom_item = c(1, 2, 3), top_item = c(2, 1, 2)
+  )
+  expect_error(
+    compute_mallows(setup_rank_data(preferences = prefs)),
+    "Intransitive pairwise comparisons. Please specify an error model."
+  )
+
+  expect_error(
+    compute_mallows(
+      data = setup_rank_data(potato_visual),
+      initial_values = set_initial_values(rho_init = rnorm(20))
+    ),
+    "rho_init must be a proper permutation"
+  )
+
+  expect_error(
+    compute_mallows(
+      data = setup_rank_data(potato_visual),
+      initial_values = set_initial_values(rho_init = 1:3)
+    ),
+    "initial value for rho must have one value per item"
   )
 })
 
-test_that("compute_mallows with missing data works", {
-  mat <- potato_visual * ifelse(runif(length(potato_visual)) > 0.8, NA_real_, 1)
-  m <- compute_mallows(rankings = mat, nmc = 30)
-  expect_gt(sd(m$rho$value), 0)
-  expect_gt(sd(m$alpha$value), 0.001)
-  expect_s3_class(m, "BayesMallows")
+test_that("compute_mallows is platform independent", {
+  set.seed(1)
+  mod <- compute_mallows(setup_rank_data(potato_visual))
+  expect_equal(mod$alpha$value[1998], 10.2019196814125)
+
+  dat <- potato_visual
+  dat[dat > 5] <- NA
+  mod <- compute_mallows(setup_rank_data(dat))
+  expect_equal(mod$alpha$value[1998], 7.26333324707436)
 })
 
-
-test_that("compute_mallows runs with the right distances", {
-  for (metric in c("footrule", "spearman", "cayley", "kendall", "ulam", "hamming")) {
-    expect_s3_class(compute_mallows(potato_visual, metric = metric, nmc = 3), "BayesMallows")
-  }
-})
-
-test_that("compute_mallows handles integer preferences", {
-  set.seed(123)
-  m <- subset(
-    beach_preferences,
-    top_item %in% c(1, 2, 3) | bottom_item %in% c(1, 2, 3)
+test_that("compute_mallows gives prior samples", {
+  mod <- compute_mallows(
+    data = setup_rank_data(rankings = matrix(nrow = 0, ncol = 10)),
+    compute_options = set_compute_options(nmc = 10)
   )
-  m[sample(nrow(m), 20), , ]
-  for (col in names(m)) {
-    eval(parse(text = paste("m$", col, "<- as.integer(m$", col, ")")))
-  }
-
-  expect_s3_class(compute_mallows(preferences = m, nmc = 20), "BayesMallows")
-})
-
-test_that("compute_mallows handles data with lots of missings", {
-  R_partial2 <- structure(c(
-    NA, NA, NA, NA, NA, NA, 9, NA, NA, 7, NA, NA, NA,
-    NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
-    NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
-    NA, NA, NA, NA, NA, NA, NA, 7, 8, 10, NA, NA, 9, NA, NA, NA,
-    NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 6, NA, 5, 2,
-    6, 5, 6, 6, 5, 7, 8, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
-    NA, NA, 3, 4, NA, 3, 3, 3, 3, 4, 5, 3, 3, 3, NA, 3, 3, 4, NA,
-    7, 8, 3, 3, 10, 5, 4, NA, NA, NA, 8, NA, NA, NA, NA, NA, 11,
-    NA, NA, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 2, 4, 2,
-    2, 2, 4, 2, 2, 2, NA, NA, 4, 7, 5, 4, 6, 7, 2, 6, 6, 7, NA, NA,
-    NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 9,
-    7, 8, NA, 8, 10, 6, NA, 5, NA, 6, 6, 5, 4, 5, NA, 4, 4, 5, NA,
-    NA, NA, NA, 8, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
-    NA, NA, NA, NA, NA, 8, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
-    NA, 9, NA
-  ), .Dim = c(12L, 20L))
-
-  m <- compute_mallows(R_partial2)
-  expect_s3_class(assess_convergence(m), "gg")
-})
-
-test_that("compute_mallows treats obs_freq properly", {
-  m1 <- compute_mallows(
-    rankings = potato_visual,
-    obs_freq = rep(1, nrow(potato_visual)), seed = 2233
-  )
-  m2 <- compute_mallows(rankings = potato_visual, seed = 2233)
-  expect_equal(m1, m2)
-
-  # Test with repeated beach preferences
-  obs_freq <- c(2, 1, 4)
-
-  beach_small <- subset(beach_preferences, assessor %in% c(1, 2, 3))
-
-  # Next, we create a new hypthetical beach_preferences dataframe where each
-  # assessor is replicated 1-4 times
-
-  beach_pref_rep <- do.call(rbind, lapply(split(beach_small, f = seq_len(nrow(beach_small))), function(dd) {
-    ret <- merge(
-      dd,
-      data.frame(new_assessor = seq_len(obs_freq[dd$assessor])),
-      all = TRUE
-    )
-    ret$assessor <- paste(ret$assessor, ret$new_assessor, sep = ",")
-    ret$new_assessor <- NULL
-    ret
-  }))
-
-
-  # We generate transitive closure for these preferences
-  beach_tc_rep <- generate_transitive_closure(beach_pref_rep)
-
-  # We generate the initial rankings for the repeated and the "unrepeated"
-  # data
-  set.seed(1223)
-  beach_tc <- generate_transitive_closure(beach_small)
-  beach_rankings <- generate_initial_ranking(beach_tc, n_items = 15)
-  beach_rankings_rep <- generate_initial_ranking(beach_tc_rep, n_items = 15)
-
-  model_fit_obs_freq <- compute_mallows(
-    rankings = beach_rankings,
-    preferences = beach_tc,
-    obs_freq = obs_freq,
-    save_aug = TRUE,
-    nmc = 10, seed = 3344L
-  )
-
-  expect_equal(
-    model_fit_obs_freq$rho$value,
-    c(
-      15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 4, 12,
-      13, 9, 6, 2, 14, 3, 8, 11, 1, 10, 7, 5, 15, 4, 12, 13, 8, 6,
-      2, 14, 3, 9, 11, 1, 10, 7, 5, 15, 4, 12, 13, 9, 6, 2, 14, 3,
-      8, 11, 1, 10, 7, 5, 15, 4, 12, 13, 9, 6, 2, 14, 3, 8, 11, 1,
-      10, 7, 5, 15, 5, 12, 13, 9, 6, 2, 14, 4, 8, 11, 1, 10, 7, 3,
-      15, 5, 12, 13, 9, 6, 2, 14, 4, 8, 10, 1, 11, 7, 3, 15, 4, 12,
-      13, 9, 5, 2, 14, 7, 8, 10, 1, 11, 6, 3, 14, 4, 12, 13, 9, 5,
-      2, 15, 7, 8, 10, 1, 11, 6, 3, 14, 4, 12, 13, 9, 6, 2, 15, 5,
-      8, 10, 1, 11, 7, 3
-    )
-  )
-
-  expect_equal(
-    model_fit_obs_freq$alpha$value,
-    c(
-      1, 1.07422639598934, 0.867111587670556, 0.870763091397458,
-      0.814708756686028, 0.763045119115647, 0.775326303198559, 0.695442598519739,
-      0.67554927571174, 0.600167230862289
-    )
-  )
-
-  # Next for the repeated data.
-  model_fit_rep <- compute_mallows(
-    rankings = beach_rankings_rep,
-    preferences = beach_tc_rep,
-    save_aug = TRUE,
-    nmc = 10, seed = 3344L
-  )
-
-
-  expect_equal(
-    model_fit_rep$rho$value,
-    c(
-      15, 4, 12, 13, 8, 6, 2, 14, 3, 11, 10, 1, 9, 7, 5, 15, 3, 12,
-      13, 8, 6, 4, 14, 2, 11, 10, 1, 9, 7, 5, 15, 3, 12, 13, 8, 6,
-      4, 14, 2, 11, 10, 1, 9, 7, 5, 15, 3, 12, 13, 8, 5, 4, 14, 2,
-      11, 10, 1, 9, 7, 6, 15, 2, 12, 13, 8, 5, 4, 14, 3, 11, 10, 1,
-      9, 7, 6, 12, 2, 13, 14, 8, 5, 4, 15, 3, 11, 10, 1, 9, 7, 6, 11,
-      2, 13, 14, 8, 5, 4, 15, 3, 10, 9, 1, 12, 7, 6, 12, 2, 11, 14,
-      8, 5, 4, 15, 3, 10, 9, 1, 13, 7, 6, 12, 2, 11, 14, 9, 5, 4, 15,
-      3, 10, 8, 1, 13, 7, 6, 12, 2, 11, 14, 9, 5, 4, 15, 3, 10, 8,
-      1, 13, 7, 6
-    )
-  )
-
-  expect_equal(
-    model_fit_rep$alpha$value,
-    c(
-      1, 1.09844540139283, 0.991042262448225, 0.902332143366064,
-      1.00941552183767, 1.05591659293716, 1.2025606578257, 1.16106661791628,
-      1.25137708104917, 1.0752293035996
-    )
-  )
+  expect_s3_class(mod, "BayesMallows")
 })

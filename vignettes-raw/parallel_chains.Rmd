@@ -1,0 +1,185 @@
+---
+title: "MCMC with Parallel Chains"
+output: 
+  rmarkdown::html_vignette:
+    fig_width: 6
+    fig_height: 4
+bibliography: ../inst/REFERENCES.bib
+link-citations: yes
+vignette: >
+  %\VignetteIndexEntry{MCMC with Parallel Chains}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "",
+  error = FALSE
+)
+```
+
+
+```{r setup}
+library(BayesMallows)
+set.seed(123)
+```
+
+This vignette describes how to run Markov chain Monte Carlo with parallel chains. For an introduction to the "BayesMallows" package, please see [the introductory vignette](https://ocbe-uio.github.io/BayesMallows/articles/BayesMallows.html), which is an updated version of @sorensen2020. For parallel processing of particles with the sequential Monte Carlo algorithm of @steinSequentialInferenceMallows2023, see the [SMC vignette](https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html).
+
+
+## Why Parallel Chains?
+
+Modern computers have multiple cores, and on computing clusters one can get access to hundreds of cores easily. By running Markov Chains in parallel on $K$ cores, ideally from different starting points, we achieve at least the following:
+
+1. The time you have to wait to get the required number of post-burnin samples scales like $1/K$.
+
+2. You can check convergence by comparing chains.
+
+
+
+## Parallel Chains with Complete Rankings
+
+In "BayesMallows" we use the "parallel" package for parallel computation. Parallelization is obtained by starting a cluster and providing it as an argument. Note that we also give one initial value of the dispersion parameter $\alpha$ to each chain.
+
+```{r}
+library(parallel)
+cl <- makeCluster(4)
+fit <- compute_mallows(
+  data = setup_rank_data(rankings = potato_visual), 
+  compute_options = set_compute_options(nmc = 5000),
+  cl = cl
+)
+stopCluster(cl)
+```
+
+We can assess convergence in the usual way:
+
+```{r parallel_assess_convergence_alpha, fig.cap="Trace plot of scale parameter for four chains.", fig.height=3}
+assess_convergence(fit)
+```
+
+We can also assess convergence for the latent ranks $\boldsymbol{\rho}$. Since the initial value of $\boldsymbol{\rho}$ is sampled uniformly, the two chains automatically get different initial values.
+
+```{r parallel_assess_convergence_rho, fig.cap="Trace plot of modal ranking for four chains."}
+assess_convergence(fit, parameter = "rho", items = 1:3)
+```
+
+Based on the convergence plots, we set the burnin to 3000. 
+
+```{r}
+fit$burnin <- 3000
+```
+
+We can now use all the tools for assessing the posterior distributions as usual. The post-burnin samples for all parallel chains are simply combined, as they should be.
+
+Below is a plot of the posterior distribution of $\alpha$.
+
+```{r parallel_posterior_alpha, fig.cap="Posterior of scale parameter, combing post-burnin samples from all chains.", fig.height=2, fig.width=4}
+plot(fit)
+```
+
+Next is a plot of the posterior distribution of $\boldsymbol{\rho}$.
+
+
+```{r parallel_posterior_rho, fig.cap="Posterior of modal ranking, combing post-burnin samples from all chains."}
+plot(fit, parameter = "rho", items = 4:7)
+```
+
+## Parallel Chains with Pairwise Preferences
+
+
+A case where parallel chains might be more strongly needed is with incomplete data, e.g., arising from pairwise preferences. In this case the MCMC algorithm needs to perform data augmentation, which tends to be both slow and sticky. We illustrate this with the beach preference data, again referring to @sorensen2020 for a more thorough introduction to the aspects not directly related to parallelism.
+
+
+```{r}
+beach_data <- setup_rank_data(preferences = beach_preferences)
+```
+
+We run four parallel chains, letting the package generate random initial rankings, but again providing a vector of initial values for $\alpha$.
+
+```{r}
+cl <- makeCluster(4)
+fit <- compute_mallows(
+  data = beach_data,
+  compute_options = set_compute_options(nmc = 4000, save_aug = TRUE),
+  initial_values = set_initial_values(alpha_init = runif(4, 1, 4)),
+  cl = cl
+)
+stopCluster(cl)
+```
+
+### Trace Plots
+
+The convergence plots shows some long-range autocorrelation, but otherwise it seems to mix relatively well.
+
+```{r parallel_assess_converge_prefs_alpha, fig.cap="Trace plot of scale parameter for beach preferences data, on four chains.", fig.height=3}
+assess_convergence(fit)
+```
+
+Here is the convergence plot for $\boldsymbol{\rho}$:
+
+```{r parallel_assess_converge_prefs_rho, fig.cap="Trace plot of modal ranking for beach preferences data, on four chains."}
+assess_convergence(fit, parameter = "rho", items = 4:6)
+```
+
+To avoid overplotting, it's a good idea to pick a low number of assessors and chains. We here look at items 1-3 of assessors 1 and 2.
+
+```{r parallel_assess_convergence_prefs_rtilde, fig.cap="Trace plot of augmented rankings for beach preference data, on four chains."}
+assess_convergence(fit,
+  parameter = "Rtilde",
+  items = 1:3, assessors = 1:2
+)
+```
+
+### Posterior Quantities
+
+Based on the trace plots, the chains seem to be mixing well. We set the burnin to 1000.
+
+```{r}
+fit$burnin <- 1000
+```
+
+We can now study the posterior distributions. Here is the posterior for $\alpha$. Note that by increasing the `nmc` argument to `compute_mallows` above, the density would appear smoother. In this vignette we have kept it low to reduce the run time.
+
+```{r parallel_beach_prefs_alpha_posterior, fig.cap="Posterior distribution for scale parameter.", fig.height=2, fig.width=4}
+plot(fit)
+```
+
+We can also look at the posterior for $\boldsymbol{\rho}$.
+
+```{r parallel_beach_prefs_rho_posterior, fig.cap="Posterior distribution for modal rankings."}
+plot(fit, parameter = "rho", items = 6:9)
+```
+
+We can also compute posterior intervals in the usual way:
+
+```{r}
+compute_posterior_intervals(fit, parameter = "alpha")
+```
+
+```{r}
+compute_posterior_intervals(fit, parameter = "rho")
+```
+
+And we can compute the consensus ranking:
+
+```{r}
+compute_consensus(fit)
+```
+
+```{r}
+compute_consensus(fit, type = "MAP")
+```
+
+We can compute the probability of being top-$k$, here for $k=4$:
+
+```{r parallel_top_k, fig.cap="Probability of being top-4 for beach preference data."}
+plot_top_k(fit, k = 4)
+```
+
+
+
+# References

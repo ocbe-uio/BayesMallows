@@ -1,27 +1,15 @@
-#ifndef PAIRWISE_H
-#define PAIRWISE_H
+#pragma once
 
-void update_shape_bernoulli(
-    double& shape_1,
-    double& shape_2,
-    const double& kappa_1,
-    const double& kappa_2,
-    const arma::mat& rankings,
-    const Rcpp::List& constraints
-);
+#include "classes.h"
 
-void augment_pairwise(
-    arma::mat& rankings,
-    const arma::uvec& current_cluster_assignment,
-    const arma::vec& alpha,
-    const double& theta,
-    const arma::mat& rho,
-    const std::string& metric,
-    const Rcpp::List& constraints,
-    arma::vec& aug_acceptance,
-    const std::string& error_model,
-    const int& Lswap
-);
+arma::vec propose_pairwise_augmentation(
+    const arma::vec& ranking,
+    const doubly_nested& items_above,
+    const doubly_nested & items_below);
 
-
-#endif
+arma::vec propose_swap(
+    const arma::vec& ranking,
+    const doubly_nested& items_above,
+    const doubly_nested& items_below,
+    int& g_diff,
+    const int& swap_leap);

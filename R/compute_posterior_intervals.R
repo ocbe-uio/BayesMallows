@@ -5,15 +5,23 @@
 #'
 #' @param model_fit A model object.
 #'
-#' @param ... other arguments passed to methods.
+#' @param burnin A numeric value specifying the number of iterations to discard
+#'   as burn-in. Defaults to `model_fit$burnin`, and must be provided if
+#'   `model_fit$burnin` does not exist. See
+#'   [assess_convergence()].
+#' @param parameter Character string defining which parameter to compute
+#'   posterior intervals for. One of `"alpha"`, `"rho"`, or
+#'   `"cluster_probs"`. Default is `"alpha"`.
+#' @param level Decimal number in \eqn{[0,1]} specifying the confidence level.
+#'   Defaults to `0.95`.
+#' @param decimals Integer specifying the number of decimals to include in
+#'   posterior intervals and the mean and median. Defaults to `3`.
+#' @param ... Other arguments. Currently not used.
 #'
 #' @details This function computes both the Highest Posterior Density Interval (HPDI),
 #' which may be discontinuous for bimodal distributions, and
 #' the central posterior interval, which is simply defined by the quantiles of the posterior
-#' distribution. The HPDI intervals are computed using the \code{HDInterval} package
-#' \insertCite{meredith2018}{BayesMallows}.
-#'
-#' @seealso \code{\link{compute_mallows}}
+#' distribution.
 #'
 #' @references \insertAllCited{}
 #'
@@ -25,197 +33,112 @@ compute_posterior_intervals <- function(model_fit, ...) {
   UseMethod("compute_posterior_intervals")
 }
 
-
-#' Compute posterior intervals
-#'
-#' @param model_fit An object of class \code{BayesMallows} returned from
-#'   \code{\link{compute_mallows}}.
-#' @param burnin A numeric value specifying the number of iterations to discard
-#'   as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
-#'   \code{model_fit$burnin} does not exist. See
-#'   \code{\link{assess_convergence}}.
-#' @param parameter Character string defining which parameter to compute
-#'   posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
-#'   \code{"cluster_probs"}. Default is \code{"alpha"}.
-#' @param level Decimal number in \eqn{[0,1]} specifying the confidence level.
-#'   Defaults to \code{0.95}.
-#' @param decimals Integer specifying the number of decimals to include in
-#'   posterior intervals and the mean and median. Defaults to \code{3}.
-#' @param ... Other arguments. Currently not used.
-#'
-#' @seealso assess_convergence
 #' @export
-#' @family posterior quantities
+#' @rdname compute_posterior_intervals
 compute_posterior_intervals.BayesMallows <- function(
     model_fit, burnin = model_fit$burnin,
-    parameter = "alpha",
+    parameter = c("alpha", "rho", "cluster_probs"),
     level = 0.95, decimals = 3L, ...) {
-  stopifnot(inherits(model_fit, "BayesMallows"))
-
-  if (is.null(burnin)) {
-    stop("Please specify the burnin.")
-  }
-
+  if (is.null(burnin)) stop("Please specify the burnin.")
   stopifnot(burnin < model_fit$nmc)
 
-  if (length(parameter) > 1) stop("Only one parameter allowed.")
   parameter <- match.arg(
-    parameter,
-    c("alpha", "rho", "cluster_probs", "cluster_assignment")
+    parameter, c("alpha", "rho", "cluster_probs")
   )
 
   stopifnot(level > 0 && level < 1)
 
-  df <- model_fit[[parameter]][model_fit[[parameter]]$iteration > burnin, , drop = FALSE]
-  df$chain <- NULL
+  posterior_data <- model_fit[[parameter]][
+    model_fit[[parameter]]$iteration > burnin, ,
+    drop = FALSE
+  ]
 
   if (parameter == "alpha" || parameter == "cluster_probs") {
-    df <- .compute_posterior_intervals(split(df, f = df$cluster), parameter, level, decimals)
+    posterior_split <- split(posterior_data, f = posterior_data$cluster)
+
+    posterior_intervals <- do.call(rbind, lapply(posterior_split, function(x) {
+      data.frame(
+        parameter = parameter,
+        cluster = unique(x$cluster),
+        mean = format(round(mean(x$value), decimals), nsmall = decimals),
+        median = format(round(stats::median(x$value), decimals),
+          nsmall = decimals
+        ),
+        hpdi = compute_continuous_hpdi(x$value, level, decimals),
+        central_interval = compute_central_interval(x$value, level, decimals)
+      )
+    }))
   } else if (parameter == "rho") {
-    decimals <- 0
-    df <- .compute_posterior_intervals(
-      split(df, f = interaction(df$cluster, df$item)),
-      parameter, level, decimals,
-      discrete = TRUE
+    posterior_split <- split(
+      posterior_data,
+      f = list(posterior_data$item, posterior_data$cluster)
     )
+
+    posterior_intervals <- do.call(rbind, lapply(posterior_split, function(x) {
+      data.frame(
+        parameter = parameter,
+        cluster = unique(x$cluster),
+        item = unique(x$item),
+        mean = round(mean(x$value), 0),
+        median = round(stats::median(x$value), 0),
+        hpdi = compute_discrete_hpdi(x, level),
+        central_interval = compute_central_interval(x$value, level, 0)
+      )
+    }))
   }
 
-  if (model_fit$n_clusters == 1) df$cluster <- NULL
-
-  row.names(df) <- NULL
-  return(df)
+  if (model_fit$n_clusters == 1) posterior_intervals$cluster <- NULL
+  row.names(posterior_intervals) <- NULL
+  posterior_intervals
 }
 
-#' @title Compute posterior intervals
-#'
-#' @description This function computes posterior intervals based on the set of samples at the
-#' last timepoint of the SMC algorithm.
-#'
-#' @param model_fit An object of class \code{SMCMallows}, returned from
-#'   \code{\link{smc_mallows_new_item_rank}} or
-#'   \code{\link{smc_mallows_new_users}}.
-#' @param parameter Character string defining which parameter to compute
-#'   posterior intervals for. One of \code{"alpha"} or \code{"rho"}.
-#' @param level Decimal number in \eqn{[0,1]} specifying the confidence level.
-#'   Defaults to \code{0.95}.
-#' @param decimals Integer specifying the number of decimals to include in
-#'   posterior intervals and the mean and median. Defaults to \code{3}.
-#' @param ... Other arguments. Currently not used.
 #' @export
-#' @family posterior quantities
-#'
-#' @example inst/examples/smc_post_processing_functions_example.R
+#' @rdname compute_posterior_intervals
 compute_posterior_intervals.SMCMallows <- function(
-    model_fit, parameter = "alpha", level = 0.95,
+    model_fit, parameter = c("alpha", "rho"), level = 0.95,
     decimals = 3L, ...) {
-  if (length(parameter) > 1) stop("Only one parameter allowed.")
-  parameter <- match.arg(
-    parameter, c("alpha", "rho")
-  )
-
-  stopifnot(level > 0 && level < 1)
-
-  if (parameter == "alpha") {
-    tab <- data.frame(
-      value = model_fit$alpha_samples[, ncol(model_fit$alpha_samples), drop = TRUE]
-    )
-    tab$n_clusters <- 1
-    tab$cluster <- "Cluster 1"
-
-    tab <- .compute_posterior_intervals(
-      df = split(tab, f = tab$cluster),
-      parameter = parameter,
-      level = level,
-      decimals = decimals
-    )
-  } else if (parameter == "rho") {
-    tab <- smc_processing(
-      model_fit$rho_samples[, , dim(model_fit$rho_samples)[[3]], drop = TRUE]
-    )
-    tab$n_clusters <- 1
-    tab$cluster <- "Cluster 1"
-
-    tab <- .compute_posterior_intervals(
-      df = split(tab, f = interaction(tab$cluster, tab$item)),
-      parameter = parameter, level = level,
-      decimals = decimals, discrete = TRUE
-    )
-  }
-
-  if (length(unique(tab$cluster)) == 1) {
-    tab$cluster <- NULL
-  }
-
-  rownames(tab) <- NULL
-
-  return(tab)
+  model_fit$burnin <- 0
+  parameter <- match.arg(parameter, c("alpha", "rho"))
+  NextMethod("compute_posterior_intervals")
 }
 
-.compute_posterior_intervals <- function(df, parameter, level, decimals, discrete = FALSE, ...) {
-  do.call(rbind, lapply(df, function(x) {
-    format <- paste0("%.", decimals, "f")
-
-    posterior_mean <- round(base::mean(x$value), decimals)
-    posterior_median <- round(stats::median(x$value), decimals)
-
-    if (discrete) {
-      hpdi <- compute_discrete_hpdi(x, level)
-    } else {
-      hpdi <- HDInterval::hdi(x$value, credMass = level, allowSplit = TRUE)
-
-      hpdi[] <- sprintf(format, hpdi)
-      if (is.matrix(hpdi)) {
-        # Discontinous case
-        hpdi <- paste(apply(hpdi, 1, function(x) paste0("[", x[[1]], ",", x[[2]], "]")))
-      } else {
-        # Continuous case
-        hpdi <- paste0("[", hpdi[[1]], ",", hpdi[[2]], "]")
-      }
-    }
-
-    central <- unique(stats::quantile(x$value, probs = c((1 - level) / 2, level + (1 - level) / 2)))
-    central <- sprintf(format, central)
-    central <- paste0("[", paste(central, collapse = ","), "]")
-
-    ret <- data.frame(
-      parameter = parameter,
-      mean = posterior_mean,
-      median = posterior_median,
-      conf_level = paste(level * 100, "%"),
-      hpdi = hpdi,
-      central_interval = central
+compute_central_interval <- function(values, level, decimals) {
+  central <- unique(
+    stats::quantile(values,
+      probs = c((1 - level) / 2, level + (1 - level) / 2),
+      names = FALSE
     )
-
-    targets <- setdiff(names(x), c("iteration", "value", "n_clusters"))
-    for (nm in targets) {
-      eval(parse(text = paste0("ret$", nm, " <- unique(x$", nm, ")")))
-    }
-    ret[, c(targets, setdiff(names(ret), targets)), drop = FALSE]
-  }))
+  )
+  interval <- format(round(central, decimals), nsmall = decimals)
+  paste0("[", paste(trimws(interval), collapse = ","), "]")
 }
 
+# This function is derived from HDInterval::hdiVector
+# Copyright: Juat Ngumbang, Mike Meredith, and John Kruschke
+compute_continuous_hpdi <- function(values, level, decimals) {
+  n <- length(values)
+  values <- sort(values)
+  lower <- values[1:(n - floor(n * level))]
+  upper <- values[(floor(n * level) + 1):n]
+  ind <- which.min(upper - lower)
+  hpdi <- format(round(c(lower[ind], upper[ind]), decimals), nsmall = decimals)
+  paste0("[", paste(trimws(hpdi), collapse = ","), "]")
+}
 
-compute_discrete_hpdi <- function(df, level) {
-  if (!"iteration" %in% names(df)) df$iteration <- seq_len(nrow(df))
-  df <- aggregate(list(n = df$iteration),
-    list(value = df$value),
-    FUN = length
+compute_discrete_hpdi <- function(x, level) {
+  pct_dat <- aggregate(
+    iteration ~ value,
+    data = x, FUN = function(y) {
+      length(y) / nrow(x)
+    }
   )
-  df <- df[order(df$n, decreasing = TRUE), , drop = FALSE]
-  df$cumprob <- cumsum(df$n) / sum(df$n)
-  df$lagcumprob <- c(0, head(df$cumprob, -1))
-  df <- df[df$lagcumprob <= level, , drop = FALSE]
-
-  values <- sort(df$value)
-
-  # Find contiguous regions
-  breaks <- c(0, which(diff(values) != 1), length(values))
-
-  hpdi <- lapply(seq(length(breaks) - 1), function(.x, values, breaks) {
-    vals <- values[(breaks[.x] + 1):breaks[.x + 1]]
-    vals <- unique(c(min(vals), max(vals)))
-    paste0("[", paste(vals, collapse = ","), "]")
-  }, values = values, breaks = breaks)
-
-  paste(hpdi, collapse = ",")
+  pct_dat <- pct_dat[order(pct_dat$iteration, decreasing = TRUE), ]
+  pct_dat$cumprob <- cumsum(pct_dat$iteration)
+  maxind <- min(which(pct_dat$cumprob >= level))
+  hpdi <- sort(pct_dat$value[seq(from = 1, to = maxind)])
+  contiguous_regions <- split(hpdi, cummax(c(1, diff(hpdi))))
+  hpdi <- vapply(contiguous_regions, function(r) {
+    paste0("[", paste(unique(range(r)), collapse = ","), "]")
+  }, character(1))
+  paste(hpdi, collapse = "")
 }

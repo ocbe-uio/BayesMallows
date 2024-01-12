@@ -8,14 +8,14 @@ get_mallows_loglik(
   rho,
   alpha,
   weights,
-  metric,
+  metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
   rankings,
-  obs_freq = NULL,
+  observation_frequency = NULL,
   log = TRUE
 )
 }
 \arguments{
-\item{rho}{A matrix of size \code{n_clusters x n_items} whose rows are
+\item{rho}{A matrix of size \verb{n_clusters x n_items} whose rows are
 permutations of the first n_items integers corresponding to the modal
 rankings of the Mallows mixture components.}
 
@@ -27,16 +27,15 @@ the mixture weights.}
 
 \item{metric}{Character string specifying the distance measure to use.
 Available options are \code{"kendall"}, \code{"cayley"}, \code{"hamming"},
-\code{"ulam"} for \code{n_items<=95}, \code{"footrule"} for
-\code{n_items<=50} and \code{"spearman"} for \code{n_items<=14}.}
+\code{"ulam"}, \code{"footrule"}, and \code{"spearman"}.}
 
 \item{rankings}{A matrix with observed rankings in each row.}
 
-\item{obs_freq}{A vector of observation frequencies (weights) to apply to
+\item{observation_frequency}{A vector of observation frequencies (weights) to apply to
 each row in \code{rankings}. This can speed up computation if a large
 number of assessors share the same rank pattern. Defaults to \code{NULL},
 which means that each row of \code{rankings} is multiplied by 1. If
-provided, \code{obs_freq} must have the same number of elements as there
+provided, \code{observation_frequency} must have the same number of elements as there
 are rows in \code{rankings}, and \code{rankings} cannot be \code{NULL}.}
 
 \item{log}{A logical; if TRUE, the log-likelihood value is returned,
@@ -44,12 +43,12 @@ otherwise its exponential. Default is \code{TRUE}.}
 }
 \value{
 The likelihood or the log-likelihood value corresponding to one or
-  more observed complete rankings under the Mallows mixture rank model with
-  distance specified by the \code{metric} argument.
+more observed complete rankings under the Mallows mixture rank model with
+distance specified by the \code{metric} argument.
 }
 \description{
 Compute either the likelihood or the log-likelihood value of the
-  Mallows mixture model parameters for a dataset of complete rankings.
+Mallows mixture model parameters for a dataset of complete rankings.
 }
 \examples{
 # Simulate a sample from a Mallows model with the Kendall distance
@@ -81,14 +80,14 @@ get_mallows_loglik(
   )
 
 # or equivalently, by using the frequency distribution
-freq_distr <- rank_freq_distr(mydata)
+freq_distr <- compute_observation_frequency(mydata)
 get_mallows_loglik(
   rho = rbind(1:n_items, 1:n_items),
   alpha = c(10, 10),
   weights = c(0.5, 0.5),
   metric = "kendall",
   rankings = freq_distr[, 1:n_items],
-  obs_freq = freq_distr[, n_items + 1],
+  observation_frequency = freq_distr[, n_items + 1],
   log = FALSE
   )
 
@@ -98,16 +97,16 @@ get_mallows_loglik(
   weights = c(0.5, 0.5),
   metric = "kendall",
   rankings = freq_distr[, 1:n_items],
-  obs_freq = freq_distr[, n_items + 1],
+  observation_frequency = freq_distr[, n_items + 1],
   log = TRUE
   )
 }
 \seealso{
 Other rank functions: 
-\code{\link{expected_dist}()},
-\code{\link{rank_conversion}},
-\code{\link{rank_distance}()},
-\code{\link{rank_freq_distr}()},
+\code{\link{compute_expected_distance}()},
+\code{\link{compute_observation_frequency}()},
+\code{\link{compute_rank_distance}()},
+\code{\link{create_ranking}()},
 \code{\link{sample_mallows}()}
 }
 \concept{rank functions}

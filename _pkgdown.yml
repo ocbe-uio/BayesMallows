@@ -3,38 +3,34 @@ template:
   bootstrap: 5
 
 reference:
-- title: Modeling fitting
+- title: Model estimation
   desc: Functions for estimating the Bayesian Mallows model.
   contents:
   - has_concept("modeling")
-  - BayesMallows
+  - has_concept("diagnostics")
+
+- title: Preparing model estimation
+  desc: Functions to run prior to fitting a model.
+  contents:
+  - has_concept("preprocessing")
 
 - title: Posterior quantities
   desc: Functions for studying posterior distributions of model parameters.
   contents:
   - has_concept("posterior quantities")
 
-- title: Preprocessing
-  desc: Functions to run prior to fitting a model.
-  contents:
-  - has_concept("preprocessing")
-
-- title: Diagnostics
-  desc: Functions for checking diagnostics of the Monte Carlo algorithms.
-  contents:
-  - has_concept("diagnostics")
-
 - title: Rank functions
   desc: Various functions for sampling ranks and working with ranks.
   contents:
   - has_concept("rank functions")
 
+- title: Partition functions
+  desc: Tools related to computing or estimating the partition function of the
+    Mallows model with various distances.
+  contents:
+  - has_concept("partition function")
+
 - title: Datasets
   desc: Example datasets included in the package.
   contents:
   - has_concept("datasets")
-
-- title: Deprecated
-  desc: Soft-deprecated functions, which will be removed in a future release.
-  contents:
-  - has_concept("deprecated")

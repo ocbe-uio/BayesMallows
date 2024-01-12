@@ -3,7 +3,7 @@
 \docType{data}
 \name{sushi_rankings}
 \alias{sushi_rankings}
-\title{Sushi Rankings}
+\title{Sushi rankings}
 \format{
 An object of class \code{matrix} (inherits from \code{array}) with 5000 rows and 10 columns.
 }
@@ -11,8 +11,8 @@ An object of class \code{matrix} (inherits from \code{array}) with 5000 rows and
 sushi_rankings
 }
 \description{
-Complete rankings of 10 types of sushi from
-5000 assessors \insertCite{kamishima2003}{BayesMallows}.
+Complete rankings of 10 types of sushi from 5000 assessors
+\insertCite{kamishima2003}{BayesMallows}.
 }
 \references{
 \insertAllCited{}
@@ -20,10 +20,11 @@ Complete rankings of 10 types of sushi from
 \seealso{
 Other datasets: 
 \code{\link{beach_preferences}},
+\code{\link{bernoulli_data}},
+\code{\link{cluster_data}},
 \code{\link{potato_true_ranking}},
 \code{\link{potato_visual}},
-\code{\link{potato_weighing}},
-\code{\link{sample_dataset}}
+\code{\link{potato_weighing}}
 }
 \concept{datasets}
 \keyword{datasets}

@@ -2,41 +2,58 @@
 % Please edit documentation in R/assess_convergence.R
 \name{assess_convergence}
 \alias{assess_convergence}
+\alias{assess_convergence.BayesMallows}
+\alias{assess_convergence.BayesMallowsMixtures}
 \title{Trace Plots from Metropolis-Hastings Algorithm}
 \usage{
-assess_convergence(
+assess_convergence(model_fit, ...)
+
+\method{assess_convergence}{BayesMallows}(
   model_fit,
-  parameter = "alpha",
+  parameter = c("alpha", "rho", "Rtilde", "cluster_probs", "theta"),
   items = NULL,
-  assessors = NULL
+  assessors = NULL,
+  ...
+)
+
+\method{assess_convergence}{BayesMallowsMixtures}(
+  model_fit,
+  parameter = c("alpha", "cluster_probs"),
+  items = NULL,
+  assessors = NULL,
+  ...
 )
 }
 \arguments{
 \item{model_fit}{A fitted model object of class \code{BayesMallows} returned from
-\code{\link{compute_mallows}} or an object of class \code{BayesMallowsMixtures}
-returned from \code{\link{compute_mallows_mixtures}}.}
+\code{\link[=compute_mallows]{compute_mallows()}} or an object of class \code{BayesMallowsMixtures} returned
+from \code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}}.}
 
-\item{parameter}{Character string specifying which parameter to plot. Available
-options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"},
-\code{"cluster_probs"}, or \code{"theta"}.}
+\item{...}{Other arguments passed on to other methods. Currently not used.}
 
-\item{items}{The items to study in the diagnostic plot for \code{rho}. Either
-a vector of item names, corresponding to \code{model_fit$items} or a
-vector of indices. If NULL, five items are selected randomly. Only used when
+\item{parameter}{Character string specifying which parameter to plot.
+Available options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"}, \code{"cluster_probs"}, or
+\code{"theta"}.}
+
+\item{items}{The items to study in the diagnostic plot for \code{rho}. Either a
+vector of item names, corresponding to \code{model_fit$items} or a vector of
+indices. If NULL, five items are selected randomly. Only used when
 \code{parameter = "rho"} or \code{parameter = "Rtilde"}.}
 
-\item{assessors}{Numeric vector specifying the assessors to study in
-the diagnostic plot for \code{"Rtilde"}.}
+\item{assessors}{Numeric vector specifying the assessors to study in the
+diagnostic plot for \code{"Rtilde"}.}
 }
 \description{
-\code{assess_convergence} provides trace plots for the parameters of the
-Mallows Rank model, in order to study the convergence of the Metropolis-Hastings
+\code{assess_convergence} provides trace plots for the parameters of the Mallows
+Rank model, in order to study the convergence of the Metropolis-Hastings
 algorithm.
 }
-\seealso{
-\code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
-
-Other diagnostics: 
-\code{\link{label_switching}}
+\examples{
+set.seed(1)
+# Fit a model on the potato_visual data
+mod <- compute_mallows(setup_rank_data(potato_visual))
+# Check for convergence
+assess_convergence(mod)
+assess_convergence(mod, parameter = "rho", items = 1:20)
 }
 \concept{diagnostics}

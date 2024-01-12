@@ -19,9 +19,10 @@ True ranking of the weights of 20 potatoes.
 \seealso{
 Other datasets: 
 \code{\link{beach_preferences}},
+\code{\link{bernoulli_data}},
+\code{\link{cluster_data}},
 \code{\link{potato_visual}},
 \code{\link{potato_weighing}},
-\code{\link{sample_dataset}},
 \code{\link{sushi_rankings}}
 }
 \concept{datasets}

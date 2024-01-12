@@ -1,187 +1,86 @@
-context("Testing compute_consensus")
+test_that("compute_consensus fails properly", {
+  mod <- compute_mallows(
+    setup_rank_data(potato_visual),
+    compute_options = set_compute_options(nmc = 10)
+  )
+  expect_error(compute_consensus(mod), "Please specify the burnin")
+  mod$burnin <- 11
+  expect_error(compute_consensus(mod), "burnin < model_fit")
+  mod$burnin <- 2
+  expect_error(
+    compute_consensus(mod, parameter = "Rtilde"),
+    "For augmented ranks, please refit model"
+  )
 
-beach_small <- subset(
-  beach_preferences,
-  bottom_item %in% 1:3 & top_item %in% 1:3
-)
+  dat <- potato_visual
+  dat[c(1, 13, 14, 23)] <- NA
+  mod <- compute_mallows(
+    setup_rank_data(dat),
+    compute_options = set_compute_options(nmc = 10, burnin = 2)
+  )
 
-b <- compute_mallows(preferences = beach_preferences, nmc = 100, seed = 123L)
-b$burnin <- 2
-cp <- compute_consensus(b)
-map <- compute_consensus(b, type = "MAP")
-
-test_that("compute_consensus returns correct object", {
-  expect_true(inherits(cp, "data.frame"))
-  expect_true(inherits(map, "data.frame"))
-})
-
-test_that("compute_consensus computes correctly for rho", {
-  expect_equal(cp, structure(list(ranking = c(
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-    12, 13, 14, 15
-  ), item = c(
-    "Item 3", "Item 11", "Item 1", "Item 12",
-    "Item 7", "Item 15", "Item 14", "Item 10", "Item 4", "Item 13",
-    "Item 6", "Item 9", "Item 5", "Item 8", "Item 2"
-  ), cumprob = c(
-    0.673469387755102,
-    0.571428571428571, 0.489795918367347, 0.448979591836735, 0.755102040816327,
-    0.214285714285714, 0.5, 0.785714285714286, 0.683673469387755,
-    0.540816326530612, 0.683673469387755, 0.683673469387755, 0.73469387755102,
-    0.704081632653061, 1
-  )), row.names = c(NA, -15L), class = "data.frame"))
-
-  expect_equal(
-    map,
-    structure(list(map_ranking = c(
-      1, 1, 1, 1, 2, 2, 2, 2, 3, 3,
-      3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8,
-      8, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11, 12, 12, 12, 12,
-      13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15
-    ), item = c(
-      "Item 1",
-      "Item 3", "Item 3", "Item 3", "Item 3", "Item 11", "Item 11",
-      "Item 11", "Item 1", "Item 7", "Item 11", "Item 12", "Item 1",
-      "Item 7", "Item 10", "Item 12", "Item 7", "Item 7", "Item 12",
-      "Item 15", "Item 1", "Item 12", "Item 14", "Item 15", "Item 14",
-      "Item 14", "Item 15", "Item 15", "Item 4", "Item 9", "Item 10",
-      "Item 10", "Item 4", "Item 4", "Item 10", "Item 13", "Item 6",
-      "Item 6", "Item 13", "Item 14", "Item 4", "Item 8", "Item 13",
-      "Item 13", "Item 6", "Item 6", "Item 9", "Item 9", "Item 5",
-      "Item 5", "Item 8", "Item 8", "Item 2", "Item 5", "Item 5", "Item 9",
-      "Item 2", "Item 2", "Item 2", "Item 8"
-    ), probability = c(
-      0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653, 0.0510204081632653,
-      0.0510204081632653, 0.0510204081632653, 0.0510204081632653
-    )), row.names = c(
-      NA,
-      -60L
-    ), class = "data.frame")
+  expect_error(
+    compute_consensus(mod, parameter = "Rtilde"),
+    "For augmented ranks, please refit"
   )
 })
 
+test_that("compute_consensus.BayesMallows works", {
+  set.seed(1)
+  mod <- compute_mallows(
+    setup_rank_data(potato_visual),
+    compute_options = set_compute_options(nmc = 200, burnin = 100)
+  )
+  c1 <- compute_consensus(mod)
+  expect_gt(which(c1$item == "P16") - which(c1$item == "P12"), 0)
+  c2 <- compute_consensus(mod, type = "MAP")
+  expect_equal(length(unique(c2$probability)), 1)
 
-b2 <- compute_mallows(preferences = beach_small, nmc = 500, save_aug = TRUE, seed = 123L)
-b3 <- compute_mallows(preferences = beach_small, nmc = 500, save_aug = TRUE, aug_thinning = 3, seed = 123L)
-
-test_that("compute_consensus fails when it should", {
-  # Burnin not set
-  expect_error(compute_consensus(b2, type = "CP"))
-  expect_error(compute_consensus(b2, type = "MAP"))
-
-  # Augmented data are missing
-  expect_error(compute_consensus(b, burnin = 200, type = "CP", parameter = "Rtilde"))
-  expect_error(compute_consensus(b, burnin = 200, type = "MAP", parameter = "Rtilde"))
-
-  # Incorrect assessor
-  expect_error(compute_consensus(b2, burnin = 200, type = "CP", parameter = "Rtilde", assessors = 0))
-  expect_error(compute_consensus(b2, burnin = 200, type = "MAP", parameter = "Rtilde", assessors = 0))
+  mod <- compute_mallows(
+    setup_rank_data(preferences = beach_preferences),
+    compute_options = set_compute_options(nmc = 100, burnin = 50, save_aug = TRUE)
+  )
+  a1 <- compute_consensus(mod, parameter = "Rtilde", assessors = 2)
+  expect_equal(unique(a1$assessor), 2)
+  expect_equal(dim(a1), c(15, 4))
+  a2 <- compute_consensus(
+    mod,
+    parameter = "Rtilde", type = "MAP", assessors = 3
+  )
+  expect_equal(unique(a2$assessor), 3)
+  expect_equal(length(unique(a2$probability)), 1)
 })
 
-test_that("compute_consensus computes augmented ranks correctly", {
-  res <- compute_consensus(b2, type = "CP", burnin = 200, parameter = "Rtilde", assessors = 1L)
-  expect_equal(res, structure(list(assessor = c("1", "1", "1"), ranking = c(
-    1, 2,
-    3
-  ), item = c("Item 1", "Item 3", "Item 2"), cumprob = c(
-    0.62,
-    1, 1
-  )), row.names = c(NA, -3L), class = "data.frame"))
-
-  res <- compute_consensus(b3, type = "CP", burnin = 200, parameter = "Rtilde", assessors = 1L)
-  expect_equal(res, structure(list(assessor = c("1", "1", "1"), ranking = c(
-    1, 2,
-    3
-  ), item = c("Item 1", "Item 3", "Item 2"), cumprob = c(
-    0.61,
-    1, 1
-  )), row.names = c(NA, -3L), class = "data.frame"))
-
-
-  res <- compute_consensus(b2, type = "CP", burnin = 200, parameter = "Rtilde", assessors = c(3L, 5L))
-  expect_equal(
-    res,
-    structure(
-      list(
-        assessor  = c("3", "3", "3", "5", "5", "5"),
-        ranking   = c(1, 2, 3, 1, 2, 3),
-        item      = c("Item 1", "Item 3", "Item 2", "Item 1", "Item 3", "Item 2"),
-        cumprob   = c(0.696666666666667, 0.836666666666667, 1, 1, 1, 1)
-      ),
-      row.names = c(NA, -6L),
-      class = "data.frame"
-    )
+test_that("compute_consensus.SMCMallows works", {
+  set.seed(1)
+  data_first_batch <- potato_visual[1:4, ]
+  mod_init <- compute_mallows(
+    data = setup_rank_data(data_first_batch),
+    compute_options = set_compute_options(nmc = 200, burnin = 50)
   )
 
-  res <- compute_consensus(b3, type = "CP", burnin = 200, parameter = "Rtilde", assessors = c(3L, 5L))
-  expect_equal(
-    res,
-    structure(
-      list(
-        assessor = c("3", "3", "3", "5", "5", "5"),
-        ranking = c(1, 2, 3, 1, 2, 3),
-        item = c("Item 1", "Item 3", "Item 2", "Item 1", "Item 3", "Item 2"),
-        cumprob = c(0.69, 0.84, 1, 1, 1, 1)
-      ),
-      row.names = c(NA, -6L),
-      class = "data.frame"
-    )
+  data_second_batch <- potato_visual[5:8, ]
+  mod_second <- update_mallows(
+    model = mod_init,
+    new_data = setup_rank_data(rankings = data_second_batch),
+    smc_options = set_smc_options(n_particles = 30)
   )
 
-  res <- compute_consensus(b2, type = "MAP", burnin = 200, parameter = "Rtilde", assessors = 1L)
-  expect_equal(res, structure(list(assessor = c(1, 1, 1), map_ranking = c(1, 2, 3), item = c("Item 1", "Item 3", "Item 2"), probability = c(
-    0.62,
-    0.62, 0.62
-  )), row.names = c(NA, -3L), class = "data.frame"))
+  expect_equal(dim(compute_consensus(mod_second)), c(20, 4))
 
-  res <- compute_consensus(b3, type = "MAP", burnin = 200, parameter = "Rtilde", assessors = 1L)
-  expect_equal(
-    res,
-    structure(list(assessor = c(1, 1, 1), map_ranking = c(1, 2, 3), item = c("Item 1", "Item 3", "Item 2"), probability = c(
-      0.61,
-      0.61, 0.61
-    )), row.names = c(NA, -3L), class = "data.frame")
+  data_third_batch <- potato_visual[9:12, ]
+  mod_final <- update_mallows(
+    model = mod_second,
+    new_data = setup_rank_data(rankings = data_third_batch)
   )
 
-  res <- compute_consensus(b2, type = "MAP", burnin = 200, parameter = "Rtilde", assessors = c(5L, 3L))
-  expect_equal(res, structure(list(assessor = c(3, 3, 3, 5, 5, 5), map_ranking = c(
-    1,
-    2, 3, 1, 2, 3
-  ), item = c(
-    "Item 1", "Item 3", "Item 2", "Item 1",
-    "Item 3", "Item 2"
-  ), probability = c(
-    0.533333333333333, 0.533333333333333,
-    0.533333333333333, 1, 1, 1
-  )), row.names = c(NA, -6L), class = "data.frame"))
-
-  res <- compute_consensus(b3, type = "MAP", burnin = 200, parameter = "Rtilde", assessors = c(5L, 3L))
-
-  expect_equal(
-    res,
-    structure(list(assessor = c(3, 3, 3, 5, 5, 5), map_ranking = c(
-      1,
-      2, 3, 1, 2, 3
-    ), item = c(
-      "Item 1", "Item 3", "Item 2", "Item 1",
-      "Item 3", "Item 2"
-    ), probability = c(
-      0.53, 0.53, 0.53, 1, 1,
-      1
-    )), row.names = c(NA, -6L), class = "data.frame")
+  expect_error(
+    compute_consensus(mod_final, parameter = "Rtilde"),
+    "'arg' should be"
   )
+
+  a1 <- compute_consensus(mod_final, type = "MAP")
+  expect_equal(length(unique(a1$probability)), 1)
+  a2 <- compute_consensus(mod_final, type = "CP")
+  expect_equal(dim(a2), c(20, 4))
 })

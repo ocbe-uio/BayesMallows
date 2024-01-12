@@ -73,7 +73,7 @@ test_that("get_mallows_loglik works", {
   ), 4), -170.0306)
 
   # or equivalently, by using the frequency distribution
-  freq_distr <- rank_freq_distr(mydata)
+  freq_distr <- compute_observation_frequency(mydata)
   expect_equal(
     sprintf("%.3e", get_mallows_loglik(
       rho = rbind(1:n_items, 1:n_items),
@@ -81,7 +81,7 @@ test_that("get_mallows_loglik works", {
       weights = c(0.5, 0.5),
       metric = "kendall",
       rankings = freq_distr[, 1:n_items],
-      obs_freq = freq_distr[, n_items + 1],
+      observation_frequency = freq_distr[, n_items + 1],
       log = FALSE
     )), "1.434e-74"
   )
@@ -92,7 +92,7 @@ test_that("get_mallows_loglik works", {
     weights = c(0.5, 0.5),
     metric = "kendall",
     rankings = freq_distr[, 1:n_items],
-    obs_freq = freq_distr[, n_items + 1],
+    observation_frequency = freq_distr[, n_items + 1],
     log = TRUE
   ), 4), -170.0306)
 
@@ -103,9 +103,9 @@ test_that("get_mallows_loglik works", {
       weights = c(0.5, 0.5),
       metric = "kendall",
       rankings = mydata,
-      obs_freq = c(1, 2)
+      observation_frequency = c(1, 2)
     ),
-    "obs_freq must be of same length as the number of rows in rankings"
+    "observation_frequency must be of same length as the number of rows in rankings"
   )
 
   expect_error(
@@ -116,6 +116,6 @@ test_that("get_mallows_loglik works", {
       metric = "spearman",
       rankings = do.call(rbind, replicate(3, list(1:100), simplify = "list"))
     ),
-    "Given number of items currently not available for the specified metric"
+    "Partition function not available."
   )
 })

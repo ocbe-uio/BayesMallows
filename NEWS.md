@@ -1,3 +1,5 @@
+# BayesMallows (development versions)
+
 # BayesMallows 1.5.0
 
 * Bug in plot.BayesMallows for posterior distribution with 'parameter = "rho"'
@@ -9,12 +11,6 @@
 * Argument save_clus to compute_mallows() has been removed, as it was not used.
 * compute_mallows() now supports parallel chains, by providing a 'cl' argument.
   See vignette "MCMC with Parallel Chains" for a tutorial.
-* compute_rho_consensus() for SMC Mallows has been deprecated in favor of 
-  compute_consensus().
-* compute_posterior_intervals_rho() and compute_posterior_intervals_alpha()
-  for SMC Mallows have been deprecated in factor of 
-  compute_posterior_intervals() with argument parameter = "rho" and
-  parameter = "alpha".
 * Documentation of functions are now grouped in families.
 * lik_db_mix() is now deprecated in favor of get_mallows_loglik()
 * Unusued argument removed from internal function augment_pairwise(). Thanks to

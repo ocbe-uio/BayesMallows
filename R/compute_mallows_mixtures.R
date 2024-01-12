@@ -1,21 +1,21 @@
 #' Compute Mixtures of Mallows Models
 #'
-#' Convenience function for computing Mallows models with varying
-#' numbers of mixtures. This is useful for deciding the number of
-#' mixtures to use in the final model.
+#' Convenience function for computing Mallows models with varying numbers of
+#' mixtures. This is useful for deciding the number of mixtures to use in the
+#' final model.
 #'
-#' @param n_clusters Integer vector specifying the number of clusters
-#' to use.
-#'
-#' @param ... Other named arguments, passed to \code{\link{compute_mallows}}.
-#'
-#' @param cl Optional computing cluster used for parallelization, returned
-#' from \code{parallel::makeCluster}. Defaults to \code{NULL}.
+#' @param n_clusters Integer vector specifying the number of clusters to use.
+#' @inheritParams compute_mallows
 #'
 #'
-#' @return A list of Mallows models of class \code{BayesMallowsMixtures}, with one element
-#' for each number of mixtures that
-#' was computed. This object can be studied with \code{\link{plot_elbow}}.
+#' @return A list of Mallows models of class `BayesMallowsMixtures`, with
+#'   one element for each number of mixtures that was computed. This object can
+#'   be studied with [plot_elbow()].
+#'
+#' @details
+#' The `n_clusters` argument to [set_model_options()] is ignored
+#' when calling `compute_mallows_mixtures`.
+#'
 #'
 #' @family modeling
 #'
@@ -23,22 +23,34 @@
 #'
 #' @example /inst/examples/compute_mallows_mixtures_example.R
 #'
-compute_mallows_mixtures <- function(n_clusters, ..., cl = NULL) {
-  stopifnot(is.numeric(n_clusters))
+compute_mallows_mixtures <- function(
+    n_clusters,
+    data,
+    model_options = set_model_options(),
+    compute_options = set_compute_options(),
+    priors = set_priors(),
+    initial_values = set_initial_values(),
+    pfun_estimate = NULL,
+    verbose = FALSE,
+    cl = NULL) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
   if (is.null(cl)) {
-    models <- lapply(n_clusters, function(x) {
-      compute_mallows(..., n_clusters = x)
-    })
+    lapplyfun <- lapply
   } else {
-    args <- list(...)
-    parallel::clusterExport(cl = cl, varlist = "args", envir = environment())
-    models <- parallel::parLapply(cl = cl, X = n_clusters, fun = function(x) {
-      args$n_clusters <- x
-      do.call(compute_mallows, args)
-    })
+    lapplyfun <- prepare_cluster(cl, c(
+      "data", "model_options", "compute_options", "priors", "initial_values",
+      "pfun_estimate", "verbose"
+    ))
   }
+
+  models <- lapplyfun(n_clusters, function(x) {
+    model_options$n_clusters <- x
+    compute_mallows(
+      data = data, model_options = model_options, compute_options = compute_options,
+      priors = priors, initial_values = initial_values, verbose = verbose
+    )
+  })
 
   class(models) <- "BayesMallowsMixtures"
   return(models)

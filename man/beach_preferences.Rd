@@ -3,7 +3,7 @@
 \docType{data}
 \name{beach_preferences}
 \alias{beach_preferences}
-\title{Beach Preferences}
+\title{Beach preferences}
 \format{
 An object of class \code{data.frame} with 1442 rows and 3 columns.
 }
@@ -18,10 +18,11 @@ Example dataset from \insertCite{vitelli2018}{BayesMallows}, Section 6.2.
 }
 \seealso{
 Other datasets: 
+\code{\link{bernoulli_data}},
+\code{\link{cluster_data}},
 \code{\link{potato_true_ranking}},
 \code{\link{potato_visual}},
 \code{\link{potato_weighing}},
-\code{\link{sample_dataset}},
 \code{\link{sushi_rankings}}
 }
 \concept{datasets}

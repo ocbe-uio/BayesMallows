@@ -1,7 +1,7 @@
 Package: BayesMallows
 Type: Package
 Title: Bayesian Preference Learning with the Mallows Rank Model
-Version: 1.5.0
+Version: 1.5.0.9000
 Authors@R: c(person("Oystein", "Sorensen",
                     email = "oystein.sorensen.1985@gmail.com",
                     role = c("aut", "cre"),
@@ -54,19 +54,16 @@ Imports: Rcpp (>= 1.0.0),
   igraph (>= 1.2.5),
   sets (>= 1.0-18),
   relations (>= 0.6-8),
-  rlang (>= 0.3.1),
-  HDInterval (>= 0.2.0),
-  cowplot (>= 1.0.0),
-  methods
+  rlang (>= 0.3.1)
 LinkingTo: Rcpp, RcppArmadillo, testthat
 Suggests:
-  R.rsp,
-  xml2,
   knitr,
   testthat (>= 3.0.0),
   label.switching (>= 1.7),
   rmarkdown,
   covr,
   parallel (>= 3.5.1)
-VignetteBuilder: R.rsp, knitr
+VignetteBuilder: knitr, rmarkdown
 RdMacros: Rdpack
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)

@@ -39,6 +39,8 @@ arma::mat rmallows(
     int leap_size = 1,
     std::string metric = "footrule"
   ) {
+  auto distfun = choose_distance_function(metric);
+
   // The number of items ranked
   int n_items = rho0.n_elem;
 
@@ -64,23 +66,21 @@ arma::mat rmallows(
 
     // Sample a proposal
     leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
-                   rho_iter, leap_size, true);
+                   rho_iter, leap_size, distfun);
 
-    // These distances do not work with the computational shortcut
-    if ((metric == "cayley") || (metric == "ulam")) {
-      indices = regspace<uvec>(0, n_items - 1);
-    }
+    distfun->update_leap_and_shift_indices(indices, n_items);
 
     // Compute the distances to current and proposed ranks
-    double dist_new = get_rank_distance(rho0(indices), rho_proposal(indices), metric);
-    double dist_old = rank_dist_sum(rho0(indices), rho_iter(indices), metric, ones(rho0.n_elem));
+    const vec& rho1 = rho0(indices);
+    double dist_new = distfun->d(rho1, rho_proposal(indices));
+    double dist_old = distfun->d(rho1, rho_iter(indices));
 
     // Metropolis-Hastings ratio
     double ratio = - alpha0 / n_items * (dist_new - dist_old) +
       std::log(prob_backward) - std::log(prob_forward);
 
     // Draw a uniform random number
-    double u = std::log(randu<double>());
+    double u = std::log(R::runif(0, 1));
 
     if(ratio > u){
       rho_iter = rho_proposal;

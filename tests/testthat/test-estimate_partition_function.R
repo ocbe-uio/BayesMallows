@@ -1,52 +1,67 @@
-context("Testing function estimate_partition_function")
+test_that("estimate_partition_function works", {
+  set.seed(1)
+  alpha_vector <- seq(from = 0, to = 10, by = 0.5)
+  n_items <- 20
 
+  metrics <- c("footrule", "spearman", "kendall", "cayley", "hamming", "ulam")
+  expectations <- c(
+    0.4961490378154, 19.75045734511,
+    22.3471310441124, -9.13330233602348,
+    -78.559587447592, -10.9508829949516
+  )
+  names(expectations) <- metrics
 
-test_that(
-  "estimate_partition_function fails for wrong asymptotic metrics",
-  {
-    for (metric in c("cayley", "hamming", "kendall", "ulam")) {
-      expect_error(
-        estimate_partition_function(
-          method = "asymptotic",
-          alpha_vector = seq(from = 1, to = 2, by = .1),
-          n_items = 10,
-          metric = metric,
-          n_iterations = 50,
-          K = 20, degree = 5
-        )
-      )
-    }
-  }
-)
-
-test_that(
-  "estimate_partition_function asymptotic gives correct values",
-  {
-    expect_equal(
-      estimate_partition_function(
-        method = "asymptotic",
-        alpha_vector = seq(from = 1, to = 2, by = .1),
-        n_items = 10, metric = "footrule",
-        n_iterations = 50, K = 20, degree = 5
-      ),
-      c(
-        `(Intercept)` = 15.1041186472153, `I(alpha^1)` = -3.32366499344578,
-        `I(alpha^2)` = 0.221067735142993, `I(alpha^3)` = 0.00983874213603723,
-        `I(alpha^4)` = -0.00400646965806447, `I(alpha^5)` = 0.000290662453972935
-      )
+  for (m in metrics) {
+    fit <- estimate_partition_function(
+      method = "importance_sampling",
+      alpha_vector = alpha_vector,
+      n_items = n_items,
+      metric = m,
+      n_iterations = 1e3
     )
-    expect_equal(
-      estimate_partition_function(
-        method = "asymptotic",
-        alpha_vector = seq(from = 1, to = 2, by = .2),
-        n_items = 20, metric = "spearman",
-        n_iterations = 55, K = 21, degree = 4
-      ),
-      c(
-        `(Intercept)` = 34.3498359623487, `I(alpha^1)` = -22.0673491727874,
-        `I(alpha^2)` = 10.8140117937552, `I(alpha^3)` = -3.18806119268205,
-        `I(alpha^4)` = 0.394939624914785
-      )
-    )
+    expect_equal(fit[5, 2], expectations[[m]])
   }
-)
+
+  fit <- estimate_partition_function(
+    method = "asymptotic",
+    alpha_vector = alpha_vector,
+    n_items = n_items,
+    metric = "footrule",
+    n_iterations = 50
+  )
+  expect_equal(fit[4, 2], 0.0151144482198799)
+
+  fit <- estimate_partition_function(
+    method = "asymptotic",
+    alpha_vector = alpha_vector,
+    n_items = n_items,
+    metric = "spearman",
+    n_iterations = 50
+  )
+  expect_equal(fit[4, 2], -41.9129447085325)
+})
+
+test_that("estimate_partition_function works in parallel", {
+  cl <- parallel::makeCluster(2)
+  set.seed(1)
+  alpha_vector <- seq(from = 0, to = 10, by = 0.5)
+
+  fit <- estimate_partition_function(
+    method = "importance_sampling",
+    alpha_vector = alpha_vector,
+    n_items = 34,
+    metric = "spearman",
+    n_iterations = 1e3,
+    cl = cl
+  )
+  expect_equal(fit[3, 2], 140.846380226927)
+  parallel::stopCluster(cl)
+
+  mod <- compute_mallows(
+    data = setup_rank_data(t(replicate(3, sample(34)))),
+    model_options = set_model_options(metric = "spearman"),
+    compute_options = set_compute_options(nmc = 10),
+    pfun_estimate = fit
+  )
+  expect_s3_class(mod, "BayesMallows")
+})

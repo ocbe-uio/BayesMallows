@@ -2,14 +2,48 @@
 % Please edit documentation in R/compute_posterior_intervals.R
 \name{compute_posterior_intervals}
 \alias{compute_posterior_intervals}
+\alias{compute_posterior_intervals.BayesMallows}
+\alias{compute_posterior_intervals.SMCMallows}
 \title{Compute Posterior Intervals}
 \usage{
 compute_posterior_intervals(model_fit, ...)
+
+\method{compute_posterior_intervals}{BayesMallows}(
+  model_fit,
+  burnin = model_fit$burnin,
+  parameter = c("alpha", "rho", "cluster_probs"),
+  level = 0.95,
+  decimals = 3L,
+  ...
+)
+
+\method{compute_posterior_intervals}{SMCMallows}(
+  model_fit,
+  parameter = c("alpha", "rho"),
+  level = 0.95,
+  decimals = 3L,
+  ...
+)
 }
 \arguments{
 \item{model_fit}{A model object.}
 
-\item{...}{other arguments passed to methods.}
+\item{...}{Other arguments. Currently not used.}
+
+\item{burnin}{A numeric value specifying the number of iterations to discard
+as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
+\code{model_fit$burnin} does not exist. See
+\code{\link[=assess_convergence]{assess_convergence()}}.}
+
+\item{parameter}{Character string defining which parameter to compute
+posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
+\code{"cluster_probs"}. Default is \code{"alpha"}.}
+
+\item{level}{Decimal number in \eqn{[0,1]} specifying the confidence level.
+Defaults to \code{0.95}.}
+
+\item{decimals}{Integer specifying the number of decimals to include in
+posterior intervals and the mean and median. Defaults to \code{3}.}
 }
 \description{
 Compute posterior intervals of parameters of interest.
@@ -18,18 +52,14 @@ Compute posterior intervals of parameters of interest.
 This function computes both the Highest Posterior Density Interval (HPDI),
 which may be discontinuous for bimodal distributions, and
 the central posterior interval, which is simply defined by the quantiles of the posterior
-distribution. The HPDI intervals are computed using the \code{HDInterval} package
-\insertCite{meredith2018}{BayesMallows}.
+distribution.
 }
 \examples{
-# The example datasets potato_visual and potato_weighing contain complete
-# rankings of 20 items, by 12 assessors. We first analyse these using the Mallows
-# model:
-model_fit <- compute_mallows(potato_visual)
+set.seed(1)
+model_fit <- compute_mallows(
+  setup_rank_data(potato_visual),
+  compute_options = set_compute_options(nmc = 3000, burnin = 1000))
 
-# Se the documentation to compute_mallows for how to assess the convergence of the algorithm
-# Having chosen burin = 1000, we compute posterior intervals
-model_fit$burnin <- 1000
 # First we compute the interval for alpha
 compute_posterior_intervals(model_fit, parameter = "alpha")
 # We can reduce the number decimals
@@ -41,12 +71,15 @@ compute_posterior_intervals(model_fit, parameter = "rho")
 
 \dontrun{
   # Posterior intervals of cluster probabilities
-  # We can run a mixture of Mallows models, using the n_clusters argument
-  # We use the sushi example data. See the documentation of compute_mallows for a more elaborate
-  # example
-  model_fit <- compute_mallows(sushi_rankings, n_clusters = 5)
-  # Keeping the burnin at 1000, we can compute the posterior intervals of the cluster probabilities
-  compute_posterior_intervals(model_fit, burnin = 1000, parameter = "cluster_probs")
+  model_fit <- compute_mallows(
+    setup_rank_data(sushi_rankings),
+    model_options = set_model_options(n_clusters = 5))
+
+  compute_posterior_intervals(
+    model_fit, burnin = 1000, parameter = "alpha")
+
+  compute_posterior_intervals(
+    model_fit, burnin = 1000, parameter = "cluster_probs")
 }
 
 
@@ -55,22 +88,15 @@ compute_posterior_intervals(model_fit, parameter = "rho")
 \insertAllCited{}
 }
 \seealso{
-\code{\link{compute_mallows}}
-
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
-\code{\link{compute_consensus.BayesMallows}()},
-\code{\link{compute_consensus.SMCMallows}()},
 \code{\link{compute_consensus}()},
-\code{\link{compute_posterior_intervals.BayesMallows}()},
-\code{\link{compute_posterior_intervals.SMCMallows}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},
 \code{\link{plot.SMCMallows}()},
 \code{\link{plot_elbow}()},
 \code{\link{plot_top_k}()},
 \code{\link{predict_top_k}()},
-\code{\link{print.BayesMallowsMixtures}()},
 \code{\link{print.BayesMallows}()}
 }
 \concept{posterior quantities}

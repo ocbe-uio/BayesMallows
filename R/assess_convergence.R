@@ -1,96 +1,108 @@
 #' Trace Plots from Metropolis-Hastings Algorithm
 #'
-#' \code{assess_convergence} provides trace plots for the parameters of the
-#' Mallows Rank model, in order to study the convergence of the Metropolis-Hastings
+#' `assess_convergence` provides trace plots for the parameters of the Mallows
+#' Rank model, in order to study the convergence of the Metropolis-Hastings
 #' algorithm.
 #'
-#' @param model_fit A fitted model object of class \code{BayesMallows} returned from
-#'  \code{\link{compute_mallows}} or an object of class \code{BayesMallowsMixtures}
-#'  returned from \code{\link{compute_mallows_mixtures}}.
+#' @param model_fit A fitted model object of class `BayesMallows` returned from
+#'   [compute_mallows()] or an object of class `BayesMallowsMixtures` returned
+#'   from [compute_mallows_mixtures()].
 #'
-#' @param parameter Character string specifying which parameter to plot. Available
-#' options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"},
-#' \code{"cluster_probs"}, or \code{"theta"}.
+#' @param parameter Character string specifying which parameter to plot.
+#'   Available options are `"alpha"`, `"rho"`, `"Rtilde"`, `"cluster_probs"`, or
+#'   `"theta"`.
 #'
-#' @param items The items to study in the diagnostic plot for \code{rho}. Either
-#'   a vector of item names, corresponding to \code{model_fit$items} or a
-#'   vector of indices. If NULL, five items are selected randomly. Only used when
-#'   \code{parameter = "rho"} or \code{parameter = "Rtilde"}.
+#' @param items The items to study in the diagnostic plot for `rho`. Either a
+#'   vector of item names, corresponding to `model_fit$items` or a vector of
+#'   indices. If NULL, five items are selected randomly. Only used when
+#'   `parameter = "rho"` or `parameter = "Rtilde"`.
 #'
-#' @param assessors Numeric vector specifying the assessors to study in
-#' the diagnostic plot for \code{"Rtilde"}.
+#' @param assessors Numeric vector specifying the assessors to study in the
+#'   diagnostic plot for `"Rtilde"`.
 #'
-#'
-#' @seealso \code{\link{compute_mallows}}, \code{\link{plot.BayesMallows}}
+#' @param ... Other arguments passed on to other methods. Currently not used.
 #'
 #' @export
 #' @family diagnostics
-assess_convergence <- function(model_fit, parameter = "alpha", items = NULL,
-                               assessors = NULL) {
-  stopifnot(inherits(model_fit, "BayesMallows") ||
-    inherits(model_fit, "BayesMallowsMixtures"))
+#'
+#' @example /inst/examples/assess_convergence_example.R
+assess_convergence <- function(model_fit, ...) {
+  UseMethod("assess_convergence")
+}
+
+#' @export
+#' @rdname assess_convergence
+assess_convergence.BayesMallows <- function(
+    model_fit,
+    parameter = c("alpha", "rho", "Rtilde", "cluster_probs", "theta"),
+    items = NULL,
+    assessors = NULL,
+    ...) {
+  parameter <- match.arg(
+    parameter,
+    c("alpha", "rho", "Rtilde", "cluster_probs", "theta")
+  )
 
   if (parameter == "alpha") {
-    if (inherits(model_fit, "BayesMallows")) {
-      m <- model_fit$alpha
-      trace_alpha(m, FALSE)
-    } else if (inherits(model_fit, "BayesMallowsMixtures")) {
-      m <- do.call(rbind, lapply(model_fit, function(x) {
-        x$alpha$cluster <- as.character(x$alpha$cluster)
-        x$alpha$n_clusters <- x$n_clusters
-        x$alpha
-      }))
-      trace_alpha(m, TRUE)
-    }
+    trace_alpha(model_fit$alpha, FALSE)
   } else if (parameter == "rho") {
-    if (inherits(model_fit, "BayesMallows")) {
-      trace_rho(model_fit, items)
-    } else if (inherits(model_fit, "BayesMallowsMixtures")) {
-      cowplot::plot_grid(plotlist = lapply(model_fit, trace_rho, clusters = TRUE, items = items))
-    }
+    trace_rho(model_fit, items)
   } else if (parameter == "Rtilde") {
-    if (inherits(model_fit, "BayesMallows")) {
-      trace_rtilde(model_fit, items, assessors)
-    } else if (inherits(model_fit, "BayesMallowsMixtures")) {
-      stop("Trace plots of augmented data not supported for BayesMallowsMixtures. Please rerun each component k using the k-th list element.")
-    }
+    trace_rtilde(model_fit, items, assessors)
   } else if (parameter == "cluster_probs") {
-    if (inherits(model_fit, "BayesMallows")) {
-      m <- model_fit$cluster_probs
-      m$n_clusters <- model_fit$n_clusters
-    } else if (inherits(model_fit, "BayesMallowsMixtures")) {
-      m <- do.call(rbind, lapply(model_fit, function(x) {
-        x$cluster_probs$cluster <- as.character(x$cluster_probs$cluster)
-        x$cluster_probs$n_clusters <- x$n_clusters
-        x$cluster_probs
-      }))
-    }
+    m <- model_fit$cluster_probs
+    m$n_clusters <- model_fit$n_clusters
     trace_cluster_probs(m)
   } else if (parameter == "theta") {
     trace_theta(model_fit)
-  } else {
-    stop("parameter must be either \"alpha\", \"rho\", \"augmentation\", \"cluster_probs\", or \"theta\".")
+  }
+}
+
+#' @export
+#' @rdname assess_convergence
+assess_convergence.BayesMallowsMixtures <- function(
+    model_fit,
+    parameter = c("alpha", "cluster_probs"),
+    items = NULL,
+    assessors = NULL,
+    ...) {
+  parameter <- match.arg(parameter, c("alpha", "cluster_probs"))
+
+  if (parameter == "alpha") {
+    m <- do.call(rbind, lapply(model_fit, function(x) {
+      x$alpha$cluster <- as.character(x$alpha$cluster)
+      x$alpha$n_clusters <- x$n_clusters
+      x$alpha
+    }))
+    trace_alpha(m, TRUE)
+  } else if (parameter == "cluster_probs") {
+    m <- do.call(rbind, lapply(model_fit, function(x) {
+      x$cluster_probs$cluster <- as.character(x$cluster_probs$cluster)
+      x$cluster_probs$n_clusters <- x$n_clusters
+      x$cluster_probs
+    }))
+    trace_cluster_probs(m)
   }
 }
 
 trace_alpha <- function(m, clusters) {
-  # Create the diagnostic plot for alpha
   p <- ggplot2::ggplot(m, ggplot2::aes(
     x = .data$iteration, y = .data$value,
-    group = .data$chain, color = .data$chain
+    group = interaction(.data$chain, .data$cluster),
+    color = .data$cluster, linetype = .data$chain
   )) +
+    ggplot2::geom_line() +
     ggplot2::xlab("Iteration") +
     ggplot2::ylab(expression(alpha)) +
-    ggplot2::labs(color = "Chain")
+    ggplot2::labs(color = "Cluster") +
+    ggplot2::labs(linetype = "Chain")
 
-  if (!clusters) {
-    p <- p + ggplot2::geom_line()
-  } else {
+  if (clusters) {
     p <- p +
-      ggplot2::geom_line(ggplot2::aes(color = .data$cluster)) +
       ggplot2::theme(legend.position = "none") +
       ggplot2::facet_wrap(ggplot2::vars(.data$n_clusters),
-        labeller = ggplot2::as_labeller(cluster_labeler_function), scales = "free_y"
+        labeller = ggplot2::as_labeller(cluster_labeler_function),
+        scales = "free_y"
       )
   }
   return(p)
@@ -102,6 +114,14 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1) {
     items <- sample.int(model_fit$n_items, 5)
   } else if (is.null(items) && model_fit$n_items > 0) {
     items <- seq.int(from = 1, to = model_fit$n_items)
+  } else if (!is.null(items)) {
+    if (is.numeric(items) &&
+      length(setdiff(items, seq_len(model_fit$n_item))) > 0) {
+      stop("numeric items vector must contain indices between 1 and the number of items")
+    }
+    if (is.character(items) && length(setdiff(items, model_fit$items) > 0)) {
+      stop("unknown items provided")
+    }
   }
 
   if (!is.character(items)) {
@@ -110,7 +130,11 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1) {
 
   df <- model_fit$rho[model_fit$rho$item %in% items, , drop = FALSE]
 
-  p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$iteration, y = .data$value, color = .data$item)) +
+  p <- ggplot2::ggplot(
+    df, ggplot2::aes(
+      x = .data$iteration, y = .data$value, color = .data$item
+    )
+  ) +
     ggplot2::geom_line() +
     ggplot2::theme(legend.title = ggplot2::element_blank()) +
     ggplot2::xlab("Iteration") +
@@ -125,10 +149,8 @@ trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1) {
         labeller = ggplot2::as_labeller(function(x) paste("Chain", x))
       )
   }
-
   return(p)
 }
-
 
 trace_rtilde <- function(model_fit, items, assessors, ...) {
   if (!model_fit$save_aug) {
@@ -176,7 +198,6 @@ trace_rtilde <- function(model_fit, items, assessors, ...) {
     ggplot2::ylab("Rtilde")
 }
 
-
 trace_cluster_probs <- function(m) {
   ggplot2::ggplot(m, ggplot2::aes(
     x = .data$iteration, y = .data$value,
@@ -191,12 +212,10 @@ trace_cluster_probs <- function(m) {
     )
 }
 
-
 trace_theta <- function(model_fit) {
   if (is.null(model_fit$theta) || length(model_fit$theta) == 0) {
     stop("Theta not available. Run compute_mallows with error_model = 'bernoulli'.")
   }
-  # Create the diagnostic plot for theta
   p <- ggplot2::ggplot(model_fit$theta, ggplot2::aes(x = .data$iteration, y = .data$value)) +
     ggplot2::xlab("Iteration") +
     ggplot2::ylab(expression(theta)) +
