@@ -1,4 +1,4 @@
-# BayesMallows (development versions)
+# BayesMallows 2.0.0
 
 * Large refactoring with several breaking changes. See vignettes and 
   documentation for details.
