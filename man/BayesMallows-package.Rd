@@ -24,17 +24,13 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Waldir Leoncio \email{w.l.netto@medisin.uio.no}
   \item Valeria Vitelli \email{valeria.vitelli@medisin.uio.no} (\href{https://orcid.org/0000-0002-6746-0453}{ORCID})
   \item Marta Crispino \email{crispino.marta8@gmail.com}
   \item Qinghua Liu \email{qinghual@math.uio.no}
   \item Cristina Mollica \email{cristina.mollica@uniroma1.it}
   \item Luca Tardella
   \item Anja Stein
-}
-
-Other contributors:
-\itemize{
-  \item Waldir Leoncio \email{w.l.netto@medisin.uio.no} [contractor]
 }
 
 }
