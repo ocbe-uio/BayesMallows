@@ -1,6 +1,7 @@
 ## Resubmission Note
 
-This is a resubmission, containing many bug fixes and added functionality.
+This is a resubmission, containing a large refactoring, much added functionality,
+breaking changes to the API, and fewer dependencies.
 
 
 ## Test Environments
