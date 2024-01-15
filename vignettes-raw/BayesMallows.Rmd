@@ -326,7 +326,7 @@ bmm <- compute_mallows(
 )
 ```
 
-We can plot the posterior distributions of $\alpha$ and $\bm{\rho}$ in each cluster using `plot.BayesMallows` as shown previously for the potato data. 
+We can plot the posterior distributions of $\alpha$ and $\boldsymbol{\rho}$ in each cluster using `plot.BayesMallows` as shown previously for the potato data. 
 
 ```{r cluster_posterior_alpha, fig.width=7, fig.height=6, fig.cap="Posterior of scale parameter in each cluster."}
 plot(bmm)
