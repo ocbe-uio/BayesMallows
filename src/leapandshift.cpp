@@ -10,17 +10,16 @@ void shift_step(vec& rho_proposal, const vec& rho,
   double delta_r = rho_proposal(u) - rho(u);
   indices = zeros<uvec>(std::abs(delta_r) + 1);
   indices[0] = u;
-  int index;
 
   if(delta_r > 0){
     for(int k = 1; k <= delta_r; ++k){
-      index = as_scalar(find(rho == rho(u) + k));
+      int index = as_scalar(find(rho == rho(u) + k));
       rho_proposal(index) -= 1;
       indices[k] = index;
     }
   } else if(delta_r < 0) {
     for(int k = (-1); k >= delta_r; --k){
-      index = as_scalar(find(rho == rho(u) + k));
+      int index = as_scalar(find(rho == rho(u) + k));
       rho_proposal(index) += 1;
       indices[-(k)] = index;
     }
