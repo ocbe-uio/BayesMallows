@@ -33,9 +33,7 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
                     const vec& rho, int leap_size,
                     const std::unique_ptr<Distance>& distfun){
   rho_proposal = rho;
-  vec support;
   int n_items = rho.n_elem;
-  double support_new;
 
   // Leap 1
   // 1, sample u randomly between 1 and n_items
@@ -43,7 +41,7 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   int u = a(0);
 
   // 2, compute the set S for sampling the new rank
-  support = join_cols(regspace(std::max(1.0, rho(u) - leap_size), 1, rho(u) - 1),
+  vec support = join_cols(regspace(std::max(1.0, rho(u) - leap_size), 1, rho(u) - 1),
     regspace(rho(u) + 1, 1, std::min(n_items * 1.0, rho(u) + leap_size)));
 
   // 3. assign a random element of the support set, this completes the leap step
@@ -52,7 +50,7 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   // Picked element index-1 from the support set
   rho_proposal(u) = support(index);
 
-  support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) + std::min(n_items - rho_proposal(u), leap_size * 1.0);
+  double support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) + std::min(n_items - rho_proposal(u), leap_size * 1.0);
   if(std::abs(rho_proposal(u) - rho(u)) == 1){
     prob_forward = 1.0 / (n_items * support.n_elem) + 1.0 / (n_items * support_new);
     prob_backward = prob_forward;
