@@ -18,15 +18,13 @@ setup_rank_data(
 )
 }
 \arguments{
-\item{rankings}{A matrix of ranked items, of size \verb{n_assessors x n_items}. A
-matrix of zero rows is allowed, and in this case samples from the prior
-distribution are returned. See \code{\link[=create_ranking]{create_ranking()}} if you have an ordered
-set of items that need to be converted to rankings. If \code{preferences} is
-provided, \code{rankings} is an optional initial value of the rankings. If
-\code{rankings} has column names, these are assumed to be the names of the
-items. \code{NA} values in rankings are treated as missing data and
-automatically augmented; to change this behavior, see the \code{na_action}
-argument to \code{\link[=set_model_options]{set_model_options()}}.}
+\item{rankings}{A matrix of ranked items, of size \verb{n_assessors x n_items}.
+See \code{\link[=create_ranking]{create_ranking()}} if you have an ordered set of items that need to be
+converted to rankings. If \code{preferences} is provided, \code{rankings} is an
+optional initial value of the rankings. If \code{rankings} has column names,
+these are assumed to be the names of the items. \code{NA} values in rankings are
+treated as missing data and automatically augmented; to change this
+behavior, see the \code{na_action} argument to \code{\link[=set_model_options]{set_model_options()}}.}
 
 \item{preferences}{A data frame with one row per pairwise comparison, and
 columns \code{assessor}, \code{top_item}, and \code{bottom_item}. Each column contains the

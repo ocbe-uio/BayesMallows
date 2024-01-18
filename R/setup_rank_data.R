@@ -2,15 +2,13 @@
 #'
 #' @description Prepare rank or preference data for further analyses.
 #'
-#' @param rankings A matrix of ranked items, of size `n_assessors x n_items`. A
-#'   matrix of zero rows is allowed, and in this case samples from the prior
-#'   distribution are returned. See [create_ranking()] if you have an ordered
-#'   set of items that need to be converted to rankings. If `preferences` is
-#'   provided, `rankings` is an optional initial value of the rankings. If
-#'   `rankings` has column names, these are assumed to be the names of the
-#'   items. `NA` values in rankings are treated as missing data and
-#'   automatically augmented; to change this behavior, see the `na_action`
-#'   argument to [set_model_options()].
+#' @param rankings A matrix of ranked items, of size `n_assessors x n_items`.
+#'   See [create_ranking()] if you have an ordered set of items that need to be
+#'   converted to rankings. If `preferences` is provided, `rankings` is an
+#'   optional initial value of the rankings. If `rankings` has column names,
+#'   these are assumed to be the names of the items. `NA` values in rankings are
+#'   treated as missing data and automatically augmented; to change this
+#'   behavior, see the `na_action` argument to [set_model_options()].
 #'
 #' @param preferences A data frame with one row per pairwise comparison, and
 #'   columns `assessor`, `top_item`, and `bottom_item`. Each column contains the
@@ -168,7 +166,6 @@ setup_rank_data <- function(
   n_items <- ncol(rankings)
   constraints <- generate_constraints(preferences, n_items, cl)
   consistent <- matrix(integer(0))
-  validate_positive(nrow(rankings))
 
   ret <- as.list(environment())
   class(ret) <- "BayesMallowsData"

@@ -1,7 +1,8 @@
 ## Resubmission Note
 
-This is a resubmission, containing a large refactoring, much added functionality,
-breaking changes to the API, and fewer dependencies.
+This is a resubmission, fixing issues with "clang-UBSAN", "gcc-UBSAN", and "valgrind". We have reproduced the errors using the Docker images rocker/r-devel-san, and made the necessary changes. 
+
+We also fix failing test expectations due to platform dependence of C++ code.
 
 
 ## Test Environments
