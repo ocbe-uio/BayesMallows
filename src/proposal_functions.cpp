@@ -45,12 +45,11 @@ vec make_new_rho(
     rho_proposal, indices, prob_backward, prob_forward,
     current_rho, leap_size, distfun);
 
-  const arma::mat& r = rankings.rows(indices);
   double dist_new = arma::sum(
-    distfun->matdist(r, rho_proposal(indices)) % observation_frequency
+    distfun->matdist(rankings.rows(indices), rho_proposal(indices)) % observation_frequency
   );
   double dist_old = arma::sum(
-    distfun->matdist(r, current_rho(indices)) % observation_frequency
+    distfun->matdist(rankings.rows(indices), current_rho(indices)) % observation_frequency
   );
 
   double ratio = - alpha_old / n_items * (dist_new - dist_old) +

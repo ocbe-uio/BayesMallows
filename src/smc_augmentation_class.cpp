@@ -33,8 +33,7 @@ void SMCAugmentation::reweight(
       if(!p.consistent.is_empty()) {
         for(size_t user{}; user < n_assessors - num_new_obs; user++) {
           if(p.consistent(user) == 0) {
-            const arma::vec& cad = p.augmented_data.col(user);
-            double current_distance = distfun->get()->d(cad, p.rho);
+            double current_distance = distfun->get()->d(p.augmented_data.col(user), p.rho);
 
             item_correction_contribution -= p.alpha / p.rho.size() *
               (current_distance - p.previous_distance(user));
