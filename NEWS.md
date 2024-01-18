@@ -1,6 +1,6 @@
-# BayesMallows (development versions)
+# BayesMallows 2.0.1
 
-* Internal fixes.
+* Edits to unit tests which caused issues on CRAN.
 
 # BayesMallows 2.0.0
 
