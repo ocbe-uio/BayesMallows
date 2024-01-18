@@ -18,7 +18,7 @@ void SMCAugmentation::reweight(
   if(dat.any_missing) {
     std::for_each(
       pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
-          p.previous_distance = distfun->get()->d(p.augmented_data, p.rho);
+          p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
       });
     augment_partial(pvec, dat);
   }
@@ -54,7 +54,7 @@ void SMCAugmentation::reweight(
         }
 
         new_user_contribution = -p.alpha / p.rho.size() *
-          sum(distfun->get()->d(new_rankings, p.rho));
+          sum(distfun->get()->matdist(new_rankings, p.rho));
       }
 
       p.log_inc_wgt =

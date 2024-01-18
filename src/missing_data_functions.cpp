@@ -100,7 +100,7 @@ RankProposal make_pseudo_proposal(
 
     double rho_for_item = rho(item_to_rank);
     vec log_numerator = -alpha / n_items *
-      distfun->d(available_rankings, rho_for_item);
+      distfun->scalardist(available_rankings, rho_for_item);
 
     vec sample_probs = normalise(exp(log_numerator), 1);
     ivec ans(sample_probs.size());

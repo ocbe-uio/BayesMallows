@@ -12,7 +12,7 @@ struct Distance {
   virtual double d(const arma::vec& r1, const arma::vec& r2) = 0;
   virtual double d(const arma::vec& r1, const arma::vec& r2,
                    const arma::uvec& inds) = 0;
-  arma::vec d(const arma::mat& r1, const arma::vec& r2) {
+  arma::vec matdist(const arma::mat& r1, const arma::vec& r2) {
     arma::vec result(r1.n_cols);
     for(size_t i{}; i < r1.n_cols; i++) {
       const arma::vec& v1 = r1.col(i);
@@ -20,7 +20,7 @@ struct Distance {
     }
     return result;
   }
-  arma::vec d(const arma::vec& r1, const double r2) {
+  arma::vec scalardist(const arma::vec& r1, const double r2) {
     arma::vec v2 = arma::ones(r1.size()) * r2;
     arma::vec result = arma::zeros(r1.size());
     for(size_t i{}; i < r1.n_elem; i++) {

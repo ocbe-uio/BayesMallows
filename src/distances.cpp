@@ -22,5 +22,5 @@ std::unique_ptr<Distance> choose_distance_function(std::string metric) {
 arma::vec get_rank_distance(arma::mat rankings, arma::vec rho,
                            std::string metric) {
   auto distfun = choose_distance_function(metric);
-  return distfun->d(rankings, rho);
+  return distfun->matdist(rankings, rho);
 }
