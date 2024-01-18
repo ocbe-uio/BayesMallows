@@ -168,6 +168,7 @@ setup_rank_data <- function(
   n_items <- ncol(rankings)
   constraints <- generate_constraints(preferences, n_items, cl)
   consistent <- matrix(integer(0))
+  validate_positive(nrow(rankings))
 
   ret <- as.list(environment())
   class(ret) <- "BayesMallowsData"
