@@ -33,13 +33,13 @@ struct SMCParameters {
       const SMCData& dat,
       const std::unique_ptr<PartitionFunction>& pfun,
       const std::unique_ptr<Distance>& distfun,
-      const Priors& priors);
+      const Priors& priors) const;
 
   void update_rho(
       Particle& p,
       const SMCData& dat,
       const std::unique_ptr<Distance>& distfun
-  );
+  ) const;
 
   Rcpp::IntegerVector draw_resampling_index(const std::vector<Particle>& pvec);
   void resample(std::vector<Particle>& pvec);
@@ -61,16 +61,12 @@ struct SMCAugmentation {
       const std::unique_ptr<PartitionFunction>& pfun,
       const std::unique_ptr<Distance>& distfun);
 
-  void augment_partial(
-      std::vector<Particle>& pvec,
-      const SMCData& dat);
+  void augment_partial(std::vector<Particle>& pvec, const SMCData& dat);
 
   void update_missing_ranks(Particle& p, const SMCData& dat,
-      const std::unique_ptr<Distance>& distfun);
+      const std::unique_ptr<Distance>& distfun) const;
 
-  void resample(const arma::uvec& index, const SMCData& dat);
   const arma::umat missing_indicator;
-
   const std::string aug_method;
   const std::string pseudo_aug_metric;
 };

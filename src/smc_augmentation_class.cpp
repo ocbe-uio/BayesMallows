@@ -106,7 +106,7 @@ void SMCAugmentation::augment_partial(
 void SMCAugmentation::update_missing_ranks(
     Particle& p,
     const SMCData& dat,
-    const std::unique_ptr<Distance>& distfun) {
+    const std::unique_ptr<Distance>& distfun) const {
   if(!dat.any_missing) return;
 
   auto pseudo_aug_distance = aug_method == "uniform" ? nullptr : choose_distance_function(pseudo_aug_metric);

@@ -15,7 +15,7 @@ void SMCParameters::update_alpha(
     const SMCData& dat,
     const std::unique_ptr<PartitionFunction>& pfun,
     const std::unique_ptr<Distance>& distfun,
-    const Priors& priors) {
+    const Priors& priors) const {
 
   AlphaRatio test = make_new_alpha(
     p.alpha, p.rho, alpha_prop_sd, distfun, pfun,
@@ -28,7 +28,7 @@ void SMCParameters::update_alpha(
 void SMCParameters::update_rho(
     Particle& p,
     const SMCData& dat,
-    const std::unique_ptr<Distance>& distfun) {
+    const std::unique_ptr<Distance>& distfun) const {
   p.rho = make_new_rho(
     p.rho, dat.any_missing ? p.augmented_data : dat.rankings,
     p.alpha, leap_size, distfun,
