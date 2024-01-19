@@ -81,19 +81,7 @@ compute_mallows <- function(
   validate_rankings(data)
   validate_initial_values(initial_values, data)
 
-  pfun_values <- tryCatch(
-    prepare_partition_function(model_options$metric, data$n_items),
-    error = function(e) {
-      if (is.null(pfun_estimate)) {
-        stop(
-          "Exact partition function not known. Please provide an ",
-          "estimate in argument pfun_estimate."
-        )
-      } else {
-        return(NULL)
-      }
-    }
-  )
+  pfun_values <- extract_pfun_values(model_options, data, pfun_estimate)
 
   if (is.null(cl)) {
     lapplyfun <- lapply

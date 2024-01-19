@@ -2,11 +2,23 @@
 % Please edit documentation in R/update_mallows.R
 \name{update_mallows}
 \alias{update_mallows}
+\alias{update_mallows.BayesMallowsPriorSamples}
 \alias{update_mallows.BayesMallows}
 \alias{update_mallows.SMCMallows}
 \title{Update a Bayesian Mallows model with new users}
 \usage{
 update_mallows(model, new_data, ...)
+
+\method{update_mallows}{BayesMallowsPriorSamples}(
+  model,
+  new_data,
+  model_options = set_model_options(),
+  smc_options = set_smc_options(),
+  compute_options = set_compute_options(),
+  priors = model$priors,
+  pfun_estimate = NULL,
+  ...
+)
 
 \method{update_mallows}{BayesMallows}(
   model,
@@ -22,8 +34,9 @@ update_mallows(model, new_data, ...)
 }
 \arguments{
 \item{model}{A model object of class "BayesMallows" returned from
-\code{\link[=compute_mallows]{compute_mallows()}} or an object of class "SMCMallows" returned from this
-function.}
+\code{\link[=compute_mallows]{compute_mallows()}}, an object of class "SMCMallows" returned from this
+function, or an object of class "BayesMallowsPriorSamples" returned from
+\code{\link[=sample_prior]{sample_prior()}}.}
 
 \item{new_data}{An object of class "BayesMallowsData" returned from
 \code{\link[=setup_rank_data]{setup_rank_data()}}. The object should contain the new data being provided.}
@@ -41,6 +54,12 @@ returned from \code{\link[=set_compute_options]{set_compute_options()}}.}
 
 \item{priors}{An object of class "BayesMallowsPriors" returned from
 \code{\link[=set_priors]{set_priors()}}. Defaults to the priors used in \code{model}.}
+
+\item{pfun_estimate}{Object returned from \code{\link[=estimate_partition_function]{estimate_partition_function()}}.
+Defaults to \code{NULL}, and will only be used for footrule, Spearman, or
+Ulam distances when the cardinalities are not available, cf.
+\code{\link[=get_cardinalities]{get_cardinalities()}}. Only used by the specialization for objects of type
+"BayesMallowsPriorSamples".}
 }
 \value{
 An updated model, of class "SMCMallows".
@@ -148,6 +167,7 @@ plot(mod_final)
 \seealso{
 Other modeling: 
 \code{\link{compute_mallows_mixtures}()},
-\code{\link{compute_mallows}()}
+\code{\link{compute_mallows}()},
+\code{\link{sample_prior}()}
 }
 \concept{modeling}
