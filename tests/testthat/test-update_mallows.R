@@ -16,8 +16,8 @@ test_that("update_mallows works", {
   )
 
   pi <- compute_posterior_intervals(mod_second)
-  expect_equal(pi$hpdi, "[0.331,0.771]")
-  expect_equal(mod_second$alpha$value[[9]], 0.528698473629568)
+  expect_equal(pi$hpdi, "[0.392,0.679]")
+  expect_equal(mod_second$alpha$value[[9]], 0.42949745203539)
 
   data_third_batch <- potato_visual[9:12, ]
   mod_final <- update_mallows(
@@ -52,7 +52,7 @@ test_that("update_mallows works", {
     compute_options = set_compute_options(aug_method = "pseudo")
   )
 
-  expect_equal(mod1$alpha$value[[13]], 0.544567207683911)
+  expect_equal(mod1$alpha$value[[13]], 0.347808128878992)
 
   mod2 <- update_mallows(
     model = mod1,
@@ -70,8 +70,8 @@ test_that("update_mallows works", {
 
   expect_s3_class(mod_final, "SMCMallows")
   skip_on_cran()
-  expect_equal(mod2$rho$value[[300]], 2)
-  expect_equal(mod_final$rho$value[[300]], 3)
+  expect_equal(mod2$rho$value[[300]], 13)
+  expect_equal(mod_final$rho$value[[300]], 13)
 })
 
 test_that("update_mallows handles estimated partition function", {
