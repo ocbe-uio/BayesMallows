@@ -37,7 +37,7 @@ void SMCParameters::update_rho(
 
 Rcpp::IntegerVector SMCParameters::draw_resampling_index(
   const std::vector<Particle>& pvec
-) {
+) const {
   Rcpp::NumericVector log_inc_wgt(pvec.size());
   std::transform(pvec.cbegin(), pvec.cend(), log_inc_wgt.begin(),
                  [](const Particle& p){ return p.log_inc_wgt; });
@@ -48,7 +48,7 @@ Rcpp::IntegerVector SMCParameters::draw_resampling_index(
   return Rcpp::sample(log_inc_wgt.size(), log_inc_wgt.size(), true, probs, false);
 }
 
-void SMCParameters::resample(std::vector<Particle>& pvec) {
+void SMCParameters::resample(std::vector<Particle>& pvec) const {
   Rcpp::IntegerVector index = draw_resampling_index(pvec);
   std::vector<Particle> pvec_old = pvec;
   for(size_t i{}; i < pvec.size(); i++) pvec[i] = pvec_old[index[i]];

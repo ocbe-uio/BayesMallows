@@ -31,13 +31,10 @@ Rcpp::List  run_smc(
   pars.resample(pvec);
 
   std::for_each(
-    pvec.begin(), pvec.end(), [
-  pars = std::move(pars), dat = std::move(dat),
-    distfun = std::move(distfun),
-    pfun = std::move(pfun),
-    pris = std::move(pris),
-    aug = std::move(aug)
-    ](Particle& p) {
+    pvec.begin(), pvec.end(),
+    [pars = std::move(pars), dat = std::move(dat), distfun = std::move(distfun),
+     pfun = std::move(pfun), pris = std::move(pris), aug = std::move(aug)]
+    (Particle& p) {
       for (size_t kk{}; kk < pars.mcmc_steps; ++kk) {
         pars.update_rho(p, dat, distfun);
         pars.update_alpha(p, dat, pfun, distfun, pris);

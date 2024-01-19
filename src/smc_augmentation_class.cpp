@@ -3,7 +3,7 @@
 using namespace arma;
 
 SMCAugmentation::SMCAugmentation(
-  SMCData& dat,
+  const SMCData& dat,
   const Rcpp::List& compute_options) :
   missing_indicator { set_up_missing(dat) },
   aug_method(compute_options["aug_method"]),
@@ -14,7 +14,7 @@ void SMCAugmentation::reweight(
     const SMCData& dat,
     const std::unique_ptr<PartitionFunction>& pfun,
     const std::unique_ptr<Distance>& distfun
-) {
+) const {
   if(dat.any_missing) {
     std::for_each(
       pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
@@ -68,7 +68,7 @@ void SMCAugmentation::reweight(
 void SMCAugmentation::augment_partial(
     std::vector<Particle>& pvec,
     const SMCData& dat
-){
+) const {
   std::for_each(
     pvec.begin(), pvec.end(),
     [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,

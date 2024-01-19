@@ -41,8 +41,9 @@ struct SMCParameters {
       const std::unique_ptr<Distance>& distfun
   ) const;
 
-  Rcpp::IntegerVector draw_resampling_index(const std::vector<Particle>& pvec);
-  void resample(std::vector<Particle>& pvec);
+  Rcpp::IntegerVector draw_resampling_index(
+      const std::vector<Particle>& pvec) const;
+  void resample(std::vector<Particle>& pvec) const;
 
   const unsigned int mcmc_steps;
 
@@ -52,16 +53,16 @@ private:
 };
 
 struct SMCAugmentation {
-  SMCAugmentation(SMCData& dat, const Rcpp::List& compute_options);
+  SMCAugmentation(const SMCData& dat, const Rcpp::List& compute_options);
   ~SMCAugmentation() = default;
 
   void reweight(
       std::vector<Particle>& pvec,
       const SMCData& dat,
       const std::unique_ptr<PartitionFunction>& pfun,
-      const std::unique_ptr<Distance>& distfun);
+      const std::unique_ptr<Distance>& distfun) const;
 
-  void augment_partial(std::vector<Particle>& pvec, const SMCData& dat);
+  void augment_partial(std::vector<Particle>& pvec, const SMCData& dat) const;
 
   void update_missing_ranks(Particle& p, const SMCData& dat,
       const std::unique_ptr<Distance>& distfun) const;
