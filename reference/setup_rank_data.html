@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,15 +78,13 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>rankings</dt>
-<dd><p>A matrix of ranked items, of size <code>n_assessors x n_items</code>. A
-matrix of zero rows is allowed, and in this case samples from the prior
-distribution are returned. See <code><a href="create_ranking.html">create_ranking()</a></code> if you have an ordered
-set of items that need to be converted to rankings. If <code>preferences</code> is
-provided, <code>rankings</code> is an optional initial value of the rankings. If
-<code>rankings</code> has column names, these are assumed to be the names of the
-items. <code>NA</code> values in rankings are treated as missing data and
-automatically augmented; to change this behavior, see the <code>na_action</code>
-argument to <code><a href="set_model_options.html">set_model_options()</a></code>.</p></dd>
+<dd><p>A matrix of ranked items, of size <code>n_assessors x n_items</code>.
+See <code><a href="create_ranking.html">create_ranking()</a></code> if you have an ordered set of items that need to be
+converted to rankings. If <code>preferences</code> is provided, <code>rankings</code> is an
+optional initial value of the rankings. If <code>rankings</code> has column names,
+these are assumed to be the names of the items. <code>NA</code> values in rankings are
+treated as missing data and automatically augmented; to change this
+behavior, see the <code>na_action</code> argument to <code><a href="set_model_options.html">set_model_options()</a></code>.</p></dd>
 
 
 <dt>preferences</dt>
