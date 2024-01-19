@@ -1,11 +1,12 @@
 #pragma once
+#include <algorithm>
 
 #ifdef __TBB_H
 #include <tbb/parallel_for_each.h>
 #endif
 
 template <typename Iterator, typename Function>
-void my_for_each(Iterator first, Iterator last, Function func) {
+void par_for_each(Iterator first, Iterator last, Function func) {
 #ifdef __TBB_H
   tbb::parallel_for_each(first, last, func);
 #else

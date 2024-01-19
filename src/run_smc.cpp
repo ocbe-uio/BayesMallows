@@ -32,9 +32,10 @@ Rcpp::List  run_smc(
   aug.reweight(pvec, dat, pfun, distfun);
   pars.resample(pvec);
 
-  my_for_each(
+  par_for_each(
     pvec.begin(), pvec.end(),
-    [&pars, &dat, &pris, &aug, &distfun, &pfun]
+    [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),
+     pfun = std::ref(pfun)]
     (Particle& p) {
        pars.update_rho(p, dat, distfun);
        pars.update_alpha(p, dat, pfun, distfun, pris);
