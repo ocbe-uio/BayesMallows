@@ -39,7 +39,6 @@ Rcpp::List  run_smc(
     aug = std::move(aug)
     ](Particle& p) mutable {
       for (size_t kk{}; kk < pars.mcmc_steps; ++kk) {
-        dat.update_data(p);
         pars.update_rho(p, dat, distfun);
         pars.update_alpha(p, dat, pfun, distfun, pris);
         aug.update_missing_ranks(p, dat, distfun);

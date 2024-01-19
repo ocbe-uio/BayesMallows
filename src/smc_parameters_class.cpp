@@ -18,10 +18,9 @@ void SMCParameters::update_alpha(
     const Priors& priors) {
 
   AlphaRatio test = make_new_alpha(
-    p.alpha, p.rho,
-    alpha_prop_sd, distfun, pfun,
-    dat.rankings, dat.observation_frequency,
-    dat.n_items, priors
+    p.alpha, p.rho, alpha_prop_sd, distfun, pfun,
+    dat.any_missing ? p.augmented_data : dat.rankings,
+    dat.observation_frequency, dat.n_items, priors
   );
   if(test.accept) p.alpha = test.proposal;
 }
@@ -31,7 +30,8 @@ void SMCParameters::update_rho(
     const SMCData& dat,
     const std::unique_ptr<Distance>& distfun) {
   p.rho = make_new_rho(
-    p.rho, dat.rankings, p.alpha, leap_size, distfun,
+    p.rho, dat.any_missing ? p.augmented_data : dat.rankings,
+    p.alpha, leap_size, distfun,
     dat.observation_frequency);
 }
 
