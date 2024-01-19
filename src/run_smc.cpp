@@ -1,4 +1,6 @@
 #include <RcppArmadillo.h>
+
+#include "parallel_utils.h"
 #include "smc_classes.h"
 #include "particles.h"
 
@@ -30,17 +32,14 @@ Rcpp::List  run_smc(
   aug.reweight(pvec, dat, pfun, distfun);
   pars.resample(pvec);
 
-  std::for_each(
+  my_for_each(
     pvec.begin(), pvec.end(),
-    [pars = std::move(pars), dat = std::move(dat), distfun = std::move(distfun),
-     pfun = std::move(pfun), pris = std::move(pris), aug = std::move(aug)]
+    [&pars, &dat, &pris, &aug, &distfun, &pfun]
     (Particle& p) {
-      for (size_t kk{}; kk < pars.mcmc_steps; ++kk) {
-        pars.update_rho(p, dat, distfun);
-        pars.update_alpha(p, dat, pfun, distfun, pris);
-        aug.update_missing_ranks(p, dat, distfun);
-      }
-    }
+       pars.update_rho(p, dat, distfun);
+       pars.update_alpha(p, dat, pfun, distfun, pris);
+       aug.update_missing_ranks(p, dat, distfun);
+     }
   );
 
   Rcpp::List particle_history = Rcpp::List::create(
