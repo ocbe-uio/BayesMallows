@@ -26,5 +26,6 @@ Data::Data(
   items_below { define_items(data, "items_below") },
   any_missing { !is_finite(rankings) }
   {
+    if(n_assessors <= 0) Rcpp::stop("Must have at least one observation.");
     rankings.replace(datum::nan, 0);
   }

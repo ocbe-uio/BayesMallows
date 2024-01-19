@@ -15,7 +15,7 @@ AlphaRatio make_new_alpha(
     const Priors& priors) {
 
   double alpha_proposal = R::rlnorm(std::log(alpha_old), alpha_prop_sd);
-  double rank_dist = sum(distfun->d(rankings, rho_old) % observation_frequency);
+  double rank_dist = sum(distfun->matdist(rankings, rho_old) % observation_frequency);
   double alpha_diff = alpha_old - alpha_proposal;
 
   double ratio =
@@ -45,12 +45,11 @@ vec make_new_rho(
     rho_proposal, indices, prob_backward, prob_forward,
     current_rho, leap_size, distfun);
 
-  const arma::mat& r = rankings.rows(indices);
   double dist_new = arma::sum(
-    distfun->d(r, rho_proposal(indices)) % observation_frequency
+    distfun->matdist(rankings.rows(indices), rho_proposal(indices)) % observation_frequency
   );
   double dist_old = arma::sum(
-    distfun->d(r, current_rho(indices)) % observation_frequency
+    distfun->matdist(rankings.rows(indices), current_rho(indices)) % observation_frequency
   );
 
   double ratio = - alpha_old / n_items * (dist_new - dist_old) +

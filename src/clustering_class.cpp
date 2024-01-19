@@ -88,6 +88,6 @@ void Clustering::update_dist_mat(
     const std::unique_ptr<Distance>& distfun){
   if(clustering | include_wcd) {
     for(size_t i{}; i < pars.n_clusters; ++i)
-      dist_mat.col(i) = distfun->d(dat.rankings, pars.rho_old.col(i));
+      dist_mat.col(i) = distfun->matdist(dat.rankings, pars.rho_old.col(i));
   }
 }

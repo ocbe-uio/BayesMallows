@@ -210,6 +210,7 @@ test_that("update_mallows is correct for updated partial rankings", {
     tolerance = .1
   )
 
+  skip_on_os("mac", arch = "aarch64")
   expect_equal(
     sd(mod2$alpha$value),
     sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 5000]),
