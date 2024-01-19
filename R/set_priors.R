@@ -4,7 +4,7 @@
 #'   Mallows model.
 #'
 #' @param lambda Strictly positive numeric value specifying the rate parameter
-#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+#'   of the exponential prior distribution of \eqn{\alpha}. Defaults
 #'   to `0.001`. When `n_cluster > 1`, each mixture component \eqn{\alpha_{c}}
 #'   has the same prior distribution.
 #'
