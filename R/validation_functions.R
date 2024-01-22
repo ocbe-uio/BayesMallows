@@ -57,6 +57,10 @@ validate_preferences <- function(data, model) {
   }
 }
 
+validate_rankings <- function(data) {
+  if (nrow(data$rankings) <= 0) stop("Data must have at least one row.")
+}
+
 validate_initial_values <- function(initial_values, data) {
   if (!is.null(initial_values$rho)) {
     if (length(unique(initial_values$rho)) != length(initial_values$rho)) {

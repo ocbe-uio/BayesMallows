@@ -1,5 +1,7 @@
 ## Resubmission Note
 
+UPDATE: The original resubmission did not fix a valgrind error. We have reproduced the error and fixed it.
+
 This is a resubmission, fixing issues with "clang-UBSAN", "gcc-UBSAN", and "valgrind". We have reproduced the errors using the Docker images rocker/r-devel-san, and made the necessary changes. 
 
 There are also two failing unit tests on noLD. We believe these to be cause be differences in floating point numbers, since the test expectations are based on values after running thousands of steps of an MCMC algorithm. We have added testthat::skip_on_cran() to the two tests in question.

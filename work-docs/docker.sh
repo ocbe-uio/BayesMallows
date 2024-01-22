@@ -6,3 +6,6 @@ docker run -v "$(pwd)":"/opt/$(basename $(pwd))" -it --cap-add=SYS_PTRACE rocker
 
 # To get httr package:
 apt-get install libssl-dev
+
+
+RD -d "valgrind --tool=memcheck --leak-check=full --track-origins=yes"

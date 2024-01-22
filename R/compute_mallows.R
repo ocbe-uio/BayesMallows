@@ -77,6 +77,7 @@ compute_mallows <- function(
   validate_class(compute_options, "BayesMallowsComputeOptions")
   validate_class(priors, "BayesMallowsPriors")
   validate_class(initial_values, "BayesMallowsInitialValues")
+  validate_rankings(data)
   validate_preferences(data, model_options)
   validate_initial_values(initial_values, data)
 
