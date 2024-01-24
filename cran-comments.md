@@ -9,9 +9,10 @@ There are also two failing unit tests on noLD. We believe these to be cause be d
 
 ## Test Environments
 
-* Local Ubuntu 22.04 with R using VALGRIND.
-* Local Ubuntu 23.04 with R built from source with options "--with-valgrind-instrumentation=2", using VALGRIND.
-* r-devel-san via rocker/r-devel-san, with VALGRIND.
+* Local Ubuntu 22.04, R 4.3.2, running R CMD check with --use-valgrind option.
+* Local Ubuntu 23.04 with R 4.3.2 built from source with option "--with-valgrind-instrumentation=2", running R CMD check with --use-valgrind option.
+* r-devel-san via rocker/r-devel-san, running R CMD check with --use-valgrind option.
+* r-devel-san via rocker/r-devel-san.
 * local Windows install, R 4.3.2.
 * windows, devel, release and old-release.
 * R-CMD-check via GitHub Actions on windows-latest, macOS-latest, ubuntu-20.04 (release), and ubuntu-20.04 (devel).
