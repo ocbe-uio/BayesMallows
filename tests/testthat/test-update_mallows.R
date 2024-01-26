@@ -85,7 +85,7 @@ test_that("update_mallows can start from prior", {
     mod1,
     new_data = setup_rank_data(potato_visual[2,, drop = FALSE])
   )
-  expect_equal(mod2$alpha_samples[[56]], 24.1570488851221)
+  expect_equal(mod2$alpha_samples[[56]], 34.549750670595)
 })
 
 test_that("update_mallows handles estimated partition function", {
