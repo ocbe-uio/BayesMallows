@@ -164,6 +164,13 @@ setup_rank_data <- function(
     stop("invalid permutations provided in rankings matrix")
   }
   n_items <- ncol(rankings)
+
+  if (!is.null(colnames(rankings))) {
+    items <- colnames(rankings)
+  } else {
+    items <- paste("Item", seq(from = 1, to = n_items, by = 1))
+  }
+
   constraints <- generate_constraints(preferences, n_items, cl)
   consistent <- matrix(integer(0))
 
