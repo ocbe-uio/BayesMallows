@@ -2,6 +2,7 @@
 % Please edit documentation in R/BayesMallows.R
 \docType{package}
 \name{BayesMallows-package}
+\alias{BayesMallows}
 \alias{BayesMallows-package}
 \title{BayesMallows: Bayesian Preference Learning with the Mallows Rank Model}
 \description{
