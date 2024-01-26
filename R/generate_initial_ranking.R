@@ -4,6 +4,7 @@ generate_initial_ranking <- function(
   UseMethod("generate_initial_ranking")
 }
 
+#' @export
 generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
     preferences, cl = NULL, shuffle_unranked = FALSE, random = FALSE,
     random_limit = 8L) {
@@ -34,12 +35,7 @@ generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
   }
 }
 
-
-.S3method(
-  "generate_initial_ranking", "BayesMallowsTransitiveClosure",
-  generate_initial_ranking.BayesMallowsTransitiveClosure
-)
-
+#' @export
 generate_initial_ranking.BayesMallowsIntransitive <- function(
     preferences, cl = NULL, shuffle_unranked = FALSE,
     random = FALSE, random_limit = 8L) {
