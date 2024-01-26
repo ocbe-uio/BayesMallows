@@ -116,6 +116,9 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     pfun_values = model$pfun_values,
     pfun_estimate = model$pfun_estimate
   )
+  model$alpha_samples <- ret$alpha_samples
+  model$rho_samples <- ret$rho_samples
+  model$augmented_rankings <- ret$augmented_rankings
   tidy_parameters <- tidy_smc(ret, model$items)
   model$alpha <- tidy_parameters$alpha
   model$rho <- tidy_parameters$rho
