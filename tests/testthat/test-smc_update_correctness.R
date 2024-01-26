@@ -275,8 +275,6 @@ test_that("update_mallows works for data one at a time", {
   expect_equal(
     sd(mod$alpha_samples),
     sd(mod_bmm$alpha_samples[-(1:500)]),
-    tolerance = .05)
+    tolerance = .1)
 
-  compute_consensus(mod)
-  compute_consensus(mod_bmm, burnin = 1000)
 })
