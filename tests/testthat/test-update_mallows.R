@@ -74,6 +74,20 @@ test_that("update_mallows works", {
   expect_equal(mod_final$rho$value[[300]], 3)
 })
 
+test_that("update_mallows can start from prior", {
+  set.seed(1)
+  prior_samples <- sample_prior(100, 20)
+  mod1 <- update_mallows(
+    prior_samples,
+    new_data = setup_rank_data(potato_visual[1, , drop = FALSE]),
+    smc_options = set_smc_options(n_particles = 100))
+  mod2 <- update_mallows(
+    mod1,
+    new_data = setup_rank_data(potato_visual[2,, drop = FALSE])
+  )
+  expect_equal(mod2$alpha_samples[[56]], 24.1570488851221)
+})
+
 test_that("update_mallows handles estimated partition function", {
   set.seed(199)
   dat <- t(replicate(3, sample(22)))
