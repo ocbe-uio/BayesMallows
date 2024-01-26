@@ -85,13 +85,17 @@ test_that("compute_consensus.SMCMallows works", {
   expect_equal(dim(a2), c(20, 4))
 
   mod <- sample_prior(1000, ncol(sushi_rankings))
-  for(i in seq_len(20)) {
+  for (i in seq_len(20)) {
     mod <- update_mallows(
       model = mod,
-      new_data = setup_rank_data(sushi_rankings[i, , drop = FALSE]))
+      new_data = setup_rank_data(sushi_rankings[i, , drop = FALSE])
+    )
   }
   expect_equal(
     compute_consensus(mod)$item,
-    c("fatty tuna", "sea urchin", "egg", "shrimp", "sea eel", "tuna",
-      "squid", "salmon roe", "tuna roll", "cucumber roll"))
+    c(
+      "fatty tuna", "sea urchin", "egg", "shrimp", "sea eel", "tuna",
+      "squid", "salmon roe", "tuna roll", "cucumber roll"
+    )
+  )
 })
