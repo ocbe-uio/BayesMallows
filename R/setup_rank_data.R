@@ -140,15 +140,19 @@ setup_rank_data <- function(
     if (na_action == "fail" && any(is.na(rankings))) {
       stop("rankings matrix contains NA values")
     }
-    if(!is.matrix(rankings)) {
-      rankings <- matrix(rankings, nrow = 1,
-                         dimnames = list(NULL, names(rankings)))
+    if (!is.matrix(rankings)) {
+      rankings <- matrix(rankings,
+        nrow = 1,
+        dimnames = list(NULL, names(rankings))
+      )
     }
 
     if (na_action == "omit" && any(is.na(rankings))) {
       keeps <- apply(rankings, 1, function(x) !any(is.na(x)))
-      print(paste("Omitting", sum(!keeps),
-                  "row(s) from rankings due to NA values"))
+      print(paste(
+        "Omitting", sum(!keeps),
+        "row(s) from rankings due to NA values"
+      ))
       rankings <- rankings[keeps, , drop = FALSE]
     }
   } else {
@@ -160,8 +164,10 @@ setup_rank_data <- function(
   if (!is.null(observation_frequency)) {
     validate_positive_vector(observation_frequency)
     if (nrow(rankings) != length(observation_frequency)) {
-      stop("observation_frequency must be of same ",
-           "length as the number of rows in rankings")
+      stop(
+        "observation_frequency must be of same ",
+        "length as the number of rows in rankings"
+      )
     }
   } else {
     observation_frequency <- rep(1, nrow(rankings))
