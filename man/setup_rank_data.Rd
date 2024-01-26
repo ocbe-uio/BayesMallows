@@ -24,7 +24,9 @@ converted to rankings. If \code{preferences} is provided, \code{rankings} is an
 optional initial value of the rankings. If \code{rankings} has column names,
 these are assumed to be the names of the items. \code{NA} values in rankings are
 treated as missing data and automatically augmented; to change this
-behavior, see the \code{na_action} argument to \code{\link[=set_model_options]{set_model_options()}}.}
+behavior, see the \code{na_action} argument to \code{\link[=set_model_options]{set_model_options()}}. A vector
+length \code{n_items} is silently converted to a matrix of length \verb{1 x n_items},
+and names (if any), are used as column names.}
 
 \item{preferences}{A data frame with one row per pairwise comparison, and
 columns \code{assessor}, \code{top_item}, and \code{bottom_item}. Each column contains the
