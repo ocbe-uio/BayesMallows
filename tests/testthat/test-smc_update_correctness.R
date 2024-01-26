@@ -247,7 +247,7 @@ test_that("update_mallows works for data one at a time", {
   for(i in seq_len(200)) {
     mod <- update_mallows(
       model = mod,
-      new_data = setup_rank_data(sushi_rankings[i, , drop = FALSE]))
+      new_data = setup_rank_data(sushi_rankings[i, ]))
   }
   expect_equal(
     mean(mod$alpha_samples),
