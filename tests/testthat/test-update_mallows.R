@@ -80,10 +80,11 @@ test_that("update_mallows can start from prior", {
   mod1 <- update_mallows(
     prior_samples,
     new_data = setup_rank_data(potato_visual[1, , drop = FALSE]),
-    smc_options = set_smc_options(n_particles = 100))
+    smc_options = set_smc_options(n_particles = 100)
+  )
   mod2 <- update_mallows(
     mod1,
-    new_data = setup_rank_data(potato_visual[2,, drop = FALSE])
+    new_data = setup_rank_data(potato_visual[2, , drop = FALSE])
   )
   expect_equal(mod2$alpha_samples[[56]], 34.549750670595)
 })
