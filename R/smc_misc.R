@@ -88,7 +88,7 @@ run_common_part <- function(
     pfun_estimate = pfun_list$pfun_estimate
   )
 
-  ret <- c(ret, tidy_smc(ret, model$items))
+  ret <- c(ret, tidy_smc(ret, data$items))
   ret$model_options <- model_options
   ret$smc_options <- smc_options
   ret$compute_options <- compute_options
@@ -100,7 +100,7 @@ run_common_part <- function(
   ret$pfun_values <- pfun_list$pfun_values
   ret$pfun_estimate <- pfun_list$pfun_estimate
   ret$metric <- model_options$metric
-  ret$items <- model$items
+  ret$items <- data$items
   class(ret) <- c("SMCMallows", "BayesMallows")
   ret
 }
