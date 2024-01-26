@@ -84,11 +84,7 @@ struct Clustering {
   void update_dist_mat(const Data& dat, const Parameters& pars,
                        const std::unique_ptr<Distance>& distfun);
 
-  arma::mat cluster_probs;
   arma::vec current_cluster_probs;
-  arma::umat cluster_assignment;
-  arma::uvec current_cluster_assignment;
-  arma::mat within_cluster_distance;
   const bool clustering;
   const unsigned int clus_thinning;
 
@@ -97,6 +93,13 @@ private:
   arma::mat dist_mat;
   const bool include_wcd;
   const bool save_ind_clus;
+  int n_cluster_assignments;
+
+public:
+  arma::mat cluster_probs;
+  arma::umat cluster_assignment;
+  arma::uvec current_cluster_assignment;
+  arma::mat within_cluster_distance;
 };
 
 struct Augmentation {
