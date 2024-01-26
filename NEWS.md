@@ -1,5 +1,6 @@
 # BayesMallows (development versions)
 
+* setup_rank_data() now accepts a single vector of rankings, silently converting a to matrix with a single row.
 * Sequential Monte Carlo algorithm can now start from a sample from the prior
   distribution, see the sample_prior() function for an example.
 * Added support for parallelism under-the-hood with oneTBB.
