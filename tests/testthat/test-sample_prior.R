@@ -1,0 +1,11 @@
+test_that("sample_prior works", {
+  set.seed(1)
+  mm <- sample_prior(3, 10)
+  expect_s3_class(mm, "BayesMallowsPriorSamples")
+  expect_equal(mm$n_items, 10)
+  expect_equal(mm$items, 1:10)
+  expect_equal(dim(mm$rho), c(10, 3))
+  expect_equal(length(mm$alpha), 3)
+  expect_equal(mm$alpha[[2]], 1181.64277910711)
+  expect_equal(mm$rho[2, 2], 6)
+})

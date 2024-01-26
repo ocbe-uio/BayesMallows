@@ -1,9 +1,12 @@
 # BayesMallows (development versions)
 
+* Sequential Monte Carlo algorithm can now start from a sample from the prior
+  distribution, see the sample_prior() function for an example.
 * Added support for parallelism under-the-hood with oneTBB.
 
 # BayesMallows 2.0.1
 
+* Edits to C++ code fixing memory leaks.
 * Edits to unit tests which caused issues on CRAN.
 
 # BayesMallows 2.0.0

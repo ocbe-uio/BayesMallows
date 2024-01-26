@@ -164,6 +164,7 @@ plot(mixture_model, parameter = "cluster_assignment")
 \seealso{
 Other modeling: 
 \code{\link{compute_mallows}()},
+\code{\link{sample_prior}()},
 \code{\link{update_mallows}()}
 }
 \concept{modeling}
