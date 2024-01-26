@@ -8,21 +8,20 @@ Clustering::Clustering(const Parameters& pars,
   clustering {pars.n_clusters > 1},
   clus_thinning { compute_options["clus_thinning"] },
   index { regspace<uvec>(0, pars.n_clusters - 1) },
+  dist_mat { zeros(n_assessors, pars.n_clusters) },
   include_wcd { compute_options["include_wcd"] },
-  save_ind_clus { compute_options["save_ind_clus"] } {
-    int n_cluster_assignments = pars.n_clusters > 1 ?
-    std::ceil(static_cast<double>(pars.nmc * 1.0 / clus_thinning)) : 1;
-    cluster_probs.set_size(pars.n_clusters, n_cluster_assignments);
+  save_ind_clus { compute_options["save_ind_clus"] },
+  n_cluster_assignments { pars.n_clusters > 1 ?
+    static_cast<int>(std::ceil(static_cast<double>(pars.nmc * 1.0 / clus_thinning))) : 1 },
+  cluster_probs { zeros(pars.n_clusters, n_cluster_assignments) },
+  cluster_assignment { zeros<umat>(n_assessors, n_cluster_assignments) },
+  current_cluster_assignment { cluster_assignment.col(0) },
+  within_cluster_distance { zeros(pars.n_clusters, include_wcd ? pars.nmc : 1) }
+{
     cluster_probs.col(0).fill(1.0 / pars.n_clusters);
     current_cluster_probs = cluster_probs.col(0);
-    cluster_assignment.set_size(n_assessors, n_cluster_assignments);
     ivec a = Rcpp::sample(pars.n_clusters, n_assessors, true) - 1;
     cluster_assignment.col(0) = conv_to<uvec>::from(a);
-    current_cluster_assignment = cluster_assignment.col(0);
-
-    dist_mat.set_size(n_assessors, pars.n_clusters);
-    within_cluster_distance.set_size(
-      pars.n_clusters, include_wcd ? pars.nmc : 1);
     update_wcd(0);
   }
 

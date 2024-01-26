@@ -20,7 +20,7 @@ test_that("assign_cluster works", {
   a1 <- assign_cluster(mod, soft = FALSE, expand = FALSE)
   expect_equal(dim(a1), c(60, 3))
   agg1 <- aggregate(assessor ~ map_cluster, a1, length)
-  expect_equal(agg1$assessor, c(23, 17, 20))
+  expect_equal(agg1$assessor, c(21, 20, 19))
 
   a2 <- assign_cluster(mod, soft = TRUE, expand = FALSE)
   expect_equal(ncol(a2), 4)

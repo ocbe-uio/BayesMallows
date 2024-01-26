@@ -1,3 +1,4 @@
+#include "parallel_utils.h"
 #include "smc_classes.h"
 #include "missing_data.h"
 using namespace arma;
@@ -16,14 +17,14 @@ void SMCAugmentation::reweight(
     const std::unique_ptr<Distance>& distfun
 ) const {
   if(dat.any_missing) {
-    std::for_each(
+    par_for_each(
       pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
           p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
       });
     augment_partial(pvec, dat);
   }
 
-  std::for_each(
+  par_for_each(
     pvec.begin(), pvec.end(),
     [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
      any_missing = dat.any_missing, distfun = &distfun, pfun = &pfun,
@@ -69,7 +70,7 @@ void SMCAugmentation::augment_partial(
     std::vector<Particle>& pvec,
     const SMCData& dat
 ) const {
-  std::for_each(
+  par_for_each(
     pvec.begin(), pvec.end(),
     [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
      aug_method = aug_method, pseudo_aug_metric = pseudo_aug_metric,

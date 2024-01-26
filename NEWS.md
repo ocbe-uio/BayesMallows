@@ -1,7 +1,10 @@
 # BayesMallows (development versions)
 
+* Added support for parallelism under-the-hood with oneTBB.
+
 # BayesMallows 2.0.1
 
+* Edits to C++ code fixing memory leaks.
 * Edits to unit tests which caused issues on CRAN.
 
 # BayesMallows 2.0.0

@@ -8,7 +8,7 @@ set_priors(lambda = 0.001, psi = 10, kappa = c(1, 3))
 }
 \arguments{
 \item{lambda}{Strictly positive numeric value specifying the rate parameter
-of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+of the exponential prior distribution of \eqn{\alpha}. Defaults
 to \code{0.001}. When \code{n_cluster > 1}, each mixture component \eqn{\alpha_{c}}
 has the same prior distribution.}
 
