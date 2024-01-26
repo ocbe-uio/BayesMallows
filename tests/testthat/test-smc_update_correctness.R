@@ -237,3 +237,46 @@ test_that("update_mallows does not suffer from numerical overflow", {
 
   expect_s3_class(mod2, "SMCMallows")
 })
+
+test_that("update_mallows works for data one at a time", {
+  skip_on_cran()
+  set.seed(2)
+  mod_bmm <- compute_mallows(data = setup_rank_data(sushi_rankings[1:200, ]))
+
+  mod <- sample_prior(1000, ncol(sushi_rankings))
+  for(i in seq_len(200)) {
+    mod <- update_mallows(
+      model = mod,
+      new_data = setup_rank_data(sushi_rankings[i, , drop = FALSE]))
+  }
+  expect_equal(
+    mean(mod$alpha_samples),
+    mean(mod_bmm$alpha_samples[-(1:500)]),
+    tolerance = .01)
+  expect_equal(
+    sd(mod$alpha_samples),
+    sd(mod_bmm$alpha_samples[-(1:500)]),
+    tolerance = .05)
+
+  dat <- sushi_rankings[sample(nrow(sushi_rankings), 200), ]
+  dat[dat > 6] <- NA
+  mod_bmm <- compute_mallows(data = setup_rank_data(dat))
+
+  mod <- sample_prior(1000, ncol(dat))
+  for(i in seq_len(200)) {
+    mod <- update_mallows(
+      model = mod,
+      new_data = setup_rank_data(dat[i, , drop = FALSE]))
+  }
+  expect_equal(
+    mean(mod$alpha_samples),
+    mean(mod_bmm$alpha_samples[-(1:500)]),
+    tolerance = .01)
+  expect_equal(
+    sd(mod$alpha_samples),
+    sd(mod_bmm$alpha_samples[-(1:500)]),
+    tolerance = .05)
+
+  compute_consensus(mod)
+  compute_consensus(mod_bmm, burnin = 1000)
+})
