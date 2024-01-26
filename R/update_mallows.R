@@ -47,7 +47,7 @@ update_mallows.BayesMallowsPriorSamples <- function(
     pfun_estimate = NULL,
     ...) {
   alpha_init <- sample(model$alpha, smc_options$n_particles, replace = TRUE)
-  rho_init <- model$rho[, sample(ncol(model$rho), smc_options$n_particles, replace = TRUE) ]
+  rho_init <- model$rho[, sample(ncol(model$rho), smc_options$n_particles, replace = TRUE)]
   pfun_values <- extract_pfun_values(model_options, new_data, pfun_estimate)
 
   run_common_part(
@@ -58,9 +58,12 @@ update_mallows.BayesMallowsPriorSamples <- function(
       alpha_init = alpha_init, rho_init = rho_init,
       aug_init = NULL
     ),
-    pfun_list = list(pfun_values = pfun_values,
-                     pfun_estimate = pfun_estimate),
-    model = model)
+    pfun_list = list(
+      pfun_values = pfun_values,
+      pfun_estimate = pfun_estimate
+    ),
+    model = model
+  )
 }
 
 #' @export
@@ -85,9 +88,12 @@ update_mallows.BayesMallows <- function(
       alpha_init = alpha_init, rho_init = rho_init,
       aug_init = NULL
     ),
-    pfun_list = list(pfun_values = model$pfun_values,
-                     pfun_estimate = model$pfun_estimate),
-    model = model)
+    pfun_list = list(
+      pfun_values = model$pfun_values,
+      pfun_estimate = model$pfun_estimate
+    ),
+    model = model
+  )
 }
 
 #' @export

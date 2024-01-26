@@ -1,4 +1,3 @@
-
 tidy_smc <- function(ret, items) {
   result <- list()
   result$alpha <- tidy_alpha(matrix(ret$alpha_samples, nrow = 1), 1, 1)
