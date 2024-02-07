@@ -9,3 +9,11 @@ test_that("sample_prior works", {
   expect_equal(mm$alpha[[2]], 1181.64277910711)
   expect_equal(mm$rho[2, 2], 6)
 })
+
+test_that("scale and shape matter", {
+  set.seed(1)
+  mm1 <- sample_prior(100, 20)
+  mm2 <- sample_prior(100, 20, priors = set_priors(gamma = 2, lambda = .1))
+
+  expect_lt(mean(mm2$alpha), mean(mm1$alpha))
+})
