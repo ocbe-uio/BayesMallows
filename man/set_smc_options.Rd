@@ -61,6 +61,9 @@ parameters entering at the given timestep. The default,
 hence all latent ranks are part of the move step at each timestep.
 }
 
+\references{
+\insertAllCited{}
+}
 \seealso{
 Other preprocessing: 
 \code{\link{get_transitive_closure}()},

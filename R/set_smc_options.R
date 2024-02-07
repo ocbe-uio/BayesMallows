@@ -46,6 +46,7 @@
 #'
 #'
 #' @export
+#' @references \insertAllCited{}
 #'
 #' @family preprocessing
 set_smc_options <- function(
