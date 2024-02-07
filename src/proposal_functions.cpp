@@ -23,7 +23,7 @@ AlphaRatio make_new_alpha(
     priors.lambda * alpha_diff +
     sum(observation_frequency) *
     (pfun->logz(alpha_old) - pfun->logz(alpha_proposal)) +
-    std::log(alpha_proposal) - std::log(alpha_old);
+    priors.gamma * (std::log(alpha_proposal) - std::log(alpha_old));
 
   return AlphaRatio{alpha_proposal, ratio > std::log(R::unif_rand())};
 }

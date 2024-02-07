@@ -22,10 +22,11 @@ struct Data {
 struct Priors {
   Priors(
     const Rcpp::List& priors
-  ) : lambda { priors["lambda"] }, kappa(priors["kappa"]),
-  psi { priors["psi"] } {}
+  ) : gamma { priors["gamma"] }, lambda { priors["lambda"] },
+  kappa(priors["kappa"]), psi { priors["psi"] } {}
   ~Priors() = default;
 
+  const double gamma;
   const double lambda;
   const arma::ivec kappa;
   const unsigned int psi;

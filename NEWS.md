@@ -1,5 +1,9 @@
 # BayesMallows (development versions)
 
+* Prior for precision parameter alpha is now a gamma distribution. Until now
+  an exponential distribution has been assumed. Since the exponential is a special
+  case of the gamma with shape parameter equal to 1 (the default), this is not
+  a breaking change. However, it adds flexibility when it comes to specifying the prior.
 * setup_rank_data() now accepts a single vector of rankings, silently converting a to matrix with a single row.
 * Sequential Monte Carlo algorithm can now start from a sample from the prior
   distribution, see the sample_prior() function for an example.
