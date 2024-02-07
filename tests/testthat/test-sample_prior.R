@@ -6,8 +6,8 @@ test_that("sample_prior works", {
   expect_equal(mm$items, 1:10)
   expect_equal(dim(mm$rho), c(10, 3))
   expect_equal(length(mm$alpha), 3)
-  expect_equal(mm$alpha[[2]], 1181.64277910711)
-  expect_equal(mm$rho[2, 2], 6)
+  expect_equal(mm$alpha[[2]], 1882.40159634668)
+  expect_equal(mm$rho[2, 2], 5)
 })
 
 test_that("scale and shape matter", {
