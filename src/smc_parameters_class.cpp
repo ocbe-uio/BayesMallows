@@ -8,7 +8,8 @@ SMCParameters::SMCParameters(
 ) :
   mcmc_steps { smc_options["mcmc_steps"] },
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
-  leap_size { compute_options["leap_size"] } {}
+  leap_size { compute_options["leap_size"] },
+  resampler { choose_resampler(std::string(smc_options["resampler"])) } {}
 
 void SMCParameters::update_alpha(
     Particle& p,
@@ -45,9 +46,7 @@ Rcpp::IntegerVector SMCParameters::draw_resampling_index(
   arma::vec probs = exp(log_inc_wgt - max(log_inc_wgt) -
     log(sum(exp(log_inc_wgt - max(log_inc_wgt)))));
 
-  return Rcpp::sample(
-    log_inc_wgt.size(), log_inc_wgt.size(), true,
-    Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(probs)), false);
+  return resampler->resample(probs);
 }
 
 void SMCParameters::resample(std::vector<Particle>& pvec) const {

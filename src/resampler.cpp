@@ -3,8 +3,9 @@
 template<typename T>
 Rcpp::IntegerVector count_to_index(const T& counts) {
   Rcpp::IntegerVector result;
-  for(int i{}; i < counts.size(); i++) {
-    for(int j{}; j < counts[i]; j++) {
+  for(size_t i{}; i < counts.size(); i++) {
+    int c = counts[i];
+    for(int j{}; j < c; j++) {
       result.push_back(i);
     }
   }
@@ -56,4 +57,18 @@ Rcpp::IntegerVector Stratified::resample(arma::vec probs) {
 
 Rcpp::IntegerVector Systematic::resample(arma::vec probs) {
   return stratsys(probs, false);
+}
+
+std::unique_ptr<Resampler> choose_resampler(std::string resampler) {
+  if(resampler == "multinomial") {
+    return std::make_unique<Multinomial>();
+  } else if(resampler == "residual") {
+    return std::make_unique<Residual>();
+  } else if(resampler == "stratified") {
+    return std::make_unique<Stratified>();
+  } else if(resampler == "systematic") {
+    return std::make_unique<Systematic>();
+  } else {
+    Rcpp::stop("Unknown resampler.");
+  }
 }

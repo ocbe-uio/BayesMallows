@@ -1,6 +1,7 @@
 #pragma once
 
 #include "classes.h"
+#include "resampler.h"
 
 struct Particle {
   Particle(double alpha, const arma::vec& rho, const arma::mat& augmented_data,
@@ -51,6 +52,7 @@ struct SMCParameters {
 private:
   const double alpha_prop_sd;
   const unsigned int leap_size;
+  const std::unique_ptr<Resampler> resampler;
 };
 
 struct SMCAugmentation {

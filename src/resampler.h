@@ -22,3 +22,5 @@ struct Stratified : Resampler {
 struct Systematic : Resampler {
   Rcpp::IntegerVector resample(arma::vec probs) override;
 };
+
+std::unique_ptr<Resampler> choose_resampler(std::string resampler);
