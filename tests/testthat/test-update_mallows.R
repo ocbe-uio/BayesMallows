@@ -123,4 +123,3 @@ test_that("update_mallows handles estimated partition function", {
   )
   expect_equal(mod2$pfun_estimate, fit)
 })
-

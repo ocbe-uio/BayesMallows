@@ -55,6 +55,7 @@ set_smc_options <- function(
     latent_sampling_lag = NA_integer_) {
   validate_integer(n_particles)
   validate_integer(mcmc_steps)
+  if(!is.na(latent_sampling_lag)) validate_integer(latent_sampling_lag)
 
   ret <- as.list(environment())
   class(ret) <- "SMCOptions"
