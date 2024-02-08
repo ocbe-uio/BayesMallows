@@ -14,7 +14,8 @@ setup_rank_data(
   cl = NULL,
   shuffle_unranked = FALSE,
   random = FALSE,
-  random_limit = 8L
+  random_limit = 8L,
+  timepoint = NULL
 )
 }
 \arguments{
@@ -97,6 +98,12 @@ generated for each assessor, and one of them is picked at random.}
 \item{random_limit}{Integer specifying the maximum number of items allowed
 when all possible orderings are computed, i.e., when \code{random=TRUE}.
 Defaults to \code{8L}.}
+
+\item{timepoint}{Integer vector specifying the timepoint. Defaults to \code{NULL},
+which means that a vector of ones, one for each observation, is generated.
+Used by \code{\link[=update_mallows]{update_mallows()}} to identify data with a given iteration of the
+sequential Monte Carlo algorithm. If not \code{NULL}, must contain one integer
+for each row in \code{rankings}.}
 }
 \value{
 An object of class \code{"BayesMallowsData"}, to be provided in the \code{data}

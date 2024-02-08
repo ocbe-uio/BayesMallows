@@ -21,6 +21,7 @@ struct SMCData : Data {
   void update_data(const Particle& p);
   arma::mat new_rankings;
   const unsigned int num_new_obs;
+  const arma::uvec timepoint;
 };
 
 struct SMCParameters {
@@ -53,7 +54,11 @@ private:
 };
 
 struct SMCAugmentation {
-  SMCAugmentation(const SMCData& dat, const Rcpp::List& compute_options);
+  SMCAugmentation(
+    const SMCData& dat,
+    const Rcpp::List& compute_options,
+    const Rcpp::List& smc_options
+    );
   ~SMCAugmentation() = default;
 
   void reweight(
@@ -70,4 +75,8 @@ struct SMCAugmentation {
   const arma::umat missing_indicator;
   const std::string aug_method;
   const std::string pseudo_aug_metric;
+
+private:
+  const Rcpp::IntegerVector lag_helper;
+  const unsigned int latent_sampling_lag;
 };

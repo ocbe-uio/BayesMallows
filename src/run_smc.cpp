@@ -23,7 +23,7 @@ Rcpp::List  run_smc(
   SMCData dat{data, new_data};
   SMCParameters pars{smc_options, compute_options};
   Priors pris{priors};
-  SMCAugmentation aug{dat, compute_options};
+  SMCAugmentation aug{dat, compute_options, smc_options};
   std::string metric = model_options["metric"];
   auto pfun = choose_partition_function(
     dat.n_items, metric, pfun_values, pfun_estimate);
