@@ -2,12 +2,16 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-NumericVector ouch() {
-  NumericVector x(10);
-  x[1000000] = 1;
-  return x;
+int test(Rcpp::List l) {
+  Rcpp::IntegerVector a = Rcpp::as<Rcpp::IntegerVector>(l["a"]);
+
+
+  if(IntegerVector::is_na(a[0])) {
+    Rcpp::Rcout << "hei" << std::endl;
+  }
+  return 0;
 }
 
 /*** R
-ouch()
+test(list(a = c(NA, 1)))
 */

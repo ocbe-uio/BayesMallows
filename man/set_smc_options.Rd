@@ -35,9 +35,9 @@ Sets the SMC compute options to be used in
 
 The parameter \code{latent_sampling_lag} corresponds to \eqn{L} in
 \insertCite{Kantas2015}{BayesMallows}. Its use in this package is can be
-explained in terms of Algorithm 12 and Algorithm 13 in
-\insertCite{steinSequentialInferenceMallows2023}{BayesMallows}. In
-Algorithm 12, the relevant line is close to the bottom:
+explained in terms of Algorithm 12 in
+\insertCite{steinSequentialInferenceMallows2023}{BayesMallows}. The
+relevant line of the algorithm is:
 
 \strong{for} \eqn{j = 1 : M_{t}} \strong{do} \cr
 \strong{M-H step:} update \eqn{\tilde{\mathbf{R}}_{j}^{(i)}} with proposal

@@ -82,6 +82,12 @@
 #'   when all possible orderings are computed, i.e., when `random=TRUE`.
 #'   Defaults to `8L`.
 #'
+#' @param timepoint Integer vector specifying the timepoint. Defaults to `NULL`,
+#'   which means that a vector of ones, one for each observation, is generated.
+#'   Used by [update_mallows()] to identify data with a given iteration of the
+#'   sequential Monte Carlo algorithm. If not `NULL`, must contain one integer
+#'   for each row in `rankings`.
+#'
 #' @note Setting `random=TRUE` means that all possible orderings of each
 #'   assessor's preferences are generated, and one of them is picked at random.
 #'   This can be useful when experiencing convergence issues, e.g., if the MCMC
@@ -128,7 +134,8 @@ setup_rank_data <- function(
     cl = NULL,
     shuffle_unranked = FALSE,
     random = FALSE,
-    random_limit = 8L) {
+    random_limit = 8L,
+    timepoint = NULL) {
   na_action <- match.arg(na_action, c("augment", "fail", "omit"))
 
   if (is.null(rankings) && is.null(preferences)) {
@@ -184,6 +191,12 @@ setup_rank_data <- function(
   } else {
     items <- paste("Item", seq(from = 1, to = n_items, by = 1))
   }
+
+  if(is.null(timepoint)) timepoint <- rep(1, nrow(rankings))
+  if(length(timepoint) != nrow(rankings)) {
+    stop("must have one timepoint per row")
+  }
+
 
   constraints <- generate_constraints(preferences, n_items, cl)
   consistent <- matrix(integer(0))
