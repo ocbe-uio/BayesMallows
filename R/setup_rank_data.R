@@ -192,8 +192,8 @@ setup_rank_data <- function(
     items <- paste("Item", seq(from = 1, to = n_items, by = 1))
   }
 
-  if(is.null(timepoint)) timepoint <- rep(1, nrow(rankings))
-  if(length(timepoint) != nrow(rankings)) {
+  if (is.null(timepoint)) timepoint <- rep(1, nrow(rankings))
+  if (length(timepoint) != nrow(rankings)) {
     stop("must have one timepoint per row")
   }
 

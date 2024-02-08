@@ -1,16 +1,20 @@
 test_that("set_smc_options works", {
   expect_error(
     set_smc_options(n_particles = 3.4),
-    "n_particles must be a positive integer")
+    "n_particles must be a positive integer"
+  )
   expect_error(
     set_smc_options(n_particles = -1),
-    "n_particles must be a positive integer")
+    "n_particles must be a positive integer"
+  )
   expect_error(
     set_smc_options(mcmc_steps = 3.4),
-    "mcmc_steps must be a positive integer")
+    "mcmc_steps must be a positive integer"
+  )
   expect_error(
     set_smc_options(mcmc_steps = -1),
-    "mcmc_steps must be a positive integer")
+    "mcmc_steps must be a positive integer"
+  )
   expect_error(
     set_smc_options(latent_sampling_lag = -1),
     "latent_sampling_lag must be a positive integer"
