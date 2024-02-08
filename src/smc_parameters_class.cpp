@@ -38,14 +38,16 @@ void SMCParameters::update_rho(
 Rcpp::IntegerVector SMCParameters::draw_resampling_index(
   const std::vector<Particle>& pvec
 ) const {
-  Rcpp::NumericVector log_inc_wgt(pvec.size());
+  arma::vec log_inc_wgt(pvec.size());
   std::transform(pvec.cbegin(), pvec.cend(), log_inc_wgt.begin(),
                  [](const Particle& p){ return p.log_inc_wgt; });
 
-  Rcpp::NumericVector probs = exp(log_inc_wgt - max(log_inc_wgt) -
+  arma::vec probs = exp(log_inc_wgt - max(log_inc_wgt) -
     log(sum(exp(log_inc_wgt - max(log_inc_wgt)))));
 
-  return Rcpp::sample(log_inc_wgt.size(), log_inc_wgt.size(), true, probs, false);
+  return Rcpp::sample(
+    log_inc_wgt.size(), log_inc_wgt.size(), true,
+    Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(probs)), false);
 }
 
 void SMCParameters::resample(std::vector<Particle>& pvec) const {
