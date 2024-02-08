@@ -19,7 +19,7 @@ sample_prior <- function(n, n_items, priors = set_priors()) {
   validate_positive(n)
   validate_positive(n_items)
   ret <- list(
-    alpha = stats::rexp(n, rate = priors$lambda),
+    alpha = stats::rgamma(n, shape = priors$gamma, rate = priors$lambda),
     rho = replicate(n, sample(n_items, n_items)),
     priors = priors,
     n_items = n_items,
