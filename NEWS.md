@@ -1,5 +1,8 @@
 # BayesMallows (development versions)
 
+* The move step of the SMC algorithm now allows a user-defined lag for the 
+  sampling of latent ranks, specified in the "latent_sampling_lag" argument
+  to set_smc_options().
 * Prior for precision parameter alpha is now a gamma distribution. Until now
   an exponential distribution has been assumed. Since the exponential is a special
   case of the gamma with shape parameter equal to 1 (the default), this is not

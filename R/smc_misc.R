@@ -67,7 +67,8 @@ prepare_new_data <- function(model, new_data) {
     rankings <- rbind(model$data$rankings, new_data$rankings)
     data <- setup_rank_data(
       rankings = rankings,
-      user_ids = seq_len(nrow(rankings))
+      user_ids = seq_len(nrow(rankings)),
+      timepoint = c(model$data$timepoint, new_data$timepoint)
     )
   }
   list(data = data, new_data = new_data)
