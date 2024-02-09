@@ -46,13 +46,7 @@ arma::ivec SMCParameters::draw_resampling_index(
   arma::vec probs = exp(log_inc_wgt - max(log_inc_wgt) -
     log(sum(exp(log_inc_wgt - max(log_inc_wgt)))));
 
-<<<<<<< HEAD
-  return Rcpp::sample(
-    log_inc_wgt.size(), log_inc_wgt.size(), true,
-    Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(probs)), false);
-=======
   return resampler->resample(probs);
->>>>>>> 701bf6bcc06901d84bfe5ec03b7d4e7e8b4d6386
 }
 
 void SMCParameters::resample(std::vector<Particle>& pvec) const {
