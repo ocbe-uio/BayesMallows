@@ -7,6 +7,7 @@
 set_smc_options(
   n_particles = 1000,
   mcmc_steps = 5,
+  resampler = c("stratified", "systematic", "residual", "multinomial"),
   latent_sampling_lag = NA_integer_
 )
 }
@@ -15,6 +16,13 @@ set_smc_options(
 
 \item{mcmc_steps}{Number of MCMC steps to be applied in the resample-move
 step.}
+
+\item{resampler}{Character string defining the resampling method to use. One
+of "stratified", "systematic", "residual", and "multinomial". Defaults to
+"stratified". While multinomial resampling was used in
+\insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows},
+stratified, systematic, or residual resampling typically give lower Monte
+Carlo error \insertCite{Douc2005,Hol2006,Naesseth2019}{BayesMallows}.}
 
 \item{latent_sampling_lag}{Parameter specifying the number of timesteps to go
 back when resampling the latent ranks in the move step. See Section 6.2.3
@@ -57,8 +65,8 @@ we modify for algorithm so it becomes
 This means that with \eqn{L=0} no move step is performed on any latent
 ranks, whereas \eqn{L=1} means that the move step is only applied to the
 parameters entering at the given timestep. The default,
-\code{latent_sampling_lag = NA} means that \eqn{L=t} at each timestep, and
-hence all latent ranks are part of the move step at each timestep.
+\code{latent_sampling_lag = NA} means that \eqn{L=t} at each timestep, and hence
+all latent ranks are part of the move step at each timestep.
 }
 
 \references{

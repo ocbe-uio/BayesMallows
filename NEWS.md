@@ -1,5 +1,8 @@
 # BayesMallows (development versions)
 
+* Added stratified, systematic, and residual resampling to the sequential 
+  Monte Carlo algorithm. These distributions should in general be preferred to
+  multinomial resampling, which was the only available option until now.
 * The move step of the SMC algorithm now allows a user-defined lag for the 
   sampling of latent ranks, specified in the "latent_sampling_lag" argument
   to set_smc_options().

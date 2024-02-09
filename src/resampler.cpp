@@ -1,6 +1,5 @@
-#include <RcppArmadillo.h>
-
-// [[Rcpp::depends(RcppArmadillo)]]
+#include <memory>
+#include "resampler.h"
 
 arma::ivec count_to_index(const arma::vec& counts) {
   arma::ivec indices(arma::sum(counts));
@@ -43,15 +42,13 @@ arma::ivec stratsys(arma::vec probs, bool stratified) {
   return digitize(arma::cumsum(probs), u);
 }
 
-// [[Rcpp::export]]
-arma::ivec multinomial_resampling(arma::vec probs) {
+arma::ivec Multinomial::resample(arma::vec probs) {
   return Rcpp::sample(
     probs.size(), probs.size(), true,
     Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(probs)), false);
 }
 
-// [[Rcpp::export]]
-arma::ivec residual_resampling(arma::vec probs) {
+arma::ivec Residual::resample(arma::vec probs) {
   int N = probs.size();
   arma::vec counts = arma::floor(probs * N);
   int R = N - arma::sum(counts);
@@ -66,40 +63,24 @@ arma::ivec residual_resampling(arma::vec probs) {
   return arma::join_cols(result, part2);
 }
 
-// [[Rcpp::export]]
-arma::ivec stratified_resampling(arma::vec probs) {
+arma::ivec Stratified::resample(arma::vec probs) {
   return stratsys(probs, true);
 }
 
-// [[Rcpp::export]]
-arma::ivec systematic_resampling(arma::vec probs) {
+arma::ivec Systematic::resample(arma::vec probs) {
   return stratsys(probs, false);
 }
 
-
-/*** R
-library(tidyverse)
-
-n <- 4000
-probs <- rexp(n, rate = .0001)
-probs <- probs / sum(probs)
-
-samplefun <- function(f) {
-  as.numeric(table(factor(f(probs), levels = 0:(n-1))))
+std::unique_ptr<Resampler> choose_resampler(std::string resampler) {
+  if(resampler == "multinomial") {
+    return std::make_unique<Multinomial>();
+  } else if(resampler == "residual") {
+    return std::make_unique<Residual>();
+  } else if(resampler == "stratified") {
+    return std::make_unique<Stratified>();
+  } else if(resampler == "systematic") {
+    return std::make_unique<Systematic>();
+  } else {
+    Rcpp::stop("Unknown resampler.");
+  }
 }
-
-dat <- tibble(
-  expected_value = n * probs,
-  multinomial_resampling = samplefun(multinomial_resampling),
-  residual_resampling = samplefun(residual_resampling),
-  stratified_resampling = samplefun(stratified_resampling),
-  systematic_resampling = samplefun(systematic_resampling)
-)
-
-dat %>%
-  pivot_longer(cols = -expected_value) %>%
-  ggplot(aes(x = value, y = expected_value)) +
-  geom_point() +
-  geom_abline() +
-  facet_wrap(vars(name))
-*/

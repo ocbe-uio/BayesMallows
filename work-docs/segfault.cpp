@@ -1,17 +1,15 @@
 #include <Rcpp.h>
+
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-int test(Rcpp::List l) {
-  Rcpp::IntegerVector a = Rcpp::as<Rcpp::IntegerVector>(l["a"]);
-
-
-  if(IntegerVector::is_na(a[0])) {
-    Rcpp::Rcout << "hei" << std::endl;
+double takeLog3(double val) {
+  if (val <= 0.0) {           // log() not defined here
+    stop("Inadmissible value");
   }
-  return 0;
+  return log(val);
 }
 
 /*** R
-test(list(a = c(NA, 1)))
+takeLog3(-1)
 */

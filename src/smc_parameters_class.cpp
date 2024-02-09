@@ -8,7 +8,8 @@ SMCParameters::SMCParameters(
 ) :
   mcmc_steps { smc_options["mcmc_steps"] },
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
-  leap_size { compute_options["leap_size"] } {}
+  leap_size { compute_options["leap_size"] },
+  resampler { choose_resampler(std::string(smc_options["resampler"])) }{}
 
 void SMCParameters::update_alpha(
     Particle& p,
@@ -35,7 +36,7 @@ void SMCParameters::update_rho(
     dat.observation_frequency);
 }
 
-Rcpp::IntegerVector SMCParameters::draw_resampling_index(
+arma::ivec SMCParameters::draw_resampling_index(
   const std::vector<Particle>& pvec
 ) const {
   arma::vec log_inc_wgt(pvec.size());
@@ -45,13 +46,17 @@ Rcpp::IntegerVector SMCParameters::draw_resampling_index(
   arma::vec probs = exp(log_inc_wgt - max(log_inc_wgt) -
     log(sum(exp(log_inc_wgt - max(log_inc_wgt)))));
 
+<<<<<<< HEAD
   return Rcpp::sample(
     log_inc_wgt.size(), log_inc_wgt.size(), true,
     Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(probs)), false);
+=======
+  return resampler->resample(probs);
+>>>>>>> 701bf6bcc06901d84bfe5ec03b7d4e7e8b4d6386
 }
 
 void SMCParameters::resample(std::vector<Particle>& pvec) const {
-  Rcpp::IntegerVector index = draw_resampling_index(pvec);
+  arma::ivec index = draw_resampling_index(pvec);
   std::vector<Particle> pvec_old = pvec;
   for(size_t i{}; i < pvec.size(); i++) pvec[i] = pvec_old[index[i]];
 }
