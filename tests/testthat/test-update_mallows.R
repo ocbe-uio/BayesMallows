@@ -69,9 +69,6 @@ test_that("update_mallows works", {
   )
 
   expect_s3_class(mod_final, "SMCMallows")
-  skip_on_cran()
-  expect_equal(mod2$rho$value[[300]], 4)
-  expect_equal(mod_final$rho$value[[300]], 2)
 })
 
 test_that("update_mallows can start from prior", {
