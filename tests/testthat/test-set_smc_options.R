@@ -24,9 +24,11 @@ test_that("set_smc_options works", {
   expect_equal(val$n_particles, 35)
   expect_equal(val$mcmc_steps, 2)
   expect_equal(val$latent_sampling_lag, NA_integer_)
+  expect_equal(val$resampler, "stratified")
 
-  val <- set_smc_options(latent_sampling_lag = 3)
+  val <- set_smc_options(latent_sampling_lag = 3, resampler = "residual")
   expect_equal(val$n_particles, 1000)
   expect_equal(val$mcmc_steps, 5)
   expect_equal(val$latent_sampling_lag, 3)
+  expect_equal(val$resampler, "residual")
 })

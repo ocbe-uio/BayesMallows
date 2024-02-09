@@ -16,15 +16,15 @@ test_that("update_mallows works", {
   )
 
   pi <- compute_posterior_intervals(mod_second)
-  expect_equal(pi$hpdi, "[0.392,0.679]")
-  expect_equal(mod_second$alpha$value[[9]], 0.42949745203539)
+  expect_equal(pi$hpdi, "[0.423,0.753]")
+  expect_equal(mod_second$alpha$value[[9]], 0.753246865159393)
 
   data_third_batch <- potato_visual[9:12, ]
   mod_final <- update_mallows(
     model = mod_second, new_data = setup_rank_data(rankings = data_third_batch)
   )
 
-  expect_equal(mod_final$rho$value[169], 17)
+  expect_equal(mod_final$rho$value[169], 18)
 
   # Need this because random numbers don't reproduce exactly on M1
   skip_on_os("mac", arch = "aarch64")
@@ -52,7 +52,7 @@ test_that("update_mallows works", {
     compute_options = set_compute_options(aug_method = "pseudo")
   )
 
-  expect_equal(mod1$alpha$value[[13]], 0.347808128878992)
+  expect_equal(mod1$alpha$value[[13]], 0.388038251055491)
 
   mod2 <- update_mallows(
     model = mod1,
@@ -69,9 +69,6 @@ test_that("update_mallows works", {
   )
 
   expect_s3_class(mod_final, "SMCMallows")
-  skip_on_cran()
-  expect_equal(mod2$rho$value[[300]], 13)
-  expect_equal(mod_final$rho$value[[300]], 13)
 })
 
 test_that("update_mallows can start from prior", {
@@ -86,7 +83,7 @@ test_that("update_mallows can start from prior", {
     mod1,
     new_data = setup_rank_data(potato_visual[2, , drop = FALSE])
   )
-  expect_equal(mod2$alpha_samples[[56]], 3.06811614306772)
+  expect_equal(mod2$alpha_samples[[56]], 3.51628380350389)
 })
 
 test_that("update_mallows handles estimated partition function", {

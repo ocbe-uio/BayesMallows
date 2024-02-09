@@ -1,6 +1,7 @@
 #pragma once
 
 #include "classes.h"
+#include "resampler.h"
 
 struct Particle {
   Particle(double alpha, const arma::vec& rho, const arma::mat& augmented_data,
@@ -42,7 +43,7 @@ struct SMCParameters {
       const std::unique_ptr<Distance>& distfun
   ) const;
 
-  Rcpp::IntegerVector draw_resampling_index(
+  arma::ivec draw_resampling_index(
       const std::vector<Particle>& pvec) const;
   void resample(std::vector<Particle>& pvec) const;
 
@@ -51,6 +52,7 @@ struct SMCParameters {
 private:
   const double alpha_prop_sd;
   const unsigned int leap_size;
+  const std::unique_ptr<Resampler> resampler;
 };
 
 struct SMCAugmentation {

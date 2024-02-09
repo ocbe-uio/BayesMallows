@@ -18,7 +18,7 @@ test_that("plot.SMCMallows works", {
   expect_s3_class(p, "ggplot")
   expect_equal(dim(p$data), c(10, 4))
   p <- plot(mod_second, parameter = "rho", items = 1:4)
-  expect_equal(dim(p$data), c(16, 5))
+  expect_equal(dim(p$data), c(19, 5))
   expect_message(
     p <- plot(mod_second, parameter = "rho"),
     "Items not provided by user. Picking 5 at random."
@@ -35,7 +35,7 @@ test_that("plot.SMCMallows works", {
 
   p <- plot(mod_final, parameter = "rho", items = c("P19", "P8"))
   expect_s3_class(p, "ggplot")
-  expect_equal(dim(p$data), c(6, 5))
+  expect_equal(dim(p$data), c(11, 5))
   expect_equal(as.character(unique(p$data$item)), c("P8", "P19"))
 
   expect_error(
