@@ -37,9 +37,11 @@ Rcpp::List  run_smc(
     [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),
      pfun = std::ref(pfun)]
     (Particle& p) {
-       pars.update_rho(p, dat, distfun);
-       pars.update_alpha(p, dat, pfun, distfun, pris);
-       aug.update_missing_ranks(p, dat, distfun);
+       for(size_t i{}; i < pars.mcmc_steps; i++) {
+         pars.update_rho(p, dat, distfun);
+         pars.update_alpha(p, dat, pfun, distfun, pris);
+         aug.update_missing_ranks(p, dat, distfun);
+       }
      }
   );
 
