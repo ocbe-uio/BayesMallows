@@ -96,7 +96,9 @@ test_that("compute_consensus.SMCMallows works", {
   }
   expect_equal(
     compute_consensus(mod)$item,
-    c("fatty tuna", "shrimp", "salmon roe", "squid", "sea urchin",
-      "tuna", "tuna roll", "sea eel", "egg", "cucumber roll")
+    c(
+      "fatty tuna", "shrimp", "salmon roe", "squid", "sea urchin",
+      "tuna", "tuna roll", "sea eel", "egg", "cucumber roll"
+    )
   )
 })

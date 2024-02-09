@@ -66,7 +66,8 @@ set_smc_options <- function(
   if (!is.na(latent_sampling_lag)) validate_integer(latent_sampling_lag)
   resampler <- match.arg(
     resampler,
-    c("stratified", "systematic", "residual", "multinomial"))
+    c("stratified", "systematic", "residual", "multinomial")
+  )
 
   ret <- as.list(environment())
   class(ret) <- "SMCOptions"
