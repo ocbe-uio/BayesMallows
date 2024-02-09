@@ -1,3 +1,4 @@
+#include <memory>
 #include "resampler.h"
 
 arma::ivec count_to_index(const arma::vec& counts) {
