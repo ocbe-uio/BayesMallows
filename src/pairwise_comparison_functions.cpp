@@ -7,18 +7,19 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-void find_pairwise_limits(int& left_limit, int& right_limit, int item,
-                          const uvec& items_above_item,
-                          const uvec& items_below_item,
-                          const vec& current_ranking) {
+int find_lower_limit(int item, const uvec& items_above_item, const vec& current_ranking) {
   if(items_above_item.size() > 0) {
-    vec rankings_above = current_ranking.elem(items_above_item - 1);
-    left_limit = max(rankings_above);
+    return max(current_ranking.elem(items_above_item - 1)) + 1;
+  } else {
+    return 1;
   }
+}
 
+int find_upper_limit(int item, const uvec& items_below_item, const vec& current_ranking) {
   if(items_below_item.size() > 0) {
-    vec rankings_below = current_ranking.elem(items_below_item - 1);
-    right_limit = min(rankings_below);
+    return min(current_ranking.elem(items_below_item - 1)) - 1;
+  } else {
+    return current_ranking.size();
   }
 }
 
@@ -30,19 +31,13 @@ vec propose_pairwise_augmentation(
   ivec a = Rcpp::sample(n_items, 1) - 1;
   int item = a(0);
 
-  // Left and right limits of the interval we draw ranks from
-  // Correspond to l_j and r_j, respectively, in Vitelli et al. (2018), JMLR, Sec. 4.2.
-  int left_limit = 0, right_limit = n_items + 1;
-  find_pairwise_limits(left_limit, right_limit, item, items_above[item],
-                       items_below[item], ranking);
+  int lower_limit = find_lower_limit(item, items_above[item], ranking);
+  int upper_limit = find_upper_limit(item, items_below[item], ranking);
 
-  // Now complete the leap step by sampling a new proposal uniformly between
-  // left_limit + 1 and right_limit - 1
-  Rcpp::IntegerVector b = Rcpp::seq(left_limit + 1, right_limit - 1);
+  Rcpp::IntegerVector b = Rcpp::seq(lower_limit, upper_limit);
   ivec d = Rcpp::sample(b, 1);
   int proposed_rank = d(0);
 
-  // Assign the proposal to the (item-1)th item
   vec proposal = ranking;
   proposal(item) = proposed_rank;
 
