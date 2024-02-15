@@ -4,14 +4,14 @@
 using namespace arma;
 
 AlphaRatio make_new_alpha(
-    const double& alpha_old,
+    double alpha_old,
     const vec& rho_old,
-    const double& alpha_prop_sd,
+    double alpha_prop_sd,
     const std::unique_ptr<Distance>& distfun,
     const std::unique_ptr<PartitionFunction>& pfun,
     const arma::mat& rankings,
     const arma::vec& observation_frequency,
-    const double& n_items,
+    double n_items,
     const Priors& priors) {
 
   double alpha_proposal = R::rlnorm(std::log(alpha_old), alpha_prop_sd);

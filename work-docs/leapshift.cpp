@@ -5,7 +5,7 @@ using namespace arma;
 // [[Rcpp::depends(RcppArmadillo)]]
 
 void shift_step(vec& rho_proposal, const vec& rho,
-                const int& u){
+                int u){
   // Shift step:
   double delta_r = rho_proposal(u) - rho(u);
   uvec indices = zeros<uvec>(std::abs(delta_r) + 1);

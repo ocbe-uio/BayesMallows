@@ -12,4 +12,4 @@ arma::vec propose_swap(
     const doubly_nested& items_above,
     const doubly_nested& items_below,
     int& g_diff,
-    const int& swap_leap);
+    int swap_leap);

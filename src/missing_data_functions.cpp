@@ -45,7 +45,7 @@ mat initialize_missing_ranks(mat rankings, const umat& missing_indicator) {
 }
 
 vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
-                          const double& alpha, const vec& rho,
+                          double alpha, const vec& rho,
                           const std::unique_ptr<Distance>& distfun,
                           const std::unique_ptr<Distance>& pseudo_aug_distance,
                           double& log_aug_prob) {
@@ -85,7 +85,7 @@ RankProposal make_uniform_proposal(const vec& ranks, const uvec& indicator) noex
 }
 
 RankProposal make_pseudo_proposal(
-    vec ranks, const uvec& indicator, const double& alpha, const vec& rho,
+    vec ranks, const uvec& indicator, double alpha, const vec& rho,
     const std::unique_ptr<Distance>& distfun
 ) noexcept {
   uvec missing_inds = find(indicator == 1);

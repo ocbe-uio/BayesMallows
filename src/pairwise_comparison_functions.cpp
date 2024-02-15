@@ -7,7 +7,7 @@ using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-void find_pairwise_limits(int& left_limit, int& right_limit, const int& item,
+void find_pairwise_limits(int& left_limit, int& right_limit, int item,
                           const uvec& items_above_item,
                           const uvec& items_below_item,
                           const vec& current_ranking) {
@@ -58,7 +58,7 @@ vec propose_swap(
     const vec& ranking,
     const doubly_nested& items_above,
     const doubly_nested& items_below,
-    int& g_diff, const int& swap_leap) {
+    int& g_diff, int swap_leap) {
   int n_items = ranking.n_elem;
   ivec l = Rcpp::sample(swap_leap, 1);
   ivec a = Rcpp::sample(n_items - l(0), 1);
