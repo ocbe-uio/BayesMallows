@@ -49,7 +49,8 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   // Picked element index-1 from the support set
   rho_proposal(u) = support(index);
 
-  double support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) + std::min(n_items - rho_proposal(u), leap_size * 1.0);
+  double support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) +
+    std::min(n_items - rho_proposal(u), leap_size * 1.0);
   if(std::abs(rho_proposal(u) - rho(u)) == 1){
     prob_forward = 1.0 / (n_items * support.n_elem) + 1.0 / (n_items * support_new);
     prob_backward = prob_forward;
