@@ -8,7 +8,9 @@
 #'   optional initial value of the rankings. If `rankings` has column names,
 #'   these are assumed to be the names of the items. `NA` values in rankings are
 #'   treated as missing data and automatically augmented; to change this
-#'   behavior, see the `na_action` argument to [set_model_options()].
+#'   behavior, see the `na_action` argument to [set_model_options()]. A vector
+#'   length `n_items` is silently converted to a matrix of length `1 x n_items`,
+#'   and names (if any), are used as column names.
 #'
 #' @param preferences A data frame with one row per pairwise comparison, and
 #'   columns `assessor`, `top_item`, and `bottom_item`. Each column contains the
@@ -80,6 +82,12 @@
 #'   when all possible orderings are computed, i.e., when `random=TRUE`.
 #'   Defaults to `8L`.
 #'
+#' @param timepoint Integer vector specifying the timepoint. Defaults to `NULL`,
+#'   which means that a vector of ones, one for each observation, is generated.
+#'   Used by [update_mallows()] to identify data with a given iteration of the
+#'   sequential Monte Carlo algorithm. If not `NULL`, must contain one integer
+#'   for each row in `rankings`.
+#'
 #' @note Setting `random=TRUE` means that all possible orderings of each
 #'   assessor's preferences are generated, and one of them is picked at random.
 #'   This can be useful when experiencing convergence issues, e.g., if the MCMC
@@ -126,7 +134,8 @@ setup_rank_data <- function(
     cl = NULL,
     shuffle_unranked = FALSE,
     random = FALSE,
-    random_limit = 8L) {
+    random_limit = 8L,
+    timepoint = NULL) {
   na_action <- match.arg(na_action, c("augment", "fail", "omit"))
 
   if (is.null(rankings) && is.null(preferences)) {
@@ -138,10 +147,19 @@ setup_rank_data <- function(
     if (na_action == "fail" && any(is.na(rankings))) {
       stop("rankings matrix contains NA values")
     }
+    if (!is.matrix(rankings)) {
+      rankings <- matrix(rankings,
+        nrow = 1,
+        dimnames = list(NULL, names(rankings))
+      )
+    }
 
     if (na_action == "omit" && any(is.na(rankings))) {
       keeps <- apply(rankings, 1, function(x) !any(is.na(x)))
-      print(paste("Omitting", sum(!keeps), "row(s) from rankings due to NA values"))
+      print(paste(
+        "Omitting", sum(!keeps),
+        "row(s) from rankings due to NA values"
+      ))
       rankings <- rankings[keeps, , drop = FALSE]
     }
   } else {
@@ -153,7 +171,10 @@ setup_rank_data <- function(
   if (!is.null(observation_frequency)) {
     validate_positive_vector(observation_frequency)
     if (nrow(rankings) != length(observation_frequency)) {
-      stop("observation_frequency must be of same length as the number of rows in rankings")
+      stop(
+        "observation_frequency must be of same ",
+        "length as the number of rows in rankings"
+      )
     }
   } else {
     observation_frequency <- rep(1, nrow(rankings))
@@ -164,6 +185,19 @@ setup_rank_data <- function(
     stop("invalid permutations provided in rankings matrix")
   }
   n_items <- ncol(rankings)
+
+  if (!is.null(colnames(rankings))) {
+    items <- colnames(rankings)
+  } else {
+    items <- paste("Item", seq(from = 1, to = n_items, by = 1))
+  }
+
+  if (is.null(timepoint)) timepoint <- rep(1, nrow(rankings))
+  if (length(timepoint) != nrow(rankings)) {
+    stop("must have one timepoint per row")
+  }
+
+
   constraints <- generate_constraints(preferences, n_items, cl)
   consistent <- matrix(integer(0))
 

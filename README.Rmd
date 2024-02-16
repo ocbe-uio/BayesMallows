@@ -113,6 +113,16 @@ Among the current applications, @liu2019b applied the Bayesian Mallows model for
 
 Plans for future extensions of the package include implementation of a variational Bayes algorithm for approximation the posterior distribution. The sequential Monte Carlo algorithms will also be extended to cover a larger part of the model framework, and we will add more options for specifications of prior distributions.
 
+## Compilation with Thread Building Blocks (TBB)
+
+Parts of the underlying C++ code can be easily parallelized. We have support for this through [oneAPI Threading Building Blocks](https://github.com/oneapi-src/oneTBB). If you want to make use of this, build the package from source with the `-ltbb` argument. On an M1 Mac this can be achieved by first installing TBB through `brew install tbb` and then adding the following line to `~/.R/Makevars`:
+
+```{sh, eval=FALSE}
+CXX17=g++-13 -I/opt/homebrew/include -L/opt/homebrew/lib -ltbb
+```
+
+The arguments on other platforms should be similar. If TBB is not available, the package will fall back on sequential processing.
+
 ## Citation
 
 If using the BayesMallows package in academic work, please cite @sorensen2020, in addition to the relevant methodological papers.

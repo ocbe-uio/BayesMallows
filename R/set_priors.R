@@ -3,8 +3,13 @@
 #' @description Set values related to the prior distributions for the Bayesian
 #'   Mallows model.
 #'
+#' @param gamma Strictly positive numeric value specifying the shape parameter
+#'   of the gamma prior distribution of \eqn{\alpha}. Defaults to `1`, thus
+#'   recovering the exponential prior distribution used by
+#'   \insertCite{vitelli2018}{BayesMallows}.
+#'
 #' @param lambda Strictly positive numeric value specifying the rate parameter
-#'   of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+#'   of the gamma prior distribution of \eqn{\alpha}. Defaults
 #'   to `0.001`. When `n_cluster > 1`, each mixture component \eqn{\alpha_{c}}
 #'   has the same prior distribution.
 #'
@@ -26,10 +31,13 @@
 #'   [update_mallows()].
 #' @export
 #'
+#' @references \insertAllCited{}
+#'
 #' @family preprocessing
 #'
-set_priors <- function(lambda = 0.001, psi = 10, kappa = c(1, 3)) {
+set_priors <- function(gamma = 1, lambda = 0.001, psi = 10, kappa = c(1, 3)) {
   stopifnot(length(kappa) == 2)
+  validate_positive(gamma)
   validate_positive(lambda)
   validate_integer(psi)
   validate_positive(psi)

@@ -18,7 +18,10 @@ data_second_batch <- potato_visual[5:8, ]
 
 # We can now update the model using sequential Monte Carlo
 mod_second <- update_mallows(
-  model = mod_init, new_data = setup_rank_data(rankings = data_second_batch))
+  model = mod_init,
+  new_data = setup_rank_data(rankings = data_second_batch),
+  smc_options = set_smc_options(resampler = "systematic")
+  )
 
 # This model now has a collection of particles approximating the posterior
 # distribution after the first and second batch
@@ -66,7 +69,8 @@ mod_init$burnin <- 2000
 # Next assume the users update their rankings, so we have top-12 instead.
 mod1 <- update_mallows(
   model = mod_init,
-  new_data = setup_rank_data(rankings = potato_top_12, user_ids = user_ids)
+  new_data = setup_rank_data(rankings = potato_top_12, user_ids = user_ids),
+  smc_options = set_smc_options(resampler = "stratified")
 )
 
 plot(mod1)

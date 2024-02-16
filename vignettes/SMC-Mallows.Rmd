@@ -175,9 +175,9 @@ rbind(
 )
 #>   parameter  mean median          hpdi central_interval
 #> 1     alpha 1.768  1.766 [1.603,1.917]    [1.604,1.922]
-#> 2     alpha 1.777  1.776 [1.603,1.916]    [1.617,1.930]
-#> 3     alpha 1.753  1.753 [1.678,1.830]    [1.675,1.828]
-#> 4     alpha 1.706  1.707 [1.660,1.746]    [1.663,1.749]
+#> 2     alpha 1.777  1.773 [1.630,1.935]    [1.620,1.931]
+#> 3     alpha 1.753  1.756 [1.676,1.827]    [1.677,1.827]
+#> 4     alpha 1.712  1.714 [1.667,1.748]    [1.669,1.752]
 ```
 
 As an assurance that the implementation is correct, we can compare the final model to what we get by running `compute_mallows` on the complete dataset:
@@ -223,7 +223,7 @@ rbind(
 )
 #>   parameter  mean median          hpdi central_interval
 #> 1     alpha 1.691  1.690 [1.648,1.734]    [1.643,1.732]
-#> 2     alpha 1.706  1.707 [1.660,1.746]    [1.663,1.749]
+#> 2     alpha 1.712  1.714 [1.667,1.748]    [1.669,1.752]
 ```
 
 The cumulative probability consensus is also in good agrement:
@@ -233,11 +233,11 @@ The cumulative probability consensus is also in good agrement:
 compute_consensus(model4)
 #>      cluster ranking          item cumprob
 #> 1  Cluster 1       1    fatty tuna   1.000
-#> 2  Cluster 1       2    salmon roe   0.998
+#> 2  Cluster 1       2    salmon roe   1.000
 #> 3  Cluster 1       3          tuna   1.000
 #> 4  Cluster 1       4        shrimp   1.000
 #> 5  Cluster 1       5       sea eel   1.000
-#> 6  Cluster 1       6     tuna roll   0.893
+#> 6  Cluster 1       6     tuna roll   0.835
 #> 7  Cluster 1       7         squid   1.000
 #> 8  Cluster 1       8    sea urchin   1.000
 #> 9  Cluster 1       9           egg   1.000
@@ -493,7 +493,7 @@ Before proceeding, it is instructive to study why this situation needs special c
 
 ```r
 (v1 <- model2$augmented_rankings[, 1, 1])
-#>  [1]  2  7  9  3  4  1  5  6  8 10
+#>  [1]  2  9  6  3  4  1  5 10  8  7
 ```
 
 Next, we show the data provided by user 1 in `data_batch3`:
@@ -511,7 +511,7 @@ By comparing the non-missing ranks, we can check if they are consistent or not:
 (v2b <- v2a[!is.na(v2a)])
 #> [1] 2 8 3 4 1 5 7 6
 v1[v1 %in% v2b]
-#> [1] 2 7 3 4 1 5 6 8
+#> [1] 2 6 3 4 1 5 8 7
 all(v1[v1 %in% v2b] == v2b)
 #> [1] FALSE
 ```

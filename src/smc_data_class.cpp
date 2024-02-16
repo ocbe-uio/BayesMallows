@@ -6,7 +6,8 @@ SMCData::SMCData(
   const Rcpp::List& new_data
 ) : Data(data),
 new_rankings { Rcpp::as<mat>(new_data["rankings"]).t() },
-num_new_obs { new_rankings.n_cols } {}
+num_new_obs { new_rankings.n_cols },
+timepoint { Rcpp::as<uvec>(data["timepoint"]) } {}
 
 void SMCData::update_data(const Particle& p) {
   if(!any_missing) return;
