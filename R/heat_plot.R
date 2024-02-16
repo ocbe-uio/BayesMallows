@@ -36,14 +36,14 @@ heat_plot <- function(model_fit, burnin = model_fit$burnin, ...) {
     drop = FALSE
   ]
   posterior_ranks$probability <- 1
-  posterior_ranks$iteration <- NULL
+
   heatplot_data <- aggregate(posterior_ranks[, "probability", drop = FALSE],
     by = list(
       cluster = posterior_ranks$cluster,
       item = posterior_ranks$item,
       value = posterior_ranks$value
     ),
-    FUN = function(x) sum(x) / (model_fit$nmc - burnin)
+    FUN = function(x) sum(x) / length(unique(posterior_ranks$iteration))
   )
 
   heatplot_data$item <- factor(heatplot_data$item, levels = item_order)
