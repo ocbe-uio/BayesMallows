@@ -1,5 +1,26 @@
+# BayesMallows (development versions)
+
+* Fixed a bug in heat_plot() when the model has been estimated with 
+  rho_thinning > 1, causing the probabilities to be unnormalized. Issue #381. 
+  Thanks to Marta Crispino for discovering the bug.
+* Added stratified, systematic, and residual resampling to the sequential 
+  Monte Carlo algorithm. These distributions should in general be preferred to
+  multinomial resampling, which was the only available option until now.
+* The move step of the SMC algorithm now allows a user-defined lag for the 
+  sampling of latent ranks, specified in the "latent_sampling_lag" argument
+  to set_smc_options().
+* Prior for precision parameter alpha is now a gamma distribution. Until now
+  an exponential distribution has been assumed. Since the exponential is a special
+  case of the gamma with shape parameter equal to 1 (the default), this is not
+  a breaking change. However, it adds flexibility when it comes to specifying the prior.
+* setup_rank_data() now accepts a single vector of rankings, silently converting a to matrix with a single row.
+* Sequential Monte Carlo algorithm can now start from a sample from the prior
+  distribution, see the sample_prior() function for an example.
+* Added support for parallelism under-the-hood with oneTBB.
+
 # BayesMallows 2.0.1
 
+* Edits to C++ code fixing memory leaks.
 * Edits to unit tests which caused issues on CRAN.
 
 # BayesMallows 2.0.0

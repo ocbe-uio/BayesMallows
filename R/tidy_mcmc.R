@@ -1,14 +1,6 @@
 tidy_mcmc <- function(fits, data, model_options, compute_options) {
   fit <- list()
   fit$save_aug <- compute_options$save_aug
-
-  # Add names of item
-  if (!is.null(colnames(data$rankings))) {
-    items <- colnames(data$rankings)
-  } else {
-    items <- paste("Item", seq(from = 1, to = data$n_items, by = 1))
-  }
-
   rho_dims <- dim(fits[[1]]$rho)
   fit$rho_samples <- fits[[1]]$rho
   for (f in fits[-1]) {
@@ -17,7 +9,7 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
 
   rhos <- lapply(seq_along(fits), function(i) fits[[i]]$rho)
   fit$rho <- do.call(rbind, lapply(seq_along(rhos), function(i) {
-    tidy_rho(rhos[[i]], i, compute_options$rho_thinning, items)
+    tidy_rho(rhos[[i]], i, compute_options$rho_thinning, data$items)
   }))
 
   alpha_dims <- dim(fits[[1]]$alpha)
@@ -51,7 +43,7 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
 
   fit$augmented_data <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_augmented_data(
-      fits[[i]]$augmented_data, i, items,
+      fits[[i]]$augmented_data, i, data$items,
       compute_options$aug_thinning
     )
   }))
@@ -61,7 +53,7 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
   }))
 
   fit$n_clusters <- model_options$n_clusters
-  fit$items <- items
+  fit$items <- data$items
   fit$n_items <- data$n_items
   fit$n_assessors <- fits[[1]]$n_assessors
 
@@ -71,8 +63,6 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
 
   return(fit)
 }
-
-
 
 tidy_rho <- function(rho_mat, chain, rho_thinning, items) {
   # Tidy rho

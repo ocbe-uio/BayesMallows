@@ -5,7 +5,7 @@
 arma::vec make_new_augmentation(
     const arma::vec& rankings,
     const arma::uvec& missing_indicator,
-    const double& alpha,
+    double alpha,
     const arma::vec& rho,
     const std::unique_ptr<Distance>& distfun,
     const std::unique_ptr<Distance>& pseudo_aug_distance,
@@ -21,7 +21,7 @@ struct RankProposal{
   RankProposal() {};
   RankProposal(
     const arma::vec& rankings,
-    const double& probability,
+    double probability,
     const arma::uvec& mutated_items) :
   rankings { rankings }, probability { probability },
   mutated_items { mutated_items } {}
@@ -39,7 +39,7 @@ RankProposal make_uniform_proposal(
 RankProposal make_pseudo_proposal(
     arma::vec ranks,
     const arma::uvec& indicator,
-    const double& alpha,
+    double alpha,
     const arma::vec& rho,
     const std::unique_ptr<Distance>& distfun
 ) noexcept;

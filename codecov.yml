@@ -1,3 +1,6 @@
+ignore:
+    - "work-docs"
+
 comment: false
 
 coverage:

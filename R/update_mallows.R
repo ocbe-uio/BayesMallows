@@ -6,8 +6,9 @@
 #' \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
 #'
 #' @param model A model object of class "BayesMallows" returned from
-#'   [compute_mallows()] or an object of class "SMCMallows" returned from this
-#'   function.
+#'   [compute_mallows()], an object of class "SMCMallows" returned from this
+#'   function, or an object of class "BayesMallowsPriorSamples" returned from
+#'   [sample_prior()].
 #' @param new_data An object of class "BayesMallowsData" returned from
 #'   [setup_rank_data()]. The object should contain the new data being provided.
 #' @param model_options An object of class "BayesMallowsModelOptions" returned
@@ -18,6 +19,11 @@
 #'   returned from [set_compute_options()].
 #' @param priors An object of class "BayesMallowsPriors" returned from
 #'   [set_priors()]. Defaults to the priors used in `model`.
+#' @param pfun_estimate Object returned from [estimate_partition_function()].
+#'   Defaults to \code{NULL}, and will only be used for footrule, Spearman, or
+#'   Ulam distances when the cardinalities are not available, cf.
+#'   [get_cardinalities()]. Only used by the specialization for objects of type
+#'   "BayesMallowsPriorSamples".
 #' @param ... Optional arguments. Currently not used.
 #'
 #' @return An updated model, of class "SMCMallows".
@@ -29,6 +35,35 @@
 #'
 update_mallows <- function(model, new_data, ...) {
   UseMethod("update_mallows")
+}
+
+#' @export
+#' @rdname update_mallows
+update_mallows.BayesMallowsPriorSamples <- function(
+    model, new_data, model_options = set_model_options(),
+    smc_options = set_smc_options(),
+    compute_options = set_compute_options(),
+    priors = model$priors,
+    pfun_estimate = NULL,
+    ...) {
+  alpha_init <- sample(model$alpha, smc_options$n_particles, replace = TRUE)
+  rho_init <- model$rho[, sample(ncol(model$rho), smc_options$n_particles, replace = TRUE)]
+  pfun_values <- extract_pfun_values(model_options, new_data, pfun_estimate)
+
+  run_common_part(
+    data = new_data, new_data = new_data, model_options = model_options,
+    smc_options = smc_options, compute_options = compute_options,
+    priors = priors,
+    initial_values = list(
+      alpha_init = alpha_init, rho_init = rho_init,
+      aug_init = NULL
+    ),
+    pfun_list = list(
+      pfun_values = pfun_values,
+      pfun_estimate = pfun_estimate
+    ),
+    model = model
+  )
 }
 
 #' @export
@@ -45,36 +80,20 @@ update_mallows.BayesMallows <- function(
   alpha_init <- extract_alpha_init(model, smc_options$n_particles)
   rho_init <- extract_rho_init(model, smc_options$n_particles)
 
-  ret <- run_smc(
-    data = new_data,
-    new_data = new_data,
-    model_options = model_options,
-    smc_options = smc_options,
-    compute_options = compute_options,
+  run_common_part(
+    data = new_data, new_data = new_data, model_options = model_options,
+    smc_options = smc_options, compute_options = compute_options,
     priors = priors,
     initial_values = list(
       alpha_init = alpha_init, rho_init = rho_init,
       aug_init = NULL
     ),
-    pfun_values = model$pfun_values,
-    pfun_estimate = model$pfun_estimate
+    pfun_list = list(
+      pfun_values = model$pfun_values,
+      pfun_estimate = model$pfun_estimate
+    ),
+    model = model
   )
-
-  ret <- c(ret, tidy_smc(ret, model$items))
-  ret$model_options <- model_options
-  ret$smc_options <- smc_options
-  ret$compute_options <- compute_options
-  ret$priors <- priors
-  ret$n_items <- model$n_items
-  ret$burnin <- 0
-  ret$n_clusters <- 1
-  ret$data <- new_data
-  ret$pfun_values <- model$pfun_values
-  ret$pfun_estimate <- model$pfun_estimate
-  ret$metric <- model$metric
-  ret$items <- model$items
-  class(ret) <- c("SMCMallows", "BayesMallows")
-  ret
 }
 
 #' @export
@@ -97,6 +116,9 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     pfun_values = model$pfun_values,
     pfun_estimate = model$pfun_estimate
   )
+  model$alpha_samples <- ret$alpha_samples
+  model$rho_samples <- ret$rho_samples
+  model$augmented_rankings <- ret$augmented_rankings
   tidy_parameters <- tidy_smc(ret, model$items)
   model$alpha <- tidy_parameters$alpha
   model$rho <- tidy_parameters$rho
@@ -105,79 +127,4 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
 
   class(model) <- c("SMCMallows", "BayesMallows")
   model
-}
-
-tidy_smc <- function(ret, items) {
-  result <- list()
-  result$alpha <- tidy_alpha(matrix(ret$alpha_samples, nrow = 1), 1, 1)
-
-  rho_mat <- array(dim = c(dim(ret$rho_samples)[[1]], 1, dim(ret$rho_samples)[[2]]))
-  rho_mat[, 1, ] <- ret$rho_samples
-  result$rho <- tidy_rho(rho_mat, 1, 1, items)
-
-  result
-}
-
-extract_alpha_init <- function(model, n_particles) {
-  thinned_inds <- floor(
-    seq(
-      from = model$burnin + 1, to = ncol(model$alpha_samples),
-      length.out = n_particles
-    )
-  )
-  model$alpha_samples[1, thinned_inds, drop = TRUE]
-}
-
-extract_rho_init <- function(model, n_particles) {
-  thinned_inds <- floor(
-    seq(
-      from = model$burnin + 1, to = dim(model$rho_samples)[[3]],
-      length.out = n_particles
-    )
-  )
-  model$rho_samples[, 1, thinned_inds, drop = TRUE]
-}
-
-prepare_new_data <- function(model, new_data) {
-  if (!is.null(new_data$user_ids) && !is.null(model$data$user_ids)) {
-    old_users <- setdiff(model$data$user_ids, new_data$user_ids)
-    updated_users <- intersect(model$data$user_ids, new_data$user_ids)
-    new_users <- setdiff(new_data$user_ids, model$data$user_ids)
-
-    rankings <- rbind(
-      model$data$rankings[old_users, , drop = FALSE],
-      new_data$rankings[c(updated_users, new_users), , drop = FALSE]
-    )
-
-    user_ids <- c(old_users, updated_users, new_users)
-
-    data <- setup_rank_data(rankings = rankings, user_ids = user_ids)
-    new_data <- setup_rank_data(
-      rankings = rankings[new_users, , drop = FALSE],
-      user_ids = new_users
-    )
-
-    if (!is.null(model$augmented_rankings)) {
-      consistent <- matrix(
-        TRUE,
-        nrow = nrow(rankings), ncol = model$smc_options$n_particles
-      )
-      for (uu in updated_users) {
-        index <- which(rownames(rankings) == uu)
-        to_compare <- as.numeric(stats::na.omit(rankings[index, ]))
-
-        consistent[index, ] <- apply(model$augmented_rankings[, index, ], 2, function(ar) {
-          all(ar[ar %in% to_compare] == to_compare)
-        })
-      }
-      data$consistent <- consistent * 1L
-    }
-  } else {
-    rankings <- rbind(model$data$rankings, new_data$rankings)
-    data <- setup_rank_data(
-      rankings = rankings,
-      user_ids = seq_len(nrow(rankings))
-    )
-  }
-  list(data = data, new_data = new_data)
 }

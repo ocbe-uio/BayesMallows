@@ -45,6 +45,14 @@ test_that("setup_rank_data works with rankings", {
 
   dat <- setup_rank_data(rr, validate_rankings = FALSE)
   expect_equal(dat$rankings, rr)
+
+  input1 <- potato_weighing[2, , drop = FALSE]
+  rownames(input1) <- NULL
+  input2 <- potato_weighing[2, ]
+  expect_equal(
+    setup_rank_data(input1),
+    setup_rank_data(input2)
+  )
 })
 
 test_that("setup_rank_data works for preferences", {

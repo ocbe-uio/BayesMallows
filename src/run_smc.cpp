@@ -1,4 +1,6 @@
 #include <RcppArmadillo.h>
+
+#include "parallel_utils.h"
 #include "smc_classes.h"
 #include "particles.h"
 
@@ -21,7 +23,7 @@ Rcpp::List  run_smc(
   SMCData dat{data, new_data};
   SMCParameters pars{smc_options, compute_options};
   Priors pris{priors};
-  SMCAugmentation aug{dat, compute_options};
+  SMCAugmentation aug{dat, compute_options, smc_options};
   std::string metric = model_options["metric"];
   auto pfun = choose_partition_function(
     dat.n_items, metric, pfun_values, pfun_estimate);
@@ -30,21 +32,17 @@ Rcpp::List  run_smc(
   aug.reweight(pvec, dat, pfun, distfun);
   pars.resample(pvec);
 
-  std::for_each(
-    pvec.begin(), pvec.end(), [
-  pars = std::move(pars), dat = std::move(dat),
-    distfun = std::move(distfun),
-    pfun = std::move(pfun),
-    pris = std::move(pris),
-    aug = std::move(aug)
-    ](Particle& p) mutable {
-      for (size_t kk{}; kk < pars.mcmc_steps; ++kk) {
-        dat.update_data(p);
-        pars.update_rho(p, dat, distfun);
-        pars.update_alpha(p, dat, pfun, distfun, pris);
-        aug.update_missing_ranks(p, dat, distfun);
-      }
-    }
+  par_for_each(
+    pvec.begin(), pvec.end(),
+    [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),
+     pfun = std::ref(pfun)]
+    (Particle& p) {
+       for(size_t i{}; i < pars.mcmc_steps; i++) {
+         pars.update_rho(p, dat, distfun);
+         pars.update_alpha(p, dat, pfun, distfun, pris);
+         aug.update_missing_ranks(p, dat, distfun);
+       }
+     }
   );
 
   Rcpp::List particle_history = Rcpp::List::create(

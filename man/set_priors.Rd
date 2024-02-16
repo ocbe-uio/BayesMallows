@@ -4,11 +4,16 @@
 \alias{set_priors}
 \title{Set prior parameters for Bayesian Mallows model}
 \usage{
-set_priors(lambda = 0.001, psi = 10, kappa = c(1, 3))
+set_priors(gamma = 1, lambda = 0.001, psi = 10, kappa = c(1, 3))
 }
 \arguments{
+\item{gamma}{Strictly positive numeric value specifying the shape parameter
+of the gamma prior distribution of \eqn{\alpha}. Defaults to \code{1}, thus
+recovering the exponential prior distribution used by
+\insertCite{vitelli2018}{BayesMallows}.}
+
 \item{lambda}{Strictly positive numeric value specifying the rate parameter
-of the truncated exponential prior distribution of \eqn{\alpha}. Defaults
+of the gamma prior distribution of \eqn{\alpha}. Defaults
 to \code{0.001}. When \code{n_cluster > 1}, each mixture component \eqn{\alpha_{c}}
 has the same prior distribution.}
 
@@ -33,6 +38,9 @@ An object of class \code{"BayesMallowsPriors"}, to be provided in the
 \description{
 Set values related to the prior distributions for the Bayesian
 Mallows model.
+}
+\references{
+\insertAllCited{}
 }
 \seealso{
 Other preprocessing: 

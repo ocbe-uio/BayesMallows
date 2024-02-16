@@ -14,7 +14,8 @@ setup_rank_data(
   cl = NULL,
   shuffle_unranked = FALSE,
   random = FALSE,
-  random_limit = 8L
+  random_limit = 8L,
+  timepoint = NULL
 )
 }
 \arguments{
@@ -24,7 +25,9 @@ converted to rankings. If \code{preferences} is provided, \code{rankings} is an
 optional initial value of the rankings. If \code{rankings} has column names,
 these are assumed to be the names of the items. \code{NA} values in rankings are
 treated as missing data and automatically augmented; to change this
-behavior, see the \code{na_action} argument to \code{\link[=set_model_options]{set_model_options()}}.}
+behavior, see the \code{na_action} argument to \code{\link[=set_model_options]{set_model_options()}}. A vector
+length \code{n_items} is silently converted to a matrix of length \verb{1 x n_items},
+and names (if any), are used as column names.}
 
 \item{preferences}{A data frame with one row per pairwise comparison, and
 columns \code{assessor}, \code{top_item}, and \code{bottom_item}. Each column contains the
@@ -95,6 +98,12 @@ generated for each assessor, and one of them is picked at random.}
 \item{random_limit}{Integer specifying the maximum number of items allowed
 when all possible orderings are computed, i.e., when \code{random=TRUE}.
 Defaults to \code{8L}.}
+
+\item{timepoint}{Integer vector specifying the timepoint. Defaults to \code{NULL},
+which means that a vector of ones, one for each observation, is generated.
+Used by \code{\link[=update_mallows]{update_mallows()}} to identify data with a given iteration of the
+sequential Monte Carlo algorithm. If not \code{NULL}, must contain one integer
+for each row in \code{rankings}.}
 }
 \value{
 An object of class \code{"BayesMallowsData"}, to be provided in the \code{data}

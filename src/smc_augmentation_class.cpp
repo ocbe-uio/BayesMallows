@@ -1,29 +1,35 @@
+#include "parallel_utils.h"
 #include "smc_classes.h"
 #include "missing_data.h"
 using namespace arma;
 
 SMCAugmentation::SMCAugmentation(
-  SMCData& dat,
-  const Rcpp::List& compute_options) :
+  const SMCData& dat,
+  const Rcpp::List& compute_options,
+  const Rcpp::List& smc_options
+  ) :
   missing_indicator { set_up_missing(dat) },
   aug_method(compute_options["aug_method"]),
-  pseudo_aug_metric(compute_options["pseudo_aug_metric"]) {}
+  pseudo_aug_metric(compute_options["pseudo_aug_metric"]),
+  lag_helper { Rcpp::as<Rcpp::IntegerVector>(smc_options["latent_sampling_lag"]) },
+  latent_sampling_lag {
+    Rcpp::IntegerVector::is_na(lag_helper[0]) ? max(dat.timepoint) :  lag_helper[0] } {}
 
 void SMCAugmentation::reweight(
     std::vector<Particle>& pvec,
     const SMCData& dat,
     const std::unique_ptr<PartitionFunction>& pfun,
     const std::unique_ptr<Distance>& distfun
-) {
+) const {
   if(dat.any_missing) {
-    std::for_each(
+    par_for_each(
       pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
           p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
       });
     augment_partial(pvec, dat);
   }
 
-  std::for_each(
+  par_for_each(
     pvec.begin(), pvec.end(),
     [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
      any_missing = dat.any_missing, distfun = &distfun, pfun = &pfun,
@@ -68,8 +74,8 @@ void SMCAugmentation::reweight(
 void SMCAugmentation::augment_partial(
     std::vector<Particle>& pvec,
     const SMCData& dat
-){
-  std::for_each(
+) const {
+  par_for_each(
     pvec.begin(), pvec.end(),
     [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
      aug_method = aug_method, pseudo_aug_metric = pseudo_aug_metric,
@@ -106,12 +112,13 @@ void SMCAugmentation::augment_partial(
 void SMCAugmentation::update_missing_ranks(
     Particle& p,
     const SMCData& dat,
-    const std::unique_ptr<Distance>& distfun) {
+    const std::unique_ptr<Distance>& distfun) const {
   if(!dat.any_missing) return;
 
   auto pseudo_aug_distance = aug_method == "uniform" ? nullptr : choose_distance_function(pseudo_aug_metric);
 
-  for (unsigned int jj{}; jj < dat.n_assessors; ++jj) {
+  uvec indices_to_loop = find(max(dat.timepoint) - dat.timepoint < latent_sampling_lag);
+  for (auto jj : indices_to_loop) {
     p.augmented_data.col(jj) =
       make_new_augmentation(
         p.augmented_data.col(jj), missing_indicator.col(jj), p.alpha,
