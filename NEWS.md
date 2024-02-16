@@ -1,5 +1,8 @@
 # BayesMallows (development versions)
 
+* Fixed a bug in heat_plot() when the model has been estimated with 
+  rho_thinning > 1, causing the probabilities to be unnormalized. Issue #381. 
+  Thanks to Marta Crispino for discovering the bug.
 * Added stratified, systematic, and residual resampling to the sequential 
   Monte Carlo algorithm. These distributions should in general be preferred to
   multinomial resampling, which was the only available option until now.
