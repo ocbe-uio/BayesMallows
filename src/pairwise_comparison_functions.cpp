@@ -38,15 +38,12 @@ vec propose_pairwise_augmentation(
   ivec d = Rcpp::sample(b, 1);
   int proposed_rank = d(0);
 
-  vec proposal = ranking;
-  proposal(item) = proposed_rank;
-
-  uvec indices;
+  LeapShiftObject ls{ranking};
+  ls.rho_proposal(item) = proposed_rank;
 
   // Do the shift step
-  shift_step(proposal, ranking, item, indices);
-
-  return proposal;
+  ls.shift_step(ranking, item);
+  return ls.rho_proposal;
 }
 
 vec propose_swap(

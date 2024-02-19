@@ -36,27 +36,22 @@ vec make_new_rho(
     const std::unique_ptr<Distance>& distfun,
     vec observation_frequency) {
 
-  vec rho_proposal;
-  uvec indices;
-  double prob_backward, prob_forward;
   int n_items = current_rho.n_elem;
 
-  leap_and_shift(
-    rho_proposal, indices, prob_backward, prob_forward,
-    current_rho, leap_size, distfun);
+  LeapShiftObject ls = leap_and_shift(current_rho, leap_size, distfun);
 
   double dist_new = arma::sum(
-    distfun->matdist(rankings.rows(indices), rho_proposal(indices)) % observation_frequency
+    distfun->matdist(rankings.rows(ls.indices), ls.rho_proposal(ls.indices)) % observation_frequency
   );
   double dist_old = arma::sum(
-    distfun->matdist(rankings.rows(indices), current_rho(indices)) % observation_frequency
+    distfun->matdist(rankings.rows(ls.indices), current_rho(ls.indices)) % observation_frequency
   );
 
   double ratio = - alpha_old / n_items * (dist_new - dist_old) +
-    std::log(prob_backward) - std::log(prob_forward);
+    std::log(ls.prob_backward) - std::log(ls.prob_forward);
 
   if(ratio > std::log(R::unif_rand())){
-    return(rho_proposal);
+    return(ls.rho_proposal);
   } else {
     return(current_rho);
   }

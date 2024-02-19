@@ -1,11 +1,9 @@
 #include <RcppArmadillo.h>
 #include "distances.h"
+#include "leapandshift.h"
 using namespace arma;
 
-// [[Rcpp::depends(RcppArmadillo)]]
-
-void shift_step(vec& rho_proposal, const vec& rho,
-                int u, uvec& indices){
+void LeapShiftObject::shift_step(const vec& rho, int u){
   // Shift step:
   double delta_r = rho_proposal(u) - rho(u);
   indices = zeros<uvec>(std::abs(delta_r) + 1);
@@ -26,12 +24,9 @@ void shift_step(vec& rho_proposal, const vec& rho,
   }
 }
 
-
-void leap_and_shift(vec& rho_proposal, uvec& indices,
-                    double& prob_backward, double& prob_forward,
-                    const vec& rho, int leap_size,
-                    const std::unique_ptr<Distance>& distfun){
-  rho_proposal = rho;
+LeapShiftObject leap_and_shift(
+    const vec& rho, int leap_size, const std::unique_ptr<Distance>& distfun){
+  LeapShiftObject ls{rho};
   int n_items = rho.n_elem;
 
   // Leap 1
@@ -47,17 +42,20 @@ void leap_and_shift(vec& rho_proposal, uvec& indices,
   ivec b = Rcpp::sample(support.n_elem, 1) - 1;
   int index = b(0);
   // Picked element index-1 from the support set
-  rho_proposal(u) = support(index);
+  ls.rho_proposal(u) = support(index);
 
-  double support_new = std::min(rho_proposal(u) - 1, leap_size * 1.0) +
-    std::min(n_items - rho_proposal(u), leap_size * 1.0);
-  if(std::abs(rho_proposal(u) - rho(u)) == 1){
-    prob_forward = 1.0 / (n_items * support.n_elem) + 1.0 / (n_items * support_new);
-    prob_backward = prob_forward;
+  double support_new = std::min(ls.rho_proposal(u) - 1, leap_size * 1.0) +
+    std::min(n_items - ls.rho_proposal(u), leap_size * 1.0);
+
+  ls.shift_step(rho, u);
+  distfun->update_leap_and_shift_indices(ls.indices, n_items);
+
+  if(std::abs(ls.rho_proposal(u) - rho(u)) == 1){
+    ls.prob_forward = 1.0 / (n_items * support.n_elem) + 1.0 / (n_items * support_new);
+    ls.prob_backward = ls.prob_forward;
   } else {
-    prob_forward = 1.0 / (n_items * support.n_elem);
-    prob_backward = 1.0 / (n_items * support_new);
+    ls.prob_forward = 1.0 / (n_items * support.n_elem);
+    ls.prob_backward = 1.0 / (n_items * support_new);
   }
-  shift_step(rho_proposal, rho, u, indices);
-  distfun->update_leap_and_shift_indices(indices, n_items);
+  return ls;
 }

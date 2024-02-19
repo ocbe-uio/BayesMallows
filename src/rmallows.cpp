@@ -60,29 +60,24 @@ arma::mat rmallows(
     // Check if the user has tried to stop the running
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
 
-    vec rho_proposal;
-    uvec indices;
-    double prob_backward, prob_forward;
-
     // Sample a proposal
-    leap_and_shift(rho_proposal, indices, prob_backward, prob_forward,
-                   rho_iter, leap_size, distfun);
+    LeapShiftObject ls = leap_and_shift(rho_iter, leap_size, distfun);
 
-    distfun->update_leap_and_shift_indices(indices, n_items);
+    distfun->update_leap_and_shift_indices(ls.indices, n_items);
 
     // Compute the distances to current and proposed ranks
-    double dist_new = distfun->d(rho0(indices), rho_proposal(indices));
-    double dist_old = distfun->d(rho0(indices), rho_iter(indices));
+    double dist_new = distfun->d(rho0(ls.indices), ls.rho_proposal(ls.indices));
+    double dist_old = distfun->d(rho0(ls.indices), rho_iter(ls.indices));
 
     // Metropolis-Hastings ratio
     double ratio = - alpha0 / n_items * (dist_new - dist_old) +
-      std::log(prob_backward) - std::log(prob_forward);
+      std::log(ls.prob_backward) - std::log(ls.prob_forward);
 
     // Draw a uniform random number
     double u = std::log(R::runif(0, 1));
 
     if(ratio > u){
-      rho_iter = rho_proposal;
+      rho_iter = ls.rho_proposal;
     }
 
     // Save every thinning'th iteration after burnin
