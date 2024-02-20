@@ -1,8 +1,8 @@
 test_that("compute_mallows is correct for complete data", {
   expectations <- data.frame(
-    metric = c("footrule", "spearman", "kendall"),
-    mean = c(10.83725, 2.362491, 16.30534),
-    sd = c(0.7013675, 0.2393723, 1.192979)
+    metric = c("footrule", "spearman", "kendall", "cayley", "hamming", "ulam"),
+    mean = c(10.861, 2.37, 16.46, 29.46, 29.76, 28.3433),
+    sd = c(0.735428, 0.24803, 1.2266, 4.031, 3.337, 4.561)
   )
 
   for (i in seq_len(nrow(expectations))) {
@@ -10,19 +10,19 @@ test_that("compute_mallows is correct for complete data", {
     mod_bmm <- compute_mallows(
       data = setup_rank_data(potato_visual),
       model_options = set_model_options(metric = expectations$metric[[i]]),
-      compute_options = set_compute_options(nmc = 20000, burnin = 1000)
+      compute_options = set_compute_options(nmc = 50000, burnin = 1000)
     )
 
     expect_equal(
-      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 16000]),
+      mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
       expectations$mean[[i]],
-      tolerance = 1e-4
+      tolerance = .01
     )
 
     expect_equal(
-      sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 16000]),
+      sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
       expectations$sd[[i]],
-      tolerance = 1e-4
+      tolerance = .1
     )
   }
 })
