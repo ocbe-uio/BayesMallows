@@ -67,7 +67,6 @@ RankProposal LeapAndShift::propose(
     std::min(n_items - rp.rankings(u), leap_size * 1.0);
 
   rp = shift(rp, current_rank, u);
-
   distfun->update_leap_and_shift_indices(rp.mutated_items, n_items);
 
   if(std::abs(rp.rankings(u) - current_rank(u)) == 1){

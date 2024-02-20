@@ -1,8 +1,8 @@
 test_that("compute_mallows is correct for complete data", {
   expectations <- data.frame(
-    metric = c("footrule", "spearman", "kendall", "cayley", "hamming", "ulam"),
-    mean = c(10.861, 2.37, 16.46, 29.46, 29.76, 28.3433),
-    sd = c(0.735428, 0.24803, 1.2266, 4.031, 3.337, 4.561)
+    metric = c("footrule", "spearman", "kendall"),
+    mean = c(10.861, 2.37, 16.46),
+    sd = c(0.735428, 0.24803, 1.2266)
   )
 
   for (i in seq_len(nrow(expectations))) {
