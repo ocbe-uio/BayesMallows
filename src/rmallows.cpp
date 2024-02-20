@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
-#include "leapandshift.h"
 #include "distances.h"
+#include "missing_data.h"
+#include "rank_proposal.h"
 
 using namespace arma;
 
@@ -61,23 +62,24 @@ arma::mat rmallows(
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
 
     // Sample a proposal
-    LeapShiftObject ls = leap_and_shift(rho_iter, leap_size, distfun);
+    auto prop = std::make_unique<LeapAndShift>(leap_size);
+    RankProposal rp = prop->propose(rho_iter, distfun);
 
-    distfun->update_leap_and_shift_indices(ls.indices, n_items);
+    distfun->update_leap_and_shift_indices(rp.mutated_items, n_items);
 
     // Compute the distances to current and proposed ranks
-    double dist_new = distfun->d(rho0(ls.indices), ls.rho_proposal(ls.indices));
-    double dist_old = distfun->d(rho0(ls.indices), rho_iter(ls.indices));
+    double dist_new = distfun->d(rho0(rp.mutated_items), rp.rankings(rp.mutated_items));
+    double dist_old = distfun->d(rho0(rp.mutated_items), rho_iter(rp.mutated_items));
 
     // Metropolis-Hastings ratio
     double ratio = - alpha0 / n_items * (dist_new - dist_old) +
-      std::log(ls.prob_backward) - std::log(ls.prob_forward);
+      std::log(rp.prob_backward) - std::log(rp.prob_forward);
 
     // Draw a uniform random number
     double u = std::log(R::runif(0, 1));
 
     if(ratio > u){
-      rho_iter = ls.rho_proposal;
+      rho_iter = rp.rankings;
     }
 
     // Save every thinning'th iteration after burnin

@@ -151,7 +151,6 @@ test_that("compute_mallows is correct with clustering", {
     ])
   }, 1)
 
-  wcd_means
   expect_equal(
     wcd_means, sort(wcd_means, decreasing = TRUE)
   )

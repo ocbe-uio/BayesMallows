@@ -1,5 +1,5 @@
 #include "classes.h"
-#include "leapandshift.h"
+#include "rank_proposal.h"
 #include "proposal_functions.h"
 using namespace arma;
 
@@ -38,20 +38,23 @@ vec make_new_rho(
 
   int n_items = current_rho.n_elem;
 
-  LeapShiftObject ls = leap_and_shift(current_rho, leap_size, distfun);
+  auto prop = std::make_unique<LeapAndShift>(n_items);
+  RankProposal rp = prop->propose(current_rho, distfun);
 
   double dist_new = arma::sum(
-    distfun->matdist(rankings.rows(ls.indices), ls.rho_proposal(ls.indices)) % observation_frequency
+    distfun->matdist(rankings.rows(rp.mutated_items), rp.rankings(rp.mutated_items)) %
+      observation_frequency
   );
   double dist_old = arma::sum(
-    distfun->matdist(rankings.rows(ls.indices), current_rho(ls.indices)) % observation_frequency
+    distfun->matdist(rankings.rows(rp.mutated_items), current_rho(rp.mutated_items)) %
+      observation_frequency
   );
 
   double ratio = - alpha_old / n_items * (dist_new - dist_old) +
-    std::log(ls.prob_backward) - std::log(ls.prob_forward);
+    std::log(rp.prob_backward) - std::log(rp.prob_forward);
 
   if(ratio > std::log(R::unif_rand())){
-    return(ls.rho_proposal);
+    return(rp.rankings);
   } else {
     return(current_rho);
   }

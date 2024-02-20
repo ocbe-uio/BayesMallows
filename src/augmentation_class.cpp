@@ -2,6 +2,7 @@
 #include "missing_data.h"
 #include "pairwise_comparisons.h"
 #include "distances.h"
+#include "rank_proposal.h"
 using namespace arma;
 
 Augmentation::Augmentation(
@@ -41,8 +42,11 @@ void Augmentation::augment_pairwise(
     vec proposal;
     int g_diff{};
     if(pars.error_model == "none"){
-      proposal = propose_pairwise_augmentation(
+      auto prop = std::make_unique<LeapAndShift>(1);
+      RankProposal rp = prop->propose(
         dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
+
+      proposal = rp.rankings;
     } else if(pars.error_model == "bernoulli"){
       proposal = propose_swap(dat.rankings.col(i), dat.items_above[i],
                               dat.items_below[i], g_diff, swap_leap);

@@ -1,50 +1,12 @@
 #include <RcppArmadillo.h>
 #include "classes.h"
-#include "leapandshift.h"
 #include "distances.h"
+#include "rank_proposal.h"
 
 using namespace arma;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-int find_lower_limit(int item, const uvec& items_above_item, const vec& current_ranking) {
-  if(items_above_item.size() > 0) {
-    return max(current_ranking.elem(items_above_item - 1)) + 1;
-  } else {
-    return 1;
-  }
-}
-
-int find_upper_limit(int item, const uvec& items_below_item, const vec& current_ranking) {
-  if(items_below_item.size() > 0) {
-    return min(current_ranking.elem(items_below_item - 1)) - 1;
-  } else {
-    return current_ranking.size();
-  }
-}
-
-vec propose_pairwise_augmentation(
-    const vec& ranking, const doubly_nested& items_above,
-    const doubly_nested& items_below) {
-  int n_items = ranking.n_elem;
-
-  ivec a = Rcpp::sample(n_items, 1) - 1;
-  int item = a(0);
-
-  int lower_limit = find_lower_limit(item, items_above[item], ranking);
-  int upper_limit = find_upper_limit(item, items_below[item], ranking);
-
-  Rcpp::IntegerVector b = Rcpp::seq(lower_limit, upper_limit);
-  ivec d = Rcpp::sample(b, 1);
-  int proposed_rank = d(0);
-
-  LeapShiftObject ls{ranking};
-  ls.rho_proposal(item) = proposed_rank;
-
-  // Do the shift step
-  ls.shift_step(ranking, item);
-  return ls.rho_proposal;
-}
 
 vec propose_swap(
     const vec& ranking,
