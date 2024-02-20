@@ -31,6 +31,8 @@
 #'
 #' @family preprocessing
 #'
+#' @references \insertAllCited{}
+#'
 set_model_options <- function(
     metric = c("footrule", "spearman", "cayley", "hamming", "kendall", "ulam"),
     n_clusters = 1,

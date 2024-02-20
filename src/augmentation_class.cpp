@@ -11,7 +11,7 @@ Augmentation::Augmentation(
   augpair { dat.items_above.size() > 0 },
   save_aug { compute_options["save_aug"] },
   aug_thinning { compute_options["aug_thinning"] },
-  swap_leap { compute_options["swap_leap"] } ,
+  swap_leap { compute_options["swap_leap"] },
   missing_indicator { set_up_missing(dat) },
   aug_method ( compute_options["aug_method"] ),
   pseudo_aug_metric ( compute_options["pseudo_aug_metric"] ),

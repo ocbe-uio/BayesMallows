@@ -37,6 +37,9 @@ the \code{model_options} argument to \code{\link[=compute_mallows]{compute_mallo
 \description{
 Specify various model options for the Bayesian Mallows model.
 }
+\references{
+\insertAllCited{}
+}
 \seealso{
 Other preprocessing: 
 \code{\link{get_transitive_closure}()},
