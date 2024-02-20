@@ -1,5 +1,6 @@
 #include <RcppArmadillo.h>
 #include "classes.h"
+#include "rank_proposal.h"
 
 using namespace arma;
 
@@ -25,6 +26,8 @@ Rcpp::List run_mcmc(
   auto pfun = choose_partition_function(
     dat.n_items, metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(metric);
+  auto rho_proposal = choose_rank_proposal(pars.rho_proposal_option, pars.leap_size);
+
   clus.update_dist_mat(dat, pars, distfun);
   int alpha_index = 0, rho_index = 0, aug_index = 0,
     cluster_assignment_index = 0;
@@ -40,7 +43,7 @@ Rcpp::List run_mcmc(
 
     pars.update_shape(t, dat, pris);
     pars.update_rho(t, rho_index, dat, clus.current_cluster_assignment,
-                    distfun);
+                    distfun, rho_proposal);
 
     if(t % pars.alpha_jump == 0) {
       ++alpha_index;

@@ -2,6 +2,7 @@
 #include <RcppArmadillo.h>
 #include "partition_functions.h"
 #include "distances.h"
+#include "rank_proposal.h"
 
 using doubly_nested = std::vector<std::vector<unsigned int>>;
 using triply_nested = std::vector<doubly_nested>;
@@ -43,7 +44,8 @@ struct Parameters {
   void update_shape(int t, const Data& dat, const Priors& priors);
   void update_rho(int t, int& rho_index, const Data& dat,
                   const arma::uvec& cluster_assignment,
-                  const std::unique_ptr<Distance>& distfun);
+                  const std::unique_ptr<Distance>& distfun,
+                  const std::unique_ptr<ProposalDistribution>& prop);
 
   void update_alpha(
       int alpha_index,
@@ -64,11 +66,12 @@ struct Parameters {
   const unsigned int nmc;
   const std::string error_model;
   const int alpha_jump;
+  const int leap_size;
+  const std::string rho_proposal_option;
 
 private:
   const arma::uvec element_indices;
   const double alpha_prop_sd;
-  const int leap_size;
   const int rho_thinning;
 };
 

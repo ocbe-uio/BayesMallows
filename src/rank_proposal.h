@@ -1,6 +1,8 @@
 #pragma once
 #include <RcppArmadillo.h>
-#include "missing_data.h"
+
+struct Distance;
+struct RankProposal;
 
 struct ProposalDistribution {
   ProposalDistribution() {};
@@ -10,6 +12,9 @@ struct ProposalDistribution {
       const std::unique_ptr<Distance>& distfun) = 0;
 
 };
+
+std::unique_ptr<ProposalDistribution> choose_rank_proposal(
+    const std::string& rho_proposal, int leap_size);
 
 struct LeapAndShift : ProposalDistribution {
   LeapAndShift(int leap_size);
@@ -27,8 +32,9 @@ struct LeapAndShift : ProposalDistribution {
       const arma::vec& current_rank,
       const std::unique_ptr<Distance>& distfun);
   RankProposal propose(
-    const arma::vec& current_rank, const doubly_nested& items_above,
-    const doubly_nested& items_below);
+    const arma::vec& current_rank,
+    const std::vector<std::vector<unsigned int>>& items_above,
+    const std::vector<std::vector<unsigned int>>& items_below);
 
   int leap_size;
 };

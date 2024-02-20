@@ -1,6 +1,7 @@
 #include "classes.h"
 #include "rank_proposal.h"
 #include "proposal_functions.h"
+#include "missing_data.h"
 using namespace arma;
 
 AlphaRatio make_new_alpha(

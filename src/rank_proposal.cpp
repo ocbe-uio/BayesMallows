@@ -1,7 +1,18 @@
+#include <memory>
 #include "rank_proposal.h"
 #include "distances.h"
+#include "missing_data.h"
 
 using namespace arma;
+
+std::unique_ptr<ProposalDistribution> choose_rank_proposal(
+    const std::string& rho_proposal, int leap_size) {
+  if(rho_proposal == "ls") {
+    return std::make_unique<LeapAndShift>(leap_size);
+  } else {
+    Rcpp::stop("Unknown proposal distribution.");
+  }
+}
 
 LeapAndShift::LeapAndShift(int leap_size) : leap_size { leap_size } {};
 
