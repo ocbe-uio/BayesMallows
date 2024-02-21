@@ -249,23 +249,26 @@ test_that("swap propsal works for modal ranking", {
 
   mod2 <- compute_mallows(
     data = setup_rank_data(potato_visual),
-    compute_options = set_compute_options(nmc = 10000, burnin = 2000,
-                                          rho_proposal = "swap")
+    compute_options = set_compute_options(
+      nmc = 10000, burnin = 2000,
+      rho_proposal = "swap"
+    )
   )
 
   expect_equal(
     mean(mod1$alpha$value[mod1$alpha$iteration > 2000]),
     mean(mod2$alpha$value[mod1$alpha$iteration > 2000]),
-    tolerance = .01)
+    tolerance = .01
+  )
 
   expect_equal(
     sd(mod1$alpha$value[mod1$alpha$iteration > 2000]),
     sd(mod2$alpha$value[mod1$alpha$iteration > 2000]),
-    tolerance = 1)
+    tolerance = 1
+  )
 
   expect_equal(
     compute_consensus(mod1)$item,
     compute_consensus(mod2)$item
   )
-
 })

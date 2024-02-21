@@ -296,13 +296,15 @@ test_that("update_mallows works with swap prosal for rho", {
   mod_bmm <- compute_mallows(
     data = setup_rank_data(triple_potato),
     compute_options = set_compute_options(
-      nmc = 10000, burnin = 1000, rho_proposal = "swap")
+      nmc = 10000, burnin = 1000, rho_proposal = "swap"
+    )
   )
 
   mod_init <- compute_mallows(
     data = setup_rank_data(triple_potato[1:4, , drop = FALSE]),
     compute_options = set_compute_options(
-      nmc = 20000, burnin = 1000, rho_proposal = "swap")
+      nmc = 20000, burnin = 1000, rho_proposal = "swap"
+    )
   )
 
   mod_smc <- update_mallows(
