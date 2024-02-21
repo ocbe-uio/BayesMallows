@@ -5,19 +5,20 @@ struct Distance;
 struct RankProposal;
 
 struct ProposalDistribution {
-  ProposalDistribution() {};
+  ProposalDistribution(int leap_size);
   virtual ~ProposalDistribution() = default;
   virtual RankProposal propose(
       const arma::vec& current_rank,
       const std::unique_ptr<Distance>& distfun) = 0;
 
+  int leap_size;
 };
 
 std::unique_ptr<ProposalDistribution> choose_rank_proposal(
     const std::string& rho_proposal, int leap_size);
 
 struct LeapAndShift : ProposalDistribution {
-  LeapAndShift(int leap_size);
+  using ProposalDistribution::ProposalDistribution;
 
   int find_lower_limit(int item, const arma::uvec& items_above_item,
                        const arma::vec& current_ranking);
@@ -36,5 +37,8 @@ struct LeapAndShift : ProposalDistribution {
     const std::vector<std::vector<unsigned int>>& items_above,
     const std::vector<std::vector<unsigned int>>& items_below);
 
-  int leap_size;
+};
+
+struct Swap : ProposalDistribution {
+  using ProposalDistribution::ProposalDistribution;
 };

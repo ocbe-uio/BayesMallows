@@ -14,7 +14,8 @@ std::unique_ptr<ProposalDistribution> choose_rank_proposal(
   }
 }
 
-LeapAndShift::LeapAndShift(int leap_size) : leap_size { leap_size } {};
+ProposalDistribution::ProposalDistribution(int leap_size) :
+  leap_size { leap_size } {}
 
 int LeapAndShift::find_lower_limit(int item, const uvec& items_above_item,
                      const vec& current_ranking) {
