@@ -1,5 +1,9 @@
 # BayesMallows (development versions)
 
+* The swap proposal defined in Crispino et al., Annals of Applied Statistics 
+  (2019) is now an option for proposing the modal ranking rho. It can be 
+  defined by setting rho_proposal="swap" in set_compute_options(). The leap-and-
+  shift distribution is still the default.
 * Fixed a bug in heat_plot() when the model has been estimated with 
   rho_thinning > 1, causing the probabilities to be unnormalized. Issue #381. 
   Thanks to Marta Crispino for discovering the bug.
@@ -10,10 +14,12 @@
   sampling of latent ranks, specified in the "latent_sampling_lag" argument
   to set_smc_options().
 * Prior for precision parameter alpha is now a gamma distribution. Until now
-  an exponential distribution has been assumed. Since the exponential is a special
-  case of the gamma with shape parameter equal to 1 (the default), this is not
-  a breaking change. However, it adds flexibility when it comes to specifying the prior.
-* setup_rank_data() now accepts a single vector of rankings, silently converting a to matrix with a single row.
+  an exponential distribution has been assumed. Since the exponential is a 
+  special case of the gamma with shape parameter equal to 1 (the default), this 
+  is not a breaking change. However, it adds flexibility when it comes to 
+  specifying the prior.
+* setup_rank_data() now accepts a single vector of rankings, silently converting 
+  a vector to matrix with a single row.
 * Sequential Monte Carlo algorithm can now start from a sample from the prior
   distribution, see the sample_prior() function for an example.
 * Added support for parallelism under-the-hood with oneTBB.

@@ -237,3 +237,35 @@ test_that("compute_mallows is correct with Bernoulli error and partial data", {
     tolerance = 1e-4
   )
 })
+
+test_that("swap propsal works for modal ranking", {
+  # They're not supposed to be identical, but should be fairly close
+  # for this easy problem.
+  set.seed(3)
+  mod1 <- compute_mallows(
+    data = setup_rank_data(potato_visual),
+    compute_options = set_compute_options(nmc = 10000, burnin = 2000)
+  )
+
+  mod2 <- compute_mallows(
+    data = setup_rank_data(potato_visual),
+    compute_options = set_compute_options(nmc = 10000, burnin = 2000,
+                                          rho_proposal = "swap")
+  )
+
+  expect_equal(
+    mean(mod1$alpha$value[mod1$alpha$iteration > 2000]),
+    mean(mod2$alpha$value[mod1$alpha$iteration > 2000]),
+    tolerance = .01)
+
+  expect_equal(
+    sd(mod1$alpha$value[mod1$alpha$iteration > 2000]),
+    sd(mod2$alpha$value[mod1$alpha$iteration > 2000]),
+    tolerance = 1)
+
+  expect_equal(
+    compute_consensus(mod1)$item,
+    compute_consensus(mod2)$item
+  )
+
+})
