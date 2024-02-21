@@ -21,8 +21,7 @@ vec propose_swap(
   int ind1 = as_scalar(find(ranking == u));
   int ind2 = as_scalar(find(ranking == (u + l(0))));
   vec proposal = ranking;
-  proposal(ind1) = ranking(ind2);
-  proposal(ind2) = ranking(ind1);
+  std::swap(proposal(ind1), proposal(ind2));
 
   auto count_error_diff =
     [&items_above, &items_below, &ranking, &proposal](int ind) {
