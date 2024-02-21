@@ -81,9 +81,7 @@ RankProposal LeapAndShift::propose(
 
   double support_new = std::min(rp.rankings(u) - 1, leap_size * 1.0) +
     std::min(n_items - rp.rankings(u), leap_size * 1.0);
-
   rp = shift(rp, current_rank, u);
-  distfun->update_leap_and_shift_indices(rp.mutated_items, n_items);
 
   if(std::abs(rp.rankings(u) - current_rank(u)) == 1){
     rp.prob_forward = 1.0 / (n_items * support.n_elem) + 1.0 / (n_items * support_new);
@@ -134,8 +132,6 @@ RankProposal Swap::propose(const vec& current_rank) {
   RankProposal rp{current_rank};
   std::swap(rp.rankings(inds.first), rp.rankings(inds.second));
   rp.mutated_items = {inds.first, inds.second};
-  distfun->update_leap_and_shift_indices(rp.mutated_items, current_rank.n_elem);
-
   return rp;
 }
 

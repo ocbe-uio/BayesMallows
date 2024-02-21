@@ -41,11 +41,11 @@ vec make_new_rho(
   RankProposal rp = prop->propose(current_rho);
 
   double dist_new = arma::sum(
-    distfun->matdist(rankings.rows(rp.mutated_items), rp.rankings(rp.mutated_items)) %
+    distfun->matdist(rankings, rp.rankings, rp.mutated_items) %
       observation_frequency
   );
   double dist_old = arma::sum(
-    distfun->matdist(rankings.rows(rp.mutated_items), current_rho(rp.mutated_items)) %
+    distfun->matdist(rankings, current_rho, rp.mutated_items) %
       observation_frequency
   );
 

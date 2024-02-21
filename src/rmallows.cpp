@@ -65,11 +65,9 @@ arma::mat rmallows(
     auto prop = std::make_unique<LeapAndShift>(leap_size, distfun);
     RankProposal rp = prop->propose(rho_iter);
 
-    distfun->update_leap_and_shift_indices(rp.mutated_items, n_items);
-
     // Compute the distances to current and proposed ranks
-    double dist_new = distfun->d(rho0(rp.mutated_items), rp.rankings(rp.mutated_items));
-    double dist_old = distfun->d(rho0(rp.mutated_items), rho_iter(rp.mutated_items));
+    double dist_new = distfun->d(rho0, rp.rankings, rp.mutated_items);
+    double dist_old = distfun->d(rho0, rho_iter, rp.mutated_items);
 
     // Metropolis-Hastings ratio
     double ratio = - alpha0 / n_items * (dist_new - dist_old) +
