@@ -42,11 +42,11 @@ void Augmentation::augment_pairwise(
 
     RankProposal rp{};
     if(pars.error_model == "none"){
-      auto prop = std::make_unique<LeapAndShift>(1, distfun);
+      auto prop = std::make_unique<LeapAndShift>(1);
       rp = prop->propose(
         dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
     } else if(pars.error_model == "bernoulli"){
-      auto prop = std::make_unique<Swap>(swap_leap, distfun);
+      auto prop = std::make_unique<Swap>(swap_leap);
       rp = prop->propose(
         dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
     } else {

@@ -7,20 +7,18 @@
 using namespace arma;
 
 std::unique_ptr<ProposalDistribution> choose_rank_proposal(
-    const std::string& rho_proposal, int leap_size,
-    const std::unique_ptr<Distance>& distfun) {
+    const std::string& rho_proposal, int leap_size) {
   if(rho_proposal == "ls") {
-    return std::make_unique<LeapAndShift>(leap_size, distfun);
+    return std::make_unique<LeapAndShift>(leap_size);
   } else if(rho_proposal == "swap") {
-    return std::make_unique<Swap>(leap_size, distfun);
+    return std::make_unique<Swap>(leap_size);
   } else {
     Rcpp::stop("Unknown proposal distribution.");
   }
 }
 
-ProposalDistribution::ProposalDistribution(
-  int leap_size, const std::unique_ptr<Distance>& distfun) :
-  leap_size { leap_size }, distfun(distfun) {}
+ProposalDistribution::ProposalDistribution(int leap_size) :
+  leap_size { leap_size } {}
 
 int LeapAndShift::find_lower_limit(int item, const uvec& items_above_item,
                      const vec& current_ranking) {

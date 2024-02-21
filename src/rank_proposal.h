@@ -5,17 +5,15 @@ struct Distance;
 struct RankProposal;
 
 struct ProposalDistribution {
-  ProposalDistribution(int leap_size, const std::unique_ptr<Distance>& distfun);
+  ProposalDistribution(int leap_size);
   virtual ~ProposalDistribution() = default;
   virtual RankProposal propose(const arma::vec& current_rank) = 0;
 
   const int leap_size;
-  const std::unique_ptr<Distance>& distfun;
 };
 
 std::unique_ptr<ProposalDistribution> choose_rank_proposal(
-    const std::string& rho_proposal, int leap_size,
-    const std::unique_ptr<Distance>& distfun);
+    const std::string& rho_proposal, int leap_size);
 
 struct LeapAndShift : ProposalDistribution {
   using ProposalDistribution::ProposalDistribution;

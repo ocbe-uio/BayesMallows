@@ -30,7 +30,7 @@ Rcpp::List  run_smc(
   auto distfun = choose_distance_function(metric);
   auto pvec = initialize_particles(data, initial_values, smc_options, aug, dat);
   auto rho_proposal = choose_rank_proposal(
-    pars.rho_proposal_option, pars.leap_size, distfun);
+    pars.rho_proposal_option, pars.leap_size);
   aug.reweight(pvec, dat, pfun, distfun);
   pars.resample(pvec);
 
