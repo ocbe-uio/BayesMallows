@@ -24,6 +24,6 @@ arma::vec make_new_rho(
     const arma::vec& current_rho,
     const arma::mat& rankings,
     double alpha_old,
-    int leap_size,
     const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<ProposalDistribution>& prop,
     arma::vec observation_frequency);

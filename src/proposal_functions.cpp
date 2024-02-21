@@ -33,13 +33,11 @@ vec make_new_rho(
     const vec& current_rho,
     const mat& rankings,
     double alpha_old,
-    int leap_size,
     const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<ProposalDistribution>& prop,
     vec observation_frequency) {
 
   int n_items = current_rho.n_elem;
-
-  auto prop = std::make_unique<LeapAndShift>(leap_size);
   RankProposal rp = prop->propose(current_rho, distfun);
 
   double dist_new = arma::sum(

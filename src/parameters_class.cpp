@@ -61,8 +61,8 @@ void Parameters::update_rho(
     const vec cluster_frequency =
       dat.observation_frequency.elem(cluster_indicator);
     vec rho_cluster = rho_old.col(i);
-    rho_old.col(i) = make_new_rho(rho_cluster, cluster_rankings, alpha_old(i),
-                leap_size, distfun, cluster_frequency);
+    rho_old.col(i) = make_new_rho(rho_cluster, cluster_rankings,
+                alpha_old(i), distfun, prop, cluster_frequency);
     if(t % rho_thinning == 0){
       if(i == 0) ++rho_index;
       rho.slice(rho_index).col(i) = rho_old.col(i);

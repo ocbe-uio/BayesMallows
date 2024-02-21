@@ -29,16 +29,17 @@ Rcpp::List  run_smc(
     dat.n_items, metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(metric);
   auto pvec = initialize_particles(data, initial_values, smc_options, aug, dat);
+  auto rho_proposal = choose_rank_proposal(pars.rho_proposal_option, pars.leap_size);
   aug.reweight(pvec, dat, pfun, distfun);
   pars.resample(pvec);
 
   par_for_each(
     pvec.begin(), pvec.end(),
     [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),
-     pfun = std::ref(pfun)]
+     pfun = std::ref(pfun), rho_proposal = std::ref(rho_proposal)]
     (Particle& p) {
        for(size_t i{}; i < pars.mcmc_steps; i++) {
-         pars.update_rho(p, dat, distfun);
+         pars.update_rho(p, dat, distfun, rho_proposal);
          pars.update_alpha(p, dat, pfun, distfun, pris);
          aug.update_missing_ranks(p, dat, distfun);
        }
