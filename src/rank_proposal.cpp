@@ -146,6 +146,7 @@ RankProposal Swap::propose(
   auto inds = sample(current_rank);
   RankProposal ret{current_rank};
   std::swap(ret.rankings(inds.first), ret.rankings(inds.second));
+  ret.mutated_items = {inds.first, inds.second};
 
   auto count_error_diff =
     [&items_above, &items_below, &current_rank, &ret](int ind) {

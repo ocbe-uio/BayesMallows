@@ -56,8 +56,10 @@ void Augmentation::augment_pairwise(
     double u = std::log(R::runif(0, 1));
     int cluster = clus.current_cluster_assignment(i);
 
-    double newdist = distfun->d(rp.rankings, pars.rho_old.col(cluster));
-    double olddist = distfun->d(dat.rankings.col(i), pars.rho_old.col(cluster));
+    vec rho_old = pars.rho_old.col(cluster);
+    vec rankings_col = dat.rankings.col(i);
+    double newdist = distfun->d(rp.rankings(rp.mutated_items), rho_old.rows(rp.mutated_items));
+    double olddist = distfun->d(rankings_col.rows(rp.mutated_items), rho_old.rows(rp.mutated_items));
     double ratio = -pars.alpha_old(cluster) / dat.n_items * (newdist - olddist);
 
     if(pars.error_model != "none") {
