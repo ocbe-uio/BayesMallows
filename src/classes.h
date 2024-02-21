@@ -115,7 +115,8 @@ struct Augmentation {
       Data& dat,
       const Parameters& pars,
       const Clustering& clus,
-      const std::unique_ptr<Distance>& distfun);
+      const std::unique_ptr<Distance>& distfun,
+      const std::unique_ptr<ProposalDistribution>& prop);
 
   void update_missing_ranks(
       Data& dat,
@@ -128,9 +129,9 @@ struct Augmentation {
   const bool save_aug;
   const unsigned int aug_thinning;
   arma::cube augmented_data;
+  const unsigned int swap_leap;
 
 private:
-  const unsigned int swap_leap;
   const arma::umat missing_indicator;
   const std::string aug_method;
   const std::string pseudo_aug_metric;

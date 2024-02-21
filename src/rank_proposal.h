@@ -8,6 +8,10 @@ struct ProposalDistribution {
   ProposalDistribution(int leap_size);
   virtual ~ProposalDistribution() = default;
   virtual RankProposal propose(const arma::vec& current_rank) = 0;
+  virtual RankProposal propose(
+    const arma::vec& current_rank,
+    const std::vector<std::vector<unsigned int>>& items_above,
+    const std::vector<std::vector<unsigned int>>& items_below) = 0;
 
   const int leap_size;
 };
@@ -25,7 +29,7 @@ struct LeapAndShift : ProposalDistribution {
   RankProposal propose(
     const arma::vec& current_rank,
     const std::vector<std::vector<unsigned int>>& items_above,
-    const std::vector<std::vector<unsigned int>>& items_below);
+    const std::vector<std::vector<unsigned int>>& items_below) override;
 
 private:
   int find_lower_limit(int item, const arma::uvec& items_above_item,
@@ -42,7 +46,7 @@ struct Swap : ProposalDistribution {
   RankProposal propose(
       const arma::vec& current_rank,
       const std::vector<std::vector<unsigned int>>& items_above,
-      const std::vector<std::vector<unsigned int>>& items_below);
+      const std::vector<std::vector<unsigned int>>& items_below) override;
 
 private:
   std::pair<unsigned int, unsigned int> sample(const arma::vec& current_rank);

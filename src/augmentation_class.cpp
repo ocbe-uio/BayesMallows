@@ -35,23 +35,14 @@ void Augmentation::augment_pairwise(
     Data& dat,
     const Parameters& pars,
     const Clustering& clus,
-    const std::unique_ptr<Distance>& distfun
+    const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<ProposalDistribution>& prop
 ){
   if(!augpair) return;
   for(size_t i = 0; i < dat.n_assessors; ++i) {
 
-    RankProposal rp{};
-    if(pars.error_model == "none"){
-      auto prop = std::make_unique<LeapAndShift>(1);
-      rp = prop->propose(
+    RankProposal rp = prop->propose(
         dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
-    } else if(pars.error_model == "bernoulli"){
-      auto prop = std::make_unique<Swap>(swap_leap);
-      rp = prop->propose(
-        dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
-    } else {
-      Rcpp::stop("error_model must be 'none' or 'bernoulli'");
-    }
 
     double u = std::log(R::runif(0, 1));
     int cluster = clus.current_cluster_assignment(i);
