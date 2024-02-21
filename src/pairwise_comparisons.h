@@ -2,9 +2,8 @@
 
 #include "classes.h"
 
-arma::vec propose_swap(
-    const arma::vec& ranking,
+RankProposal propose_swap(
+    const arma::vec& current_rank,
     const doubly_nested& items_above,
     const doubly_nested& items_below,
-    int& g_diff,
     int swap_leap);

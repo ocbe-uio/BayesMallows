@@ -32,6 +32,7 @@ struct RankProposal{
   double prob_forward{1};
   double prob_backward{1};
   arma::uvec mutated_items{};
+  int g_diff{};
 };
 
 RankProposal make_uniform_proposal(

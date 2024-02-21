@@ -25,8 +25,9 @@ Augmentation::Augmentation(
     }
     if(save_aug){
       unsigned int nmc{ compute_options["nmc"] };
-      augmented_data.set_size(dat.n_items, dat.n_assessors,
-                              std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
+      augmented_data.set_size(
+        dat.n_items, dat.n_assessors,
+        std::ceil(static_cast<double>(nmc * 1.0 / aug_thinning)));
       augmented_data.slice(0) = dat.rankings;
     }}
 
@@ -39,17 +40,15 @@ void Augmentation::augment_pairwise(
 ){
   if(!augpair) return;
   for(size_t i = 0; i < dat.n_assessors; ++i) {
-    vec proposal;
-    int g_diff{};
+
+    RankProposal rp{};
     if(pars.error_model == "none"){
       auto prop = std::make_unique<LeapAndShift>(1, distfun);
-      RankProposal rp = prop->propose(
+      rp = prop->propose(
         dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
-
-      proposal = rp.rankings;
     } else if(pars.error_model == "bernoulli"){
-      proposal = propose_swap(dat.rankings.col(i), dat.items_above[i],
-                              dat.items_below[i], g_diff, swap_leap);
+      rp = propose_swap(dat.rankings.col(i), dat.items_above[i],
+                              dat.items_below[i], swap_leap);
     } else {
       Rcpp::stop("error_model must be 'none' or 'bernoulli'");
     }
@@ -57,15 +56,15 @@ void Augmentation::augment_pairwise(
     double u = std::log(R::runif(0, 1));
     int cluster = clus.current_cluster_assignment(i);
 
-    double newdist = distfun->d(proposal, pars.rho_old.col(cluster));
+    double newdist = distfun->d(rp.rankings, pars.rho_old.col(cluster));
     double olddist = distfun->d(dat.rankings.col(i), pars.rho_old.col(cluster));
     double ratio = -pars.alpha_old(cluster) / dat.n_items * (newdist - olddist);
 
     if(pars.error_model != "none") {
-      ratio += g_diff * std::log(pars.theta(t) / (1 - pars.theta(t)));
+      ratio += rp.g_diff * std::log(pars.theta(t) / (1 - pars.theta(t)));
     }
 
-    if(ratio > u) dat.rankings.col(i) = proposal;
+    if(ratio > u) dat.rankings.col(i) = rp.rankings;
   }
 }
 
