@@ -141,6 +141,9 @@ If in reality there are only two items, they should be relabeled to 1 and
 1 \tab 1 \tab 2\cr
 }
 }
+\references{
+\insertAllCited{}
+}
 \seealso{
 Other preprocessing: 
 \code{\link{get_transitive_closure}()},

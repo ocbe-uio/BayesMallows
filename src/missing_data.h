@@ -19,17 +19,20 @@ arma::mat initialize_missing_ranks(
 
 struct RankProposal{
   RankProposal() {};
+  RankProposal(const arma::vec& rankings) : rankings { rankings } {}
   RankProposal(
     const arma::vec& rankings,
-    double probability,
+    double prob_forward, double prob_backward,
     const arma::uvec& mutated_items) :
-  rankings { rankings }, probability { probability },
-  mutated_items { mutated_items } {}
+  rankings { rankings }, prob_forward { prob_forward },
+  prob_backward { prob_backward }, mutated_items { mutated_items } {}
   ~RankProposal() = default;
 
   arma::vec rankings{};
-  double probability{};
+  double prob_forward{1};
+  double prob_backward{1};
   arma::uvec mutated_items{};
+  int g_diff{};
 };
 
 RankProposal make_uniform_proposal(

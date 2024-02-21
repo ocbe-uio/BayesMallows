@@ -102,7 +102,7 @@ void SMCAugmentation::augment_partial(
             pseudo_aug_distance
           );
           p.augmented_data.col(user) = pprop.rankings;
-          p.log_aug_prob(user) = log(pprop.probability);
+          p.log_aug_prob(user) = log(pprop.prob_forward);
         }
       }
     }

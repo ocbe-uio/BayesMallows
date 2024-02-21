@@ -124,6 +124,8 @@
 #'
 #' @family preprocessing
 #'
+#' @references \insertAllCited{}
+#'
 setup_rank_data <- function(
     rankings = NULL,
     preferences = NULL,

@@ -12,9 +12,10 @@ Parameters::Parameters(
   nmc { compute_options["nmc"] },
   error_model(model_options["error_model"]),
   alpha_jump { compute_options["alpha_jump"] },
+  leap_size { compute_options["leap_size"] },
+  rho_proposal_option( compute_options["rho_proposal"] ),
   element_indices { regspace<uvec>(0, n_items - 1) },
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
-  leap_size { compute_options["leap_size"] },
   rho_thinning { compute_options["rho_thinning"] }
   {
     alpha.set_size(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
@@ -50,7 +51,8 @@ void Parameters::update_rho(
     int& rho_index,
     const Data& dat,
     const uvec& current_cluster_assignment,
-    const std::unique_ptr<Distance>& distfun
+    const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<ProposalDistribution>& prop
 ) {
   for(size_t i{}; i < n_clusters; ++i){
     const uvec cluster_indicator = find(current_cluster_assignment == i);
@@ -59,8 +61,8 @@ void Parameters::update_rho(
     const vec cluster_frequency =
       dat.observation_frequency.elem(cluster_indicator);
     vec rho_cluster = rho_old.col(i);
-    rho_old.col(i) = make_new_rho(rho_cluster, cluster_rankings, alpha_old(i),
-                leap_size, distfun, cluster_frequency);
+    rho_old.col(i) = make_new_rho(rho_cluster, cluster_rankings,
+                alpha_old(i), distfun, prop, cluster_frequency);
     if(t % rho_thinning == 0){
       if(i == 0) ++rho_index;
       rho.slice(rho_index).col(i) = rho_old.col(i);

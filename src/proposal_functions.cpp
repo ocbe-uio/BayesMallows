@@ -1,6 +1,7 @@
 #include "classes.h"
-#include "leapandshift.h"
+#include "rank_proposal.h"
 #include "proposal_functions.h"
+#include "missing_data.h"
 using namespace arma;
 
 AlphaRatio make_new_alpha(
@@ -32,31 +33,27 @@ vec make_new_rho(
     const vec& current_rho,
     const mat& rankings,
     double alpha_old,
-    int leap_size,
     const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<ProposalDistribution>& prop,
     vec observation_frequency) {
 
-  vec rho_proposal;
-  uvec indices;
-  double prob_backward, prob_forward;
   int n_items = current_rho.n_elem;
-
-  leap_and_shift(
-    rho_proposal, indices, prob_backward, prob_forward,
-    current_rho, leap_size, distfun);
+  RankProposal rp = prop->propose(current_rho);
 
   double dist_new = arma::sum(
-    distfun->matdist(rankings.rows(indices), rho_proposal(indices)) % observation_frequency
+    distfun->matdist(rankings, rp.rankings, rp.mutated_items) %
+      observation_frequency
   );
   double dist_old = arma::sum(
-    distfun->matdist(rankings.rows(indices), current_rho(indices)) % observation_frequency
+    distfun->matdist(rankings, current_rho, rp.mutated_items) %
+      observation_frequency
   );
 
   double ratio = - alpha_old / n_items * (dist_new - dist_old) +
-    std::log(prob_backward) - std::log(prob_forward);
+    std::log(rp.prob_backward) - std::log(rp.prob_forward);
 
   if(ratio > std::log(R::unif_rand())){
-    return(rho_proposal);
+    return(rp.rankings);
   } else {
     return(current_rho);
   }
