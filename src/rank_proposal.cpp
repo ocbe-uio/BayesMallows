@@ -1,4 +1,5 @@
 #include <memory>
+#include <utility>
 #include "rank_proposal.h"
 #include "distances.h"
 #include "missing_data.h"
@@ -116,7 +117,8 @@ RankProposal LeapAndShift::propose(
   return rp;
 }
 
-RankProposal Swap::propose(const vec& current_rank) {
+std::pair<unsigned int, unsigned int> Swap::sample(
+    const vec& current_rank) {
   int n_items = current_rank.n_elem;
   ivec l = Rcpp::sample(leap_size, 1);
   ivec a = Rcpp::sample(n_items - l(0), 1);
@@ -124,11 +126,41 @@ RankProposal Swap::propose(const vec& current_rank) {
 
   unsigned int ind1 = as_scalar(find(current_rank == u));
   unsigned int ind2 = as_scalar(find(current_rank == (u + l(0))));
+  return std::make_pair(ind1, ind2);
+}
 
+RankProposal Swap::propose(const vec& current_rank) {
+  auto inds = sample(current_rank);
   RankProposal rp{current_rank};
-  std::swap(rp.rankings(ind1), rp.rankings(ind2));
-  rp.mutated_items = {ind1, ind2};
-  distfun->update_leap_and_shift_indices(rp.mutated_items, n_items);
+  std::swap(rp.rankings(inds.first), rp.rankings(inds.second));
+  rp.mutated_items = {inds.first, inds.second};
+  distfun->update_leap_and_shift_indices(rp.mutated_items, current_rank.n_elem);
 
   return rp;
+}
+
+RankProposal Swap::propose(
+    const arma::vec& current_rank,
+    const std::vector<std::vector<unsigned int>>& items_above,
+    const std::vector<std::vector<unsigned int>>& items_below) {
+  auto inds = sample(current_rank);
+  RankProposal ret{current_rank};
+  std::swap(ret.rankings(inds.first), ret.rankings(inds.second));
+
+  auto count_error_diff =
+    [&items_above, &items_below, &current_rank, &ret](int ind) {
+      int result{};
+      for(const auto item_above_first : items_above[ind]) {
+        result += (ret.rankings(item_above_first - 1) > ret.rankings(ind)) -
+          (current_rank(item_above_first - 1) > current_rank(ind));
+      }
+      for(const auto item_below_first : items_below[ind]) {
+        result += (ret.rankings(item_below_first - 1) < ret.rankings(ind)) -
+          (current_rank(item_below_first - 1) < current_rank(ind));
+      }
+      return result;
+    };
+
+    ret.g_diff += count_error_diff(inds.first) + count_error_diff(inds.second);
+    return ret;
 }

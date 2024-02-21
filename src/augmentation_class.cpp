@@ -1,6 +1,5 @@
 #include "classes.h"
 #include "missing_data.h"
-#include "pairwise_comparisons.h"
 #include "distances.h"
 #include "rank_proposal.h"
 using namespace arma;
@@ -47,8 +46,9 @@ void Augmentation::augment_pairwise(
       rp = prop->propose(
         dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
     } else if(pars.error_model == "bernoulli"){
-      rp = propose_swap(dat.rankings.col(i), dat.items_above[i],
-                              dat.items_below[i], swap_leap);
+      auto prop = std::make_unique<Swap>(swap_leap, distfun);
+      rp = prop->propose(
+        dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
     } else {
       Rcpp::stop("error_model must be 'none' or 'bernoulli'");
     }
