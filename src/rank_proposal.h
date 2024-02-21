@@ -36,8 +36,8 @@ struct LeapAndShift : ProposalDistribution {
     const std::vector<std::vector<unsigned int>>& items_below);
 
 };
-//
-// struct Swap : ProposalDistribution {
-//   using ProposalDistribution::ProposalDistribution;
-//   RankProposal propose(const arma::vec& current_rank) override;
-// };
+
+struct Swap : ProposalDistribution {
+  using ProposalDistribution::ProposalDistribution;
+  RankProposal propose(const arma::vec& current_rank) override;
+};

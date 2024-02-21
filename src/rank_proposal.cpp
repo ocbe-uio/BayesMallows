@@ -10,6 +10,8 @@ std::unique_ptr<ProposalDistribution> choose_rank_proposal(
     const std::unique_ptr<Distance>& distfun) {
   if(rho_proposal == "ls") {
     return std::make_unique<LeapAndShift>(leap_size, distfun);
+  } else if(rho_proposal == "swap") {
+    return std::make_unique<Swap>(leap_size, distfun);
   } else {
     Rcpp::stop("Unknown proposal distribution.");
   }
@@ -98,7 +100,6 @@ RankProposal LeapAndShift::propose(
     const doubly_nested& items_below
 ) {
   int n_items = current_rank.n_elem;
-
   ivec a = Rcpp::sample(n_items, 1) - 1;
   int item = a(0);
 
@@ -115,16 +116,19 @@ RankProposal LeapAndShift::propose(
   return rp;
 }
 
-// RankProposal Swap::propose(const vec& current_rank) {
-//   int n_items = current_rank.n_elem;
-//   ivec l = Rcpp::sample(leap_size, 1);
-//   ivec a = Rcpp::sample(leap_size - l(0), 1);
-//   int u = a(0);
-//
-//   int ind1 = as_scalar(find(current_rank == u));
-//   int ind2 = as_scalar(find(current_rank == (u + l(0))));
-//
-//   RankProposal rp{current_rank};
-//   std::swap(rp.rankings(ind1), rp.rankings(ind2));
-//   return rp;
-// }
+RankProposal Swap::propose(const vec& current_rank) {
+  int n_items = current_rank.n_elem;
+  ivec l = Rcpp::sample(leap_size, 1);
+  ivec a = Rcpp::sample(n_items - l(0), 1);
+  int u = a(0);
+
+  unsigned int ind1 = as_scalar(find(current_rank == u));
+  unsigned int ind2 = as_scalar(find(current_rank == (u + l(0))));
+
+  RankProposal rp{current_rank};
+  std::swap(rp.rankings(ind1), rp.rankings(ind2));
+  rp.mutated_items = {ind1, ind2};
+  distfun->update_leap_and_shift_indices(rp.mutated_items, n_items);
+
+  return rp;
+}
