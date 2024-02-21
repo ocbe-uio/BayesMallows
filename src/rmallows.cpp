@@ -62,8 +62,8 @@ arma::mat rmallows(
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
 
     // Sample a proposal
-    auto prop = std::make_unique<LeapAndShift>(leap_size);
-    RankProposal rp = prop->propose(rho_iter, distfun);
+    auto prop = std::make_unique<LeapAndShift>(leap_size, distfun);
+    RankProposal rp = prop->propose(rho_iter);
 
     distfun->update_leap_and_shift_indices(rp.mutated_items, n_items);
 

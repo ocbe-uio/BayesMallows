@@ -26,7 +26,8 @@ Rcpp::List run_mcmc(
   auto pfun = choose_partition_function(
     dat.n_items, metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(metric);
-  auto rho_proposal = choose_rank_proposal(pars.rho_proposal_option, pars.leap_size);
+  auto rho_proposal = choose_rank_proposal(
+    pars.rho_proposal_option, pars.leap_size, distfun);
 
   clus.update_dist_mat(dat, pars, distfun);
   int alpha_index = 0, rho_index = 0, aug_index = 0,

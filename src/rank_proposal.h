@@ -5,17 +5,17 @@ struct Distance;
 struct RankProposal;
 
 struct ProposalDistribution {
-  ProposalDistribution(int leap_size);
+  ProposalDistribution(int leap_size, const std::unique_ptr<Distance>& distfun);
   virtual ~ProposalDistribution() = default;
-  virtual RankProposal propose(
-      const arma::vec& current_rank,
-      const std::unique_ptr<Distance>& distfun) = 0;
+  virtual RankProposal propose(const arma::vec& current_rank) = 0;
 
-  int leap_size;
+  const int leap_size;
+  const std::unique_ptr<Distance>& distfun;
 };
 
 std::unique_ptr<ProposalDistribution> choose_rank_proposal(
-    const std::string& rho_proposal, int leap_size);
+    const std::string& rho_proposal, int leap_size,
+    const std::unique_ptr<Distance>& distfun);
 
 struct LeapAndShift : ProposalDistribution {
   using ProposalDistribution::ProposalDistribution;
@@ -29,16 +29,15 @@ struct LeapAndShift : ProposalDistribution {
   RankProposal shift(
       const RankProposal& rp_in, const arma::vec& current_rank, int u);
 
-  RankProposal propose(
-      const arma::vec& current_rank,
-      const std::unique_ptr<Distance>& distfun);
+  RankProposal propose(const arma::vec& current_rank) override;
   RankProposal propose(
     const arma::vec& current_rank,
     const std::vector<std::vector<unsigned int>>& items_above,
     const std::vector<std::vector<unsigned int>>& items_below);
 
 };
-
-struct Swap : ProposalDistribution {
-  using ProposalDistribution::ProposalDistribution;
-};
+//
+// struct Swap : ProposalDistribution {
+//   using ProposalDistribution::ProposalDistribution;
+//   RankProposal propose(const arma::vec& current_rank) override;
+// };

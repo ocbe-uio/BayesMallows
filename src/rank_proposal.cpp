@@ -6,16 +6,18 @@
 using namespace arma;
 
 std::unique_ptr<ProposalDistribution> choose_rank_proposal(
-    const std::string& rho_proposal, int leap_size) {
+    const std::string& rho_proposal, int leap_size,
+    const std::unique_ptr<Distance>& distfun) {
   if(rho_proposal == "ls") {
-    return std::make_unique<LeapAndShift>(leap_size);
+    return std::make_unique<LeapAndShift>(leap_size, distfun);
   } else {
     Rcpp::stop("Unknown proposal distribution.");
   }
 }
 
-ProposalDistribution::ProposalDistribution(int leap_size) :
-  leap_size { leap_size } {}
+ProposalDistribution::ProposalDistribution(
+  int leap_size, const std::unique_ptr<Distance>& distfun) :
+  leap_size { leap_size }, distfun(distfun) {}
 
 int LeapAndShift::find_lower_limit(int item, const uvec& items_above_item,
                      const vec& current_ranking) {
@@ -59,8 +61,7 @@ RankProposal LeapAndShift::shift(
 }
 
 RankProposal LeapAndShift::propose(
-    const vec& current_rank,
-    const std::unique_ptr<Distance>& distfun) {
+    const vec& current_rank) {
   RankProposal rp{current_rank};
   int n_items = current_rank.n_elem;
 
@@ -113,3 +114,17 @@ RankProposal LeapAndShift::propose(
   rp = shift(rp, current_rank, item);
   return rp;
 }
+
+// RankProposal Swap::propose(const vec& current_rank) {
+//   int n_items = current_rank.n_elem;
+//   ivec l = Rcpp::sample(leap_size, 1);
+//   ivec a = Rcpp::sample(leap_size - l(0), 1);
+//   int u = a(0);
+//
+//   int ind1 = as_scalar(find(current_rank == u));
+//   int ind2 = as_scalar(find(current_rank == (u + l(0))));
+//
+//   RankProposal rp{current_rank};
+//   std::swap(rp.rankings(ind1), rp.rankings(ind2));
+//   return rp;
+// }

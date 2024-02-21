@@ -42,7 +42,7 @@ void Augmentation::augment_pairwise(
     vec proposal;
     int g_diff{};
     if(pars.error_model == "none"){
-      auto prop = std::make_unique<LeapAndShift>(1);
+      auto prop = std::make_unique<LeapAndShift>(1, distfun);
       RankProposal rp = prop->propose(
         dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
 

@@ -29,8 +29,8 @@ struct RankProposal{
   ~RankProposal() = default;
 
   arma::vec rankings{};
-  double prob_forward{};
-  double prob_backward{};
+  double prob_forward{1};
+  double prob_backward{1};
   arma::uvec mutated_items{};
 };
 
