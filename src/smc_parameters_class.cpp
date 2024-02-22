@@ -3,6 +3,7 @@
 using namespace arma;
 
 SMCParameters::SMCParameters(
+  const Rcpp::List& model_options,
   const Rcpp::List& compute_options,
   const Rcpp::List& smc_options
 ) :

@@ -27,7 +27,9 @@ struct SMCData : Data {
 
 struct SMCParameters {
   SMCParameters(
-    const Rcpp::List& smc_options, const Rcpp::List& compute_options);
+    const Rcpp::List& model_options,
+    const Rcpp::List& smc_options,
+    const Rcpp::List& compute_options);
   ~SMCParameters() = default;
 
   void update_alpha(
