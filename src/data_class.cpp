@@ -1,4 +1,5 @@
 #include "classes.h"
+#include "missing_data.h"
 using namespace arma;
 
 triply_nested define_items(const Rcpp::List& data, const std::string type) {
@@ -15,6 +16,13 @@ triply_nested define_items(const Rcpp::List& data, const std::string type) {
   return items;
 }
 
+arma::umat set_up_missing(const mat& rankings, bool any_missing) noexcept {
+  if(!any_missing) return arma::umat{};
+  arma::umat missing_indicator = conv_to<umat>::from(rankings);
+  missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
+  return missing_indicator;
+}
+
 Data::Data(
   const Rcpp::List& data
 ) :
@@ -24,7 +32,8 @@ Data::Data(
   observation_frequency(data["observation_frequency"]),
   items_above { define_items(data, "items_above") },
   items_below { define_items(data, "items_below") },
-  any_missing { !is_finite(rankings) }
+  any_missing { !is_finite(rankings) },
+  missing_indicator { set_up_missing(rankings, any_missing) }
   {
     if(n_assessors <= 0) Rcpp::stop("Must have at least one observation.");
     rankings.replace(datum::nan, 0);

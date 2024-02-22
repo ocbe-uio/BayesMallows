@@ -18,6 +18,7 @@ struct Data {
   const triply_nested items_above{};
   const triply_nested items_below{};
   const bool any_missing;
+  const arma::umat missing_indicator;
 };
 
 struct Priors {
@@ -132,7 +133,6 @@ struct Augmentation {
   const unsigned int swap_leap;
 
 private:
-  const arma::umat missing_indicator;
   const std::string aug_method;
   const std::string pseudo_aug_metric;
   const std::unique_ptr<Distance> pseudo_aug_distance;

@@ -11,8 +11,6 @@ arma::vec make_new_augmentation(
     const std::unique_ptr<Distance>& pseudo_aug_distance,
     double& log_aug_prob);
 
-arma::umat set_up_missing(const Data& dat) noexcept;
-
 arma::mat initialize_missing_ranks(
     arma::mat rankings,
     const arma::umat& missing_indicator);

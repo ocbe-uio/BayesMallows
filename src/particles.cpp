@@ -32,13 +32,13 @@ mat initialize_augmented_data(
           span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)
         ) = initialize_missing_ranks(
           dat.new_rankings,
-          aug.missing_indicator(
+          dat.missing_indicator(
             span::all,
             span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1))
         );
       }
     } else {
-      augmented_data = initialize_missing_ranks(dat.rankings, aug.missing_indicator);
+      augmented_data = initialize_missing_ranks(dat.rankings, dat.missing_indicator);
     }
   }
   return augmented_data;

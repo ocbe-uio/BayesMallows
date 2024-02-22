@@ -76,7 +76,6 @@ struct SMCAugmentation {
   void update_missing_ranks(Particle& p, const SMCData& dat,
       const std::unique_ptr<Distance>& distfun) const;
 
-  const arma::umat missing_indicator;
   const std::string aug_method;
   const std::string pseudo_aug_metric;
 

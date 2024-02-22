@@ -12,7 +12,6 @@ Augmentation::Augmentation(
   save_aug { compute_options["save_aug"] },
   aug_thinning { compute_options["aug_thinning"] },
   swap_leap { compute_options["swap_leap"] },
-  missing_indicator { set_up_missing(dat) },
   aug_method ( compute_options["aug_method"] ),
   pseudo_aug_metric ( compute_options["pseudo_aug_metric"] ),
   pseudo_aug_distance {
@@ -20,7 +19,7 @@ Augmentation::Augmentation(
   },
   log_aug_prob { zeros(dat.n_assessors) } {
     if(dat.any_missing){
-      dat.rankings = initialize_missing_ranks(dat.rankings, missing_indicator);
+      dat.rankings = initialize_missing_ranks(dat.rankings, dat.missing_indicator);
     }
     if(save_aug){
       unsigned int nmc{ compute_options["nmc"] };
@@ -69,7 +68,7 @@ void Augmentation::update_missing_ranks(
   for(size_t i = 0; i < dat.n_assessors; ++i){
     int cluster = clus.current_cluster_assignment(i);
     dat.rankings.col(i) = make_new_augmentation(
-      dat.rankings.col(i), missing_indicator.col(i),
+      dat.rankings.col(i), dat.missing_indicator.col(i),
       pars.alpha_old(cluster), pars.rho_old.col(cluster),
       distfun, pseudo_aug_distance,
       log_aug_prob(i)

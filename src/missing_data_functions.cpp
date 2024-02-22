@@ -19,13 +19,6 @@ vec setdiff(const vec& x, const vec& y) noexcept {
   return conv_to<vec>::from(diff);
 }
 
-arma::umat set_up_missing(const Data& dat) noexcept {
-  if(!dat.any_missing) return arma::umat{};
-  arma::umat missing_indicator = conv_to<umat>::from(dat.rankings);
-  missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
-  return missing_indicator;
-}
-
 mat initialize_missing_ranks(mat rankings, const umat& missing_indicator) {
   int n_assessors = rankings.n_cols;
 
