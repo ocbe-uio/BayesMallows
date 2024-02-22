@@ -59,7 +59,6 @@ private:
 
 struct SMCAugmentation {
   SMCAugmentation(
-    const SMCData& dat,
     const Rcpp::List& compute_options,
     const Rcpp::List& smc_options
     );
@@ -80,6 +79,5 @@ struct SMCAugmentation {
   const std::string pseudo_aug_metric;
 
 private:
-  const Rcpp::IntegerVector lag_helper;
   const unsigned int latent_sampling_lag;
 };

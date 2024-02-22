@@ -4,15 +4,12 @@
 using namespace arma;
 
 SMCAugmentation::SMCAugmentation(
-  const SMCData& dat,
   const Rcpp::List& compute_options,
   const Rcpp::List& smc_options
   ) :
   aug_method(compute_options["aug_method"]),
   pseudo_aug_metric(compute_options["pseudo_aug_metric"]),
-  lag_helper { Rcpp::as<Rcpp::IntegerVector>(smc_options["latent_sampling_lag"]) },
-  latent_sampling_lag {
-    Rcpp::IntegerVector::is_na(lag_helper[0]) ? max(dat.timepoint) :  lag_helper[0] } {}
+  latent_sampling_lag { smc_options["latent_sampling_lag"] } {}
 
 void SMCAugmentation::reweight(
     std::vector<Particle>& pvec,
