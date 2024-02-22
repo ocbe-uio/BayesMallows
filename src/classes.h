@@ -69,6 +69,7 @@ struct Parameters {
   const int alpha_jump;
   const int leap_size;
   const std::string rho_proposal_option;
+  const std::string metric;
 
 private:
   const arma::uvec element_indices;

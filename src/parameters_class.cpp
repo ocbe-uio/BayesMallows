@@ -14,6 +14,7 @@ Parameters::Parameters(
   alpha_jump { compute_options["alpha_jump"] },
   leap_size { compute_options["leap_size"] },
   rho_proposal_option( compute_options["rho_proposal"] ),
+  metric ( model_options["metric"] ),
   element_indices { regspace<uvec>(0, n_items - 1) },
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
   rho_thinning { compute_options["rho_thinning"] }

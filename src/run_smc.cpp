@@ -24,10 +24,10 @@ Rcpp::List  run_smc(
   SMCParameters pars{compute_options, smc_options};
   Priors pris{priors};
   SMCAugmentation aug{compute_options, smc_options};
-  std::string metric = model_options["metric"];
+
   auto pfun = choose_partition_function(
-    dat.n_items, metric, pfun_values, pfun_estimate);
-  auto distfun = choose_distance_function(metric);
+    dat.n_items, pars.metric, pfun_values, pfun_estimate);
+  auto distfun = choose_distance_function(pars.metric);
   auto pvec = initialize_particles(data, initial_values, smc_options, aug, dat);
   auto rho_proposal = choose_rank_proposal(
     pars.rho_proposal_option, pars.leap_size);

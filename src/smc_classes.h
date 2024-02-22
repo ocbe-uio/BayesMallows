@@ -51,6 +51,7 @@ struct SMCParameters {
   const unsigned int mcmc_steps;
   const int leap_size;
   const std::string rho_proposal_option;
+  const std::string metric;
 
 private:
   const double alpha_prop_sd;

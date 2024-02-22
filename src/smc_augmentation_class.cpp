@@ -1,7 +1,15 @@
+#include <limits>
 #include "parallel_utils.h"
 #include "smc_classes.h"
 #include "missing_data.h"
 using namespace arma;
+
+unsigned int read_lag(const Rcpp::List& smc_options) {
+  Rcpp::IntegerVector tmp = smc_options["latent_sampling_lag"];
+  return Rcpp::IntegerVector::is_na(tmp[0]) ?
+  std::numeric_limits<unsigned int>::max() :
+    static_cast<unsigned int>(tmp[0]);
+}
 
 SMCAugmentation::SMCAugmentation(
   const Rcpp::List& compute_options,
@@ -9,7 +17,7 @@ SMCAugmentation::SMCAugmentation(
   ) :
   aug_method(compute_options["aug_method"]),
   pseudo_aug_metric(compute_options["pseudo_aug_metric"]),
-  latent_sampling_lag { smc_options["latent_sampling_lag"] } {}
+  latent_sampling_lag { read_lag(smc_options) } {}
 
 void SMCAugmentation::reweight(
     std::vector<Particle>& pvec,

@@ -21,11 +21,10 @@ Rcpp::List run_mcmc(
   Parameters pars{model_options, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};
   Augmentation aug{dat, compute_options};
-  std::string metric = model_options["metric"];
 
   auto pfun = choose_partition_function(
-    dat.n_items, metric, pfun_values, pfun_estimate);
-  auto distfun = choose_distance_function(metric);
+    dat.n_items, pars.metric, pfun_values, pfun_estimate);
+  auto distfun = choose_distance_function(pars.metric);
   auto rho_proposal = choose_rank_proposal(
     pars.rho_proposal_option, pars.leap_size);
   std::unique_ptr<ProposalDistribution> aug_prop;
