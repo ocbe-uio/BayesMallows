@@ -3,8 +3,8 @@
 using namespace arma;
 
 SMCParameters::SMCParameters(
-  const Rcpp::List& smc_options,
-  const Rcpp::List& compute_options
+  const Rcpp::List& compute_options,
+  const Rcpp::List& smc_options
 ) :
   mcmc_steps { smc_options["mcmc_steps"] },
   leap_size { compute_options["leap_size"] },

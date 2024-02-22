@@ -59,8 +59,8 @@ private:
 
 struct SMCAugmentation {
   SMCAugmentation(
-    const Rcpp::List& compute_options,
-    const Rcpp::List& smc_options
+    const Rcpp::List& smc_options,
+    const Rcpp::List& compute_options
     );
   ~SMCAugmentation() = default;
 

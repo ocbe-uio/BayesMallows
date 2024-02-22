@@ -21,7 +21,7 @@ Rcpp::List  run_smc(
   Rcpp::Nullable<arma::mat> pfun_estimate) {
 
   SMCData dat{data, new_data};
-  SMCParameters pars{smc_options, compute_options};
+  SMCParameters pars{compute_options, smc_options};
   Priors pris{priors};
   SMCAugmentation aug{compute_options, smc_options};
   std::string metric = model_options["metric"];
