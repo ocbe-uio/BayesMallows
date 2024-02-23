@@ -20,7 +20,7 @@ Rcpp::List  run_smc(
   Rcpp::Nullable<arma::mat> pfun_values,
   Rcpp::Nullable<arma::mat> pfun_estimate) {
 
-  SMCData dat{data, new_data};
+  SMCData dat{data, new_data[0]};
   SMCParameters pars{model_options, compute_options, smc_options};
   Priors pris{priors};
   SMCAugmentation aug{compute_options, smc_options};
@@ -31,6 +31,7 @@ Rcpp::List  run_smc(
   auto pvec = initialize_particles(data, initial_values, smc_options, aug, dat);
   auto rho_proposal = choose_rank_proposal(
     pars.rho_proposal_option, pars.leap_size);
+
   aug.reweight(pvec, dat, pfun, distfun);
   pars.resample(pvec);
 

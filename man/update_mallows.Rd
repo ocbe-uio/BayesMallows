@@ -174,6 +174,7 @@ Other modeling:
 \code{\link{burnin<-}()},
 \code{\link{compute_mallows}()},
 \code{\link{compute_mallows_mixtures}()},
+\code{\link{compute_mallows_sequentially}()},
 \code{\link{sample_prior}()}
 }
 \concept{modeling}

@@ -166,6 +166,7 @@ Other modeling:
 \code{\link{burnin}()},
 \code{\link{burnin<-}()},
 \code{\link{compute_mallows}()},
+\code{\link{compute_mallows_sequentially}()},
 \code{\link{sample_prior}()},
 \code{\link{update_mallows}()}
 }

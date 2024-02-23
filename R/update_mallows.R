@@ -103,7 +103,7 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
 
   ret <- run_smc(
     data = datlist$data,
-    new_data = datlist$new_data,
+    new_data = list(datlist$new_data),
     model_options = model$model_options,
     smc_options = model$smc_options,
     compute_options = model$compute_options,

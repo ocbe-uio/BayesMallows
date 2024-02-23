@@ -31,9 +31,9 @@ extract_rho_init <- function(model, n_particles) {
 
 prepare_new_data <- function(model, new_data) {
   if (!is.null(new_data$user_ids) && !is.null(model$data$user_ids)) {
-    old_users <- setdiff(model$data$user_ids, new_data$user_ids)
-    updated_users <- intersect(model$data$user_ids, new_data$user_ids)
-    new_users <- setdiff(new_data$user_ids, model$data$user_ids)
+    old_users <- as.character(setdiff(model$data$user_ids, new_data$user_ids))
+    updated_users <- as.character(intersect(model$data$user_ids, new_data$user_ids))
+    new_users <- as.character(setdiff(new_data$user_ids, model$data$user_ids))
 
     rankings <- rbind(
       model$data$rankings[old_users, , drop = FALSE],
@@ -79,7 +79,7 @@ run_common_part <- function(
     initial_values, pfun_list, model) {
   ret <- run_smc(
     data = data,
-    new_data = new_data,
+    new_data = list(new_data),
     model_options = model_options,
     smc_options = smc_options,
     compute_options = compute_options,
