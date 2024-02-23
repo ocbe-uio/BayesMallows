@@ -32,7 +32,7 @@ Data::Data(
   observation_frequency(data["observation_frequency"]),
   items_above { define_items(data, "items_above") },
   items_below { define_items(data, "items_below") },
-  any_missing { !is_finite(rankings) },
+  any_missing { data["any_missing"] },
   missing_indicator { set_up_missing(rankings, any_missing) }
   {
     if(n_assessors <= 0) Rcpp::stop("Must have at least one observation.");
