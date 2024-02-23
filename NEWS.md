@@ -1,5 +1,10 @@
 # BayesMallows (development versions)
 
+* BREAKING CHANGE: Burnin now has to be explicitly set using 
+  'burnin(model) <- value' if it is not already set in compute_options. This 
+  alleviates the need for a 'burnin' argument in the functions for assessing the
+  posterior distribution and it abstracts away the implementation from the user.
+  See '?burnin' and '?burnin<-' for details.
 * The swap proposal defined in Crispino et al., Annals of Applied Statistics 
   (2019) is now an option for proposing the modal ranking rho. It can be 
   defined by setting rho_proposal="swap" in set_compute_options(). The leap-and-
