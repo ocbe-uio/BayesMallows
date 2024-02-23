@@ -6,10 +6,6 @@
 #' @param model_fit An object of type `BayesMallows`, returned from
 #'   [compute_mallows()].
 #'
-#' @param burnin A numeric value specifying the number of iterations to discard
-#'   as burn-in. Defaults to `model_fit$burnin`, and must be provided if
-#'   `model_fit$burnin` does not exist. See [assess_convergence()].
-#'
 #' @param soft A logical specifying whether to perform soft or hard clustering.
 #'   If `soft=TRUE`, all cluster probabilities are returned, whereas if
 #'   `soft=FALSE`, only the maximum a posterior (MAP) cluster probability is
@@ -42,14 +38,13 @@
 #' head(assign_cluster(mixture_model, soft = FALSE))
 #'
 assign_cluster <- function(
-    model_fit, burnin = model_fit$burnin, soft = TRUE, expand = FALSE) {
-  if (is.null(burnin)) {
-    stop("Please specify the burnin.")
+    model_fit, soft = TRUE, expand = FALSE) {
+  if (is.null(burnin(model_fit))) {
+    stop("Please specify the burnin with 'burnin(model_fit) <- value'.")
   }
-  stopifnot(burnin < model_fit$nmc)
 
   df <- model_fit$cluster_assignment[
-    model_fit$cluster_assignment$iteration > burnin, ,
+    model_fit$cluster_assignment$iteration > burnin(model_fit), ,
     drop = FALSE
   ]
 

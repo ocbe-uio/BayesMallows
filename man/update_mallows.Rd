@@ -170,6 +170,8 @@ plot(mod_final)
 }
 \seealso{
 Other modeling: 
+\code{\link{burnin}()},
+\code{\link{burnin<-}()},
 \code{\link{compute_mallows}()},
 \code{\link{compute_mallows_mixtures}()},
 \code{\link{sample_prior}()}

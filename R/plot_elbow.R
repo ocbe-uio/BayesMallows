@@ -9,11 +9,6 @@
 #' has been run with a different number of mixtures, as specified in the
 #' `n_clusters` argument to [compute_mallows()].
 #'
-#' @param burnin The number of iterations to discard as burnin. Either a vector of
-#' numbers, one for each model, or a single number which is taken to be the burnin for
-#' all models. If each model provided has a `burnin` element, then this is taken
-#' as the default.
-#'
 #' @return A boxplot with the number of clusters on the horizontal axis and the
 #' with-cluster sum of distances on the vertical axis.
 #'
@@ -21,7 +16,7 @@
 #'
 #' @example /inst/examples/compute_mallows_mixtures_example.R
 #' @family posterior quantities
-plot_elbow <- function(..., burnin = NULL) {
+plot_elbow <- function(...) {
   # Put the models into a list. These are typically fitted with different number of clusters
   models <- list(...)
 
@@ -33,24 +28,18 @@ plot_elbow <- function(..., burnin = NULL) {
   df <- do.call(rbind, lapply(models, function(x) {
     stopifnot(inherits(x, "BayesMallows"))
 
-    if (!("burnin" %in% names(x))) {
-      if (is.null(burnin)) {
-        stop("burnin not provided")
-      } else {
-        x$burnin <- burnin
-      }
+    if (is.null(burnin(x))) {
+      stop("Please specify burnin with 'burnin(model_fit) <- value'.")
     }
 
-    if (length(unique(x$within_cluster_distance$iteration)) != x$nmc) {
+    if (length(unique(x$within_cluster_distance$iteration)) != x$compute_options$nmc) {
       stop("To get an elbow plot, set include_wcd=TRUE in compute_mallows")
     }
 
     df <- x$within_cluster_distance[
-      x$within_cluster_distance$iteration > x$burnin, ,
+      x$within_cluster_distance$iteration > burnin(x), ,
       drop = FALSE
     ]
-
-    if (nrow(df) <= 0) stop("burnin must be strictly smaller than the number of MCMC samples")
 
     # Need to sum the within-cluster distances across clusters, for each iteration
     df <- aggregate(x = list(value = df$value), by = list(iteration = df$iteration), FUN = sum)

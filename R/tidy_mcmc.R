@@ -54,10 +54,7 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
 
   fit$n_clusters <- model_options$n_clusters
   fit$data <- data
-
-  fit$nmc <- compute_options$nmc
-  fit$metric <- model_options$metric
-  fit$burnin <- compute_options$burnin
+  fit$compute_options <- compute_options
 
   return(fit)
 }

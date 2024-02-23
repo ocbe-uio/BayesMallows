@@ -5,10 +5,8 @@ test_that("compute_posterior_intervals works", {
     compute_options = set_compute_options(nmc = 20)
   )
   expect_error(compute_posterior_intervals(mod), "Please specify the burnin.")
-  mod$burnin <- 30
-  expect_error(compute_posterior_intervals(mod), "burnin < model_fit")
 
-  mod$burnin <- 10
+  burnin(mod) <- 10
   pi <- compute_posterior_intervals(mod)
   expect_equal(pi$median, "0.861")
   expect_equal(pi$hpdi, "[0.814,1.083]")

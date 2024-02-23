@@ -4,18 +4,13 @@
 \alias{plot_elbow}
 \title{Plot Within-Cluster Sum of Distances}
 \usage{
-plot_elbow(..., burnin = NULL)
+plot_elbow(...)
 }
 \arguments{
 \item{...}{One or more objects returned from \code{\link[=compute_mallows]{compute_mallows()}},
 separated by comma, or a list of such objects. Typically, each object
 has been run with a different number of mixtures, as specified in the
 \code{n_clusters} argument to \code{\link[=compute_mallows]{compute_mallows()}}.}
-
-\item{burnin}{The number of iterations to discard as burnin. Either a vector of
-numbers, one for each model, or a single number which is taken to be the burnin for
-all models. If each model provided has a \code{burnin} element, then this is taken
-as the default.}
 }
 \value{
 A boxplot with the number of clusters on the horizontal axis and the

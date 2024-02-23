@@ -12,7 +12,7 @@ tidy_smc <- function(ret, items) {
 extract_alpha_init <- function(model, n_particles) {
   thinned_inds <- floor(
     seq(
-      from = model$burnin + 1, to = ncol(model$alpha_samples),
+      from = burnin(model) + 1, to = ncol(model$alpha_samples),
       length.out = n_particles
     )
   )
@@ -22,7 +22,7 @@ extract_alpha_init <- function(model, n_particles) {
 extract_rho_init <- function(model, n_particles) {
   thinned_inds <- floor(
     seq(
-      from = model$burnin + 1, to = dim(model$rho_samples)[[3]],
+      from = burnin(model) + 1, to = dim(model$rho_samples)[[3]],
       length.out = n_particles
     )
   )
@@ -95,12 +95,11 @@ run_common_part <- function(
   ret$compute_options <- compute_options
   ret$priors <- priors
   ret$n_items <- model$n_items
-  ret$burnin <- 0
   ret$n_clusters <- 1
   ret$data <- new_data
   ret$pfun_values <- pfun_list$pfun_values
   ret$pfun_estimate <- pfun_list$pfun_estimate
-  ret$metric <- model_options$metric
+  ret$model_options$metric <- model_options$metric
   ret$items <- data$items
   class(ret) <- c("SMCMallows", "BayesMallows")
   ret

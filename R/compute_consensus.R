@@ -8,9 +8,6 @@
 #' @param model_fit A model fit.
 #' @param type Character string specifying which consensus to compute. Either
 #'   `"CP"` or `"MAP"`. Defaults to `"CP"`.
-#' @param burnin A numeric value specifying the number of iterations to discard
-#'   as burn-in. Defaults to `model_fit$burnin`, and must be provided if
-#'   `model_fit$burnin` does not exist. See [assess_convergence()].
 #' @param parameter Character string defining the parameter for which to compute
 #'   the consensus. Defaults to `"rho"`. Available options are `"rho"` and
 #'   `"Rtilde"`, with the latter giving consensus rankings for augmented ranks.
@@ -32,10 +29,11 @@ compute_consensus <- function(model_fit, ...) {
 #' @export
 #' @rdname compute_consensus
 compute_consensus.BayesMallows <- function(
-    model_fit, type = c("CP", "MAP"), burnin = model_fit$burnin,
+    model_fit, type = c("CP", "MAP"),
     parameter = c("rho", "Rtilde"), assessors = 1L, ...) {
-  if (is.null(burnin)) stop("Please specify the burnin.")
-  stopifnot(burnin < model_fit$nmc)
+  if (is.null(burnin(model_fit))) {
+    stop("Please specify the burnin with 'burnin(model_fit) <- value'.")
+  }
   type <- match.arg(type, c("CP", "MAP"))
   parameter <- match.arg(parameter, c("rho", "Rtilde"))
 
@@ -45,7 +43,7 @@ compute_consensus.BayesMallows <- function(
   }
 
   if (parameter == "rho") {
-    df <- model_fit$rho[model_fit$rho$iteration > burnin, , drop = FALSE]
+    df <- model_fit$rho[model_fit$rho$iteration > burnin(model_fit), , drop = FALSE]
     if (type == "CP") {
       df <- cpc_bm(df)
     } else if (type == "MAP") {
@@ -53,7 +51,7 @@ compute_consensus.BayesMallows <- function(
     }
   } else if (parameter == "Rtilde") {
     df <- model_fit$augmented_data[
-      model_fit$augmented_data$iteration > burnin &
+      model_fit$augmented_data$iteration > burnin(model_fit) &
         model_fit$augmented_data$assessor %in% assessors, ,
       drop = FALSE
     ]
@@ -83,8 +81,8 @@ compute_consensus.BayesMallows <- function(
 compute_consensus.SMCMallows <- function(
     model_fit, type = c("CP", "MAP"), parameter = "rho", ...) {
   parameter <- match.arg(parameter, "rho")
-  model_fit$burnin <- 0
-  model_fit$nmc <- model_fit$n_particles
+  burnin(model_fit) <- 0
+  model_fit$compute_options$nmc <- model_fit$n_particles
   NextMethod("compute_consensus")
 }
 

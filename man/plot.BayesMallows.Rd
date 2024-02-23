@@ -4,15 +4,11 @@
 \alias{plot.BayesMallows}
 \title{Plot Posterior Distributions}
 \usage{
-\method{plot}{BayesMallows}(x, burnin = x$burnin, parameter = "alpha", items = NULL, ...)
+\method{plot}{BayesMallows}(x, parameter = "alpha", items = NULL, ...)
 }
 \arguments{
 \item{x}{An object of type \code{BayesMallows}, returned from
 \code{\link[=compute_mallows]{compute_mallows()}}.}
-
-\item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. Defaults to \code{x$burnin}, and must be
-provided if \code{x$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{parameter}{Character string defining the parameter to plot. Available
 options are \code{"alpha"}, \code{"rho"}, \code{"cluster_probs"},
@@ -24,6 +20,10 @@ vector of indices. If NULL, five items are selected randomly.
 Only used when \code{parameter = "rho"}.}
 
 \item{...}{Other arguments passed to \code{plot} (not used).}
+
+\item{burnin}{A numeric value specifying the number of iterations
+to discard as burn-in. Defaults to \code{burnin(x)}, and must be
+provided if \code{burnin(x)} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
 }
 \description{
 Plot posterior distributions of the parameters of the Mallows Rank model.

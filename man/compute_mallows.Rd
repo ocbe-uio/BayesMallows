@@ -302,6 +302,8 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
 }
 \seealso{
 Other modeling: 
+\code{\link{burnin}()},
+\code{\link{burnin<-}()},
 \code{\link{compute_mallows_mixtures}()},
 \code{\link{sample_prior}()},
 \code{\link{update_mallows}()}

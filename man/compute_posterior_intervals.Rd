@@ -10,7 +10,6 @@ compute_posterior_intervals(model_fit, ...)
 
 \method{compute_posterior_intervals}{BayesMallows}(
   model_fit,
-  burnin = model_fit$burnin,
   parameter = c("alpha", "rho", "cluster_probs"),
   level = 0.95,
   decimals = 3L,
@@ -29,11 +28,6 @@ compute_posterior_intervals(model_fit, ...)
 \item{model_fit}{A model object.}
 
 \item{...}{Other arguments. Currently not used.}
-
-\item{burnin}{A numeric value specifying the number of iterations to discard
-as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
-\code{model_fit$burnin} does not exist. See
-\code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{parameter}{Character string defining which parameter to compute
 posterior intervals for. One of \code{"alpha"}, \code{"rho"}, or
