@@ -73,7 +73,6 @@ struct Parameters {
   const std::string metric;
 
 private:
-  const arma::uvec element_indices;
   const double alpha_prop_sd;
   const int rho_thinning;
 };
