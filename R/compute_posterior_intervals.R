@@ -90,7 +90,7 @@ compute_posterior_intervals.BayesMallows <- function(
 compute_posterior_intervals.SMCMallows <- function(
     model_fit, parameter = c("alpha", "rho"), level = 0.95,
     decimals = 3L, ...) {
-  burnin(model_fit) <- 0
+  model_fit$compute_options$burnin <- 0
   parameter <- match.arg(parameter, c("alpha", "rho"))
   NextMethod("compute_posterior_intervals")
 }

@@ -81,7 +81,7 @@ compute_consensus.BayesMallows <- function(
 compute_consensus.SMCMallows <- function(
     model_fit, type = c("CP", "MAP"), parameter = "rho", ...) {
   parameter <- match.arg(parameter, "rho")
-  burnin(model_fit) <- 0
+  model_fit$compute_options$burnin <- 0
   model_fit$compute_options$nmc <- model_fit$n_particles
   NextMethod("compute_consensus")
 }
