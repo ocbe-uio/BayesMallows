@@ -14,7 +14,7 @@
 #' `"cluster_assignment"`, and `"theta"`.
 #'
 #' @param items The items to study in the diagnostic plot for `rho`. Either
-#'   a vector of item names, corresponding to `x$items` or a
+#'   a vector of item names, corresponding to `x$data$items` or a
 #'   vector of indices. If NULL, five items are selected randomly.
 #'   Only used when `parameter = "rho"`.
 #'
@@ -126,19 +126,19 @@ plot_alpha <- function(x, burnin = 0) {
 
 
 plot_rho <- function(x, items, burnin = 0) {
-  if (is.null(items) && x$n_items > 5) {
+  if (is.null(items) && x$data$n_items > 5) {
     message("Items not provided by user. Picking 5 at random.")
-    items <- sample.int(x$n_items, 5)
-  } else if (is.null(items) && x$n_items > 0) {
-    items <- seq.int(from = 1, to = x$n_items)
+    items <- sample.int(x$data$n_items, 5)
+  } else if (is.null(items) && x$data$n_items > 0) {
+    items <- seq.int(from = 1, to = x$data$n_items)
   } else if (!is.null(items)) {
-    if (!all(items %in% x$items) && !all(items %in% seq_along(x$items))) {
+    if (!all(items %in% x$data$items) && !all(items %in% seq_along(x$data$items))) {
       stop("Unknown items.")
     }
   }
 
   if (!is.character(items)) {
-    items <- x$items[items]
+    items <- x$data$items[items]
   }
 
   df <- x$rho[x$rho$iteration > burnin & x$rho$item %in% items, , drop = FALSE]

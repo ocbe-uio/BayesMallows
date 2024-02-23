@@ -35,7 +35,7 @@ test_that("assess_convergence and plot works for alpha and rho", {
   expect_equal(dim(p$data), c(6, 5))
 
   expect_error(
-    p <- assess_convergence(mod, parameter = "rho", items = 33:34),
+    p <- assess_convergence(model_fit = mod, parameter = "rho", items = 33:34),
     "numeric items vector must contain indices between 1 and the number of items"
   )
   expect_error(
@@ -216,3 +216,4 @@ test_that("assess_convergence.BayesMallowsMixtures works", {
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "cluster")
 })
+

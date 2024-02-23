@@ -11,7 +11,7 @@
 #'
 #' @family posterior quantities
 print.BayesMallows <- function(x, ...) {
-  cat("Bayesian Mallows Model with", x$n_items, "items and", x$n_assessors, "assessors.\n")
+  cat("Bayesian Mallows Model with", x$data$n_items, "items and", x$n_assessors, "assessors.\n")
   cat("Use functions assess_convergence() or plot() to visualize the object.")
 }
 
@@ -25,6 +25,6 @@ print.BayesMallowsMixtures <- function(x, ...) {
 #' @rdname print.BayesMallows
 #' @export
 print.SMCMallows <- function(x, ...) {
-  cat("Bayesian Mallows Model with", x$n_items, "items fitted with sequential Monte Carlo.\n")
+  cat("Bayesian Mallows Model with", x$data$n_items, "items fitted with sequential Monte Carlo.\n")
   cat("Use the plot() to visualize the object.")
 }

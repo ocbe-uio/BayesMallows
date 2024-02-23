@@ -53,8 +53,7 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
   }))
 
   fit$n_clusters <- model_options$n_clusters
-  fit$items <- data$items
-  fit$n_items <- data$n_items
+  fit$data <- data
   fit$n_assessors <- fits[[1]]$n_assessors
 
   fit$nmc <- compute_options$nmc
