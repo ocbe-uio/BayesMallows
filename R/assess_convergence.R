@@ -164,13 +164,13 @@ trace_rtilde <- function(model_fit, items, assessors, ...) {
     items <- seq.int(from = 1, to = model_fit$data$n_items)
   }
 
-  if (is.null(assessors) && model_fit$n_assessors > 5) {
+  if (is.null(assessors) && model_fit$data$n_assessors > 5) {
     message("Assessors not provided by user. Picking 5 at random.")
-    assessors <- sample.int(model_fit$n_assessors, 5)
-  } else if (is.null(assessors) && model_fit$n_assessors > 0) {
-    assessors <- seq.int(from = 1, to = model_fit$n_assessors)
+    assessors <- sample.int(model_fit$data$n_assessors, 5)
+  } else if (is.null(assessors) && model_fit$data$n_assessors > 0) {
+    assessors <- seq.int(from = 1, to = model_fit$data$n_assessors)
   } else if (!is.null(assessors)) {
-    if (length(setdiff(assessors, seq(1, model_fit$n_assessors, 1))) > 0) {
+    if (length(setdiff(assessors, seq(1, model_fit$data$n_assessors, 1))) > 0) {
       stop("assessors vector must contain numeric indices between 1 and the number of assessors")
     }
   }

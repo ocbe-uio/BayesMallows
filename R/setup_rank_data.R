@@ -199,9 +199,9 @@ setup_rank_data <- function(
     stop("must have one timepoint per row")
   }
 
-
   constraints <- generate_constraints(preferences, n_items, cl)
   consistent <- matrix(integer(0))
+  n_assessors <- nrow(rankings)
 
   ret <- as.list(environment())
   class(ret) <- "BayesMallowsData"

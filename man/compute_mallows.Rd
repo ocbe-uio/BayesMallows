@@ -263,7 +263,7 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
   cluster_files <- list.files(pattern = "cluster\\\\_probs[[:digit:]]+\\\\.csv")
   # Create 3d array, with dimensions (iterations, assessors, clusters)
   prob_array <- array(
-    dim = c(length(cluster_files), m$n_assessors, m$n_clusters))
+    dim = c(length(cluster_files), m$data$n_assessors, m$n_clusters))
   # Read each file, adding to the right element of the array
   for(i in seq_along(cluster_files)){
     prob_array[i, , ] <- as.matrix(

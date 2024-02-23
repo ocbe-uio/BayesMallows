@@ -11,7 +11,7 @@
 #'
 #' @family posterior quantities
 print.BayesMallows <- function(x, ...) {
-  cat("Bayesian Mallows Model with", x$data$n_items, "items and", x$n_assessors, "assessors.\n")
+  cat("Bayesian Mallows Model with", x$data$n_items, "items and", x$data$n_assessors, "assessors.\n")
   cat("Use functions assess_convergence() or plot() to visualize the object.")
 }
 

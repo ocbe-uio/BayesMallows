@@ -95,7 +95,6 @@ Rcpp::List run_mcmc(
     Rcpp::Named("augmented_data") = aug.augmented_data,
     Rcpp::Named("any_missing") = dat.any_missing,
     Rcpp::Named("augpair") = aug.augpair,
-    Rcpp::Named("n_assessors") = dat.n_assessors,
     Rcpp::Named("observation_frequency") = dat.observation_frequency
   );
 

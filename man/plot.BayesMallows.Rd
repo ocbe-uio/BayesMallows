@@ -19,7 +19,7 @@ options are \code{"alpha"}, \code{"rho"}, \code{"cluster_probs"},
 \code{"cluster_assignment"}, and \code{"theta"}.}
 
 \item{items}{The items to study in the diagnostic plot for \code{rho}. Either
-a vector of item names, corresponding to \code{x$items} or a
+a vector of item names, corresponding to \code{x$data$items} or a
 vector of indices. If NULL, five items are selected randomly.
 Only used when \code{parameter = "rho"}.}
 
