@@ -92,8 +92,7 @@ Rcpp::List run_mcmc(
     Rcpp::Named("cluster_assignment") = clus.cluster_assignment + 1,
     Rcpp::Named("cluster_probs") = clus.cluster_probs,
     Rcpp::Named("within_cluster_distance") = clus.within_cluster_distance,
-    Rcpp::Named("augmented_data") = aug.augmented_data,
-    Rcpp::Named("augpair") = aug.augpair
+    Rcpp::Named("augmented_data") = aug.augmented_data
   );
 
 }

@@ -8,7 +8,6 @@ Augmentation::Augmentation(
   Data& dat,
   const Rcpp::List& compute_options
 ) :
-  augpair { dat.items_above.size() > 0 },
   save_aug { compute_options["save_aug"] },
   aug_thinning { compute_options["aug_thinning"] },
   swap_leap { compute_options["swap_leap"] },
@@ -37,7 +36,7 @@ void Augmentation::augment_pairwise(
     const std::unique_ptr<Distance>& distfun,
     const std::unique_ptr<ProposalDistribution>& prop
 ){
-  if(!augpair) return;
+  if(!dat.augpair) return;
   for(size_t i = 0; i < dat.n_assessors; ++i) {
 
     RankProposal rp = prop->propose(

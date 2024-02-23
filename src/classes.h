@@ -18,6 +18,7 @@ struct Data {
   const triply_nested items_above{};
   const triply_nested items_below{};
   const bool any_missing;
+  const bool augpair;
   const arma::umat missing_indicator;
 };
 
@@ -127,7 +128,6 @@ struct Augmentation {
       const std::unique_ptr<Distance>& distfun
   );
 
-  const bool augpair;
   const bool save_aug;
   const unsigned int aug_thinning;
   arma::cube augmented_data;

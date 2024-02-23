@@ -203,6 +203,7 @@ setup_rank_data <- function(
   consistent <- matrix(integer(0))
   n_assessors <- nrow(rankings)
   any_missing <- any(is.na(rankings))
+  augpair <- !is.null(preferences)
 
   ret <- as.list(environment())
   class(ret) <- "BayesMallowsData"
