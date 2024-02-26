@@ -1,10 +1,15 @@
 #include <Rcpp.h>
+using namespace Rcpp;
 
 // [[Rcpp::export]]
-void hello(Rcpp::CharacterVector v1, Rcpp::CharacterVector v2) {
-  Rcpp::Rcout << Rcpp::setdiff(v1, v2) << std::endl;
+IntegerVector createEmptyIntegerVector() {
+  IntegerVector x = IntegerVector();
+  for(auto i : x) {Rcpp::Rcout << i << std::endl;}
+    return IntegerVector(); // Creates an empty IntegerVector
 }
 
 /*** R
-hello(c("hello", "hei", "a", "b"), c("b", "c"))
+# Example usage
+empty_vector <- createEmptyIntegerVector()
+print(empty_vector)
 */

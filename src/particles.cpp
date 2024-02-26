@@ -57,10 +57,26 @@ std::vector<Particle> initialize_particles(
 
   std::vector<Particle> pvec;
   pvec.reserve(n_particles);
+  cube aug_init1 = aug_init.isNotNull() ? Rcpp::as<cube>(aug_init) : cube{};
 
   for(size_t i{}; i < n_particles; i++) {
     uvec particle_consistent;
-    if(!dat.consistent.is_empty()) particle_consistent = dat.consistent.col(i);
+    if(!aug_init1.empty()) {
+      particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
+    }
+
+    if(!aug_init1.empty()) {
+      for(auto index : dat.updated_match) {
+
+        vec to_compare = dat.rankings.col(index);
+        uvec comparison_inds = find(to_compare > 0);
+        vec augmented = aug_init1(span::all, span(index), span(i));
+
+        particle_consistent(index) =
+          all(to_compare(comparison_inds) == augmented(comparison_inds));
+      }
+    }
+
     mat augmented_data = initialize_augmented_data(i, dat, aug_init);
     pvec.emplace_back(
       Particle(alpha_samples(i), rho_samples.col(i), augmented_data,

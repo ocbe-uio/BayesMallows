@@ -21,11 +21,13 @@ struct Particle {
 struct SMCData : Data {
   SMCData(const Rcpp::List& data);
   void update(const Rcpp::List& new_data);
+  Rcpp::List wrapup();
   arma::mat new_rankings{};
   unsigned int num_new_obs{};
   arma::uvec timepoint{};
   arma::umat consistent{};
-  Rcpp::Nullable<Rcpp::CharacterVector> user_ids{};
+  Rcpp::CharacterVector user_ids{};
+  Rcpp::IntegerVector updated_match{};
 };
 
 struct SMCParameters {

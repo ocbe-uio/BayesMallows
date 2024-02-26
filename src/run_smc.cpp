@@ -32,7 +32,6 @@ Rcpp::List  run_smc(
     pars.rho_proposal_option, pars.leap_size);
 
   dat.update(new_data[0]);
-
   auto pvec = initialize_particles(initial_values, pars.n_particles, dat);
   aug.reweight(pvec, dat, pfun, distfun);
   pars.resample(pvec);
@@ -53,7 +52,8 @@ Rcpp::List  run_smc(
   Rcpp::List particle_history = Rcpp::List::create(
     Rcpp::Named("rho_samples") = wrapup_rho(pvec),
     Rcpp::Named("alpha_samples") = wrapup_alpha(pvec),
-    Rcpp::Named("augmented_rankings") = wrapup_augmented_data(pvec)
+    Rcpp::Named("augmented_rankings") = wrapup_augmented_data(pvec),
+    Rcpp::Named("data") = dat.wrapup()
   );
 
   return particle_history;

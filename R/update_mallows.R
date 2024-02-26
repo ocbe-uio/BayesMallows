@@ -99,11 +99,11 @@ update_mallows.BayesMallows <- function(
 #' @export
 #' @rdname update_mallows
 update_mallows.SMCMallows <- function(model, new_data, ...) {
-  datlist <- prepare_new_data(model, new_data)
+  #datlist <- prepare_new_data(model, new_data)
 
   ret <- run_smc(
-    data = datlist$data,
-    new_data = list(datlist$new_data),
+    data = model$data,
+    new_data = list(new_data),
     model_options = model$model_options,
     smc_options = model$smc_options,
     compute_options = model$compute_options,
@@ -123,7 +123,9 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
   model$alpha <- tidy_parameters$alpha
   model$rho <- tidy_parameters$rho
   model$augmented_rankings <- ret$augmented_rankings
-  model$data <- join_data(datlist$data, datlist$new_data)
+  items <- model$data$items
+  model$data <- ret$data
+  model$data$items <- items
 
   class(model) <- c("SMCMallows", "BayesMallows")
   model

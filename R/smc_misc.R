@@ -104,21 +104,11 @@ run_common_part <- function(
 }
 
 flush <- function(data) {
-  if(!is.null(data$rankings)) data$rankings <- data$rankings[integer(), , drop = FALSE]
+  data$rankings <- data$rankings[integer(), , drop = FALSE]
   data$n_assessors <- 0
+  data$observation_frequency <- data$observation_frequency[integer()]
   data$consistent <- data$consistent[integer(), , drop = FALSE]
-  if(!is.null(data$user_ids)) data$user_ids <- data$user_ids[integer()]
+  data$user_ids <- data$user_ids[integer()]
   data$timepoint <- data$timepoint[integer()]
-  data
-}
-
-
-join_data <- function(data, new_data) {
-  data$n_assessors <- data$n_assessors + new_data$n_assessors
-  data$consistent <- rbind(data$consistent, new_data$consistent)
-  data$rankings <- rbind(data$rankings, new_data$rankings)
-  if(!is.null(data$user_ids)) data$user_ids <- c(data$user_ids, new_data$user_ids)
-  data$observation_frequency <- c(data$observation_frequency, new_data$observation_frequency)
-  data$timepoint <- c(data$timepoint, new_data$timepoint)
   data
 }
