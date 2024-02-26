@@ -84,7 +84,7 @@ mod_init <- compute_mallows(
 
 # Convergence seems good after no more than 2000 iterations
 assess_convergence(mod_init)
-mod_init$burnin <- 2000
+burnin(mod_init) <- 2000
 
 # Next, assume we receive four more observations
 data_second_batch <- potato_visual[5:8, ]
@@ -137,7 +137,7 @@ mod_init <- compute_mallows(
 
 # Convergence seems fine. We set the burnin to 2000.
 assess_convergence(mod_init)
-mod_init$burnin <- 2000
+burnin(mod_init) <- 2000
 
 # Next assume the users update their rankings, so we have top-12 instead.
 mod1 <- update_mallows(

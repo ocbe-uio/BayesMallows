@@ -44,7 +44,8 @@ model using sequential Monte Carlo. This is based on the algorithms developed
 in \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
 }
 \examples{
-timeseries <- lapply(seq_len(nrow(potato_visual)), function(i) {
+# Observe one ranking at each of 12 timepoints
+data <- lapply(seq_len(nrow(potato_visual)), function(i) {
   setup_rank_data(potato_visual[i, ])
 })
 
