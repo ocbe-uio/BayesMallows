@@ -35,10 +35,26 @@
 #'
 compute_mallows_sequentially <- function(
     data,
+    initial_values,
     model_options = set_model_options(),
     smc_options = set_smc_options(),
     compute_options = set_compute_options(),
     priors = set_priors(),
     pfun_estimate = NULL) {
-  pfun_values <- extract_pfun_values(model_options, data, pfun_estimate)
+  pfun_values <- extract_pfun_values(model_options$metric, data[[1]]$n_items, pfun_estimate)
+  validate_class(initial_values, "BayesMallowsPriorSamples")
+  alpha_init <- sample(initial_values$alpha, smc_options$n_particles, replace = TRUE)
+  rho_init <- initial_values$rho[, sample(ncol(initial_values$rho), smc_options$n_particles, replace = TRUE)]
+
+  ret <- run_smc(
+    data = flush(data[[1]]),
+    new_data = data,
+    model_options = model_options,
+    smc_options = smc_options,
+    compute_options = compute_options,
+    priors = priors,
+    initial_values = list(alpha_init = alpha_init, rho_init = rho_init, aug_init = NULL),
+    pfun_values = pfun_values,
+    pfun_estimate = pfun_estimate
+  )
 }

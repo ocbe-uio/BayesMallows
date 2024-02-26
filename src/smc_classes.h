@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "classes.h"
 #include "resampler.h"
 
@@ -24,6 +25,7 @@ struct SMCData : Data {
   unsigned int num_new_obs{};
   arma::uvec timepoint{};
   arma::umat consistent{};
+  Rcpp::Nullable<Rcpp::CharacterVector> user_ids{};
 };
 
 struct SMCParameters {

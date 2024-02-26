@@ -4,7 +4,8 @@ using namespace arma;
 SMCData::SMCData(const Rcpp::List& data) :
   Data(data),
   timepoint { Rcpp::as<uvec>(data["timepoint"]) },
-  consistent ( data["consistent"]) {}
+  consistent ( data["consistent"]),
+  user_ids ( Rcpp::as<Rcpp::Nullable<Rcpp::CharacterVector>>(data["user_ids"]) ) {}
 
 void SMCData::update(const Rcpp::List& new_data) {
   SMCData new_dat{new_data};

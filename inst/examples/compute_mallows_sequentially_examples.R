@@ -3,3 +3,5 @@ data <- lapply(seq_len(nrow(potato_visual)), function(i) {
   setup_rank_data(potato_visual[i, ])
 })
 
+initial_values <- sample_prior(200, 20)
+smc_options <- set_smc_options(n_particles = 4)
