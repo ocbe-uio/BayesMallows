@@ -37,10 +37,6 @@ compute_mallows_sequentially <- function(
     smc_options = set_smc_options(),
     compute_options = set_compute_options(),
     priors = set_priors(),
-    pfun_estimate = NULL
-) {
+    pfun_estimate = NULL) {
   pfun_values <- extract_pfun_values(model_options, data, pfun_estimate)
-
-
-
 }

@@ -40,7 +40,8 @@ prepare_new_data <- function(model, new_data) {
       new_data$rankings[updated_users, , drop = FALSE]
     )
     data <- setup_rank_data(
-      rankings = rankings, user_ids = c(old_users, updated_users))
+      rankings = rankings, user_ids = c(old_users, updated_users)
+    )
     new_data <- setup_rank_data(
       rankings = new_data$rankings[new_users, , drop = FALSE],
       user_ids = new_users
@@ -60,8 +61,10 @@ prepare_new_data <- function(model, new_data) {
         })
       }
       data$consistent <- consistent * 1L
-      new_data$consistent <- matrix(1L, nrow = nrow(new_data$rankings),
-                                    ncol = ncol(data$consistent))
+      new_data$consistent <- matrix(1L,
+        nrow = nrow(new_data$rankings),
+        ncol = ncol(data$consistent)
+      )
     }
   } else {
     data <- model$data

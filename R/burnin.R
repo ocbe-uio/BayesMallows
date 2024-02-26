@@ -17,17 +17,18 @@
 #'
 #' @family modeling
 #'
-#' @examples /inst/examples/burnin_example.R
+#' @example /inst/examples/burnin_example.R
+#'
 `burnin<-` <- function(model, ...) UseMethod("burnin<-")
 
 #' @export
 #' @rdname burnin-set
 `burnin<-.BayesMallows` <- function(model, value) {
-  if(inherits(model, "SMCMallows")) {
+  if (inherits(model, "SMCMallows")) {
     stop("Cannot set burnin for SMC model.")
   }
   validate_integer(value)
-  if(value >= model$compute_options$nmc) {
+  if (value >= model$compute_options$nmc) {
     stop("Burnin cannot be larger than the number of Monte Carlo samples.")
   }
   model$compute_options$burnin <- value
@@ -37,11 +38,11 @@
 #' @export
 #' @rdname burnin-set
 `burnin<-.BayesMallowsMixtures` <- function(model, value) {
-  for(v in value) validate_integer(v)
-  if(length(value) == 1) value <- rep(value, length(model))
-  if(length(value) != length(model)) stop("Wrong number of entries in value.")
+  for (v in value) validate_integer(v)
+  if (length(value) == 1) value <- rep(value, length(model))
+  if (length(value) != length(model)) stop("Wrong number of entries in value.")
 
-  for(i in seq_along(model)) burnin(model[[i]]) <- value[[i]]
+  for (i in seq_along(model)) burnin(model[[i]]) <- value[[i]]
   model
 }
 
@@ -57,7 +58,8 @@
 #'
 #' @family modeling
 #'
-#' @examples /inst/examples/burnin_example.R
+#' @example /inst/examples/burnin_example.R
+#'
 burnin <- function(model, ...) UseMethod("burnin")
 
 #' @rdname burnin
