@@ -178,7 +178,8 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows
   # We can create an elbow plot
-  plot_elbow(models, burnin = 1000)
+  burnin(models) <- 1000
+  plot_elbow(models)
   # We then select the number of cluster at a point where this plot has
   # an "elbow", e.g., at 6 clusters.
 }

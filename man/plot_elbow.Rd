@@ -35,7 +35,8 @@ models <- compute_mallows_mixtures(
 assess_convergence(models)
 # We can create an elbow plot, suggesting that there are three clusters, exactly
 # as simulated.
-plot_elbow(models, burnin = 1000)
+burnin(models) <- 1000
+plot_elbow(models)
 
 # We now fit a model with three clusters
 mixture_model <- compute_mallows(
@@ -69,7 +70,8 @@ plot(mixture_model, parameter = "cluster_assignment")
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows
   # We can create an elbow plot
-  plot_elbow(models, burnin = 1000)
+  burnin(models) <- 1000
+  plot_elbow(models)
   # We then select the number of cluster at a point where this plot has
   # an "elbow", e.g., n_clusters = 5.
 
