@@ -51,7 +51,7 @@ update_mallows.BayesMallowsPriorSamples <- function(
   pfun_values <- extract_pfun_values(model_options, new_data, pfun_estimate)
 
   run_common_part(
-    data = new_data, new_data = new_data, model_options = model_options,
+    data = flush(new_data), new_data = new_data, model_options = model_options,
     smc_options = smc_options, compute_options = compute_options,
     priors = priors,
     initial_values = list(
@@ -81,7 +81,7 @@ update_mallows.BayesMallows <- function(
   rho_init <- extract_rho_init(model, smc_options$n_particles)
 
   run_common_part(
-    data = new_data, new_data = new_data, model_options = model_options,
+    data = flush(new_data), new_data = new_data, model_options = model_options,
     smc_options = smc_options, compute_options = compute_options,
     priors = priors,
     initial_values = list(
@@ -123,7 +123,7 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
   model$alpha <- tidy_parameters$alpha
   model$rho <- tidy_parameters$rho
   model$augmented_rankings <- ret$augmented_rankings
-  model$data <- datlist$data
+  model$data <- join_data(datlist$data, datlist$new_data)
 
   class(model) <- c("SMCMallows", "BayesMallows")
   model

@@ -31,20 +31,18 @@ extract_rho_init <- function(model, n_particles) {
 
 prepare_new_data <- function(model, new_data) {
   if (!is.null(new_data$user_ids) && !is.null(model$data$user_ids)) {
-    old_users <- as.character(setdiff(model$data$user_ids, new_data$user_ids))
-    updated_users <- as.character(intersect(model$data$user_ids, new_data$user_ids))
-    new_users <- as.character(setdiff(new_data$user_ids, model$data$user_ids))
+    old_users <- setdiff(model$data$user_ids, new_data$user_ids)
+    updated_users <- intersect(model$data$user_ids, new_data$user_ids)
+    new_users <- setdiff(new_data$user_ids, model$data$user_ids)
 
     rankings <- rbind(
       model$data$rankings[old_users, , drop = FALSE],
-      new_data$rankings[c(updated_users, new_users), , drop = FALSE]
+      new_data$rankings[updated_users, , drop = FALSE]
     )
-
-    user_ids <- c(old_users, updated_users, new_users)
-
-    data <- setup_rank_data(rankings = rankings, user_ids = user_ids)
+    data <- setup_rank_data(
+      rankings = rankings, user_ids = c(old_users, updated_users))
     new_data <- setup_rank_data(
-      rankings = rankings[new_users, , drop = FALSE],
+      rankings = new_data$rankings[new_users, , drop = FALSE],
       user_ids = new_users
     )
 
@@ -62,14 +60,11 @@ prepare_new_data <- function(model, new_data) {
         })
       }
       data$consistent <- consistent * 1L
+      new_data$consistent <- matrix(1L, nrow = nrow(new_data$rankings),
+                                    ncol = ncol(data$consistent))
     }
   } else {
-    rankings <- rbind(model$data$rankings, new_data$rankings)
-    data <- setup_rank_data(
-      rankings = rankings,
-      user_ids = seq_len(nrow(rankings)),
-      timepoint = c(model$data$timepoint, new_data$timepoint)
-    )
+    data <- model$data
   }
   list(data = data, new_data = new_data)
 }
@@ -103,4 +98,24 @@ run_common_part <- function(
   ret$items <- data$items
   class(ret) <- c("SMCMallows", "BayesMallows")
   ret
+}
+
+flush <- function(data) {
+  data$rankings <- data$rankings[integer(), , drop = FALSE]
+  data$n_assessors <- 0
+  data$consistent <- data$consistent[integer(), , drop = FALSE]
+  data$user_ids <- data$user_ids[integer()]
+  data$timepoint <- data$timepoint[integer()]
+  data
+}
+
+
+join_data <- function(data, new_data) {
+  data$n_assessors <- data$n_assessors + new_data$n_assessors
+  data$consistent <- rbind(data$consistent, new_data$consistent)
+  data$rankings <- rbind(data$rankings, new_data$rankings)
+  data$user_ids <- c(data$user_ids, new_data$user_ids)
+  data$observation_frequency <- c(data$observation_frequency, new_data$observation_frequency)
+  data$timepoint <- c(data$timepoint, new_data$timepoint)
+  data
 }

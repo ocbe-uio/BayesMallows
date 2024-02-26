@@ -18,11 +18,12 @@ struct Particle {
 };
 
 struct SMCData : Data {
-  SMCData(const Rcpp::List& data, const Rcpp::List& new_data);
-  void update_data(const Particle& p);
-  arma::mat new_rankings;
-  const unsigned int num_new_obs;
-  const arma::uvec timepoint;
+  SMCData(const Rcpp::List& data);
+  void update(const Rcpp::List& new_data);
+  arma::mat new_rankings{};
+  unsigned int num_new_obs{};
+  arma::uvec timepoint{};
+  arma::umat consistent{};
 };
 
 struct SMCParameters {
