@@ -4,7 +4,7 @@
 
 std::vector<Particle> initialize_particles(
     const Rcpp::List& initial_values,
-    const Rcpp::List& smc_options,
+    unsigned int n_particles,
     const SMCData& dat
 );
 

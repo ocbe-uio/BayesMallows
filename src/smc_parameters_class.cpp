@@ -11,8 +11,9 @@ SMCParameters::SMCParameters(
   leap_size { compute_options["leap_size"] },
   rho_proposal_option ( compute_options["rho_proposal"] ),
   metric ( model_options["metric"] ),
+  n_particles {smc_options["n_particles"] },
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
-  resampler { choose_resampler(std::string(smc_options["resampler"])) }{}
+  resampler { choose_resampler(std::string(smc_options["resampler"])) } {}
 
 void SMCParameters::update_alpha(
     Particle& p,

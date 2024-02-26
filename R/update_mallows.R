@@ -48,7 +48,7 @@ update_mallows.BayesMallowsPriorSamples <- function(
     ...) {
   alpha_init <- sample(model$alpha, smc_options$n_particles, replace = TRUE)
   rho_init <- model$rho[, sample(ncol(model$rho), smc_options$n_particles, replace = TRUE)]
-  pfun_values <- extract_pfun_values(model_options, new_data, pfun_estimate)
+  pfun_values <- extract_pfun_values(model_options$metric, new_data$n_items, pfun_estimate)
 
   run_common_part(
     data = flush(new_data), new_data = new_data, model_options = model_options,

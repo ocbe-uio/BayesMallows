@@ -45,10 +45,9 @@ mat initialize_augmented_data(
 
 std::vector<Particle> initialize_particles(
     const Rcpp::List& initial_values,
-    const Rcpp::List& smc_options,
+    unsigned int n_particles,
     const SMCData& dat
 ) {
-  const unsigned int n_particles { smc_options["n_particles"] };
   vec alpha_samples(initial_values["alpha_init"]);
   mat rho_samples(initial_values["rho_init"]);
   Rcpp::Nullable<cube> aug_init(initial_values["aug_init"]);

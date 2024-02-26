@@ -1,13 +1,15 @@
 #' @title Estimate the Bayesian Mallows Model Sequentially
 #'
-#' @description
-#' Compute the posterior distributions of the parameters of the Bayesian Mallows
-#' model using sequential Monte Carlo. This is based on the algorithms developed
-#' in \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
+#' @description Compute the posterior distributions of the parameters of the
+#' Bayesian Mallows model using sequential Monte Carlo. This is based on the
+#' algorithms developed in
+#' \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
 #'
 #' @param data A list of objects of class "BayesMallowsData" returned from
 #'   [setup_rank_data()]. Each list element is interpreted as the data belonging
 #'   to a given timepoint.
+#' @param initial_values An object of class "BayesMallowsPriorSamples" returned
+#'   from [sample_prior()].
 #' @param model_options An object of class "BayesMallowsModelOptions" returned
 #'   from [set_model_options()].
 #' @param smc_options An object of class "SMCOptions" returned from

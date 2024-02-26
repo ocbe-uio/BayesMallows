@@ -112,9 +112,9 @@ estimate_partition_function <- function(
   matrix(c(power, stats::lm(form, data = estimate)$coefficients), ncol = 2)
 }
 
-extract_pfun_values <- function(model_options, data, pfun_estimate) {
+extract_pfun_values <- function(metric, n_items, pfun_estimate) {
   tryCatch(
-    prepare_partition_function(model_options$metric, data$n_items),
+    prepare_partition_function(metric, n_items),
     error = function(e) {
       if (is.null(pfun_estimate)) {
         stop(

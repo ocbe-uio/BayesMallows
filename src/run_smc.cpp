@@ -33,7 +33,7 @@ Rcpp::List  run_smc(
 
   dat.update(new_data[0]);
 
-  auto pvec = initialize_particles(initial_values, smc_options, dat);
+  auto pvec = initialize_particles(initial_values, pars.n_particles, dat);
   aug.reweight(pvec, dat, pfun, distfun);
   pars.resample(pvec);
 

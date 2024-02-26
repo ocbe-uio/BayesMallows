@@ -55,6 +55,7 @@ struct SMCParameters {
   const int leap_size;
   const std::string rho_proposal_option;
   const std::string metric;
+  const unsigned int n_particles;
 
 private:
   const double alpha_prop_sd;
