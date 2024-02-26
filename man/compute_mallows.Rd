@@ -87,7 +87,7 @@ assess_convergence(model_fit, parameter = "alpha")
 assess_convergence(model_fit, parameter = "rho", items = 1:4)
 
 # Based on these plots, we set burnin = 1000.
-model_fit$burnin <- 1000
+burnin(model_fit) <- 1000
 # Next, we use the generic plot function to study the posterior distributions
 # of alpha and rho
 plot(model_fit, parameter = "alpha")
@@ -152,7 +152,7 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
   # Based on this, we set burnin = 1000
   # We now plot the posterior density of the scale parameters alpha in
   # each mixture:
-  model_fit$burnin <- 1000
+  burnin(model_fit) <- 1000
   plot(model_fit, parameter = "alpha")
   # We can also compute the posterior density of the cluster probabilities
   plot(model_fit, parameter = "cluster_probs")
@@ -209,7 +209,7 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
 
   assess_convergence(mod)
   assess_convergence(mod, parameter = "theta")
-  mod$burnin <- 3000
+  burnin(mod) <- 3000
 
   plot(mod)
   plot(mod, parameter = "theta")

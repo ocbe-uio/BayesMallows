@@ -1,5 +1,5 @@
 model_fit <- compute_mallows(setup_rank_data(potato_visual))
-model_fit$burnin <- 1000
+burnin(model_fit) <- 1000
 
 # By default, the scale parameter "alpha" is plotted
 plot(model_fit)
@@ -22,7 +22,7 @@ plot(model_fit, parameter = "rho",
   model_fit <- compute_mallows(
     setup_rank_data(sushi_rankings),
     model_options = set_model_options(n_clusters = 5))
-  model_fit$burnin <- 1000
+  burnin(model_fit) <- 1000
   # Posterior distributions of the cluster probabilities
   plot(model_fit, parameter = "cluster_probs")
   # Cluster assignment plot. Color shows the probability of belonging to each

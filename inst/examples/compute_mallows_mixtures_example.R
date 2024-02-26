@@ -22,7 +22,7 @@ mixture_model <- compute_mallows(
 # The trace plot for this model looks good. It seems to converge quickly.
 assess_convergence(mixture_model)
 # We set the burnin to 500
-mixture_model$burnin <- 500
+burnin(mixture_model) <- 500
 
 # We can now look at posterior quantities
 # Posterior of scale parameter alpha
@@ -58,7 +58,7 @@ plot(mixture_model, parameter = "cluster_assignment")
   # Delete the models object to free some memory
   rm(models)
   # Set the burnin
-  mixture_model$burnin <- 1000
+  burnin(mixture_model) <- 1000
   # Plot the posterior distributions of alpha per cluster
   plot(mixture_model)
   # Compute the posterior interval of alpha per cluster

@@ -8,9 +8,9 @@
 \usage{
 burnin(model, ...) <- value
 
-\method{burnin}{BayesMallows}(model) <- value
+\method{burnin}{BayesMallows}(model, ...) <- value
 
-\method{burnin}{BayesMallowsMixtures}(model) <- value
+\method{burnin}{BayesMallowsMixtures}(model, ...) <- value
 }
 \arguments{
 \item{model}{An object of class \code{BayesMallows} returned from

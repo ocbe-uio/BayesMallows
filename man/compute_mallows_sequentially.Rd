@@ -6,6 +6,7 @@
 \usage{
 compute_mallows_sequentially(
   data,
+  initial_values,
   model_options = set_model_options(),
   smc_options = set_smc_options(),
   compute_options = set_compute_options(),
@@ -17,6 +18,9 @@ compute_mallows_sequentially(
 \item{data}{A list of objects of class "BayesMallowsData" returned from
 \code{\link[=setup_rank_data]{setup_rank_data()}}. Each list element is interpreted as the data belonging
 to a given timepoint.}
+
+\item{initial_values}{An object of class "BayesMallowsPriorSamples" returned
+from \code{\link[=sample_prior]{sample_prior()}}.}
 
 \item{model_options}{An object of class "BayesMallowsModelOptions" returned
 from \code{\link[=set_model_options]{set_model_options()}}.}
@@ -39,9 +43,10 @@ Ulam distances when the cardinalities are not available, cf.
 An object of class SMCMallows.
 }
 \description{
-Compute the posterior distributions of the parameters of the Bayesian Mallows
-model using sequential Monte Carlo. This is based on the algorithms developed
-in \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
+Compute the posterior distributions of the parameters of the
+Bayesian Mallows model using sequential Monte Carlo. This is based on the
+algorithms developed in
+\insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
 }
 \examples{
 # Observe one ranking at each of 12 timepoints
@@ -49,6 +54,8 @@ data <- lapply(seq_len(nrow(potato_visual)), function(i) {
   setup_rank_data(potato_visual[i, ])
 })
 
+initial_values <- sample_prior(200, 20)
+smc_options <- set_smc_options(n_particles = 4)
 }
 \references{
 \insertAllCited{}

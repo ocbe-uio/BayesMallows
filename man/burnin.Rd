@@ -9,11 +9,11 @@
 \usage{
 burnin(model, ...)
 
-\method{burnin}{BayesMallows}(model)
+\method{burnin}{BayesMallows}(model, ...)
 
-\method{burnin}{BayesMallowsMixtures}(model)
+\method{burnin}{BayesMallowsMixtures}(model, ...)
 
-\method{burnin}{SMCMallows}(model)
+\method{burnin}{SMCMallows}(model, ...)
 }
 \arguments{
 \item{model}{A model object.}
