@@ -1,9 +1,13 @@
 #' @title Estimate the Bayesian Mallows Model Sequentially
 #'
 #' @description Compute the posterior distributions of the parameters of the
-#' Bayesian Mallows model using sequential Monte Carlo. This is based on the
-#' algorithms developed in
-#' \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
+#'   Bayesian Mallows model using sequential Monte Carlo. This is based on the
+#'   algorithms developed in
+#'   \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
+#'   This function differs from [update_mallows()] in that it takes all the data
+#'   at once, and uses SMC to fit the model step-by-step. Used in this way, SMC
+#'   is an alternative to Metropolis-Hastings, which may work better in some
+#'   settings. In addition, it allows visualization of the learning process.
 #'
 #' @param data A list of objects of class "BayesMallowsData" returned from
 #'   [setup_rank_data()]. Each list element is interpreted as the data belonging
@@ -24,14 +28,19 @@
 #'   Ulam distances when the cardinalities are not available, cf.
 #'   [get_cardinalities()].
 #'
-#' @return An object of class SMCMallows.
+#' @return An object of class BayesMallowsSequential.
+#'
+#' @details This function is very new, and plotting functions and other tools
+#' for visualizing the posterior distribution do not yet work. See the examples
+#' for some workarounds.
+#'
 #'
 #' @references \insertAllCited{}
 #' @export
 #'
 #' @family modeling
 #'
-#' @example /inst/examples/compute_mallows_sequentially_examples.R
+#' @example /inst/examples/compute_mallows_sequentially_example.R
 #'
 compute_mallows_sequentially <- function(
     data,
@@ -57,4 +66,6 @@ compute_mallows_sequentially <- function(
     pfun_values = pfun_values,
     pfun_estimate = pfun_estimate
   )
+  class(ret) <- "SMCMallows"
+  ret
 }

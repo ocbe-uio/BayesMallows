@@ -44,6 +44,8 @@ run_common_part <- function(
     pfun_estimate = pfun_list$pfun_estimate
   )
 
+  ret$alpha_samples <- ret$alpha_samples[, 1]
+  ret$rho_samples <- ret$rho_samples[, , 1]
   ret <- c(ret, tidy_smc(ret, data$items))
   ret$model_options <- model_options
   ret$smc_options <- smc_options

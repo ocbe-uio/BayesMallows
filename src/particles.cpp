@@ -1,3 +1,4 @@
+#include <vector>
 #include "smc_classes.h"
 #include "missing_data.h"
 
@@ -85,15 +86,28 @@ std::vector<Particle> augment_particles(
   return pvec;
 }
 
-mat wrapup_rho(const std::vector<Particle>& pvec) {
-  mat rho_samples(pvec[0].rho.size(), pvec.size());
-  for(size_t i{}; i < pvec.size(); i++) rho_samples.col(i) = pvec[i].rho;
+cube wrapup_rho(const std::vector<std::vector<Particle>>& particle_vectors) {
+
+  cube rho_samples(particle_vectors[0][0].rho.size(),
+                   particle_vectors[0].size(),
+                   particle_vectors.size());
+  for(size_t i{}; i < particle_vectors.size(); i++) {
+    for(size_t j{}; j < particle_vectors[i].size(); j++) {
+      rho_samples(span::all, span(j), span(i)) = particle_vectors[i][j].rho;
+    }
+  }
+
   return rho_samples;
 }
 
-vec wrapup_alpha(const std::vector<Particle>& pvec) {
-  vec alpha_samples(pvec.size());
-  for(size_t i{}; i < pvec.size(); i++) alpha_samples(i) = pvec[i].alpha;
+mat wrapup_alpha(const std::vector<std::vector<Particle>>& particle_vectors) {
+  mat alpha_samples(particle_vectors[0].size(), particle_vectors.size());
+  for(size_t i{}; i < particle_vectors.size(); i++) {
+    for(size_t j{}; j < particle_vectors[i].size(); j++) {
+      alpha_samples(j, i) = particle_vectors[i][j].alpha;
+    }
+  }
+
   return alpha_samples;
 }
 

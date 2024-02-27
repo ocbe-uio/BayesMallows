@@ -114,8 +114,8 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     pfun_values = model$pfun_values,
     pfun_estimate = model$pfun_estimate
   )
-  model$alpha_samples <- ret$alpha_samples
-  model$rho_samples <- ret$rho_samples
+  model$alpha_samples <- ret$alpha_samples[, 1]
+  model$rho_samples <- ret$rho_samples[, , 1]
   model$augmented_rankings <-
     if(prod(dim(ret$augmented_rankings)) == 0) {
       NULL
