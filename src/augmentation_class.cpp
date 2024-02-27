@@ -29,7 +29,6 @@ Augmentation::Augmentation(
     }}
 
 void Augmentation::augment_pairwise(
-    const unsigned int t,
     Data& dat,
     const Parameters& pars,
     const Clustering& clus,
@@ -50,7 +49,7 @@ void Augmentation::augment_pairwise(
     double ratio = -pars.alpha_old(cluster) / dat.n_items * (newdist - olddist);
 
     if(pars.error_model != "none") {
-      ratio += rp.g_diff * std::log(pars.theta(t) / (1 - pars.theta(t)));
+      ratio += rp.g_diff * std::log(pars.theta_current / (1 - pars.theta_current));
     }
 
     if(ratio > u) dat.rankings.col(i) = rp.rankings;

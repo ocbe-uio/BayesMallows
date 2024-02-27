@@ -73,7 +73,7 @@ Rcpp::List run_mcmc(
 
   clus.update_wcd(t);
   aug.update_missing_ranks(dat, clus, pars, distfun);
-  aug.augment_pairwise(t, dat, pars, clus, distfun, aug_prop);
+  aug.augment_pairwise(dat, pars, clus, distfun, aug_prop);
 
   if(aug.save_aug & (t % aug.aug_thinning == 0)){
     ++aug_index;

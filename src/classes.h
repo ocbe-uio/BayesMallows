@@ -64,6 +64,7 @@ struct Parameters {
   arma::vec shape_1;
   arma::vec shape_2;
   arma::vec theta;
+  double theta_current;
   const unsigned int n_clusters;
   const unsigned int nmc;
   const std::string error_model;
@@ -114,7 +115,6 @@ struct Augmentation {
   ~Augmentation() = default;
 
   void augment_pairwise(
-      const unsigned int t,
       Data& dat,
       const Parameters& pars,
       const Clustering& clus,

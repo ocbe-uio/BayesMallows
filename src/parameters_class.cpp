@@ -96,6 +96,7 @@ void Parameters::update_shape(
   shape_1(t) = priors.kappa(0) + sum_1;
   shape_2(t) = priors.kappa(1) + sum_2;
   theta(t) = rtruncbeta(shape_1(t), shape_2(t), 0.5);
+  theta_current = theta(t);
 }
 
 void Parameters::update_alpha(
