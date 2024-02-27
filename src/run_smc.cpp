@@ -35,30 +35,31 @@ Rcpp::List  run_smc(
   auto rho_proposal = choose_rank_proposal(
     pars.rho_proposal_option, pars.leap_size);
 
+  auto T{new_data.size()};
+  for(size_t t{}; t < T; t++) {
+    dat.update(new_data[t]);
+    particle_vectors[t + 1] = augment_particles(particle_vectors[t], dat);
+    aug.reweight(particle_vectors[t + 1], dat, pfun, distfun);
+    pars.resample(particle_vectors[t + 1]);
 
-
-  dat.update(new_data[0]);
-  particle_vectors[1] = augment_particles(particle_vectors[0], dat);
-  aug.reweight(particle_vectors[1], dat, pfun, distfun);
-  pars.resample(particle_vectors[1]);
-
-  par_for_each(
-    particle_vectors[1].begin(), particle_vectors[1].end(),
-    [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),
-     pfun = std::ref(pfun), rho_proposal = std::ref(rho_proposal)]
-    (Particle& p) {
-       for(size_t i{}; i < pars.mcmc_steps; i++) {
-         pars.update_rho(p, dat, distfun, rho_proposal);
-         pars.update_alpha(p, dat, pfun, distfun, pris);
-         aug.update_missing_ranks(p, dat, distfun);
+    par_for_each(
+      particle_vectors[t + 1].begin(), particle_vectors[t + 1].end(),
+      [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),
+       pfun = std::ref(pfun), rho_proposal = std::ref(rho_proposal)]
+      (Particle& p) {
+         for(size_t i{}; i < pars.mcmc_steps; i++) {
+           pars.update_rho(p, dat, distfun, rho_proposal);
+           pars.update_alpha(p, dat, pfun, distfun, pris);
+           aug.update_missing_ranks(p, dat, distfun);
+         }
        }
-     }
-  );
+    );
+  }
 
   Rcpp::List particle_history = Rcpp::List::create(
-    Rcpp::Named("rho_samples") = wrapup_rho(particle_vectors[1]),
-    Rcpp::Named("alpha_samples") = wrapup_alpha(particle_vectors[1]),
-    Rcpp::Named("augmented_rankings") = wrapup_augmented_data(particle_vectors[1]),
+    Rcpp::Named("rho_samples") = wrapup_rho(particle_vectors[T]),
+    Rcpp::Named("alpha_samples") = wrapup_alpha(particle_vectors[T]),
+    Rcpp::Named("augmented_rankings") = wrapup_augmented_data(particle_vectors[T]),
     Rcpp::Named("data") = dat.wrapup()
   );
 
