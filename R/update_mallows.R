@@ -116,7 +116,13 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
   )
   model$alpha_samples <- ret$alpha_samples
   model$rho_samples <- ret$rho_samples
-  model$augmented_rankings <- ret$augmented_rankings
+  model$augmented_rankings <-
+    if(prod(dim(ret$augmented_rankings)) == 0) {
+      NULL
+    } else {
+      ret$augmented_rankings
+    }
+
   tidy_parameters <- tidy_smc(ret, model$items)
   model$alpha <- tidy_parameters$alpha
   model$rho <- tidy_parameters$rho

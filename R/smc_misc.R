@@ -56,6 +56,7 @@ run_common_part <- function(
   ret$pfun_values <- pfun_list$pfun_values
   ret$pfun_estimate <- pfun_list$pfun_estimate
   ret$model_options$metric <- model_options$metric
+  if(prod(dim(ret$augmented_rankings)) == 0) ret$augmented_rankings <- NULL
   ret$items <- data$items
   class(ret) <- c("SMCMallows", "BayesMallows")
   ret

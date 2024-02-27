@@ -11,26 +11,6 @@ Particle::Particle(
   consistent(particle_consistent),
   previous_distance(zeros(n_assessors)){}
 
-mat initialize_augmented_data(
-    const unsigned int particle_index,
-    const SMCData& dat,
-    const Rcpp::Nullable<cube>& aug_init
-) {
-  mat augmented_data;
-  if(dat.any_missing){
-    augmented_data.set_size(dat.n_items, dat.n_assessors);
-
-    if(aug_init.isNotNull()) {
-      augmented_data(
-        span::all, span(0, dat.rankings.n_cols - dat.num_new_obs - 1)) =
-          Rcpp::as<cube>(aug_init).slice(particle_index);
-    } else {
-      augmented_data = initialize_missing_ranks(dat.rankings, dat.missing_indicator);
-    }
-  }
-  return augmented_data;
-}
-
 std::vector<Particle> initialize_particles(
     const Rcpp::List& initial_values,
     unsigned int n_particles,
@@ -48,15 +28,19 @@ std::vector<Particle> initialize_particles(
 
   for(size_t i{}; i < n_particles; i++) {
     uvec particle_consistent;
-    if(aug_init.isNotNull()) {
-      particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
+    mat augmented_data;
+    if(dat.any_missing) {
+      if(aug_init.isNotNull()) {
+        particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
+        augmented_data = Rcpp::as<cube>(aug_init).slice(i);
+      } else {
+        augmented_data = initialize_missing_ranks(dat.rankings, dat.missing_indicator);
+      }
     }
 
-    mat augmented_data = initialize_augmented_data(i, dat, aug_init);
     pvec.emplace_back(
       Particle(alpha_samples(i), rho_samples.col(i), augmented_data,
-               dat.n_assessors, particle_consistent)
-    );
+               dat.n_assessors, particle_consistent));
   }
 
   return pvec;
