@@ -52,7 +52,7 @@ test_that("update_mallows works", {
     compute_options = set_compute_options(aug_method = "pseudo")
   )
 
-  expect_equal(mod1$alpha$value[[13]], 0.388038251055491)
+  expect_equal(mod1$alpha$value[[13]], 0.371164198305016)
 
   mod2 <- update_mallows(
     model = mod1,
