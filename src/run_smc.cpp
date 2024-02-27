@@ -56,10 +56,11 @@ Rcpp::List  run_smc(
     );
   }
 
+  particle_vectors.erase(particle_vectors.begin());
   Rcpp::List particle_history = Rcpp::List::create(
-    Rcpp::Named("rho_samples") = wrapup_rho(particle_vectors[T]),
-    Rcpp::Named("alpha_samples") = wrapup_alpha(particle_vectors[T]),
-    Rcpp::Named("augmented_rankings") = wrapup_augmented_data(particle_vectors[T]),
+    Rcpp::Named("rho_samples") = wrapup_rho(particle_vectors[T - 1]),
+    Rcpp::Named("alpha_samples") = wrapup_alpha(particle_vectors[T - 1]),
+    Rcpp::Named("augmented_rankings") = wrapup_augmented_data(particle_vectors[T - 1]),
     Rcpp::Named("data") = dat.wrapup()
   );
 
