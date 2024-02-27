@@ -100,4 +100,3 @@ test_that("compute_consensus.SMCMallows works", {
     )
   )
 })
-
