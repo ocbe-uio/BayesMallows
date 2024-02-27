@@ -11,7 +11,7 @@ initial_values <- sample_prior(
 mod <- compute_mallows_sequentially(
   data = data,
   initial_values = initial_values,
-  smc_options = set_smc_options(n_particles = 2000, mcmc_steps = 20))
+  smc_options = set_smc_options(n_particles = 500, mcmc_steps = 20))
 
 plot_dat <- data.frame(
   n_obs = seq_along(data),
