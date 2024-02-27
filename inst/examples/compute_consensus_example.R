@@ -5,7 +5,7 @@ model_fit <- compute_mallows(setup_rank_data(potato_visual))
 
 # Se the documentation to compute_mallows for how to assess the convergence of
 # the algorithm. Having chosen burin = 1000, we compute posterior intervals
-model_fit$burnin <- 1000
+burnin(model_fit) <- 1000
 # We then compute the CP consensus.
 compute_consensus(model_fit, type = "CP")
 # And we compute the MAP consensus
@@ -20,7 +20,7 @@ compute_consensus(model_fit, type = "MAP")
     setup_rank_data(sushi_rankings),
     model_options = set_model_options(n_clusters = 5))
   # Keeping the burnin at 1000, we can compute the consensus ranking per cluster
-  model_fit$burnin <- 1000
+  burnin(model_fit) <- 1000
   cp_consensus_df <- compute_consensus(model_fit, type = "CP")
   # We can now make a table which shows the ranking in each cluster:
   cp_consensus_df$cumprob <- NULL
@@ -34,7 +34,7 @@ compute_consensus(model_fit, type = "MAP")
   # We use the example dataset with beach preferences.
   model_fit <- compute_mallows(setup_rank_data(preferences = beach_preferences))
   # We set burnin = 1000
-  model_fit$burnin <- 1000
+  burnin(model_fit) <- 1000
   # We now compute the MAP consensus
   map_consensus_df <- compute_consensus(model_fit, type = "MAP")
 
@@ -44,7 +44,7 @@ compute_consensus(model_fit, type = "MAP")
     setup_rank_data(preferences = beach_preferences),
     compute_options = set_compute_options(save_aug = TRUE, aug_thinning = 2))
   # We set burnin = 1000
-  model_fit$burnin <- 1000
+  burnin(model_fit) <- 1000
   # We now compute the CP consensus of augmented ranks for assessors 1 and 3
   cp_consensus_df <- compute_consensus(
     model_fit, type = "CP", parameter = "Rtilde", assessors = c(1L, 3L))
@@ -61,7 +61,7 @@ compute_consensus(model_fit, type = "MAP")
     setup_rank_data(preferences = beach_preferences),
     compute_options = set_compute_options(
       nmc = 1005, save_aug = TRUE, aug_thinning = 1))
-  model_fit$burnin <- 1000
+  burnin(model_fit) <- 1000
   compute_consensus(model_fit, type = "MAP", parameter = "Rtilde",
                     assessors = 2L)
 }

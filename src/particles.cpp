@@ -1,3 +1,4 @@
+#include <vector>
 #include "smc_classes.h"
 #include "missing_data.h"
 
@@ -11,48 +12,11 @@ Particle::Particle(
   consistent(particle_consistent),
   previous_distance(zeros(n_assessors)){}
 
-mat initialize_augmented_data(
-    const unsigned int particle_index,
-    const SMCData& dat,
-    const SMCAugmentation& aug,
-    const Rcpp::Nullable<cube>& aug_init
-) {
-  mat augmented_data;
-  if(dat.any_missing){
-    augmented_data.set_size(dat.n_items, dat.n_assessors);
-
-    if(aug_init.isNotNull()) {
-      augmented_data(
-        span::all, span(0, dat.rankings.n_cols - dat.num_new_obs - 1)) =
-          Rcpp::as<cube>(aug_init).slice(particle_index);
-
-      if(dat.num_new_obs > 0) {
-        augmented_data(
-          span::all,
-          span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)
-        ) = initialize_missing_ranks(
-          dat.new_rankings,
-          dat.missing_indicator(
-            span::all,
-            span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1))
-        );
-      }
-    } else {
-      augmented_data = initialize_missing_ranks(dat.rankings, dat.missing_indicator);
-    }
-  }
-  return augmented_data;
-}
-
 std::vector<Particle> initialize_particles(
-    const Rcpp::List& data,
     const Rcpp::List& initial_values,
-    const Rcpp::List& smc_options,
-    const SMCAugmentation& aug,
+    unsigned int n_particles,
     const SMCData& dat
 ) {
-  umat consistent (data["consistent"]);
-  const unsigned int n_particles { smc_options["n_particles"] };
   vec alpha_samples(initial_values["alpha_init"]);
   mat rho_samples(initial_values["rho_init"]);
   Rcpp::Nullable<cube> aug_init(initial_values["aug_init"]);
@@ -65,26 +29,85 @@ std::vector<Particle> initialize_particles(
 
   for(size_t i{}; i < n_particles; i++) {
     uvec particle_consistent;
-    if(!consistent.is_empty()) particle_consistent = consistent.col(i);
-    mat augmented_data = initialize_augmented_data(i, dat, aug, aug_init);
+    mat augmented_data;
+    if(dat.any_missing) {
+      if(aug_init.isNotNull()) {
+        particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
+        augmented_data = Rcpp::as<cube>(aug_init).slice(i);
+      } else {
+        augmented_data = initialize_missing_ranks(dat.rankings, dat.missing_indicator);
+      }
+    }
+
     pvec.emplace_back(
       Particle(alpha_samples(i), rho_samples.col(i), augmented_data,
-               dat.n_assessors, particle_consistent)
-    );
+               dat.n_assessors, particle_consistent));
   }
 
   return pvec;
 }
 
-mat wrapup_rho(const std::vector<Particle>& pvec) {
-  mat rho_samples(pvec[0].rho.size(), pvec.size());
-  for(size_t i{}; i < pvec.size(); i++) rho_samples.col(i) = pvec[i].rho;
+std::vector<Particle> augment_particles(
+    const std::vector<Particle>& pvec_init,
+    const SMCData& dat
+) {
+  auto pvec = pvec_init;
+  for(size_t i{}; i < pvec.size(); i++) {
+    uvec particle_consistent;
+    if(dat.any_missing) {
+      particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
+
+      for(auto index : dat.updated_match) {
+        vec to_compare = dat.rankings.col(index);
+        uvec comparison_inds = find(to_compare > 0);
+        vec augmented = pvec[i].augmented_data(span::all, span(index));
+
+        particle_consistent(index) =
+          all(to_compare(comparison_inds) == augmented(comparison_inds));
+      }
+
+      if(dat.num_new_obs > 0) {
+        mat tmp = initialize_missing_ranks(
+          dat.new_rankings,
+          dat.missing_indicator(
+            span::all,
+            span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)));
+
+        pvec[i].augmented_data.resize(dat.n_items, dat.rankings.n_cols);
+        pvec[i].augmented_data(
+            span::all,
+            span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)
+        ) = tmp;
+        pvec[i].log_aug_prob.resize(dat.rankings.n_cols);
+      }
+    }
+  }
+
+  return pvec;
+}
+
+cube wrapup_rho(const std::vector<std::vector<Particle>>& particle_vectors) {
+
+  cube rho_samples(particle_vectors[0][0].rho.size(),
+                   particle_vectors[0].size(),
+                   particle_vectors.size());
+  for(size_t i{}; i < particle_vectors.size(); i++) {
+    for(size_t j{}; j < particle_vectors[i].size(); j++) {
+      rho_samples(span::all, span(j), span(i)) = particle_vectors[i][j].rho;
+    }
+  }
+
   return rho_samples;
 }
 
-vec wrapup_alpha(const std::vector<Particle>& pvec) {
-  vec alpha_samples(pvec.size());
-  for(size_t i{}; i < pvec.size(); i++) alpha_samples(i) = pvec[i].alpha;
+mat wrapup_alpha(const std::vector<std::vector<Particle>>& particle_vectors) {
+  mat alpha_samples(particle_vectors[0].size(), particle_vectors.size());
+  for(size_t i{}; i < particle_vectors.size(); i++) {
+    for(size_t j{}; j < particle_vectors[i].size(); j++) {
+      alpha_samples(j, i) = particle_vectors[i][j].alpha;
+    }
+  }
+
   return alpha_samples;
 }
 

@@ -12,14 +12,14 @@ struct Data {
   ~Data() = default;
 
   arma::mat rankings;
-  const unsigned int n_assessors;
+  unsigned int n_assessors;
   const unsigned int n_items;
-  const arma::vec observation_frequency;
+  arma::vec observation_frequency;
   const triply_nested items_above{};
   const triply_nested items_below{};
   const bool any_missing;
   const bool augpair;
-  const arma::umat missing_indicator;
+  arma::umat missing_indicator;
 };
 
 struct Priors {
@@ -74,7 +74,6 @@ struct Parameters {
   const std::string metric;
 
 private:
-  const arma::uvec element_indices;
   const double alpha_prop_sd;
   const int rho_thinning;
 };

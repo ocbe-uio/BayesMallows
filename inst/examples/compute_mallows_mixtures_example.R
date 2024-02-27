@@ -11,7 +11,8 @@ models <- compute_mallows_mixtures(
 assess_convergence(models)
 # We can create an elbow plot, suggesting that there are three clusters, exactly
 # as simulated.
-plot_elbow(models, burnin = 1000)
+burnin(models) <- 1000
+plot_elbow(models)
 
 # We now fit a model with three clusters
 mixture_model <- compute_mallows(
@@ -22,7 +23,7 @@ mixture_model <- compute_mallows(
 # The trace plot for this model looks good. It seems to converge quickly.
 assess_convergence(mixture_model)
 # We set the burnin to 500
-mixture_model$burnin <- 500
+burnin(mixture_model) <- 500
 
 # We can now look at posterior quantities
 # Posterior of scale parameter alpha
@@ -45,7 +46,8 @@ plot(mixture_model, parameter = "cluster_assignment")
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows
   # We can create an elbow plot
-  plot_elbow(models, burnin = 1000)
+  burnin(models) <- 1000
+  plot_elbow(models)
   # We then select the number of cluster at a point where this plot has
   # an "elbow", e.g., n_clusters = 5.
 
@@ -58,7 +60,7 @@ plot(mixture_model, parameter = "cluster_assignment")
   # Delete the models object to free some memory
   rm(models)
   # Set the burnin
-  mixture_model$burnin <- 1000
+  burnin(mixture_model) <- 1000
   # Plot the posterior distributions of alpha per cluster
   plot(mixture_model)
   # Compute the posterior interval of alpha per cluster

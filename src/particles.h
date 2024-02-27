@@ -3,13 +3,16 @@
 #include "smc_classes.h"
 
 std::vector<Particle> initialize_particles(
-    const Rcpp::List& data,
     const Rcpp::List& initial_values,
-    const Rcpp::List& smc_options,
-    const SMCAugmentation& aug,
+    unsigned int n_particles,
     const SMCData& dat
 );
 
-arma::mat wrapup_rho(const std::vector<Particle>& pvec);
-arma::vec wrapup_alpha(const std::vector<Particle>& pvec);
+std::vector<Particle> augment_particles(
+  const std::vector<Particle>& pvec,
+  const SMCData& dat
+);
+
+arma::cube wrapup_rho(const std::vector<std::vector<Particle>>& particle_vectors);
+arma::mat wrapup_alpha(const std::vector<std::vector<Particle>>& pvec);
 arma::cube wrapup_augmented_data(const std::vector<Particle>& pvec);

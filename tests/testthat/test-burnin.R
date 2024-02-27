@@ -28,5 +28,4 @@ test_that("burnin works", {
   expect_equal(burnin(mod), list(3, 3, 3))
   burnin(mod) <- 4:6
   expect_equal(burnin(mod), list(4, 5, 6))
-
 })

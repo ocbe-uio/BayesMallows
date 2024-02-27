@@ -17,7 +17,7 @@
 #'
 #' @example /inst/examples/plot_top_k_example.R
 #' @family posterior quantities
-predict_top_k <- function(model_fit,k = 3) {
+predict_top_k <- function(model_fit, k = 3) {
   validate_top_k(model_fit)
   .predict_top_k(model_fit, k)
 }
