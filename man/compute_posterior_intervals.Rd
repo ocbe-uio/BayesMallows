@@ -68,12 +68,11 @@ compute_posterior_intervals(model_fit, parameter = "rho")
   model_fit <- compute_mallows(
     setup_rank_data(sushi_rankings),
     model_options = set_model_options(n_clusters = 5))
+  burnin(model_fit) <- 1000
 
-  compute_posterior_intervals(
-    model_fit, burnin = 1000, parameter = "alpha")
+  compute_posterior_intervals(model_fit, parameter = "alpha")
 
-  compute_posterior_intervals(
-    model_fit, burnin = 1000, parameter = "cluster_probs")
+  compute_posterior_intervals(model_fit, parameter = "cluster_probs")
 }
 
 
