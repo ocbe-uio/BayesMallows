@@ -63,11 +63,8 @@ std::vector<Particle> initialize_particles(
     uvec particle_consistent;
     if(!aug_init1.empty()) {
       particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
-    }
 
-    if(!aug_init1.empty()) {
       for(auto index : dat.updated_match) {
-
         vec to_compare = dat.rankings.col(index);
         uvec comparison_inds = find(to_compare > 0);
         vec augmented = aug_init1(span::all, span(index), span(i));
