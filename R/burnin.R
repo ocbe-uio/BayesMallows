@@ -49,26 +49,6 @@
   model
 }
 
-#' @rdname burnin-set
-#' @export
-`$<-.BayesMallows` <- function(model, ..., value) {
-  args <- list(...)
-  if(any(grepl("burnin", args))) {
-    stop("Setting burnin with `$<-` is deprecated. See help('burnin<-').")
-  }
-}
-
-#' @rdname burnin-set
-#' @export
-`$<-.BayesMallowsMixtures` <- function(model, ..., value) {
-  args <- list(...)
-  if(any(grepl("burnin", args))) {
-    stop("Setting burnin with `$<-` is deprecated. See help('burnin<-').")
-  }
-}
-
-
-
 #' @title See the burnin
 #' @description
 #' See the current burnin value of the model.
@@ -100,5 +80,3 @@ burnin.BayesMallowsMixtures <- function(model, ...) {
 #' @rdname burnin
 #' @export
 burnin.SMCMallows <- function(model, ...) 0
-
-

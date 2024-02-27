@@ -4,8 +4,6 @@
 \alias{burnin<-}
 \alias{burnin<-.BayesMallows}
 \alias{burnin<-.BayesMallowsMixtures}
-\alias{$<-.BayesMallows}
-\alias{$<-.BayesMallowsMixtures}
 \title{Set the burnin}
 \usage{
 burnin(model, ...) <- value
@@ -13,10 +11,6 @@ burnin(model, ...) <- value
 \method{burnin}{BayesMallows}(model, ...) <- value
 
 \method{burnin}{BayesMallowsMixtures}(model, ...) <- value
-
-\method{$}{BayesMallows}(model, ...) <- value
-
-\method{$}{BayesMallowsMixtures}(model, ...) <- value
 }
 \arguments{
 \item{model}{An object of class \code{BayesMallows} returned from

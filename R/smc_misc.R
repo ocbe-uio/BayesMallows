@@ -48,6 +48,7 @@ run_common_part <- function(
   ret$model_options <- model_options
   ret$smc_options <- smc_options
   ret$compute_options <- compute_options
+  class(ret$compute_options) <- "list"
   ret$priors <- priors
   ret$n_items <- model$n_items
   ret$n_clusters <- 1

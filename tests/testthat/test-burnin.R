@@ -29,16 +29,3 @@ test_that("burnin works", {
   burnin(mod) <- 4:6
   expect_equal(burnin(mod), list(4, 5, 6))
 })
-
-test_that("old burnin is deprecated", {
-  mod <- compute_mallows(
-    data = setup_rank_data(potato_visual),
-    compute_options = set_compute_options(nmc = 30)
-  )
-  expect_error(mod$burnin <- 10, "deprecated")
-
-  mod <- compute_mallows_mixtures(
-    1:2, setup_rank_data(cluster_data),
-    compute_options = set_compute_options(nmc = 20))
-  expect_error(mod$burnin <- 10, "deprecated")
-})
