@@ -15,7 +15,6 @@ Parameters::Parameters(
   leap_size { compute_options["leap_size"] },
   rho_proposal_option( compute_options["rho_proposal"] ),
   metric ( model_options["metric"] ),
-  element_indices { regspace<uvec>(0, n_items - 1) },
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
   rho_thinning { compute_options["rho_thinning"] }
   {
@@ -57,8 +56,7 @@ void Parameters::update_rho(
 ) {
   for(size_t i{}; i < n_clusters; ++i){
     const uvec cluster_indicator = find(current_cluster_assignment == i);
-    const mat cluster_rankings = dat.rankings.submat(
-      element_indices, cluster_indicator);
+    const mat cluster_rankings = dat.rankings.cols(cluster_indicator);
     const vec cluster_frequency =
       dat.observation_frequency.elem(cluster_indicator);
     vec rho_cluster = rho_old.col(i);
@@ -108,8 +106,7 @@ void Parameters::update_alpha(
 
   for(size_t i{}; i < n_clusters; ++i) {
     const uvec cluster_indicator = find(current_cluster_assignment == i);
-    const mat cluster_rankings = dat.rankings.submat(
-      element_indices, cluster_indicator);
+    const mat cluster_rankings = dat.rankings.cols(cluster_indicator);
     const vec cluster_frequency =
       dat.observation_frequency.elem(cluster_indicator);
 

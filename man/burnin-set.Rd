@@ -8,9 +8,9 @@
 \usage{
 burnin(model, ...) <- value
 
-\method{burnin}{BayesMallows}(model) <- value
+\method{burnin}{BayesMallows}(model, ...) <- value
 
-\method{burnin}{BayesMallowsMixtures}(model) <- value
+\method{burnin}{BayesMallowsMixtures}(model, ...) <- value
 }
 \arguments{
 \item{model}{An object of class \code{BayesMallows} returned from
@@ -33,13 +33,29 @@ Set or update the burnin of a model
 computed using Metropolis-Hastings.
 }
 \examples{
-/inst/examples/burnin_example.R
+set.seed(445)
+mod <- compute_mallows(setup_rank_data(potato_visual))
+assess_convergence(mod)
+burnin(mod)
+burnin(mod) <- 1500
+burnin(mod)
+plot(mod)
+#'
+models <- compute_mallows_mixtures(
+  data = setup_rank_data(cluster_data),
+  n_clusters = 1:3)
+burnin(models)
+burnin(models) <- 100
+burnin(models)
+burnin(models) <- c(100, 300, 200)
+burnin(models)
 }
 \seealso{
 Other modeling: 
 \code{\link{burnin}()},
 \code{\link{compute_mallows}()},
 \code{\link{compute_mallows_mixtures}()},
+\code{\link{compute_mallows_sequentially}()},
 \code{\link{sample_prior}()},
 \code{\link{update_mallows}()}
 }

@@ -36,6 +36,5 @@ Data::Data(
   augpair { data["augpair"] },
   missing_indicator { set_up_missing(rankings, any_missing) }
   {
-    if(n_assessors <= 0) Rcpp::stop("Must have at least one observation.");
     rankings.replace(datum::nan, 0);
   }

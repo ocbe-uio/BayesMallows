@@ -5,10 +5,6 @@
 #' @param x An object of type `BayesMallows`, returned from
 #'   [compute_mallows()].
 #'
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to `burnin(x)`, and must be
-#' provided if `burnin(x)` does not exist. See [assess_convergence()].
-#'
 #' @param parameter Character string defining the parameter to plot. Available
 #' options are `"alpha"`, `"rho"`, `"cluster_probs"`,
 #' `"cluster_assignment"`, and `"theta"`.

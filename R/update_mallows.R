@@ -48,10 +48,10 @@ update_mallows.BayesMallowsPriorSamples <- function(
     ...) {
   alpha_init <- sample(model$alpha, smc_options$n_particles, replace = TRUE)
   rho_init <- model$rho[, sample(ncol(model$rho), smc_options$n_particles, replace = TRUE)]
-  pfun_values <- extract_pfun_values(model_options, new_data, pfun_estimate)
+  pfun_values <- extract_pfun_values(model_options$metric, new_data$n_items, pfun_estimate)
 
   run_common_part(
-    data = new_data, new_data = new_data, model_options = model_options,
+    data = flush(new_data), new_data = new_data, model_options = model_options,
     smc_options = smc_options, compute_options = compute_options,
     priors = priors,
     initial_values = list(
@@ -81,7 +81,7 @@ update_mallows.BayesMallows <- function(
   rho_init <- extract_rho_init(model, smc_options$n_particles)
 
   run_common_part(
-    data = new_data, new_data = new_data, model_options = model_options,
+    data = flush(new_data), new_data = new_data, model_options = model_options,
     smc_options = smc_options, compute_options = compute_options,
     priors = priors,
     initial_values = list(
@@ -99,11 +99,9 @@ update_mallows.BayesMallows <- function(
 #' @export
 #' @rdname update_mallows
 update_mallows.SMCMallows <- function(model, new_data, ...) {
-  datlist <- prepare_new_data(model, new_data)
-
   ret <- run_smc(
-    data = datlist$data,
-    new_data = datlist$new_data,
+    data = model$data,
+    new_data = list(new_data),
     model_options = model$model_options,
     smc_options = model$smc_options,
     compute_options = model$compute_options,
@@ -116,14 +114,22 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     pfun_values = model$pfun_values,
     pfun_estimate = model$pfun_estimate
   )
-  model$alpha_samples <- ret$alpha_samples
-  model$rho_samples <- ret$rho_samples
-  model$augmented_rankings <- ret$augmented_rankings
+  model$alpha_samples <- ret$alpha_samples[, 1]
+  model$rho_samples <- ret$rho_samples[, , 1]
+  model$augmented_rankings <-
+    if (prod(dim(ret$augmented_rankings)) == 0) {
+      NULL
+    } else {
+      ret$augmented_rankings
+    }
+
   tidy_parameters <- tidy_smc(ret, model$items)
   model$alpha <- tidy_parameters$alpha
   model$rho <- tidy_parameters$rho
   model$augmented_rankings <- ret$augmented_rankings
-  model$data <- datlist$data
+  items <- model$data$items
+  model$data <- ret$data
+  model$data$items <- items
 
   class(model) <- c("SMCMallows", "BayesMallows")
   model

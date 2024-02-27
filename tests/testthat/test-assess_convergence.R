@@ -216,4 +216,3 @@ test_that("assess_convergence.BayesMallowsMixtures works", {
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "cluster")
 })
-

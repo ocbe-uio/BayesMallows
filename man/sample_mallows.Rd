@@ -97,7 +97,8 @@ model_fit <- compute_mallows(
   setup_rank_data(samples),
   compute_options = set_compute_options(nmc = 10000))
 # The highest posterior density interval covers alpha0 = 10.
-compute_posterior_intervals(model_fit, burnin = 2000, parameter = "alpha")
+burnin(model_fit) <- 2000
+compute_posterior_intervals(model_fit, parameter = "alpha")
 
 }
 \references{

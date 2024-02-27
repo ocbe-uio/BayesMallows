@@ -43,4 +43,3 @@ test_that("assign_cluster works", {
   expect_equal(dim(assign_cluster(mod)), c(60, 4))
   expect_equal(dim(assign_cluster(mod, expand = TRUE)), c(180, 4))
 })
-

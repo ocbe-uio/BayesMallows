@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "classes.h"
 #include "resampler.h"
 
@@ -18,11 +19,15 @@ struct Particle {
 };
 
 struct SMCData : Data {
-  SMCData(const Rcpp::List& data, const Rcpp::List& new_data);
-  void update_data(const Particle& p);
-  arma::mat new_rankings;
-  const unsigned int num_new_obs;
-  const arma::uvec timepoint;
+  SMCData(const Rcpp::List& data);
+  void update(const Rcpp::List& new_data);
+  Rcpp::List wrapup();
+  arma::mat new_rankings{};
+  unsigned int num_new_obs{};
+  arma::uvec timepoint{};
+  arma::umat consistent{};
+  Rcpp::CharacterVector user_ids{};
+  Rcpp::IntegerVector updated_match{};
 };
 
 struct SMCParameters {
@@ -54,6 +59,7 @@ struct SMCParameters {
   const int leap_size;
   const std::string rho_proposal_option;
   const std::string metric;
+  const unsigned int n_particles;
 
 private:
   const double alpha_prop_sd;
