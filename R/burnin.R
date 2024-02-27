@@ -31,7 +31,10 @@
   if (value >= model$compute_options$nmc) {
     stop("Burnin cannot be larger than the number of Monte Carlo samples.")
   }
+  # Workaround as long as we have the deprecation notice for `$<-`
+  class(model) <- "list"
   model$compute_options$burnin <- value
+  class(model) <- "BayesMallows"
   model
 }
 
@@ -45,6 +48,26 @@
   for (i in seq_along(model)) burnin(model[[i]]) <- value[[i]]
   model
 }
+
+#' @rdname burnin-set
+#' @export
+`$<-.BayesMallows` <- function(model, ..., value) {
+  args <- list(...)
+  if(any(grepl("burnin", args))) {
+    stop("Setting burnin with `$<-` is deprecated. See help('burnin<-').")
+  }
+}
+
+#' @rdname burnin-set
+#' @export
+`$<-.BayesMallowsMixtures` <- function(model, ..., value) {
+  args <- list(...)
+  if(any(grepl("burnin", args))) {
+    stop("Setting burnin with `$<-` is deprecated. See help('burnin<-').")
+  }
+}
+
+
 
 #' @title See the burnin
 #' @description
@@ -77,3 +100,5 @@ burnin.BayesMallowsMixtures <- function(model, ...) {
 #' @rdname burnin
 #' @export
 burnin.SMCMallows <- function(model, ...) 0
+
+
