@@ -63,15 +63,6 @@ std::vector<Particle> initialize_particles(
     uvec particle_consistent;
     if(!aug_init1.empty()) {
       particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
-
-      for(auto index : dat.updated_match) {
-        vec to_compare = dat.rankings.col(index);
-        uvec comparison_inds = find(to_compare > 0);
-        vec augmented = aug_init1(span::all, span(index), span(i));
-
-        particle_consistent(index) =
-          all(to_compare(comparison_inds) == augmented(comparison_inds));
-      }
     }
 
     mat augmented_data = initialize_augmented_data(i, dat, aug_init);
@@ -79,6 +70,45 @@ std::vector<Particle> initialize_particles(
       Particle(alpha_samples(i), rho_samples.col(i), augmented_data,
                dat.n_assessors, particle_consistent)
     );
+  }
+
+  return pvec;
+}
+
+std::vector<Particle> augment_particles(
+    const std::vector<Particle>& pvec_init,
+    const SMCData& dat
+) {
+  auto pvec = pvec_init;
+  for(size_t i{}; i < pvec.size(); i++) {
+    uvec particle_consistent;
+    if(dat.any_missing) {
+      particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
+
+      for(auto index : dat.updated_match) {
+        vec to_compare = dat.rankings.col(index);
+        uvec comparison_inds = find(to_compare > 0);
+        vec augmented = pvec[i].augmented_data(span::all, span(index));
+
+        particle_consistent(index) =
+          all(to_compare(comparison_inds) == augmented(comparison_inds));
+      }
+
+      if(dat.num_new_obs > 0) {
+        mat tmp = initialize_missing_ranks(
+          dat.new_rankings,
+          dat.missing_indicator(
+            span::all,
+            span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)));
+
+        pvec[i].augmented_data.resize(dat.n_items, dat.rankings.n_cols);
+        pvec[i].augmented_data(
+            span::all,
+            span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)
+        ) = tmp;
+        pvec[i].log_aug_prob.resize(dat.rankings.n_cols);
+      }
+    }
   }
 
   return pvec;

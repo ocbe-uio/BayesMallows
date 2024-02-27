@@ -24,6 +24,7 @@ Rcpp::List  run_smc(
   SMCParameters pars{model_options, compute_options, smc_options};
   Priors pris{priors};
   SMCAugmentation aug{compute_options, smc_options};
+  auto pvec = initialize_particles(initial_values, pars.n_particles, dat);
 
   auto pfun = choose_partition_function(
     dat.n_items, pars.metric, pfun_values, pfun_estimate);
@@ -32,7 +33,7 @@ Rcpp::List  run_smc(
     pars.rho_proposal_option, pars.leap_size);
 
   dat.update(new_data[0]);
-  auto pvec = initialize_particles(initial_values, pars.n_particles, dat);
+  pvec = augment_particles(pvec, dat);
   aug.reweight(pvec, dat, pfun, distfun);
   pars.resample(pvec);
 
