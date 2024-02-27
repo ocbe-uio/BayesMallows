@@ -83,7 +83,8 @@ compute_mallows <- function(
   validate_initial_values(initial_values, data)
 
   pfun_values <- extract_pfun_values(
-    model_options$metric, data$n_items, pfun_estimate)
+    model_options$metric, data$n_items, pfun_estimate
+  )
 
   if (is.null(cl)) {
     lapplyfun <- lapply

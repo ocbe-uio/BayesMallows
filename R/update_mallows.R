@@ -99,8 +99,6 @@ update_mallows.BayesMallows <- function(
 #' @export
 #' @rdname update_mallows
 update_mallows.SMCMallows <- function(model, new_data, ...) {
-  #datlist <- prepare_new_data(model, new_data)
-
   ret <- run_smc(
     data = model$data,
     new_data = list(new_data),

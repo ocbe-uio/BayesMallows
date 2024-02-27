@@ -28,7 +28,9 @@ void SMCData::update(
       user_ids.push_back(new_users[index]);
       new_rankings = join_rows(new_rankings, new_dat.rankings.col(new_match[index]));
       timepoint = join_cols(timepoint, new_dat.timepoint(span(new_match[index])));
-      missing_indicator = join_rows(missing_indicator, new_dat.missing_indicator.col(new_match[index]));
+      missing_indicator = join_rows(
+        missing_indicator,
+        new_dat.any_missing ? new_dat.missing_indicator.col(new_match[index]) : uvec(new_dat.n_items, fill::zeros));
       observation_frequency = join_cols(observation_frequency, new_dat.observation_frequency(span(new_match[index])));
     }
 

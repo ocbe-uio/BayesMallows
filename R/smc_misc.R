@@ -29,49 +29,6 @@ extract_rho_init <- function(model, n_particles) {
   model$rho_samples[, 1, thinned_inds, drop = TRUE]
 }
 
-prepare_new_data <- function(model, new_data) {
-  if (!is.null(new_data$user_ids) && !is.null(model$data$user_ids)) {
-    old_users <- setdiff(model$data$user_ids, new_data$user_ids)
-    updated_users <- intersect(model$data$user_ids, new_data$user_ids)
-    new_users <- setdiff(new_data$user_ids, model$data$user_ids)
-
-    rankings <- rbind(
-      model$data$rankings[old_users, , drop = FALSE],
-      new_data$rankings[updated_users, , drop = FALSE]
-    )
-    data <- setup_rank_data(
-      rankings = rankings, user_ids = c(old_users, updated_users)
-    )
-    new_data <- setup_rank_data(
-      rankings = new_data$rankings[new_users, , drop = FALSE],
-      user_ids = new_users
-    )
-
-    if (!is.null(model$augmented_rankings)) {
-      consistent <- matrix(
-        TRUE,
-        nrow = nrow(rankings), ncol = model$smc_options$n_particles
-      )
-      for (uu in updated_users) {
-        index <- which(rownames(rankings) == uu)
-        to_compare <- as.numeric(stats::na.omit(rankings[index, ]))
-
-        consistent[index, ] <- apply(model$augmented_rankings[, index, ], 2, function(ar) {
-          all(ar[ar %in% to_compare] == to_compare)
-        })
-      }
-      data$consistent <- consistent * 1L
-      new_data$consistent <- matrix(1L,
-        nrow = nrow(new_data$rankings),
-        ncol = ncol(data$consistent)
-      )
-    }
-  } else {
-    data <- model$data
-  }
-  list(data = data, new_data = new_data)
-}
-
 run_common_part <- function(
     data, new_data, model_options, smc_options, compute_options, priors,
     initial_values, pfun_list, model) {
