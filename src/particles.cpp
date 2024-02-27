@@ -24,18 +24,6 @@ mat initialize_augmented_data(
       augmented_data(
         span::all, span(0, dat.rankings.n_cols - dat.num_new_obs - 1)) =
           Rcpp::as<cube>(aug_init).slice(particle_index);
-
-      if(dat.num_new_obs > 0) {
-        augmented_data(
-          span::all,
-          span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)
-        ) = initialize_missing_ranks(
-          dat.new_rankings,
-          dat.missing_indicator(
-            span::all,
-            span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1))
-        );
-      }
     } else {
       augmented_data = initialize_missing_ranks(dat.rankings, dat.missing_indicator);
     }
@@ -57,11 +45,10 @@ std::vector<Particle> initialize_particles(
 
   std::vector<Particle> pvec;
   pvec.reserve(n_particles);
-  cube aug_init1 = aug_init.isNotNull() ? Rcpp::as<cube>(aug_init) : cube{};
 
   for(size_t i{}; i < n_particles; i++) {
     uvec particle_consistent;
-    if(!aug_init1.empty()) {
+    if(aug_init.isNotNull()) {
       particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
     }
 
