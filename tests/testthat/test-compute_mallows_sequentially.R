@@ -26,3 +26,30 @@ test_that("compute_mallows_sequentially works", {
     )
 
 })
+
+test_that("compute_mallows_sequentially works with partial rankings", {
+  set.seed(345)
+  dat <- potato_visual
+  dat[dat > 15] <- NA
+
+  data <- lapply(seq_len(nrow(dat)), function(i) {
+    setup_rank_data(dat[i, ])
+  })
+
+  initial_values <- sample_prior(
+    n = 200, n_items = 20,
+    priors = set_priors(gamma = 3, lambda = .1))
+
+  mod <- compute_mallows_sequentially(
+    data = data,
+    initial_values = initial_values,
+    smc_options = set_smc_options(n_particles = 200, mcmc_steps = 20))
+
+  expect_equal(
+    apply(mod$alpha_samples, 2, mean),
+    c(2.87674720640401, 2.22027499892846, 2.53499158193073, 3.28424790116212,
+      3.86836385208775, 4.57947369845994, 5.75771795091753, 7.5070197872037,
+      8.63830524611693, 9.73845592788363, 10.2889617544371, 10.4747448422823
+    ))
+
+})
