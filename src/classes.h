@@ -2,6 +2,7 @@
 #include <RcppArmadillo.h>
 #include "partition_functions.h"
 #include "distances.h"
+#include "rank_proposal.h"
 
 using doubly_nested = std::vector<std::vector<unsigned int>>;
 using triply_nested = std::vector<doubly_nested>;
@@ -11,12 +12,14 @@ struct Data {
   ~Data() = default;
 
   arma::mat rankings;
-  const unsigned int n_assessors;
+  unsigned int n_assessors;
   const unsigned int n_items;
-  const arma::vec observation_frequency;
+  arma::vec observation_frequency;
   const triply_nested items_above{};
   const triply_nested items_below{};
   const bool any_missing;
+  const bool augpair;
+  arma::umat missing_indicator;
 };
 
 struct Priors {
@@ -40,13 +43,13 @@ struct Parameters {
     const unsigned int n_items);
   ~Parameters() = default;
 
-  void update_shape(int t, const Data& dat, const Priors& priors);
-  void update_rho(int t, int& rho_index, const Data& dat,
+  void update_shape(const Data& dat, const Priors& priors);
+  void update_rho(const Data& dat,
                   const arma::uvec& cluster_assignment,
-                  const std::unique_ptr<Distance>& distfun);
+                  const std::unique_ptr<Distance>& distfun,
+                  const std::unique_ptr<ProposalDistribution>& prop);
 
   void update_alpha(
-      int alpha_index,
       const Data& dat,
       const std::unique_ptr<Distance>& distfun,
       const std::unique_ptr<PartitionFunction>& pfun,
@@ -54,21 +57,29 @@ struct Parameters {
       const arma::uvec& current_cluster_assignment);
 
   arma::mat alpha;
+  double alpha_acceptance{};
   arma::vec alpha_old;
   arma::cube rho;
+  double rho_acceptance{};
   arma::mat rho_old;
   arma::vec shape_1;
   arma::vec shape_2;
   arma::vec theta;
+  double theta_current;
   const unsigned int n_clusters;
   const unsigned int nmc;
   const std::string error_model;
   const int alpha_jump;
+  const int leap_size;
+  const std::string rho_proposal_option;
+  const std::string metric;
+  int burnin{};
+  size_t t{};
+  size_t alpha_index{};
+  size_t rho_index{};
 
 private:
-  const arma::uvec element_indices;
   const double alpha_prop_sd;
-  const int leap_size;
   const int rho_thinning;
 };
 
@@ -108,11 +119,11 @@ struct Augmentation {
   ~Augmentation() = default;
 
   void augment_pairwise(
-      const unsigned int t,
       Data& dat,
       const Parameters& pars,
       const Clustering& clus,
-      const std::unique_ptr<Distance>& distfun);
+      const std::unique_ptr<Distance>& distfun,
+      const std::unique_ptr<ProposalDistribution>& prop);
 
   void update_missing_ranks(
       Data& dat,
@@ -121,14 +132,12 @@ struct Augmentation {
       const std::unique_ptr<Distance>& distfun
   );
 
-  const bool augpair;
   const bool save_aug;
   const unsigned int aug_thinning;
   arma::cube augmented_data;
+  const unsigned int swap_leap;
 
 private:
-  const unsigned int swap_leap;
-  const arma::umat missing_indicator;
   const std::string aug_method;
   const std::string pseudo_aug_metric;
   const std::unique_ptr<Distance> pseudo_aug_distance;

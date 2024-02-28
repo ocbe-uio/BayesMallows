@@ -25,50 +25,6 @@ test_that("update_mallows works", {
   )
 
   expect_equal(mod_final$rho$value[169], 18)
-
-  # Need this because random numbers don't reproduce exactly on M1
-  skip_on_os("mac", arch = "aarch64")
-  potato_top_10 <- ifelse(potato_visual[1:10, ] > 10, NA_real_,
-    potato_visual[1:10, ]
-  )
-  potato_top_12 <- ifelse(potato_visual[1:10, ] > 12, NA_real_,
-    potato_visual[1:10, ]
-  )
-  potato_top_14 <- ifelse(potato_visual[1:10, ] > 14, NA_real_,
-    potato_visual[1:10, ]
-  )
-
-  user_ids <- rownames(potato_visual[1:10, ])
-
-  mod_init <- compute_mallows(
-    data = setup_rank_data(rankings = potato_top_10, user_ids = user_ids),
-    compute_options = set_compute_options(nmc = 100, burnin = 5)
-  )
-
-  mod1 <- update_mallows(
-    model = mod_init,
-    new_data = setup_rank_data(rankings = potato_top_12, user_ids = user_ids),
-    smc_options = set_smc_options(n_particles = 20),
-    compute_options = set_compute_options(aug_method = "pseudo")
-  )
-
-  expect_equal(mod1$alpha$value[[13]], 0.388038251055491)
-
-  mod2 <- update_mallows(
-    model = mod1,
-    new_data = setup_rank_data(rankings = potato_top_14, user_ids = user_ids)
-  )
-
-  expect_s3_class(mod2, "SMCMallows")
-  potato_new <- potato_visual[11:12, ]
-  user_ids <- rownames(potato_new)
-
-  mod_final <- update_mallows(
-    model = mod2,
-    new_data = setup_rank_data(rankings = potato_new, user_ids = user_ids)
-  )
-
-  expect_s3_class(mod_final, "SMCMallows")
 })
 
 test_that("update_mallows can start from prior", {

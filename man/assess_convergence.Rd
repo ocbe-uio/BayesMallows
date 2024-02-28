@@ -36,7 +36,7 @@ Available options are \code{"alpha"}, \code{"rho"}, \code{"Rtilde"}, \code{"clus
 \code{"theta"}.}
 
 \item{items}{The items to study in the diagnostic plot for \code{rho}. Either a
-vector of item names, corresponding to \code{model_fit$items} or a vector of
+vector of item names, corresponding to \code{model_fit$data$items} or a vector of
 indices. If NULL, five items are selected randomly. Only used when
 \code{parameter = "rho"} or \code{parameter = "Rtilde"}.}
 

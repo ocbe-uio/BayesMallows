@@ -1,19 +1,23 @@
+#include <limits>
 #include "parallel_utils.h"
 #include "smc_classes.h"
 #include "missing_data.h"
 using namespace arma;
 
+unsigned int read_lag(const Rcpp::List& smc_options) {
+  Rcpp::IntegerVector tmp = smc_options["latent_sampling_lag"];
+  return Rcpp::IntegerVector::is_na(tmp[0]) ?
+  std::numeric_limits<unsigned int>::max() :
+    static_cast<unsigned int>(tmp[0]);
+}
+
 SMCAugmentation::SMCAugmentation(
-  const SMCData& dat,
   const Rcpp::List& compute_options,
   const Rcpp::List& smc_options
   ) :
-  missing_indicator { set_up_missing(dat) },
   aug_method(compute_options["aug_method"]),
   pseudo_aug_metric(compute_options["pseudo_aug_metric"]),
-  lag_helper { Rcpp::as<Rcpp::IntegerVector>(smc_options["latent_sampling_lag"]) },
-  latent_sampling_lag {
-    Rcpp::IntegerVector::is_na(lag_helper[0]) ? max(dat.timepoint) :  lag_helper[0] } {}
+  latent_sampling_lag { read_lag(smc_options) } {}
 
 void SMCAugmentation::reweight(
     std::vector<Particle>& pvec,
@@ -79,7 +83,7 @@ void SMCAugmentation::augment_partial(
     pvec.begin(), pvec.end(),
     [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
      aug_method = aug_method, pseudo_aug_metric = pseudo_aug_metric,
-     missing_indicator = missing_indicator]
+     missing_indicator = dat.missing_indicator]
     (Particle& p){
        auto pseudo_aug_distance = aug_method == "uniform" ? nullptr :
        choose_distance_function(pseudo_aug_metric);
@@ -102,7 +106,7 @@ void SMCAugmentation::augment_partial(
             pseudo_aug_distance
           );
           p.augmented_data.col(user) = pprop.rankings;
-          p.log_aug_prob(user) = log(pprop.probability);
+          p.log_aug_prob(user) = log(pprop.prob_forward);
         }
       }
     }
@@ -121,7 +125,7 @@ void SMCAugmentation::update_missing_ranks(
   for (auto jj : indices_to_loop) {
     p.augmented_data.col(jj) =
       make_new_augmentation(
-        p.augmented_data.col(jj), missing_indicator.col(jj), p.alpha,
+        p.augmented_data.col(jj), dat.missing_indicator.col(jj), p.alpha,
         p.rho, distfun, pseudo_aug_distance, p.log_aug_prob(jj));
   }
 }

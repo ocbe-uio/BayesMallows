@@ -25,6 +25,29 @@ arma::vec get_rank_distance(arma::mat rankings, arma::vec rho,
   return distfun->matdist(rankings, rho);
 }
 
+arma::vec Distance::matdist(const arma::mat& r1, const arma::vec& r2) {
+  return matdist(r1, r2, arma::regspace<arma::uvec>(0, r2.n_elem - 1));
+}
+
+arma::vec Distance::matdist(const arma::mat& r1, const arma::vec& r2,
+                            const arma::uvec& inds) {
+  arma::vec result(r1.n_cols);
+  for(size_t i{}; i < r1.n_cols; i++) {
+    const arma::vec& v1 = r1.col(i);
+    result(i) = d(v1, r2, inds);
+  }
+  return result;
+}
+
+arma::vec Distance::scalardist(const arma::vec& r1, const double r2) {
+  arma::vec v2 = arma::ones(r1.size()) * r2;
+  arma::vec result = arma::zeros(r1.size());
+  for(size_t i{}; i < r1.n_elem; i++) {
+    result(i) = d(arma::vec{r1(i)}, arma::vec{v2(i)});
+  }
+  return result;
+}
+
 double CayleyDistance::d(const arma::vec& r1, const arma::vec& r2) {
   double distance{};
   arma::vec tmp2 = r1;
@@ -41,36 +64,9 @@ double CayleyDistance::d(const arma::vec& r1, const arma::vec& r2) {
   return distance;
 }
 
-arma::vec Distance::matdist(const arma::mat& r1, const arma::vec& r2) {
-  arma::vec result(r1.n_cols);
-  for(size_t i{}; i < r1.n_cols; i++) {
-    const arma::vec& v1 = r1.col(i);
-    result(i) = d(v1, r2);
-  }
-  return result;
-}
-
-arma::vec Distance::scalardist(const arma::vec& r1, const double r2) {
-  arma::vec v2 = arma::ones(r1.size()) * r2;
-  arma::vec result = arma::zeros(r1.size());
-  for(size_t i{}; i < r1.n_elem; i++) {
-    result(i) = d(arma::vec{r1(i)}, arma::vec{v2(i)});
-  }
-  return result;
-}
-
-void Distance::update_leap_and_shift_indices(arma::uvec& indices, int n_items) {
-  return;
-};
-
 double CayleyDistance::d(
     const arma::vec& r1, const arma::vec& r2, const arma::uvec& inds) {
   return d(r1, r2);
-}
-
-void CayleyDistance::update_leap_and_shift_indices(
-    arma::uvec& indices, int n_items) {
-  indices = arma::regspace<arma::uvec>(0, n_items - 1);
 }
 
 double FootruleDistance::d(const arma::vec& r1, const arma::vec& r2) {
@@ -125,8 +121,4 @@ double UlamDistance::d(const arma::vec& r1, const arma::vec& r2) {
 
 double UlamDistance::d(const arma::vec& r1, const arma::vec& r2, const arma::uvec& inds) {
   return d(r1, r2);
-}
-
-void UlamDistance::update_leap_and_shift_indices(arma::uvec& indices, int n_items) {
-  indices = arma::regspace<arma::uvec>(0, n_items - 1);
 }

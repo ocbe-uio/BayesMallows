@@ -41,19 +41,7 @@ jobs:
           run: |
             library(lintr)
             excluded_files <- list(
-              "inst/examples/compute_consensus_example.R",
-              "inst/examples/compute_mallows_example.R",
-              "inst/examples/compute_mallows_mixtures_example.R",
-              "inst/examples/compute_posterior_intervals_example.R",
-              "inst/examples/estimate_partition_function_example.R",
-              "inst/examples/generate_constraints_example.R",
-              "inst/examples/generate_initial_ranking_example.R",
-              "inst/examples/generate_transitive_closure_example.R",
-              "inst/examples/label_switching_example.R",
-              "inst/examples/obs_freq_example.R",
-              "inst/examples/plot_top_k_example.R",
-              "inst/examples/plot.BayesMallows_example.R",
-              "inst/examples/sample_mallows_example.R",
+              "inst",
               "data-raw",
               "tests/testthat.R",
               "tests",

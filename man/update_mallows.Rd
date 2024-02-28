@@ -84,14 +84,17 @@ mod_init <- compute_mallows(
 
 # Convergence seems good after no more than 2000 iterations
 assess_convergence(mod_init)
-mod_init$burnin <- 2000
+burnin(mod_init) <- 2000
 
 # Next, assume we receive four more observations
 data_second_batch <- potato_visual[5:8, ]
 
 # We can now update the model using sequential Monte Carlo
 mod_second <- update_mallows(
-  model = mod_init, new_data = setup_rank_data(rankings = data_second_batch))
+  model = mod_init,
+  new_data = setup_rank_data(rankings = data_second_batch),
+  smc_options = set_smc_options(resampler = "systematic")
+  )
 
 # This model now has a collection of particles approximating the posterior
 # distribution after the first and second batch
@@ -134,12 +137,13 @@ mod_init <- compute_mallows(
 
 # Convergence seems fine. We set the burnin to 2000.
 assess_convergence(mod_init)
-mod_init$burnin <- 2000
+burnin(mod_init) <- 2000
 
 # Next assume the users update their rankings, so we have top-12 instead.
 mod1 <- update_mallows(
   model = mod_init,
-  new_data = setup_rank_data(rankings = potato_top_12, user_ids = user_ids)
+  new_data = setup_rank_data(rankings = potato_top_12, user_ids = user_ids),
+  smc_options = set_smc_options(resampler = "stratified")
 )
 
 plot(mod1)
@@ -166,8 +170,11 @@ plot(mod_final)
 }
 \seealso{
 Other modeling: 
+\code{\link{burnin}()},
+\code{\link{burnin<-}()},
 \code{\link{compute_mallows}()},
 \code{\link{compute_mallows_mixtures}()},
+\code{\link{compute_mallows_sequentially}()},
 \code{\link{sample_prior}()}
 }
 \concept{modeling}

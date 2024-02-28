@@ -13,7 +13,7 @@
 #'   `"theta"`.
 #'
 #' @param items The items to study in the diagnostic plot for `rho`. Either a
-#'   vector of item names, corresponding to `model_fit$items` or a vector of
+#'   vector of item names, corresponding to `model_fit$data$items` or a vector of
 #'   indices. If NULL, five items are selected randomly. Only used when
 #'   `parameter = "rho"` or `parameter = "Rtilde"`.
 #'
@@ -109,23 +109,23 @@ trace_alpha <- function(m, clusters) {
 }
 
 trace_rho <- function(model_fit, items, clusters = model_fit$n_clusters > 1) {
-  if (is.null(items) && model_fit$n_items > 5) {
+  if (is.null(items) && model_fit$data$n_items > 5) {
     message("Items not provided by user. Picking 5 at random.")
-    items <- sample.int(model_fit$n_items, 5)
-  } else if (is.null(items) && model_fit$n_items > 0) {
-    items <- seq.int(from = 1, to = model_fit$n_items)
+    items <- sample.int(model_fit$data$n_items, 5)
+  } else if (is.null(items) && model_fit$data$n_items > 0) {
+    items <- seq.int(from = 1, to = model_fit$data$n_items)
   } else if (!is.null(items)) {
     if (is.numeric(items) &&
-      length(setdiff(items, seq_len(model_fit$n_item))) > 0) {
+      length(setdiff(items, seq_len(model_fit$data$n_items))) > 0) {
       stop("numeric items vector must contain indices between 1 and the number of items")
     }
-    if (is.character(items) && length(setdiff(items, model_fit$items) > 0)) {
+    if (is.character(items) && length(setdiff(items, model_fit$data$items) > 0)) {
       stop("unknown items provided")
     }
   }
 
   if (!is.character(items)) {
-    items <- model_fit$items[items]
+    items <- model_fit$data$items[items]
   }
 
   df <- model_fit$rho[model_fit$rho$item %in% items, , drop = FALSE]
@@ -157,20 +157,20 @@ trace_rtilde <- function(model_fit, items, assessors, ...) {
     stop("Please rerun with compute_mallows with save_aug = TRUE")
   }
 
-  if (is.null(items) && model_fit$n_items > 5) {
+  if (is.null(items) && model_fit$data$n_items > 5) {
     message("Items not provided by user. Picking 5 at random.")
-    items <- sample.int(model_fit$n_items, 5)
-  } else if (is.null(items) && model_fit$n_items > 0) {
-    items <- seq.int(from = 1, to = model_fit$n_items)
+    items <- sample.int(model_fit$data$n_items, 5)
+  } else if (is.null(items) && model_fit$data$n_items > 0) {
+    items <- seq.int(from = 1, to = model_fit$data$n_items)
   }
 
-  if (is.null(assessors) && model_fit$n_assessors > 5) {
+  if (is.null(assessors) && model_fit$data$n_assessors > 5) {
     message("Assessors not provided by user. Picking 5 at random.")
-    assessors <- sample.int(model_fit$n_assessors, 5)
-  } else if (is.null(assessors) && model_fit$n_assessors > 0) {
-    assessors <- seq.int(from = 1, to = model_fit$n_assessors)
+    assessors <- sample.int(model_fit$data$n_assessors, 5)
+  } else if (is.null(assessors) && model_fit$data$n_assessors > 0) {
+    assessors <- seq.int(from = 1, to = model_fit$data$n_assessors)
   } else if (!is.null(assessors)) {
-    if (length(setdiff(assessors, seq(1, model_fit$n_assessors, 1))) > 0) {
+    if (length(setdiff(assessors, seq(1, model_fit$data$n_assessors, 1))) > 0) {
       stop("assessors vector must contain numeric indices between 1 and the number of assessors")
     }
   }

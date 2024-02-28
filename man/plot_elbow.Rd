@@ -4,18 +4,14 @@
 \alias{plot_elbow}
 \title{Plot Within-Cluster Sum of Distances}
 \usage{
-plot_elbow(..., burnin = NULL)
+plot_elbow(...)
 }
 \arguments{
-\item{...}{One or more objects returned from \code{\link[=compute_mallows]{compute_mallows()}},
-separated by comma, or a list of such objects. Typically, each object
-has been run with a different number of mixtures, as specified in the
-\code{n_clusters} argument to \code{\link[=compute_mallows]{compute_mallows()}}.}
-
-\item{burnin}{The number of iterations to discard as burnin. Either a vector of
-numbers, one for each model, or a single number which is taken to be the burnin for
-all models. If each model provided has a \code{burnin} element, then this is taken
-as the default.}
+\item{...}{One or more objects returned from \code{\link[=compute_mallows]{compute_mallows()}}, separated
+by comma, or a list of such objects. Typically, each object has been run
+with a different number of mixtures, as specified in the \code{n_clusters}
+argument to \code{\link[=compute_mallows]{compute_mallows()}}. Alternatively an object returned from
+\code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}}.}
 }
 \value{
 A boxplot with the number of clusters on the horizontal axis and the
@@ -40,7 +36,8 @@ models <- compute_mallows_mixtures(
 assess_convergence(models)
 # We can create an elbow plot, suggesting that there are three clusters, exactly
 # as simulated.
-plot_elbow(models, burnin = 1000)
+burnin(models) <- 1000
+plot_elbow(models)
 
 # We now fit a model with three clusters
 mixture_model <- compute_mallows(
@@ -51,7 +48,7 @@ mixture_model <- compute_mallows(
 # The trace plot for this model looks good. It seems to converge quickly.
 assess_convergence(mixture_model)
 # We set the burnin to 500
-mixture_model$burnin <- 500
+burnin(mixture_model) <- 500
 
 # We can now look at posterior quantities
 # Posterior of scale parameter alpha
@@ -74,7 +71,8 @@ plot(mixture_model, parameter = "cluster_assignment")
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows
   # We can create an elbow plot
-  plot_elbow(models, burnin = 1000)
+  burnin(models) <- 1000
+  plot_elbow(models)
   # We then select the number of cluster at a point where this plot has
   # an "elbow", e.g., n_clusters = 5.
 
@@ -87,7 +85,7 @@ plot(mixture_model, parameter = "cluster_assignment")
   # Delete the models object to free some memory
   rm(models)
   # Set the burnin
-  mixture_model$burnin <- 1000
+  burnin(mixture_model) <- 1000
   # Plot the posterior distributions of alpha per cluster
   plot(mixture_model)
   # Compute the posterior interval of alpha per cluster
@@ -132,6 +130,7 @@ Other posterior quantities:
 \code{\link{assign_cluster}()},
 \code{\link{compute_consensus}()},
 \code{\link{compute_posterior_intervals}()},
+\code{\link{get_acceptance_ratios}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},
 \code{\link{plot.SMCMallows}()},

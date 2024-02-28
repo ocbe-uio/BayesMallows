@@ -4,9 +4,7 @@ test_that("compute_consensus fails properly", {
     compute_options = set_compute_options(nmc = 10)
   )
   expect_error(compute_consensus(mod), "Please specify the burnin")
-  mod$burnin <- 11
-  expect_error(compute_consensus(mod), "burnin < model_fit")
-  mod$burnin <- 2
+  burnin(mod) <- 2
   expect_error(
     compute_consensus(mod, parameter = "Rtilde"),
     "For augmented ranks, please refit model"

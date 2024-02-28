@@ -1,15 +1,20 @@
+#include <utility>
 #include "smc_classes.h"
 #include "proposal_functions.h"
 using namespace arma;
 
 SMCParameters::SMCParameters(
-  const Rcpp::List& smc_options,
-  const Rcpp::List& compute_options
+  const Rcpp::List& model_options,
+  const Rcpp::List& compute_options,
+  const Rcpp::List& smc_options
 ) :
   mcmc_steps { smc_options["mcmc_steps"] },
-  alpha_prop_sd { compute_options["alpha_prop_sd"] },
   leap_size { compute_options["leap_size"] },
-  resampler { choose_resampler(std::string(smc_options["resampler"])) }{}
+  rho_proposal_option ( compute_options["rho_proposal"] ),
+  metric ( model_options["metric"] ),
+  n_particles {smc_options["n_particles"] },
+  alpha_prop_sd { compute_options["alpha_prop_sd"] },
+  resampler { choose_resampler(std::string(smc_options["resampler"])) } {}
 
 void SMCParameters::update_alpha(
     Particle& p,
@@ -23,17 +28,24 @@ void SMCParameters::update_alpha(
     dat.any_missing ? p.augmented_data : dat.rankings,
     dat.observation_frequency, dat.n_items, priors
   );
-  if(test.accept) p.alpha = test.proposal;
+  if(test.accept) {
+    p.alpha = test.proposal;
+    p.alpha_acceptance++;
+  }
 }
 
 void SMCParameters::update_rho(
     Particle& p,
     const SMCData& dat,
-    const std::unique_ptr<Distance>& distfun) const {
-  p.rho = make_new_rho(
+    const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<ProposalDistribution>& prop) const {
+  auto proposal = make_new_rho(
     p.rho, dat.any_missing ? p.augmented_data : dat.rankings,
-    p.alpha, leap_size, distfun,
-    dat.observation_frequency);
+    p.alpha, distfun, prop, dat.observation_frequency);
+  if(proposal.second) {
+    p.rho = proposal.first;
+    p.rho_acceptance++;
+  }
 }
 
 arma::ivec SMCParameters::draw_resampling_index(

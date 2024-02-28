@@ -29,7 +29,7 @@ back when resampling the latent ranks in the move step. See Section 6.2.3
 of \insertCite{Kantas2015}{BayesMallows} for details. The \eqn{L} in their
 notation corresponds to \code{latent_sampling_lag}. See more under Details.
 Defaults to \code{NA}, which means that all latent ranks from previous timesteps
-are resampled. If set to \code{0}, no move step is applied to the latent ranks.}
+are moved. If set to \code{0}, no move step is applied to the latent ranks.}
 }
 \value{
 An object of class "SMCOptions".

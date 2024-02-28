@@ -7,7 +7,7 @@
 setup_rank_data(
   rankings = NULL,
   preferences = NULL,
-  user_ids = NULL,
+  user_ids = character(),
   observation_frequency = NULL,
   validate_rankings = TRUE,
   na_action = c("augment", "fail", "omit"),
@@ -51,10 +51,10 @@ we have the following \code{df}:
 2 \tab 5 \tab 3\cr
 }}
 
-\item{user_ids}{Optional vector of user IDs. Defaults to \code{NULL}, and only
-used by \code{\link[=update_mallows]{update_mallows()}}. If provided, new data can consist of updated
-partial rankings from users already in the dataset, as described in Section
-6 of
+\item{user_ids}{Optional vector of user IDs. Defaults to \code{character()}, and
+only used by \code{\link[=update_mallows]{update_mallows()}}. If provided, new data can consist of
+updated partial rankings from users already in the dataset, as described in
+Section 6 of
 \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.}
 
 \item{observation_frequency}{A vector of observation frequencies (weights) to
@@ -140,6 +140,9 @@ If in reality there are only two items, they should be relabeled to 1 and
 \strong{assessor} \tab \strong{bottom_item} \tab \strong{top_item}\cr
 1 \tab 1 \tab 2\cr
 }
+}
+\references{
+\insertAllCited{}
 }
 \seealso{
 Other preprocessing: 

@@ -24,7 +24,7 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
 
   fit$cluster_assignment <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_cluster_assignment(
-      fits[[i]]$cluster_assignment, i, model_options$n_clusters, fits[[i]]$n_assessors,
+      fits[[i]]$cluster_assignment, i, model_options$n_clusters, data$n_assessors,
       compute_options$nmc
     )
   }))
@@ -53,13 +53,13 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
   }))
 
   fit$n_clusters <- model_options$n_clusters
-  fit$items <- data$items
-  fit$n_items <- data$n_items
-  fit$n_assessors <- fits[[1]]$n_assessors
+  fit$data <- data
+  fit$compute_options <- compute_options
 
-  fit$nmc <- compute_options$nmc
-  fit$metric <- model_options$metric
-  fit$burnin <- compute_options$burnin
+  fit$acceptance_ratios <- list(
+    alpha_acceptance = lapply(fits, function(x) x$alpha_acceptance),
+    rho_acceptance = lapply(fits, function(x) x$rho_acceptance)
+  )
 
   return(fit)
 }
@@ -128,8 +128,7 @@ tidy_alpha <- function(alpha_mat, chain, alpha_jump) {
 }
 
 tidy_cluster_assignment <- function(
-    cluster_assignment, chain, n_clusters,
-    n_assessors, nmc) {
+    cluster_assignment, chain, n_clusters, n_assessors, nmc) {
   if (n_clusters > 1) {
     cluster_dims <- dim(cluster_assignment)
     value <- paste("Cluster", cluster_assignment)

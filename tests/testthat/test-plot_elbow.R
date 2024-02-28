@@ -6,7 +6,7 @@ test_that("plot_elbow works", {
     compute_options = set_compute_options(nmc = 2, include_wcd = TRUE)
   )
 
-  expect_error(plot_elbow(models), "burnin not provided")
+  expect_error(plot_elbow(models), "Please specify burnin with")
 
   models <- compute_mallows_mixtures(
     n_clusters = n_clusters, data = setup_rank_data(cluster_data),
@@ -37,12 +37,7 @@ test_that("plot_elbow works", {
     compute_options = set_compute_options(nmc = 100, include_wcd = TRUE)
   )
 
-  expect_error(plot_elbow(mod), "burnin not provided")
-  mod$burnin <- 200
-  expect_error(
-    plot_elbow(mod),
-    "burnin must be strictly smaller than the number of MCMC samples"
-  )
-  mod$burnin <- 0
+  expect_error(plot_elbow(mod), "Please specify burnin with")
+  burnin(mod) <- 0
   expect_s3_class(plot_elbow(mod), "ggplot")
 })

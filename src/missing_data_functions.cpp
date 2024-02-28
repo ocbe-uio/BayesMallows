@@ -19,13 +19,6 @@ vec setdiff(const vec& x, const vec& y) noexcept {
   return conv_to<vec>::from(diff);
 }
 
-arma::umat set_up_missing(const Data& dat) noexcept {
-  if(!dat.any_missing) return arma::umat{};
-  arma::umat missing_indicator = conv_to<umat>::from(dat.rankings);
-  missing_indicator.transform( [](int val) { return (val == 0) ? 1 : 0; } );
-  return missing_indicator;
-}
-
 mat initialize_missing_ranks(mat rankings, const umat& missing_indicator) {
   int n_assessors = rankings.n_cols;
 
@@ -56,7 +49,7 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
   } else {
     pprop = make_pseudo_proposal(
       rankings, missing_indicator, alpha, rho, pseudo_aug_distance);
-    log_hastings_correction = -std::log(pprop.probability) + log_aug_prob;
+    log_hastings_correction = -std::log(pprop.prob_forward) + log_aug_prob;
   }
 
   double u = std::log(R::runif(0, 1));
@@ -68,7 +61,7 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
     log_hastings_correction;
 
   if(ratio > u){
-    log_aug_prob = std::log(pprop.probability);
+    log_aug_prob = std::log(pprop.prob_forward);
     return pprop.rankings;
   } else {
     return rankings;
@@ -81,7 +74,7 @@ RankProposal make_uniform_proposal(const vec& ranks, const uvec& indicator) noex
   vec mutable_ranks = ranks(missing_inds);
   ivec inds = Rcpp::sample(mutable_ranks.size(), mutable_ranks.size()) - 1;
   proposal(missing_inds) = mutable_ranks(conv_to<uvec>::from(inds));
-  return RankProposal(proposal, 1, missing_inds);
+  return RankProposal(proposal, 1, 1, missing_inds);
 }
 
 RankProposal make_pseudo_proposal(
@@ -117,5 +110,5 @@ RankProposal make_pseudo_proposal(
       available_rankings, available_rankings(span(ranking_chosen)));
   }
 
-  return RankProposal(ranks, prob, missing_inds);
+  return RankProposal(ranks, prob, prob, missing_inds);
 }

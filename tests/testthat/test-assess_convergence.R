@@ -7,35 +7,35 @@ test_that("assess_convergence and plot works for alpha and rho", {
   p <- assess_convergence(mod)
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$group, "interaction(chain, cluster)")
-  expect_error(plot(mod), "Please specify the burnin.")
-  p <- plot(mod, burnin = 10)
+  expect_error(plot(mod), "Please specify the burnin")
+  burnin(mod) <- 10
+  p <- plot(mod)
   expect_equal(p$labels$y, "Posterior density")
   expect_equal(p$labels$x, expression(alpha))
   expect_error(
-    plot(mod, burnin = 10, parameter = "alfa"), "'arg' should be one of"
+    plot(mod, parameter = "alfa"), "'arg' should be one of"
   )
-  expect_error(plot(mod, burnin = 51), "burnin must be <= nmc")
   expect_message(
-    p <- plot(mod, burnin = 3, parameter = "rho"),
+    p <- plot(mod, parameter = "rho"),
     "Items not provided by user. Picking 5 at random."
   )
   expect_equal(p$labels$y, "Posterior probability")
   expect_equal(p$labels$x, "rank")
-  p <- plot(mod, burnin = 3, parameter = "rho", items = 1)
+  p <- plot(mod, parameter = "rho", items = 1)
   expect_equal(dim(p$data), c(2, 5))
   expect_error(
-    plot(mod, burnin = 3, parameter = "rho", items = 33),
+    plot(mod, parameter = "rho", items = 33),
     "Unknown items."
   )
   expect_error(
-    plot(mod, burnin = 3, parameter = "rho", items = "A1"),
+    plot(mod, parameter = "rho", items = "A1"),
     "Unknown items."
   )
-  p <- plot(mod, burnin = 3, parameter = "rho", items = c("P3", "P5"))
+  p <- plot(mod, parameter = "rho", items = c("P3", "P5"))
   expect_equal(dim(p$data), c(6, 5))
 
   expect_error(
-    p <- assess_convergence(mod, parameter = "rho", items = 33:34),
+    p <- assess_convergence(model_fit = mod, parameter = "rho", items = 33:34),
     "numeric items vector must contain indices between 1 and the number of items"
   )
   expect_error(
@@ -80,7 +80,7 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
   expect_equal(p$labels$x, "Iteration")
   expect_equal(p$labels$colour, "item")
   expect_error(
-    plot(mod, burnin = 10, parameter = "Rtilde"),
+    plot(mod, parameter = "Rtilde"),
     "'arg' should be one of"
   )
 
