@@ -48,7 +48,6 @@ Parameters::Parameters(
   }
 
 void Parameters::update_rho(
-    int t,
     int& rho_index,
     const Data& dat,
     const uvec& current_cluster_assignment,
@@ -70,8 +69,7 @@ void Parameters::update_rho(
   }
 }
 
-void Parameters::update_shape(
-    int t, const Data& dat, const Priors& priors) {
+void Parameters::update_shape(const Data& dat, const Priors& priors) {
   if(error_model != "bernoulli") return;
   int sum_1{};
   int sum_2{};

@@ -40,20 +40,20 @@ Rcpp::List run_mcmc(
   int alpha_index = 0, rho_index = 0, aug_index = 0,
     cluster_assignment_index = 0;
 
-  for(size_t t{1}; t < pars.nmc; ++t){
-    if (t % 1000 == 0) {
+  for(pars.t = 1; pars.t < pars.nmc; pars.t++){
+    if (pars.t % 1000 == 0) {
       Rcpp::checkUserInterrupt();
       if(verbose){
-        Rcpp::Rcout << "First " << t <<
+        Rcpp::Rcout << "First " << pars.t <<
           " iterations of Metropolis-Hastings algorithm completed." << std::endl;
       }
     }
 
-    pars.update_shape(t, dat, pris);
-    pars.update_rho(t, rho_index, dat, clus.current_cluster_assignment,
+    pars.update_shape(dat, pris);
+    pars.update_rho(rho_index, dat, clus.current_cluster_assignment,
                     distfun, rho_proposal);
 
-    if(t % pars.alpha_jump == 0) {
+    if(pars.t % pars.alpha_jump == 0) {
       ++alpha_index;
       pars.update_alpha(alpha_index, dat, distfun, pfun, pris,
                         clus.current_cluster_assignment);
@@ -62,20 +62,20 @@ Rcpp::List run_mcmc(
 
   if(clus.clustering){
     clus.update_cluster_probs(pars, pris);
-    clus.update_cluster_labels(t, dat, pars, pfun);
+    clus.update_cluster_labels(pars.t, dat, pars, pfun);
 
-    if(t % clus.clus_thinning == 0){
+    if(pars.t % clus.clus_thinning == 0){
       ++cluster_assignment_index;
       clus.cluster_assignment.col(cluster_assignment_index) = clus.current_cluster_assignment;
       clus.cluster_probs.col(cluster_assignment_index) = clus.current_cluster_probs;
     }
   }
 
-  clus.update_wcd(t);
+  clus.update_wcd(pars.t);
   aug.update_missing_ranks(dat, clus, pars, distfun);
   aug.augment_pairwise(dat, pars, clus, distfun, aug_prop);
 
-  if(aug.save_aug & (t % aug.aug_thinning == 0)){
+  if(aug.save_aug & (pars.t % aug.aug_thinning == 0)){
     ++aug_index;
     aug.augmented_data.slice(aug_index) = dat.rankings;
   }

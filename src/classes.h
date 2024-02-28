@@ -43,8 +43,8 @@ struct Parameters {
     const unsigned int n_items);
   ~Parameters() = default;
 
-  void update_shape(int t, const Data& dat, const Priors& priors);
-  void update_rho(int t, int& rho_index, const Data& dat,
+  void update_shape(const Data& dat, const Priors& priors);
+  void update_rho(int& rho_index, const Data& dat,
                   const arma::uvec& cluster_assignment,
                   const std::unique_ptr<Distance>& distfun,
                   const std::unique_ptr<ProposalDistribution>& prop);
