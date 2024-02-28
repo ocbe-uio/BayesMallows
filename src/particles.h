@@ -16,3 +16,5 @@ std::vector<Particle> augment_particles(
 arma::cube wrapup_rho(const std::vector<std::vector<Particle>>& particle_vectors);
 arma::mat wrapup_alpha(const std::vector<std::vector<Particle>>& pvec);
 arma::cube wrapup_augmented_data(const std::vector<Particle>& pvec);
+
+Rcpp::List compute_particle_acceptance(const std::vector<std::vector<Particle>>& particle_vectors, int mcmc_steps);

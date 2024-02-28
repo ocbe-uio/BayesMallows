@@ -66,6 +66,7 @@ Other posterior quantities:
 \code{\link{assign_cluster}()},
 \code{\link{compute_consensus}()},
 \code{\link{compute_posterior_intervals}()},
+\code{\link{get_acceptance_ratios}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.SMCMallows}()},
 \code{\link{plot_elbow}()},

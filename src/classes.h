@@ -43,14 +43,13 @@ struct Parameters {
     const unsigned int n_items);
   ~Parameters() = default;
 
-  void update_shape(int t, const Data& dat, const Priors& priors);
-  void update_rho(int t, int& rho_index, const Data& dat,
+  void update_shape(const Data& dat, const Priors& priors);
+  void update_rho(const Data& dat,
                   const arma::uvec& cluster_assignment,
                   const std::unique_ptr<Distance>& distfun,
                   const std::unique_ptr<ProposalDistribution>& prop);
 
   void update_alpha(
-      int alpha_index,
       const Data& dat,
       const std::unique_ptr<Distance>& distfun,
       const std::unique_ptr<PartitionFunction>& pfun,
@@ -58,8 +57,10 @@ struct Parameters {
       const arma::uvec& current_cluster_assignment);
 
   arma::mat alpha;
+  double alpha_acceptance{};
   arma::vec alpha_old;
   arma::cube rho;
+  double rho_acceptance{};
   arma::mat rho_old;
   arma::vec shape_1;
   arma::vec shape_2;
@@ -72,6 +73,10 @@ struct Parameters {
   const int leap_size;
   const std::string rho_proposal_option;
   const std::string metric;
+  int burnin{};
+  size_t t{};
+  size_t alpha_index{};
+  size_t rho_index{};
 
 private:
   const double alpha_prop_sd;

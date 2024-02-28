@@ -1,3 +1,4 @@
+#include <utility>
 #include "classes.h"
 #include "rank_proposal.h"
 #include "proposal_functions.h"
@@ -29,7 +30,7 @@ AlphaRatio make_new_alpha(
   return AlphaRatio{alpha_proposal, ratio > std::log(R::unif_rand())};
 }
 
-vec make_new_rho(
+std::pair<vec, bool> make_new_rho(
     const vec& current_rho,
     const mat& rankings,
     double alpha_old,
@@ -52,11 +53,8 @@ vec make_new_rho(
   double ratio = - alpha_old / n_items * (dist_new - dist_old) +
     std::log(rp.prob_backward) - std::log(rp.prob_forward);
 
-  if(ratio > std::log(R::unif_rand())){
-    return(rp.rankings);
-  } else {
-    return(current_rho);
-  }
+  bool accept = ratio > std::log(R::unif_rand());
+  return std::pair<vec, bool>{rp.rankings, accept};
 }
 
 

@@ -37,45 +37,40 @@ Rcpp::List run_mcmc(
   }
 
   clus.update_dist_mat(dat, pars, distfun);
-  int alpha_index = 0, rho_index = 0, aug_index = 0,
-    cluster_assignment_index = 0;
+  int aug_index = 0, cluster_assignment_index = 0;
 
-  for(size_t t{1}; t < pars.nmc; ++t){
-    if (t % 1000 == 0) {
+  for(pars.t = 1; pars.t < pars.nmc; pars.t++){
+    if (pars.t % 1000 == 0) {
       Rcpp::checkUserInterrupt();
       if(verbose){
-        Rcpp::Rcout << "First " << t <<
+        Rcpp::Rcout << "First " << pars.t <<
           " iterations of Metropolis-Hastings algorithm completed." << std::endl;
       }
     }
 
-    pars.update_shape(t, dat, pris);
-    pars.update_rho(t, rho_index, dat, clus.current_cluster_assignment,
+    pars.update_shape(dat, pris);
+    pars.update_rho(dat, clus.current_cluster_assignment,
                     distfun, rho_proposal);
+    pars.update_alpha(dat, distfun, pfun, pris,
+                      clus.current_cluster_assignment);
 
-    if(t % pars.alpha_jump == 0) {
-      ++alpha_index;
-      pars.update_alpha(alpha_index, dat, distfun, pfun, pris,
-                        clus.current_cluster_assignment);
-      pars.alpha_old = pars.alpha.col(alpha_index);
-    }
 
   if(clus.clustering){
     clus.update_cluster_probs(pars, pris);
-    clus.update_cluster_labels(t, dat, pars, pfun);
+    clus.update_cluster_labels(pars.t, dat, pars, pfun);
 
-    if(t % clus.clus_thinning == 0){
+    if(pars.t % clus.clus_thinning == 0){
       ++cluster_assignment_index;
       clus.cluster_assignment.col(cluster_assignment_index) = clus.current_cluster_assignment;
       clus.cluster_probs.col(cluster_assignment_index) = clus.current_cluster_probs;
     }
   }
 
-  clus.update_wcd(t);
+  clus.update_wcd(pars.t);
   aug.update_missing_ranks(dat, clus, pars, distfun);
   aug.augment_pairwise(dat, pars, clus, distfun, aug_prop);
 
-  if(aug.save_aug & (t % aug.aug_thinning == 0)){
+  if(aug.save_aug & (pars.t % aug.aug_thinning == 0)){
     ++aug_index;
     aug.augmented_data.slice(aug_index) = dat.rankings;
   }
@@ -92,7 +87,10 @@ Rcpp::List run_mcmc(
     Rcpp::Named("cluster_assignment") = clus.cluster_assignment + 1,
     Rcpp::Named("cluster_probs") = clus.cluster_probs,
     Rcpp::Named("within_cluster_distance") = clus.within_cluster_distance,
-    Rcpp::Named("augmented_data") = aug.augmented_data
+    Rcpp::Named("augmented_data") = aug.augmented_data,
+    Rcpp::Named("alpha_acceptance") = pars.alpha_acceptance /
+      (pars.nmc - pars.burnin) * pars.alpha_jump,
+    Rcpp::Named("rho_acceptance") = pars.rho_acceptance / (pars.nmc - pars.burnin)
   );
 
 }
