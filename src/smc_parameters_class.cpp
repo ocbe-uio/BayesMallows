@@ -28,7 +28,10 @@ void SMCParameters::update_alpha(
     dat.any_missing ? p.augmented_data : dat.rankings,
     dat.observation_frequency, dat.n_items, priors
   );
-  if(test.accept) p.alpha = test.proposal;
+  if(test.accept) {
+    p.alpha = test.proposal;
+    p.alpha_acceptance++;
+  }
 }
 
 void SMCParameters::update_rho(
@@ -39,7 +42,10 @@ void SMCParameters::update_rho(
   auto proposal = make_new_rho(
     p.rho, dat.any_missing ? p.augmented_data : dat.rankings,
     p.alpha, distfun, prop, dat.observation_frequency);
-  if(proposal.second) p.rho = proposal.first;
+  if(proposal.second) {
+    p.rho = proposal.first;
+    p.rho_acceptance++;
+  }
 }
 
 arma::ivec SMCParameters::draw_resampling_index(

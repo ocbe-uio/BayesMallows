@@ -16,6 +16,8 @@ struct Particle {
   arma::vec log_aug_prob;
   arma::uvec consistent;
   arma::vec previous_distance;
+  double alpha_acceptance{};
+  double rho_acceptance{};
 };
 
 struct SMCData : Data {

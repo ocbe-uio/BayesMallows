@@ -1,4 +1,5 @@
 #include <vector>
+#include <numeric>
 #include "smc_classes.h"
 #include "missing_data.h"
 
@@ -122,4 +123,30 @@ cube wrapup_augmented_data(const std::vector<Particle>& pvec) {
     }
   }
   return augmented_data;
+}
+
+Rcpp::List compute_particle_acceptance(
+    const std::vector<std::vector<Particle>>& particle_vectors, int mcmc_steps) {
+  vec alpha_acceptance(particle_vectors.size());
+  vec rho_acceptance(particle_vectors.size());
+  for(size_t i{}; i < particle_vectors.size(); i++) {
+    alpha_acceptance[i] =
+      std::accumulate(
+        particle_vectors[i].begin(), particle_vectors[i].end(), 0.0,
+        [](double accumulator, const Particle& p) {
+          return accumulator + p.alpha_acceptance;
+          });
+    alpha_acceptance[i] /= particle_vectors[i].size() * mcmc_steps;
+    rho_acceptance[i] =
+      std::accumulate(
+        particle_vectors[i].begin(), particle_vectors[i].end(), 0.0,
+        [](double accumulator, const Particle& p) {
+          return accumulator + p.rho_acceptance;
+        });
+    rho_acceptance[i] /= particle_vectors[i].size() * mcmc_steps;
+  }
+  return Rcpp::List::create(
+    Rcpp::Named("alpha_acceptance") = alpha_acceptance,
+    Rcpp::Named("rho_acceptance") = rho_acceptance
+  );
 }

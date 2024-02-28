@@ -49,3 +49,24 @@ test_that("acceptance rates are computed", {
   expect_equal(mod1$acceptance_ratios$rho_acceptance, mod2$acceptance_ratios$rho_acceptance)
   stopCluster(cl)
 })
+
+test_that("acceptance rates work with SMC", {
+  set.seed(1)
+  mod0 <- compute_mallows(
+    data = setup_rank_data(potato_visual[1:6, ]),
+    compute_options = set_compute_options(nmc = 100, burnin = 10)
+    )
+
+  mod1 <- update_mallows(mod0, setup_rank_data(potato_visual[7:12, ]),
+                         smc_options = set_smc_options(n_particles = 100))
+  expect_equal(as.numeric(mod1$acceptance_ratios$alpha_acceptance), .966)
+  expect_equal(as.numeric(mod1$acceptance_ratios$rho_acceptance), .964)
+
+  mod2 <- update_mallows(mod1, setup_rank_data(potato_weighing[1:6, ]))
+  expect_equal(as.numeric(mod2$acceptance_ratios$alpha_acceptance), .958)
+  expect_equal(as.numeric(mod2$acceptance_ratios$rho_acceptance), .888)
+
+  mod3 <- update_mallows(mod2, setup_rank_data(potato_weighing[7:12, ]))
+  expect_equal(as.numeric(mod3$acceptance_ratios$alpha_acceptance), .902)
+  expect_equal(as.numeric(mod3$acceptance_ratios$rho_acceptance), .854)
+})

@@ -61,7 +61,8 @@ Rcpp::List  run_smc(
     Rcpp::Named("rho_samples") = wrapup_rho(particle_vectors),
     Rcpp::Named("alpha_samples") = wrapup_alpha(particle_vectors),
     Rcpp::Named("augmented_rankings") = wrapup_augmented_data(particle_vectors[T - 1]),
-    Rcpp::Named("data") = dat.wrapup()
+    Rcpp::Named("data") = dat.wrapup(),
+    Rcpp::Named("acceptance_ratios") = compute_particle_acceptance(particle_vectors, pars.mcmc_steps)
   );
 
   return particle_history;
