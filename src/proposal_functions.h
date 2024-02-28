@@ -20,7 +20,7 @@ AlphaRatio make_new_alpha(
     double n_items,
     const Priors& priors);
 
-arma::vec make_new_rho(
+std::pair<arma::vec, bool> make_new_rho(
     const arma::vec& current_rho,
     const arma::mat& rankings,
     double alpha_old,

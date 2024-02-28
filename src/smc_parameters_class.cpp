@@ -1,3 +1,4 @@
+#include <utility>
 #include "smc_classes.h"
 #include "proposal_functions.h"
 using namespace arma;
@@ -35,9 +36,10 @@ void SMCParameters::update_rho(
     const SMCData& dat,
     const std::unique_ptr<Distance>& distfun,
     const std::unique_ptr<ProposalDistribution>& prop) const {
-  p.rho = make_new_rho(
+  auto proposal = make_new_rho(
     p.rho, dat.any_missing ? p.augmented_data : dat.rankings,
     p.alpha, distfun, prop, dat.observation_frequency);
+  if(proposal.second) p.rho = proposal.first;
 }
 
 arma::ivec SMCParameters::draw_resampling_index(
