@@ -97,13 +97,14 @@ void Parameters::update_shape(const Data& dat, const Priors& priors) {
 }
 
 void Parameters::update_alpha(
-    int alpha_index,
     const Data& dat,
     const std::unique_ptr<Distance>& distfun,
     const std::unique_ptr<PartitionFunction>& pfun,
     const Priors& priors,
     const uvec& current_cluster_assignment) {
 
+  if(t % alpha_jump != 0) return;
+  alpha_index++;
   for(size_t i{}; i < n_clusters; ++i) {
     const uvec cluster_indicator = find(current_cluster_assignment == i);
     const mat cluster_rankings = dat.rankings.cols(cluster_indicator);
@@ -121,4 +122,5 @@ void Parameters::update_alpha(
       alpha(i, alpha_index) = alpha_old(i);
     }
   }
+  alpha_old = alpha.col(alpha_index);
 }

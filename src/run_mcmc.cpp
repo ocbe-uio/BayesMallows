@@ -37,7 +37,7 @@ Rcpp::List run_mcmc(
   }
 
   clus.update_dist_mat(dat, pars, distfun);
-  int alpha_index = 0, rho_index = 0, aug_index = 0,
+  int rho_index = 0, aug_index = 0,
     cluster_assignment_index = 0;
 
   for(pars.t = 1; pars.t < pars.nmc; pars.t++){
@@ -52,13 +52,9 @@ Rcpp::List run_mcmc(
     pars.update_shape(dat, pris);
     pars.update_rho(rho_index, dat, clus.current_cluster_assignment,
                     distfun, rho_proposal);
+    pars.update_alpha(dat, distfun, pfun, pris,
+                      clus.current_cluster_assignment);
 
-    if(pars.t % pars.alpha_jump == 0) {
-      ++alpha_index;
-      pars.update_alpha(alpha_index, dat, distfun, pfun, pris,
-                        clus.current_cluster_assignment);
-      pars.alpha_old = pars.alpha.col(alpha_index);
-    }
 
   if(clus.clustering){
     clus.update_cluster_probs(pars, pris);

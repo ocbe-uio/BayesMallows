@@ -50,7 +50,6 @@ struct Parameters {
                   const std::unique_ptr<ProposalDistribution>& prop);
 
   void update_alpha(
-      int alpha_index,
       const Data& dat,
       const std::unique_ptr<Distance>& distfun,
       const std::unique_ptr<PartitionFunction>& pfun,
@@ -76,6 +75,7 @@ struct Parameters {
   const std::string metric;
   int burnin{};
   size_t t{};
+  size_t alpha_index{};
 
 private:
   const double alpha_prop_sd;
