@@ -88,7 +88,6 @@ std::vector<Particle> augment_particles(
 }
 
 cube wrapup_rho(const std::vector<std::vector<Particle>>& particle_vectors) {
-
   cube rho_samples(particle_vectors[0][0].rho.size(),
                    particle_vectors[0].size(),
                    particle_vectors.size());
