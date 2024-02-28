@@ -37,13 +37,11 @@ void Augmentation::augment_pairwise(
 ){
   if(!dat.augpair) return;
   for(size_t i = 0; i < dat.n_assessors; ++i) {
-
     RankProposal rp = prop->propose(
         dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
 
     double u = std::log(R::runif(0, 1));
     int cluster = clus.current_cluster_assignment(i);
-
     double newdist = distfun->d(rp.rankings, pars.rho_old.col(cluster), rp.mutated_items);
     double olddist = distfun->d(dat.rankings.col(i), pars.rho_old.col(cluster), rp.mutated_items);
     double ratio = -pars.alpha_old(cluster) / dat.n_items * (newdist - olddist);
@@ -51,7 +49,6 @@ void Augmentation::augment_pairwise(
     if(pars.error_model != "none") {
       ratio += rp.g_diff * std::log(pars.theta_current / (1 - pars.theta_current));
     }
-
     if(ratio > u) dat.rankings.col(i) = rp.rankings;
   }
 }
