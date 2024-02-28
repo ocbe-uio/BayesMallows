@@ -7,10 +7,6 @@
 #' @param model_fit An object of type `BayesMallows`, returned from
 #'   [compute_mallows()].
 #'
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to `x$burnin`, and must be
-#' provided if `x$burnin` does not exist. See [assess_convergence()].
-#'
 #' @param ... Additional arguments passed on to other methods. In particular,
 #'   `type = "CP"` or `type = "MAP"` can be passed on to
 #'   [compute_consensus()] to determine the order of items along the
@@ -21,10 +17,10 @@
 #'
 #' @example /inst/examples/heat_plot_example.R
 #' @family posterior quantities
-heat_plot <- function(model_fit, burnin = model_fit$burnin, ...) {
-  if (is.null(burnin)) stop("Please specify the burnin.")
-  if (model_fit$nmc <= burnin) stop("burnin must be <= nmc")
-  if (is.null(model_fit$burnin)) model_fit$burnin <- burnin
+heat_plot <- function(model_fit, ...) {
+  if (is.null(burnin(model_fit))) {
+    stop("Please specify the burnin with 'burnin(model_fit) <- value'.")
+  }
   if (model_fit$n_clusters != 1) {
     stop("heat_plot only works for a single cluster")
   }
@@ -32,7 +28,7 @@ heat_plot <- function(model_fit, burnin = model_fit$burnin, ...) {
   item_order <- unique(compute_consensus(model_fit, ...)[["item"]])
 
   posterior_ranks <- model_fit$rho[
-    model_fit$rho$iteration > burnin, ,
+    model_fit$rho$iteration > burnin(model_fit), ,
     drop = FALSE
   ]
   posterior_ranks$probability <- 1

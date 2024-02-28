@@ -69,7 +69,7 @@ assess_convergence(model1)
 
 
 ```r
-model1$burnin <- 300
+burnin(model1) <- 300
 ```
 
 Having saved this model, assume we receive another batch of preferences at a later timepoint, with an additional 300 rankings.
@@ -312,7 +312,7 @@ We set the burnin to 300.
 
 
 ```r
-model1$burnin <- 300
+burnin(model1) <- 300
 ```
 
 Below is the posterior for $\alpha$ after this initial run:
@@ -440,7 +440,7 @@ assess_convergence(mod_init)
 </div>
 
 ```r
-mod_init$burnin <- 300
+burnin(mod_init) <- 300
 ```
 
 Next, assume we receive top-5 rankings from the same users. We now update the model using SMC.
@@ -598,11 +598,15 @@ assess_convergence(mod_bmm)
 <p class="caption">Trace plot for MCMC run on sushi data.</p>
 </div>
 
+```r
+burnin(mod_bmm) <- 300
+```
+
 We see that the posterior is close to the one of `model4`:
 
 
 ```r
-plot(mod_bmm, burnin = 300)
+plot(mod_bmm)
 ```
 
 <div class="figure">

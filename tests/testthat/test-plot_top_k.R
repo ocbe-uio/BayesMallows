@@ -32,6 +32,4 @@ test_that("predict_top_k works", {
   )
 
   expect_error(predict_top_k(model_fit), "Please specify the burnin.")
-  model_fit$burnin <- 1e7
-  expect_error(predict_top_k(model_fit), "burnin < model_fit")
 })

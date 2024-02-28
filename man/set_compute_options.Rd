@@ -8,6 +8,7 @@ set_compute_options(
   nmc = 2000,
   burnin = NULL,
   alpha_prop_sd = 0.1,
+  rho_proposal = c("ls", "swap"),
   leap_size = 1,
   aug_method = c("uniform", "pseudo"),
   pseudo_aug_metric = c("footrule", "spearman"),
@@ -34,9 +35,14 @@ the lognormal proposal distribution used for \eqn{\alpha} in the
 Metropolis-Hastings algorithm. The logarithm of the proposed samples will
 have standard deviation given by \code{alpha_prop_sd}. Defaults to \code{0.1}.}
 
-\item{leap_size}{Integer specifying the step size of the leap-and-shift
-proposal distribution used for proposing new latent ranks \eqn{rho}.
-Defaults to 1.}
+\item{rho_proposal}{Character string specifying the proposal distribution of
+modal ranking \eqn{\rho}. Defaults to "ls", which means that the
+leap-and-shift algorithm of \insertCite{vitelli2018;textual}{BayesMallows}
+is used. The other option is "swap", which means that the swap proposal of
+\insertCite{crispino2019;textual}{BayesMallows} is used instead.}
+
+\item{leap_size}{Integer specifying the step size of the distribution defined
+in \code{rho_proposal} for proposing new latent ranks \eqn{rho}. Defaults to 1.}
 
 \item{aug_method}{Augmentation proposal for use with missing data. One of
 "pseudo" and "uniform". Defaults to "uniform", which means that new
@@ -52,8 +58,11 @@ used instead.}
 pseudo-likelihood proposal. Only used if \code{aug_method = "pseudo"}. Can be
 either "footrule" or "spearman", and defaults to "footrule".}
 
-\item{swap_leap}{Integer specifying the step size of the swap proposal used
-for augmentation with pairwise preference data. Defaults to 1.}
+\item{swap_leap}{Integer specifying the leap size for the swap proposal used
+for proposing latent ranks in the case of non-transitive pairwise
+preference data. Note that leap size for the swap proposal when used for
+proposal the modal ranking \eqn{\rho} is given by the \code{leap_size}
+argument above.}
 
 \item{alpha_jump}{Integer specifying how many times to sample \eqn{\rho}
 between each sampling of \eqn{\alpha}. In other words, how many times to
@@ -97,6 +106,9 @@ the \code{compute_options} argument to \code{\link[=compute_mallows]{compute_mal
 }
 \description{
 Set parameters related to the Metropolis-Hastings algorithm.
+}
+\references{
+\insertAllCited{}
 }
 \seealso{
 Other preprocessing: 

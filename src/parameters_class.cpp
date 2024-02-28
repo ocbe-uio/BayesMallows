@@ -12,9 +12,11 @@ Parameters::Parameters(
   nmc { compute_options["nmc"] },
   error_model(model_options["error_model"]),
   alpha_jump { compute_options["alpha_jump"] },
-  element_indices { regspace<uvec>(0, n_items - 1) },
-  alpha_prop_sd { compute_options["alpha_prop_sd"] },
   leap_size { compute_options["leap_size"] },
+  rho_proposal_option( compute_options["rho_proposal"] ),
+  metric ( model_options["metric"] ),
+  burnin { compute_options["burnin"] == R_NilValue ? 0 : compute_options["burnin"] },
+  alpha_prop_sd { compute_options["alpha_prop_sd"] },
   rho_thinning { compute_options["rho_thinning"] }
   {
     alpha.set_size(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
@@ -46,21 +48,24 @@ Parameters::Parameters(
   }
 
 void Parameters::update_rho(
-    int t,
-    int& rho_index,
     const Data& dat,
     const uvec& current_cluster_assignment,
-    const std::unique_ptr<Distance>& distfun
+    const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<ProposalDistribution>& prop
 ) {
   for(size_t i{}; i < n_clusters; ++i){
     const uvec cluster_indicator = find(current_cluster_assignment == i);
-    const mat cluster_rankings = dat.rankings.submat(
-      element_indices, cluster_indicator);
+    const mat cluster_rankings = dat.rankings.cols(cluster_indicator);
     const vec cluster_frequency =
       dat.observation_frequency.elem(cluster_indicator);
     vec rho_cluster = rho_old.col(i);
-    rho_old.col(i) = make_new_rho(rho_cluster, cluster_rankings, alpha_old(i),
-                leap_size, distfun, cluster_frequency);
+    auto proposal = make_new_rho(
+      rho_cluster, cluster_rankings,
+      alpha_old(i), distfun, prop, cluster_frequency);
+    if(proposal.second) {
+      rho_old.col(i) = proposal.first;
+      if(t > burnin) rho_acceptance++;
+    }
     if(t % rho_thinning == 0){
       if(i == 0) ++rho_index;
       rho.slice(rho_index).col(i) = rho_old.col(i);
@@ -68,8 +73,7 @@ void Parameters::update_rho(
   }
 }
 
-void Parameters::update_shape(
-    int t, const Data& dat, const Priors& priors) {
+void Parameters::update_shape(const Data& dat, const Priors& priors) {
   if(error_model != "bernoulli") return;
   int sum_1{};
   int sum_2{};
@@ -93,20 +97,21 @@ void Parameters::update_shape(
   shape_1(t) = priors.kappa(0) + sum_1;
   shape_2(t) = priors.kappa(1) + sum_2;
   theta(t) = rtruncbeta(shape_1(t), shape_2(t), 0.5);
+  theta_current = theta(t);
 }
 
 void Parameters::update_alpha(
-    int alpha_index,
     const Data& dat,
     const std::unique_ptr<Distance>& distfun,
     const std::unique_ptr<PartitionFunction>& pfun,
     const Priors& priors,
     const uvec& current_cluster_assignment) {
 
+  if(t % alpha_jump != 0) return;
+  alpha_index++;
   for(size_t i{}; i < n_clusters; ++i) {
     const uvec cluster_indicator = find(current_cluster_assignment == i);
-    const mat cluster_rankings = dat.rankings.submat(
-      element_indices, cluster_indicator);
+    const mat cluster_rankings = dat.rankings.cols(cluster_indicator);
     const vec cluster_frequency =
       dat.observation_frequency.elem(cluster_indicator);
 
@@ -117,8 +122,10 @@ void Parameters::update_alpha(
 
     if(test.accept){
       alpha(i, alpha_index) = test.proposal;
+      if(t > burnin) alpha_acceptance++;
     } else {
       alpha(i, alpha_index) = alpha_old(i);
     }
   }
+  alpha_old = alpha.col(alpha_index);
 }

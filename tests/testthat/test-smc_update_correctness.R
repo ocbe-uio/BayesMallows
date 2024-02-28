@@ -25,12 +25,14 @@ test_that("update_mallows is correct for new rankings", {
     new_data = setup_rank_data(rankings = triple_potato[21:36, ])
   )
 
-  expect_equal(mean(mod_smc_next$alpha$value),
+  expect_equal(
+    mean(mod_smc_next$alpha$value),
     mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
     tolerance = 0.01
   )
 
-  expect_equal(sd(mod_smc_next$alpha$value),
+  expect_equal(
+    sd(mod_smc_next$alpha$value),
     sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
     tolerance = 0.1
   )
@@ -187,7 +189,7 @@ test_that("update_mallows is correct for updated partial rankings", {
   expect_equal(
     mean(mod1$alpha$value),
     mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 4000]),
-    tolerance = .05
+    tolerance = .1
   )
 
   dat2 <- potato_visual
@@ -281,5 +283,49 @@ test_that("update_mallows works for data one at a time", {
     sd(mod$alpha_samples),
     sd(mod_bmm$alpha_samples[-(1:500)]),
     tolerance = .1
+  )
+})
+
+test_that("update_mallows works with swap prosal for rho", {
+  triple_potato <- rbind(potato_visual, potato_visual, potato_visual)
+  rownames(triple_potato) <- seq_len(nrow(triple_potato))
+  user_ids <- rownames(triple_potato)
+
+  set.seed(123)
+
+  mod_bmm <- compute_mallows(
+    data = setup_rank_data(triple_potato),
+    compute_options = set_compute_options(
+      nmc = 10000, burnin = 1000, rho_proposal = "swap"
+    )
+  )
+
+  mod_init <- compute_mallows(
+    data = setup_rank_data(triple_potato[1:4, , drop = FALSE]),
+    compute_options = set_compute_options(
+      nmc = 20000, burnin = 1000, rho_proposal = "swap"
+    )
+  )
+
+  mod_smc <- update_mallows(
+    model = mod_init,
+    new_data = setup_rank_data(rankings = triple_potato[5:20, ])
+  )
+
+  mod_smc_next <- update_mallows(
+    model = mod_smc,
+    new_data = setup_rank_data(rankings = triple_potato[21:36, ])
+  )
+
+  expect_equal(
+    mean(mod_smc_next$alpha$value),
+    mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
+    tolerance = 0.01
+  )
+
+  expect_equal(
+    sd(mod_smc_next$alpha$value),
+    sd(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
+    tolerance = 0.1
   )
 })

@@ -4,7 +4,7 @@ test_that("heat_plot works", {
     setup_rank_data(potato_visual),
     compute_options = set_compute_options(nmc = 20, burnin = 3)
   )
-  expect_s3_class(heat_plot(model_fit, burnin = 0, type = "MAP"), "ggplot")
+  expect_s3_class(heat_plot(model_fit, type = "MAP"), "ggplot")
   obj <- heat_plot(model_fit)
   expect_equal(sum(obj$data$probability), 20)
 
@@ -22,10 +22,7 @@ test_that("heat_plot works", {
   )
 
   expect_error(heat_plot(model_fit), "Please specify the burnin.")
-  expect_error(heat_plot(model_fit, burnin = 300), "burnin must be <= nmc")
-
-  expect_s3_class(heat_plot(model_fit, burnin = 1), "ggplot")
-  model_fit$burnin <- 1
+  burnin(model_fit) <- 1
   expect_s3_class(heat_plot(model_fit, type = "MAP"), "ggplot")
 
   model_fit <- compute_mallows(

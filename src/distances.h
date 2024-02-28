@@ -13,8 +13,9 @@ struct Distance {
   virtual double d(const arma::vec& r1, const arma::vec& r2,
                    const arma::uvec& inds) = 0;
   arma::vec matdist(const arma::mat& r1, const arma::vec& r2);
+  arma::vec matdist(const arma::mat& r1, const arma::vec& r2,
+                    const arma::uvec& inds);
   arma::vec scalardist(const arma::vec& r1, const double r2);
-  virtual void update_leap_and_shift_indices(arma::uvec& indices, int n_items);
 };
 
 std::unique_ptr<Distance> choose_distance_function(std::string metric);
@@ -22,7 +23,6 @@ std::unique_ptr<Distance> choose_distance_function(std::string metric);
 struct CayleyDistance : Distance {
   double d(const arma::vec& r1, const arma::vec& r2) override;
   double d(const arma::vec& r1, const arma::vec& r2, const arma::uvec& inds) override;
-  void update_leap_and_shift_indices(arma::uvec& indices, int n_items) override;
 };
 
 struct FootruleDistance : Distance {
@@ -48,5 +48,4 @@ struct SpearmanDistance : Distance {
 struct UlamDistance : Distance {
   double d(const arma::vec& r1, const arma::vec& r2) override;
   double d(const arma::vec& r1, const arma::vec& r2, const arma::uvec& inds) override;
-  void update_leap_and_shift_indices(arma::uvec& indices, int n_items) override;
 };

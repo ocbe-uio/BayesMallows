@@ -17,7 +17,7 @@
 #'   of \insertCite{Kantas2015}{BayesMallows} for details. The \eqn{L} in their
 #'   notation corresponds to `latent_sampling_lag`. See more under Details.
 #'   Defaults to `NA`, which means that all latent ranks from previous timesteps
-#'   are resampled. If set to `0`, no move step is applied to the latent ranks.
+#'   are moved. If set to `0`, no move step is applied to the latent ranks.
 #'
 #' @return An object of class "SMCOptions".
 #'

@@ -7,11 +7,6 @@
 #' @param model_fit An object of type `BayesMallows`, returned from
 #'   [compute_mallows()].
 #'
-#' @param burnin A numeric value specifying the number of iterations to discard
-#'   as burn-in. Defaults to `model_fit$burnin`, and must be provided if
-#'   `model_fit$burnin` does not exist. See
-#'   [assess_convergence()].
-#'
 #' @param k Integer specifying the k in top-\eqn{k}.
 #'
 #' @export
@@ -22,14 +17,14 @@
 #'
 #' @example /inst/examples/plot_top_k_example.R
 #' @family posterior quantities
-predict_top_k <- function(model_fit, burnin = model_fit$burnin, k = 3) {
-  validate_top_k(model_fit, burnin)
-  .predict_top_k(model_fit, burnin, k)
+predict_top_k <- function(model_fit, k = 3) {
+  validate_top_k(model_fit)
+  .predict_top_k(model_fit, k)
 }
 
-.predict_top_k <- function(model_fit, burnin, k) {
+.predict_top_k <- function(model_fit, k) {
   rankings <- model_fit$augmented_data[
-    model_fit$augmented_data$iteration > burnin &
+    model_fit$augmented_data$iteration > burnin(model_fit) &
       model_fit$augmented_data$value <= k, ,
     drop = FALSE
   ]
@@ -45,11 +40,10 @@ predict_top_k <- function(model_fit, burnin = model_fit$burnin, k = 3) {
 }
 
 
-validate_top_k <- function(model_fit, burnin) {
-  if (is.null(burnin)) {
-    stop("Please specify the burnin.")
+validate_top_k <- function(model_fit) {
+  if (is.null(burnin(model_fit))) {
+    stop("Please specify the burnin with 'burnin(model_fit) <- value'.")
   }
-  stopifnot(burnin < model_fit$nmc)
 
   if (!exists("augmented_data", model_fit)) {
     stop("model_fit must have element augmented_data. Please set save_aug = TRUE

@@ -66,7 +66,7 @@ Setting the burnin to 500, we obtain a plot of the posterior
 distribution of the scale parameter with:
 
 ``` r
-fit$burnin <- 500
+burnin(fit) <- 500
 plot(fit)
 ```
 

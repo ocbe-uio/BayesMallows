@@ -48,8 +48,11 @@ plot(model3)
 }
 \seealso{
 Other modeling: 
+\code{\link{burnin}()},
+\code{\link{burnin<-}()},
 \code{\link{compute_mallows}()},
 \code{\link{compute_mallows_mixtures}()},
+\code{\link{compute_mallows_sequentially}()},
 \code{\link{update_mallows}()}
 }
 \concept{modeling}

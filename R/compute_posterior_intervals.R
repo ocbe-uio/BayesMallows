@@ -4,11 +4,6 @@
 #' Compute posterior intervals of parameters of interest.
 #'
 #' @param model_fit A model object.
-#'
-#' @param burnin A numeric value specifying the number of iterations to discard
-#'   as burn-in. Defaults to `model_fit$burnin`, and must be provided if
-#'   `model_fit$burnin` does not exist. See
-#'   [assess_convergence()].
 #' @param parameter Character string defining which parameter to compute
 #'   posterior intervals for. One of `"alpha"`, `"rho"`, or
 #'   `"cluster_probs"`. Default is `"alpha"`.
@@ -36,20 +31,18 @@ compute_posterior_intervals <- function(model_fit, ...) {
 #' @export
 #' @rdname compute_posterior_intervals
 compute_posterior_intervals.BayesMallows <- function(
-    model_fit, burnin = model_fit$burnin,
-    parameter = c("alpha", "rho", "cluster_probs"),
+    model_fit, parameter = c("alpha", "rho", "cluster_probs"),
     level = 0.95, decimals = 3L, ...) {
-  if (is.null(burnin)) stop("Please specify the burnin.")
-  stopifnot(burnin < model_fit$nmc)
+  if (is.null(burnin(model_fit))) {
+    stop("Please specify the burnin with 'burnin(model_fit) <- value'.")
+  }
 
-  parameter <- match.arg(
-    parameter, c("alpha", "rho", "cluster_probs")
-  )
+  parameter <- match.arg(parameter, c("alpha", "rho", "cluster_probs"))
 
   stopifnot(level > 0 && level < 1)
 
   posterior_data <- model_fit[[parameter]][
-    model_fit[[parameter]]$iteration > burnin, ,
+    model_fit[[parameter]]$iteration > burnin(model_fit), ,
     drop = FALSE
   ]
 
@@ -97,7 +90,7 @@ compute_posterior_intervals.BayesMallows <- function(
 compute_posterior_intervals.SMCMallows <- function(
     model_fit, parameter = c("alpha", "rho"), level = 0.95,
     decimals = 3L, ...) {
-  model_fit$burnin <- 0
+  model_fit$compute_options$burnin <- 0
   parameter <- match.arg(parameter, c("alpha", "rho"))
   NextMethod("compute_posterior_intervals")
 }

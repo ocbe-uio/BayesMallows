@@ -87,7 +87,7 @@ assess_convergence(model_fit, parameter = "alpha")
 assess_convergence(model_fit, parameter = "rho", items = 1:4)
 
 # Based on these plots, we set burnin = 1000.
-model_fit$burnin <- 1000
+burnin(model_fit) <- 1000
 # Next, we use the generic plot function to study the posterior distributions
 # of alpha and rho
 plot(model_fit, parameter = "alpha")
@@ -152,7 +152,7 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
   # Based on this, we set burnin = 1000
   # We now plot the posterior density of the scale parameters alpha in
   # each mixture:
-  model_fit$burnin <- 1000
+  burnin(model_fit) <- 1000
   plot(model_fit, parameter = "alpha")
   # We can also compute the posterior density of the cluster probabilities
   plot(model_fit, parameter = "cluster_probs")
@@ -178,7 +178,8 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
   # models is a list in which each element is an object of class BayesMallows,
   # returned from compute_mallows
   # We can create an elbow plot
-  plot_elbow(models, burnin = 1000)
+  burnin(models) <- 1000
+  plot_elbow(models)
   # We then select the number of cluster at a point where this plot has
   # an "elbow", e.g., at 6 clusters.
 }
@@ -209,7 +210,7 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
 
   assess_convergence(mod)
   assess_convergence(mod, parameter = "theta")
-  mod$burnin <- 3000
+  burnin(mod) <- 3000
 
   plot(mod)
   plot(mod, parameter = "theta")
@@ -263,7 +264,7 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
   cluster_files <- list.files(pattern = "cluster\\\\_probs[[:digit:]]+\\\\.csv")
   # Create 3d array, with dimensions (iterations, assessors, clusters)
   prob_array <- array(
-    dim = c(length(cluster_files), m$n_assessors, m$n_clusters))
+    dim = c(length(cluster_files), m$data$n_assessors, m$n_clusters))
   # Read each file, adding to the right element of the array
   for(i in seq_along(cluster_files)){
     prob_array[i, , ] <- as.matrix(
@@ -302,7 +303,10 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
 }
 \seealso{
 Other modeling: 
+\code{\link{burnin}()},
+\code{\link{burnin<-}()},
 \code{\link{compute_mallows_mixtures}()},
+\code{\link{compute_mallows_sequentially}()},
 \code{\link{sample_prior}()},
 \code{\link{update_mallows}()}
 }

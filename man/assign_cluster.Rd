@@ -4,20 +4,11 @@
 \alias{assign_cluster}
 \title{Assign Assessors to Clusters}
 \usage{
-assign_cluster(
-  model_fit,
-  burnin = model_fit$burnin,
-  soft = TRUE,
-  expand = FALSE
-)
+assign_cluster(model_fit, soft = TRUE, expand = FALSE)
 }
 \arguments{
 \item{model_fit}{An object of type \code{BayesMallows}, returned from
 \code{\link[=compute_mallows]{compute_mallows()}}.}
-
-\item{burnin}{A numeric value specifying the number of iterations to discard
-as burn-in. Defaults to \code{model_fit$burnin}, and must be provided if
-\code{model_fit$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{soft}{A logical specifying whether to perform soft or hard clustering.
 If \code{soft=TRUE}, all cluster probabilities are returned, whereas if
@@ -56,6 +47,7 @@ head(assign_cluster(mixture_model, soft = FALSE))
 Other posterior quantities: 
 \code{\link{compute_consensus}()},
 \code{\link{compute_posterior_intervals}()},
+\code{\link{get_acceptance_ratios}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},
 \code{\link{plot.SMCMallows}()},

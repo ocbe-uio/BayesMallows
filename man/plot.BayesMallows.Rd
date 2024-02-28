@@ -4,22 +4,18 @@
 \alias{plot.BayesMallows}
 \title{Plot Posterior Distributions}
 \usage{
-\method{plot}{BayesMallows}(x, burnin = x$burnin, parameter = "alpha", items = NULL, ...)
+\method{plot}{BayesMallows}(x, parameter = "alpha", items = NULL, ...)
 }
 \arguments{
 \item{x}{An object of type \code{BayesMallows}, returned from
 \code{\link[=compute_mallows]{compute_mallows()}}.}
-
-\item{burnin}{A numeric value specifying the number of iterations
-to discard as burn-in. Defaults to \code{x$burnin}, and must be
-provided if \code{x$burnin} does not exist. See \code{\link[=assess_convergence]{assess_convergence()}}.}
 
 \item{parameter}{Character string defining the parameter to plot. Available
 options are \code{"alpha"}, \code{"rho"}, \code{"cluster_probs"},
 \code{"cluster_assignment"}, and \code{"theta"}.}
 
 \item{items}{The items to study in the diagnostic plot for \code{rho}. Either
-a vector of item names, corresponding to \code{x$items} or a
+a vector of item names, corresponding to \code{x$data$items} or a
 vector of indices. If NULL, five items are selected randomly.
 Only used when \code{parameter = "rho"}.}
 
@@ -30,7 +26,7 @@ Plot posterior distributions of the parameters of the Mallows Rank model.
 }
 \examples{
 model_fit <- compute_mallows(setup_rank_data(potato_visual))
-model_fit$burnin <- 1000
+burnin(model_fit) <- 1000
 
 # By default, the scale parameter "alpha" is plotted
 plot(model_fit)
@@ -53,7 +49,7 @@ plot(model_fit, parameter = "rho",
   model_fit <- compute_mallows(
     setup_rank_data(sushi_rankings),
     model_options = set_model_options(n_clusters = 5))
-  model_fit$burnin <- 1000
+  burnin(model_fit) <- 1000
   # Posterior distributions of the cluster probabilities
   plot(model_fit, parameter = "cluster_probs")
   # Cluster assignment plot. Color shows the probability of belonging to each
@@ -70,6 +66,7 @@ Other posterior quantities:
 \code{\link{assign_cluster}()},
 \code{\link{compute_consensus}()},
 \code{\link{compute_posterior_intervals}()},
+\code{\link{get_acceptance_ratios}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.SMCMallows}()},
 \code{\link{plot_elbow}()},

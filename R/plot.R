@@ -5,16 +5,12 @@
 #' @param x An object of type `BayesMallows`, returned from
 #'   [compute_mallows()].
 #'
-#' @param burnin A numeric value specifying the number of iterations
-#' to discard as burn-in. Defaults to `x$burnin`, and must be
-#' provided if `x$burnin` does not exist. See [assess_convergence()].
-#'
 #' @param parameter Character string defining the parameter to plot. Available
 #' options are `"alpha"`, `"rho"`, `"cluster_probs"`,
 #' `"cluster_assignment"`, and `"theta"`.
 #'
 #' @param items The items to study in the diagnostic plot for `rho`. Either
-#'   a vector of item names, corresponding to `x$items` or a
+#'   a vector of item names, corresponding to `x$data$items` or a
 #'   vector of indices. If NULL, five items are selected randomly.
 #'   Only used when `parameter = "rho"`.
 #'
@@ -25,24 +21,22 @@
 #'
 #' @example /inst/examples/plot.BayesMallows_example.R
 #' @family posterior quantities
-plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha",
-                              items = NULL, ...) {
+plot.BayesMallows <- function(x, parameter = "alpha", items = NULL, ...) {
   parameter <- match.arg(
     parameter,
     c("alpha", "rho", "cluster_probs", "cluster_assignment", "theta")
   )
 
-  if (is.null(burnin)) {
-    stop("Please specify the burnin.")
+  if (is.null(burnin(x))) {
+    stop("Please specify the burnin with 'burnin(x) <- value'.")
   }
-  if (x$nmc <= burnin) stop("burnin must be <= nmc")
 
   if (parameter == "alpha") {
-    plot_alpha(x, burnin)
+    plot_alpha(x)
   } else if (parameter == "rho") {
-    plot_rho(x, items, burnin)
+    plot_rho(x, items)
   } else if (parameter == "cluster_probs") {
-    df <- x$cluster_probs[x$cluster_probs$iteration > burnin, , drop = FALSE]
+    df <- x$cluster_probs[x$cluster_probs$iteration > burnin(x), , drop = FALSE]
 
     ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
@@ -54,11 +48,11 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha",
       stop("No cluster assignments.")
     }
 
-    df <- assign_cluster(x, burnin = burnin, soft = FALSE, expand = FALSE)
+    df <- assign_cluster(x, soft = FALSE, expand = FALSE)
     df <- df[order(df$map_cluster), ]
     assessor_order <- df$assessor
 
-    df <- assign_cluster(x, burnin = burnin, soft = TRUE, expand = TRUE)
+    df <- assign_cluster(x, soft = TRUE, expand = TRUE)
     df$assessor <- factor(df$assessor, levels = assessor_order)
 
     ggplot2::ggplot(df, ggplot2::aes(.data$assessor, .data$cluster)) +
@@ -74,7 +68,7 @@ plot.BayesMallows <- function(x, burnin = x$burnin, parameter = "alpha",
     if (is.null(x$theta)) {
       stop("Please run compute_mallows with error_model = 'bernoulli'.")
     }
-    df <- x$theta[x$theta$iteration > burnin, , drop = FALSE]
+    df <- x$theta[x$theta$iteration > burnin(x), , drop = FALSE]
     p <- ggplot2::ggplot(df, ggplot2::aes(x = .data$value)) +
       ggplot2::geom_density() +
       ggplot2::xlab(expression(theta)) +
@@ -110,8 +104,8 @@ plot.SMCMallows <- function(
   }
 }
 
-plot_alpha <- function(x, burnin = 0) {
-  plot_dat <- x$alpha[x$alpha$iteration > burnin, , drop = FALSE]
+plot_alpha <- function(x) {
+  plot_dat <- x$alpha[x$alpha$iteration > burnin(x), , drop = FALSE]
 
   p <- ggplot2::ggplot(plot_dat, ggplot2::aes(x = .data$value)) +
     ggplot2::geom_density() +
@@ -125,23 +119,23 @@ plot_alpha <- function(x, burnin = 0) {
 }
 
 
-plot_rho <- function(x, items, burnin = 0) {
-  if (is.null(items) && x$n_items > 5) {
+plot_rho <- function(x, items) {
+  if (is.null(items) && x$data$n_items > 5) {
     message("Items not provided by user. Picking 5 at random.")
-    items <- sample.int(x$n_items, 5)
-  } else if (is.null(items) && x$n_items > 0) {
-    items <- seq.int(from = 1, to = x$n_items)
+    items <- sample.int(x$data$n_items, 5)
+  } else if (is.null(items) && x$data$n_items > 0) {
+    items <- seq.int(from = 1, to = x$data$n_items)
   } else if (!is.null(items)) {
-    if (!all(items %in% x$items) && !all(items %in% seq_along(x$items))) {
+    if (!all(items %in% x$data$items) && !all(items %in% seq_along(x$data$items))) {
       stop("Unknown items.")
     }
   }
 
   if (!is.character(items)) {
-    items <- x$items[items]
+    items <- x$data$items[items]
   }
 
-  df <- x$rho[x$rho$iteration > burnin & x$rho$item %in% items, , drop = FALSE]
+  df <- x$rho[x$rho$iteration > burnin(x) & x$rho$item %in% items, , drop = FALSE]
   df1 <- aggregate(iteration ~ item + cluster + value, data = df, FUN = length)
   df1$pct <- df1$iteration / length(unique(df$iteration))
 

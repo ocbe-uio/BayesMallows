@@ -5,8 +5,6 @@ test_that("assign_cluster fails properly", {
   )
 
   expect_error(assign_cluster(mod), "Please specify the burnin.")
-  mod$burnin <- 11
-  expect_error(assign_cluster(mod), "burnin < model_fit")
 })
 
 test_that("assign_cluster works", {
