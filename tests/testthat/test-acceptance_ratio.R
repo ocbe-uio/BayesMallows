@@ -1,6 +1,5 @@
 test_that("acceptance rates are computed", {
-  library(parallel)
-  cl <- makeCluster(2)
+  cl <- parallel::makeCluster(2)
   set.seed(1)
   mod <- compute_mallows(
     data = setup_rank_data(potato_visual),
@@ -47,7 +46,7 @@ test_that("acceptance rates are computed", {
     cl = cl
   )
   expect_equal(mod1$acceptance_ratios$rho_acceptance, mod2$acceptance_ratios$rho_acceptance)
-  stopCluster(cl)
+  parallel::stopCluster(cl)
 })
 
 test_that("acceptance rates work with SMC", {
