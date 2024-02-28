@@ -44,7 +44,7 @@ struct Parameters {
   ~Parameters() = default;
 
   void update_shape(const Data& dat, const Priors& priors);
-  void update_rho(int& rho_index, const Data& dat,
+  void update_rho(const Data& dat,
                   const arma::uvec& cluster_assignment,
                   const std::unique_ptr<Distance>& distfun,
                   const std::unique_ptr<ProposalDistribution>& prop);
@@ -76,6 +76,7 @@ struct Parameters {
   int burnin{};
   size_t t{};
   size_t alpha_index{};
+  size_t rho_index{};
 
 private:
   const double alpha_prop_sd;

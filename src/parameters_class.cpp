@@ -48,7 +48,6 @@ Parameters::Parameters(
   }
 
 void Parameters::update_rho(
-    int& rho_index,
     const Data& dat,
     const uvec& current_cluster_assignment,
     const std::unique_ptr<Distance>& distfun,
