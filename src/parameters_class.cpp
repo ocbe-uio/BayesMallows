@@ -117,6 +117,7 @@ void Parameters::update_alpha(
 
     if(test.accept){
       alpha(i, alpha_index) = test.proposal;
+      if(t > burnin) alpha_acceptance++;
     } else {
       alpha(i, alpha_index) = alpha_old(i);
     }
