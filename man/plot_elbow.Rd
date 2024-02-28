@@ -7,10 +7,11 @@
 plot_elbow(...)
 }
 \arguments{
-\item{...}{One or more objects returned from \code{\link[=compute_mallows]{compute_mallows()}},
-separated by comma, or a list of such objects. Typically, each object
-has been run with a different number of mixtures, as specified in the
-\code{n_clusters} argument to \code{\link[=compute_mallows]{compute_mallows()}}.}
+\item{...}{One or more objects returned from \code{\link[=compute_mallows]{compute_mallows()}}, separated
+by comma, or a list of such objects. Typically, each object has been run
+with a different number of mixtures, as specified in the \code{n_clusters}
+argument to \code{\link[=compute_mallows]{compute_mallows()}}. Alternatively an object returned from
+\code{\link[=compute_mallows_mixtures]{compute_mallows_mixtures()}}.}
 }
 \value{
 A boxplot with the number of clusters on the horizontal axis and the
