@@ -21,7 +21,6 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
   fit$alpha <- do.call(rbind, lapply(seq_along(alphas), function(i) {
     tidy_alpha(alphas[[i]], i, compute_options$alpha_jump)
   }))
-  fit$alpha_acceptance <- lapply(fits, function(x) x$alpha_acceptance)
 
   fit$cluster_assignment <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_cluster_assignment(
@@ -56,6 +55,11 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
   fit$n_clusters <- model_options$n_clusters
   fit$data <- data
   fit$compute_options <- compute_options
+
+  fit$acceptance_ratios <- list(
+    alpha_acceptance = lapply(fits, function(x) x$alpha_acceptance),
+    rho_acceptance = lapply(fits, function(x) x$rho_acceptance)
+  )
 
   return(fit)
 }

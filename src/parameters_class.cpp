@@ -62,7 +62,10 @@ void Parameters::update_rho(
     auto proposal = make_new_rho(
       rho_cluster, cluster_rankings,
       alpha_old(i), distfun, prop, cluster_frequency);
-    if(proposal.second) rho_old.col(i) = proposal.first;
+    if(proposal.second) {
+      rho_old.col(i) = proposal.first;
+      if(t > burnin) rho_acceptance++;
+    }
     if(t % rho_thinning == 0){
       if(i == 0) ++rho_index;
       rho.slice(rho_index).col(i) = rho_old.col(i);
