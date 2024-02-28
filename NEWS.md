@@ -1,5 +1,9 @@
 # BayesMallows (development versions)
 
+* Acceptance ratios are now tracked both in the Metropolis-Hastings algorithm
+  used by compute_mallows() and in the move step inside the sequential Monte 
+  Carlo algorithm used by update_mallows() and compute_mallows_sequentially(). 
+  Use the function get_acceptance_ratios() to access them.
 * BREAKING CHANGE: Burnin now has to be explicitly set using 
   'burnin(model) <- value' if it is not already set in compute_options. This 
   alleviates the need for a 'burnin' argument in the functions for assessing the

@@ -84,6 +84,7 @@ compute_posterior_intervals(model_fit, parameter = "rho")
 Other posterior quantities: 
 \code{\link{assign_cluster}()},
 \code{\link{compute_consensus}()},
+\code{\link{get_acceptance_ratios}()},
 \code{\link{heat_plot}()},
 \code{\link{plot.BayesMallows}()},
 \code{\link{plot.SMCMallows}()},
