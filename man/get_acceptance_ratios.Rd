@@ -3,11 +3,14 @@
 \name{get_acceptance_ratios}
 \alias{get_acceptance_ratios}
 \alias{get_acceptance_ratios.BayesMallows}
+\alias{get_acceptance_ratios.SMCMallows}
 \title{Get Acceptance Ratios}
 \usage{
 get_acceptance_ratios(model_fit, ...)
 
 \method{get_acceptance_ratios}{BayesMallows}(model_fit, ...)
+
+\method{get_acceptance_ratios}{SMCMallows}(model_fit, ...)
 }
 \arguments{
 \item{model_fit}{A model fit.}

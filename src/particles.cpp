@@ -54,6 +54,8 @@ std::vector<Particle> augment_particles(
 ) {
   auto pvec = pvec_init;
   for(size_t i{}; i < pvec.size(); i++) {
+    pvec[i].alpha_acceptance = 0;
+    pvec[i].rho_acceptance = 0;
     uvec particle_consistent;
     if(dat.any_missing) {
       particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);

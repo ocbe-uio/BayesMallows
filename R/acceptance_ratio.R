@@ -25,3 +25,9 @@ get_acceptance_ratios <- function(model_fit, ...) {
 get_acceptance_ratios.BayesMallows <- function(model_fit, ...) {
   model_fit$acceptance_ratios
 }
+
+#' @export
+#' @rdname get_acceptance_ratios
+get_acceptance_ratios.SMCMallows <- function(model_fit, ...) {
+  model_fit$acceptance_ratios
+}

@@ -13,6 +13,9 @@ mod <- compute_mallows_sequentially(
   initial_values = initial_values,
   smc_options = set_smc_options(n_particles = 500, mcmc_steps = 20))
 
+# We can see the acceptance ratio of the move step for each timepoint:
+get_acceptance_ratios(mod)
+
 plot_dat <- data.frame(
   n_obs = seq_along(data),
   alpha_mean = apply(mod$alpha_samples, 2, mean),
