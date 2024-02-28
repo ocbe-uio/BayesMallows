@@ -15,6 +15,7 @@ Parameters::Parameters(
   leap_size { compute_options["leap_size"] },
   rho_proposal_option( compute_options["rho_proposal"] ),
   metric ( model_options["metric"] ),
+  burnin { compute_options["burnin"] == R_NilValue ? 0 : compute_options["burnin"] },
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
   rho_thinning { compute_options["rho_thinning"] }
   {

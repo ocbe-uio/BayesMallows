@@ -58,8 +58,10 @@ struct Parameters {
       const arma::uvec& current_cluster_assignment);
 
   arma::mat alpha;
+  double alpha_acceptance{};
   arma::vec alpha_old;
   arma::cube rho;
+  double rho_acceptance{};
   arma::mat rho_old;
   arma::vec shape_1;
   arma::vec shape_2;
@@ -72,6 +74,8 @@ struct Parameters {
   const int leap_size;
   const std::string rho_proposal_option;
   const std::string metric;
+  int burnin{};
+  size_t t{};
 
 private:
   const double alpha_prop_sd;

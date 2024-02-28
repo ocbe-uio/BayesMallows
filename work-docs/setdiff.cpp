@@ -2,14 +2,17 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-IntegerVector createEmptyIntegerVector() {
-  IntegerVector x = IntegerVector();
-  for(auto i : x) {Rcpp::Rcout << i << std::endl;}
-    return IntegerVector(); // Creates an empty IntegerVector
+int test(Rcpp::List a)  {
+  auto tmp = Rcpp::IntegerVector(a["b"]);
+  int ret;
+  if(tmp[0] == R_NilValue) {
+    ret = 0;
+  } else {
+    ret = tmp[0];
+  }
+  return ret;
 }
 
 /*** R
-# Example usage
-empty_vector <- createEmptyIntegerVector()
-print(empty_vector)
+test(list(b = 3))
 */
