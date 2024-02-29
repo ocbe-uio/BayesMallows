@@ -98,7 +98,6 @@ void SMCAugmentation::augment_partial(
           p.alpha, p.rho);
         p.augmented_data.col(user) = pprop.rankings;
         p.log_aug_prob(user) = log(pprop.prob_forward);
-
       }
     }
   );

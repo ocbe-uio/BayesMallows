@@ -33,15 +33,12 @@ vec make_new_augmentation(const vec& rankings, const uvec& missing_indicator,
   RankProposal pprop = propfun->propose(rankings, missing_indicator, alpha, rho);
   log_hastings_correction = -std::log(pprop.prob_forward) + log_aug_prob;
 
-  double u = std::log(R::runif(0, 1));
-  int n_items = rho.n_elem;
-
   double newdist = distfun->d(pprop.rankings, rho, pprop.mutated_items);
   double olddist = distfun->d(rankings, rho, pprop.mutated_items);
-  double ratio = -alpha / n_items * (newdist - olddist) +
+  double ratio = -alpha / rho.n_elem * (newdist - olddist) +
     log_hastings_correction;
 
-  if(ratio > u){
+  if(ratio > std::log(R::runif(0, 1))){
     log_aug_prob = std::log(pprop.prob_forward);
     return pprop.rankings;
   } else {
