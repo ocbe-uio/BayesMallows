@@ -44,8 +44,7 @@ struct Parameters {
   void update_shape(const Data& dat, const Priors& priors);
   void update_rho(const Data& dat,
                   const arma::uvec& cluster_assignment,
-                  const std::unique_ptr<Distance>& distfun,
-                  const std::unique_ptr<RhoProposal>& prop);
+                  const std::unique_ptr<Distance>& distfun);
 
   void update_alpha(
       const Data& dat,
@@ -68,8 +67,6 @@ struct Parameters {
   const unsigned int nmc;
   const std::string error_model;
   const int alpha_jump;
-  const int leap_size;
-  const std::string rho_proposal_option;
   const std::string metric;
   int burnin{};
   size_t t{};
@@ -77,6 +74,7 @@ struct Parameters {
   size_t rho_index{};
 
 private:
+  const std::unique_ptr<RhoProposal> rho_proposal_function;
   const double alpha_prop_sd;
   const int rho_thinning;
 };

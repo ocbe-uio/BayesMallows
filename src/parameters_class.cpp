@@ -12,10 +12,11 @@ Parameters::Parameters(
   nmc { compute_options["nmc"] },
   error_model(model_options["error_model"]),
   alpha_jump { compute_options["alpha_jump"] },
-  leap_size { compute_options["leap_size"] },
-  rho_proposal_option( compute_options["rho_proposal"] ),
   metric ( model_options["metric"] ),
   burnin { compute_options["burnin"] == R_NilValue ? 0 : compute_options["burnin"] },
+  rho_proposal_function {
+    choose_rho_proposal(compute_options["rho_proposal"],
+                        compute_options["leap_size"]) },
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
   rho_thinning { compute_options["rho_thinning"] }
   {
@@ -50,8 +51,7 @@ Parameters::Parameters(
 void Parameters::update_rho(
     const Data& dat,
     const uvec& current_cluster_assignment,
-    const std::unique_ptr<Distance>& distfun,
-    const std::unique_ptr<RhoProposal>& prop
+    const std::unique_ptr<Distance>& distfun
 ) {
   for(size_t i{}; i < n_clusters; ++i){
     const uvec cluster_indicator = find(current_cluster_assignment == i);
@@ -61,7 +61,7 @@ void Parameters::update_rho(
     vec rho_cluster = rho_old.col(i);
     auto proposal = make_new_rho(
       rho_cluster, cluster_rankings,
-      alpha_old(i), distfun, prop, cluster_frequency);
+      alpha_old(i), distfun, rho_proposal_function, cluster_frequency);
     if(proposal.second) {
       rho_old.col(i) = proposal.first;
       if(t > burnin) rho_acceptance++;

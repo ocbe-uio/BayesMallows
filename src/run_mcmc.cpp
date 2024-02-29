@@ -27,8 +27,6 @@ Rcpp::List run_mcmc(
   auto pfun = choose_partition_function(
     dat.n_items, pars.metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(pars.metric);
-  auto rho_proposal = choose_rho_proposal(
-    pars.rho_proposal_option, pars.leap_size);
   auto pairwise_aug_prop = choose_pairwise_proposal(pars.error_model, aug.swap_leap);
 
   clus.update_dist_mat(dat, pars, distfun);
@@ -36,8 +34,7 @@ Rcpp::List run_mcmc(
   for(pars.t = 1; pars.t < pars.nmc; pars.t++){
     rep.report(pars.t);
     pars.update_shape(dat, pris);
-    pars.update_rho(dat, clus.current_cluster_assignment,
-                    distfun, rho_proposal);
+    pars.update_rho(dat, clus.current_cluster_assignment, distfun);
     pars.update_alpha(dat, distfun, pfun, pris,
                       clus.current_cluster_assignment);
     clus.update_cluster_probs(pars, pris);
