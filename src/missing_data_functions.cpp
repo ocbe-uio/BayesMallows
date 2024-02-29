@@ -6,10 +6,6 @@
 
 using namespace arma;
 
-// [[Rcpp::depends(RcppArmadillo)]]
-
-
-
 mat initialize_missing_ranks(mat rankings, const umat& missing_indicator) {
   int n_assessors = rankings.n_cols;
 

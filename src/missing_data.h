@@ -1,6 +1,5 @@
 #pragma once
 #include "distances.h"
-#include "classes.h"
 #include "rank_proposal.h"
 
 arma::vec make_new_augmentation(

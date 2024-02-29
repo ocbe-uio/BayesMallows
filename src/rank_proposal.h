@@ -1,7 +1,6 @@
 #pragma once
 #include <RcppArmadillo.h>
-
-struct Distance;
+#include "distances.h"
 
 struct RankProposal{
   RankProposal() {};
