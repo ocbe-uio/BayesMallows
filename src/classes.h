@@ -1,11 +1,9 @@
 #pragma once
 #include <RcppArmadillo.h>
+#include "typedefs.h"
 #include "partition_functions.h"
 #include "distances.h"
 #include "rank_proposal.h"
-
-using doubly_nested = std::vector<std::vector<unsigned int>>;
-using triply_nested = std::vector<doubly_nested>;
 
 struct Data {
   Data(const Rcpp::List& data);

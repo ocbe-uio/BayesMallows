@@ -1,5 +1,6 @@
 #pragma once
 #include <RcppArmadillo.h>
+#include "typedefs.h"
 #include "distances.h"
 
 struct RankProposal{
@@ -43,24 +44,24 @@ struct PairwiseProposal {
   virtual ~PairwiseProposal() = default;
   virtual RankProposal propose(
       const arma::vec& current_rank,
-      const std::vector<std::vector<unsigned int>>& items_above,
-      const std::vector<std::vector<unsigned int>>& items_below) = 0;
+      const doubly_nested& items_above,
+      const doubly_nested& items_below) = 0;
 };
 
 struct PairwiseLeapAndShift : PairwiseProposal {
   PairwiseLeapAndShift();
   RankProposal propose(
       const arma::vec& current_rank,
-      const std::vector<std::vector<unsigned int>>& items_above,
-      const std::vector<std::vector<unsigned int>>& items_below) override;
+      const doubly_nested& items_above,
+      const doubly_nested& items_below) override;
 };
 
 struct PairwiseSwap : PairwiseProposal {
   PairwiseSwap(int leap_size);
   RankProposal propose(
       const arma::vec& current_rank,
-      const std::vector<std::vector<unsigned int>>& items_above,
-      const std::vector<std::vector<unsigned int>>& items_below) override;
+      const doubly_nested& items_above,
+      const doubly_nested& items_below) override;
   const int leap_size;
 };
 

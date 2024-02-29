@@ -1,9 +1,8 @@
 #include <memory>
 #include <utility>
-#include "rank_proposal.h"
-#include "distances.h"
-#include "missing_data.h"
+#include "typedefs.h"
 #include "setdiff.h"
+#include "rank_proposal.h"
 
 using namespace arma;
 
@@ -165,8 +164,8 @@ PairwiseSwap::PairwiseSwap(int leap_size) : leap_size { leap_size } {}
 
 RankProposal PairwiseSwap::propose(
     const arma::vec& current_rank,
-    const std::vector<std::vector<unsigned int>>& items_above,
-    const std::vector<std::vector<unsigned int>>& items_below) {
+    const doubly_nested& items_above,
+    const doubly_nested& items_below) {
   auto inds = sample(current_rank, leap_size);
   RankProposal ret{current_rank};
   std::swap(ret.rankings(inds.first), ret.rankings(inds.second));
