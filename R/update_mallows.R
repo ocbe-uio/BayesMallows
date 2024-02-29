@@ -34,6 +34,7 @@
 #' @example /inst/examples/update_mallows_example.R
 #'
 update_mallows <- function(model, new_data, ...) {
+  validate_class(new_data, "BayesMallowsData")
   UseMethod("update_mallows")
 }
 
