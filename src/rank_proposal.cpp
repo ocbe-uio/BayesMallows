@@ -6,33 +6,33 @@
 
 using namespace arma;
 
-std::unique_ptr<ProposalDistribution> choose_rank_proposal(
+std::unique_ptr<RhoProposal> choose_rho_proposal(
     const std::string& rho_proposal, int leap_size) {
   if(rho_proposal == "ls") {
-    return std::make_unique<LeapAndShift>(leap_size);
+    return std::make_unique<RhoLeapAndShift>(leap_size);
   } else if(rho_proposal == "swap") {
-    return std::make_unique<Swap>(leap_size);
+    return std::make_unique<RhoSwap>(leap_size);
   } else {
     Rcpp::stop("Unknown proposal distribution.");
   }
 }
 
-std::unique_ptr<ProposalDistribution> choose_pairwise_proposal(
+std::unique_ptr<PairwiseProposal> choose_pairwise_proposal(
     const std::string& error_model, unsigned int swap_leap
 ) {
   if(error_model == "none"){
-    return std::make_unique<LeapAndShift>(1);
+    return std::make_unique<PairwiseLeapAndShift>();
   } else if(error_model == "bernoulli"){
-    return std::make_unique<Swap>(swap_leap);
+    return std::make_unique<PairwiseSwap>(swap_leap);
   } else {
     Rcpp::stop("error_model must be 'none' or 'bernoulli'");
   }
 }
 
-ProposalDistribution::ProposalDistribution(int leap_size) :
+RhoProposal::RhoProposal(int leap_size) :
   leap_size { leap_size } {}
 
-int LeapAndShift::find_lower_limit(int item, const uvec& items_above_item,
+int find_lower_limit(int item, const uvec& items_above_item,
                      const vec& current_ranking) {
   if(items_above_item.size() > 0) {
     return max(current_ranking.elem(items_above_item - 1)) + 1;
@@ -41,7 +41,7 @@ int LeapAndShift::find_lower_limit(int item, const uvec& items_above_item,
   }
 }
 
-int LeapAndShift::find_upper_limit(int item, const uvec& items_below_item, const vec& current_ranking) {
+int find_upper_limit(int item, const uvec& items_below_item, const vec& current_ranking) {
   if(items_below_item.size() > 0) {
     return min(current_ranking.elem(items_below_item - 1)) - 1;
   } else {
@@ -49,7 +49,7 @@ int LeapAndShift::find_upper_limit(int item, const uvec& items_below_item, const
   }
 }
 
-RankProposal LeapAndShift::shift(
+RankProposal shift(
     const RankProposal& rp_in, const vec& current_rank, int u) {
   RankProposal rp{rp_in};
   double delta_r = rp.rankings(u) - current_rank(u);
@@ -69,11 +69,22 @@ RankProposal LeapAndShift::shift(
       rp.mutated_items[-(k)] = index;
     }
   }
-
   return rp;
 }
 
-RankProposal LeapAndShift::propose(
+std::pair<unsigned int, unsigned int> sample(
+    const vec& current_rank, int leap_size) {
+  int n_items = current_rank.n_elem;
+  ivec l = Rcpp::sample(leap_size, 1);
+  ivec a = Rcpp::sample(n_items - l(0), 1);
+  int u = a(0);
+
+  unsigned int ind1 = as_scalar(find(current_rank == u));
+  unsigned int ind2 = as_scalar(find(current_rank == (u + l(0))));
+  return std::make_pair(ind1, ind2);
+}
+
+RankProposal RhoLeapAndShift::propose(
     const vec& current_rank) {
   RankProposal rp{current_rank};
   int n_items = current_rank.n_elem;
@@ -104,7 +115,18 @@ RankProposal LeapAndShift::propose(
   return rp;
 }
 
-RankProposal LeapAndShift::propose(
+RankProposal RhoSwap::propose(const vec& current_rank) {
+  auto inds = sample(current_rank, leap_size);
+  RankProposal rp{current_rank};
+  std::swap(rp.rankings(inds.first), rp.rankings(inds.second));
+  rp.mutated_items = {inds.first, inds.second};
+  return rp;
+}
+
+PairwiseProposal::PairwiseProposal() {}
+PairwiseLeapAndShift::PairwiseLeapAndShift() {}
+
+RankProposal PairwiseLeapAndShift::propose(
     const vec& current_rank, const doubly_nested& items_above,
     const doubly_nested& items_below
 ) {
@@ -125,31 +147,13 @@ RankProposal LeapAndShift::propose(
   return rp;
 }
 
-std::pair<unsigned int, unsigned int> Swap::sample(
-    const vec& current_rank) {
-  int n_items = current_rank.n_elem;
-  ivec l = Rcpp::sample(leap_size, 1);
-  ivec a = Rcpp::sample(n_items - l(0), 1);
-  int u = a(0);
+PairwiseSwap::PairwiseSwap(int leap_size) : leap_size { leap_size } {}
 
-  unsigned int ind1 = as_scalar(find(current_rank == u));
-  unsigned int ind2 = as_scalar(find(current_rank == (u + l(0))));
-  return std::make_pair(ind1, ind2);
-}
-
-RankProposal Swap::propose(const vec& current_rank) {
-  auto inds = sample(current_rank);
-  RankProposal rp{current_rank};
-  std::swap(rp.rankings(inds.first), rp.rankings(inds.second));
-  rp.mutated_items = {inds.first, inds.second};
-  return rp;
-}
-
-RankProposal Swap::propose(
+RankProposal PairwiseSwap::propose(
     const arma::vec& current_rank,
     const std::vector<std::vector<unsigned int>>& items_above,
     const std::vector<std::vector<unsigned int>>& items_below) {
-  auto inds = sample(current_rank);
+  auto inds = sample(current_rank, leap_size);
   RankProposal ret{current_rank};
   std::swap(ret.rankings(inds.first), ret.rankings(inds.second));
   ret.mutated_items = {inds.first, inds.second};

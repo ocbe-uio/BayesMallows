@@ -33,7 +33,7 @@ void Augmentation::augment_pairwise(
     const Parameters& pars,
     const Clustering& clus,
     const std::unique_ptr<Distance>& distfun,
-    const std::unique_ptr<ProposalDistribution>& prop
+    const std::unique_ptr<PairwiseProposal>& prop
 ){
   if(!dat.augpair) return;
   for(size_t i = 0; i < dat.n_assessors; ++i) {

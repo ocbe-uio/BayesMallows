@@ -38,7 +38,7 @@ void SMCParameters::update_rho(
     Particle& p,
     const SMCData& dat,
     const std::unique_ptr<Distance>& distfun,
-    const std::unique_ptr<ProposalDistribution>& prop) const {
+    const std::unique_ptr<RhoProposal>& prop) const {
   auto proposal = make_new_rho(
     p.rho, dat.any_missing ? p.augmented_data : dat.rankings,
     p.alpha, distfun, prop, dat.observation_frequency);

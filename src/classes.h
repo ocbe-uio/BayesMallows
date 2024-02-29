@@ -47,7 +47,7 @@ struct Parameters {
   void update_rho(const Data& dat,
                   const arma::uvec& cluster_assignment,
                   const std::unique_ptr<Distance>& distfun,
-                  const std::unique_ptr<ProposalDistribution>& prop);
+                  const std::unique_ptr<RhoProposal>& prop);
 
   void update_alpha(
       const Data& dat,
@@ -125,7 +125,7 @@ struct Augmentation {
       const Parameters& pars,
       const Clustering& clus,
       const std::unique_ptr<Distance>& distfun,
-      const std::unique_ptr<ProposalDistribution>& prop);
+      const std::unique_ptr<PairwiseProposal>& prop);
 
   void update_missing_ranks(
       Data& dat,

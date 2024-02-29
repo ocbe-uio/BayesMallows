@@ -50,7 +50,7 @@ struct SMCParameters {
       Particle& p,
       const SMCData& dat,
       const std::unique_ptr<Distance>& distfun,
-      const std::unique_ptr<ProposalDistribution>& prop
+      const std::unique_ptr<RhoProposal>& prop
   ) const;
 
   arma::ivec draw_resampling_index(

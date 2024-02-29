@@ -62,7 +62,7 @@ arma::mat rmallows(
     if (t % 1000 == 0) Rcpp::checkUserInterrupt();
 
     // Sample a proposal
-    auto prop = std::make_unique<LeapAndShift>(leap_size);
+    auto prop = std::make_unique<RhoLeapAndShift>(leap_size);
     RankProposal rp = prop->propose(rho_iter);
 
     // Compute the distances to current and proposed ranks

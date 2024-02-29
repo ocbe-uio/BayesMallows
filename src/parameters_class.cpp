@@ -51,7 +51,7 @@ void Parameters::update_rho(
     const Data& dat,
     const uvec& current_cluster_assignment,
     const std::unique_ptr<Distance>& distfun,
-    const std::unique_ptr<ProposalDistribution>& prop
+    const std::unique_ptr<RhoProposal>& prop
 ) {
   for(size_t i{}; i < n_clusters; ++i){
     const uvec cluster_indicator = find(current_cluster_assignment == i);
