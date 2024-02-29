@@ -70,3 +70,10 @@ void Augmentation::update_missing_ranks(
     );
   }
 }
+
+void Augmentation::save_augmented_data(const Data& dat, const Parameters& pars) {
+  if(save_aug & (pars.t % aug_thinning == 0)){
+    ++aug_index;
+    augmented_data.slice(aug_index) = dat.rankings;
+  }
+}

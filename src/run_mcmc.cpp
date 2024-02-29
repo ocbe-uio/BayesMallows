@@ -30,7 +30,7 @@ Rcpp::List run_mcmc(
   auto pairwise_aug_prop = choose_pairwise_proposal(pars.error_model, aug.swap_leap);
 
   clus.update_dist_mat(dat, pars, distfun);
-  int aug_index = 0, cluster_assignment_index = 0;
+  int cluster_assignment_index = 0;
 
   for(pars.t = 1; pars.t < pars.nmc; pars.t++){
     if (pars.t % 1000 == 0) {
@@ -62,11 +62,7 @@ Rcpp::List run_mcmc(
   clus.update_wcd(pars.t);
   aug.update_missing_ranks(dat, clus, pars, distfun);
   aug.augment_pairwise(dat, pars, clus, distfun, pairwise_aug_prop);
-
-  if(aug.save_aug & (pars.t % aug.aug_thinning == 0)){
-    ++aug_index;
-    aug.augmented_data.slice(aug_index) = dat.rankings;
-  }
+  aug.save_augmented_data(dat, pars);
 
   clus.update_dist_mat(dat, pars, distfun);
   }

@@ -131,11 +131,12 @@ struct Augmentation {
       const Parameters& pars,
       const std::unique_ptr<Distance>& distfun
   );
-
+  void save_augmented_data(const Data& dat, const Parameters& pars);
   const bool save_aug;
   const unsigned int aug_thinning;
   arma::cube augmented_data;
   const unsigned int swap_leap;
+  size_t aug_index{};
 
 private:
   const std::string aug_method;
