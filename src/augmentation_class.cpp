@@ -6,13 +6,18 @@ using namespace arma;
 
 Augmentation::Augmentation(
   Data& dat,
-  const Rcpp::List& compute_options
+  const Rcpp::List& compute_options,
+  const Rcpp::List& model_options
 ) :
   save_aug { compute_options["save_aug"] },
   aug_thinning { compute_options["aug_thinning"] },
-  swap_leap { compute_options["swap_leap"] },
-  partial_aug_prop { choose_partial_proposal(compute_options["aug_method"],
-                                             compute_options["pseudo_aug_metric"]) },
+  error_model(model_options["error_model"]),
+  partial_aug_prop {
+    choose_partial_proposal(compute_options["aug_method"],
+                            compute_options["pseudo_aug_metric"]) },
+  pairwise_aug_prop {
+    choose_pairwise_proposal(error_model, compute_options["swap_leap"])
+  },
   log_aug_prob { zeros(dat.n_assessors) }
    {
     if(dat.any_missing){
@@ -30,8 +35,7 @@ void Augmentation::augment_pairwise(
     Data& dat,
     const Parameters& pars,
     const Clustering& clus,
-    const std::unique_ptr<Distance>& distfun,
-    const std::unique_ptr<PairwiseProposal>& pairwise_aug_prop
+    const std::unique_ptr<Distance>& distfun
 ){
   if(!dat.augpair) return;
   for(size_t i = 0; i < dat.n_assessors; ++i) {
@@ -43,7 +47,7 @@ void Augmentation::augment_pairwise(
     double olddist = distfun->d(dat.rankings.col(i), pars.rho_old.col(cluster), rp.mutated_items);
     double ratio = -pars.alpha_old(cluster) / dat.n_items * (newdist - olddist);
 
-    if(pars.error_model != "none") {
+    if(error_model != "none") {
       ratio += rp.g_diff * std::log(pars.theta_current / (1 - pars.theta_current));
     }
     if(ratio > std::log(R::runif(0, 1))) dat.rankings.col(i) = rp.rankings;

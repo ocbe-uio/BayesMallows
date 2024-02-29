@@ -65,7 +65,6 @@ struct Parameters {
   double theta_current;
   const unsigned int n_clusters;
   const unsigned int nmc;
-  const std::string error_model;
   const int alpha_jump;
   const std::string metric;
   int burnin{};
@@ -77,6 +76,7 @@ private:
   const std::unique_ptr<RhoProposal> rho_proposal_function;
   const double alpha_prop_sd;
   const int rho_thinning;
+  const std::string error_model;
 };
 
 struct Clustering {
@@ -113,15 +113,15 @@ public:
 };
 
 struct Augmentation {
-  Augmentation(Data& dat, const Rcpp::List& compute_options);
+  Augmentation(Data& dat, const Rcpp::List& compute_options,
+               const Rcpp::List& model_options);
   ~Augmentation() = default;
 
   void augment_pairwise(
       Data& dat,
       const Parameters& pars,
       const Clustering& clus,
-      const std::unique_ptr<Distance>& distfun,
-      const std::unique_ptr<PairwiseProposal>& pairwise_aug_prop);
+      const std::unique_ptr<Distance>& distfun);
 
   void update_missing_ranks(
       Data& dat,
@@ -133,11 +133,12 @@ struct Augmentation {
   const bool save_aug;
   const unsigned int aug_thinning;
   arma::cube augmented_data;
-  const unsigned int swap_leap;
   size_t aug_index{};
 
 private:
+  const std::string error_model;
   const std::unique_ptr<PartialProposal> partial_aug_prop;
+  const std::unique_ptr<PairwiseProposal> pairwise_aug_prop;
   arma::vec log_aug_prob;
 };
 

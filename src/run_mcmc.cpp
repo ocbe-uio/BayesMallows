@@ -21,13 +21,12 @@ Rcpp::List run_mcmc(
   Priors pris{priors};
   Parameters pars{model_options, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};
-  Augmentation aug{dat, compute_options};
+  Augmentation aug{dat, compute_options, model_options};
   ProgressReporter rep{verbose};
 
   auto pfun = choose_partition_function(
     dat.n_items, pars.metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(pars.metric);
-  auto pairwise_aug_prop = choose_pairwise_proposal(pars.error_model, aug.swap_leap);
 
   clus.update_dist_mat(dat, pars, distfun);
 
@@ -42,7 +41,7 @@ Rcpp::List run_mcmc(
     clus.save_cluster_parameters(pars.t);
     clus.update_wcd(pars.t);
     aug.update_missing_ranks(dat, clus, pars, distfun);
-    aug.augment_pairwise(dat, pars, clus, distfun, pairwise_aug_prop);
+    aug.augment_pairwise(dat, pars, clus, distfun);
     aug.save_augmented_data(dat, pars);
     clus.update_dist_mat(dat, pars, distfun);
   }
