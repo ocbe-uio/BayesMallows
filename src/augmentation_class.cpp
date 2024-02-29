@@ -11,9 +11,10 @@ Augmentation::Augmentation(
   save_aug { compute_options["save_aug"] },
   aug_thinning { compute_options["aug_thinning"] },
   swap_leap { compute_options["swap_leap"] },
-  aug_method ( compute_options["aug_method"] ),
-  pseudo_aug_metric ( compute_options["pseudo_aug_metric"] ),
-  log_aug_prob { zeros(dat.n_assessors) } {
+  partial_aug_prop { choose_partial_proposal(compute_options["aug_method"],
+                                             compute_options["pseudo_aug_metric"]) },
+  log_aug_prob { zeros(dat.n_assessors) }
+   {
     if(dat.any_missing){
       dat.rankings = initialize_missing_ranks(dat.rankings, dat.missing_indicator);
     }
@@ -30,11 +31,11 @@ void Augmentation::augment_pairwise(
     const Parameters& pars,
     const Clustering& clus,
     const std::unique_ptr<Distance>& distfun,
-    const std::unique_ptr<PairwiseProposal>& prop
+    const std::unique_ptr<PairwiseProposal>& pairwise_aug_prop
 ){
   if(!dat.augpair) return;
   for(size_t i = 0; i < dat.n_assessors; ++i) {
-    RankProposal rp = prop->propose(
+    RankProposal rp = pairwise_aug_prop->propose(
         dat.rankings.col(i), dat.items_above[i], dat.items_below[i]);
 
     int cluster = clus.current_cluster_assignment(i);
@@ -53,8 +54,7 @@ void Augmentation::update_missing_ranks(
     Data& dat,
     const Clustering& clus,
     const Parameters& pars,
-    const std::unique_ptr<Distance>& distfun,
-    const std::unique_ptr<PartialProposal>& propfun) {
+    const std::unique_ptr<Distance>& distfun) {
   if(!dat.any_missing) return;
 
   for(size_t i = 0; i < dat.n_assessors; ++i){
@@ -62,7 +62,7 @@ void Augmentation::update_missing_ranks(
     dat.rankings.col(i) = make_new_augmentation(
       dat.rankings.col(i), dat.missing_indicator.col(i),
       pars.alpha_old(cluster), pars.rho_old.col(cluster),
-      distfun, propfun, log_aug_prob(i)
+      distfun, partial_aug_prop, log_aug_prob(i)
     );
   }
 }

@@ -123,14 +123,13 @@ struct Augmentation {
       const Parameters& pars,
       const Clustering& clus,
       const std::unique_ptr<Distance>& distfun,
-      const std::unique_ptr<PairwiseProposal>& prop);
+      const std::unique_ptr<PairwiseProposal>& pairwise_aug_prop);
 
   void update_missing_ranks(
       Data& dat,
       const Clustering& clus,
       const Parameters& pars,
-      const std::unique_ptr<Distance>& distfun,
-      const std::unique_ptr<PartialProposal>& propfun
+      const std::unique_ptr<Distance>& distfun
   );
   void save_augmented_data(const Data& dat, const Parameters& pars);
   const bool save_aug;
@@ -138,10 +137,9 @@ struct Augmentation {
   arma::cube augmented_data;
   const unsigned int swap_leap;
   size_t aug_index{};
-  const std::string aug_method;
-  const std::string pseudo_aug_metric;
 
 private:
+  const std::unique_ptr<PartialProposal> partial_aug_prop;
   arma::vec log_aug_prob;
 };
 
