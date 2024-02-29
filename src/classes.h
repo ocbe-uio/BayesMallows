@@ -95,10 +95,12 @@ struct Clustering {
   void update_wcd(const int t);
   void update_dist_mat(const Data& dat, const Parameters& pars,
                        const std::unique_ptr<Distance>& distfun);
+  void save_cluster_parameters(size_t t);
 
   arma::vec current_cluster_probs;
   const bool clustering;
   const unsigned int clus_thinning;
+  size_t cluster_assignment_index{};
 
 private:
   const arma::uvec index;

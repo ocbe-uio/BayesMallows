@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include "classes.h"
 #include "rank_proposal.h"
+#include "progress_reporter.h"
 
 using namespace arma;
 
@@ -21,6 +22,7 @@ Rcpp::List run_mcmc(
   Parameters pars{model_options, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};
   Augmentation aug{dat, compute_options};
+  ProgressReporter rep{verbose};
 
   auto pfun = choose_partition_function(
     dat.n_items, pars.metric, pfun_values, pfun_estimate);
@@ -30,41 +32,22 @@ Rcpp::List run_mcmc(
   auto pairwise_aug_prop = choose_pairwise_proposal(pars.error_model, aug.swap_leap);
 
   clus.update_dist_mat(dat, pars, distfun);
-  int cluster_assignment_index = 0;
 
   for(pars.t = 1; pars.t < pars.nmc; pars.t++){
-    if (pars.t % 1000 == 0) {
-      Rcpp::checkUserInterrupt();
-      if(verbose){
-        Rcpp::Rcout << "First " << pars.t <<
-          " iterations of Metropolis-Hastings algorithm completed." << std::endl;
-      }
-    }
-
+    rep.report(pars.t);
     pars.update_shape(dat, pris);
     pars.update_rho(dat, clus.current_cluster_assignment,
                     distfun, rho_proposal);
     pars.update_alpha(dat, distfun, pfun, pris,
                       clus.current_cluster_assignment);
-
-
-  if(clus.clustering){
     clus.update_cluster_probs(pars, pris);
     clus.update_cluster_labels(pars.t, dat, pars, pfun);
-
-    if(pars.t % clus.clus_thinning == 0){
-      ++cluster_assignment_index;
-      clus.cluster_assignment.col(cluster_assignment_index) = clus.current_cluster_assignment;
-      clus.cluster_probs.col(cluster_assignment_index) = clus.current_cluster_probs;
-    }
-  }
-
-  clus.update_wcd(pars.t);
-  aug.update_missing_ranks(dat, clus, pars, distfun);
-  aug.augment_pairwise(dat, pars, clus, distfun, pairwise_aug_prop);
-  aug.save_augmented_data(dat, pars);
-
-  clus.update_dist_mat(dat, pars, distfun);
+    clus.save_cluster_parameters(pars.t);
+    clus.update_wcd(pars.t);
+    aug.update_missing_ranks(dat, clus, pars, distfun);
+    aug.augment_pairwise(dat, pars, clus, distfun, pairwise_aug_prop);
+    aug.save_augmented_data(dat, pars);
+    clus.update_dist_mat(dat, pars, distfun);
   }
 
   return Rcpp::List::create(
