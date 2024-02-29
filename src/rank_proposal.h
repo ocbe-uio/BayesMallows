@@ -19,6 +19,10 @@ struct ProposalDistribution {
 std::unique_ptr<ProposalDistribution> choose_rank_proposal(
     const std::string& rho_proposal, int leap_size);
 
+std::unique_ptr<ProposalDistribution> choose_pairwise_proposal(
+  const std::string& error_model, unsigned int swap_leap
+);
+
 struct LeapAndShift : ProposalDistribution {
   using ProposalDistribution::ProposalDistribution;
 

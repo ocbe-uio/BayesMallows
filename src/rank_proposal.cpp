@@ -17,6 +17,18 @@ std::unique_ptr<ProposalDistribution> choose_rank_proposal(
   }
 }
 
+std::unique_ptr<ProposalDistribution> choose_pairwise_proposal(
+    const std::string& error_model, unsigned int swap_leap
+) {
+  if(error_model == "none"){
+    return std::make_unique<LeapAndShift>(1);
+  } else if(error_model == "bernoulli"){
+    return std::make_unique<Swap>(swap_leap);
+  } else {
+    Rcpp::stop("error_model must be 'none' or 'bernoulli'");
+  }
+}
+
 ProposalDistribution::ProposalDistribution(int leap_size) :
   leap_size { leap_size } {}
 

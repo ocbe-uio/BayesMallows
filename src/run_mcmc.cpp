@@ -27,14 +27,7 @@ Rcpp::List run_mcmc(
   auto distfun = choose_distance_function(pars.metric);
   auto rho_proposal = choose_rank_proposal(
     pars.rho_proposal_option, pars.leap_size);
-  std::unique_ptr<ProposalDistribution> aug_prop;
-  if(pars.error_model == "none"){
-    aug_prop = std::make_unique<LeapAndShift>(1);
-  } else if(pars.error_model == "bernoulli"){
-    aug_prop = std::make_unique<Swap>(aug.swap_leap);
-  } else {
-    Rcpp::stop("error_model must be 'none' or 'bernoulli'");
-  }
+  auto pairwise_aug_prop = choose_pairwise_proposal(pars.error_model, aug.swap_leap);
 
   clus.update_dist_mat(dat, pars, distfun);
   int aug_index = 0, cluster_assignment_index = 0;
@@ -68,7 +61,7 @@ Rcpp::List run_mcmc(
 
   clus.update_wcd(pars.t);
   aug.update_missing_ranks(dat, clus, pars, distfun);
-  aug.augment_pairwise(dat, pars, clus, distfun, aug_prop);
+  aug.augment_pairwise(dat, pars, clus, distfun, pairwise_aug_prop);
 
   if(aug.save_aug & (pars.t % aug.aug_thinning == 0)){
     ++aug_index;
