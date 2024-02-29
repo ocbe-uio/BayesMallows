@@ -13,8 +13,8 @@ struct Data {
   unsigned int n_assessors;
   const unsigned int n_items;
   arma::vec observation_frequency;
-  const triply_nested items_above{};
-  const triply_nested items_below{};
+  triply_nested items_above{};
+  triply_nested items_below{};
   const bool any_missing;
   const bool augpair;
   arma::umat missing_indicator;
@@ -116,12 +116,6 @@ struct Augmentation {
   Augmentation(Data& dat, const Rcpp::List& compute_options,
                const Rcpp::List& model_options);
   ~Augmentation() = default;
-
-  void augment_pairwise(
-      Data& dat,
-      const Parameters& pars,
-      const Clustering& clus,
-      const std::unique_ptr<Distance>& distfun);
 
   void update_missing_ranks(
       Data& dat,

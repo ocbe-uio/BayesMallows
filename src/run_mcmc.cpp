@@ -41,7 +41,6 @@ Rcpp::List run_mcmc(
     clus.save_cluster_parameters(pars.t);
     clus.update_wcd(pars.t);
     aug.update_missing_ranks(dat, clus, pars, distfun);
-    aug.augment_pairwise(dat, pars, clus, distfun);
     aug.save_augmented_data(dat, pars);
     clus.update_dist_mat(dat, pars, distfun);
   }

@@ -17,6 +17,8 @@ SMCAugmentation::SMCAugmentation(
   ) :
   partial_aug_prop { choose_partial_proposal(compute_options["aug_method"],
                                              compute_options["pseudo_aug_metric"]) },
+  pairwise_aug_prop {
+     choose_pairwise_proposal("none", compute_options["swap_leap"]) },
   latent_sampling_lag { read_lag(smc_options) } {}
 
 void SMCAugmentation::reweight(
@@ -31,6 +33,8 @@ void SMCAugmentation::reweight(
           p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
       });
     augment_partial(pvec, dat);
+  } else if(dat.augpair) {
+    augment_pairwise(pvec, dat);
   }
 
   par_for_each(
@@ -75,23 +79,43 @@ void SMCAugmentation::reweight(
 
 }
 
+void SMCAugmentation::augment_pairwise(
+    std::vector<Particle>& pvec, const SMCData& dat
+) const {
+  par_for_each(
+    pvec.begin(), pvec.end(),
+    [&dat, pairwise_aug_prop = std::ref(pairwise_aug_prop)]
+    (Particle& p){
+       for (size_t user{}; user < dat.n_assessors; user++) {
+         if(user < dat.n_assessors - dat.num_new_obs) {
+           if(p.consistent.is_empty()) continue;
+           if(p.consistent(user) == 1) continue;
+         }
+         Rcpp::Rcout << std::endl << std::endl;
+         RankProposal pprop = pairwise_aug_prop.get()->propose(
+           p.augmented_data.col(user), dat.items_above[user], dat.items_below[user]);
+         p.augmented_data.col(user) = pprop.rankings;
+         p.log_aug_prob(user) = log(pprop.prob_forward);
+       }
+     }
+  );
+}
+
 void SMCAugmentation::augment_partial(
     std::vector<Particle>& pvec, const SMCData& dat
 ) const {
   par_for_each(
     pvec.begin(), pvec.end(),
-    [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
-     missing_indicator = dat.missing_indicator,
-     partial_aug_prop = std::ref(partial_aug_prop)]
+    [&dat, partial_aug_prop = std::ref(partial_aug_prop)]
     (Particle& p){
-       for (size_t user{}; user < n_assessors; user++) {
-        if(user < n_assessors - num_new_obs) {
+       for (size_t user{}; user < dat.n_assessors; user++) {
+        if(user < dat.n_assessors - dat.num_new_obs) {
           if(p.consistent.is_empty()) continue;
           if(p.consistent(user) == 1) continue;
         }
 
         RankProposal pprop = partial_aug_prop.get()->propose(
-          p.augmented_data.col(user), missing_indicator.col(user),
+          p.augmented_data.col(user), dat.missing_indicator.col(user),
           p.alpha, p.rho);
         p.augmented_data.col(user) = pprop.rankings;
         p.log_aug_prob(user) = log(pprop.prob_forward);

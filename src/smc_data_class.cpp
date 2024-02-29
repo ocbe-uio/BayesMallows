@@ -13,6 +13,7 @@ void SMCData::update(
   SMCData new_dat{new_data};
 
   if(new_dat.user_ids.size() > 0) {
+    if(augpair) Rcpp::stop("Pairwise prefences not yet supported with user IDs.");
     Rcpp::CharacterVector new_users = Rcpp::setdiff(new_dat.user_ids, user_ids);
     Rcpp::IntegerVector new_match = Rcpp::match(new_users, new_dat.user_ids) - 1;
     Rcpp::IntegerVector new_indices = new_users.size() > 0 ?
@@ -42,6 +43,12 @@ void SMCData::update(
     timepoint = join_cols(timepoint, new_dat.timepoint);
     missing_indicator = join_rows(missing_indicator, new_dat.missing_indicator);
     observation_frequency = join_cols(observation_frequency, new_dat.observation_frequency);
+    for(auto items_above_for_user : new_dat.items_above) {
+      items_above.push_back(items_above_for_user);
+    }
+    for(auto items_below_for_user : new_dat.items_below) {
+      items_below.push_back(items_below_for_user);
+    }
   }
 
   rankings = join_rows(rankings, new_rankings);

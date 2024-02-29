@@ -83,6 +83,13 @@ std::vector<Particle> augment_particles(
         ) = tmp;
         pvec[i].log_aug_prob.resize(dat.rankings.n_cols);
       }
+    } else if (dat.augpair) {
+      pvec[i].augmented_data.resize(dat.n_items, dat.rankings.n_cols);
+      pvec[i].augmented_data(
+          span::all,
+          span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)
+      ) = dat.rankings(span::all, span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1));
+      pvec[i].log_aug_prob.resize(dat.rankings.n_cols);
     }
   }
 
