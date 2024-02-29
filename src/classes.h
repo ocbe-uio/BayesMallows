@@ -131,7 +131,8 @@ struct Augmentation {
       Data& dat,
       const Clustering& clus,
       const Parameters& pars,
-      const std::unique_ptr<Distance>& distfun
+      const std::unique_ptr<Distance>& distfun,
+      const std::unique_ptr<PartialProposal>& propfun
   );
   void save_augmented_data(const Data& dat, const Parameters& pars);
   const bool save_aug;
@@ -139,11 +140,10 @@ struct Augmentation {
   arma::cube augmented_data;
   const unsigned int swap_leap;
   size_t aug_index{};
-
-private:
   const std::string aug_method;
   const std::string pseudo_aug_metric;
-  const std::unique_ptr<Distance> pseudo_aug_distance;
+
+private:
   arma::vec log_aug_prob;
 };
 

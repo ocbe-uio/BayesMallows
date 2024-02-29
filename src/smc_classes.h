@@ -79,12 +79,15 @@ struct SMCAugmentation {
       std::vector<Particle>& pvec,
       const SMCData& dat,
       const std::unique_ptr<PartitionFunction>& pfun,
-      const std::unique_ptr<Distance>& distfun) const;
+      const std::unique_ptr<Distance>& distfun,
+      const std::unique_ptr<PartialProposal>& propfun) const;
 
-  void augment_partial(std::vector<Particle>& pvec, const SMCData& dat) const;
+  void augment_partial(std::vector<Particle>& pvec, const SMCData& dat,
+                       const std::unique_ptr<PartialProposal>& propfun) const;
 
   void update_missing_ranks(Particle& p, const SMCData& dat,
-      const std::unique_ptr<Distance>& distfun) const;
+      const std::unique_ptr<Distance>& distfun,
+      const std::unique_ptr<PartialProposal>& propfun) const;
 
   const std::string aug_method;
   const std::string pseudo_aug_metric;

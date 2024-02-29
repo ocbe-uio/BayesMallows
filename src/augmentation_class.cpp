@@ -13,9 +13,6 @@ Augmentation::Augmentation(
   swap_leap { compute_options["swap_leap"] },
   aug_method ( compute_options["aug_method"] ),
   pseudo_aug_metric ( compute_options["pseudo_aug_metric"] ),
-  pseudo_aug_distance {
-    aug_method == "uniform" ? nullptr : choose_distance_function(pseudo_aug_metric)
-  },
   log_aug_prob { zeros(dat.n_assessors) } {
     if(dat.any_missing){
       dat.rankings = initialize_missing_ranks(dat.rankings, dat.missing_indicator);
@@ -57,7 +54,8 @@ void Augmentation::update_missing_ranks(
     Data& dat,
     const Clustering& clus,
     const Parameters& pars,
-    const std::unique_ptr<Distance>& distfun) {
+    const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<PartialProposal>& propfun) {
   if(!dat.any_missing) return;
 
   for(size_t i = 0; i < dat.n_assessors; ++i){
@@ -65,8 +63,7 @@ void Augmentation::update_missing_ranks(
     dat.rankings.col(i) = make_new_augmentation(
       dat.rankings.col(i), dat.missing_indicator.col(i),
       pars.alpha_old(cluster), pars.rho_old.col(cluster),
-      distfun, pseudo_aug_distance,
-      log_aug_prob(i)
+      distfun, propfun, log_aug_prob(i)
     );
   }
 }

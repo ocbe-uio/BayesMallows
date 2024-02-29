@@ -23,14 +23,15 @@ void SMCAugmentation::reweight(
     std::vector<Particle>& pvec,
     const SMCData& dat,
     const std::unique_ptr<PartitionFunction>& pfun,
-    const std::unique_ptr<Distance>& distfun
+    const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<PartialProposal>& propfun
 ) const {
   if(dat.any_missing) {
     par_for_each(
       pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
           p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
       });
-    augment_partial(pvec, dat);
+    augment_partial(pvec, dat, propfun);
   }
 
   par_for_each(
@@ -77,37 +78,27 @@ void SMCAugmentation::reweight(
 
 void SMCAugmentation::augment_partial(
     std::vector<Particle>& pvec,
-    const SMCData& dat
+    const SMCData& dat,
+    const std::unique_ptr<PartialProposal>& propfun
 ) const {
   par_for_each(
     pvec.begin(), pvec.end(),
     [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
-     aug_method = aug_method, pseudo_aug_metric = pseudo_aug_metric,
-     missing_indicator = dat.missing_indicator]
+     missing_indicator = dat.missing_indicator,
+     propfun = std::ref(propfun)]
     (Particle& p){
-       auto pseudo_aug_distance = aug_method == "uniform" ? nullptr :
-       choose_distance_function(pseudo_aug_metric);
-
        for (size_t user{}; user < n_assessors; user++) {
         if(user < n_assessors - num_new_obs) {
           if(p.consistent.is_empty()) continue;
           if(p.consistent(user) == 1) continue;
         }
-        if (pseudo_aug_distance == nullptr) {
-          p.augmented_data.col(user) =
-            make_uniform_proposal(
-              p.augmented_data.col(user),
-              missing_indicator.col(user)).rankings;
-        } else {
-          RankProposal pprop = make_pseudo_proposal(
-            p.augmented_data.col(user),
-            missing_indicator.col(user),
-            p.alpha, p.rho,
-            pseudo_aug_distance
-          );
-          p.augmented_data.col(user) = pprop.rankings;
-          p.log_aug_prob(user) = log(pprop.prob_forward);
-        }
+
+        RankProposal pprop = propfun.get()->propose(
+          p.augmented_data.col(user), missing_indicator.col(user),
+          p.alpha, p.rho);
+        p.augmented_data.col(user) = pprop.rankings;
+        p.log_aug_prob(user) = log(pprop.prob_forward);
+
       }
     }
   );
@@ -116,16 +107,15 @@ void SMCAugmentation::augment_partial(
 void SMCAugmentation::update_missing_ranks(
     Particle& p,
     const SMCData& dat,
-    const std::unique_ptr<Distance>& distfun) const {
+    const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<PartialProposal>& propfun) const {
   if(!dat.any_missing) return;
-
-  auto pseudo_aug_distance = aug_method == "uniform" ? nullptr : choose_distance_function(pseudo_aug_metric);
 
   uvec indices_to_loop = find(max(dat.timepoint) - dat.timepoint < latent_sampling_lag);
   for (auto jj : indices_to_loop) {
     p.augmented_data.col(jj) =
       make_new_augmentation(
         p.augmented_data.col(jj), dat.missing_indicator.col(jj), p.alpha,
-        p.rho, distfun, pseudo_aug_distance, p.log_aug_prob(jj));
+        p.rho, distfun, propfun, p.log_aug_prob(jj));
   }
 }

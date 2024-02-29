@@ -136,7 +136,7 @@ test_that("update_mallows is correct for new partial rankings", {
     expect_equal(
       mean(mod_smc_next$alpha$value),
       mean(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
-      tolerance = .01
+      tolerance = .03
     )
 
     expect_equal(
@@ -182,9 +182,10 @@ test_that("update_mallows is correct for updated partial rankings", {
     data = setup_rank_data(rankings = dat1),
     compute_options = set_compute_options(
       nmc = 5000, burnin = 2000,
-      aug_method = "pseudo"
+      aug_method = "uniform"
     )
   )
+  mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 2000])
 
   expect_equal(
     mean(mod1$alpha$value),

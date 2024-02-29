@@ -34,23 +34,25 @@ Rcpp::List  run_smc(
   auto distfun = choose_distance_function(pars.metric);
   auto rho_proposal = choose_rho_proposal(
     pars.rho_proposal_option, pars.leap_size);
+  auto partial_aug_prop = choose_partial_proposal(aug.aug_method, aug.pseudo_aug_metric);
 
   auto T{new_data.size()};
   for(size_t t{}; t < T; t++) {
     dat.update(new_data[t]);
     particle_vectors[t + 1] = augment_particles(particle_vectors[t], dat);
-    aug.reweight(particle_vectors[t + 1], dat, pfun, distfun);
+    aug.reweight(particle_vectors[t + 1], dat, pfun, distfun, partial_aug_prop);
     pars.resample(particle_vectors[t + 1]);
 
     par_for_each(
       particle_vectors[t + 1].begin(), particle_vectors[t + 1].end(),
       [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),
-       pfun = std::ref(pfun), rho_proposal = std::ref(rho_proposal)]
+       pfun = std::ref(pfun), rho_proposal = std::ref(rho_proposal),
+       partial_aug_prop = std::ref(partial_aug_prop)]
       (Particle& p) {
          for(size_t i{}; i < pars.mcmc_steps; i++) {
            pars.update_rho(p, dat, distfun, rho_proposal);
            pars.update_alpha(p, dat, pfun, distfun, pris);
-           aug.update_missing_ranks(p, dat, distfun);
+           aug.update_missing_ranks(p, dat, distfun, partial_aug_prop);
          }
        }
     );

@@ -3,6 +3,7 @@
 #include "rank_proposal.h"
 #include "distances.h"
 #include "missing_data.h"
+#include "setdiff.h"
 
 using namespace arma;
 
@@ -29,15 +30,15 @@ std::unique_ptr<PairwiseProposal> choose_pairwise_proposal(
   }
 }
 
-RhoProposal::RhoProposal(int leap_size) :
-  leap_size { leap_size } {}
-
-int find_lower_limit(int item, const uvec& items_above_item,
-                     const vec& current_ranking) {
-  if(items_above_item.size() > 0) {
-    return max(current_ranking.elem(items_above_item - 1)) + 1;
+std::unique_ptr<PartialProposal> choose_partial_proposal(
+    const std::string& aug_method, const std::string& pseudo_aug_metric
+) {
+  if(aug_method == "uniform") {
+    return std::make_unique<PartialUniform>();
+  } else if(aug_method == "pseudo") {
+    return std::make_unique<PartialPseudoProposal>(pseudo_aug_metric);
   } else {
-    return 1;
+    Rcpp::stop("augmentation method must be either 'uniform' or 'pseudo'.");
   }
 }
 
@@ -82,6 +83,19 @@ std::pair<unsigned int, unsigned int> sample(
   unsigned int ind1 = as_scalar(find(current_rank == u));
   unsigned int ind2 = as_scalar(find(current_rank == (u + l(0))));
   return std::make_pair(ind1, ind2);
+}
+
+
+RhoProposal::RhoProposal(int leap_size) :
+  leap_size { leap_size } {}
+
+int find_lower_limit(int item, const uvec& items_above_item,
+                     const vec& current_ranking) {
+  if(items_above_item.size() > 0) {
+    return max(current_ranking.elem(items_above_item - 1)) + 1;
+  } else {
+    return 1;
+  }
 }
 
 RankProposal RhoLeapAndShift::propose(
@@ -174,4 +188,58 @@ RankProposal PairwiseSwap::propose(
 
     ret.g_diff += count_error_diff(inds.first) + count_error_diff(inds.second);
     return ret;
+}
+
+PartialProposal::PartialProposal() {}
+PartialUniform::PartialUniform() {}
+
+RankProposal PartialUniform::propose(
+    const vec& current_rank, const uvec& indicator,
+    double alpha, const vec& rho) {
+  vec proposal = current_rank;
+  uvec missing_inds = find(indicator == 1);
+  vec mutable_current_rank = current_rank(missing_inds);
+  ivec inds = Rcpp::sample(mutable_current_rank.size(), mutable_current_rank.size()) - 1;
+  proposal(missing_inds) = mutable_current_rank(conv_to<uvec>::from(inds));
+  return RankProposal(proposal, 1, 1, missing_inds);
+}
+
+PartialPseudoProposal::PartialPseudoProposal(
+  const std::string& pseudo_aug_metric) :
+  distfun { choose_distance_function(pseudo_aug_metric) } {}
+
+RankProposal PartialPseudoProposal::propose(
+    const vec& current_rank, const uvec& indicator,
+    double alpha, const vec& rho) {
+  vec proposal = current_rank;
+  uvec missing_inds = find(indicator == 1);
+  ivec a = Rcpp::sample(missing_inds.size(), missing_inds.size()) - 1;
+  uvec unranked_items = missing_inds(conv_to<uvec>::from(a));
+
+  int n_items = proposal.n_elem;
+  double prob = 1;
+  while(unranked_items.n_elem > 0) {
+    vec available_rankings = proposal(unranked_items);
+    int item_to_rank = unranked_items(0);
+
+    double rho_for_item = rho(item_to_rank);
+    vec log_numerator = -alpha / n_items *
+      distfun->scalardist(available_rankings, rho_for_item);
+
+    vec sample_probs = normalise(exp(log_numerator), 1);
+    ivec ans(sample_probs.size());
+    R::rmultinom(1, sample_probs.begin(), sample_probs.size(), ans.begin());
+    proposal(span(item_to_rank)) = available_rankings(find(ans == 1));
+
+    int ranking_chosen = as_scalar(find(proposal(item_to_rank) == available_rankings));
+
+    prob *= sample_probs(ranking_chosen);
+    if(available_rankings.n_elem <= 1) break;
+    unranked_items = unranked_items.subvec(1, available_rankings.n_elem - 1);
+
+    proposal(unranked_items) = setdiff(
+      available_rankings, available_rankings(span(ranking_chosen)));
+  }
+
+  return RankProposal(current_rank, prob, prob, missing_inds);
 }
