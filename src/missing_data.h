@@ -11,6 +11,16 @@ arma::vec make_new_augmentation(
     const std::unique_ptr<PartialProposal>& propfun,
     double& log_aug_prob);
 
+arma::vec make_new_augmentation(
+    const arma::vec& rankings,
+    double alpha,
+    const arma::vec& rho,
+    double theta,
+    const std::unique_ptr<Distance>& distfun,
+    const std::unique_ptr<PairwiseProposal>& pairwise_aug_prop,
+    double& log_aug_prob, const doubly_nested& items_above,
+    const doubly_nested& items_below, const std::string& error_model);
+
 arma::mat initialize_missing_ranks(
     arma::mat rankings,
     const arma::umat& missing_indicator);
