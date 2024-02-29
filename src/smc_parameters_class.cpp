@@ -9,10 +9,10 @@ SMCParameters::SMCParameters(
   const Rcpp::List& smc_options
 ) :
   mcmc_steps { smc_options["mcmc_steps"] },
-  leap_size { compute_options["leap_size"] },
-  rho_proposal_option ( compute_options["rho_proposal"] ),
   metric ( model_options["metric"] ),
   n_particles {smc_options["n_particles"] },
+  rho_proposal_function { choose_rho_proposal(compute_options["rho_proposal"],
+                                              compute_options["leap_size"])},
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
   resampler { choose_resampler(std::string(smc_options["resampler"])) } {}
 
@@ -37,11 +37,10 @@ void SMCParameters::update_alpha(
 void SMCParameters::update_rho(
     Particle& p,
     const SMCData& dat,
-    const std::unique_ptr<Distance>& distfun,
-    const std::unique_ptr<RhoProposal>& prop) const {
+    const std::unique_ptr<Distance>& distfun) const {
   auto proposal = make_new_rho(
     p.rho, dat.any_missing ? p.augmented_data : dat.rankings,
-    p.alpha, distfun, prop, dat.observation_frequency);
+    p.alpha, distfun, rho_proposal_function, dat.observation_frequency);
   if(proposal.second) {
     p.rho = proposal.first;
     p.rho_acceptance++;

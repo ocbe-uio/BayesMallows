@@ -32,8 +32,6 @@ Rcpp::List  run_smc(
   auto pfun = choose_partition_function(
     dat.n_items, pars.metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(pars.metric);
-  auto rho_proposal = choose_rho_proposal(
-    pars.rho_proposal_option, pars.leap_size);
 
   auto T{new_data.size()};
   for(size_t t{}; t < T; t++) {
@@ -45,10 +43,10 @@ Rcpp::List  run_smc(
     par_for_each(
       particle_vectors[t + 1].begin(), particle_vectors[t + 1].end(),
       [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),
-       pfun = std::ref(pfun), rho_proposal = std::ref(rho_proposal)]
+       pfun = std::ref(pfun)]
       (Particle& p) {
          for(size_t i{}; i < pars.mcmc_steps; i++) {
-           pars.update_rho(p, dat, distfun, rho_proposal);
+           pars.update_rho(p, dat, distfun);
            pars.update_alpha(p, dat, pfun, distfun, pris);
            aug.update_missing_ranks(p, dat, distfun);
          }

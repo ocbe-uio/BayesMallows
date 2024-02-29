@@ -49,8 +49,7 @@ struct SMCParameters {
   void update_rho(
       Particle& p,
       const SMCData& dat,
-      const std::unique_ptr<Distance>& distfun,
-      const std::unique_ptr<RhoProposal>& prop
+      const std::unique_ptr<Distance>& distfun
   ) const;
 
   arma::ivec draw_resampling_index(
@@ -58,12 +57,11 @@ struct SMCParameters {
   void resample(std::vector<Particle>& pvec) const;
 
   const unsigned int mcmc_steps;
-  const int leap_size;
-  const std::string rho_proposal_option;
   const std::string metric;
   const unsigned int n_particles;
 
 private:
+  const std::unique_ptr<RhoProposal> rho_proposal_function;
   const double alpha_prop_sd;
   const std::unique_ptr<Resampler> resampler;
 };

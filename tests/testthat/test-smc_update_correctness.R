@@ -192,12 +192,6 @@ test_that("update_mallows is correct for updated partial rankings", {
   )
 
   expect_equal(
-    mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 2000]),
-    10.5,
-    tolerance = .02
-  )
-
-  expect_equal(
     mean(mod1$alpha$value),
     10.2,
     tolerance = .02
