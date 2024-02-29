@@ -135,6 +135,11 @@ test_that("update_mallows is correct for new partial rankings", {
 
     expect_equal(
       mean(mod_smc_next$alpha$value),
+      ifelse(aug == "uniform", 10.9348917143992, 10.9138872080765)
+    )
+
+    expect_equal(
+      mean(mod_smc_next$alpha$value),
       mean(bmm_mod$alpha$value[bmm_mod$alpha$iteration > 1000]),
       tolerance = .03
     )
@@ -185,11 +190,22 @@ test_that("update_mallows is correct for updated partial rankings", {
       aug_method = "uniform"
     )
   )
-  mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 2000])
+
+  expect_equal(
+    mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 2000]),
+    10.52,
+    tolerance = .01
+  )
 
   expect_equal(
     mean(mod1$alpha$value),
-    mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 4000]),
+    10.0808809563164,
+    tolerance = .01
+  )
+
+  expect_equal(
+    mean(mod1$alpha$value),
+    mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 2000]),
     tolerance = .1
   )
 

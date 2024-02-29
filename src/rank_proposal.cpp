@@ -241,5 +241,5 @@ RankProposal PartialPseudoProposal::propose(
       available_rankings, available_rankings(span(ranking_chosen)));
   }
 
-  return RankProposal(current_rank, prob, prob, missing_inds);
+  return RankProposal(proposal, prob, prob, missing_inds);
 }
