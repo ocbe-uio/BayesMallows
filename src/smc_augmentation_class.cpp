@@ -15,23 +15,22 @@ SMCAugmentation::SMCAugmentation(
   const Rcpp::List& compute_options,
   const Rcpp::List& smc_options
   ) :
-  aug_method(compute_options["aug_method"]),
-  pseudo_aug_metric(compute_options["pseudo_aug_metric"]),
+  partial_aug_prop { choose_partial_proposal(compute_options["aug_method"],
+                                             compute_options["pseudo_aug_metric"]) },
   latent_sampling_lag { read_lag(smc_options) } {}
 
 void SMCAugmentation::reweight(
     std::vector<Particle>& pvec,
     const SMCData& dat,
     const std::unique_ptr<PartitionFunction>& pfun,
-    const std::unique_ptr<Distance>& distfun,
-    const std::unique_ptr<PartialProposal>& propfun
+    const std::unique_ptr<Distance>& distfun
 ) const {
   if(dat.any_missing) {
     par_for_each(
       pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
           p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
       });
-    augment_partial(pvec, dat, propfun);
+    augment_partial(pvec, dat);
   }
 
   par_for_each(
@@ -77,15 +76,13 @@ void SMCAugmentation::reweight(
 }
 
 void SMCAugmentation::augment_partial(
-    std::vector<Particle>& pvec,
-    const SMCData& dat,
-    const std::unique_ptr<PartialProposal>& propfun
+    std::vector<Particle>& pvec, const SMCData& dat
 ) const {
   par_for_each(
     pvec.begin(), pvec.end(),
     [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
      missing_indicator = dat.missing_indicator,
-     propfun = std::ref(propfun)]
+     partial_aug_prop = std::ref(partial_aug_prop)]
     (Particle& p){
        for (size_t user{}; user < n_assessors; user++) {
         if(user < n_assessors - num_new_obs) {
@@ -93,7 +90,7 @@ void SMCAugmentation::augment_partial(
           if(p.consistent(user) == 1) continue;
         }
 
-        RankProposal pprop = propfun.get()->propose(
+        RankProposal pprop = partial_aug_prop.get()->propose(
           p.augmented_data.col(user), missing_indicator.col(user),
           p.alpha, p.rho);
         p.augmented_data.col(user) = pprop.rankings;
@@ -106,8 +103,7 @@ void SMCAugmentation::augment_partial(
 void SMCAugmentation::update_missing_ranks(
     Particle& p,
     const SMCData& dat,
-    const std::unique_ptr<Distance>& distfun,
-    const std::unique_ptr<PartialProposal>& propfun) const {
+    const std::unique_ptr<Distance>& distfun) const {
   if(!dat.any_missing) return;
 
   uvec indices_to_loop = find(max(dat.timepoint) - dat.timepoint < latent_sampling_lag);
@@ -115,6 +111,6 @@ void SMCAugmentation::update_missing_ranks(
     p.augmented_data.col(jj) =
       make_new_augmentation(
         p.augmented_data.col(jj), dat.missing_indicator.col(jj), p.alpha,
-        p.rho, distfun, propfun, p.log_aug_prob(jj));
+        p.rho, distfun, partial_aug_prop, p.log_aug_prob(jj));
   }
 }
