@@ -1,15 +1,14 @@
 generate_initial_ranking <- function(
-    preferences, cl = NULL, shuffle_unranked = FALSE,
+    preferences, n_items, cl = NULL, shuffle_unranked = FALSE,
     random = FALSE, random_limit = 8L) {
   UseMethod("generate_initial_ranking")
 }
 
 #' @export
 generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
-    preferences, cl = NULL, shuffle_unranked = FALSE, random = FALSE,
+    preferences, n_items, cl = NULL, shuffle_unranked = FALSE, random = FALSE,
     random_limit = 8L) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
-  n_items <- max(preferences[, c("bottom_item", "top_item")])
   if (n_items > random_limit && random) {
     stop(paste(
       "Number of items exceeds the limit for generation of random permutations,\n",
@@ -37,9 +36,8 @@ generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
 
 #' @export
 generate_initial_ranking.BayesMallowsIntransitive <- function(
-    preferences, cl = NULL, shuffle_unranked = FALSE,
+    preferences, n_items, cl = NULL, shuffle_unranked = FALSE,
     random = FALSE, random_limit = 8L) {
-  n_items <- max(preferences[, c("bottom_item", "top_item")])
   n_assessors <- length(unique(preferences$assessor))
   rankings <- replicate(n_assessors, sample(x = n_items, size = n_items),
     simplify = "numeric"

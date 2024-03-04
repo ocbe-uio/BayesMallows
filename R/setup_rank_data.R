@@ -88,6 +88,13 @@
 #'   sequential Monte Carlo algorithm. If not `NULL`, must contain one integer
 #'   for each row in `rankings`.
 #'
+#' @param n_items Integer specifying the number of items. Defaults to `NULL`,
+#'   which means that the number of items is inferred from `rankings` or from
+#'   `preferences`. Setting `n_items` manually can be useful with pairwise
+#'   preference data in the SMC algorithm, i.e., when `rankings` is `NULL` and
+#'   `preferences` is non-`NULL`, and contains a small number of pairwise
+#'   preferences for a subset of users and items.
+#'
 #' @note Setting `random=TRUE` means that all possible orderings of each
 #'   assessor's preferences are generated, and one of them is picked at random.
 #'   This can be useful when experiencing convergence issues, e.g., if the MCMC
@@ -137,8 +144,12 @@ setup_rank_data <- function(
     shuffle_unranked = FALSE,
     random = FALSE,
     random_limit = 8L,
-    timepoint = NULL) {
+    timepoint = NULL,
+    n_items = NULL) {
   na_action <- match.arg(na_action, c("augment", "fail", "omit"))
+  if(!is.null(rankings) && !is.null(n_items)) {
+    stop("n_items can only be set when rankings=NULL")
+  }
 
   if (is.null(rankings) && is.null(preferences)) {
     stop("Either rankings or preferences (or both) must be provided.")
@@ -165,8 +176,9 @@ setup_rank_data <- function(
       rankings <- rankings[keeps, , drop = FALSE]
     }
   } else {
+    n_items <- max(preferences[, c("bottom_item", "top_item")])
     rankings <- generate_initial_ranking(
-      preferences, cl, shuffle_unranked, random, random_limit
+      preferences, n_items, cl, shuffle_unranked, random, random_limit
     )
   }
 

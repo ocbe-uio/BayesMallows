@@ -15,7 +15,8 @@ setup_rank_data(
   shuffle_unranked = FALSE,
   random = FALSE,
   random_limit = 8L,
-  timepoint = NULL
+  timepoint = NULL,
+  n_items = NULL
 )
 }
 \arguments{
@@ -104,6 +105,13 @@ which means that a vector of ones, one for each observation, is generated.
 Used by \code{\link[=update_mallows]{update_mallows()}} to identify data with a given iteration of the
 sequential Monte Carlo algorithm. If not \code{NULL}, must contain one integer
 for each row in \code{rankings}.}
+
+\item{n_items}{Integer specifying the number of items. Defaults to \code{NULL},
+which means that the number of items is inferred from \code{rankings} or from
+\code{preferences}. Setting \code{n_items} manually can be useful with pairwise
+preference data in the SMC algorithm, i.e., when \code{rankings} is \code{NULL} and
+\code{preferences} is non-\code{NULL}, and contains a small number of pairwise
+preferences for a subset of users and items.}
 }
 \value{
 An object of class \code{"BayesMallowsData"}, to be provided in the \code{data}
