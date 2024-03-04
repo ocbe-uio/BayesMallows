@@ -35,6 +35,10 @@ void SMCAugmentation::reweight(
       });
     augment_partial(pvec, dat);
   } else if(dat.augpair) {
+    par_for_each(
+      pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
+        p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
+      });
     augment_pairwise(pvec, dat);
   }
 
@@ -87,10 +91,7 @@ void SMCAugmentation::augment_pairwise(
     [&dat, pairwise_aug_prop = std::ref(pairwise_aug_prop)]
     (Particle& p){
        for (size_t user{}; user < dat.n_assessors; user++) {
-         if(user < dat.n_assessors - dat.num_new_obs) {
-           if(p.consistent.is_empty()) continue;
-           if(p.consistent(user) == 1) continue;
-         }
+         auto tmp = p.augmented_data.col(user);
          RankProposal pprop = pairwise_aug_prop.get()->propose(
            p.augmented_data.col(user), dat.items_above[user], dat.items_below[user]);
          p.augmented_data.col(user) = pprop.rankings;

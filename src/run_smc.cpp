@@ -37,10 +37,8 @@ Rcpp::List  run_smc(
   for(size_t t{}; t < T; t++) {
     dat.update(new_data[t]);
     particle_vectors[t + 1] = augment_particles(particle_vectors[t], dat);
-
     aug.reweight(particle_vectors[t + 1], dat, pfun, distfun);
     pars.resample(particle_vectors[t + 1]);
-
     par_for_each(
       particle_vectors[t + 1].begin(), particle_vectors[t + 1].end(),
       [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),

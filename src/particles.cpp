@@ -84,12 +84,15 @@ std::vector<Particle> augment_particles(
         pvec[i].log_aug_prob.resize(dat.rankings.n_cols);
       }
     } else if (dat.augpair) {
+      particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
+      for(auto index : dat.updated_match) {
+        particle_consistent(index) = 0;
+      }
+
       pvec[i].augmented_data.resize(dat.n_items, dat.rankings.n_cols);
-      pvec[i].augmented_data(
-          span::all,
-          span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)
-      ) = dat.rankings(span::all, span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1));
+      pvec[i].augmented_data = dat.rankings;
       pvec[i].log_aug_prob.resize(dat.rankings.n_cols);
+
     }
   }
 

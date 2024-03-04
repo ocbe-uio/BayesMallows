@@ -148,7 +148,6 @@ RankProposal PairwiseLeapAndShift::propose(
   int item = a(0);
   int lower_limit = find_lower_limit(item, items_above[item], current_rank);
   int upper_limit = find_upper_limit(item, items_below[item], current_rank);
-
   Rcpp::IntegerVector b = Rcpp::seq(lower_limit, upper_limit);
   ivec d = Rcpp::sample(b, 1);
   int proposed_rank = d(0);
