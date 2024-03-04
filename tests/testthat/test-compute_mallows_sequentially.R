@@ -1,7 +1,7 @@
 test_that("compute_mallows_sequentially works", {
   set.seed(345)
   data <- lapply(seq_len(nrow(potato_visual)), function(i) {
-    setup_rank_data(potato_visual[i, ])
+    setup_rank_data(potato_visual[i, ], user_ids = i)
   })
 
   initial_values <- sample_prior(
@@ -49,7 +49,7 @@ test_that("compute_mallows_sequentially works with partial rankings", {
   dat[dat > 15] <- NA
 
   data <- lapply(seq_len(nrow(dat)), function(i) {
-    setup_rank_data(dat[i, ])
+    setup_rank_data(dat[i, ], user_ids = i)
   })
 
   initial_values <- sample_prior(

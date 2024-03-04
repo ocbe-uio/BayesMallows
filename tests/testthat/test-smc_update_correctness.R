@@ -167,7 +167,7 @@ test_that("update_mallows is correct for new partial rankings", {
 
 test_that("update_mallows is correct for updated partial rankings", {
   set.seed(1)
-  user_ids <- rownames(potato_visual)
+  user_ids <- 1:12
   dat0 <- potato_visual
   dat0[] <- ifelse(runif(length(dat0)) > .5, NA_real_, dat0)
 

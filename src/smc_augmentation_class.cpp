@@ -77,7 +77,6 @@ void SMCAugmentation::reweight(
         sum(p.log_aug_prob);
     }
   );
-
 }
 
 void SMCAugmentation::augment_pairwise(

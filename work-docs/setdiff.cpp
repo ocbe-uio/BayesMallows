@@ -1,16 +1,21 @@
-#include <Rcpp.h>
-using namespace Rcpp;
+#include <RcppArmadillo.h>
+using namespace arma;
+
+// [[Rcpp::depends(RcppArmadillo)]]
+
+
 
 // [[Rcpp::export]]
-int test(Rcpp::List a)  {
-  auto tmp = Rcpp::IntegerVector(a["b"]);
-  int ret;
-  if(tmp[0] == R_NilValue) {
-    ret = 0;
-  } else {
-    ret = tmp[0];
+arma::ivec match(arma::ivec v1, arma::ivec v2) {
+  ivec indices(v1.n_elem);
+
+  // Loop through each element of v1
+  for (int i = 0; i < v1.n_elem; ++i) {
+    // Find the index of v1[i] in v2
+    indices(i) = index(v2, v1(i));
   }
-  return ret;
+
+  return indices;
 }
 
 /*** R

@@ -37,6 +37,7 @@ Rcpp::List  run_smc(
   for(size_t t{}; t < T; t++) {
     dat.update(new_data[t]);
     particle_vectors[t + 1] = augment_particles(particle_vectors[t], dat);
+
     aug.reweight(particle_vectors[t + 1], dat, pfun, distfun);
     pars.resample(particle_vectors[t + 1]);
 
@@ -62,6 +63,5 @@ Rcpp::List  run_smc(
     Rcpp::Named("data") = dat.wrapup(),
     Rcpp::Named("acceptance_ratios") = compute_particle_acceptance(particle_vectors, pars.mcmc_steps)
   );
-
   return particle_history;
 }

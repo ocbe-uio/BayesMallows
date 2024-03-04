@@ -50,6 +50,9 @@ update_mallows.BayesMallowsPriorSamples <- function(
   alpha_init <- sample(model$alpha, smc_options$n_particles, replace = TRUE)
   rho_init <- model$rho[, sample(ncol(model$rho), smc_options$n_particles, replace = TRUE)]
   pfun_values <- extract_pfun_values(model_options$metric, new_data$n_items, pfun_estimate)
+  if(length(new_data$user_ids) == 0) {
+    new_data$user_ids <- seq(from = 1, to = nrow(new_data$rankings), by = 1)
+  }
 
   run_common_part(
     data = flush(new_data), new_data = new_data, model_options = model_options,
@@ -79,6 +82,9 @@ update_mallows.BayesMallows <- function(
   if (is.null(burnin(model))) stop("Burnin must be set.")
   alpha_init <- extract_alpha_init(model, smc_options$n_particles)
   rho_init <- extract_rho_init(model, smc_options$n_particles)
+  if(length(new_data$user_ids) == 0) {
+    new_data$user_ids <- seq(from = 1, to = nrow(new_data$rankings), by = 1)
+  }
 
   run_common_part(
     data = flush(new_data), new_data = new_data, model_options = model_options,
@@ -99,6 +105,10 @@ update_mallows.BayesMallows <- function(
 #' @export
 #' @rdname update_mallows
 update_mallows.SMCMallows <- function(model, new_data, ...) {
+  if(length(new_data$user_ids) == 0) {
+    new_data$user_ids <- max(as.numeric(model$data$user_ids)) + seq(from = 1, to = nrow(new_data$rankings), by = 1)
+  }
+
   ret <- run_smc(
     data = model$data,
     new_data = list(new_data),

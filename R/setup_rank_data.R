@@ -34,10 +34,9 @@
 #' 2 \tab 5 \tab 3\cr
 #' }
 #'
-#' @param user_ids Optional vector of user IDs. Defaults to `character()`, and
-#'   only used by [update_mallows()]. If provided, new data can consist of
-#'   updated partial rankings from users already in the dataset, as described in
-#'   Section 6 of
+#' @param user_ids Optional `numeric` vector of user IDs. Only only used by
+#'   [update_mallows()]. If provided, new data can consist of updated partial
+#'   rankings from users already in the dataset, as described in Section 6 of
 #'   \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
 #'
 #' @param observation_frequency A vector of observation frequencies (weights) to
@@ -136,7 +135,7 @@
 setup_rank_data <- function(
     rankings = NULL,
     preferences = NULL,
-    user_ids = character(),
+    user_ids = numeric(),
     observation_frequency = NULL,
     validate_rankings = TRUE,
     na_action = c("augment", "fail", "omit"),
@@ -176,7 +175,7 @@ setup_rank_data <- function(
       rankings <- rankings[keeps, , drop = FALSE]
     }
   } else {
-    n_items <- max(preferences[, c("bottom_item", "top_item")])
+    if(is.null(n_items)) n_items <- max(preferences[, c("bottom_item", "top_item")])
     rankings <- generate_initial_ranking(
       preferences, n_items, cl, shuffle_unranked, random, random_limit
     )
@@ -216,6 +215,7 @@ setup_rank_data <- function(
   n_assessors <- nrow(rankings)
   any_missing <- any(is.na(rankings))
   augpair <- !is.null(preferences)
+  stopifnot(is.numeric(user_ids))
 
   ret <- as.list(environment())
   class(ret) <- "BayesMallowsData"

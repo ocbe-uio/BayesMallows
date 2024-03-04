@@ -14,5 +14,9 @@ dat_60 <- subset(beach_preferences, assessor == 60)
 
 mod <- update_mallows(
   model = mod_init,
-  new_data = setup_rank_data(preferences = dat_60[1, , drop = FALSE])
+  new_data = setup_rank_data(
+    preferences = dat_60[1, , drop = FALSE], n_items = 15),
+  smc_options = set_smc_options(n_particles = 4, mcmc_steps = 2)
 )
+
+plot(mod)

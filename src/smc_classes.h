@@ -30,7 +30,7 @@ struct SMCData : Data {
   unsigned int num_new_obs{};
   arma::uvec timepoint{};
   arma::umat consistent{};
-  Rcpp::CharacterVector user_ids{};
+  Rcpp::IntegerVector user_ids{};
   Rcpp::IntegerVector updated_match{};
 };
 
