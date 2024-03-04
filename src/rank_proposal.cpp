@@ -49,6 +49,15 @@ int find_upper_limit(int item, const uvec& items_below_item, const vec& current_
   }
 }
 
+int find_lower_limit(int item, const uvec& items_above_item,
+                     const vec& current_ranking) {
+  if(items_above_item.size() > 0) {
+    return max(current_ranking.elem(items_above_item - 1)) + 1;
+  } else {
+    return 1;
+  }
+}
+
 RankProposal shift(
     const RankProposal& rp_in, const vec& current_rank, int u) {
   RankProposal rp{rp_in};
@@ -87,15 +96,6 @@ std::pair<unsigned int, unsigned int> sample(
 
 RhoProposal::RhoProposal(int leap_size) :
   leap_size { leap_size } {}
-
-int find_lower_limit(int item, const uvec& items_above_item,
-                     const vec& current_ranking) {
-  if(items_above_item.size() > 0) {
-    return max(current_ranking.elem(items_above_item - 1)) + 1;
-  } else {
-    return 1;
-  }
-}
 
 RankProposal RhoLeapAndShift::propose(
     const vec& current_rank) {
@@ -146,7 +146,6 @@ RankProposal PairwiseLeapAndShift::propose(
   int n_items = current_rank.n_elem;
   ivec a = Rcpp::sample(n_items, 1) - 1;
   int item = a(0);
-
   int lower_limit = find_lower_limit(item, items_above[item], current_rank);
   int upper_limit = find_upper_limit(item, items_below[item], current_rank);
 
@@ -207,38 +206,54 @@ PartialPseudoProposal::PartialPseudoProposal(
   const std::string& pseudo_aug_metric) :
   distfun { choose_distance_function(pseudo_aug_metric) } {}
 
-RankProposal PartialPseudoProposal::propose(
-    const vec& current_rank, const uvec& indicator,
-    double alpha, const vec& rho) {
+std::pair<arma::vec, double> PartialPseudoProposal::propose_pseudo(
+    const vec& current_rank, const uvec& unranked_items, const vec& rho,
+    double alpha, bool forward) {
+  int n_items = current_rank.n_elem;
   vec proposal = current_rank;
-  uvec missing_inds = find(indicator == 1);
-  ivec a = Rcpp::sample(missing_inds.size(), missing_inds.size()) - 1;
-  uvec unranked_items = missing_inds(conv_to<uvec>::from(a));
-
-  int n_items = proposal.n_elem;
+  uvec remaining_unranked_items = unranked_items;
   double prob = 1;
-  while(unranked_items.n_elem > 0) {
-    vec available_rankings = proposal(unranked_items);
-    int item_to_rank = unranked_items(0);
+  while(remaining_unranked_items.n_elem > 0) {
+    vec available_rankings = proposal(remaining_unranked_items);
+    int item_to_rank = remaining_unranked_items(0);
 
     double rho_for_item = rho(item_to_rank);
     vec log_numerator = -alpha / n_items *
       distfun->scalardist(available_rankings, rho_for_item);
 
     vec sample_probs = normalise(exp(log_numerator), 1);
-    ivec ans(sample_probs.size());
-    R::rmultinom(1, sample_probs.begin(), sample_probs.size(), ans.begin());
-    proposal(span(item_to_rank)) = available_rankings(find(ans == 1));
+
+    if(forward) {
+      ivec ans(sample_probs.size());
+      R::rmultinom(1, sample_probs.begin(), sample_probs.size(), ans.begin());
+      proposal(span(item_to_rank)) = available_rankings(find(ans == 1));
+    }
 
     int ranking_chosen = as_scalar(find(proposal(item_to_rank) == available_rankings));
 
     prob *= sample_probs(ranking_chosen);
     if(available_rankings.n_elem <= 1) break;
-    unranked_items = unranked_items.subvec(1, available_rankings.n_elem - 1);
+    remaining_unranked_items = remaining_unranked_items.subvec(1, available_rankings.n_elem - 1);
 
-    proposal(unranked_items) = setdiff(
+    proposal(remaining_unranked_items) = setdiff(
       available_rankings, available_rankings(span(ranking_chosen)));
   }
 
-  return RankProposal(proposal, prob, prob, missing_inds);
+  return std::pair<vec, double>(proposal, prob);
+}
+
+RankProposal PartialPseudoProposal::propose(
+    const vec& current_rank, const uvec& indicator, double alpha, const vec& rho) {
+  uvec missing_inds = find(indicator == 1);
+  ivec a = Rcpp::sample(missing_inds.size(), missing_inds.size()) - 1;
+  uvec unranked_items = missing_inds(conv_to<uvec>::from(a));
+
+  auto forward_proposal = propose_pseudo(
+    current_rank, unranked_items, rho, alpha, true);
+  auto backward_proposal = propose_pseudo(
+    current_rank, unranked_items, rho, alpha, false);
+
+  return RankProposal(
+  forward_proposal.first, forward_proposal.second,
+  backward_proposal.second, missing_inds);
 }

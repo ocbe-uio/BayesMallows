@@ -133,6 +133,5 @@ private:
   const std::string error_model;
   const std::unique_ptr<PartialProposal> partial_aug_prop;
   const std::unique_ptr<PairwiseProposal> pairwise_aug_prop;
-  arma::vec log_aug_prob;
 };
 

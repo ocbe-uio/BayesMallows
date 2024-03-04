@@ -77,7 +77,6 @@ update_mallows.BayesMallows <- function(
     priors = model$priors,
     ...) {
   if (is.null(burnin(model))) stop("Burnin must be set.")
-
   alpha_init <- extract_alpha_init(model, smc_options$n_particles)
   rho_init <- extract_rho_init(model, smc_options$n_particles)
 
@@ -130,7 +129,9 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
   model$rho <- tidy_parameters$rho
   model$augmented_rankings <- ret$augmented_rankings
   items <- model$data$items
+  new_constraints <- c(model$data$constraints, new_data$constraints)
   model$data <- ret$data
+  model$data$constraints <- new_constraints
   model$data$items <- items
 
   class(model) <- c("SMCMallows", "BayesMallows")

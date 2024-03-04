@@ -86,6 +86,10 @@ struct PartialPseudoProposal : PartialProposal {
       const arma::vec& current_rank, const arma::uvec& indicator,
       double alpha, const arma::vec& rho) override;
 
+  std::pair<arma::vec, double> propose_pseudo(
+      const arma::vec& current_rank, const arma::uvec& unranked_items,
+      const arma::vec& rho, double alpha, bool forward);
+
   std::unique_ptr<Distance> distfun;
 };
 

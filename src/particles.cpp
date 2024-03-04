@@ -31,7 +31,7 @@ std::vector<Particle> initialize_particles(
   for(size_t i{}; i < n_particles; i++) {
     uvec particle_consistent;
     mat augmented_data;
-    if(dat.any_missing) {
+    if(dat.any_missing || dat.augpair) {
       if(aug_init.isNotNull()) {
         particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
         augmented_data = Rcpp::as<cube>(aug_init).slice(i);

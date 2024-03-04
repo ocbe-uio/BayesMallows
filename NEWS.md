@@ -1,5 +1,8 @@
 # BayesMallows (development versions)
 
+* The SMC method update_mallows() now supports pairwise preferences. Currently
+  this is limited to new users providing pairwise preferences, and not existing
+  users updating their preferences.
 * Acceptance ratios are now tracked both in the Metropolis-Hastings algorithm
   used by compute_mallows() and in the move step inside the sequential Monte 
   Carlo algorithm used by update_mallows() and compute_mallows_sequentially(). 

@@ -17,8 +17,7 @@ Augmentation::Augmentation(
                             compute_options["pseudo_aug_metric"]) },
   pairwise_aug_prop {
     choose_pairwise_proposal(error_model, compute_options["swap_leap"])
-  },
-  log_aug_prob { zeros(dat.n_assessors) }
+  }
    {
     if(dat.any_missing){
       dat.rankings = initialize_missing_ranks(dat.rankings, dat.missing_indicator);
@@ -43,12 +42,11 @@ void Augmentation::update_missing_ranks(
       dat.rankings.col(i) = make_new_augmentation(
         dat.rankings.col(i), dat.missing_indicator.col(i),
         pars.alpha_old(cluster), pars.rho_old.col(cluster),
-        distfun, partial_aug_prop, log_aug_prob(i)
-      );
+        distfun, partial_aug_prop);
     } else if(dat.augpair) {
       dat.rankings.col(i) = make_new_augmentation(
         dat.rankings.col(i), pars.alpha_old(cluster), pars.rho_old.col(cluster),
-        pars.theta_current, distfun, pairwise_aug_prop, log_aug_prob(i),
+        pars.theta_current, distfun, pairwise_aug_prop,
         dat.items_above[i], dat.items_below[i], error_model);
     }
   }

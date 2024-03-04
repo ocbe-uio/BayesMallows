@@ -15,8 +15,9 @@ SMCAugmentation::SMCAugmentation(
   const Rcpp::List& compute_options,
   const Rcpp::List& smc_options
   ) :
-  partial_aug_prop { choose_partial_proposal(compute_options["aug_method"],
-                                             compute_options["pseudo_aug_metric"]) },
+  partial_aug_prop {
+  choose_partial_proposal(compute_options["aug_method"],
+                          compute_options["pseudo_aug_metric"]) },
   pairwise_aug_prop {
      choose_pairwise_proposal("none", compute_options["swap_leap"]) },
   latent_sampling_lag { read_lag(smc_options) } {}
@@ -91,7 +92,6 @@ void SMCAugmentation::augment_pairwise(
            if(p.consistent.is_empty()) continue;
            if(p.consistent(user) == 1) continue;
          }
-         Rcpp::Rcout << std::endl << std::endl;
          RankProposal pprop = pairwise_aug_prop.get()->propose(
            p.augmented_data.col(user), dat.items_above[user], dat.items_below[user]);
          p.augmented_data.col(user) = pprop.rankings;
@@ -117,6 +117,7 @@ void SMCAugmentation::augment_partial(
         RankProposal pprop = partial_aug_prop.get()->propose(
           p.augmented_data.col(user), dat.missing_indicator.col(user),
           p.alpha, p.rho);
+
         p.augmented_data.col(user) = pprop.rankings;
         p.log_aug_prob(user) = log(pprop.prob_forward);
       }
@@ -136,11 +137,11 @@ void SMCAugmentation::update_missing_ranks(
       p.augmented_data.col(jj) =
         make_new_augmentation(
           p.augmented_data.col(jj), dat.missing_indicator.col(jj), p.alpha,
-          p.rho, distfun, partial_aug_prop, p.log_aug_prob(jj));
+          p.rho, distfun, partial_aug_prop);
     } else if(dat.augpair) {
       p.augmented_data.col(jj) = make_new_augmentation(
         p.augmented_data.col(jj), p.alpha, p.rho, 0, distfun, pairwise_aug_prop,
-        p.log_aug_prob(jj), dat.items_above[jj], dat.items_below[jj], "none"
+        dat.items_above[jj], dat.items_below[jj], "none"
       );
     }
 
