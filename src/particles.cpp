@@ -137,6 +137,7 @@ Rcpp::List compute_particle_acceptance(
     const std::vector<std::vector<Particle>>& particle_vectors, int mcmc_steps) {
   vec alpha_acceptance(particle_vectors.size());
   vec rho_acceptance(particle_vectors.size());
+  vec aug_acceptance(particle_vectors.size());
   for(size_t i{}; i < particle_vectors.size(); i++) {
     alpha_acceptance[i] =
       std::accumulate(
@@ -152,9 +153,17 @@ Rcpp::List compute_particle_acceptance(
           return accumulator + p.rho_acceptance;
         });
     rho_acceptance[i] /= particle_vectors[i].size() * mcmc_steps;
+    aug_acceptance[i] =
+      std::accumulate(
+        particle_vectors[i].begin(), particle_vectors[i].end(), 0.0,
+        [](double accumulator, const Particle& p) {
+          return accumulator + p.aug_acceptance / p.aug_count;
+        });
+    aug_acceptance[i] /= particle_vectors[i].size();
   }
   return Rcpp::List::create(
     Rcpp::Named("alpha_acceptance") = alpha_acceptance,
-    Rcpp::Named("rho_acceptance") = rho_acceptance
+    Rcpp::Named("rho_acceptance") = rho_acceptance,
+    Rcpp::Named("aug_acceptance") = aug_acceptance
   );
 }

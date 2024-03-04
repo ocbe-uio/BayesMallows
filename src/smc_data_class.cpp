@@ -31,8 +31,10 @@ void SMCData::update(
       timepoint = join_cols(timepoint, new_dat.timepoint(span(new_match[index])));
       missing_indicator = join_rows(
         missing_indicator,
-        new_dat.any_missing ? new_dat.missing_indicator.col(new_match[index]) : uvec(new_dat.n_items, fill::zeros));
-      observation_frequency = join_cols(observation_frequency, new_dat.observation_frequency(span(new_match[index])));
+        new_dat.any_missing ? new_dat.missing_indicator.col(new_match[index]) :
+        uvec(new_dat.n_items, fill::zeros));
+      observation_frequency = join_cols(
+        observation_frequency, new_dat.observation_frequency(span(new_match[index])));
     }
 
     for(auto index : updated_indices) {

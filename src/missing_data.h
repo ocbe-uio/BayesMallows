@@ -2,7 +2,7 @@
 #include "distances.h"
 #include "rank_proposal.h"
 
-arma::vec make_new_augmentation(
+std::pair<arma::vec, bool> make_new_augmentation(
     const arma::vec& rankings,
     const arma::uvec& missing_indicator,
     double alpha,
@@ -10,7 +10,7 @@ arma::vec make_new_augmentation(
     const std::unique_ptr<Distance>& distfun,
     const std::unique_ptr<PartialProposal>& propfun);
 
-arma::vec make_new_augmentation(
+std::pair<arma::vec, bool> make_new_augmentation(
     const arma::vec& rankings,
     double alpha,
     const arma::vec& rho,

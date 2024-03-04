@@ -38,16 +38,22 @@ void Augmentation::update_missing_ranks(
   if(!dat.any_missing && !dat.augpair) return;
   for(size_t i = 0; i < dat.n_assessors; ++i){
     int cluster = clus.current_cluster_assignment(i);
+    std::pair<vec, bool> aug{};
     if(dat.any_missing) {
-      dat.rankings.col(i) = make_new_augmentation(
+      aug = make_new_augmentation(
         dat.rankings.col(i), dat.missing_indicator.col(i),
         pars.alpha_old(cluster), pars.rho_old.col(cluster),
         distfun, partial_aug_prop);
     } else if(dat.augpair) {
-      dat.rankings.col(i) = make_new_augmentation(
+      aug = make_new_augmentation(
         dat.rankings.col(i), pars.alpha_old(cluster), pars.rho_old.col(cluster),
         pars.theta_current, distfun, pairwise_aug_prop,
         dat.items_above[i], dat.items_below[i], error_model);
+    }
+    if(pars.t > pars.burnin) aug_count++;
+    if(aug.second) {
+      dat.rankings.col(i) = aug.first;
+      if(pars.t > pars.burnin) aug_acceptance++;
     }
   }
 }

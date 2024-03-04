@@ -57,7 +57,8 @@ Rcpp::List run_mcmc(
     Rcpp::Named("augmented_data") = aug.augmented_data,
     Rcpp::Named("alpha_acceptance") = pars.alpha_acceptance /
       (pars.nmc - pars.burnin) * pars.alpha_jump,
-    Rcpp::Named("rho_acceptance") = pars.rho_acceptance / (pars.nmc - pars.burnin)
+    Rcpp::Named("rho_acceptance") = pars.rho_acceptance / (pars.nmc - pars.burnin),
+    Rcpp::Named("aug_acceptance") = aug.aug_acceptance / aug.aug_count
   );
 
 }

@@ -128,6 +128,8 @@ struct Augmentation {
   const unsigned int aug_thinning;
   arma::cube augmented_data;
   size_t aug_index{};
+  double aug_acceptance{};
+  int aug_count{};
 
 private:
   const std::string error_model;

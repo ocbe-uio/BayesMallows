@@ -10,12 +10,12 @@ mod <- compute_mallows(
 )
 
 for(i in 2:60) {
+  print(i)
   dat <- subset(beach_preferences, assessor == i)
   mod <- update_mallows(
     model = mod,
-    new_data = setup_rank_data(
-      preferences = dat, timepoint = i),
-    smc_options = set_smc_options(n_particles = 5000, latent_sampling_lag = 0)
+    new_data = setup_rank_data(preferences = dat, timepoint = i),
+    smc_options = set_smc_options(latent_sampling_lag = 0, mcmc_steps = 20)
   )
 }
 
@@ -27,7 +27,7 @@ mod_bmm <- compute_mallows(
 mod_smc <- update_mallows(
   model = mod_bmm,
   new_data = setup_rank_data(preferences = beach_preferences),
-  smc_options = set_smc_options(n_particles = 5000, mcmc_steps = 0)
+  smc_options = set_smc_options(n_particles = 20, mcmc_steps = 3000)
 )
 
 plot(mod_smc)

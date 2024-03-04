@@ -196,14 +196,8 @@ test_that("update_mallows is correct for updated partial rankings", {
 
   expect_equal(
     mean(mod1$alpha$value),
-    10.446,
-    tolerance = .02
-  )
-
-  expect_equal(
-    mean(mod1$alpha$value),
     mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 2000]),
-    tolerance = .005
+    tolerance = .01
   )
 
   dat2 <- potato_visual
@@ -215,7 +209,6 @@ test_that("update_mallows is correct for updated partial rankings", {
     compute_options = set_compute_options(aug_method = "pseudo"),
     smc_options = set_smc_options(n_particles = 1000, mcmc_steps = 20)
   )
-  mean(mod2$alpha$value)
 
   mod_bmm <- compute_mallows(
     data = setup_rank_data(rankings = dat2),

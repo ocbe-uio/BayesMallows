@@ -25,7 +25,7 @@ mat initialize_missing_ranks(mat rankings, const umat& missing_indicator) {
 }
 
 
-vec make_new_augmentation_common(const vec& rankings, double alpha, const vec& rho,
+std::pair<vec, bool> make_new_augmentation_common(const vec& rankings, double alpha, const vec& rho,
                                  const std::unique_ptr<Distance>& distfun,
                                  const RankProposal& pprop,
                                  const std::string& error_model = "none", double theta = 0.0) {
@@ -41,13 +41,13 @@ vec make_new_augmentation_common(const vec& rankings, double alpha, const vec& r
   }
 
   if(ratio > std::log(R::runif(0, 1))){
-    return pprop.rankings;
+    return std::pair<vec, bool>(pprop.rankings, true);
   } else {
-    return rankings;
+    return std::pair<vec, bool>(rankings, false);
   }
 }
 
-vec make_new_augmentation(
+std::pair<vec, bool> make_new_augmentation(
     const vec& rankings, const uvec& missing_indicator, double alpha,
     const vec& rho, const std::unique_ptr<Distance>& distfun,
     const std::unique_ptr<PartialProposal>& partial_aug_prop) {
@@ -56,7 +56,7 @@ vec make_new_augmentation(
   return make_new_augmentation_common(rankings, alpha, rho, distfun, pprop);
 }
 
-vec make_new_augmentation(
+std::pair<vec, bool> make_new_augmentation(
     const vec& rankings, double alpha, const vec& rho, double theta,
     const std::unique_ptr<Distance>& distfun,
     const std::unique_ptr<PairwiseProposal>& pairwise_aug_prop,

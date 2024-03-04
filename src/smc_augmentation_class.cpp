@@ -126,23 +126,26 @@ void SMCAugmentation::augment_partial(
 }
 
 void SMCAugmentation::update_missing_ranks(
-    Particle& p,
-    const SMCData& dat,
-    const std::unique_ptr<Distance>& distfun) const {
+    Particle& p, const SMCData& dat, const std::unique_ptr<Distance>& distfun) const {
   if(!dat.any_missing && !dat.augpair) return;
 
   uvec indices_to_loop = find(max(dat.timepoint) - dat.timepoint < latent_sampling_lag);
   for (auto jj : indices_to_loop) {
+    std::pair<vec, bool> aug{};
     if(dat.any_missing) {
-      p.augmented_data.col(jj) =
-        make_new_augmentation(
+      aug = make_new_augmentation(
           p.augmented_data.col(jj), dat.missing_indicator.col(jj), p.alpha,
           p.rho, distfun, partial_aug_prop);
     } else if(dat.augpair) {
-      p.augmented_data.col(jj) = make_new_augmentation(
+      aug = make_new_augmentation(
         p.augmented_data.col(jj), p.alpha, p.rho, 0, distfun, pairwise_aug_prop,
         dat.items_above[jj], dat.items_below[jj], "none"
       );
+    }
+    p.aug_count++;
+    if(aug.second) {
+      p.augmented_data.col(jj) = aug.first;
+      p.aug_acceptance++;
     }
 
   }

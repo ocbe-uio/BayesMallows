@@ -18,6 +18,8 @@ struct Particle {
   arma::vec previous_distance;
   double alpha_acceptance{};
   double rho_acceptance{};
+  double aug_acceptance{};
+  int aug_count{};
 };
 
 struct SMCData : Data {
