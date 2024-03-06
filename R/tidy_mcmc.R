@@ -58,7 +58,8 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
 
   fit$acceptance_ratios <- list(
     alpha_acceptance = lapply(fits, function(x) x$alpha_acceptance),
-    rho_acceptance = lapply(fits, function(x) x$rho_acceptance)
+    rho_acceptance = lapply(fits, function(x) x$rho_acceptance),
+    aug_acceptance = lapply(fits, function(x) x$aug_acceptance)
   )
 
   return(fit)

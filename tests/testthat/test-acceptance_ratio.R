@@ -66,7 +66,10 @@ test_that("acceptance rates work with SMC", {
   expect_equal(as.numeric(mod2$acceptance_ratios$alpha_acceptance), .958)
   expect_equal(as.numeric(mod2$acceptance_ratios$rho_acceptance), .888)
 
-  mod3 <- update_mallows(mod2, setup_rank_data(potato_weighing[7:12, ]))
+  mod3 <- update_mallows(
+    model = mod2,
+    new_data = setup_rank_data(potato_weighing[7:12, ])
+  )
   expect_equal(as.numeric(mod3$acceptance_ratios$alpha_acceptance), .902)
   expect_equal(as.numeric(mod3$acceptance_ratios$rho_acceptance), .854)
 })

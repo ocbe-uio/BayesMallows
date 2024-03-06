@@ -28,8 +28,8 @@ Clustering::Clustering(const Parameters& pars,
 void Clustering::update_cluster_probs(
     const Parameters& pars,
     const Priors& pris){
+  if(!clustering) return;
   vec cluster_probs(pars.n_clusters);
-
   for(size_t i{}; i < pars.n_clusters; ++i){
     cluster_probs(i) = R::rgamma(
       sum(current_cluster_assignment == i) + pris.psi, 1.0);
@@ -43,6 +43,7 @@ void Clustering::update_cluster_labels(
     const Parameters& pars,
     const std::unique_ptr<PartitionFunction>& pfun
 ){
+  if(!clustering) return;
   uvec new_cluster_assignment(dat.n_assessors);
   mat assignment_prob(dat.n_assessors, pars.n_clusters);
   for(size_t i{}; i < pars.n_clusters; ++i){
@@ -66,6 +67,14 @@ void Clustering::update_cluster_labels(
         std::string(".csv"), csv_ascii);
   }
   current_cluster_assignment = new_cluster_assignment;
+}
+
+void Clustering::save_cluster_parameters(size_t t) {
+  if(clustering && t % clus_thinning == 0){
+    cluster_assignment_index++;
+    cluster_assignment.col(cluster_assignment_index) = current_cluster_assignment;
+    cluster_probs.col(cluster_assignment_index) = current_cluster_probs;
+  }
 }
 
 void Clustering::update_wcd(const int t){

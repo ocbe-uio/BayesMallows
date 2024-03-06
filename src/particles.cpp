@@ -31,7 +31,7 @@ std::vector<Particle> initialize_particles(
   for(size_t i{}; i < n_particles; i++) {
     uvec particle_consistent;
     mat augmented_data;
-    if(dat.any_missing) {
+    if(dat.any_missing || dat.augpair) {
       if(aug_init.isNotNull()) {
         particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
         augmented_data = Rcpp::as<cube>(aug_init).slice(i);
@@ -83,6 +83,15 @@ std::vector<Particle> augment_particles(
         ) = tmp;
         pvec[i].log_aug_prob.resize(dat.rankings.n_cols);
       }
+    } else if (dat.augpair) {
+      particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
+      for(auto index : dat.updated_match) {
+        particle_consistent(index) = 0;
+      }
+
+      pvec[i].augmented_data.resize(dat.n_items, dat.rankings.n_cols);
+      pvec[i].augmented_data = dat.rankings;
+      pvec[i].log_aug_prob.resize(dat.rankings.n_cols);
     }
   }
 
@@ -130,6 +139,7 @@ Rcpp::List compute_particle_acceptance(
     const std::vector<std::vector<Particle>>& particle_vectors, int mcmc_steps) {
   vec alpha_acceptance(particle_vectors.size());
   vec rho_acceptance(particle_vectors.size());
+  vec aug_acceptance(particle_vectors.size());
   for(size_t i{}; i < particle_vectors.size(); i++) {
     alpha_acceptance[i] =
       std::accumulate(
@@ -145,9 +155,17 @@ Rcpp::List compute_particle_acceptance(
           return accumulator + p.rho_acceptance;
         });
     rho_acceptance[i] /= particle_vectors[i].size() * mcmc_steps;
+    aug_acceptance[i] =
+      std::accumulate(
+        particle_vectors[i].begin(), particle_vectors[i].end(), 0.0,
+        [](double accumulator, const Particle& p) {
+          return accumulator + p.aug_acceptance / p.aug_count;
+        });
+    aug_acceptance[i] /= particle_vectors[i].size();
   }
   return Rcpp::List::create(
     Rcpp::Named("alpha_acceptance") = alpha_acceptance,
-    Rcpp::Named("rho_acceptance") = rho_acceptance
+    Rcpp::Named("rho_acceptance") = rho_acceptance,
+    Rcpp::Named("aug_acceptance") = aug_acceptance
   );
 }

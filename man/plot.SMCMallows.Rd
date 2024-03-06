@@ -81,7 +81,7 @@ potato_top_14 <- ifelse(potato_visual[1:10, ] > 14, NA_real_,
                         potato_visual[1:10, ])
 
 # We need the rownames as user IDs
-(user_ids <- rownames(potato_visual[1:10, ]))
+(user_ids <- 1:10)
 
 # First, users provide top-10 rankings
 mod_init <- compute_mallows(
@@ -112,7 +112,7 @@ plot(mod2)
 # Finally, assume a set of new users arrive, who have complete rankings.
 potato_new <- potato_visual[11:12, ]
 # We need to update the user IDs, to show that these users are different
-(user_ids <- rownames(potato_new))
+(user_ids <- 11:12)
 
 mod_final <- update_mallows(
   model = mod2,
