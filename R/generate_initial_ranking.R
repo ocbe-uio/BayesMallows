@@ -50,11 +50,6 @@ generate_initial_ranking.BayesMallowsIntransitive <- function(
   rankings <- matrix(rankings, ncol = n_items, nrow = n_assessors, byrow = TRUE)
 }
 
-.S3method(
-  "generate_initial_ranking", "BayesMallowsIntransitive",
-  generate_initial_ranking.BayesMallowsIntransitive
-)
-
 create_ranks <- function(mat, n_items, shuffle_unranked, random) {
   if (!random) {
     g <- igraph::graph_from_edgelist(as.matrix(mat))
