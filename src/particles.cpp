@@ -92,7 +92,6 @@ std::vector<Particle> augment_particles(
       pvec[i].augmented_data.resize(dat.n_items, dat.rankings.n_cols);
       pvec[i].augmented_data = dat.rankings;
       pvec[i].log_aug_prob.resize(dat.rankings.n_cols);
-
     }
   }
 

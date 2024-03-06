@@ -10,9 +10,10 @@ SMCParameters::SMCParameters(
 ) :
   mcmc_steps { smc_options["mcmc_steps"] },
   metric ( model_options["metric"] ),
-  n_particles {smc_options["n_particles"] },
-  rho_proposal_function { choose_rho_proposal(compute_options["rho_proposal"],
-                                              compute_options["leap_size"])},
+  n_particles { smc_options["n_particles"] },
+  rho_proposal_function {
+    choose_rho_proposal(compute_options["rho_proposal"],
+                        compute_options["leap_size"])},
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
   resampler { choose_resampler(std::string(smc_options["resampler"])) } {}
 
