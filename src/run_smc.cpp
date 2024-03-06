@@ -33,7 +33,7 @@ Rcpp::List  run_smc(
     dat.n_items, pars.metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(pars.metric);
 
-  auto T{new_data.size()};
+  size_t T = new_data.size();
   for(size_t t{}; t < T; t++) {
     dat.update(new_data[t]);
     particle_vectors[t + 1] = augment_particles(particle_vectors[t], dat);

@@ -12,7 +12,6 @@ Parameters::Parameters(
   nmc { compute_options["nmc"] },
   alpha_jump { compute_options["alpha_jump"] },
   metric ( model_options["metric"] ),
-  burnin { compute_options["burnin"] == R_NilValue ? 0 : compute_options["burnin"] },
   rho_proposal_function {
     choose_rho_proposal(compute_options["rho_proposal"],
                         compute_options["leap_size"]) },
@@ -20,6 +19,7 @@ Parameters::Parameters(
   rho_thinning { compute_options["rho_thinning"] },
   error_model (model_options["error_model"])
   {
+    burnin = compute_options["burnin"] == R_NilValue ? 0 : compute_options["burnin"];
     alpha.set_size(n_clusters, std::ceil(static_cast<double>(nmc * 1.0 / alpha_jump)));
     double alpha_init = initial_values["alpha_init"];
     alpha.col(0).fill(alpha_init);

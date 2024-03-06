@@ -67,7 +67,7 @@ struct Parameters {
   const unsigned int nmc;
   const int alpha_jump;
   const std::string metric;
-  int burnin{};
+  size_t burnin{};
   size_t t{};
   size_t alpha_index{};
   size_t rho_index{};
