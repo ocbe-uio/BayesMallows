@@ -35,14 +35,18 @@ void SMCData::update(
     observation_frequency = join_cols(
       observation_frequency, new_dat.observation_frequency(span(new_match[index])));
 
-    items_above.push_back(new_dat.items_above[new_match[index]]);
-    items_below.push_back(new_dat.items_below[new_match[index]]);
+    if(augpair) {
+      items_above.push_back(new_dat.items_above[new_match[index]]);
+      items_below.push_back(new_dat.items_below[new_match[index]]);
+    }
   }
 
   for(auto index : updated_indices) {
     rankings.col(updated_match[index]) = new_dat.rankings.col(updated_new[index]);
-    items_above[updated_match[index]] = new_dat.items_above[updated_new[index]];
-    items_below[updated_match[index]] = new_dat.items_below[updated_new[index]];
+    if(augpair) {
+      items_above[updated_match[index]] = new_dat.items_above[updated_new[index]];
+      items_below[updated_match[index]] = new_dat.items_below[updated_new[index]];
+    }
   }
 
   new_rankings = new_dat.new_rankings;
