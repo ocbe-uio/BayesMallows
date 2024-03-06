@@ -33,7 +33,7 @@ void SMCAugmentation::reweight(
       pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
           p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
       });
-    augment_partial(pvec, dat);
+    pvec = augment_partial(pvec, dat);
   }
 
   par_for_each(
@@ -74,11 +74,12 @@ void SMCAugmentation::reweight(
   );
 }
 
-void SMCAugmentation::augment_partial(
-    std::vector<Particle>& pvec, const SMCData& dat
+std::vector<Particle> SMCAugmentation::augment_partial(
+    const std::vector<Particle>& pvec, const SMCData& dat
 ) const {
+  std::vector<Particle> ret{pvec};
   par_for_each(
-    pvec.begin(), pvec.end(),
+    ret.begin(), ret.end(),
     [&dat, partial_aug_prop = std::ref(partial_aug_prop),
      pairwise_aug_prop = std::ref(pairwise_aug_prop)]
     (Particle& p){
@@ -103,6 +104,7 @@ void SMCAugmentation::augment_partial(
       }
     }
   );
+  return ret;
 }
 
 void SMCAugmentation::update_missing_ranks(
