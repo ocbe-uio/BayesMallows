@@ -146,7 +146,7 @@ setup_rank_data <- function(
     timepoint = NULL,
     n_items = NULL) {
   na_action <- match.arg(na_action, c("augment", "fail", "omit"))
-  if(!is.null(rankings) && !is.null(n_items)) {
+  if (!is.null(rankings) && !is.null(n_items)) {
     stop("n_items can only be set when rankings=NULL")
   }
 
@@ -175,7 +175,7 @@ setup_rank_data <- function(
       rankings <- rankings[keeps, , drop = FALSE]
     }
   } else {
-    if(is.null(n_items)) n_items <- max(preferences[, c("bottom_item", "top_item")])
+    if (is.null(n_items)) n_items <- max(preferences[, c("bottom_item", "top_item")])
     rankings <- generate_initial_ranking(
       preferences, n_items, cl, shuffle_unranked, random, random_limit
     )
