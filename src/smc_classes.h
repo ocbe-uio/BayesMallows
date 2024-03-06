@@ -82,7 +82,6 @@ struct SMCAugmentation {
       const std::unique_ptr<Distance>& distfun) const;
 
   void augment_partial(std::vector<Particle>& pvec, const SMCData& dat) const;
-  void augment_pairwise(std::vector<Particle>& pvec, const SMCData& dat) const;
 
   void update_missing_ranks(Particle& p, const SMCData& dat,
       const std::unique_ptr<Distance>& distfun) const;

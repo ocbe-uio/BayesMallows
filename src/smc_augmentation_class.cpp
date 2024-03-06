@@ -28,29 +28,20 @@ void SMCAugmentation::reweight(
     const std::unique_ptr<PartitionFunction>& pfun,
     const std::unique_ptr<Distance>& distfun
 ) const {
-  if(dat.any_missing) {
+  if(dat.any_missing || dat.augpair) {
     par_for_each(
       pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
           p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
       });
     augment_partial(pvec, dat);
-  } else if(dat.augpair) {
-    par_for_each(
-      pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
-        p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
-      });
-    augment_pairwise(pvec, dat);
   }
 
   par_for_each(
-    pvec.begin(), pvec.end(),
-    [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
-     any_missing = dat.any_missing, distfun = &distfun, pfun = &pfun,
-     nr = &dat.new_rankings]
+    pvec.begin(), pvec.end(), [&dat, distfun = &distfun, pfun = &pfun]
     (Particle& p){
       double item_correction_contribution{};
       if(!p.consistent.is_empty()) {
-        for(size_t user{}; user < n_assessors - num_new_obs; user++) {
+        for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
           if(p.consistent(user) == 0) {
             double current_distance = distfun->get()->d(p.augmented_data.col(user), p.rho);
 
@@ -61,14 +52,14 @@ void SMCAugmentation::reweight(
       }
 
       double new_user_contribution{};
-      if(num_new_obs > 0) {
+      if(dat.num_new_obs > 0) {
         mat new_rankings;
-        if(any_missing) {
+        if(dat.any_missing || dat.augpair) {
           new_rankings = p.augmented_data(
             span::all,
-            span(n_assessors - num_new_obs, n_assessors - 1));
+            span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1));
         } else {
-          new_rankings = *nr;
+          new_rankings = dat.new_rankings;
         }
 
         new_user_contribution = -p.alpha / p.rho.size() *
@@ -77,27 +68,9 @@ void SMCAugmentation::reweight(
 
       p.log_inc_wgt =
         new_user_contribution + item_correction_contribution -
-        num_new_obs * pfun->get()->logz(p.alpha) -
+        dat.num_new_obs * pfun->get()->logz(p.alpha) -
         sum(p.log_aug_prob);
     }
-  );
-}
-
-void SMCAugmentation::augment_pairwise(
-    std::vector<Particle>& pvec, const SMCData& dat
-) const {
-  par_for_each(
-    pvec.begin(), pvec.end(),
-    [&dat, pairwise_aug_prop = std::ref(pairwise_aug_prop)]
-    (Particle& p){
-       for (size_t user{}; user < dat.n_assessors; user++) {
-         auto tmp = p.augmented_data.col(user);
-         RankProposal pprop = pairwise_aug_prop.get()->propose(
-           p.augmented_data.col(user), dat.items_above[user], dat.items_below[user]);
-         p.augmented_data.col(user) = pprop.rankings;
-         p.log_aug_prob(user) = log(pprop.prob_forward);
-       }
-     }
   );
 }
 
@@ -106,7 +79,8 @@ void SMCAugmentation::augment_partial(
 ) const {
   par_for_each(
     pvec.begin(), pvec.end(),
-    [&dat, partial_aug_prop = std::ref(partial_aug_prop)]
+    [&dat, partial_aug_prop = std::ref(partial_aug_prop),
+     pairwise_aug_prop = std::ref(pairwise_aug_prop)]
     (Particle& p){
        for (size_t user{}; user < dat.n_assessors; user++) {
         if(user < dat.n_assessors - dat.num_new_obs) {
@@ -114,9 +88,15 @@ void SMCAugmentation::augment_partial(
           if(p.consistent(user) == 1) continue;
         }
 
-        RankProposal pprop = partial_aug_prop.get()->propose(
-          p.augmented_data.col(user), dat.missing_indicator.col(user),
-          p.alpha, p.rho);
+        RankProposal pprop;
+        if(dat.any_missing) {
+          pprop = partial_aug_prop.get()->propose(
+            p.augmented_data.col(user), dat.missing_indicator.col(user),
+            p.alpha, p.rho);
+        } else if(dat.augpair) {
+          pprop = pairwise_aug_prop.get()->propose(
+            p.augmented_data.col(user), dat.items_above[user], dat.items_below[user]);
+        }
 
         p.augmented_data.col(user) = pprop.rankings;
         p.log_aug_prob(user) = log(pprop.prob_forward);
