@@ -103,7 +103,7 @@ set.seed(3)
 dat <- subset(beach_preferences, assessor <= 20)
 mod <- compute_mallows(
   data = setup_rank_data(
-    preferences = beach_preferences, shuffle_unranked = TRUE),
+    preferences = beach_preferences),
   compute_options = set_compute_options(nmc = 3000, burnin = 1000)
 )
 
@@ -113,7 +113,7 @@ for(i in 21:60){
     model = mod,
     new_data = setup_rank_data(
       preferences = subset(beach_preferences, assessor == i),
-      user_ids = i),
+      user_ids = i, shuffle_unranked = TRUE),
     smc_options = set_smc_options(latent_sampling_lag = 0)
   )
 }
