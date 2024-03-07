@@ -177,7 +177,7 @@ rm(data_batch1, data_batch2, data_batch3, data_batch4)
 
 ## New users with partial or complete rankings
 
-The functionality extends directly to partial ranks, including both top-$k$ rankings and rankings missing at random. At the moment, pairwise preferences are not supported, but this will be added in the future.
+The functionality extends directly to partial ranks, including both top-$k$ rankings and rankings missing at random. Pairwise preferences are also supported, although not demonstrated here.
 
 For this demonstration we shall assume that we can only observe the top-5 ranked items from each user in the `sushi_rankings` dataset.
 
