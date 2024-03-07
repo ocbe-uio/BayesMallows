@@ -28,7 +28,7 @@ for(i in 6:60) {
 
 mod_bmm <- compute_mallows(
   data = setup_rank_data(preferences = beach_preferences),
-  compute_options = set_compute_options(nmc = 50000, burnin = 1000)
+  compute_options = set_compute_options(nmc = 10000, burnin = 1000)
 )
 
 plot(mod_bmm) + plot(mod) + plot_layout(ncol = 1)

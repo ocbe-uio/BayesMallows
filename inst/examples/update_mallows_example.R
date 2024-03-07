@@ -94,3 +94,32 @@ mod_final <- update_mallows(
 )
 
 plot(mod_final)
+
+# We can also update models with pairwise preferences
+# We here start by running MCMC on the first 20 assessors of the beach data
+# A realistic application should run a larger number of iterations than we
+# do in this example.
+set.seed(3)
+dat <- subset(beach_preferences, assessor <= 20)
+mod <- compute_mallows(
+  data = setup_rank_data(
+    preferences = beach_preferences, shuffle_unranked = TRUE),
+  compute_options = set_compute_options(nmc = 3000, burnin = 1000)
+)
+
+# Next we provide assessors 21 to 60 one at a time.
+for(i in 21:60){
+  mod <- update_mallows(
+    model = mod,
+    new_data = setup_rank_data(
+      preferences = subset(beach_preferences, assessor == i),
+      user_ids = i),
+    smc_options = set_smc_options(latent_sampling_lag = 0)
+  )
+}
+
+# Compared to running full MCMC, there is a downward bias in the scale
+# parameter. This can be alleviated by increasing the number of particles,
+# MCMC steps, and the latent sampling lag.
+plot(mod)
+compute_consensus(mod)
