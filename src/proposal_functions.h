@@ -25,5 +25,5 @@ std::pair<arma::vec, bool> make_new_rho(
     const arma::mat& rankings,
     double alpha_old,
     const std::unique_ptr<Distance>& distfun,
-    const std::unique_ptr<ProposalDistribution>& prop,
+    const std::unique_ptr<RhoProposal>& prop,
     arma::vec observation_frequency);

@@ -1,15 +1,21 @@
+splitpref <- function(preferences) {
+  split(
+    preferences[, c("bottom_item", "top_item"), drop = FALSE],
+    preferences$assessor
+  )
+}
+
 generate_initial_ranking <- function(
-    preferences, cl = NULL, shuffle_unranked = FALSE,
+    preferences, n_items, cl = NULL, shuffle_unranked = FALSE,
     random = FALSE, random_limit = 8L) {
   UseMethod("generate_initial_ranking")
 }
 
 #' @export
 generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
-    preferences, cl = NULL, shuffle_unranked = FALSE, random = FALSE,
+    preferences, n_items, cl = NULL, shuffle_unranked = FALSE, random = FALSE,
     random_limit = 8L) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
-  n_items <- max(preferences[, c("bottom_item", "top_item")])
   if (n_items > random_limit && random) {
     stop(paste(
       "Number of items exceeds the limit for generation of random permutations,\n",
@@ -17,10 +23,8 @@ generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
     ))
   }
 
-  prefs <- split(
-    preferences[, c("bottom_item", "top_item"), drop = FALSE],
-    preferences$assessor
-  )
+  prefs <- splitpref(preferences)
+
   if (is.null(cl)) {
     do.call(rbind, lapply(
       prefs, function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
@@ -37,20 +41,14 @@ generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
 
 #' @export
 generate_initial_ranking.BayesMallowsIntransitive <- function(
-    preferences, cl = NULL, shuffle_unranked = FALSE,
+    preferences, n_items, cl = NULL, shuffle_unranked = FALSE,
     random = FALSE, random_limit = 8L) {
-  n_items <- max(preferences[, c("bottom_item", "top_item")])
   n_assessors <- length(unique(preferences$assessor))
   rankings <- replicate(n_assessors, sample(x = n_items, size = n_items),
     simplify = "numeric"
   )
   rankings <- matrix(rankings, ncol = n_items, nrow = n_assessors, byrow = TRUE)
 }
-
-.S3method(
-  "generate_initial_ranking", "BayesMallowsIntransitive",
-  generate_initial_ranking.BayesMallowsIntransitive
-)
 
 create_ranks <- function(mat, n_items, shuffle_unranked, random) {
   if (!random) {

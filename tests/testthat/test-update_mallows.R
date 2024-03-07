@@ -15,6 +15,11 @@ test_that("update_mallows works", {
     smc_options = set_smc_options(n_particles = 10)
   )
 
+  expect_error(
+    update_mallows(model = mod_init, new_data = data_second_batch),
+    "new_data must be an object of class BayesMallowsData"
+  )
+
   pi <- compute_posterior_intervals(mod_second)
   expect_equal(pi$hpdi, "[0.423,0.753]")
   expect_equal(mod_second$alpha$value[[9]], 0.753246865159393)
@@ -25,6 +30,11 @@ test_that("update_mallows works", {
   )
 
   expect_equal(mod_final$rho$value[169], 18)
+
+  expect_error(
+    update_mallows(model = mod_second, new_data = data_third_batch),
+    "new_data must be an object of class BayesMallowsData"
+  )
 })
 
 test_that("update_mallows can start from prior", {
@@ -35,6 +45,12 @@ test_that("update_mallows can start from prior", {
     new_data = setup_rank_data(potato_visual[1, , drop = FALSE]),
     smc_options = set_smc_options(n_particles = 100)
   )
+
+  expect_error(
+    update_mallows(prior_samples, new_data = potato_visual[1, , drop = FALSE]),
+    "new_data must be an object of class BayesMallowsData"
+  )
+
   mod2 <- update_mallows(
     mod1,
     new_data = setup_rank_data(potato_visual[2, , drop = FALSE])

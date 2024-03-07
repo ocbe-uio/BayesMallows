@@ -8,11 +8,7 @@ generate_transitive_closure <- function(preferences, cl = NULL) {
     stop("assessor column in preferences must be numeric")
   }
 
-  prefs <- split(
-    preferences[, c("bottom_item", "top_item"), drop = FALSE],
-    preferences$assessor
-  )
-
+  prefs <- splitpref(preferences)
   if (is.null(cl)) {
     lapplyfun <- lapply
   } else {
@@ -47,7 +43,6 @@ generate_transitive_closure <- function(preferences, cl = NULL) {
 .generate_transitive_closure <- function(mat) {
   # This line was an answer to StackOverflow question 51794127
   my_set <- do.call(sets::set, apply(mat, 1, sets::as.tuple))
-
   r <- relations::endorelation(graph = my_set)
   tc <- relations::transitive_closure(r)
   incidence <- relations::relation_incidence(tc)

@@ -502,16 +502,16 @@ reshape(
   drop = "cumprob"
   )
 #>    ranking     Cluster 1     Cluster 2     Cluster 3     Cluster 4     Cluster 5
-#> 1        1    fatty tuna    fatty tuna    fatty tuna        shrimp    fatty tuna
-#> 2        2          tuna          tuna    sea urchin       sea eel    sea urchin
-#> 3        3    salmon roe       sea eel    salmon roe         squid    salmon roe
-#> 4        4        shrimp        shrimp          tuna           egg       sea eel
-#> 5        5     tuna roll     tuna roll        shrimp    fatty tuna          tuna
-#> 6        6         squid         squid         squid          tuna        shrimp
-#> 7        7           egg           egg     tuna roll     tuna roll     tuna roll
-#> 8        8       sea eel cucumber roll       sea eel    salmon roe         squid
-#> 9        9 cucumber roll    salmon roe cucumber roll cucumber roll           egg
-#> 10      10    sea urchin    sea urchin           egg    sea urchin cucumber roll
+#> 1        1        shrimp    fatty tuna    fatty tuna    sea urchin    fatty tuna
+#> 2        2       sea eel          tuna    salmon roe    fatty tuna    sea urchin
+#> 3        3         squid       sea eel    sea urchin    salmon roe          tuna
+#> 4        4           egg        shrimp          tuna       sea eel    salmon roe
+#> 5        5    fatty tuna     tuna roll        shrimp        shrimp       sea eel
+#> 6        6          tuna         squid     tuna roll          tuna     tuna roll
+#> 7        7     tuna roll           egg         squid         squid        shrimp
+#> 8        8 cucumber roll cucumber roll       sea eel     tuna roll         squid
+#> 9        9    salmon roe    salmon roe           egg           egg           egg
+#> 10      10    sea urchin    sea urchin cucumber roll cucumber roll cucumber roll
 ```
 
 Note that for estimating cluster specific parameters, label switching is a potential problem that needs to be handled. `BayesMallows` ignores label switching issues inside the MCMC, because it has been shown that this approach is better for ensuring full convergence of the chain [@jasra2005;@celeux2000]. MCMC iterations can be re-ordered after convergence is achieved, for example by using the implementation of Stephens' algorithm [@Stephens2000] provided by the R package `label.switching` [@papastamoulis2016]. A full example of how to assess label switching is provided in the examples for the `compute_mallows` function.

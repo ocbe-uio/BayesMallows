@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include "classes.h"
 #include "rank_proposal.h"
+#include "progress_reporter.h"
 
 using namespace arma;
 
@@ -20,62 +21,28 @@ Rcpp::List run_mcmc(
   Priors pris{priors};
   Parameters pars{model_options, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};
-  Augmentation aug{dat, compute_options};
+  Augmentation aug{dat, compute_options, model_options};
+  ProgressReporter rep{verbose};
 
   auto pfun = choose_partition_function(
     dat.n_items, pars.metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(pars.metric);
-  auto rho_proposal = choose_rank_proposal(
-    pars.rho_proposal_option, pars.leap_size);
-  std::unique_ptr<ProposalDistribution> aug_prop;
-  if(pars.error_model == "none"){
-    aug_prop = std::make_unique<LeapAndShift>(1);
-  } else if(pars.error_model == "bernoulli"){
-    aug_prop = std::make_unique<Swap>(aug.swap_leap);
-  } else {
-    Rcpp::stop("error_model must be 'none' or 'bernoulli'");
-  }
 
   clus.update_dist_mat(dat, pars, distfun);
-  int aug_index = 0, cluster_assignment_index = 0;
 
   for(pars.t = 1; pars.t < pars.nmc; pars.t++){
-    if (pars.t % 1000 == 0) {
-      Rcpp::checkUserInterrupt();
-      if(verbose){
-        Rcpp::Rcout << "First " << pars.t <<
-          " iterations of Metropolis-Hastings algorithm completed." << std::endl;
-      }
-    }
-
+    rep.report(pars.t);
     pars.update_shape(dat, pris);
-    pars.update_rho(dat, clus.current_cluster_assignment,
-                    distfun, rho_proposal);
+    pars.update_rho(dat, clus.current_cluster_assignment, distfun);
     pars.update_alpha(dat, distfun, pfun, pris,
                       clus.current_cluster_assignment);
-
-
-  if(clus.clustering){
     clus.update_cluster_probs(pars, pris);
     clus.update_cluster_labels(pars.t, dat, pars, pfun);
-
-    if(pars.t % clus.clus_thinning == 0){
-      ++cluster_assignment_index;
-      clus.cluster_assignment.col(cluster_assignment_index) = clus.current_cluster_assignment;
-      clus.cluster_probs.col(cluster_assignment_index) = clus.current_cluster_probs;
-    }
-  }
-
-  clus.update_wcd(pars.t);
-  aug.update_missing_ranks(dat, clus, pars, distfun);
-  aug.augment_pairwise(dat, pars, clus, distfun, aug_prop);
-
-  if(aug.save_aug & (pars.t % aug.aug_thinning == 0)){
-    ++aug_index;
-    aug.augmented_data.slice(aug_index) = dat.rankings;
-  }
-
-  clus.update_dist_mat(dat, pars, distfun);
+    clus.save_cluster_parameters(pars.t);
+    clus.update_wcd(pars.t);
+    aug.update_missing_ranks(dat, clus, pars, distfun);
+    aug.save_augmented_data(dat, pars);
+    clus.update_dist_mat(dat, pars, distfun);
   }
 
   return Rcpp::List::create(
@@ -90,7 +57,8 @@ Rcpp::List run_mcmc(
     Rcpp::Named("augmented_data") = aug.augmented_data,
     Rcpp::Named("alpha_acceptance") = pars.alpha_acceptance /
       (pars.nmc - pars.burnin) * pars.alpha_jump,
-    Rcpp::Named("rho_acceptance") = pars.rho_acceptance / (pars.nmc - pars.burnin)
+    Rcpp::Named("rho_acceptance") = pars.rho_acceptance / (pars.nmc - pars.burnin),
+    Rcpp::Named("aug_acceptance") = aug.aug_acceptance / aug.aug_count
   );
 
 }

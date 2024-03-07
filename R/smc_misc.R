@@ -66,6 +66,8 @@ run_common_part <- function(
 
 flush <- function(data) {
   data$rankings <- data$rankings[integer(), , drop = FALSE]
+  data$preferences <- data$preferences[integer(), , drop = FALSE]
+  data$constraints <- data$constraints[integer()]
   data$n_assessors <- 0
   data$observation_frequency <- data$observation_frequency[integer()]
   data$consistent <- data$consistent[integer(), , drop = FALSE]

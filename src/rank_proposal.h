@@ -1,53 +1,105 @@
 #pragma once
 #include <RcppArmadillo.h>
+#include "typedefs.h"
+#include "distances.h"
 
-struct Distance;
-struct RankProposal;
+struct RankProposal{
+  RankProposal() {};
+  RankProposal(const arma::vec& rankings) : rankings { rankings } {}
+  RankProposal(
+    const arma::vec& rankings,
+    double prob_forward, double prob_backward,
+    const arma::uvec& mutated_items) :
+    rankings { rankings }, prob_forward { prob_forward },
+    prob_backward { prob_backward }, mutated_items { mutated_items } {}
+  ~RankProposal() = default;
 
-struct ProposalDistribution {
-  ProposalDistribution(int leap_size);
-  virtual ~ProposalDistribution() = default;
+  arma::vec rankings{};
+  double prob_forward{1};
+  double prob_backward{1};
+  arma::uvec mutated_items{};
+  int g_diff{};
+};
+
+struct RhoProposal {
+  RhoProposal(int leap_size);
+  virtual ~RhoProposal() = default;
   virtual RankProposal propose(const arma::vec& current_rank) = 0;
-  virtual RankProposal propose(
-    const arma::vec& current_rank,
-    const std::vector<std::vector<unsigned int>>& items_above,
-    const std::vector<std::vector<unsigned int>>& items_below) = 0;
-
   const int leap_size;
 };
 
-std::unique_ptr<ProposalDistribution> choose_rank_proposal(
-    const std::string& rho_proposal, int leap_size);
-
-struct LeapAndShift : ProposalDistribution {
-  using ProposalDistribution::ProposalDistribution;
-
-  RankProposal shift(
-      const RankProposal& rp_in, const arma::vec& current_rank, int u);
-
+struct RhoLeapAndShift : RhoProposal {
+  using RhoProposal::RhoProposal;
   RankProposal propose(const arma::vec& current_rank) override;
-  RankProposal propose(
-    const arma::vec& current_rank,
-    const std::vector<std::vector<unsigned int>>& items_above,
-    const std::vector<std::vector<unsigned int>>& items_below) override;
-
-private:
-  int find_lower_limit(int item, const arma::uvec& items_above_item,
-                       const arma::vec& current_ranking);
-
-  int find_upper_limit(int item, const arma::uvec& items_below_item,
-                       const arma::vec& current_ranking);
 };
 
-struct Swap : ProposalDistribution {
-  using ProposalDistribution::ProposalDistribution;
-
+struct RhoSwap : RhoProposal {
+  using RhoProposal::RhoProposal;
   RankProposal propose(const arma::vec& current_rank) override;
+};
+
+
+struct PairwiseProposal {
+  PairwiseProposal();
+  virtual ~PairwiseProposal() = default;
+  virtual RankProposal propose(
+      const arma::vec& current_rank,
+      const doubly_nested& items_above,
+      const doubly_nested& items_below) = 0;
+};
+
+struct PairwiseLeapAndShift : PairwiseProposal {
+  PairwiseLeapAndShift();
   RankProposal propose(
       const arma::vec& current_rank,
-      const std::vector<std::vector<unsigned int>>& items_above,
-      const std::vector<std::vector<unsigned int>>& items_below) override;
-
-private:
-  std::pair<unsigned int, unsigned int> sample(const arma::vec& current_rank);
+      const doubly_nested& items_above,
+      const doubly_nested& items_below) override;
 };
+
+struct PairwiseSwap : PairwiseProposal {
+  PairwiseSwap(int leap_size);
+  RankProposal propose(
+      const arma::vec& current_rank,
+      const doubly_nested& items_above,
+      const doubly_nested& items_below) override;
+  const int leap_size;
+};
+
+struct PartialProposal {
+  PartialProposal();
+  virtual ~PartialProposal() = default;
+  virtual RankProposal propose(
+    const arma::vec& current_rank, const arma::uvec& indicator,
+    double alpha, const arma::vec& rho) = 0;
+};
+
+struct PartialUniform : PartialProposal {
+  PartialUniform();
+  RankProposal propose(
+      const arma::vec& current_rank, const arma::uvec& indicator,
+      double alpha, const arma::vec& rho) override;
+};
+
+struct PartialPseudoProposal : PartialProposal {
+  PartialPseudoProposal(const std::string& pseudo_aug_metric);
+  RankProposal propose(
+      const arma::vec& current_rank, const arma::uvec& indicator,
+      double alpha, const arma::vec& rho) override;
+
+  std::pair<arma::vec, double> propose_pseudo(
+      const arma::vec& current_rank, const arma::uvec& unranked_items,
+      const arma::vec& rho, double alpha, bool forward);
+
+  std::unique_ptr<Distance> distfun;
+};
+
+std::unique_ptr<RhoProposal> choose_rho_proposal(
+    const std::string& rho_proposal, int leap_size);
+
+std::unique_ptr<PairwiseProposal> choose_pairwise_proposal(
+    const std::string& error_model, unsigned int swap_leap
+);
+
+std::unique_ptr<PartialProposal> choose_partial_proposal(
+  const std::string& aug_method, const std::string& pseudo_aug_metric
+);

@@ -55,7 +55,7 @@ potato_top_14 <- ifelse(potato_visual[1:10, ] > 14, NA_real_,
                         potato_visual[1:10, ])
 
 # We need the rownames as user IDs
-(user_ids <- rownames(potato_visual[1:10, ]))
+(user_ids <- 1:10)
 
 # First, users provide top-10 rankings
 mod_init <- compute_mallows(
@@ -86,7 +86,7 @@ plot(mod2)
 # Finally, assume a set of new users arrive, who have complete rankings.
 potato_new <- potato_visual[11:12, ]
 # We need to update the user IDs, to show that these users are different
-(user_ids <- rownames(potato_new))
+(user_ids <- 11:12)
 
 mod_final <- update_mallows(
   model = mod2,
@@ -94,3 +94,32 @@ mod_final <- update_mallows(
 )
 
 plot(mod_final)
+
+# We can also update models with pairwise preferences
+# We here start by running MCMC on the first 20 assessors of the beach data
+# A realistic application should run a larger number of iterations than we
+# do in this example.
+set.seed(3)
+dat <- subset(beach_preferences, assessor <= 20)
+mod <- compute_mallows(
+  data = setup_rank_data(
+    preferences = beach_preferences),
+  compute_options = set_compute_options(nmc = 3000, burnin = 1000)
+)
+
+# Next we provide assessors 21 to 60 one at a time.
+for(i in 21:60){
+  mod <- update_mallows(
+    model = mod,
+    new_data = setup_rank_data(
+      preferences = subset(beach_preferences, assessor == i),
+      user_ids = i, shuffle_unranked = TRUE),
+    smc_options = set_smc_options(latent_sampling_lag = 0)
+  )
+}
+
+# Compared to running full MCMC, there is a downward bias in the scale
+# parameter. This can be alleviated by increasing the number of particles,
+# MCMC steps, and the latent sampling lag.
+plot(mod)
+compute_consensus(mod)

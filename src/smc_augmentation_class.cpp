@@ -15,8 +15,11 @@ SMCAugmentation::SMCAugmentation(
   const Rcpp::List& compute_options,
   const Rcpp::List& smc_options
   ) :
-  aug_method(compute_options["aug_method"]),
-  pseudo_aug_metric(compute_options["pseudo_aug_metric"]),
+  partial_aug_prop {
+  choose_partial_proposal(compute_options["aug_method"],
+                          compute_options["pseudo_aug_metric"]) },
+  pairwise_aug_prop {
+     choose_pairwise_proposal("none", compute_options["swap_leap"]) },
   latent_sampling_lag { read_lag(smc_options) } {}
 
 void SMCAugmentation::reweight(
@@ -25,23 +28,20 @@ void SMCAugmentation::reweight(
     const std::unique_ptr<PartitionFunction>& pfun,
     const std::unique_ptr<Distance>& distfun
 ) const {
-  if(dat.any_missing) {
+  if(dat.any_missing || dat.augpair) {
     par_for_each(
       pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
           p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
       });
-    augment_partial(pvec, dat);
+    pvec = augment_partial(pvec, dat);
   }
 
   par_for_each(
-    pvec.begin(), pvec.end(),
-    [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
-     any_missing = dat.any_missing, distfun = &distfun, pfun = &pfun,
-     nr = &dat.new_rankings]
+    pvec.begin(), pvec.end(), [&dat, distfun = &distfun, pfun = &pfun]
     (Particle& p){
       double item_correction_contribution{};
       if(!p.consistent.is_empty()) {
-        for(size_t user{}; user < n_assessors - num_new_obs; user++) {
+        for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
           if(p.consistent(user) == 0) {
             double current_distance = distfun->get()->d(p.augmented_data.col(user), p.rho);
 
@@ -52,14 +52,14 @@ void SMCAugmentation::reweight(
       }
 
       double new_user_contribution{};
-      if(num_new_obs > 0) {
+      if(dat.num_new_obs > 0) {
         mat new_rankings;
-        if(any_missing) {
+        if(dat.any_missing || dat.augpair) {
           new_rankings = p.augmented_data(
             span::all,
-            span(n_assessors - num_new_obs, n_assessors - 1));
+            span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1));
         } else {
-          new_rankings = *nr;
+          new_rankings = dat.new_rankings;
         }
 
         new_user_contribution = -p.alpha / p.rho.size() *
@@ -68,64 +68,67 @@ void SMCAugmentation::reweight(
 
       p.log_inc_wgt =
         new_user_contribution + item_correction_contribution -
-        num_new_obs * pfun->get()->logz(p.alpha) -
+        dat.num_new_obs * pfun->get()->logz(p.alpha) -
         sum(p.log_aug_prob);
     }
   );
-
 }
 
-void SMCAugmentation::augment_partial(
-    std::vector<Particle>& pvec,
-    const SMCData& dat
+std::vector<Particle> SMCAugmentation::augment_partial(
+    const std::vector<Particle>& pvec, const SMCData& dat
 ) const {
+  std::vector<Particle> ret{pvec};
   par_for_each(
-    pvec.begin(), pvec.end(),
-    [n_assessors = dat.n_assessors, num_new_obs = dat.num_new_obs,
-     aug_method = aug_method, pseudo_aug_metric = pseudo_aug_metric,
-     missing_indicator = dat.missing_indicator]
+    ret.begin(), ret.end(),
+    [&dat, partial_aug_prop = std::ref(partial_aug_prop),
+     pairwise_aug_prop = std::ref(pairwise_aug_prop)]
     (Particle& p){
-       auto pseudo_aug_distance = aug_method == "uniform" ? nullptr :
-       choose_distance_function(pseudo_aug_metric);
-
-       for (size_t user{}; user < n_assessors; user++) {
-        if(user < n_assessors - num_new_obs) {
+       for (size_t user{}; user < dat.n_assessors; user++) {
+        if(user < dat.n_assessors - dat.num_new_obs) {
           if(p.consistent.is_empty()) continue;
           if(p.consistent(user) == 1) continue;
         }
-        if (pseudo_aug_distance == nullptr) {
-          p.augmented_data.col(user) =
-            make_uniform_proposal(
-              p.augmented_data.col(user),
-              missing_indicator.col(user)).rankings;
-        } else {
-          RankProposal pprop = make_pseudo_proposal(
-            p.augmented_data.col(user),
-            missing_indicator.col(user),
-            p.alpha, p.rho,
-            pseudo_aug_distance
-          );
-          p.augmented_data.col(user) = pprop.rankings;
-          p.log_aug_prob(user) = log(pprop.prob_forward);
+
+        RankProposal pprop;
+        if(dat.any_missing) {
+          pprop = partial_aug_prop.get()->propose(
+            p.augmented_data.col(user), dat.missing_indicator.col(user),
+            p.alpha, p.rho);
+        } else if(dat.augpair) {
+          pprop = pairwise_aug_prop.get()->propose(
+            p.augmented_data.col(user), dat.items_above[user], dat.items_below[user]);
         }
+
+        p.augmented_data.col(user) = pprop.rankings;
+        p.log_aug_prob(user) = log(pprop.prob_forward);
       }
     }
   );
+  return ret;
 }
 
 void SMCAugmentation::update_missing_ranks(
-    Particle& p,
-    const SMCData& dat,
-    const std::unique_ptr<Distance>& distfun) const {
-  if(!dat.any_missing) return;
-
-  auto pseudo_aug_distance = aug_method == "uniform" ? nullptr : choose_distance_function(pseudo_aug_metric);
+    Particle& p, const SMCData& dat, const std::unique_ptr<Distance>& distfun) const {
+  if(!dat.any_missing && !dat.augpair) return;
 
   uvec indices_to_loop = find(max(dat.timepoint) - dat.timepoint < latent_sampling_lag);
   for (auto jj : indices_to_loop) {
-    p.augmented_data.col(jj) =
-      make_new_augmentation(
-        p.augmented_data.col(jj), dat.missing_indicator.col(jj), p.alpha,
-        p.rho, distfun, pseudo_aug_distance, p.log_aug_prob(jj));
+    std::pair<vec, bool> aug{};
+    if(dat.any_missing) {
+      aug = make_new_augmentation(
+          p.augmented_data.col(jj), dat.missing_indicator.col(jj), p.alpha,
+          p.rho, distfun, partial_aug_prop);
+    } else if(dat.augpair) {
+      aug = make_new_augmentation(
+        p.augmented_data.col(jj), p.alpha, p.rho, 0, distfun, pairwise_aug_prop,
+        dat.items_above[jj], dat.items_below[jj], "none"
+      );
+    }
+    p.aug_count++;
+    if(aug.second) {
+      p.augmented_data.col(jj) = aug.first;
+      p.aug_acceptance++;
+    }
+
   }
 }

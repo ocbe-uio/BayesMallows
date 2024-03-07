@@ -50,8 +50,11 @@ compute_mallows_sequentially <- function(
     compute_options = set_compute_options(),
     priors = set_priors(),
     pfun_estimate = NULL) {
-  pfun_values <- extract_pfun_values(model_options$metric, data[[1]]$n_items, pfun_estimate)
   validate_class(initial_values, "BayesMallowsPriorSamples")
+  if (!is.list(data) | !all(vapply(data, inherits, logical(1), "BayesMallowsData"))) {
+    stop("data must be a list of BayesMallowsData objects.")
+  }
+  pfun_values <- extract_pfun_values(model_options$metric, data[[1]]$n_items, pfun_estimate)
   alpha_init <- sample(initial_values$alpha, smc_options$n_particles, replace = TRUE)
   rho_init <- initial_values$rho[, sample(ncol(initial_values$rho), smc_options$n_particles, replace = TRUE)]
 

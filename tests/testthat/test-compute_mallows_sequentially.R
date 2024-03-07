@@ -1,7 +1,7 @@
 test_that("compute_mallows_sequentially works", {
   set.seed(345)
   data <- lapply(seq_len(nrow(potato_visual)), function(i) {
-    setup_rank_data(potato_visual[i, ])
+    setup_rank_data(potato_visual[i, ], user_ids = i)
   })
 
   initial_values <- sample_prior(
@@ -31,6 +31,16 @@ test_that("compute_mallows_sequentially works", {
 
   expect_equal(get_acceptance_ratios(mod)$alpha_acceptance[[5]], .80025)
   expect_equal(get_acceptance_ratios(mod)$rho_acceptance[[7]], .3495)
+
+  expect_error(
+    compute_mallows_sequentially(potato_visual, initial_values),
+    "data must be a list of BayesMallowsData objects."
+  )
+
+  expect_error(
+    compute_mallows_sequentially(setup_rank_data(potato_visual), initial_values),
+    "data must be a list of BayesMallowsData objects."
+  )
 })
 
 test_that("compute_mallows_sequentially works with partial rankings", {
@@ -39,7 +49,7 @@ test_that("compute_mallows_sequentially works with partial rankings", {
   dat[dat > 15] <- NA
 
   data <- lapply(seq_len(nrow(dat)), function(i) {
-    setup_rank_data(dat[i, ])
+    setup_rank_data(dat[i, ], user_ids = i)
   })
 
   initial_values <- sample_prior(

@@ -35,7 +35,7 @@ std::pair<vec, bool> make_new_rho(
     const mat& rankings,
     double alpha_old,
     const std::unique_ptr<Distance>& distfun,
-    const std::unique_ptr<ProposalDistribution>& prop,
+    const std::unique_ptr<RhoProposal>& prop,
     vec observation_frequency) {
 
   int n_items = current_rho.n_elem;

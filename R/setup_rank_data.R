@@ -34,10 +34,9 @@
 #' 2 \tab 5 \tab 3\cr
 #' }
 #'
-#' @param user_ids Optional vector of user IDs. Defaults to `character()`, and
-#'   only used by [update_mallows()]. If provided, new data can consist of
-#'   updated partial rankings from users already in the dataset, as described in
-#'   Section 6 of
+#' @param user_ids Optional `numeric` vector of user IDs. Only only used by
+#'   [update_mallows()]. If provided, new data can consist of updated partial
+#'   rankings from users already in the dataset, as described in Section 6 of
 #'   \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
 #'
 #' @param observation_frequency A vector of observation frequencies (weights) to
@@ -88,6 +87,13 @@
 #'   sequential Monte Carlo algorithm. If not `NULL`, must contain one integer
 #'   for each row in `rankings`.
 #'
+#' @param n_items Integer specifying the number of items. Defaults to `NULL`,
+#'   which means that the number of items is inferred from `rankings` or from
+#'   `preferences`. Setting `n_items` manually can be useful with pairwise
+#'   preference data in the SMC algorithm, i.e., when `rankings` is `NULL` and
+#'   `preferences` is non-`NULL`, and contains a small number of pairwise
+#'   preferences for a subset of users and items.
+#'
 #' @note Setting `random=TRUE` means that all possible orderings of each
 #'   assessor's preferences are generated, and one of them is picked at random.
 #'   This can be useful when experiencing convergence issues, e.g., if the MCMC
@@ -129,7 +135,7 @@
 setup_rank_data <- function(
     rankings = NULL,
     preferences = NULL,
-    user_ids = character(),
+    user_ids = numeric(),
     observation_frequency = NULL,
     validate_rankings = TRUE,
     na_action = c("augment", "fail", "omit"),
@@ -137,8 +143,12 @@ setup_rank_data <- function(
     shuffle_unranked = FALSE,
     random = FALSE,
     random_limit = 8L,
-    timepoint = NULL) {
+    timepoint = NULL,
+    n_items = NULL) {
   na_action <- match.arg(na_action, c("augment", "fail", "omit"))
+  if (!is.null(rankings) && !is.null(n_items)) {
+    stop("n_items can only be set when rankings=NULL")
+  }
 
   if (is.null(rankings) && is.null(preferences)) {
     stop("Either rankings or preferences (or both) must be provided.")
@@ -165,8 +175,9 @@ setup_rank_data <- function(
       rankings <- rankings[keeps, , drop = FALSE]
     }
   } else {
+    if (is.null(n_items)) n_items <- max(preferences[, c("bottom_item", "top_item")])
     rankings <- generate_initial_ranking(
-      preferences, cl, shuffle_unranked, random, random_limit
+      preferences, n_items, cl, shuffle_unranked, random, random_limit
     )
   }
 
@@ -204,6 +215,7 @@ setup_rank_data <- function(
   n_assessors <- nrow(rankings)
   any_missing <- any(is.na(rankings))
   augpair <- !is.null(preferences)
+  stopifnot(is.numeric(user_ids))
 
   ret <- as.list(environment())
   class(ret) <- "BayesMallowsData"
