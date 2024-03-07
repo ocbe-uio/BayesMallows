@@ -24,7 +24,6 @@ mat initialize_missing_ranks(mat rankings, const umat& missing_indicator) {
   return rankings;
 }
 
-
 std::pair<vec, bool> make_new_augmentation_common(const vec& rankings, double alpha, const vec& rho,
                                  const std::unique_ptr<Distance>& distfun,
                                  const RankProposal& pprop,
