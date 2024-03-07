@@ -17,6 +17,7 @@ vignette: >
 ```r
 library(BayesMallows)
 library(ggplot2)
+#> Learn more about the underlying theory at https://ggplot2-book.org/
 set.seed(123)
 ```
 
@@ -261,7 +262,7 @@ compute_consensus(mod_bmm)
 
 ## New users with partial or complete rankings
 
-The functionality extends directly to partial ranks, including both top-$k$ rankings and rankings missing at random. At the moment, pairwise preferences are not supported, but this will be added in the future.
+The functionality extends directly to partial ranks, including both top-$k$ rankings and rankings missing at random. Pairwise preferences are also supported, although not demonstrated here.
 
 For this demonstration we shall assume that we can only observe the top-5 ranked items from each user in the `sushi_rankings` dataset.
 
@@ -419,200 +420,36 @@ head(data_batch1)
 We fit the standard Metropolis-Hastings algorithm to these data, yielding a starting point.
 
 
-```r
-mod_init <- compute_mallows(
-  data = setup_rank_data(
-    rankings = data_batch1,
-    user_ids = rownames(data_batch1))
-)
-```
-
-Convergence seems to be quick, and we set the burnin to 300.
-
-
-```r
-assess_convergence(mod_init)
-```
-
-<div class="figure">
-<img src="sushi_updated_batch1_burnin-1.png" alt="Trace plot for initial run on sushi batch 1." height="4cm" />
-<p class="caption">Trace plot for initial run on sushi batch 1.</p>
-</div>
-
-```r
-burnin(mod_init) <- 300
-```
-
-Next, assume we receive top-5 rankings from the same users. We now update the model using SMC.
-
-
-```r
-data_batch2 <- ifelse(sushi_reduced > 5, NA_real_, sushi_reduced)
-rownames(data_batch2) <- seq_len(nrow(data_batch2))
-model2 <- update_mallows(
-  model = mod_init, 
-  new_data = setup_rank_data(
-    rankings = data_batch2, user_ids = rownames(data_batch2)),
-  compute_options = set_compute_options(
-    aug_method = "pseudo", pseudo_aug_metric = "footrule")
-  )
-```
-
-We can plot the posterior distributions of $\alpha$ before and after.
-
-
-```r
-plot(mod_init) + ggtitle("Posterior of dispersion parameter after data batch 1")
-```
-
-<div class="figure">
-<img src="sushi_updated_batch1_posterior-1.png" alt="Posterior after sushi batch 1." height="4cm" />
-<p class="caption">Posterior after sushi batch 1.</p>
-</div>
-
-
-```r
-plot(model2) + ggtitle("Posterior of dispersion parameter after data batch 2")
-```
-
-<div class="figure">
-<img src="sushi_updated_batch2_posterior-1.png" alt="Posterior after sushi batch 2." height="4cm" />
-<p class="caption">Posterior after sushi batch 2.</p>
-</div>
-
-Next, assume we receive top-8 rankings from the same users. 
-
-
-```r
-data_batch3 <- ifelse(sushi_reduced > 8, NA_real_, sushi_reduced)
-rownames(data_batch3) <- seq_len(nrow(data_batch3))
-```
-
-Before proceeding, it is instructive to study why this situation needs special care. Below are the augmented rankings for user 1 in particle 1:
-
-
-```r
-(v1 <- model2$augmented_rankings[, 1, 1])
-#>  [1]  2  9  6  3  4  1  5 10  8  7
-```
-
-Next, we show the data provided by user 1 in `data_batch3`:
-
-
-```r
-(v2a <- unname(data_batch3[1, ]))
-#>  [1]  2  8 NA  3  4  1  5 NA  7  6
-```
-
-By comparing the non-missing ranks, we can check if they are consistent or not:
-
-
-```r
-(v2b <- v2a[!is.na(v2a)])
-#> [1] 2 8 3 4 1 5 7 6
-v1[v1 %in% v2b]
-#> [1] 2 6 3 4 1 5 8 7
-all(v1[v1 %in% v2b] == v2b)
-#> [1] FALSE
-```
-
-The provided data are not consistent with the augmented rankings in this case. This means that the augmented rankings for user 1 in particle 1 need to be corrected by the algorithm.
-
-Luckily, this happens automatically in our implementation, so we can update the model again.
-
-
-```r
-model3 <- update_mallows(
-  model = mod_init, 
-  new_data = setup_rank_data(
-    rankings = data_batch3, user_ids = rownames(data_batch3)))
-```
-
-Next we plot the posterior:
-
-
-```r
-plot(model3) + ggtitle("Posterior of dispersion parameter after data batch 3")
-```
-
-<div class="figure">
-<img src="sushi_updated_batch3_posterior-1.png" alt="Posterior after sushi batch 3." height="4cm" />
-<p class="caption">Posterior after sushi batch 3.</p>
-</div>
-
-Now assume we get a batch of new users, without missing ranks. These can be treated just as the other ones, but we need new user IDs.
-
-
-```r
-data_batch4 <- sushi_rankings[500:600, ]
-rownames(data_batch4) <- as.character(500:600)
-head(data_batch4)
-#>     shrimp sea eel tuna squid sea urchin salmon roe egg fatty tuna tuna roll cucumber roll
-#> 500      6       5    4     8          2          3   7          1         9            10
-#> 501      3       9    5     8          4          2   6          1         7            10
-#> 502      3       1    8     5          4          7   9          2         6            10
-#> 503      8       6    3     1          4          5   9          7         2            10
-#> 504      4       7    1     2          9         10   3          8         5             6
-#> 505      1       5    6     8          3          4   9          2         7            10
-```
 
 
 
-```r
-model4 <- update_mallows(
-  model = model3, 
-  new_data = setup_rank_data(
-    rankings = data_batch4, user_ids = rownames(data_batch4)))
-```
-
-Here is the posterior for this model.
 
 
-```r
-plot(model4) + ggtitle("Posterior of dispersion parameter after data batch 4")
-```
-
-<div class="figure">
-<img src="sushi_updated_batch4_posterior-1.png" alt="Posterior after sushi batch 4." height="4cm" />
-<p class="caption">Posterior after sushi batch 4.</p>
-</div>
-
-We can confirm that the implementation is sensible by giving the complete data to `compute_mallows`:
 
 
-```r
-full_data <- rbind(data_batch3, data_batch4)
-mod_bmm <- compute_mallows(data = setup_rank_data(rankings = full_data))
-```
 
 
-The trace plot indicates good convergence, and we set the burnin to 300.
 
 
-```r
-assess_convergence(mod_bmm)
-```
-
-<div class="figure">
-<img src="sushi_updated_burnin-1.png" alt="Trace plot for MCMC run on sushi data." height="4cm" />
-<p class="caption">Trace plot for MCMC run on sushi data.</p>
-</div>
-
-```r
-burnin(mod_bmm) <- 300
-```
-
-We see that the posterior is close to the one of `model4`:
 
 
-```r
-plot(mod_bmm)
-```
-
-<div class="figure">
-<img src="sushi_updated_bmm_posterior-1.png" alt="Posterior for MCMC on sushi data." height="4cm" />
-<p class="caption">Posterior for MCMC on sushi data.</p>
-</div>
 
 
-## References
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
