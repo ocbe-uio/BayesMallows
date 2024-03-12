@@ -1,4 +1,4 @@
-# BayesMallows (development versions)
+# BayesMallows 2.1.0
 
 * The SMC method update_mallows() now supports pairwise preferences, both new 
   users providing pairwise preferences and existing users updating their
