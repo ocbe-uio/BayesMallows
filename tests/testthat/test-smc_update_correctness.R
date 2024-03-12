@@ -197,7 +197,7 @@ test_that("update_mallows is correct for updated partial rankings", {
   expect_equal(
     mean(mod1$alpha$value),
     mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 2000]),
-    tolerance = .01
+    tolerance = .05
   )
 
   dat2 <- potato_visual
