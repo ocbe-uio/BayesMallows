@@ -14,7 +14,7 @@ form of pairwise preferences."><!-- mathjax --><script src="https://cdnjs.cloudf
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ form of pairwise preferences.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_top_k</span><span class="op">(</span><span class="va">model_fit</span>, burnin <span class="op">=</span> <span class="va">model_fit</span><span class="op">$</span><span class="va">burnin</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_top_k</span><span class="op">(</span><span class="va">model_fit</span>, k <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,12 +75,6 @@ form of pairwise preferences.</p>
     <dl><dt>model_fit</dt>
 <dd><p>An object of type <code>BayesMallows</code>, returned from
 <code><a href="compute_mallows.html">compute_mallows()</a></code>.</p></dd>
-
-
-<dt>burnin</dt>
-<dd><p>A numeric value specifying the number of iterations to discard
-as burn-in. Defaults to <code>model_fit$burnin</code>, and must be provided if
-<code>model_fit$burnin</code> does not exist. See <code><a href="assess_convergence.html">assess_convergence()</a></code>.</p></dd>
 
 
 <dt>k</dt>
@@ -93,6 +87,7 @@ as burn-in. Defaults to <code>model_fit$burnin</code>, and must be provided if
 <code><a href="assign_cluster.html">assign_cluster</a>()</code>,
 <code><a href="compute_consensus.html">compute_consensus</a>()</code>,
 <code><a href="compute_posterior_intervals.html">compute_posterior_intervals</a>()</code>,
+<code><a href="get_acceptance_ratios.html">get_acceptance_ratios</a>()</code>,
 <code><a href="heat_plot.html">heat_plot</a>()</code>,
 <code><a href="plot.BayesMallows.html">plot.BayesMallows</a>()</code>,
 <code><a href="plot.SMCMallows.html">plot.SMCMallows</a>()</code>,

@@ -12,7 +12,7 @@ Mallows mixture model parameters for a dataset of complete rankings."><!-- mathj
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -155,7 +155,7 @@ distance specified by the <code>metric</code> argument.</p>
 <span class="r-in"><span>  rankings <span class="op">=</span> <span class="va">mydata</span>,</span></span>
 <span class="r-in"><span>  log <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.724993e-68</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5.786706e-72</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">get_mallows_loglik</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  rho <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n_items</span>, <span class="fl">1</span><span class="op">:</span><span class="va">n_items</span><span class="op">)</span>,</span></span>
@@ -165,7 +165,7 @@ distance specified by the <code>metric</code> argument.</p>
 <span class="r-in"><span>  rankings <span class="op">=</span> <span class="va">mydata</span>,</span></span>
 <span class="r-in"><span>  log <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -156.0306</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -164.0306</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># or equivalently, by using the frequency distribution</span></span></span>
 <span class="r-in"><span><span class="va">freq_distr</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_observation_frequency.html">compute_observation_frequency</a></span><span class="op">(</span><span class="va">mydata</span><span class="op">)</span></span></span>
@@ -178,7 +178,7 @@ distance specified by the <code>metric</code> argument.</p>
 <span class="r-in"><span>  observation_frequency <span class="op">=</span> <span class="va">freq_distr</span><span class="op">[</span>, <span class="va">n_items</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>  log <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.724993e-68</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5.786706e-72</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">get_mallows_loglik</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  rho <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n_items</span>, <span class="fl">1</span><span class="op">:</span><span class="va">n_items</span><span class="op">)</span>,</span></span>
@@ -189,7 +189,7 @@ distance specified by the <code>metric</code> argument.</p>
 <span class="r-in"><span>  observation_frequency <span class="op">=</span> <span class="va">freq_distr</span><span class="op">[</span>, <span class="va">n_items</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span>,</span></span>
 <span class="r-in"><span>  log <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -156.0306</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -164.0306</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

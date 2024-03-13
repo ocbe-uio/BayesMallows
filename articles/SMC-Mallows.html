@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,14 +92,15 @@ Mallows model. We consider scenarios where we receive sequential
 information in the form of complete rankings, partial rankings and
 updated rankings from existing individuals who have previously provided
 a (partial) ranking. This vignette focuses on the code. For an in-depth
-treatment of the implemented methodology, see <span class="citation">Stein (<a href="#ref-steinSequentialInferenceMallows2023" role="doc-biblioref">2023</a>)</span> which is available
+treatment of the implemented methodology, see <span class="citation">Stein (<a href="#ref-steinSequentialInferenceMallows2023">2023</a>)</span> which
+is available
 <a href="https://eprints.lancs.ac.uk/id/eprint/195759/" target="_blank" class="external-link">here</a>.</p>
 <div class="section level2">
 <h2 id="new-users-with-complete-rankings">New users with complete rankings<a class="anchor" aria-label="anchor" href="#new-users-with-complete-rankings"></a>
 </h2>
 <p>We use the <code>sushi_rankings</code> dataset to illustrate the
-methodology <span class="citation">(<a href="#ref-kamishima2003nantonac" role="doc-biblioref">Kamishima 2003</a>)</span>. This dataset contains
-5000 complete rankings for 10 sushi dishes.</p>
+methodology <span class="citation">(<a href="#ref-kamishima2003nantonac">Kamishima 2003</a>)</span>. This
+dataset contains 5000 complete rankings for 10 sushi dishes.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sushi_rankings</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      shrimp sea eel tuna squid sea urchin salmon roe egg fatty tuna tuna roll cucumber roll</span></span>
@@ -129,16 +130,16 @@ Trace plot for SMC model.
 </p>
 </div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model1</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">300</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/burnin.html">burnin</a></span><span class="op">(</span><span class="va">model1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">300</span></span></code></pre></div>
 <p>Having saved this model, assume we receive another batch of
 preferences at a later timepoint, with an additional 300 rankings.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_batch2</span> <span class="op">&lt;-</span> <span class="va">sushi_rankings</span><span class="op">[</span><span class="fl">301</span><span class="op">:</span><span class="fl">600</span>, <span class="op">]</span></span></code></pre></div>
 <p>We can now update the initial model, without rerunning the full
 Metropolis-Hastings algorithm, by calling <code><a href="../reference/update_mallows.html">update_mallows()</a></code>.
-This function uses the sequential Monte Carlo algorithm of <span class="citation">Stein (<a href="#ref-steinSequentialInferenceMallows2023" role="doc-biblioref">2023</a>)</span>, and extracts a thinned sample of
-size <code>n_particles</code> from <code>model1</code> as initial
-values.</p>
+This function uses the sequential Monte Carlo algorithm of <span class="citation">Stein (<a href="#ref-steinSequentialInferenceMallows2023">2023</a>)</span>, and
+extracts a thinned sample of size <code>n_particles</code> from
+<code>model1</code> as initial values.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_mallows.html">update_mallows</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">model1</span>, </span>
@@ -206,9 +207,9 @@ narrower as more data is added.</p>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;   parameter  mean median          hpdi central_interval</span></span>
 <span><span class="co">#&gt; 1     alpha 1.768  1.766 [1.603,1.917]    [1.604,1.922]</span></span>
-<span><span class="co">#&gt; 2     alpha 1.777  1.776 [1.603,1.916]    [1.617,1.930]</span></span>
-<span><span class="co">#&gt; 3     alpha 1.753  1.753 [1.678,1.830]    [1.675,1.828]</span></span>
-<span><span class="co">#&gt; 4     alpha 1.706  1.707 [1.660,1.746]    [1.663,1.749]</span></span></code></pre></div>
+<span><span class="co">#&gt; 2     alpha 1.777  1.773 [1.630,1.935]    [1.620,1.931]</span></span>
+<span><span class="co">#&gt; 3     alpha 1.753  1.756 [1.676,1.827]    [1.677,1.827]</span></span>
+<span><span class="co">#&gt; 4     alpha 1.712  1.714 [1.667,1.748]    [1.669,1.752]</span></span></code></pre></div>
 <p>As an assurance that the implementation is correct, we can compare
 the final model to what we get by running <code>compute_mallows</code>
 on the complete dataset:</p>
@@ -243,17 +244,17 @@ Posterior distribution of scale parameter for model 4.
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt;   parameter  mean median          hpdi central_interval</span></span>
 <span><span class="co">#&gt; 1     alpha 1.691  1.690 [1.648,1.734]    [1.643,1.732]</span></span>
-<span><span class="co">#&gt; 2     alpha 1.706  1.707 [1.660,1.746]    [1.663,1.749]</span></span></code></pre></div>
+<span><span class="co">#&gt; 2     alpha 1.712  1.714 [1.667,1.748]    [1.669,1.752]</span></span></code></pre></div>
 <p>The cumulative probability consensus is also in good agrement:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_consensus.html">compute_consensus</a></span><span class="op">(</span><span class="va">model4</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      cluster ranking          item cumprob</span></span>
 <span><span class="co">#&gt; 1  Cluster 1       1    fatty tuna   1.000</span></span>
-<span><span class="co">#&gt; 2  Cluster 1       2    salmon roe   0.998</span></span>
+<span><span class="co">#&gt; 2  Cluster 1       2    salmon roe   1.000</span></span>
 <span><span class="co">#&gt; 3  Cluster 1       3          tuna   1.000</span></span>
 <span><span class="co">#&gt; 4  Cluster 1       4        shrimp   1.000</span></span>
 <span><span class="co">#&gt; 5  Cluster 1       5       sea eel   1.000</span></span>
-<span><span class="co">#&gt; 6  Cluster 1       6     tuna roll   0.893</span></span>
+<span><span class="co">#&gt; 6  Cluster 1       6     tuna roll   0.835</span></span>
 <span><span class="co">#&gt; 7  Cluster 1       7         squid   1.000</span></span>
 <span><span class="co">#&gt; 8  Cluster 1       8    sea urchin   1.000</span></span>
 <span><span class="co">#&gt; 9  Cluster 1       9           egg   1.000</span></span>
@@ -276,8 +277,8 @@ Posterior distribution of scale parameter for model 4.
 </h2>
 <p>The functionality extends directly to partial ranks, including both
 top-<span class="math inline">\(k\)</span> rankings and rankings missing
-at random. At the moment, pairwise preferences are not supported, but
-this will be added in the future.</p>
+at random. Pairwise preferences are also supported, although not
+demonstrated here.</p>
 <p>For this demonstration we shall assume that we can only observe the
 top-5 ranked items from each user in the <code>sushi_rankings</code>
 dataset.</p>
@@ -314,7 +315,7 @@ Trace plot for SMC model.
 </div>
 <p>We set the burnin to 300.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">model1</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">300</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/burnin.html">burnin</a></span><span class="op">(</span><span class="va">model1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">300</span></span></code></pre></div>
 <p>Below is the posterior for <span class="math inline">\(\alpha\)</span> after this initial run:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model1</span><span class="op">)</span></span></code></pre></div>
@@ -328,9 +329,9 @@ Posterior distribution of scale parameter after initial run.
 <code class="sourceCode R"><span><span class="va">data_batch2</span> <span class="op">&lt;-</span> <span class="va">data_partial</span><span class="op">[</span><span class="fl">101</span><span class="op">:</span><span class="fl">200</span>, <span class="op">]</span></span></code></pre></div>
 <p>We now update the initial model, using SMC. By default, a uniform
 distribution is used to propose new values of augmented ranks. The
-pseudo-likelihood proposal developed in <span class="citation">Stein (<a href="#ref-steinSequentialInferenceMallows2023" role="doc-biblioref">2023</a>)</span> can be used instead, by setting
-<code>aug_method = "pseudo"</code> in the call to
-<code><a href="../reference/set_compute_options.html">set_compute_options()</a></code>, and we do this here.</p>
+pseudo-likelihood proposal developed in <span class="citation">Stein (<a href="#ref-steinSequentialInferenceMallows2023">2023</a>)</span> can be
+used instead, by setting <code>aug_method = "pseudo"</code> in the call
+to <code><a href="../reference/set_compute_options.html">set_compute_options()</a></code>, and we do this here.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_mallows.html">update_mallows</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">model1</span>, </span>
@@ -376,8 +377,8 @@ subsequently provide these rankings.</p>
 <p>The main methodological issue in this case, is that the augmented
 rankings at the previous SMC timepoint may be in conflict with the new
 rankings. In this case, the augmented rankings must be corrected, as
-described in Chapter 6 of <span class="citation">Stein (<a href="#ref-steinSequentialInferenceMallows2023" role="doc-biblioref">2023</a>)</span>. We provide an example again with
-the sushi data.</p>
+described in Chapter 6 of <span class="citation">Stein (<a href="#ref-steinSequentialInferenceMallows2023">2023</a>)</span>. We
+provide an example again with the sushi data.</p>
 <p>We assume that the initial batch of data contains top-3 rankings
 provided by the first 100 users.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
@@ -385,8 +386,8 @@ provided by the first 100 users.</p>
 <span><span class="va">sushi_reduced</span> <span class="op">&lt;-</span> <span class="va">sushi_rankings</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="op">]</span></span>
 <span><span class="va">data_batch1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">sushi_reduced</span> <span class="op">&gt;</span> <span class="fl">3</span>, <span class="cn">NA_real_</span>, <span class="va">sushi_reduced</span><span class="op">)</span></span></code></pre></div>
 <p>To keep track of existing users updating their preferences, we also
-need a user ID in this case. Currently, this is implemented by providing
-row names to the ranking matrix.</p>
+need a user ID in this case, which is required to be a number
+vector.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">data_batch1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">data_batch1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data_batch1</span><span class="op">)</span></span>
@@ -403,7 +404,7 @@ yielding a starting point.</p>
 <code class="sourceCode R"><span><span class="va">mod_init</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_mallows.html">compute_mallows</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="fu"><a href="../reference/setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span></span>
 <span>    rankings <span class="op">=</span> <span class="va">data_batch1</span>,</span>
-<span>    user_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">data_batch1</span><span class="op">)</span><span class="op">)</span></span>
+<span>    user_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">data_batch1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Convergence seems to be quick, and we set the burnin to 300.</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
@@ -414,7 +415,7 @@ Trace plot for initial run on sushi batch 1.
 </p>
 </div>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mod_init</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">300</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/burnin.html">burnin</a></span><span class="op">(</span><span class="va">mod_init</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">300</span></span></code></pre></div>
 <p>Next, assume we receive top-5 rankings from the same users. We now
 update the model using SMC.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
@@ -423,7 +424,7 @@ update the model using SMC.</p>
 <span><span class="va">model2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_mallows.html">update_mallows</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">mod_init</span>, </span>
 <span>  new_data <span class="op">=</span> <span class="fu"><a href="../reference/setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span></span>
-<span>    rankings <span class="op">=</span> <span class="va">data_batch2</span>, user_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">data_batch2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    rankings <span class="op">=</span> <span class="va">data_batch2</span>, user_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">data_batch2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  compute_options <span class="op">=</span> <span class="fu"><a href="../reference/set_compute_options.html">set_compute_options</a></span><span class="op">(</span></span>
 <span>    aug_method <span class="op">=</span> <span class="st">"pseudo"</span>, pseudo_aug_metric <span class="op">=</span> <span class="st">"footrule"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
@@ -451,7 +452,7 @@ needs special care. Below are the augmented rankings for user 1 in
 particle 1:</p>
 <div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">v1</span> <span class="op">&lt;-</span> <span class="va">model2</span><span class="op">$</span><span class="va">augmented_rankings</span><span class="op">[</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1]  2  7  9  3  4  1  5  6  8 10</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1]  2  7 10  3  4  1  5  6  8  9</span></span></code></pre></div>
 <p>Next, we show the data provided by user 1 in
 <code>data_batch3</code>:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
@@ -475,7 +476,7 @@ update the model again.</p>
 <code class="sourceCode R"><span><span class="va">model3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_mallows.html">update_mallows</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">mod_init</span>, </span>
 <span>  new_data <span class="op">=</span> <span class="fu"><a href="../reference/setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span></span>
-<span>    rankings <span class="op">=</span> <span class="va">data_batch3</span>, user_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">data_batch3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>    rankings <span class="op">=</span> <span class="va">data_batch3</span>, user_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">data_batch3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Next we plot the posterior:</p>
 <div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model3</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Posterior of dispersion parameter after data batch 3"</span><span class="op">)</span></span></code></pre></div>
@@ -488,7 +489,7 @@ Posterior after sushi batch 3.
 can be treated just as the other ones, but we need new user IDs.</p>
 <div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_batch4</span> <span class="op">&lt;-</span> <span class="va">sushi_rankings</span><span class="op">[</span><span class="fl">500</span><span class="op">:</span><span class="fl">600</span>, <span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">data_batch4</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">500</span><span class="op">:</span><span class="fl">600</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">data_batch4</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">500</span><span class="op">:</span><span class="fl">600</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data_batch4</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     shrimp sea eel tuna squid sea urchin salmon roe egg fatty tuna tuna roll cucumber roll</span></span>
 <span><span class="co">#&gt; 500      6       5    4     8          2          3   7          1         9            10</span></span>
@@ -501,7 +502,7 @@ can be treated just as the other ones, but we need new user IDs.</p>
 <code class="sourceCode R"><span><span class="va">model4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/update_mallows.html">update_mallows</a></span><span class="op">(</span></span>
 <span>  model <span class="op">=</span> <span class="va">model3</span>, </span>
 <span>  new_data <span class="op">=</span> <span class="fu"><a href="../reference/setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span></span>
-<span>    rankings <span class="op">=</span> <span class="va">data_batch4</span>, user_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">data_batch4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>    rankings <span class="op">=</span> <span class="va">data_batch4</span>, user_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">data_batch4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Here is the posterior for this model.</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model4</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Posterior of dispersion parameter after data batch 4"</span><span class="op">)</span></span></code></pre></div>
@@ -524,10 +525,12 @@ complete data to <code>compute_mallows</code>:</p>
 Trace plot for MCMC run on sushi data.
 </p>
 </div>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/burnin.html">burnin</a></span><span class="op">(</span><span class="va">mod_bmm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">300</span></span></code></pre></div>
 <p>We see that the posterior is close to the one of
 <code>model4</code>:</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_bmm</span>, burnin <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod_bmm</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="sushi_updated_bmm_posterior-1.png" alt="Posterior for MCMC on sushi data." height="4cm"><p class="caption">
 Posterior for MCMC on sushi data.
@@ -537,7 +540,7 @@ Posterior for MCMC on sushi data.
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-kamishima2003nantonac" class="csl-entry">
 Kamishima, Toshihiro. 2003. <span>“Nantonac Collaborative Filtering:
 Recommendation Based on Order Responses.”</span> In <em>Proceedings of

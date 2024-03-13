@@ -20,7 +20,7 @@ computed for each assessor, by setting parameter = "Rtilde".'><!-- mathjax --><s
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,6 @@ computed for each assessor, by setting <code>parameter = "Rtilde"</code>.</p>
 <span><span class="fu">compute_consensus</span><span class="op">(</span></span>
 <span>  <span class="va">model_fit</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CP"</span>, <span class="st">"MAP"</span><span class="op">)</span>,</span>
-<span>  burnin <span class="op">=</span> <span class="va">model_fit</span><span class="op">$</span><span class="va">burnin</span>,</span>
 <span>  parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rho"</span>, <span class="st">"Rtilde"</span><span class="op">)</span>,</span>
 <span>  assessors <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -105,12 +104,6 @@ computed for each assessor, by setting <code>parameter = "Rtilde"</code>.</p>
 <dt>type</dt>
 <dd><p>Character string specifying which consensus to compute. Either
 <code>"CP"</code> or <code>"MAP"</code>. Defaults to <code>"CP"</code>.</p></dd>
-
-
-<dt>burnin</dt>
-<dd><p>A numeric value specifying the number of iterations to discard
-as burn-in. Defaults to <code>model_fit$burnin</code>, and must be provided if
-<code>model_fit$burnin</code> does not exist. See <code><a href="assess_convergence.html">assess_convergence()</a></code>.</p></dd>
 
 
 <dt>parameter</dt>
@@ -137,6 +130,7 @@ to <code>1L</code>, which yields augmented rankings for assessor 1.</p></dd>
     <div class="dont-index"><p>Other posterior quantities: 
 <code><a href="assign_cluster.html">assign_cluster</a>()</code>,
 <code><a href="compute_posterior_intervals.html">compute_posterior_intervals</a>()</code>,
+<code><a href="get_acceptance_ratios.html">get_acceptance_ratios</a>()</code>,
 <code><a href="heat_plot.html">heat_plot</a>()</code>,
 <code><a href="plot.BayesMallows.html">plot.BayesMallows</a>()</code>,
 <code><a href="plot.SMCMallows.html">plot.SMCMallows</a>()</code>,
@@ -155,53 +149,53 @@ to <code>1L</code>, which yields augmented rankings for assessor 1.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Se the documentation to compute_mallows for how to assess the convergence of</span></span></span>
 <span class="r-in"><span><span class="co"># the algorithm. Having chosen burin = 1000, we compute posterior intervals</span></span></span>
-<span class="r-in"><span><span class="va">model_fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="burnin.html">burnin</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
 <span class="r-in"><span><span class="co"># We then compute the CP consensus.</span></span></span>
 <span class="r-in"><span><span class="fu">compute_consensus</span><span class="op">(</span><span class="va">model_fit</span>, type <span class="op">=</span> <span class="st">"CP"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      cluster ranking item cumprob</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Cluster 1       1  P12   0.524</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Cluster 1       2  P13   0.662</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  Cluster 1       3  P17   0.454</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Cluster 1       4  P10   0.864</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Cluster 1       5   P9   0.403</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Cluster 1       6   P7   0.554</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  Cluster 1       7  P14   0.648</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  Cluster 1       8  P16   0.868</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  Cluster 1       9  P19   0.515</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 Cluster 1      10   P5   0.663</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 Cluster 1      11   P1   0.590</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 Cluster 1      12   P4   0.480</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13 Cluster 1      13  P11   0.470</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14 Cluster 1      14  P18   0.685</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15 Cluster 1      15  P20   0.819</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16 Cluster 1      16   P6   0.687</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17 Cluster 1      17   P2   0.914</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18 Cluster 1      18  P15   0.917</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19 Cluster 1      19   P3   0.944</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Cluster 1       1  P12   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Cluster 1       2  P13   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  Cluster 1       3   P9   0.978</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Cluster 1       4  P10   0.973</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Cluster 1       5  P17   0.879</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Cluster 1       6   P7   0.917</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  Cluster 1       7  P14   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  Cluster 1       8  P16   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  Cluster 1       9   P1   0.540</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 Cluster 1      10   P5   0.657</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 Cluster 1      11  P11   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 Cluster 1      12  P19   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 Cluster 1      13  P20   0.568</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 Cluster 1      14  P18   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 Cluster 1      15   P6   0.977</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 Cluster 1      16   P4   0.621</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 Cluster 1      17   P2   0.908</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 Cluster 1      18  P15   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 Cluster 1      19   P3   1.000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 20 Cluster 1      20   P8   1.000</span>
 <span class="r-in"><span><span class="co"># And we compute the MAP consensus</span></span></span>
 <span class="r-in"><span><span class="fu">compute_consensus</span><span class="op">(</span><span class="va">model_fit</span>, type <span class="op">=</span> <span class="st">"MAP"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      cluster map_ranking item probability</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Cluster 1           1  P12       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Cluster 1           2  P13       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  Cluster 1           3   P9       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Cluster 1           4  P10       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Cluster 1           5  P17       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Cluster 1           6   P7       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  Cluster 1           7  P14       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  Cluster 1           8  P16       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  Cluster 1           9  P19       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 Cluster 1          10  P11       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 Cluster 1          11   P1       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 Cluster 1          12   P5       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13 Cluster 1          13  P20       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14 Cluster 1          14  P18       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15 Cluster 1          15   P6       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16 Cluster 1          16   P4       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17 Cluster 1          17  P15       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18 Cluster 1          18   P2       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19 Cluster 1          19   P3       0.029</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20 Cluster 1          20   P8       0.029</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Cluster 1           1  P12       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Cluster 1           2  P13       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  Cluster 1           3   P9       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Cluster 1           4  P10       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Cluster 1           5  P17       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Cluster 1           6   P7       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  Cluster 1           7  P14       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  Cluster 1           8  P16       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  Cluster 1           9   P1       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 Cluster 1          10   P5       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 Cluster 1          11  P11       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 Cluster 1          12  P19       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 Cluster 1          13  P20       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 Cluster 1          14  P18       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 Cluster 1          15   P6       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 Cluster 1          16   P4       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 Cluster 1          17   P2       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 Cluster 1          18  P15       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 Cluster 1          19   P3       0.154</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 Cluster 1          20   P8       0.154</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="co"># CLUSTERWISE CONSENSUS</span></span></span>
@@ -212,7 +206,7 @@ to <code>1L</code>, which yields augmented rankings for assessor 1.</p></dd>
 <span class="r-in"><span>    <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span><span class="va">sushi_rankings</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    model_options <span class="op">=</span> <span class="fu"><a href="set_model_options.html">set_model_options</a></span><span class="op">(</span>n_clusters <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># Keeping the burnin at 1000, we can compute the consensus ranking per cluster</span></span></span>
-<span class="r-in"><span>  <span class="va">model_fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="burnin.html">burnin</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
 <span class="r-in"><span>  <span class="va">cp_consensus_df</span> <span class="op">&lt;-</span> <span class="fu">compute_consensus</span><span class="op">(</span><span class="va">model_fit</span>, type <span class="op">=</span> <span class="st">"CP"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># We can now make a table which shows the ranking in each cluster:</span></span></span>
 <span class="r-in"><span>  <span class="va">cp_consensus_df</span><span class="op">$</span><span class="va">cumprob</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
@@ -226,7 +220,7 @@ to <code>1L</code>, which yields augmented rankings for assessor 1.</p></dd>
 <span class="r-in"><span>  <span class="co"># We use the example dataset with beach preferences.</span></span></span>
 <span class="r-in"><span>  <span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span><span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>preferences <span class="op">=</span> <span class="va">beach_preferences</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># We set burnin = 1000</span></span></span>
-<span class="r-in"><span>  <span class="va">model_fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="burnin.html">burnin</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
 <span class="r-in"><span>  <span class="co"># We now compute the MAP consensus</span></span></span>
 <span class="r-in"><span>  <span class="va">map_consensus_df</span> <span class="op">&lt;-</span> <span class="fu">compute_consensus</span><span class="op">(</span><span class="va">model_fit</span>, type <span class="op">=</span> <span class="st">"MAP"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -236,7 +230,7 @@ to <code>1L</code>, which yields augmented rankings for assessor 1.</p></dd>
 <span class="r-in"><span>    <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>preferences <span class="op">=</span> <span class="va">beach_preferences</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>save_aug <span class="op">=</span> <span class="cn">TRUE</span>, aug_thinning <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># We set burnin = 1000</span></span></span>
-<span class="r-in"><span>  <span class="va">model_fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="burnin.html">burnin</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
 <span class="r-in"><span>  <span class="co"># We now compute the CP consensus of augmented ranks for assessors 1 and 3</span></span></span>
 <span class="r-in"><span>  <span class="va">cp_consensus_df</span> <span class="op">&lt;-</span> <span class="fu">compute_consensus</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="va">model_fit</span>, type <span class="op">=</span> <span class="st">"CP"</span>, parameter <span class="op">=</span> <span class="st">"Rtilde"</span>, assessors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">3L</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -253,7 +247,7 @@ to <code>1L</code>, which yields augmented rankings for assessor 1.</p></dd>
 <span class="r-in"><span>    <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>preferences <span class="op">=</span> <span class="va">beach_preferences</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>      nmc <span class="op">=</span> <span class="fl">1005</span>, save_aug <span class="op">=</span> <span class="cn">TRUE</span>, aug_thinning <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">model_fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="burnin.html">burnin</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
 <span class="r-in"><span>  <span class="fu">compute_consensus</span><span class="op">(</span><span class="va">model_fit</span>, type <span class="op">=</span> <span class="st">"MAP"</span>, parameter <span class="op">=</span> <span class="st">"Rtilde"</span>,</span></span>
 <span class="r-in"><span>                    assessors <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>

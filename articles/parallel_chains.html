@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,8 +90,9 @@
 <p>This vignette describes how to run Markov chain Monte Carlo with
 parallel chains. For an introduction to the “BayesMallows” package,
 please see <a href="https://ocbe-uio.github.io/BayesMallows/articles/BayesMallows.html" class="external-link">the
-introductory vignette</a>, which is an updated version of <span class="citation">Sørensen et al. (<a href="#ref-sorensen2020" role="doc-biblioref">2020</a>)</span>. For parallel processing of
-particles with the sequential Monte Carlo algorithm of <span class="citation">Stein (<a href="#ref-steinSequentialInferenceMallows2023" role="doc-biblioref">2023</a>)</span>, see the <a href="https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html" class="external-link">SMC
+introductory vignette</a>, which is an updated version of <span class="citation">Sørensen et al. (<a href="#ref-sorensen2020">2020</a>)</span>. For parallel processing of
+particles with the sequential Monte Carlo algorithm of <span class="citation">Stein (<a href="#ref-steinSequentialInferenceMallows2023">2023</a>)</span>, see
+the <a href="https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html" class="external-link">SMC
 vignette</a>.</p>
 <div class="section level3">
 <h3 id="why-parallel-chains">Why Parallel Chains?<a class="anchor" aria-label="anchor" href="#why-parallel-chains"></a>
@@ -126,8 +127,9 @@ each chain.</p>
 <p>We can assess convergence in the usual way:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="parallel_assess_convergence_alpha-1.png" alt=""><p class="caption">Trace plot of scale parameter for four chains.</p>
+<div class="float">
+<img src="parallel_assess_convergence_alpha-1.png" alt="Trace plot of scale parameter for four chains."><div class="figcaption">Trace plot of scale parameter for four
+chains.</div>
 </div>
 <p>We can also assess convergence for the latent ranks <span class="math inline">\(\boldsymbol{\rho}\)</span>. Since the initial
 value of <span class="math inline">\(\boldsymbol{\rho}\)</span> is
@@ -135,28 +137,29 @@ sampled uniformly, the two chains automatically get different initial
 values.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="parallel_assess_convergence_rho-1.png" alt=""><p class="caption">Trace plot of modal ranking for four chains.</p>
+<div class="float">
+<img src="parallel_assess_convergence_rho-1.png" alt="Trace plot of modal ranking for four chains."><div class="figcaption">Trace plot of modal ranking for four
+chains.</div>
 </div>
 <p>Based on the convergence plots, we set the burnin to 3000.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">3000</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/burnin.html">burnin</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">3000</span></span></code></pre></div>
 <p>We can now use all the tools for assessing the posterior
 distributions as usual. The post-burnin samples for all parallel chains
 are simply combined, as they should be.</p>
 <p>Below is a plot of the posterior distribution of <span class="math inline">\(\alpha\)</span>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="parallel_posterior_alpha-1.png" alt=""><p class="caption">Posterior of scale parameter, combing post-burnin
-samples from all chains.</p>
+<div class="float">
+<img src="parallel_posterior_alpha-1.png" alt="Posterior of scale parameter, combing post-burnin samples from all chains."><div class="figcaption">Posterior of scale parameter, combing
+post-burnin samples from all chains.</div>
 </div>
 <p>Next is a plot of the posterior distribution of <span class="math inline">\(\boldsymbol{\rho}\)</span>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">4</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="parallel_posterior_rho-1.png" alt=""><p class="caption">Posterior of modal ranking, combing post-burnin
-samples from all chains.</p>
+<div class="float">
+<img src="parallel_posterior_rho-1.png" alt="Posterior of modal ranking, combing post-burnin samples from all chains."><div class="figcaption">Posterior of modal ranking, combing post-burnin
+samples from all chains.</div>
 </div>
 </div>
 <div class="section level3">
@@ -166,9 +169,8 @@ samples from all chains.</p>
 incomplete data, e.g., arising from pairwise preferences. In this case
 the MCMC algorithm needs to perform data augmentation, which tends to be
 both slow and sticky. We illustrate this with the beach preference data,
-again referring to <span class="citation">Sørensen et al. (<a href="#ref-sorensen2020" role="doc-biblioref">2020</a>)</span> for a
-more thorough introduction to the aspects not directly related to
-parallelism.</p>
+again referring to <span class="citation">Sørensen et al. (<a href="#ref-sorensen2020">2020</a>)</span> for a more thorough
+introduction to the aspects not directly related to parallelism.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">beach_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>preferences <span class="op">=</span> <span class="va">beach_preferences</span><span class="op">)</span></span></code></pre></div>
 <p>We run four parallel chains, letting the package generate random
@@ -190,16 +192,16 @@ initial rankings, but again providing a vector of initial values for
 otherwise it seems to mix relatively well.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="parallel_assess_converge_prefs_alpha-1.png" alt=""><p class="caption">Trace plot of scale parameter for beach preferences
-data, on four chains.</p>
+<div class="float">
+<img src="parallel_assess_converge_prefs_alpha-1.png" alt="Trace plot of scale parameter for beach preferences data, on four chains."><div class="figcaption">Trace plot of scale parameter for beach
+preferences data, on four chains.</div>
 </div>
 <p>Here is the convergence plot for <span class="math inline">\(\boldsymbol{\rho}\)</span>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">4</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="parallel_assess_converge_prefs_rho-1.png" alt=""><p class="caption">Trace plot of modal ranking for beach preferences
-data, on four chains.</p>
+<div class="float">
+<img src="parallel_assess_converge_prefs_rho-1.png" alt="Trace plot of modal ranking for beach preferences data, on four chains."><div class="figcaption">Trace plot of modal ranking for beach
+preferences data, on four chains.</div>
 </div>
 <p>To avoid overplotting, it’s a good idea to pick a low number of
 assessors and chains. We here look at items 1-3 of assessors 1 and
@@ -209,9 +211,9 @@ assessors and chains. We here look at items 1-3 of assessors 1 and
 <span>  parameter <span class="op">=</span> <span class="st">"Rtilde"</span>,</span>
 <span>  items <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, assessors <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="parallel_assess_convergence_prefs_rtilde-1.png" alt=""><p class="caption">Trace plot of augmented rankings for beach preference
-data, on four chains.</p>
+<div class="float">
+<img src="parallel_assess_convergence_prefs_rtilde-1.png" alt="Trace plot of augmented rankings for beach preference data, on four chains."><div class="figcaption">Trace plot of augmented rankings for beach
+preference data, on four chains.</div>
 </div>
 </div>
 <div class="section level4">
@@ -220,7 +222,7 @@ data, on four chains.</p>
 <p>Based on the trace plots, the chains seem to be mixing well. We set
 the burnin to 1000.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/burnin.html">burnin</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></code></pre></div>
 <p>We can now study the posterior distributions. Here is the posterior
 for <span class="math inline">\(\alpha\)</span>. Note that by increasing
 the <code>nmc</code> argument to <code>compute_mallows</code> above, the
@@ -228,14 +230,15 @@ density would appear smoother. In this vignette we have kept it low to
 reduce the run time.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="parallel_beach_prefs_alpha_posterior-1.png" alt=""><p class="caption">Posterior distribution for scale parameter.</p>
+<div class="float">
+<img src="parallel_beach_prefs_alpha_posterior-1.png" alt="Posterior distribution for scale parameter."><div class="figcaption">Posterior distribution for scale
+parameter.</div>
 </div>
 <p>We can also look at the posterior for <span class="math inline">\(\boldsymbol{\rho}\)</span>.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">6</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="parallel_beach_prefs_rho_posterior-1.png" alt=""><p class="caption">Posterior distribution for modal rankings.</p>
+<div class="float">
+<img src="parallel_beach_prefs_rho_posterior-1.png" alt="Posterior distribution for modal rankings."><div class="figcaption">Posterior distribution for modal rankings.</div>
 </div>
 <p>We can also compute posterior intervals in the usual way:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -300,16 +303,16 @@ reduce the run time.</p>
 <p>We can compute the probability of being top-<span class="math inline">\(k\)</span>, here for <span class="math inline">\(k=4\)</span>:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_top_k.html">plot_top_k</a></span><span class="op">(</span><span class="va">fit</span>, k <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="parallel_top_k-1.png" alt=""><p class="caption">Probability of being top-4 for beach preference
-data.</p>
+<div class="float">
+<img src="parallel_top_k-1.png" alt="Probability of being top-4 for beach preference data."><div class="figcaption">Probability of being top-4 for beach preference
+data.</div>
 </div>
 </div>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-sorensen2020" class="csl-entry">
 Sørensen, Øystein, Marta Crispino, Qinghua Liu, and Valeria Vitelli.
 2020. <span>“<span>BayesMallows</span>: <span>An R Package</span> for

@@ -12,7 +12,7 @@ Mallows model."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/l
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,14 +64,22 @@ Mallows model.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">set_priors</span><span class="op">(</span>lambda <span class="op">=</span> <span class="fl">0.001</span>, psi <span class="op">=</span> <span class="fl">10</span>, kappa <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">set_priors</span><span class="op">(</span>gamma <span class="op">=</span> <span class="fl">1</span>, lambda <span class="op">=</span> <span class="fl">0.001</span>, psi <span class="op">=</span> <span class="fl">10</span>, kappa <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>lambda</dt>
+    <dl><dt>gamma</dt>
+<dd><p>Strictly positive numeric value specifying the shape parameter
+of the gamma prior distribution of \(\alpha\). Defaults to <code>1</code>, thus
+recovering the exponential prior distribution used by
+(Vitelli et al. 2018)
+.</p></dd>
+
+
+<dt>lambda</dt>
 <dd><p>Strictly positive numeric value specifying the rate parameter
-of the truncated exponential prior distribution of \(\alpha\). Defaults
+of the gamma prior distribution of \(\alpha\). Defaults
 to <code>0.001</code>. When <code>n_cluster &gt; 1</code>, each mixture component \(\alpha_{c}\)
 has the same prior distribution.</p></dd>
 
@@ -101,6 +109,17 @@ expected to be closer to zero than to 0.5. See
 <p>An object of class <code>"BayesMallowsPriors"</code>, to be provided in the
 <code>priors</code> argument to <code><a href="compute_mallows.html">compute_mallows()</a></code>, <code><a href="compute_mallows_mixtures.html">compute_mallows_mixtures()</a></code>, or
 <code><a href="update_mallows.html">update_mallows()</a></code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Crispino M, Arjas E, Vitelli V, Barrett N, Frigessi A (2019).
+“A Bayesian Mallows approach to nontransitive pair comparison data: How human are sounds?”
+<em>The Annals of Applied Statistics</em>, <b>13</b>(1), 492--519.
+<a href="https://doi.org/10.1214/18-aoas1203" class="external-link">doi:10.1214/18-aoas1203</a>
+.<br><br> Vitelli V, Sørensen, Crispino M, Arjas E, Frigessi A (2018).
+“Probabilistic Preference Learning with the Mallows Rank Model.”
+<em>Journal of Machine Learning Research</em>, <b>18</b>(1), 1--49.
+<a href="https://jmlr.org/papers/v18/15-481.html" class="external-link">https://jmlr.org/papers/v18/15-481.html</a>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

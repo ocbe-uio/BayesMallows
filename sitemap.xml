@@ -46,6 +46,12 @@
     <loc>/reference/bernoulli_data.html</loc>
   </url>
   <url>
+    <loc>/reference/burnin-set.html</loc>
+  </url>
+  <url>
+    <loc>/reference/burnin.html</loc>
+  </url>
+  <url>
     <loc>/reference/cluster_data.html</loc>
   </url>
   <url>
@@ -61,6 +67,9 @@
     <loc>/reference/compute_mallows_mixtures.html</loc>
   </url>
   <url>
+    <loc>/reference/compute_mallows_sequentially.html</loc>
+  </url>
+  <url>
     <loc>/reference/compute_observation_frequency.html</loc>
   </url>
   <url>
@@ -74,6 +83,9 @@
   </url>
   <url>
     <loc>/reference/estimate_partition_function.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_acceptance_ratios.html</loc>
   </url>
   <url>
     <loc>/reference/get_cardinalities.html</loc>
@@ -122,6 +134,9 @@
   </url>
   <url>
     <loc>/reference/sample_mallows.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sample_prior.html</loc>
   </url>
   <url>
     <loc>/reference/set_compute_options.html</loc>

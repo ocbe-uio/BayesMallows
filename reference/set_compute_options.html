@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,6 +65,7 @@
 <span>  nmc <span class="op">=</span> <span class="fl">2000</span>,</span>
 <span>  burnin <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  alpha_prop_sd <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  rho_proposal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ls"</span>, <span class="st">"swap"</span><span class="op">)</span>,</span>
 <span>  leap_size <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  aug_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"uniform"</span>, <span class="st">"pseudo"</span><span class="op">)</span>,</span>
 <span>  pseudo_aug_metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"footrule"</span>, <span class="st">"spearman"</span><span class="op">)</span>,</span>
@@ -99,10 +100,19 @@ Metropolis-Hastings algorithm. The logarithm of the proposed samples will
 have standard deviation given by <code>alpha_prop_sd</code>. Defaults to <code>0.1</code>.</p></dd>
 
 
+<dt>rho_proposal</dt>
+<dd><p>Character string specifying the proposal distribution of
+modal ranking \(\rho\). Defaults to "ls", which means that the
+leap-and-shift algorithm of Vitelli et al. (2018)
+
+is used. The other option is "swap", which means that the swap proposal of
+Crispino et al. (2019)
+ is used instead.</p></dd>
+
+
 <dt>leap_size</dt>
-<dd><p>Integer specifying the step size of the leap-and-shift
-proposal distribution used for proposing new latent ranks \(rho\).
-Defaults to 1.</p></dd>
+<dd><p>Integer specifying the step size of the distribution defined
+in <code>rho_proposal</code> for proposing new latent ranks \(rho\). Defaults to 1.</p></dd>
 
 
 <dt>aug_method</dt>
@@ -126,8 +136,11 @@ either "footrule" or "spearman", and defaults to "footrule".</p></dd>
 
 
 <dt>swap_leap</dt>
-<dd><p>Integer specifying the step size of the swap proposal used
-for augmentation with pairwise preference data. Defaults to 1.</p></dd>
+<dd><p>Integer specifying the leap size for the swap proposal used
+for proposing latent ranks in the case of non-transitive pairwise
+preference data. Note that leap size for the swap proposal when used for
+proposal the modal ranking \(\rho\) is given by the <code>leap_size</code>
+argument above.</p></dd>
 
 
 <dt>alpha_jump</dt>
@@ -186,6 +199,19 @@ label switching using Stephen's algorithm.</p></dd>
 <p>An object of class <code>"BayesMallowsComputeOptions"</code>, to be provided in
 the <code>compute_options</code> argument to <code><a href="compute_mallows.html">compute_mallows()</a></code>,
 <code><a href="compute_mallows_mixtures.html">compute_mallows_mixtures()</a></code>, or <code><a href="update_mallows.html">update_mallows()</a></code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Crispino M, Arjas E, Vitelli V, Barrett N, Frigessi A (2019).
+“A Bayesian Mallows approach to nontransitive pair comparison data: How human are sounds?”
+<em>The Annals of Applied Statistics</em>, <b>13</b>(1), 492--519.
+<a href="https://doi.org/10.1214/18-aoas1203" class="external-link">doi:10.1214/18-aoas1203</a>
+.<br><br> Stein A (2023).
+<em>Sequential Inference with the Mallows Model</em>.
+Ph.D. thesis, Lancaster University.<br><br> Vitelli V, Sørensen, Crispino M, Arjas E, Frigessi A (2018).
+“Probabilistic Preference Learning with the Mallows Rank Model.”
+<em>Journal of Machine Learning Research</em>, <b>18</b>(1), 1--49.
+<a href="https://jmlr.org/papers/v18/15-481.html" class="external-link">https://jmlr.org/papers/v18/15-481.html</a>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

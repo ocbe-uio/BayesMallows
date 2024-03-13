@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,9 +84,9 @@
 
     
     
-<p>This vignette contains update syntax for the code examples in <span class="citation">Sørensen et al. (<a href="#ref-sorensen2020" role="doc-biblioref">2020</a>)</span>, since both the underlying code
-and the user interface are continuously evolving. We refer to <span class="citation">Sørensen et al. (<a href="#ref-sorensen2020" role="doc-biblioref">2020</a>)</span> for notation and all other details
-about the models and algorithms.</p>
+<p>This vignette contains update syntax for the code examples in <span class="citation">Sørensen et al. (<a href="#ref-sorensen2020">2020</a>)</span>, since both the underlying
+code and the user interface are continuously evolving. We refer to <span class="citation">Sørensen et al. (<a href="#ref-sorensen2020">2020</a>)</span> for notation and all other
+details about the models and algorithms.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ocbe-uio/BayesMallows" class="external-link">BayesMallows</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></code></pre></div>
@@ -94,7 +94,7 @@ about the models and algorithms.</p>
 <h2 id="analysis-of-complete-rankings">Analysis of complete rankings<a class="anchor" aria-label="anchor" href="#analysis-of-complete-rankings"></a>
 </h2>
 <p>We illustrate the case of complete rankings with the potato datasets
-described in Section 4 of <span class="citation">(<a href="#ref-liu2019" role="doc-biblioref">Liu et al. 2019</a>)</span>. In short, a bag of 20
+described in Section 4 of <span class="citation">(<a href="#ref-liu2019">Liu et al. 2019</a>)</span>. In short, a bag of 20
 potatoes was bought, and 12 assessors were asked to rank the potatoes by
 weight, first by visual inspection, and next by holding the potatoes in
 hand. These datasets are available in <code>BayesMallows</code> as
@@ -119,8 +119,8 @@ and then get trace plots with <code>assess_convergence</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bmm_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_mallows.html">compute_mallows</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">complete_data</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">bmm_test</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="complete_data_diagnostic_alpha-1.png" alt=""><p class="caption">Trace plot for scale parameter.</p>
+<div class="float">
+<img src="complete_data_diagnostic_alpha-1.png" alt="Trace plot for scale parameter."><div class="figcaption">Trace plot for scale parameter.</div>
 </div>
 <p>By default, <code>assess_convergence</code> returns a trace plot for
 <span class="math inline">\(\alpha\)</span>, shown in the figure above.
@@ -130,8 +130,8 @@ plots, we pick potatoes <span class="math inline">\(1-5\)</span> by
 specifying this in the <code>items</code> argument.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">bmm_test</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="complete_data_diagnostic_rho-1.png" alt=""><p class="caption">Trace plot for modal ranking.</p>
+<div class="float">
+<img src="complete_data_diagnostic_rho-1.png" alt="Trace plot for modal ranking."><div class="figcaption">Trace plot for modal ranking.</div>
 </div>
 <p>The plot shows that the MCMC algorithm seems to have converged after
 around 1,000 iterations.</p>
@@ -147,8 +147,8 @@ burn-in. The object <code>bmm_visual</code> has <code>S3</code> class
 <span>  compute_options <span class="op">=</span> <span class="fu"><a href="../reference/set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">21000</span>, burnin <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bmm_visual</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="complete_data_model-1.png" alt=""><p class="caption">Posterior for scale parameter.</p>
+<div class="float">
+<img src="complete_data_model-1.png" alt="Posterior for scale parameter."><div class="figcaption">Posterior for scale parameter.</div>
 </div>
 <p>We can also get posterior credible intervals for <span class="math inline">\(\alpha\)</span> using
 <code>compute_posterior_intervals</code>, which returns both highest
@@ -163,8 +163,8 @@ provided, and the number of items exceeds five, five items are picked at
 random for plotting. To show all potatoes, we explicitly set .</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bmm_visual</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="complete_data_posterior_rho-1.png" alt=""><p class="caption">Posterior for modal ranking.</p>
+<div class="float">
+<img src="complete_data_posterior_rho-1.png" alt="Posterior for modal ranking."><div class="figcaption">Posterior for modal ranking.</div>
 </div>
 <div class="section level3">
 <h3 id="jumping-over-the-scale-parameter">Jumping over the scale parameter<a class="anchor" aria-label="anchor" href="#jumping-over-the-scale-parameter"></a>
@@ -229,9 +229,10 @@ as an initial ranking matrix consistent with the pairwise
 preferences.</p>
 <p>We illustrate with the beach preference data containing stated
 pairwise preferences between random subsets of 15 images of beaches, by
-60 assessors <span class="citation">(<a href="#ref-vitelli2018" role="doc-biblioref">Vitelli et al. 2018</a>)</span>. This dataset is
-provided in the dataframe <code>beach_preferences</code>, whose first
-six rows are shown below:</p>
+60 assessors <span class="citation">(<a href="#ref-vitelli2018">Vitelli
+et al. 2018</a>)</span>. This dataset is provided in the dataframe
+<code>beach_preferences</code>, whose first six rows are shown
+below:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">beach_preferences</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   assessor bottom_item top_item</span></span>
@@ -282,13 +283,13 @@ convergence of the augmented rankings.</p>
 after 1000 iterations.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">bmm_test</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="preferences_alpha_trace-1.png" alt=""><p class="caption">Trace plot for scale parameter.</p>
+<div class="float">
+<img src="preferences_alpha_trace-1.png" alt="Trace plot for scale parameter."><div class="figcaption">Trace plot for scale parameter.</div>
 </div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">bmm_test</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="preferences_rho_trace-1.png" alt=""><p class="caption">Trace plot for modal ranking.</p>
+<div class="float">
+<img src="preferences_rho_trace-1.png" alt="Trace plot for modal ranking."><div class="figcaption">Trace plot for modal ranking.</div>
 </div>
 <p>To check the convergence of the data augmentation scheme, we need to
 set <code>parameter = "Rtilde"</code>, and also specify which items and
@@ -297,8 +298,8 @@ assessor 1, which we studied above.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span></span>
 <span>  <span class="va">bmm_test</span>, parameter <span class="op">=</span> <span class="st">"Rtilde"</span>, items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">6</span>, <span class="fl">15</span><span class="op">)</span>, assessors <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="preferences_augmented_rankings-1.png" alt=""><p class="caption">Trace plot for augmented rankings.</p>
+<div class="float">
+<img src="preferences_augmented_rankings-1.png" alt="Trace plot for augmented rankings."><div class="figcaption">Trace plot for augmented rankings.</div>
 </div>
 <p>The convergence plot illustrates how the augmented rankings vary,
 while also obeying their implied ordering.</p>
@@ -314,9 +315,9 @@ this:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span></span>
 <span>  <span class="va">bmm_test</span>, parameter <span class="op">=</span> <span class="st">"Rtilde"</span>, items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">15</span><span class="op">)</span>, assessors <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="preferences_augmented_rankings_free-1.png" alt=""><p class="caption">Trace plot for augmented rankings where items have
-not been compared.</p>
+<div class="float">
+<img src="preferences_augmented_rankings_free-1.png" alt="Trace plot for augmented rankings where items have not been compared."><div class="figcaption">Trace plot for augmented rankings where items
+have not been compared.</div>
 </div>
 <p>As expected, the traces of the augmented rankings for beach 1 and 15
 for assessor 2 do cross each other, since no ordering is implied between
@@ -329,8 +330,9 @@ repeated for other items.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span></span>
 <span>  <span class="va">bmm_test</span>, parameter <span class="op">=</span> <span class="st">"Rtilde"</span>, items <span class="op">=</span> <span class="fl">13</span><span class="op">:</span><span class="fl">15</span>, assessors <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="preferences_augmented_rankings_many-1.png" alt=""><p class="caption">Trace plots for items 13-15 and assessors 1-8.</p>
+<div class="float">
+<img src="preferences_augmented_rankings_many-1.png" alt="Trace plots for items 13-15 and assessors 1-8."><div class="figcaption">Trace plots for items 13-15 and assessors
+1-8.</div>
 </div>
 <p>The plot indicates good mixing.</p>
 </div>
@@ -369,10 +371,10 @@ each beach are obtained with
 <span><span class="co">#&gt; 14       rho Item 14   13     14 [11,14]          [11,14]</span></span>
 <span><span class="co">#&gt; 15       rho Item 15    5      5   [4,5]            [4,6]</span></span></code></pre></div>
 <p>We can also rank the beaches according to their cumulative
-probability (CP) consensus <span class="citation">(<a href="#ref-vitelli2018" role="doc-biblioref">Vitelli et al.
-2018</a>)</span> and their maximum posterior (MAP) rankings. This is
-done with the function <code>compute_consensus</code>, and the following
-call returns the CP consensus:</p>
+probability (CP) consensus <span class="citation">(<a href="#ref-vitelli2018">Vitelli et al. 2018</a>)</span> and their
+maximum posterior (MAP) rankings. This is done with the function
+<code>compute_consensus</code>, and the following call returns the CP
+consensus:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_consensus.html">compute_consensus</a></span><span class="op">(</span><span class="va">bmm_beaches</span>, type <span class="op">=</span> <span class="st">"CP"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      cluster ranking    item cumprob</span></span>
@@ -426,8 +428,8 @@ it sets <code>k = 3</code>, so a heatplot of the probability of being
 ranked top-3 is obtained with the call:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_top_k.html">plot_top_k</a></span><span class="op">(</span><span class="va">bmm_beaches</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="preferences_top_k-1.png" alt=""><p class="caption">Top-3 rankings for beach preferences.</p>
+<div class="float">
+<img src="preferences_top_k-1.png" alt="Top-3 rankings for beach preferences."><div class="figcaption">Top-3 rankings for beach preferences.</div>
 </div>
 <p>The plot shows, for each beach as indicated on the left axis, the
 probability that assessor <span class="math inline">\(j\)</span> ranks
@@ -457,9 +459,10 @@ among assessor 2’s top-3.</p>
 </h2>
 <p><code>BayesMallows</code> comes with a set of sushi preference data,
 in which 5,000 assessors each have ranked a set of 10 types of sushi
-<span class="citation">(<a href="#ref-kamishima2003" role="doc-biblioref">Kamishima 2003</a>)</span>. It is interesting to
-see if we can find subsets of assessors with similar preferences. The
-sushi dataset was analyzed with the BMM by <span class="citation">Vitelli et al. (<a href="#ref-vitelli2018" role="doc-biblioref">2018</a>)</span>, but the results in that paper
+<span class="citation">(<a href="#ref-kamishima2003">Kamishima
+2003</a>)</span>. It is interesting to see if we can find subsets of
+assessors with similar preferences. The sushi dataset was analyzed with
+the BMM by <span class="citation">Vitelli et al. (<a href="#ref-vitelli2018">2018</a>)</span>, but the results in that paper
 differ somewhat from those obtained here, due to a bug in the function
 that was used to sample cluster probabilities from the Dirichlet
 distribution. We start by defining the data object.</p>
@@ -499,8 +502,8 @@ grid plot when given an object of class
 <span class="math inline">\(\alpha\)</span> with the command</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">bmm</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="cluster_trace_alpha-1.png" alt=""><p class="caption">Trace plots for scale parameters.</p>
+<div class="float">
+<img src="cluster_trace_alpha-1.png" alt="Trace plots for scale parameters."><div class="figcaption">Trace plots for scale parameters.</div>
 </div>
 <p>The resulting plot shows that all the chains seem to be close to
 convergence quite quickly. We can also make sure that the posterior
@@ -509,8 +512,9 @@ distributions of the cluster probabilities <span class="math inline">\(\tau_{c}\
 <code>parameter = "cluster_probs"</code>.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">bmm</span>, parameter <span class="op">=</span> <span class="st">"cluster_probs"</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="cluster_trace_probs-1.png" alt=""><p class="caption">Trace plots for cluster assignment probabilities.</p>
+<div class="float">
+<img src="cluster_trace_probs-1.png" alt="Trace plots for cluster assignment probabilities."><div class="figcaption">Trace plots for cluster assignment
+probabilities.</div>
 </div>
 <p>Note that with only one cluster, the cluster probability is fixed at
 the value 1, while for other number of mixture components, the chains
@@ -542,9 +546,9 @@ saving every 10th value of <span class="math inline">\(\boldsymbol{\rho}\)</span
 <p>We then create an elbow plot:</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_elbow.html">plot_elbow</a></span><span class="op">(</span><span class="va">bmm</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="cluster_elbow-1.png" alt=""><p class="caption">Elbow plot for deciding on the number of mixture
-components.</p>
+<div class="float">
+<img src="cluster_elbow-1.png" alt="Elbow plot for deciding on the number of mixture components."><div class="figcaption">Elbow plot for deciding on the number of mixture
+components.</div>
 </div>
 <p>Although not clear-cut, we see that the within-cluster sum of
 distances levels off at around 5 clusters, and hence we choose to use 5
@@ -575,30 +579,31 @@ efficiency, it is best to avoid thinning.</p>
 data.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bmm</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="cluster_posterior_alpha-1.png" alt=""><p class="caption">Posterior of scale parameter in each cluster.</p>
+<div class="float">
+<img src="cluster_posterior_alpha-1.png" alt="Posterior of scale parameter in each cluster."><div class="figcaption">Posterior of scale parameter in each
+cluster.</div>
 </div>
 <p>Since there are five clusters, the easiest way of visualizing
 posterior rankings is by choosing a single item.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bmm</span>, parameter <span class="op">=</span> <span class="st">"rho"</span>, items <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="cluster_posterior_rho-1.png" alt=""><p class="caption">Posterior of item 1 in each cluster.</p>
+<div class="float">
+<img src="cluster_posterior_rho-1.png" alt="Posterior of item 1 in each cluster."><div class="figcaption">Posterior of item 1 in each cluster.</div>
 </div>
 <p>We can also show the posterior distributions of the cluster
 probabilities.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bmm</span>, parameter <span class="op">=</span> <span class="st">"cluster_probs"</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="cluster_probs_posterior-1.png" alt=""><p class="caption">Posterior for cluster probabilities.</p>
+<div class="float">
+<img src="cluster_probs_posterior-1.png" alt="Posterior for cluster probabilities."><div class="figcaption">Posterior for cluster probabilities.</div>
 </div>
 <p>Using the argument <code>parameter = "cluster_assignment"</code>, we
 can visualize the posterior probability for each assessor of belonging
 to each cluster:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">bmm</span>, parameter <span class="op">=</span> <span class="st">"cluster_assignment"</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="cluster_assignment_posterior-1.png" alt=""><p class="caption">Posterior for cluster assignment.</p>
+<div class="float">
+<img src="cluster_assignment_posterior-1.png" alt="Posterior for cluster assignment."><div class="figcaption">Posterior for cluster assignment.</div>
 </div>
 <p>The number underlying the plot can be found using
 <code>assign_cluster</code>.</p>
@@ -615,26 +620,24 @@ to each cluster:</p>
 <span>  drop <span class="op">=</span> <span class="st">"cumprob"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt;    ranking     Cluster 1     Cluster 2     Cluster 3     Cluster 4     Cluster 5</span></span>
-<span><span class="co">#&gt; 1        1    fatty tuna    fatty tuna    fatty tuna        shrimp    fatty tuna</span></span>
-<span><span class="co">#&gt; 2        2          tuna          tuna    sea urchin       sea eel    sea urchin</span></span>
-<span><span class="co">#&gt; 3        3    salmon roe       sea eel    salmon roe         squid    salmon roe</span></span>
-<span><span class="co">#&gt; 4        4        shrimp        shrimp          tuna           egg       sea eel</span></span>
-<span><span class="co">#&gt; 5        5     tuna roll     tuna roll        shrimp    fatty tuna          tuna</span></span>
-<span><span class="co">#&gt; 6        6         squid         squid         squid          tuna        shrimp</span></span>
-<span><span class="co">#&gt; 7        7           egg           egg     tuna roll     tuna roll     tuna roll</span></span>
-<span><span class="co">#&gt; 8        8       sea eel cucumber roll       sea eel    salmon roe         squid</span></span>
-<span><span class="co">#&gt; 9        9 cucumber roll    salmon roe cucumber roll cucumber roll           egg</span></span>
-<span><span class="co">#&gt; 10      10    sea urchin    sea urchin           egg    sea urchin cucumber roll</span></span></code></pre></div>
+<span><span class="co">#&gt; 1        1        shrimp    fatty tuna    fatty tuna    sea urchin    fatty tuna</span></span>
+<span><span class="co">#&gt; 2        2       sea eel          tuna    salmon roe    fatty tuna    sea urchin</span></span>
+<span><span class="co">#&gt; 3        3         squid       sea eel    sea urchin    salmon roe          tuna</span></span>
+<span><span class="co">#&gt; 4        4           egg        shrimp          tuna       sea eel    salmon roe</span></span>
+<span><span class="co">#&gt; 5        5    fatty tuna     tuna roll        shrimp        shrimp       sea eel</span></span>
+<span><span class="co">#&gt; 6        6          tuna         squid     tuna roll          tuna     tuna roll</span></span>
+<span><span class="co">#&gt; 7        7     tuna roll           egg         squid         squid        shrimp</span></span>
+<span><span class="co">#&gt; 8        8 cucumber roll cucumber roll       sea eel     tuna roll         squid</span></span>
+<span><span class="co">#&gt; 9        9    salmon roe    salmon roe           egg           egg           egg</span></span>
+<span><span class="co">#&gt; 10      10    sea urchin    sea urchin cucumber roll cucumber roll cucumber roll</span></span></code></pre></div>
 <p>Note that for estimating cluster specific parameters, label switching
 is a potential problem that needs to be handled.
 <code>BayesMallows</code> ignores label switching issues inside the
 MCMC, because it has been shown that this approach is better for
-ensuring full convergence of the chain <span class="citation">(<a href="#ref-jasra2005" role="doc-biblioref">Jasra, Holmes, and Stephens
-2005</a>; <a href="#ref-celeux2000" role="doc-biblioref">Celeux, Hurn,
-and Robert 2000</a>)</span>. MCMC iterations can be re-ordered after
-convergence is achieved, for example by using the implementation of
-Stephens’ algorithm <span class="citation">(<a href="#ref-Stephens2000" role="doc-biblioref">Stephens 2000</a>)</span> provided by the R package
-<code>label.switching</code> <span class="citation">(<a href="#ref-papastamoulis2016" role="doc-biblioref">Papastamoulis
+ensuring full convergence of the chain <span class="citation">(<a href="#ref-jasra2005">Jasra, Holmes, and Stephens 2005</a>; <a href="#ref-celeux2000">Celeux, Hurn, and Robert 2000</a>)</span>. MCMC
+iterations can be re-ordered after convergence is achieved, for example
+by using the implementation of Stephens’ algorithm <span class="citation">(<a href="#ref-Stephens2000">Stephens 2000</a>)</span>
+provided by the R package <code>label.switching</code> <span class="citation">(<a href="#ref-papastamoulis2016">Papastamoulis
 2016</a>)</span>. A full example of how to assess label switching is
 provided in the examples for the <code>compute_mallows</code>
 function.</p>
@@ -643,7 +646,7 @@ function.</p>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-celeux2000" class="csl-entry">
 Celeux, G., M. Hurn, and C. Robert. 2000. <span>“Computational and
 Inferential Difficulties with Mixture Posterior Distribution.”</span>

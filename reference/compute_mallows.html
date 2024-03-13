@@ -50,7 +50,7 @@ clustering of assessors with similar preferences."><!-- mathjax --><script src="
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -196,7 +196,11 @@ provided, chains will be run in parallel, one on each node of <code>cl</code>.</
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other modeling: 
+<code><a href="burnin.html">burnin</a>()</code>,
+<code>burnin&lt;-()</code>,
 <code><a href="compute_mallows_mixtures.html">compute_mallows_mixtures</a>()</code>,
+<code><a href="compute_mallows_sequentially.html">compute_mallows_sequentially</a>()</code>,
+<code><a href="sample_prior.html">sample_prior</a>()</code>,
 <code><a href="update_mallows.html">update_mallows</a>()</code></p></div>
     </div>
 
@@ -219,7 +223,7 @@ provided, chains will be run in parallel, one on each node of <code>cl</code>.</
 <span class="r-plt img"><img src="compute_mallows-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Based on these plots, we set burnin = 1000.</span></span></span>
-<span class="r-in"><span><span class="va">model_fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="burnin.html">burnin</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
 <span class="r-in"><span><span class="co"># Next, we use the generic plot function to study the posterior distributions</span></span></span>
 <span class="r-in"><span><span class="co"># of alpha and rho</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span></span>
@@ -336,7 +340,7 @@ provided, chains will be run in parallel, one on each node of <code>cl</code>.</
 <span class="r-in"><span>  <span class="co"># Based on this, we set burnin = 1000</span></span></span>
 <span class="r-in"><span>  <span class="co"># We now plot the posterior density of the scale parameters alpha in</span></span></span>
 <span class="r-in"><span>  <span class="co"># each mixture:</span></span></span>
-<span class="r-in"><span>  <span class="va">model_fit</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="burnin.html">burnin</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"alpha"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># We can also compute the posterior density of the cluster probabilities</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">model_fit</span>, parameter <span class="op">=</span> <span class="st">"cluster_probs"</span><span class="op">)</span></span></span>
@@ -362,7 +366,8 @@ provided, chains will be run in parallel, one on each node of <code>cl</code>.</
 <span class="r-in"><span>  <span class="co"># models is a list in which each element is an object of class BayesMallows,</span></span></span>
 <span class="r-in"><span>  <span class="co"># returned from compute_mallows</span></span></span>
 <span class="r-in"><span>  <span class="co"># We can create an elbow plot</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="plot_elbow.html">plot_elbow</a></span><span class="op">(</span><span class="va">models</span>, burnin <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="burnin.html">burnin</a></span><span class="op">(</span><span class="va">models</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="plot_elbow.html">plot_elbow</a></span><span class="op">(</span><span class="va">models</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># We then select the number of cluster at a point where this plot has</span></span></span>
 <span class="r-in"><span>  <span class="co"># an "elbow", e.g., at 6 clusters.</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
@@ -393,7 +398,7 @@ provided, chains will be run in parallel, one on each node of <code>cl</code>.</
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">mod</span>, parameter <span class="op">=</span> <span class="st">"theta"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">mod</span><span class="op">$</span><span class="va">burnin</span> <span class="op">&lt;-</span> <span class="fl">3000</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="burnin.html">burnin</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">3000</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mod</span>, parameter <span class="op">=</span> <span class="st">"theta"</span><span class="op">)</span></span></span>
@@ -447,7 +452,7 @@ provided, chains will be run in parallel, one on each node of <code>cl</code>.</
 <span class="r-in"><span>  <span class="va">cluster_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"cluster\\_probs[[:digit:]]+\\.csv"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># Create 3d array, with dimensions (iterations, assessors, clusters)</span></span></span>
 <span class="r-in"><span>  <span class="va">prob_array</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cluster_files</span><span class="op">)</span>, <span class="va">m</span><span class="op">$</span><span class="va">n_assessors</span>, <span class="va">m</span><span class="op">$</span><span class="va">n_clusters</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cluster_files</span><span class="op">)</span>, <span class="va">m</span><span class="op">$</span><span class="va">data</span><span class="op">$</span><span class="va">n_assessors</span>, <span class="va">m</span><span class="op">$</span><span class="va">n_clusters</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># Read each file, adding to the right element of the array</span></span></span>
 <span class="r-in"><span>  <span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">cluster_files</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span></span>
 <span class="r-in"><span>    <span class="va">prob_array</span><span class="op">[</span><span class="va">i</span>, , <span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span></span></span>

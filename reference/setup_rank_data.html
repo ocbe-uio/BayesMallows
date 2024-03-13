@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,14 +64,16 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">setup_rank_data</span><span class="op">(</span></span>
 <span>  rankings <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  preferences <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  user_ids <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  user_ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  observation_frequency <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  validate_rankings <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  na_action <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"augment"</span>, <span class="st">"fail"</span>, <span class="st">"omit"</span><span class="op">)</span>,</span>
 <span>  cl <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  shuffle_unranked <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  random <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  random_limit <span class="op">=</span> <span class="fl">8L</span></span>
+<span>  random_limit <span class="op">=</span> <span class="fl">8L</span>,</span>
+<span>  timepoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_items <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -84,7 +86,9 @@ converted to rankings. If <code>preferences</code> is provided, <code>rankings</
 optional initial value of the rankings. If <code>rankings</code> has column names,
 these are assumed to be the names of the items. <code>NA</code> values in rankings are
 treated as missing data and automatically augmented; to change this
-behavior, see the <code>na_action</code> argument to <code><a href="set_model_options.html">set_model_options()</a></code>.</p></dd>
+behavior, see the <code>na_action</code> argument to <code><a href="set_model_options.html">set_model_options()</a></code>. A vector
+length <code>n_items</code> is silently converted to a matrix of length <code>1 x n_items</code>,
+and names (if any), are used as column names.</p></dd>
 
 
 <dt>preferences</dt>
@@ -101,10 +105,9 @@ we have the following <code>df</code>:</p><table class="table table"><tr><td><st
 
 
 <dt>user_ids</dt>
-<dd><p>Optional vector of user IDs. Defaults to <code>NULL</code>, and only
-used by <code><a href="update_mallows.html">update_mallows()</a></code>. If provided, new data can consist of updated
-partial rankings from users already in the dataset, as described in Section
-6 of
+<dd><p>Optional <code>numeric</code> vector of user IDs. Only only used by
+<code><a href="update_mallows.html">update_mallows()</a></code>. If provided, new data can consist of updated partial
+rankings from users already in the dataset, as described in Section 6 of
 Stein (2023)
 .</p></dd>
 
@@ -165,6 +168,23 @@ generated for each assessor, and one of them is picked at random.</p></dd>
 when all possible orderings are computed, i.e., when <code>random=TRUE</code>.
 Defaults to <code>8L</code>.</p></dd>
 
+
+<dt>timepoint</dt>
+<dd><p>Integer vector specifying the timepoint. Defaults to <code>NULL</code>,
+which means that a vector of ones, one for each observation, is generated.
+Used by <code><a href="update_mallows.html">update_mallows()</a></code> to identify data with a given iteration of the
+sequential Monte Carlo algorithm. If not <code>NULL</code>, must contain one integer
+for each row in <code>rankings</code>.</p></dd>
+
+
+<dt>n_items</dt>
+<dd><p>Integer specifying the number of items. Defaults to <code>NULL</code>,
+which means that the number of items is inferred from <code>rankings</code> or from
+<code>preferences</code>. Setting <code>n_items</code> manually can be useful with pairwise
+preference data in the SMC algorithm, i.e., when <code>rankings</code> is <code>NULL</code> and
+<code>preferences</code> is non-<code>NULL</code>, and contains a small number of pairwise
+preferences for a subset of users and items.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -193,6 +213,15 @@ permutation of these 30 items consistent with the preference 29&lt;30.</p>
 <table class="table table"><tr><td><strong>assessor</strong></td><td><strong>bottom_item</strong></td><td><strong>top_item</strong></td></tr><tr><td>1</td><td>29</td><td>30</td></tr></table><p>If in reality there are only two items, they should be relabeled to 1 and
 2, as follows:</p>
 <table class="table table"><tr><td><strong>assessor</strong></td><td><strong>bottom_item</strong></td><td><strong>top_item</strong></td></tr><tr><td>1</td><td>1</td><td>2</td></tr></table></div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Stein A (2023).
+<em>Sequential Inference with the Mallows Model</em>.
+Ph.D. thesis, Lancaster University.<br><br> Vitelli V, Sørensen, Crispino M, Arjas E, Frigessi A (2018).
+“Probabilistic Preference Learning with the Mallows Rank Model.”
+<em>Journal of Machine Learning Research</em>, <b>18</b>(1), 1--49.
+<a href="https://jmlr.org/papers/v18/15-481.html" class="external-link">https://jmlr.org/papers/v18/15-481.html</a>.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other preprocessing: 
