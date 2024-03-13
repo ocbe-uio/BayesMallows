@@ -107,8 +107,8 @@ mod <- compute_mallows(
   compute_options = set_compute_options(nmc = 3000, burnin = 1000)
 )
 
-# Next we provide assessors 21 to 60 one at a time.
-for(i in 21:60){
+# Next we provide assessors 21 to 24 one at a time.
+for(i in 21:24){
   mod <- update_mallows(
     model = mod,
     new_data = setup_rank_data(
