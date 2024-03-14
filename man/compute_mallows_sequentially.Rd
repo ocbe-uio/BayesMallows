@@ -61,7 +61,7 @@ for some workarounds.
 # Observe one ranking at each of 12 timepoints
 library(ggplot2)
 data <- lapply(seq_len(nrow(potato_visual)), function(i) {
-  setup_rank_data(potato_visual[i, ])
+  setup_rank_data(potato_visual[i, ], user_ids = i)
 })
 
 initial_values <- sample_prior(

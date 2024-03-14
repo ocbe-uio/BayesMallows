@@ -72,3 +72,24 @@ test_that("compute_mallows_sequentially works with partial rankings", {
     )
   )
 })
+
+test_that("compute_mallows_sequentially validates input", {
+  set.seed(345)
+  data <- lapply(seq_len(nrow(potato_visual)), function(i) {
+    setup_rank_data(potato_visual[i, ])
+  })
+
+  initial_values <- sample_prior(
+    n = 200, n_items = 20,
+    priors = set_priors(gamma = 3, lambda = .1)
+  )
+
+  expect_error(
+    compute_mallows_sequentially(
+      data = data,
+      initial_values = initial_values,
+      smc_options = set_smc_options(n_particles = 200, mcmc_steps = 20)
+    ),
+    "User IDs must be set."
+  )
+})
