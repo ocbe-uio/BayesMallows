@@ -54,9 +54,11 @@ compute_mallows_sequentially <- function(
   if (!is.list(data) | !all(vapply(data, inherits, logical(1), "BayesMallowsData"))) {
     stop("data must be a list of BayesMallowsData objects.")
   }
-  if(any(
-    vapply(data, function(x)
-      is.null(x$user_ids) || length(x$user_ids) == 0, logical(1)))) {
+  if (any(
+    vapply(data, function(x) {
+      is.null(x$user_ids) || length(x$user_ids) == 0
+    }, logical(1))
+  )) {
     stop("User IDs must be set.")
   }
   pfun_values <- extract_pfun_values(model_options$metric, data[[1]]$n_items, pfun_estimate)
