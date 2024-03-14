@@ -1,3 +1,8 @@
+# BayesMallows 2.1.1
+
+* Fixed gcc-UBSAN issue happening when compute_mallows_sequentially() is run
+  without user IDs specified.
+
 # BayesMallows 2.1.0
 
 * The SMC method update_mallows() now supports pairwise preferences, both new 

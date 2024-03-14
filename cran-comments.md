@@ -1,6 +1,6 @@
 ## Resubmission Note
 
-This is a resubmission, fixing a failing unit test on noLD and containing a large number of new features.
+This is a resubmission, fixing the gcc-UBSAN error reported on CRAN.
 
 
 ## Test Environments
