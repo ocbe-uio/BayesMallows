@@ -1,3 +1,5 @@
+# BayesMallows (development versions)
+
 # BayesMallows 2.1.1
 
 * Fixed gcc-UBSAN issue happening when compute_mallows_sequentially() is run
