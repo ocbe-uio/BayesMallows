@@ -108,7 +108,11 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
   if (length(new_data$user_ids) == 0) {
     new_data$user_ids <- max(as.numeric(model$data$user_ids)) + seq(from = 1, to = nrow(new_data$rankings), by = 1)
   }
-  if(!is.null(new_data$preferences)) new_data$preferences <- as.matrix(new_data$preferences)
+  if(!is.null(new_data$preferences)) {
+    new_data$preferences <- as.matrix(new_data$preferences)
+  } else {
+    new_data$preferences <- matrix(0, 0, 0)
+  }
   ret <- run_smc(
     data = model$data,
     new_data = list(new_data),

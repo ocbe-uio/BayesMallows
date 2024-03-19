@@ -32,6 +32,7 @@ struct SMCData : Data {
   arma::umat consistent{};
   Rcpp::IntegerVector user_ids{};
   Rcpp::IntegerVector updated_match{};
+  arma::imat preferences;
 };
 
 struct SMCParameters {

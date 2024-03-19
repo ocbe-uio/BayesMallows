@@ -11,9 +11,6 @@ mod_init <- compute_mallows(
 # assess_convergence(mod_init)
 alpha <- numeric()
 
-new_data = setup_rank_data(
-  preferences = subset(beach_preferences, assessor == i), timepoint = i)
-
 mod <- mod_init
 for(i in 6:60) {
   print(i)

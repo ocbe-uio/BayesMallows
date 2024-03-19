@@ -61,6 +61,14 @@ compute_mallows_sequentially <- function(
   )) {
     stop("User IDs must be set.")
   }
+  data <- lapply(data, function(x) {
+    if(!is.null(x$preferences)) {
+      x$preferences <- as.matrix(x$preferences)
+    } else {
+      x$preferences <- matrix(0, 0, 0)
+    }
+    x
+  })
   pfun_values <- extract_pfun_values(model_options$metric, data[[1]]$n_items, pfun_estimate)
   alpha_init <- sample(initial_values$alpha, smc_options$n_particles, replace = TRUE)
   rho_init <- initial_values$rho[, sample(ncol(initial_values$rho), smc_options$n_particles, replace = TRUE)]

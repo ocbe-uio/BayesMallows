@@ -8,7 +8,8 @@ SMCData::SMCData(const Rcpp::List& data) :
   Data(data),
   timepoint { Rcpp::as<uvec>(data["timepoint"]) },
   consistent ( data["consistent"]),
-  user_ids ( data["user_ids"] ) {}
+  user_ids ( data["user_ids"] ),
+  preferences (data["preferences"]) {}
 
 void SMCData::update(
     const Rcpp::List& new_data) {
@@ -38,6 +39,7 @@ void SMCData::update(
     if(augpair) {
       items_above.push_back(new_dat.items_above[new_match[index]]);
       items_below.push_back(new_dat.items_below[new_match[index]]);
+      preferences = join_cols(preferences, new_dat.preferences);
     }
   }
 
@@ -62,6 +64,7 @@ Rcpp::List SMCData::wrapup() {
     Rcpp::Named("n_assessors") = n_assessors,
     Rcpp::Named("consistent") = consistent,
     Rcpp::Named("constraints") = Rcpp::List(),
+    Rcpp::Named("preferences") = preferences,
     Rcpp::Named("n_items") = n_items,
     Rcpp::Named("rankings") = rankings.t(),
     Rcpp::Named("user_ids") = user_ids,
