@@ -32,6 +32,7 @@ struct SMCData : Data {
   arma::umat consistent{};
   Rcpp::IntegerVector user_ids{};
   Rcpp::IntegerVector updated_match{};
+  arma::imat preferences;
 };
 
 struct SMCParameters {
@@ -83,6 +84,8 @@ struct SMCAugmentation {
 
   void update_missing_ranks(Particle& p, const SMCData& dat,
       const std::unique_ptr<Distance>& distfun) const;
+
+  const int max_topological_sorts;
 
 private:
   const std::unique_ptr<PartialProposal> partial_aug_prop;

@@ -1,5 +1,11 @@
 # BayesMallows (development versions)
 
+* SMC Mallows with pairwise preference data now allows different initially
+  values for the augmented rankings across the particles. This is obtained by
+  generating (a subset of) all topological sorts consistent with the transitive
+  closure for the user, and sampling from these. Can be set with the 
+  max_topological_sorts argument to set_smc_options().
+
 # BayesMallows 2.1.1
 
 * Fixed gcc-UBSAN issue happening when compute_mallows_sequentially() is run

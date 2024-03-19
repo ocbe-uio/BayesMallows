@@ -15,6 +15,7 @@ SMCAugmentation::SMCAugmentation(
   const Rcpp::List& compute_options,
   const Rcpp::List& smc_options
   ) :
+  max_topological_sorts{ smc_options["max_topological_sorts"] },
   partial_aug_prop {
   choose_partial_proposal(compute_options["aug_method"],
                           compute_options["pseudo_aug_metric"]) },

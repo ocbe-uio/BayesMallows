@@ -1,8 +1,8 @@
 splitpref <- function(preferences) {
-  split(
+  lapply(split(
     preferences[, c("bottom_item", "top_item"), drop = FALSE],
     preferences$assessor
-  )
+  ), as.matrix)
 }
 
 generate_initial_ranking <- function(
@@ -27,13 +27,13 @@ generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
 
   if (is.null(cl)) {
     do.call(rbind, lapply(
-      prefs, function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
+      prefs, function(x, y, sr, r) create_ranks(x, y, sr, r),
       n_items, shuffle_unranked, random
     ))
   } else {
     do.call(rbind, parallel::parLapply(
       cl = cl, X = prefs,
-      fun = function(x, y, sr, r) create_ranks(as.matrix(x), y, sr, r),
+      fun = function(x, y, sr, r) create_ranks(x, y, sr, r),
       n_items, shuffle_unranked, random
     ))
   }
@@ -52,7 +52,7 @@ generate_initial_ranking.BayesMallowsIntransitive <- function(
 
 create_ranks <- function(mat, n_items, shuffle_unranked, random) {
   if (!random) {
-    g <- igraph::graph_from_edgelist(as.matrix(mat))
+    g <- igraph::graph_from_edgelist(mat)
     g <- as.integer(igraph::topo_sort(g))
 
     all_items <- seq(from = 1, to = n_items, by = 1)
@@ -73,19 +73,7 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     # Convert from ordering to ranking
     return(create_ranking(rev(g_final)))
   } else {
-    graph <- list()
-    for (i in seq_len(n_items)) {
-      graph[[i]] <- unique(mat[mat[, "top_item"] == i, "bottom_item"])
-    }
-    indegree_init <- rep(0, n_items)
-    indegree <- table(unlist(graph))
-    indegree_init[as.integer(names(indegree))] <- indegree
-    attr(graph, "indegree") <- indegree_init
-
-    e1 <- new.env()
-    assign("x", list(), envir = e1)
-    assign("num", 0L, envir = e1)
-    all_topological_sorts(graph, n_items, e1)
-    return(get("x", envir = e1)[[sample(get("num", envir = e1), 1)]])
+    ret <- all_topological_sorts(mat, n_items)
+    create_ranking(ret[sample(nrow(ret), 1), ])
   }
 }

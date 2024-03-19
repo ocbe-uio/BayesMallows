@@ -20,6 +20,20 @@ test_that("update_mallows works with pairwise preferences", {
     )
   }
 
-  expect_equal(mean(mod$alpha_samples), 3.8454030710008)
-  expect_equal(sd(mod$alpha_samples), 0.842589725546165)
+  expect_equal(mean(mod$alpha_samples), 4.01518119011504)
+  expect_equal(sd(mod$alpha_samples), 0.845892936899719)
+
+  for (i in 23:24) {
+    mod <- update_mallows(
+      model = mod,
+      new_data = setup_rank_data(
+        preferences = subset(beach_preferences, assessor == i),
+        user_ids = i, shuffle_unranked = TRUE
+      ),
+      smc_options = set_smc_options(latent_sampling_lag = 1, max_topological_sorts = 10)
+    )
+  }
+
+  expect_equal(mean(mod$alpha_samples), 2.38605651257406)
+  expect_equal(sd(mod$alpha_samples), 0.546341440972763)
 })
