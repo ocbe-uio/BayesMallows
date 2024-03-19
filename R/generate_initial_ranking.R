@@ -73,19 +73,7 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     # Convert from ordering to ranking
     return(create_ranking(rev(g_final)))
   } else {
-    graph <- list()
-    for (i in seq_len(n_items)) {
-      graph[[i]] <- unique(mat[mat[, "top_item"] == i, "bottom_item"])
-    }
-    indegree_init <- rep(0, n_items)
-    indegree <- table(unlist(graph))
-    indegree_init[as.integer(names(indegree))] <- indegree
-    attr(graph, "indegree") <- indegree_init
-
-    e1 <- new.env()
-    assign("x", list(), envir = e1)
-    assign("num", 0L, envir = e1)
-    all_topological_sorts(graph, n_items, e1)
-    return(get("x", envir = e1)[[sample(get("num", envir = e1), 1)]])
+    ret <- all_topological_sorts(mat, n_items)
+    ret[sample(nrow(ret), 1), ]
   }
 }

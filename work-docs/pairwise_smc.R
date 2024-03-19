@@ -32,3 +32,10 @@ mod_bmm <- compute_mallows(
 )
 
 plot(mod_bmm) + plot(mod) + plot_layout(ncol = 1)
+
+
+nd <- setup_rank_data(
+  preferences = subset(beach_preferences, assessor < 3 & top_item < 5),
+  shuffle_unranked = TRUE, n_items = 15, pairwise_smc = 100
+)
+nd$rankings
