@@ -109,7 +109,7 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
     new_data$user_ids <- max(as.numeric(model$data$user_ids)) +
       seq(from = 1, to = nrow(new_data$rankings), by = 1)
   }
-  if(!is.null(new_data$preferences)) {
+  if (!is.null(new_data$preferences)) {
     new_data$preferences <- as.matrix(new_data$preferences)
   } else {
     new_data$preferences <- matrix(0, 0, 0)
@@ -145,7 +145,8 @@ update_mallows.SMCMallows <- function(model, new_data, ...) {
   model$augmented_rankings <- ret$augmented_rankings
   items <- model$data$items
   old_constraints <- model$data$constraints[
-    setdiff(names(model$data$constraints), names(new_data$constraints))]
+    setdiff(names(model$data$constraints), names(new_data$constraints))
+  ]
   model$data <- ret$data
   model$data$constraints <- c(old_constraints, new_data$constraints)
   model$data$items <- items

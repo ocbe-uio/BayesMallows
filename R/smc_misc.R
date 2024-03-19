@@ -32,12 +32,12 @@ extract_rho_init <- function(model, n_particles) {
 run_common_part <- function(
     data, new_data, model_options, smc_options, compute_options, priors,
     initial_values, pfun_list, model) {
-  if(!is.null(data$preferences)) {
+  if (!is.null(data$preferences)) {
     data$preferences <- as.matrix(data$preferences)
   } else {
     data$preferences <- matrix(0, 0, 0)
   }
-  if(!is.null(new_data$preferences)) {
+  if (!is.null(new_data$preferences)) {
     new_data$preferences <- as.matrix(new_data$preferences)
   } else {
     new_data$preferences <- matrix(0, 0, 0)

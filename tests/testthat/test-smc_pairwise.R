@@ -36,5 +36,4 @@ test_that("update_mallows works with pairwise preferences", {
 
   expect_equal(mean(mod$alpha_samples), 2.38605651257406)
   expect_equal(sd(mod$alpha_samples), 0.546341440972763)
-
 })

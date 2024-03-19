@@ -62,7 +62,7 @@ compute_mallows_sequentially <- function(
     stop("User IDs must be set.")
   }
   data <- lapply(data, function(x) {
-    if(!is.null(x$preferences)) {
+    if (!is.null(x$preferences)) {
       x$preferences <- as.matrix(x$preferences)
     } else {
       x$preferences <- matrix(0, 0, 0)
