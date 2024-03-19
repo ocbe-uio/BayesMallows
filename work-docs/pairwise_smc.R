@@ -11,15 +11,17 @@ mod_init <- compute_mallows(
 # assess_convergence(mod_init)
 alpha <- numeric()
 
+new_data = setup_rank_data(
+  preferences = subset(beach_preferences, assessor == i), timepoint = i)
+
 mod <- mod_init
 for(i in 6:60) {
   print(i)
   mod <- update_mallows(
     model = mod,
-    new_data = setup_rank_data(preferences = subset(beach_preferences, assessor == i),
-                               timepoint = i),
-    smc_options = set_smc_options(
-      n_particles = 10000, mcmc_steps = 100)
+    new_data = setup_rank_data(
+      preferences = subset(beach_preferences, assessor == i), timepoint = i),
+    smc_options = set_smc_options(n_particles = 3, mcmc_steps = 1)
   )
   alpha <- c(alpha, mean(mod$alpha_samples))
 }

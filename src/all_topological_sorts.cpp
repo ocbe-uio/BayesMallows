@@ -68,7 +68,6 @@ void Graph::alltopologicalSort() {
   alltopologicalSortUtil(res, visited);
 }
 
-
 // [[Rcpp::export]]
 arma::imat all_topological_sorts(arma::imat prefs, int n_items) {
   Graph g(n_items);

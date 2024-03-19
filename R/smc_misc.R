@@ -32,6 +32,8 @@ extract_rho_init <- function(model, n_particles) {
 run_common_part <- function(
     data, new_data, model_options, smc_options, compute_options, priors,
     initial_values, pfun_list, model) {
+  if(!is.null(data$preferences)) data$preferences <- as.matrix(data$preferences)
+  if(!is.null(new_data$preferences)) new_data$preferences <- as.matrix(new_data$preferences)
   ret <- run_smc(
     data = data,
     new_data = list(new_data),
