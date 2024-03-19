@@ -14,15 +14,18 @@ class Graph {
   list<int> *adj;
   vector<int> indegree;
   void alltopologicalSortUtil(vector<int>& res, bool visited[]);
+  int maxit;
+  int iter{};
 
 public:
-  Graph(int n_items);
+  Graph(int n_items, int maxit);
   void addEdge(int v, int w);
   void alltopologicalSort();
   std::vector<std::vector<int>> m;
 };
 
-Graph::Graph(int n_items) : n_items { n_items } {
+Graph::Graph(int n_items, int maxit) : n_items { n_items },
+  maxit { maxit } {
   adj = new list<int>[n_items];
   for (int i = 0; i < n_items; i++) indegree.push_back(0);
 }
@@ -43,7 +46,11 @@ void Graph::alltopologicalSortUtil(vector<int>& res, bool visited[]) {
 
       res.push_back(i);
       visited[i] = true;
-      alltopologicalSortUtil(res, visited);
+
+      if(iter < maxit) {
+        alltopologicalSortUtil(res, visited);
+      }
+
 
       visited[i] = false;
       res.erase(res.end() - 1);
@@ -55,6 +62,7 @@ void Graph::alltopologicalSortUtil(vector<int>& res, bool visited[]) {
   }
 
   if (!flag){
+    iter++;
     m.push_back(res);
   }
 }
@@ -69,8 +77,8 @@ void Graph::alltopologicalSort() {
 }
 
 // [[Rcpp::export]]
-arma::imat all_topological_sorts(arma::imat prefs, int n_items) {
-  Graph g(n_items);
+arma::imat all_topological_sorts(arma::imat prefs, int n_items, int maxit = 1000) {
+  Graph g(n_items, maxit);
   for(size_t i{}; i < prefs.n_rows; i++) {
     g.addEdge(prefs.at(i, 1) - 1, prefs.at(i, 0) - 1);
   }

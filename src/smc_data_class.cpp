@@ -39,7 +39,8 @@ void SMCData::update(
     if(augpair) {
       items_above.push_back(new_dat.items_above[new_match[index]]);
       items_below.push_back(new_dat.items_below[new_match[index]]);
-      preferences = join_cols(preferences, new_dat.preferences);
+      uvec indices = find(new_dat.preferences.col(0) == new_users[index]);
+      preferences = join_cols(preferences, new_dat.preferences.rows(indices));
     }
   }
 
@@ -48,6 +49,10 @@ void SMCData::update(
     if(augpair) {
       items_above[updated_match[index]] = new_dat.items_above[updated_new[index]];
       items_below[updated_match[index]] = new_dat.items_below[updated_new[index]];
+      uvec indices_to_keep = find(preferences.col(0) != updated_users[index]);
+      preferences = preferences.rows(indices_to_keep);
+      uvec indices_to_add = find(new_dat.preferences.col(0) == updated_users[index]);
+      preferences = join_cols(preferences, new_dat.preferences.rows(indices_to_add));
     }
   }
 

@@ -85,6 +85,8 @@ struct SMCAugmentation {
   void update_missing_ranks(Particle& p, const SMCData& dat,
       const std::unique_ptr<Distance>& distfun) const;
 
+  const int max_topological_sorts;
+
 private:
   const std::unique_ptr<PartialProposal> partial_aug_prop;
   const std::unique_ptr<PairwiseProposal> pairwise_aug_prop;

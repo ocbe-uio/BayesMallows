@@ -74,6 +74,6 @@ create_ranks <- function(mat, n_items, shuffle_unranked, random) {
     return(create_ranking(rev(g_final)))
   } else {
     ret <- all_topological_sorts(mat, n_items)
-    ret[sample(nrow(ret), 1), ]
+    create_ranking(ret[sample(nrow(ret), 1), ])
   }
 }
