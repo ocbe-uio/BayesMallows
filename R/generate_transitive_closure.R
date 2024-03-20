@@ -19,7 +19,7 @@ generate_transitive_closure <- function(preferences, cl = NULL) {
   prefs <- lapplyfun(seq_along(prefs), function(i) {
     cbind(
       assessor = as.numeric(names(prefs)[[i]]),
-      .generate_transitive_closure(as.matrix(prefs[[i]]))
+      .generate_transitive_closure(prefs[[i]])
     )
   })
 
