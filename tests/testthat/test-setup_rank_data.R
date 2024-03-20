@@ -57,8 +57,8 @@ test_that("setup_rank_data works with rankings", {
 
 test_that("setup_rank_data works for preferences", {
   expect_error(
-    setup_rank_data(preferences = beach_preferences, random = TRUE),
-    "Number of items exceeds the limit"
+    setup_rank_data(preferences = beach_preferences, max_topological_sorts = -1),
+    "max_topological_sorts must be a strictly positive number of length one"
   )
 
   rr <- matrix(rep(1:3, 2), byrow = TRUE, ncol = 3)
@@ -94,12 +94,10 @@ test_that("setup_rank_data works for preferences", {
     bottom_item <= 3 & top_item <= 3
   )
 
-  dat1 <- setup_rank_data(preferences = prefdat, random = TRUE)
-  expect_error(
-    setup_rank_data(preferences = prefdat, random = TRUE, random_limit = 1),
-    "Number of items exceeds"
+  dat1 <- setup_rank_data(
+    preferences = prefdat, max_topological_sorts = 20, n_items = 3
   )
-  dat2 <- setup_rank_data(preferences = prefdat, random = TRUE)
+  dat2 <- setup_rank_data(preferences = prefdat, max_topological_sorts = 1, n_items = 3)
 
   expect_false(all(dat1$rankings == dat2$rankings))
   expect_equal(dim(dat1$rankings), dim(dat2$rankings))

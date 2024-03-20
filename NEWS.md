@@ -1,5 +1,11 @@
 # BayesMallows (development versions)
 
+* Arguments random and random_limit to setup_rank_data() have been removed. A 
+  new argument max_topological_sorts has been added instead, which captures all 
+  previous use cases, but also allows the user to specify the number of 
+  topological sorts to generate. This makes it useful also with a relatively 
+  large number of items, while it previously would be computationally unfeasible
+  for anything more than 8-9 items.
 * Argument shuffle_unranked to setup_rank_data() has been removed. If there are 
   unranked items they will now always be shuffled. For reproducibility, set the
   random number seed.
