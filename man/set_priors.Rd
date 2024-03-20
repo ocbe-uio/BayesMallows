@@ -48,6 +48,7 @@ Other preprocessing:
 \code{\link{set_compute_options}()},
 \code{\link{set_initial_values}()},
 \code{\link{set_model_options}()},
+\code{\link{set_progress_report}()},
 \code{\link{set_smc_options}()},
 \code{\link{setup_rank_data}()}
 }

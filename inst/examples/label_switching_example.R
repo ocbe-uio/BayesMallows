@@ -14,15 +14,13 @@
   system.time(m <- compute_mallows(
     setup_rank_data(rankings = sushi_rankings),
     model_options = set_model_options(n_clusters = 3),
-    compute_options = set_compute_options(nmc = 500, save_ind_clus = FALSE),
-    verbose = TRUE))
+    compute_options = set_compute_options(nmc = 500, save_ind_clus = FALSE)))
   # With this options, compute_mallows will save cluster_probs2.csv,
   # cluster_probs3.csv, ..., cluster_probs[nmc].csv.
   system.time(m <- compute_mallows(
     setup_rank_data(rankings = sushi_rankings),
     model_options = set_model_options(n_clusters = 3),
-    compute_options = set_compute_options(nmc = 500, save_ind_clus = TRUE),
-    verbose = TRUE))
+    compute_options = set_compute_options(nmc = 500, save_ind_clus = TRUE)))
 
   # Next, we check convergence of alpha
   assess_convergence(m)

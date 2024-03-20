@@ -12,7 +12,7 @@ compute_mallows_mixtures(
   priors = set_priors(),
   initial_values = set_initial_values(),
   pfun_estimate = NULL,
-  verbose = FALSE,
+  progress_report = set_progress_report(),
   cl = NULL
 )
 }
@@ -39,9 +39,8 @@ Defaults to \code{NULL}, and will only be used for footrule, Spearman, or
 Ulam distances when the cardinalities are not available, cf.
 \code{\link[=get_cardinalities]{get_cardinalities()}}.}
 
-\item{verbose}{Logical specifying whether to print out the progress of the
-Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
-every 1000th iteration. Defaults to \code{FALSE}.}
+\item{progress_report}{An object of class "BayesMallowsProgressReported"
+returned from \code{\link[=set_progress_report]{set_progress_report()}}.}
 
 \item{cl}{Optional cluster returned from \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. If
 provided, chains will be run in parallel, one on each node of \code{cl}.}

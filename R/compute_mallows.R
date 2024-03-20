@@ -14,8 +14,8 @@
 #'   is the latent consensus ranking, \eqn{Z_{n}(\alpha)} is the partition
 #'   function (normalizing constant), and \eqn{d(r,\rho)} is a distance function
 #'   measuring the distance between \eqn{r} and \eqn{\rho}. We refer to
-#'   \insertCite{vitelli2018;textual}{BayesMallows} for further details of the Bayesian
-#'   Mallows model.
+#'   \insertCite{vitelli2018;textual}{BayesMallows} for further details of the
+#'   Bayesian Mallows model.
 #'
 #'   `compute_mallows` always returns posterior distributions of the latent
 #'   consensus ranking \eqn{\rho} and the scale parameter \eqn{\alpha}. Several
@@ -44,9 +44,8 @@
 #'   Ulam distances when the cardinalities are not available, cf.
 #'   [get_cardinalities()].
 #'
-#' @param verbose Logical specifying whether to print out the progress of the
-#'   Metropolis-Hastings algorithm. If `TRUE`, a notification is printed
-#'   every 1000th iteration. Defaults to `FALSE`.
+#' @param progress_report An object of class "BayesMallowsProgressReported"
+#'   returned from [set_progress_report()].
 #'
 #' @param cl Optional cluster returned from [parallel::makeCluster()]. If
 #'   provided, chains will be run in parallel, one on each node of `cl`.
@@ -70,7 +69,7 @@ compute_mallows <- function(
     priors = set_priors(),
     initial_values = set_initial_values(),
     pfun_estimate = NULL,
-    verbose = FALSE,
+    progress_report = set_progress_report(),
     cl = NULL) {
   validate_class(data, "BayesMallowsData")
   validate_class(model_options, "BayesMallowsModelOptions")
@@ -92,7 +91,7 @@ compute_mallows <- function(
   } else {
     lapplyfun <- prepare_cluster(cl, c(
       "data", "model_options", "compute_options", "priors", "initial_values",
-      "pfun_values", "pfun_estimate", "verbose"
+      "pfun_values", "pfun_estimate", "progress_report"
     ))
     chain_seq <- seq_along(cl)
   }
@@ -109,7 +108,7 @@ compute_mallows <- function(
       initial_values = initial_values,
       pfun_values = pfun_values,
       pfun_estimate = pfun_estimate,
-      verbose = verbose
+      progress_report = progress_report
     )
   })
 

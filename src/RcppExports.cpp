@@ -125,8 +125,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_mcmc
-Rcpp::List run_mcmc(Rcpp::List data, Rcpp::List model_options, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List initial_values, Rcpp::Nullable<arma::mat> pfun_values, Rcpp::Nullable<arma::mat> pfun_estimate, bool verbose);
-RcppExport SEXP _BayesMallows_run_mcmc(SEXP dataSEXP, SEXP model_optionsSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP initial_valuesSEXP, SEXP pfun_valuesSEXP, SEXP pfun_estimateSEXP, SEXP verboseSEXP) {
+Rcpp::List run_mcmc(Rcpp::List data, Rcpp::List model_options, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List initial_values, Rcpp::Nullable<arma::mat> pfun_values, Rcpp::Nullable<arma::mat> pfun_estimate, Rcpp::List progress_report);
+RcppExport SEXP _BayesMallows_run_mcmc(SEXP dataSEXP, SEXP model_optionsSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP initial_valuesSEXP, SEXP pfun_valuesSEXP, SEXP pfun_estimateSEXP, SEXP progress_reportSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -137,8 +137,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::List >::type initial_values(initial_valuesSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::mat> >::type pfun_values(pfun_valuesSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::mat> >::type pfun_estimate(pfun_estimateSEXP);
-    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_mcmc(data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, verbose));
+    Rcpp::traits::input_parameter< Rcpp::List >::type progress_report(progress_reportSEXP);
+    rcpp_result_gen = Rcpp::wrap(run_mcmc(data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, progress_report));
     return rcpp_result_gen;
 END_RCPP
 }

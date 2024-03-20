@@ -31,7 +31,7 @@ compute_mallows_mixtures <- function(
     priors = set_priors(),
     initial_values = set_initial_values(),
     pfun_estimate = NULL,
-    verbose = FALSE,
+    progress_report = set_progress_report(),
     cl = NULL) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
 
@@ -40,15 +40,16 @@ compute_mallows_mixtures <- function(
   } else {
     lapplyfun <- prepare_cluster(cl, c(
       "data", "model_options", "compute_options", "priors", "initial_values",
-      "pfun_estimate", "verbose"
+      "pfun_estimate", "progress_report"
     ))
   }
 
   models <- lapplyfun(n_clusters, function(x) {
     model_options$n_clusters <- x
     compute_mallows(
-      data = data, model_options = model_options, compute_options = compute_options,
-      priors = priors, initial_values = initial_values, verbose = verbose
+      data = data, model_options = model_options,
+      compute_options = compute_options, priors = priors,
+      initial_values = initial_values, progress_report = progress_report
     )
   })
 

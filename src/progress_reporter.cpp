@@ -2,8 +2,9 @@
 #include <cstddef>
 #include "progress_reporter.h"
 
-ProgressReporter::ProgressReporter(bool verbose, size_t interval) :
-  verbose { verbose }, interval { interval } {}
+ProgressReporter::ProgressReporter(const Rcpp::List& progress_report) :
+  verbose { progress_report["verbose"] },
+  interval { progress_report["report_interval"] } {}
 
 void ProgressReporter::report(size_t t) {
   if (t % interval == 0) {

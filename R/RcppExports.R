@@ -72,8 +72,8 @@ rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, 
     .Call(`_BayesMallows_rmallows`, rho0, alpha0, n_samples, burnin, thinning, leap_size, metric)
 }
 
-run_mcmc <- function(data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, verbose = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, verbose)
+run_mcmc <- function(data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, progress_report) {
+    .Call(`_BayesMallows_run_mcmc`, data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, progress_report)
 }
 
 run_smc <- function(data, new_data, model_options, smc_options, compute_options, priors, initial_values, pfun_values, pfun_estimate) {
