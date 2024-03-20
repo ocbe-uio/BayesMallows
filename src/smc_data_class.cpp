@@ -46,6 +46,7 @@ void SMCData::update(
 
   for(auto index : updated_indices) {
     rankings.col(updated_match[index]) = new_dat.rankings.col(updated_new[index]);
+    missing_indicator.col(updated_match[index]) = new_dat.missing_indicator.col(updated_new[index]);
     if(augpair) {
       items_above[updated_match[index]] = new_dat.items_above[updated_new[index]];
       items_below[updated_match[index]] = new_dat.items_below[updated_new[index]];

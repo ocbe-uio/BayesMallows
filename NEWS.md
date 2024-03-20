@@ -1,5 +1,7 @@
 # BayesMallows (development versions)
 
+* Fixed a bug which caused inconsistent partial rank data to be retained from
+  previous timepoints when existing users update their preferences.
 * Arguments random and random_limit to setup_rank_data() have been removed. A 
   new argument max_topological_sorts has been added instead, which captures all 
   previous use cases, but also allows the user to specify the number of 

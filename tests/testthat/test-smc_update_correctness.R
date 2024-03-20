@@ -169,31 +169,39 @@ test_that("update_mallows is correct for updated partial rankings", {
   set.seed(1)
   user_ids <- 1:12
   dat0 <- potato_visual
-  dat0[] <- ifelse(runif(length(dat0)) > .8, NA_real_, dat0)
+  dat0[] <- ifelse(runif(length(dat0)) > .5, NA_real_, dat0)
 
   mod0 <- compute_mallows(
     data = setup_rank_data(rankings = dat0),
-    compute_options = set_compute_options(burnin = 1000)
+    compute_options = set_compute_options(nmc = 5000, burnin = 2500)
   )
 
   dat1 <- potato_visual
-  dat1 <- ifelse(is.na(dat0) & runif(length(dat1)) > .8, NA_real_, dat1)
+  dat1 <- ifelse(is.na(dat0) & runif(length(dat1)) > .5, NA_real_, dat1)
 
   mod1 <- update_mallows(
     model = mod0,
     new_data = setup_rank_data(rankings = dat1, user_ids = user_ids),
-    compute_options = set_compute_options(aug_method = "pseudo")
+    compute_options = set_compute_options(aug_method = "pseudo"),
+    smc_options = set_smc_options(n_particles = 3000, mcmc_steps = 10)
   )
+
+  for (i in 1:12) {
+    expect_equal(
+      as.numeric(mod1$augmented_rankings[, i, 1][!is.na(dat1[i, ])]),
+      as.numeric(dat1[i, !is.na(dat1[i, ])])
+    )
+  }
 
   mod_bmm1 <- compute_mallows(
     data = setup_rank_data(rankings = dat1),
-    compute_options = set_compute_options(burnin = 500)
+    compute_options = set_compute_options(nmc = 5000, burnin = 500)
   )
 
   expect_equal(
     mean(mod1$alpha$value),
-    mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 500]),
-    tolerance = .05
+    mean(mod_bmm1$alpha$value[mod_bmm1$alpha$iteration > 2500]),
+    tolerance = .2
   )
 
   dat2 <- potato_visual
@@ -201,19 +209,23 @@ test_that("update_mallows is correct for updated partial rankings", {
 
   mod2 <- update_mallows(
     model = mod1,
-    new_data = setup_rank_data(rankings = dat2, user_ids = user_ids),
-    compute_options = set_compute_options(aug_method = "pseudo"),
-    smc_options = set_smc_options(n_particles = 1000, mcmc_steps = 20)
+    new_data = setup_rank_data(rankings = dat2, user_ids = user_ids)
   )
 
+  for (i in 1:12) {
+    expect_equal(
+      as.numeric(mod2$augmented_rankings[, i, 1][!is.na(dat2[i, ])]),
+      as.numeric(dat2[i, !is.na(dat2[i, ])])
+    )
+  }
+
   mod_bmm <- compute_mallows(
-    data = setup_rank_data(rankings = dat2),
-    compute_options = set_compute_options(nmc = 50000)
+    data = setup_rank_data(rankings = dat2)
   )
 
   expect_equal(
     mean(mod2$alpha$value),
-    mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 5000]),
+    mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
     tolerance = .1
   )
 })

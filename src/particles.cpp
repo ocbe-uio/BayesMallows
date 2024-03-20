@@ -81,9 +81,12 @@ std::vector<Particle> augment_particles(
         vec to_compare = dat.rankings.col(index);
         uvec comparison_inds = find(to_compare > 0);
         vec augmented = pvec[i].augmented_data(span::all, span(index));
-
-        pvec[i].consistent(index) =
-          all(to_compare(comparison_inds) == augmented(comparison_inds));
+        bool check = all(to_compare(comparison_inds) == augmented(comparison_inds));
+        pvec[i].consistent(index) = check;
+        if(!check) {
+          pvec[i].augmented_data.col(index) =
+            initialize_missing_ranks_vec(to_compare, dat.missing_indicator.col(index));
+        }
       }
 
       if(dat.num_new_obs > 0) {

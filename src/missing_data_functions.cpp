@@ -6,20 +6,24 @@
 
 using namespace arma;
 
+vec initialize_missing_ranks_vec(vec rankings, const uvec& missing_indicator) {
+  vec present_ranks = rankings(find(missing_indicator == 0));
+  uvec missing_inds = find(missing_indicator == 1);
+  vec a = setdiff(
+    regspace<vec>(1, rankings.n_elem), present_ranks);
+
+  ivec inds = Rcpp::sample(a.size(), a.size()) - 1;
+  vec new_ranks = a.elem(conv_to<uvec>::from(inds));
+  rankings(missing_inds) = new_ranks;
+  return rankings;
+}
+
 mat initialize_missing_ranks(mat rankings, const umat& missing_indicator) {
   int n_assessors = rankings.n_cols;
 
   for(int i = 0; i < n_assessors; ++i){
-    vec rank_vector = rankings.col(i);
-    vec present_ranks = rank_vector(find(missing_indicator.col(i) == 0));
-    uvec missing_inds = find(missing_indicator.col(i) == 1);
-    vec a = setdiff(
-      regspace<vec>(1, rank_vector.n_elem), present_ranks);
-
-    ivec inds = Rcpp::sample(a.size(), a.size()) - 1;
-    vec new_ranks = a.elem(conv_to<uvec>::from(inds));
-    rank_vector(missing_inds) = new_ranks;
-    rankings.col(i) = rank_vector;
+    rankings.col(i) = initialize_missing_ranks_vec(
+      rankings.col(i), missing_indicator.col(i));
   }
   return rankings;
 }
