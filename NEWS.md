@@ -1,5 +1,11 @@
 # BayesMallows (development versions)
 
+* It is now possible to report progress of MCMC more flexibly using 
+  compute_mallows() or compute_mallows_mixtures(). The old argument "verbose"
+  which by default reported every 1000'th iteration has been replaced by an
+  argument "progress_report" which can be set by calling set_progress_report().
+  The latter allows setting the interval between reports. This is particularly
+  useful for big data, where running 1000 iterations may take very long time.
 * Fixed a bug which caused inconsistent partial rank data to be retained from
   previous timepoints when existing users update their preferences.
 * Arguments random and random_limit to setup_rank_data() have been removed. A 
