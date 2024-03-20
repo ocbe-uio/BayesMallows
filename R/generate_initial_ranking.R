@@ -6,14 +6,13 @@ splitpref <- function(preferences) {
 }
 
 generate_initial_ranking <- function(
-    preferences, n_items, cl = NULL, shuffle_unranked = FALSE,
-    random = FALSE, random_limit = 8L) {
+    preferences, n_items, cl = NULL, random = FALSE, random_limit = 8L) {
   UseMethod("generate_initial_ranking")
 }
 
 #' @export
 generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
-    preferences, n_items, cl = NULL, shuffle_unranked = FALSE, random = FALSE,
+    preferences, n_items, cl = NULL, random = FALSE,
     random_limit = 8L) {
   stopifnot(is.null(cl) || inherits(cl, "cluster"))
   if (n_items > random_limit && random) {
@@ -27,21 +26,21 @@ generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
 
   if (is.null(cl)) {
     do.call(rbind, lapply(
-      prefs, function(x, y, sr, r) create_ranks(x, y, sr, r),
-      n_items, shuffle_unranked, random
+      prefs, function(x, y, r) create_ranks(x, y, r),
+      n_items, random
     ))
   } else {
     do.call(rbind, parallel::parLapply(
       cl = cl, X = prefs,
-      fun = function(x, y, sr, r) create_ranks(x, y, sr, r),
-      n_items, shuffle_unranked, random
+      fun = function(x, y, r) create_ranks(x, y, r),
+      n_items, random
     ))
   }
 }
 
 #' @export
 generate_initial_ranking.BayesMallowsIntransitive <- function(
-    preferences, n_items, cl = NULL, shuffle_unranked = FALSE,
+    preferences, n_items, cl = NULL,
     random = FALSE, random_limit = 8L) {
   n_assessors <- length(unique(preferences$assessor))
   rankings <- replicate(n_assessors, sample(x = n_items, size = n_items),
@@ -50,25 +49,19 @@ generate_initial_ranking.BayesMallowsIntransitive <- function(
   rankings <- matrix(rankings, ncol = n_items, nrow = n_assessors, byrow = TRUE)
 }
 
-create_ranks <- function(mat, n_items, shuffle_unranked, random) {
+create_ranks <- function(mat, n_items, random) {
   if (!random) {
     g <- igraph::graph_from_edgelist(mat)
     g <- as.integer(igraph::topo_sort(g))
 
     all_items <- seq(from = 1, to = n_items, by = 1)
-
-    if (!shuffle_unranked) {
-      # Add unranked elements outside of the range at the end
-      g_final <- c(g, setdiff(all_items, g))
-    } else {
-      ranked_items <- unique(c(mat))
-      unranked_items <- setdiff(all_items, ranked_items)
-      # Indices of ranked elements in final vector
-      idx_ranked <- sort(sample(length(all_items), length(ranked_items)))
-      g_final <- rep(NA, n_items)
-      g_final[idx_ranked] <- g[g %in% ranked_items]
-      g_final[is.na(g_final)] <- unranked_items[sample(length(unranked_items))]
-    }
+    ranked_items <- unique(c(mat))
+    unranked_items <- setdiff(all_items, ranked_items)
+    # Indices of ranked elements in final vector
+    idx_ranked <- sort(sample(length(all_items), length(ranked_items)))
+    g_final <- rep(NA, n_items)
+    g_final[idx_ranked] <- g[g %in% ranked_items]
+    g_final[is.na(g_final)] <- unranked_items[sample(length(unranked_items))]
 
     # Convert from ordering to ranking
     return(create_ranking(rev(g_final)))

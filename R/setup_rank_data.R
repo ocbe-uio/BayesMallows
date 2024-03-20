@@ -66,12 +66,6 @@
 #'   transitive closure based on preferences, returned from
 #'   [parallel::makeCluster()]. Defaults to `NULL`.
 #'
-#' @param shuffle_unranked Logical specifying whether or not to randomly permute
-#'   unranked items in the initial ranking. When `shuffle_unranked=TRUE` and
-#'   `random=FALSE`, all unranked items for each assessor are randomly permuted.
-#'   Otherwise, the first ordering returned by `igraph::topo_sort()` is
-#'   returned.
-#'
 #' @param random Logical specifying whether or not to use a random initial
 #'   ranking. Defaults to `FALSE`. Setting this to `TRUE` means that all
 #'   possible orderings consistent with the stated pairwise preferences are
@@ -140,7 +134,6 @@ setup_rank_data <- function(
     validate_rankings = TRUE,
     na_action = c("augment", "fail", "omit"),
     cl = NULL,
-    shuffle_unranked = FALSE,
     random = FALSE,
     random_limit = 8L,
     timepoint = NULL,
@@ -177,7 +170,7 @@ setup_rank_data <- function(
   } else {
     if (is.null(n_items)) n_items <- max(preferences[, c("bottom_item", "top_item")])
     rankings <- generate_initial_ranking(
-      preferences, n_items, cl, shuffle_unranked, random, random_limit
+      preferences, n_items, cl, random, random_limit
     )
   }
 

@@ -80,14 +80,10 @@ test_that("setup_rank_data works for preferences", {
 
   set.seed(1)
   prefdat <- subset(beach_preferences, assessor <= 3)
-  dat <- setup_rank_data(
-    preferences = prefdat, shuffle_unranked = TRUE
-  )
+  dat <- setup_rank_data(preferences = prefdat)
   expect_equal(dim(dat$rankings), c(3, 15))
   expect_equal(sum(is.na(dat$rankings)), 0)
-  dat2 <- setup_rank_data(
-    preferences = prefdat, shuffle_unranked = TRUE
-  )
+  dat2 <- setup_rank_data(preferences = prefdat)
   expect_false(
     all(dat2$rankings == dat$rankings)
   )
@@ -103,10 +99,7 @@ test_that("setup_rank_data works for preferences", {
     setup_rank_data(preferences = prefdat, random = TRUE, random_limit = 1),
     "Number of items exceeds"
   )
-  dat2 <- setup_rank_data(
-    preferences = prefdat, random = TRUE,
-    shuffle_unranked = TRUE
-  )
+  dat2 <- setup_rank_data(preferences = prefdat, random = TRUE)
 
   expect_false(all(dat1$rankings == dat2$rankings))
   expect_equal(dim(dat1$rankings), dim(dat2$rankings))

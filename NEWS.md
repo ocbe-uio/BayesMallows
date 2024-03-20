@@ -1,5 +1,8 @@
 # BayesMallows (development versions)
 
+* Argument shuffle_unranked to setup_rank_data() has been removed. If there are 
+  unranked items they will now always be shuffled. For reproducibility, set the
+  random number seed.
 * SMC Mallows with pairwise preference data now allows different initially
   values for the augmented rankings across the particles. This is obtained by
   generating (a subset of) all topological sorts consistent with the transitive

@@ -12,7 +12,6 @@ setup_rank_data(
   validate_rankings = TRUE,
   na_action = c("augment", "fail", "omit"),
   cl = NULL,
-  shuffle_unranked = FALSE,
   random = FALSE,
   random_limit = 8L,
   timepoint = NULL,
@@ -83,12 +82,6 @@ deletes rows with \code{NA}s in them.}
 \item{cl}{Optional computing cluster used for parallelization when generating
 transitive closure based on preferences, returned from
 \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}.}
-
-\item{shuffle_unranked}{Logical specifying whether or not to randomly permute
-unranked items in the initial ranking. When \code{shuffle_unranked=TRUE} and
-\code{random=FALSE}, all unranked items for each assessor are randomly permuted.
-Otherwise, the first ordering returned by \code{igraph::topo_sort()} is
-returned.}
 
 \item{random}{Logical specifying whether or not to use a random initial
 ranking. Defaults to \code{FALSE}. Setting this to \code{TRUE} means that all
