@@ -51,7 +51,6 @@ Depends: R (>= 3.5.0)
 Imports: Rcpp (>= 1.0.0),
   ggplot2 (>= 3.1.0),
   Rdpack (>= 1.0),
-  igraph (>= 1.2.5),
   sets (>= 1.0-18),
   relations (>= 0.6-8),
   rlang (>= 0.3.1)

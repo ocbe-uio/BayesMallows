@@ -71,16 +71,18 @@ std::vector<Particle> augment_particles(
   for(size_t i{}; i < pvec.size(); i++) {
     pvec[i].alpha_acceptance = 0;
     pvec[i].rho_acceptance = 0;
-    uvec particle_consistent;
-    if(dat.any_missing) {
-      particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
 
+    if(dat.any_missing || dat.augpair) {
+      pvec[i].consistent = ones<uvec>(dat.n_assessors - dat.num_new_obs);
+    }
+
+    if(dat.any_missing) {
       for(auto index : dat.updated_match) {
         vec to_compare = dat.rankings.col(index);
         uvec comparison_inds = find(to_compare > 0);
         vec augmented = pvec[i].augmented_data(span::all, span(index));
 
-        particle_consistent(index) =
+        pvec[i].consistent(index) =
           all(to_compare(comparison_inds) == augmented(comparison_inds));
       }
 
@@ -99,9 +101,8 @@ std::vector<Particle> augment_particles(
         pvec[i].log_aug_prob.resize(dat.rankings.n_cols);
       }
     } else if (dat.augpair) {
-      particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
       for(auto index : dat.updated_match) {
-        particle_consistent(index) = 0;
+        pvec[i].consistent(index) = 0;
       }
 
       pvec[i].augmented_data.resize(dat.n_items, dat.rankings.n_cols);

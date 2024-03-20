@@ -33,8 +33,7 @@ generate_initial_ranking.BayesMallowsTransitiveClosure <- function(
 
 #' @export
 generate_initial_ranking.BayesMallowsIntransitive <- function(
-    preferences, n_items, cl = NULL,
-    random = FALSE, random_limit = 8L) {
+    preferences, n_items, cl = NULL, max_topological_sorts) {
   n_assessors <- length(unique(preferences$assessor))
   rankings <- replicate(n_assessors, sample(x = n_items, size = n_items),
     simplify = "numeric"
