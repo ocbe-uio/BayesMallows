@@ -1,5 +1,7 @@
 # BayesMallows (development versions)
 
+* Fixed a bug in SMC algorithm for pairwise preference data, where the proposal
+  distribution incorrectly was assumed to be uniform.
 * It is now possible to report progress of MCMC more flexibly using 
   compute_mallows() or compute_mallows_mixtures(). The old argument "verbose"
   which by default reported every 1000'th iteration has been replaced by an

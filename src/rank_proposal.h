@@ -4,12 +4,10 @@
 #include "distances.h"
 
 struct RankProposal{
-  RankProposal() {};
-  RankProposal(const arma::vec& rankings) : rankings { rankings } {}
   RankProposal(
-    const arma::vec& rankings,
-    double prob_forward, double prob_backward,
-    const arma::uvec& mutated_items) :
+    const arma::vec& rankings = arma::vec{},
+    double prob_forward = 1, double prob_backward = 1,
+    const arma::uvec& mutated_items = arma::uvec{}) :
     rankings { rankings }, prob_forward { prob_forward },
     prob_backward { prob_backward }, mutated_items { mutated_items } {}
   ~RankProposal() = default;

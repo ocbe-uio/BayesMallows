@@ -21,8 +21,8 @@ test_that("update_mallows works with pairwise preferences", {
     )
   }
 
-  expect_equal(mean(mod$alpha_samples), 4.00989802568879)
-  expect_equal(sd(mod$alpha_samples), 0.886628762151786)
+  expect_equal(mean(mod$alpha_samples), 3.99645235790935)
+  expect_equal(sd(mod$alpha_samples), 0.872720087078698)
 
   mod <- mod_init
   for (i in 23:24) {
@@ -36,6 +36,6 @@ test_that("update_mallows works with pairwise preferences", {
     )
   }
 
-  expect_equal(mean(mod$alpha_samples), 2.90231911632982)
-  expect_equal(sd(mod$alpha_samples), 0.632204306028645)
+  expect_equal(mean(mod$alpha_samples), 3.03458072249661)
+  expect_equal(sd(mod$alpha_samples), 0.670792690537946)
 })
