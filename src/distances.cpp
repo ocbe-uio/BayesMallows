@@ -114,7 +114,7 @@ double SpearmanDistance::d(const vec& r1, const vec& r2, const uvec& inds) {
 }
 
 // Rewritten from https://www.geeksforgeeks.org/c-program-for-longest-increasing-subsequence/
-int longest_increasing_subsequence(const vec& permutation) {
+double longest_increasing_subsequence(const vec& permutation) {
   int n = permutation.n_elem;
   vec lis(n, fill::ones);
 
@@ -125,15 +125,7 @@ int longest_increasing_subsequence(const vec& permutation) {
       }
     }
   }
-
-  int max = 0;
-  for (int i = 0; i < n; i++) {
-    if (max < lis(i)) {
-      max = lis(i);
-    }
-  }
-
-  return max;
+  return max(lis);
 }
 
 
