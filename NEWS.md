@@ -1,5 +1,7 @@
 # BayesMallows (development versions)
 
+* Fixed a bug in the Ulam distance. Thanks for Marta Crispino for discovering 
+  it.
 * Fixed a bug in SMC algorithm for pairwise preference data, where the proposal
   distribution incorrectly was assumed to be uniform.
 * It is now possible to report progress of MCMC more flexibly using 
