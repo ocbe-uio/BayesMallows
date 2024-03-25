@@ -87,8 +87,8 @@ test_that("distances are right-invariant", {
   metrics <- c("footrule", "spearman", "kendall", "cayley", "hamming", "ulam")
   names(expectations <- metrics)
 
-  for(metric in metrics) {
-    r1 <- compute_rank_distance(rho1, rho2, metric = metric);
+  for (metric in metrics) {
+    r1 <- compute_rank_distance(rho1, rho2, metric = metric)
     r2 <- compute_rank_distance(rho1[eta], rho2[eta], metric = metric)
     expect_equal(r1, r2)
   }
