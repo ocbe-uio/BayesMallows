@@ -1,5 +1,8 @@
 # BayesMallows (development versions)
 
+* A function compute_exact_partition_function() is now added, which returns the
+  logarithm of the exact partition function for Cayley, Hamming, and Kendall
+  distance.
 * Fixed a bug in the Ulam distance. Thanks for Marta Crispino for discovering 
   it.
 * Fixed a bug in SMC algorithm for pairwise preference data, where the proposal

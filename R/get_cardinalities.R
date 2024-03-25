@@ -3,7 +3,7 @@
 #' @description The partition function for the Mallows model can be defined in a
 #'   computationally efficient manner as
 #'   \deqn{Z_{n}(\alpha) = \sum_{d_{n} \in
-#'   \mathcal{D}_{n}} N_{m,n} e^{-(\alpha/n) d_{m}}}.
+#'   \mathcal{D}_{n}} N_{m,n} e^{-(\alpha/n) d_{m}}.}
 #'   In this equation, \eqn{\mathcal{D}_{n}} a set containing all possible
 #'   distances at the given number of items, and \eqn{d_{m}} is on element of
 #'   this set. Finally, \eqn{N_{m,n}} is the number of possible configurations

@@ -54,7 +54,7 @@ can be computed efficiently for Cayley, Hamming and Kendall distances with
 any number of items, for footrule distances with up to 50 items, Spearman
 distance with up to 20 items, and Ulam distance with up to 60 items. This
 function is thus intended for the complement of these cases. See
-\code{\link[=get_cardinalities]{get_cardinalities()}} for details.
+\code{\link[=get_cardinalities]{get_cardinalities()}} and \code{\link[=compute_exact_partition_function]{compute_exact_partition_function()}} for details.
 }
 \examples{
 # IMPORTANCE SAMPLING
@@ -116,6 +116,7 @@ model_fit <- compute_mallows(
 }
 \seealso{
 Other partition function: 
+\code{\link{compute_exact_partition_function}()},
 \code{\link{get_cardinalities}()}
 }
 \concept{partition function}
