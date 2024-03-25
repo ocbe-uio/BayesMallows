@@ -1,5 +1,7 @@
 # BayesMallows (development versions)
 
+* The SMC function now check for consistency with previous latent ranks for 
+  existing users also when data arrive in the form of pairwise preferences.
 * A function compute_exact_partition_function() is now added, which returns the
   logarithm of the exact partition function for Cayley, Hamming, and Kendall
   distance.

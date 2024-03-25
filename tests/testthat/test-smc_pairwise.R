@@ -76,7 +76,7 @@ test_that("update_mallows works with existing users updating their data", {
 
   expect_equal(
     mean(m2$alpha_samples),
-    2.82143649083478
+    2.79625839950885
   )
 
   expect_equal(
