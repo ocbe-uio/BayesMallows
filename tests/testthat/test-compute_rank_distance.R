@@ -77,3 +77,19 @@ test_that("compute_rank_distance works", {
     ), c(6, 3)
   )
 })
+
+test_that("distances are right-invariant", {
+  n_items <- 10
+  rho1 <- sample(n_items)
+  rho2 <- sample(n_items)
+  eta <- sample(n_items)
+
+  metrics <- c("footrule", "spearman", "kendall", "cayley", "hamming", "ulam")
+  names(expectations <- metrics)
+
+  for (metric in metrics) {
+    r1 <- compute_rank_distance(rho1, rho2, metric = metric)
+    r2 <- compute_rank_distance(rho1[eta], rho2[eta], metric = metric)
+    expect_equal(r1, r2)
+  }
+})
