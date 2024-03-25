@@ -105,7 +105,20 @@ std::vector<Particle> augment_particles(
       }
     } else if (dat.augpair) {
       for(auto index : dat.updated_match) {
-        pvec[i].consistent(index) = 0;
+        pvec[i].consistent(index) = 1;
+        vec augmented = pvec[i].augmented_data(span::all, span(index));
+        auto items_above_for_user = dat.items_above[index];
+        size_t j{};
+        while(pvec[i].consistent(index) == 1 && j < items_above_for_user.size()) {
+          size_t k{};
+          while(pvec[i].consistent(index) == 1 && k < items_above_for_user[j].size()) {
+            if(augmented(items_above_for_user[j][k] - 1) > augmented(j)) {
+              pvec[i].consistent(index) = 0;
+            }
+            k++;
+          }
+          j++;
+        }
       }
 
       pvec[i].augmented_data.resize(dat.n_items, dat.rankings.n_cols);
