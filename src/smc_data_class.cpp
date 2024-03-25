@@ -46,7 +46,7 @@ void SMCData::update(
 
   for(auto index : updated_indices) {
     rankings.col(updated_match[index]) = new_dat.rankings.col(updated_new[index]);
-    missing_indicator.col(updated_match[index]) = new_dat.missing_indicator.col(updated_new[index]);
+
     if(augpair) {
       items_above[updated_match[index]] = new_dat.items_above[updated_new[index]];
       items_below[updated_match[index]] = new_dat.items_below[updated_new[index]];
@@ -54,6 +54,9 @@ void SMCData::update(
       preferences = preferences.rows(indices_to_keep);
       uvec indices_to_add = find(new_dat.preferences.col(0) == updated_users[index]);
       preferences = join_cols(preferences, new_dat.preferences.rows(indices_to_add));
+    } else if(any_missing) {
+      missing_indicator.col(updated_match[index]) =
+        new_dat.missing_indicator.col(updated_new[index]);
     }
   }
 
