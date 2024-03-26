@@ -10,7 +10,7 @@
 #' any number of items, for footrule distances with up to 50 items, Spearman
 #' distance with up to 20 items, and Ulam distance with up to 60 items. This
 #' function is thus intended for the complement of these cases. See
-#' [get_cardinalities()] for details.
+#' [get_cardinalities()] and [compute_exact_partition_function()] for details.
 #'
 #' @param method Character string specifying the method to use in order to
 #'   estimate the logarithm of the partition function. Available options are

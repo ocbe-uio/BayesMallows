@@ -1,3 +1,37 @@
+# BayesMallows (development versions)
+
+* The SMC function now check for consistency with previous latent ranks for 
+  existing users also when data arrive in the form of pairwise preferences.
+* A function compute_exact_partition_function() is now added, which returns the
+  logarithm of the exact partition function for Cayley, Hamming, and Kendall
+  distance.
+* Fixed a bug in the Ulam distance. Thanks for Marta Crispino for discovering 
+  it.
+* Fixed a bug in SMC algorithm for pairwise preference data, where the proposal
+  distribution incorrectly was assumed to be uniform.
+* It is now possible to report progress of MCMC more flexibly using 
+  compute_mallows() or compute_mallows_mixtures(). The old argument "verbose"
+  which by default reported every 1000'th iteration has been replaced by an
+  argument "progress_report" which can be set by calling set_progress_report().
+  The latter allows setting the interval between reports. This is particularly
+  useful for big data, where running 1000 iterations may take very long time.
+* Fixed a bug which caused inconsistent partial rank data to be retained from
+  previous timepoints when existing users update their preferences.
+* Arguments random and random_limit to setup_rank_data() have been removed. A 
+  new argument max_topological_sorts has been added instead, which captures all 
+  previous use cases, but also allows the user to specify the number of 
+  topological sorts to generate. This makes it useful also with a relatively 
+  large number of items, while it previously would be computationally unfeasible
+  for anything more than 8-9 items.
+* Argument shuffle_unranked to setup_rank_data() has been removed. If there are 
+  unranked items they will now always be shuffled. For reproducibility, set the
+  random number seed.
+* SMC Mallows with pairwise preference data now allows different initially
+  values for the augmented rankings across the particles. This is obtained by
+  generating (a subset of) all topological sorts consistent with the transitive
+  closure for the user, and sampling from these. Can be set with the 
+  max_topological_sorts argument to set_smc_options().
+
 # BayesMallows 2.1.1
 
 * Fixed gcc-UBSAN issue happening when compute_mallows_sequentially() is run

@@ -18,6 +18,14 @@
 #'   notation corresponds to `latent_sampling_lag`. See more under Details.
 #'   Defaults to `NA`, which means that all latent ranks from previous timesteps
 #'   are moved. If set to `0`, no move step is applied to the latent ranks.
+#' @param max_topological_sorts User when pairwise preference data are provided,
+#'   and specifies the maximum number of topological sorts of the graph
+#'   corresponding to the transitive closure for each user will be used as
+#'   initial ranks. Defaults to 1, which means that all particles get the same
+#'   initial augmented ranking. If larger than 1, the initial augmented ranking
+#'   for each particle will be sampled from a set of maximum size
+#'   `max_topological_sorts`. If the actual number of topological sorts consists
+#'   of fewer rankings, then this determines the upper limit.
 #'
 #' @return An object of class "SMCOptions".
 #'
@@ -60,7 +68,8 @@ set_smc_options <- function(
     n_particles = 1000,
     mcmc_steps = 5,
     resampler = c("stratified", "systematic", "residual", "multinomial"),
-    latent_sampling_lag = NA_integer_) {
+    latent_sampling_lag = NA_integer_,
+    max_topological_sorts = 1) {
   validate_integer(n_particles)
   validate_integer(mcmc_steps)
   if (!is.na(latent_sampling_lag)) validate_integer(latent_sampling_lag)

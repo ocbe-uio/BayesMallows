@@ -133,14 +133,17 @@ mod <- compute_mallows(
   compute_options = set_compute_options(nmc = 3000, burnin = 1000)
 )
 
-# Next we provide assessors 21 to 24 one at a time.
+# Next we provide assessors 21 to 24 one at a time. Note that we sample the
+# initial augmented rankings in each particle for each assessor from 200
+# different topological sorts consistent with their transitive closure.
 for(i in 21:24){
   mod <- update_mallows(
     model = mod,
     new_data = setup_rank_data(
       preferences = subset(beach_preferences, assessor == i),
-      user_ids = i, shuffle_unranked = TRUE),
-    smc_options = set_smc_options(latent_sampling_lag = 0)
+      user_ids = i),
+    smc_options = set_smc_options(latent_sampling_lag = 0,
+                                  max_topological_sorts = 200)
   )
 }
 

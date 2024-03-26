@@ -30,8 +30,8 @@ test_that("compute_mallows is correct for complete data", {
 test_that("compute_mallows is correct for pairwise preferences", {
   expectations <- data.frame(
     metric = c("footrule", "kendall"),
-    mean = c(4.82178, 6.628639),
-    sd = c(0.2640226, 0.4140462)
+    mean = c(4.844578, 6.622525),
+    sd = c(0.2916162, 0.4074065)
   )
 
   for (i in seq_len(nrow(expectations))) {

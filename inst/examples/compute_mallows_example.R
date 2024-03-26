@@ -40,7 +40,7 @@ beach_data <- setup_rank_data(
 model_fit <- compute_mallows(
   data = beach_data,
   compute_options = set_compute_options(save_aug = TRUE),
-  verbose = TRUE)
+  progress_report = set_progress_report(verbose = TRUE))
 # We can assess the convergence of the scale parameter
 assess_convergence(model_fit)
 # We can assess the convergence of latent rankings. Here we
@@ -70,7 +70,7 @@ subset(get_transitive_closure(beach_data), assessor %in% c(1, 2) &
     data = setup_rank_data(sushi_rankings),
     model_options = set_model_options(n_clusters = 3),
     compute_options = set_compute_options(nmc = 10000),
-    verbose = TRUE)
+    progress_report = set_progress_report(verbose = TRUE))
   # We then assess convergence of the scale parameter alpha
   assess_convergence(model_fit)
   # Next, we assess convergence of the cluster probabilities

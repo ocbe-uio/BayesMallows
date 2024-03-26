@@ -23,6 +23,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// all_topological_sorts
+arma::imat all_topological_sorts(arma::imat prefs, int n_items, int maxit);
+RcppExport SEXP _BayesMallows_all_topological_sorts(SEXP prefsSEXP, SEXP n_itemsSEXP, SEXP maxitSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::imat >::type prefs(prefsSEXP);
+    Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    rcpp_result_gen = Rcpp::wrap(all_topological_sorts(prefs, n_items, maxit));
+    return rcpp_result_gen;
+END_RCPP
+}
 // asymptotic_partition_function
 arma::vec asymptotic_partition_function(arma::vec alpha_vector, int n_items, std::string metric, int K, int n_iterations, double tol);
 RcppExport SEXP _BayesMallows_asymptotic_partition_function(SEXP alpha_vectorSEXP, SEXP n_itemsSEXP, SEXP metricSEXP, SEXP KSEXP, SEXP n_iterationsSEXP, SEXP tolSEXP) {
@@ -112,8 +125,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_mcmc
-Rcpp::List run_mcmc(Rcpp::List data, Rcpp::List model_options, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List initial_values, Rcpp::Nullable<arma::mat> pfun_values, Rcpp::Nullable<arma::mat> pfun_estimate, bool verbose);
-RcppExport SEXP _BayesMallows_run_mcmc(SEXP dataSEXP, SEXP model_optionsSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP initial_valuesSEXP, SEXP pfun_valuesSEXP, SEXP pfun_estimateSEXP, SEXP verboseSEXP) {
+Rcpp::List run_mcmc(Rcpp::List data, Rcpp::List model_options, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List initial_values, Rcpp::Nullable<arma::mat> pfun_values, Rcpp::Nullable<arma::mat> pfun_estimate, Rcpp::List progress_report);
+RcppExport SEXP _BayesMallows_run_mcmc(SEXP dataSEXP, SEXP model_optionsSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP initial_valuesSEXP, SEXP pfun_valuesSEXP, SEXP pfun_estimateSEXP, SEXP progress_reportSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -124,8 +137,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::List >::type initial_values(initial_valuesSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::mat> >::type pfun_values(pfun_valuesSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::mat> >::type pfun_estimate(pfun_estimateSEXP);
-    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_mcmc(data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, verbose));
+    Rcpp::traits::input_parameter< Rcpp::List >::type progress_report(progress_reportSEXP);
+    rcpp_result_gen = Rcpp::wrap(run_mcmc(data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, progress_report));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -151,6 +164,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_abind", (DL_FUNC) &_BayesMallows_abind, 2},
+    {"_BayesMallows_all_topological_sorts", (DL_FUNC) &_BayesMallows_all_topological_sorts, 3},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
     {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 4},

@@ -10,7 +10,8 @@ std::vector<Particle> initialize_particles(
 
 std::vector<Particle> augment_particles(
   const std::vector<Particle>& pvec,
-  const SMCData& dat
+  const SMCData& dat,
+  const SMCAugmentation& aug
 );
 
 arma::cube wrapup_rho(const std::vector<std::vector<Particle>>& particle_vectors);

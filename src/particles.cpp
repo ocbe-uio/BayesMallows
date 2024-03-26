@@ -2,6 +2,7 @@
 #include <numeric>
 #include "smc_classes.h"
 #include "missing_data.h"
+#include "all_topological_sorts.h"
 
 using namespace arma;
 
@@ -50,23 +51,42 @@ std::vector<Particle> initialize_particles(
 
 std::vector<Particle> augment_particles(
     const std::vector<Particle>& pvec_init,
-    const SMCData& dat
+    const SMCData& dat, const SMCAugmentation& aug
 ) {
   auto pvec = pvec_init;
+
+  std::vector<imat> sorts(dat.user_ids.size());
+  if(dat.augpair) {
+    for(int i{}; i < dat.n_assessors; i++) {
+      Rcpp::IntegerVector test = Rcpp::intersect(dat.updated_match, Rcpp::IntegerVector{i});
+      if(i >= (dat.n_assessors - dat.num_new_obs) || test.size() > 0) {
+        uvec indices = find(dat.preferences.col(0) == dat.user_ids[i]);
+        imat prefs = dat.preferences.rows(indices);
+        sorts[i] = all_topological_sorts(prefs.cols(1, 2), dat.n_items,
+                                         aug.max_topological_sorts);
+      }
+    }
+  }
+
   for(size_t i{}; i < pvec.size(); i++) {
     pvec[i].alpha_acceptance = 0;
     pvec[i].rho_acceptance = 0;
-    uvec particle_consistent;
-    if(dat.any_missing) {
-      particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
 
+    if(dat.any_missing || dat.augpair) {
+      pvec[i].consistent = ones<uvec>(dat.n_assessors - dat.num_new_obs);
+    }
+
+    if(dat.any_missing) {
       for(auto index : dat.updated_match) {
         vec to_compare = dat.rankings.col(index);
         uvec comparison_inds = find(to_compare > 0);
         vec augmented = pvec[i].augmented_data(span::all, span(index));
-
-        particle_consistent(index) =
-          all(to_compare(comparison_inds) == augmented(comparison_inds));
+        bool check = all(to_compare(comparison_inds) == augmented(comparison_inds));
+        pvec[i].consistent(index) = check;
+        if(!check) {
+          pvec[i].augmented_data.col(index) =
+            initialize_missing_ranks_vec(to_compare, dat.missing_indicator.col(index));
+        }
       }
 
       if(dat.num_new_obs > 0) {
@@ -84,13 +104,34 @@ std::vector<Particle> augment_particles(
         pvec[i].log_aug_prob.resize(dat.rankings.n_cols);
       }
     } else if (dat.augpair) {
-      particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
       for(auto index : dat.updated_match) {
-        particle_consistent(index) = 0;
+        pvec[i].consistent(index) = 1;
+        vec augmented = pvec[i].augmented_data(span::all, span(index));
+        auto items_above_for_user = dat.items_above[index];
+        size_t j{};
+        while(pvec[i].consistent(index) == 1 && j < items_above_for_user.size()) {
+          size_t k{};
+          while(pvec[i].consistent(index) == 1 && k < items_above_for_user[j].size()) {
+            if(augmented(items_above_for_user[j][k] - 1) > augmented(j)) {
+              pvec[i].consistent(index) = 0;
+            }
+            k++;
+          }
+          j++;
+        }
       }
 
       pvec[i].augmented_data.resize(dat.n_items, dat.rankings.n_cols);
-      pvec[i].augmented_data = dat.rankings;
+
+      for(int j{}; j < dat.n_assessors; j++) {
+        Rcpp::IntegerVector test = Rcpp::intersect(dat.updated_match, Rcpp::IntegerVector{j});
+        if(j >= (dat.n_assessors - dat.num_new_obs) || test.size() > 0) {
+          Rcpp::IntegerVector v = Rcpp::sample(sorts[j].n_rows, 1, false, R_NilValue, false);
+          ivec ordering = sorts[j].row(v[0]).t();
+          uvec rank = sort_index(ordering) + 1;
+          pvec[i].augmented_data.col(j) = conv_to<vec>::from(rank);
+        }
+      }
       pvec[i].log_aug_prob.resize(dat.rankings.n_cols);
     }
   }

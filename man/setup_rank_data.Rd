@@ -12,9 +12,7 @@ setup_rank_data(
   validate_rankings = TRUE,
   na_action = c("augment", "fail", "omit"),
   cl = NULL,
-  shuffle_unranked = FALSE,
-  random = FALSE,
-  random_limit = 8L,
+  max_topological_sorts = 1,
   timepoint = NULL,
   n_items = NULL
 )
@@ -84,20 +82,15 @@ deletes rows with \code{NA}s in them.}
 transitive closure based on preferences, returned from
 \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. Defaults to \code{NULL}.}
 
-\item{shuffle_unranked}{Logical specifying whether or not to randomly permute
-unranked items in the initial ranking. When \code{shuffle_unranked=TRUE} and
-\code{random=FALSE}, all unranked items for each assessor are randomly permuted.
-Otherwise, the first ordering returned by \code{igraph::topo_sort()} is
-returned.}
-
-\item{random}{Logical specifying whether or not to use a random initial
-ranking. Defaults to \code{FALSE}. Setting this to \code{TRUE} means that all
-possible orderings consistent with the stated pairwise preferences are
-generated for each assessor, and one of them is picked at random.}
-
-\item{random_limit}{Integer specifying the maximum number of items allowed
-when all possible orderings are computed, i.e., when \code{random=TRUE}.
-Defaults to \code{8L}.}
+\item{max_topological_sorts}{When preference data are provided, multiple
+rankings will be consistent with the preferences stated by each users.
+These rankings are the topological sorts of the directed acyclic graph
+corresponding to the transitive closure of the preferences. This number
+defaults to one, which means that the algorithm stops when it finds a
+single initial ranking which is compatible with the rankings stated by the
+user. By increasing this number, multiple rankings compatible with the
+pairwise preferences will be generated, and one initial value will be
+sampled from this set.}
 
 \item{timepoint}{Integer vector specifying the timepoint. Defaults to \code{NULL},
 which means that a vector of ones, one for each observation, is generated.
@@ -120,15 +113,10 @@ argument to \code{\link[=compute_mallows]{compute_mallows()}}.
 Prepare rank or preference data for further analyses.
 }
 \note{
-Setting \code{random=TRUE} means that all possible orderings of each
-assessor's preferences are generated, and one of them is picked at random.
-This can be useful when experiencing convergence issues, e.g., if the MCMC
-algorithm does not mix properly. However, finding all possible orderings is
-a combinatorial problem, which may be computationally very hard. The result
-may not even be possible to fit in memory, which may cause the R session to
-crash. When using this option, please try to increase the size of the
-problem incrementally, by starting with smaller subsets of the complete
-data. An example is given below.
+Setting \code{max_topological_sorts} larger than 1 means that many possible
+orderings of each assessor's preferences are generated, and one of them is
+picked at random. This can be useful when experiencing convergence issues,
+e.g., if the MCMC algorithm does not mix properly.
 
 It is assumed that the items are labeled starting from 1. For example, if a
 single comparison of the following form is provided, it is assumed that
@@ -158,6 +146,7 @@ Other preprocessing:
 \code{\link{set_initial_values}()},
 \code{\link{set_model_options}()},
 \code{\link{set_priors}()},
+\code{\link{set_progress_report}()},
 \code{\link{set_smc_options}()}
 }
 \concept{preprocessing}

@@ -8,7 +8,7 @@ test_that("predict_top_k works", {
   )
 
   ptk <- predict_top_k(model_fit)
-  expect_equal(ptk$prob[[900]], .08)
+  expect_equal(ptk$prob[[900]], .06)
   expect_equal(dim(ptk), c(900, 3))
 
   p <- plot_top_k(model_fit)

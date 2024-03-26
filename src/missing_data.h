@@ -23,3 +23,6 @@ std::pair<arma::vec, bool> make_new_augmentation(
 arma::mat initialize_missing_ranks(
     arma::mat rankings,
     const arma::umat& missing_indicator);
+
+arma::vec initialize_missing_ranks_vec(
+    arma::vec rankings, const arma::uvec& missing_indicator);

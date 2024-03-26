@@ -151,8 +151,9 @@ RankProposal PairwiseLeapAndShift::propose(
   Rcpp::IntegerVector b = Rcpp::seq(lower_limit, upper_limit);
   ivec d = Rcpp::sample(b, 1);
   int proposed_rank = d(0);
+  double prob = 1.0 / b.size() / n_items;
 
-  RankProposal rp{current_rank};
+  RankProposal rp{current_rank, prob, prob};
   rp.rankings(item) = proposed_rank;
   rp = shift(rp, current_rank, item);
   return rp;

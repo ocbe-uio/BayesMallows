@@ -16,13 +16,13 @@ Rcpp::List run_mcmc(
     Rcpp::List initial_values,
     Rcpp::Nullable<arma::mat> pfun_values,
     Rcpp::Nullable<arma::mat> pfun_estimate,
-    bool verbose = false){
+    Rcpp::List progress_report){
   Data dat{data};
   Priors pris{priors};
   Parameters pars{model_options, compute_options, initial_values, dat.n_items};
   Clustering clus{pars, compute_options, dat.n_assessors};
   Augmentation aug{dat, compute_options, model_options};
-  ProgressReporter rep{verbose};
+  ProgressReporter rep{progress_report};
 
   auto pfun = choose_partition_function(
     dat.n_items, pars.metric, pfun_values, pfun_estimate);

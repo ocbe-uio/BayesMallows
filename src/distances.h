@@ -2,10 +2,6 @@
 #include <memory>
 #include <RcppArmadillo.h>
 
-int perm0_distance (
-    const arma::ivec& a,
-    const arma::ivec& b);
-
 struct Distance {
   Distance() {};
   virtual ~Distance() = default;

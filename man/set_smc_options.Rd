@@ -8,7 +8,8 @@ set_smc_options(
   n_particles = 1000,
   mcmc_steps = 5,
   resampler = c("stratified", "systematic", "residual", "multinomial"),
-  latent_sampling_lag = NA_integer_
+  latent_sampling_lag = NA_integer_,
+  max_topological_sorts = 1
 )
 }
 \arguments{
@@ -30,6 +31,15 @@ of \insertCite{Kantas2015}{BayesMallows} for details. The \eqn{L} in their
 notation corresponds to \code{latent_sampling_lag}. See more under Details.
 Defaults to \code{NA}, which means that all latent ranks from previous timesteps
 are moved. If set to \code{0}, no move step is applied to the latent ranks.}
+
+\item{max_topological_sorts}{User when pairwise preference data are provided,
+and specifies the maximum number of topological sorts of the graph
+corresponding to the transitive closure for each user will be used as
+initial ranks. Defaults to 1, which means that all particles get the same
+initial augmented ranking. If larger than 1, the initial augmented ranking
+for each particle will be sampled from a set of maximum size
+\code{max_topological_sorts}. If the actual number of topological sorts consists
+of fewer rankings, then this determines the upper limit.}
 }
 \value{
 An object of class "SMCOptions".
@@ -79,6 +89,7 @@ Other preprocessing:
 \code{\link{set_initial_values}()},
 \code{\link{set_model_options}()},
 \code{\link{set_priors}()},
+\code{\link{set_progress_report}()},
 \code{\link{setup_rank_data}()}
 }
 \concept{preprocessing}

@@ -5,6 +5,10 @@ abind <- function(x, y) {
     .Call(`_BayesMallows_abind`, x, y)
 }
 
+all_topological_sorts <- function(prefs, n_items, maxit = 1000L) {
+    .Call(`_BayesMallows_all_topological_sorts`, prefs, n_items, maxit)
+}
+
 #' Asymptotic Approximation of Partition Function
 #'
 #' Compute the asymptotic approximation of the logarithm of the partition function,
@@ -68,8 +72,8 @@ rmallows <- function(rho0, alpha0, n_samples, burnin, thinning, leap_size = 1L, 
     .Call(`_BayesMallows_rmallows`, rho0, alpha0, n_samples, burnin, thinning, leap_size, metric)
 }
 
-run_mcmc <- function(data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, verbose = FALSE) {
-    .Call(`_BayesMallows_run_mcmc`, data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, verbose)
+run_mcmc <- function(data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, progress_report) {
+    .Call(`_BayesMallows_run_mcmc`, data, model_options, compute_options, priors, initial_values, pfun_values, pfun_estimate, progress_report)
 }
 
 run_smc <- function(data, new_data, model_options, smc_options, compute_options, priors, initial_values, pfun_values, pfun_estimate) {

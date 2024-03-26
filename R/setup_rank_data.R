@@ -66,20 +66,15 @@
 #'   transitive closure based on preferences, returned from
 #'   [parallel::makeCluster()]. Defaults to `NULL`.
 #'
-#' @param shuffle_unranked Logical specifying whether or not to randomly permute
-#'   unranked items in the initial ranking. When `shuffle_unranked=TRUE` and
-#'   `random=FALSE`, all unranked items for each assessor are randomly permuted.
-#'   Otherwise, the first ordering returned by `igraph::topo_sort()` is
-#'   returned.
-#'
-#' @param random Logical specifying whether or not to use a random initial
-#'   ranking. Defaults to `FALSE`. Setting this to `TRUE` means that all
-#'   possible orderings consistent with the stated pairwise preferences are
-#'   generated for each assessor, and one of them is picked at random.
-#'
-#' @param random_limit Integer specifying the maximum number of items allowed
-#'   when all possible orderings are computed, i.e., when `random=TRUE`.
-#'   Defaults to `8L`.
+#' @param max_topological_sorts When preference data are provided, multiple
+#'   rankings will be consistent with the preferences stated by each users.
+#'   These rankings are the topological sorts of the directed acyclic graph
+#'   corresponding to the transitive closure of the preferences. This number
+#'   defaults to one, which means that the algorithm stops when it finds a
+#'   single initial ranking which is compatible with the rankings stated by the
+#'   user. By increasing this number, multiple rankings compatible with the
+#'   pairwise preferences will be generated, and one initial value will be
+#'   sampled from this set.
 #'
 #' @param timepoint Integer vector specifying the timepoint. Defaults to `NULL`,
 #'   which means that a vector of ones, one for each observation, is generated.
@@ -94,15 +89,10 @@
 #'   `preferences` is non-`NULL`, and contains a small number of pairwise
 #'   preferences for a subset of users and items.
 #'
-#' @note Setting `random=TRUE` means that all possible orderings of each
-#'   assessor's preferences are generated, and one of them is picked at random.
-#'   This can be useful when experiencing convergence issues, e.g., if the MCMC
-#'   algorithm does not mix properly. However, finding all possible orderings is
-#'   a combinatorial problem, which may be computationally very hard. The result
-#'   may not even be possible to fit in memory, which may cause the R session to
-#'   crash. When using this option, please try to increase the size of the
-#'   problem incrementally, by starting with smaller subsets of the complete
-#'   data. An example is given below.
+#' @note Setting `max_topological_sorts` larger than 1 means that many possible
+#'   orderings of each assessor's preferences are generated, and one of them is
+#'   picked at random. This can be useful when experiencing convergence issues,
+#'   e.g., if the MCMC algorithm does not mix properly.
 #'
 #'   It is assumed that the items are labeled starting from 1. For example, if a
 #'   single comparison of the following form is provided, it is assumed that
@@ -140,12 +130,11 @@ setup_rank_data <- function(
     validate_rankings = TRUE,
     na_action = c("augment", "fail", "omit"),
     cl = NULL,
-    shuffle_unranked = FALSE,
-    random = FALSE,
-    random_limit = 8L,
+    max_topological_sorts = 1,
     timepoint = NULL,
     n_items = NULL) {
   na_action <- match.arg(na_action, c("augment", "fail", "omit"))
+  validate_positive(max_topological_sorts)
   if (!is.null(rankings) && !is.null(n_items)) {
     stop("n_items can only be set when rankings=NULL")
   }
@@ -177,7 +166,7 @@ setup_rank_data <- function(
   } else {
     if (is.null(n_items)) n_items <- max(preferences[, c("bottom_item", "top_item")])
     rankings <- generate_initial_ranking(
-      preferences, n_items, cl, shuffle_unranked, random, random_limit
+      preferences, n_items, cl, max_topological_sorts
     )
   }
 

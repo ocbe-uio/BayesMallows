@@ -14,7 +14,7 @@ validate_integer <- function(argument) {
 }
 
 validate_positive <- function(argument) {
-  if (argument <= 0 || !is.numeric(argument)) {
+  if (length(argument) > 1 || argument <= 0 || !is.numeric(argument)) {
     stop(paste(
       deparse(substitute(argument)),
       "must be a strictly positive number of length one"

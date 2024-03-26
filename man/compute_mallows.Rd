@@ -11,7 +11,7 @@ compute_mallows(
   priors = set_priors(),
   initial_values = set_initial_values(),
   pfun_estimate = NULL,
-  verbose = FALSE,
+  progress_report = set_progress_report(),
   cl = NULL
 )
 }
@@ -36,9 +36,8 @@ Defaults to \code{NULL}, and will only be used for footrule, Spearman, or
 Ulam distances when the cardinalities are not available, cf.
 \code{\link[=get_cardinalities]{get_cardinalities()}}.}
 
-\item{verbose}{Logical specifying whether to print out the progress of the
-Metropolis-Hastings algorithm. If \code{TRUE}, a notification is printed
-every 1000th iteration. Defaults to \code{FALSE}.}
+\item{progress_report}{An object of class "BayesMallowsProgressReported"
+returned from \code{\link[=set_progress_report]{set_progress_report()}}.}
 
 \item{cl}{Optional cluster returned from \code{\link[parallel:makeCluster]{parallel::makeCluster()}}. If
 provided, chains will be run in parallel, one on each node of \code{cl}.}
@@ -61,8 +60,8 @@ where \eqn{r} is a ranking, \eqn{\alpha} is a scale parameter, \eqn{\rho}
 is the latent consensus ranking, \eqn{Z_{n}(\alpha)} is the partition
 function (normalizing constant), and \eqn{d(r,\rho)} is a distance function
 measuring the distance between \eqn{r} and \eqn{\rho}. We refer to
-\insertCite{vitelli2018;textual}{BayesMallows} for further details of the Bayesian
-Mallows model.
+\insertCite{vitelli2018;textual}{BayesMallows} for further details of the
+Bayesian Mallows model.
 
 \code{compute_mallows} always returns posterior distributions of the latent
 consensus ranking \eqn{\rho} and the scale parameter \eqn{\alpha}. Several
@@ -114,7 +113,7 @@ beach_data <- setup_rank_data(
 model_fit <- compute_mallows(
   data = beach_data,
   compute_options = set_compute_options(save_aug = TRUE),
-  verbose = TRUE)
+  progress_report = set_progress_report(verbose = TRUE))
 # We can assess the convergence of the scale parameter
 assess_convergence(model_fit)
 # We can assess the convergence of latent rankings. Here we
@@ -144,7 +143,7 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
     data = setup_rank_data(sushi_rankings),
     model_options = set_model_options(n_clusters = 3),
     compute_options = set_compute_options(nmc = 10000),
-    verbose = TRUE)
+    progress_report = set_progress_report(verbose = TRUE))
   # We then assess convergence of the scale parameter alpha
   assess_convergence(model_fit)
   # Next, we assess convergence of the cluster probabilities
@@ -231,15 +230,13 @@ subset(get_transitive_closure(beach_data), assessor \%in\% c(1, 2) &
   system.time(m <- compute_mallows(
     setup_rank_data(rankings = sushi_rankings),
     model_options = set_model_options(n_clusters = 3),
-    compute_options = set_compute_options(nmc = 500, save_ind_clus = FALSE),
-    verbose = TRUE))
+    compute_options = set_compute_options(nmc = 500, save_ind_clus = FALSE)))
   # With this options, compute_mallows will save cluster_probs2.csv,
   # cluster_probs3.csv, ..., cluster_probs[nmc].csv.
   system.time(m <- compute_mallows(
     setup_rank_data(rankings = sushi_rankings),
     model_options = set_model_options(n_clusters = 3),
-    compute_options = set_compute_options(nmc = 500, save_ind_clus = TRUE),
-    verbose = TRUE))
+    compute_options = set_compute_options(nmc = 500, save_ind_clus = TRUE)))
 
   # Next, we check convergence of alpha
   assess_convergence(m)
