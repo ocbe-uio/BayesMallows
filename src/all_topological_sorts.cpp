@@ -13,7 +13,7 @@ class Graph {
   int n_items;
   list<int> *adj;
   vector<int> indegree;
-  void alltopologicalSortUtil(vector<int>& res, bool visited[]);
+  void alltopologicalSortUtil(vector<int>& res, vector<bool>& visited);
   int maxit;
   int iter{};
 
@@ -21,7 +21,7 @@ public:
   Graph(int n_items, int maxit);
   void addEdge(int v, int w);
   void alltopologicalSort();
-  std::vector<std::vector<int>> m;
+  vector<vector<int>> m;
 };
 
 Graph::Graph(int n_items, int maxit) : n_items { n_items },
@@ -35,7 +35,7 @@ void Graph::addEdge(int v, int w) {
   indegree[w]++;
 }
 
-void Graph::alltopologicalSortUtil(vector<int>& res, bool visited[]) {
+void Graph::alltopologicalSortUtil(vector<int>& res, vector<bool>& visited) {
   bool flag = false;
 
   for (int i = 0; i < n_items; i++) {
@@ -68,9 +68,9 @@ void Graph::alltopologicalSortUtil(vector<int>& res, bool visited[]) {
 }
 
 void Graph::alltopologicalSort() {
-  bool *visited = new bool[n_items];
-  for (int i = 0; i < n_items; i++)
-    visited[i] = false;
+  vector<bool> visited;
+  visited.resize(n_items);
+  fill(visited.begin(), visited.end(), false);
 
   vector<int> res;
   alltopologicalSortUtil(res, visited);
