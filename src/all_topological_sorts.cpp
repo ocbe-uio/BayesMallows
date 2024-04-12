@@ -71,7 +71,6 @@ void Graph::alltopologicalSort() {
   vector<bool> visited;
   visited.resize(n_items);
   fill(visited.begin(), visited.end(), false);
-
   vector<int> res;
   alltopologicalSortUtil(res, visited);
 }
