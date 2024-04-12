@@ -1,5 +1,7 @@
 # BayesMallows (development versions)
 
+* For initialization of latent ranks when using pairwise preference data, all
+  topological sorts are now generated in random order.
 * The SMC function now check for consistency with previous latent ranks for 
   existing users also when data arrive in the form of pairwise preferences.
 * A function compute_exact_partition_function() is now added, which returns the

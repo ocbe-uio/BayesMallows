@@ -37,8 +37,9 @@ void Graph::addEdge(int v, int w) {
 
 void Graph::alltopologicalSortUtil(vector<int>& res, vector<bool>& visited) {
   bool flag = false;
+  Rcpp::IntegerVector visit_order = Rcpp::sample(n_items, n_items) - 1;
 
-  for (int i = 0; i < n_items; i++) {
+  for (int i : visit_order) {
     if (indegree[i] == 0 && !visited[i]) {
       list<int>:: iterator j;
       for (j = adj[i].begin(); j != adj[i].end(); j++)

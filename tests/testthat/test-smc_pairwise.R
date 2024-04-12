@@ -21,8 +21,8 @@ test_that("update_mallows works with pairwise preferences", {
     )
   }
 
-  expect_equal(mean(mod$alpha_samples), 3.99645235790935)
-  expect_equal(sd(mod$alpha_samples), 0.872720087078698)
+  expect_equal(mean(mod$alpha_samples), 3.23002172007725)
+  expect_equal(sd(mod$alpha_samples), 0.687078638322223)
 
   mod <- mod_init
   for (i in 23:24) {
@@ -36,8 +36,8 @@ test_that("update_mallows works with pairwise preferences", {
     )
   }
 
-  expect_equal(mean(mod$alpha_samples), 3.03458072249661)
-  expect_equal(sd(mod$alpha_samples), 0.670792690537946)
+  expect_equal(mean(mod$alpha_samples), 2.87132006142477)
+  expect_equal(sd(mod$alpha_samples), 0.581863142256992)
 })
 
 test_that("update_mallows works with existing users updating their data", {
@@ -58,12 +58,12 @@ test_that("update_mallows works with existing users updating their data", {
 
   expect_equal(
     mean(m1$alpha_samples),
-    2.75891148770247
+    1.80598634638498
   )
 
   expect_equal(
     order(apply(m1$augmented_rankings, 1, mean)),
-    c(1L, 6L, 9L, 3L, 7L, 4L, 10L, 11L, 8L, 12L, 15L, 13L, 14L, 2L, 5L)
+    c(15L, 6L, 2L, 3L, 12L, 11L, 9L, 13L, 10L, 14L, 1L, 8L, 5L, 7L, 4L)
   )
 
   m2 <- update_mallows(
@@ -76,12 +76,12 @@ test_that("update_mallows works with existing users updating their data", {
 
   expect_equal(
     mean(m2$alpha_samples),
-    2.79625839950885
+    2.01294805363435
   )
 
   expect_equal(
     order(apply(m2$augmented_rankings, 1, mean)),
-    c(6L, 4L, 10L, 1L, 2L, 7L, 8L, 11L, 5L, 3L, 12L, 9L, 13L, 15L, 14L)
+    c(6L, 11L, 2L, 8L, 4L, 12L, 10L, 14L, 15L, 3L, 1L, 9L, 13L, 7L, 5L)
   )
 })
 
