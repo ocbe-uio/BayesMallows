@@ -24,15 +24,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // all_topological_sorts
-arma::imat all_topological_sorts(arma::imat prefs, int n_items, int maxit);
-RcppExport SEXP _BayesMallows_all_topological_sorts(SEXP prefsSEXP, SEXP n_itemsSEXP, SEXP maxitSEXP) {
+arma::imat all_topological_sorts(arma::imat prefs, int n_items, int maxit, bool save);
+RcppExport SEXP _BayesMallows_all_topological_sorts(SEXP prefsSEXP, SEXP n_itemsSEXP, SEXP maxitSEXP, SEXP saveSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::imat >::type prefs(prefsSEXP);
     Rcpp::traits::input_parameter< int >::type n_items(n_itemsSEXP);
     Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
-    rcpp_result_gen = Rcpp::wrap(all_topological_sorts(prefs, n_items, maxit));
+    Rcpp::traits::input_parameter< bool >::type save(saveSEXP);
+    rcpp_result_gen = Rcpp::wrap(all_topological_sorts(prefs, n_items, maxit, save));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -164,7 +165,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_abind", (DL_FUNC) &_BayesMallows_abind, 2},
-    {"_BayesMallows_all_topological_sorts", (DL_FUNC) &_BayesMallows_all_topological_sorts, 3},
+    {"_BayesMallows_all_topological_sorts", (DL_FUNC) &_BayesMallows_all_topological_sorts, 4},
     {"_BayesMallows_asymptotic_partition_function", (DL_FUNC) &_BayesMallows_asymptotic_partition_function, 6},
     {"_BayesMallows_get_rank_distance", (DL_FUNC) &_BayesMallows_get_rank_distance, 3},
     {"_BayesMallows_compute_importance_sampling_estimate", (DL_FUNC) &_BayesMallows_compute_importance_sampling_estimate, 4},

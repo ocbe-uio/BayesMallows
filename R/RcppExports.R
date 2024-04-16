@@ -5,8 +5,8 @@ abind <- function(x, y) {
     .Call(`_BayesMallows_abind`, x, y)
 }
 
-all_topological_sorts <- function(prefs, n_items, maxit = 1000L) {
-    .Call(`_BayesMallows_all_topological_sorts`, prefs, n_items, maxit)
+all_topological_sorts <- function(prefs, n_items, maxit, save) {
+    .Call(`_BayesMallows_all_topological_sorts`, prefs, n_items, maxit, save)
 }
 
 #' Asymptotic Approximation of Partition Function
