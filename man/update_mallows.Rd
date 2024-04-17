@@ -71,6 +71,7 @@ described in
 \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows}.
 }
 \examples{
+\dontrun{
 set.seed(1)
 # UPDATING A MALLOWS MODEL WITH NEW COMPLETE RANKINGS
 # Assume we first only observe the first four rankings in the potato_visual
@@ -199,6 +200,7 @@ for(i in 21:24){
 # MCMC steps, and the latent sampling lag.
 plot(mod)
 compute_consensus(mod)
+}
 }
 \seealso{
 Other modeling: 
