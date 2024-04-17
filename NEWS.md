@@ -1,4 +1,4 @@
-# BayesMallows (development versions)
+# BayesMallows 2.2.0
 
 * For initialization of latent ranks when using pairwise preference data, all
   topological sorts are now generated in random order.
