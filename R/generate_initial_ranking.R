@@ -42,7 +42,7 @@ generate_initial_ranking.BayesMallowsIntransitive <- function(
 }
 
 create_ranks <- function(mat, n_items, max_topological_sorts) {
-  ret <- all_topological_sorts(mat, n_items, max_topological_sorts)
+  ret <- all_topological_sorts(mat, n_items, max_topological_sorts, TRUE)
   u <- sample(min(max_topological_sorts, nrow(ret)), 1)
   ret <- ret[u, ]
   all_items <- seq(from = 1, to = n_items, by = 1)

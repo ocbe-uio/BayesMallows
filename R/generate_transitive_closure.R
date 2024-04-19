@@ -53,7 +53,5 @@ generate_transitive_closure <- function(preferences, cl = NULL) {
     bottom_item = row_inds[new_mat[, 1, drop = FALSE]],
     top_item = row_inds[new_mat[, 2, drop = FALSE]]
   )
-
-
-  return(result)
+  result
 }

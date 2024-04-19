@@ -122,7 +122,7 @@ extract_pfun_values <- function(metric, n_items, pfun_estimate) {
           "estimate in argument pfun_estimate."
         )
       } else {
-        return(NULL)
+        NULL
       }
     }
   )
