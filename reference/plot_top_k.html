@@ -10,11 +10,11 @@ form of pairwise preferences."><!-- mathjax --><script src="https://cdnjs.cloudf
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,8 +31,8 @@ form of pairwise preferences."><!-- mathjax --><script src="https://cdnjs.cloudf
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
+    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
   </div>
 </li>
 <li class="nav-item">
@@ -120,9 +120,11 @@ form of pairwise preferences.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">probs</span>, <span class="va">assessor</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span> <span class="op">&amp;</span> <span class="va">prob</span> <span class="op">&gt;</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     assessor    item  prob</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 301        1  Item 6 1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 303        3  Item 6 0.994</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 302        2  Item 6 0.866</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 303        3  Item 6 0.998</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 482        2  Item 9 0.892</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 483        3  Item 9 1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 601        1 Item 11 1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 601        1 Item 11 0.854</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># We can also plot for clusters</span></span></span>
 <span class="r-in"><span><span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="compute_mallows.html">compute_mallows</a></span><span class="op">(</span></span></span>
@@ -146,7 +148,7 @@ form of pairwise preferences.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.8.</p>
 </div>
 
     </footer></div>

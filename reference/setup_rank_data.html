@@ -6,11 +6,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,8 +27,8 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
+    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
   </div>
 </li>
 <li class="nav-item">
@@ -69,9 +69,7 @@
 <span>  validate_rankings <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  na_action <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"augment"</span>, <span class="st">"fail"</span>, <span class="st">"omit"</span><span class="op">)</span>,</span>
 <span>  cl <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  shuffle_unranked <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  random <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  random_limit <span class="op">=</span> <span class="fl">8L</span>,</span>
+<span>  max_topological_sorts <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  timepoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_items <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -148,25 +146,16 @@ transitive closure based on preferences, returned from
 <code><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">parallel::makeCluster()</a></code>. Defaults to <code>NULL</code>.</p></dd>
 
 
-<dt>shuffle_unranked</dt>
-<dd><p>Logical specifying whether or not to randomly permute
-unranked items in the initial ranking. When <code>shuffle_unranked=TRUE</code> and
-<code>random=FALSE</code>, all unranked items for each assessor are randomly permuted.
-Otherwise, the first ordering returned by <code><a href="https://r.igraph.org/reference/topo_sort.html" class="external-link">igraph::topo_sort()</a></code> is
-returned.</p></dd>
-
-
-<dt>random</dt>
-<dd><p>Logical specifying whether or not to use a random initial
-ranking. Defaults to <code>FALSE</code>. Setting this to <code>TRUE</code> means that all
-possible orderings consistent with the stated pairwise preferences are
-generated for each assessor, and one of them is picked at random.</p></dd>
-
-
-<dt>random_limit</dt>
-<dd><p>Integer specifying the maximum number of items allowed
-when all possible orderings are computed, i.e., when <code>random=TRUE</code>.
-Defaults to <code>8L</code>.</p></dd>
+<dt>max_topological_sorts</dt>
+<dd><p>When preference data are provided, multiple
+rankings will be consistent with the preferences stated by each users.
+These rankings are the topological sorts of the directed acyclic graph
+corresponding to the transitive closure of the preferences. This number
+defaults to one, which means that the algorithm stops when it finds a
+single initial ranking which is compatible with the rankings stated by the
+user. By increasing this number, multiple rankings compatible with the
+pairwise preferences will be generated, and one initial value will be
+sampled from this set.</p></dd>
 
 
 <dt>timepoint</dt>
@@ -197,15 +186,10 @@ preferences for a subset of users and items.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>Setting <code>random=TRUE</code> means that all possible orderings of each
-assessor's preferences are generated, and one of them is picked at random.
-This can be useful when experiencing convergence issues, e.g., if the MCMC
-algorithm does not mix properly. However, finding all possible orderings is
-a combinatorial problem, which may be computationally very hard. The result
-may not even be possible to fit in memory, which may cause the R session to
-crash. When using this option, please try to increase the size of the
-problem incrementally, by starting with smaller subsets of the complete
-data. An example is given below.</p>
+    <p>Setting <code>max_topological_sorts</code> larger than 1 means that many possible
+orderings of each assessor's preferences are generated, and one of them is
+picked at random. This can be useful when experiencing convergence issues,
+e.g., if the MCMC algorithm does not mix properly.</p>
 <p>It is assumed that the items are labeled starting from 1. For example, if a
 single comparison of the following form is provided, it is assumed that
 there is a total of 30 items (<code>n_items=30</code>), and the initial ranking is a
@@ -230,6 +214,7 @@ Ph.D. thesis, Lancaster University.<br><br> Vitelli V, Sørensen, Crispino M, Ar
 <code><a href="set_initial_values.html">set_initial_values</a>()</code>,
 <code><a href="set_model_options.html">set_model_options</a>()</code>,
 <code><a href="set_priors.html">set_priors</a>()</code>,
+<code><a href="set_progress_report.html">set_progress_report</a>()</code>,
 <code><a href="set_smc_options.html">set_smc_options</a>()</code></p></div>
     </div>
 
@@ -242,7 +227,7 @@ Ph.D. thesis, Lancaster University.<br><br> Vitelli V, Sørensen, Crispino M, Ar
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.8.</p>
 </div>
 
     </footer></div>

@@ -58,6 +58,9 @@
     <loc>/reference/compute_consensus.html</loc>
   </url>
   <url>
+    <loc>/reference/compute_exact_partition_function.html</loc>
+  </url>
+  <url>
     <loc>/reference/compute_expected_distance.html</loc>
   </url>
   <url>
@@ -149,6 +152,9 @@
   </url>
   <url>
     <loc>/reference/set_priors.html</loc>
+  </url>
+  <url>
+    <loc>/reference/set_progress_report.html</loc>
   </url>
   <url>
     <loc>/reference/set_smc_options.html</loc>

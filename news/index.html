@@ -6,11 +6,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,8 +27,8 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
+    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
   </div>
 </li>
 <li class="active nav-item">
@@ -54,6 +54,19 @@
       <small>Source: <a href="https://github.com/ocbe-uio/BayesMallows/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.2.0" id="bayesmallows-220">BayesMallows 2.2.0<a class="anchor" aria-label="anchor" href="#bayesmallows-220"></a></h2>
+<ul><li>For initialization of latent ranks when using pairwise preference data, all topological sorts are now generated in random order.</li>
+<li>The SMC function now check for consistency with previous latent ranks for existing users also when data arrive in the form of pairwise preferences.</li>
+<li>A function compute_exact_partition_function() is now added, which returns the logarithm of the exact partition function for Cayley, Hamming, and Kendall distance.</li>
+<li>Fixed a bug in the Ulam distance. Thanks for Marta Crispino for discovering it.</li>
+<li>Fixed a bug in SMC algorithm for pairwise preference data, where the proposal distribution incorrectly was assumed to be uniform.</li>
+<li>It is now possible to report progress of MCMC more flexibly using compute_mallows() or compute_mallows_mixtures(). The old argument “verbose” which by default reported every 1000’th iteration has been replaced by an argument “progress_report” which can be set by calling set_progress_report(). The latter allows setting the interval between reports. This is particularly useful for big data, where running 1000 iterations may take very long time.</li>
+<li>Fixed a bug which caused inconsistent partial rank data to be retained from previous timepoints when existing users update their preferences.</li>
+<li>Arguments random and random_limit to setup_rank_data() have been removed. A new argument max_topological_sorts has been added instead, which captures all previous use cases, but also allows the user to specify the number of topological sorts to generate. This makes it useful also with a relatively large number of items, while it previously would be computationally unfeasible for anything more than 8-9 items.</li>
+<li>Argument shuffle_unranked to setup_rank_data() has been removed. If there are unranked items they will now always be shuffled. For reproducibility, set the random number seed.</li>
+<li>SMC Mallows with pairwise preference data now allows different initially values for the augmented rankings across the particles. This is obtained by generating (a subset of) all topological sorts consistent with the transitive closure for the user, and sampling from these. Can be set with the max_topological_sorts argument to set_smc_options().</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.1.1" id="bayesmallows-211">BayesMallows 2.1.1<a class="anchor" aria-label="anchor" href="#bayesmallows-211"></a></h2><p class="text-muted">CRAN release: 2024-03-15</p>
 <ul><li>Fixed gcc-UBSAN issue happening when compute_mallows_sequentially() is run without user IDs specified.</li>
@@ -369,7 +382,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.8.</p>
 </div>
 
     </footer></div>

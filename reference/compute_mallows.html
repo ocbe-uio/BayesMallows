@@ -12,8 +12,8 @@ is the latent consensus ranking, \(Z_{n}(\alpha)\) is the partition
 function (normalizing constant), and \(d(r,\rho)\) is a distance function
 measuring the distance between \(r\) and \(\rho\). We refer to
 Vitelli et al. (2018)
- for further details of the Bayesian
-Mallows model.
+ for further details of the
+Bayesian Mallows model.
 compute_mallows always returns posterior distributions of the latent
 consensus ranking \(\rho\) and the scale parameter \(\alpha\). Several
 distance measures are supported, and the preferences can take the form of
@@ -32,8 +32,8 @@ is the latent consensus ranking, \(Z_{n}(\alpha)\) is the partition
 function (normalizing constant), and \(d(r,\rho)\) is a distance function
 measuring the distance between \(r\) and \(\rho\). We refer to
 Vitelli et al. (2018)
- for further details of the Bayesian
-Mallows model.
+ for further details of the
+Bayesian Mallows model.
 compute_mallows always returns posterior distributions of the latent
 consensus ranking \(\rho\) and the scale parameter \(\alpha\). Several
 distance measures are supported, and the preferences can take the form of
@@ -46,11 +46,11 @@ clustering of assessors with similar preferences."><!-- mathjax --><script src="
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,8 +67,8 @@ clustering of assessors with similar preferences."><!-- mathjax --><script src="
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
     <a class="dropdown-item" href="../articles/parallel_chains.html">MCMC with Parallel Chains</a>
+    <a class="dropdown-item" href="../articles/SMC-Mallows.html">Sequential Monte Carlo for the Bayesian Mallows model</a>
   </div>
 </li>
 <li class="nav-item">
@@ -109,8 +109,8 @@ is the latent consensus ranking, \(Z_{n}(\alpha)\) is the partition
 function (normalizing constant), and \(d(r,\rho)\) is a distance function
 measuring the distance between \(r\) and \(\rho\). We refer to
 Vitelli et al. (2018)
- for further details of the Bayesian
-Mallows model.</p>
+ for further details of the
+Bayesian Mallows model.</p>
 <p><code>compute_mallows</code> always returns posterior distributions of the latent
 consensus ranking \(\rho\) and the scale parameter \(\alpha\). Several
 distance measures are supported, and the preferences can take the form of
@@ -128,7 +128,7 @@ clustering of assessors with similar preferences.</p>
 <span>  priors <span class="op">=</span> <span class="fu"><a href="set_priors.html">set_priors</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  initial_values <span class="op">=</span> <span class="fu"><a href="set_initial_values.html">set_initial_values</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  pfun_estimate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  progress_report <span class="op">=</span> <span class="fu"><a href="set_progress_report.html">set_progress_report</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  cl <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -167,10 +167,9 @@ Ulam distances when the cardinalities are not available, cf.
 <code><a href="get_cardinalities.html">get_cardinalities()</a></code>.</p></dd>
 
 
-<dt>verbose</dt>
-<dd><p>Logical specifying whether to print out the progress of the
-Metropolis-Hastings algorithm. If <code>TRUE</code>, a notification is printed
-every 1000th iteration. Defaults to <code>FALSE</code>.</p></dd>
+<dt>progress_report</dt>
+<dd><p>An object of class "BayesMallowsProgressReported"
+returned from <code><a href="set_progress_report.html">set_progress_report()</a></code>.</p></dd>
 
 
 <dt>cl</dt>
@@ -296,7 +295,7 @@ provided, chains will be run in parallel, one on each node of <code>cl</code>.</
 <span class="r-in"><span><span class="va">model_fit</span> <span class="op">&lt;-</span> <span class="fu">compute_mallows</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">beach_data</span>,</span></span>
 <span class="r-in"><span>  compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>save_aug <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  progress_report <span class="op">=</span> <span class="fu"><a href="set_progress_report.html">set_progress_report</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> First 1000 iterations of Metropolis-Hastings algorithm completed.</span>
 <span class="r-in"><span><span class="co"># We can assess the convergence of the scale parameter</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span></span></span>
@@ -332,7 +331,7 @@ provided, chains will be run in parallel, one on each node of <code>cl</code>.</
 <span class="r-in"><span>    data <span class="op">=</span> <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span><span class="va">sushi_rankings</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    model_options <span class="op">=</span> <span class="fu"><a href="set_model_options.html">set_model_options</a></span><span class="op">(</span>n_clusters <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    progress_report <span class="op">=</span> <span class="fu"><a href="set_progress_report.html">set_progress_report</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># We then assess convergence of the scale parameter alpha</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">model_fit</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># Next, we assess convergence of the cluster probabilities</span></span></span>
@@ -419,15 +418,13 @@ provided, chains will be run in parallel, one on each node of <code>cl</code>.</
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">compute_mallows</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">sushi_rankings</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    model_options <span class="op">=</span> <span class="fu"><a href="set_model_options.html">set_model_options</a></span><span class="op">(</span>n_clusters <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">500</span>, save_ind_clus <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">500</span>, save_ind_clus <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="co"># With this options, compute_mallows will save cluster_probs2.csv,</span></span></span>
 <span class="r-in"><span>  <span class="co"># cluster_probs3.csv, ..., cluster_probs[nmc].csv.</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu">compute_mallows</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="setup_rank_data.html">setup_rank_data</a></span><span class="op">(</span>rankings <span class="op">=</span> <span class="va">sushi_rankings</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    model_options <span class="op">=</span> <span class="fu"><a href="set_model_options.html">set_model_options</a></span><span class="op">(</span>n_clusters <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">500</span>, save_ind_clus <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    compute_options <span class="op">=</span> <span class="fu"><a href="set_compute_options.html">set_compute_options</a></span><span class="op">(</span>nmc <span class="op">=</span> <span class="fl">500</span>, save_ind_clus <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># Next, we check convergence of alpha</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="assess_convergence.html">assess_convergence</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
@@ -496,7 +493,7 @@ provided, chains will be run in parallel, one on each node of <code>cl</code>.</
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.8.</p>
 </div>
 
     </footer></div>
