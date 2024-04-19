@@ -20,4 +20,5 @@ We got
 
 
 ## Downstream Dependencies
-The package has one downstream dependency, the package PlackettLuce. This package is not affected by this change, as it does not use any of its functions.
+
+The package is reverse imported by 'MSmix' and reverse suggested by 'PlackettLuce'. Running revdep_check() with the 'revdepcheck' package returned OK for both packages.
