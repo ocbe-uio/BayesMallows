@@ -60,30 +60,21 @@ std::vector<StaticParticle> initialize_particles(
   return pvec;
 }
 
-std::vector<StaticParticle> augment_particles(
+std::vector<StaticParticle> prepare_particle_filter(
     const std::vector<StaticParticle>& pvec_init,
     const SMCData& dat, const SMCAugmentation& aug
 ) {
   auto pvec = pvec_init;
 
-  std::vector<imat> sorts(dat.user_ids.size());
-  if(dat.augpair) {
-    for(int i{}; i < dat.n_assessors; i++) {
-      Rcpp::IntegerVector test = Rcpp::intersect(dat.updated_match, Rcpp::IntegerVector{i});
-      if(i >= (dat.n_assessors - dat.num_new_obs) || test.size() > 0) {
-        uvec indices = find(dat.preferences.col(0) == dat.user_ids[i]);
-        imat prefs = dat.preferences.rows(indices);
-        sorts[i] = all_topological_sorts(prefs.cols(1, 2), dat.n_items,
-                                         aug.max_topological_sorts);
-      }
-    }
-  }
-
   for(size_t static_particle_i{}; static_particle_i < pvec.size(); static_particle_i++) {
     pvec[static_particle_i].alpha_acceptance = 0;
     pvec[static_particle_i].rho_acceptance = 0;
 
-    for(size_t latent_particle_j{}; latent_particle_j < pvec[static_particle_i].particle_filters.size(); latent_particle_j++) {
+    for(
+      size_t latent_particle_j{};
+      latent_particle_j < pvec[static_particle_i].particle_filters.size();
+      latent_particle_j++
+        ) {
       if(dat.any_missing || dat.augpair) {
         pvec[static_particle_i].particle_filters[latent_particle_j].consistent = ones<uvec>(dat.n_assessors - dat.num_new_obs);
       }
@@ -138,8 +129,12 @@ std::vector<StaticParticle> augment_particles(
         for(int k{}; k < dat.n_assessors; k++) {
           Rcpp::IntegerVector test = Rcpp::intersect(dat.updated_match, Rcpp::IntegerVector{k});
           if(k >= (dat.n_assessors - dat.num_new_obs) || test.size() > 0) {
-            Rcpp::IntegerVector v = Rcpp::sample(sorts[k].n_rows, 1, false, R_NilValue, false);
-            ivec ordering = sorts[k].row(v[0]).t();
+            uvec indices = find(dat.preferences.col(0) == dat.user_ids[k]);
+            imat prefs = dat.preferences.rows(indices);
+            imat sorts = all_topological_sorts(prefs.cols(1, 2), dat.n_items, aug.max_topological_sorts);
+
+            Rcpp::IntegerVector v = Rcpp::sample(sorts.n_rows, 1, false, R_NilValue, false);
+            ivec ordering = sorts.row(v[0]).t();
             uvec rank = sort_index(ordering) + 1;
             pvec[static_particle_i].particle_filters[latent_particle_j].augmented_data.col(k) = conv_to<vec>::from(rank);
           }

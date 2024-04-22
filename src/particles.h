@@ -8,7 +8,7 @@ std::vector<StaticParticle> initialize_particles(
     const SMCData& dat
 );
 
-std::vector<StaticParticle> augment_particles(
+std::vector<StaticParticle> prepare_particle_filter(
   const std::vector<StaticParticle>& pvec,
   const SMCData& dat,
   const SMCAugmentation& aug

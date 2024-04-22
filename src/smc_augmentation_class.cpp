@@ -23,23 +23,22 @@ SMCAugmentation::SMCAugmentation(
      choose_pairwise_proposal("none", compute_options["swap_leap"]) },
   latent_sampling_lag { read_lag(smc_options) } {}
 
-void SMCAugmentation::reweight(
+void SMCAugmentation::run_particle_filter(
     std::vector<StaticParticle>& pvec,
     const SMCData& dat,
     const std::unique_ptr<PartitionFunction>& pfun,
     const std::unique_ptr<Distance>& distfun
 ) const {
-  if(dat.any_missing || dat.augpair) {
-    par_for_each(
-      pvec.begin(), pvec.end(), [distfun = &distfun](StaticParticle& p){
-          p.previous_distance = distfun->get()->matdist(p.particle_filters[0].augmented_data, p.rho);
-      });
-    pvec = augment_partial(pvec, dat);
-  }
 
   par_for_each(
-    pvec.begin(), pvec.end(), [&dat, distfun = &distfun, pfun = &pfun]
+    pvec.begin(), pvec.end(), [&dat, distfun = &distfun, pfun = &pfun, this]
     (StaticParticle& p){
+
+      if(dat.any_missing || dat.augpair) {
+        p.previous_distance = distfun->get()->matdist(p.particle_filters[0].augmented_data, p.rho);
+        p = augment_partial(p, dat);
+      }
+
       double item_correction_contribution{};
       if(!p.particle_filters[0].consistent.is_empty()) {
         for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
@@ -75,36 +74,30 @@ void SMCAugmentation::reweight(
   );
 }
 
-std::vector<StaticParticle> SMCAugmentation::augment_partial(
-    const std::vector<StaticParticle>& pvec, const SMCData& dat
+StaticParticle SMCAugmentation::augment_partial(
+    const StaticParticle& p, const SMCData& dat
 ) const {
-  std::vector<StaticParticle> ret{pvec};
-  par_for_each(
-    ret.begin(), ret.end(),
-    [&dat, partial_aug_prop = std::ref(partial_aug_prop),
-     pairwise_aug_prop = std::ref(pairwise_aug_prop)]
-    (StaticParticle& p){
-       for (size_t user{}; user < dat.n_assessors; user++) {
-        if(user < dat.n_assessors - dat.num_new_obs) {
-          if(p.particle_filters[0].consistent.is_empty()) continue;
-          if(p.particle_filters[0].consistent(user) == 1) continue;
-        }
+  StaticParticle ret{p};
 
-        RankProposal pprop;
-        if(dat.any_missing) {
-          pprop = partial_aug_prop.get()->propose(
-            p.particle_filters[0].augmented_data.col(user), dat.missing_indicator.col(user),
-            p.alpha, p.rho);
-        } else if(dat.augpair) {
-          pprop = pairwise_aug_prop.get()->propose(
-            p.particle_filters[0].augmented_data.col(user), dat.items_above[user], dat.items_below[user]);
-        }
+  for (size_t user{}; user < dat.n_assessors; user++) {
+  if(user < dat.n_assessors - dat.num_new_obs) {
+    if(ret.particle_filters[0].consistent.is_empty()) continue;
+    if(ret.particle_filters[0].consistent(user) == 1) continue;
+  }
 
-        p.particle_filters[0].augmented_data.col(user) = pprop.rankings;
-        p.particle_filters[0].log_aug_prob(user) = log(pprop.prob_forward);
-      }
-    }
-  );
+  RankProposal pprop;
+  if(dat.any_missing) {
+    pprop = partial_aug_prop.get()->propose(
+      ret.particle_filters[0].augmented_data.col(user), dat.missing_indicator.col(user),
+      ret.alpha, p.rho);
+  } else if(dat.augpair) {
+    pprop = pairwise_aug_prop.get()->propose(
+      ret.particle_filters[0].augmented_data.col(user), dat.items_above[user], dat.items_below[user]);
+  }
+
+  ret.particle_filters[0].augmented_data.col(user) = pprop.rankings;
+  ret.particle_filters[0].log_aug_prob(user) = log(pprop.prob_forward);
+  }
   return ret;
 }
 

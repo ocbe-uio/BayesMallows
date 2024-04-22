@@ -82,7 +82,7 @@ struct SMCAugmentation {
     );
   ~SMCAugmentation() = default;
 
-  void reweight(
+  void run_particle_filter(
       std::vector<StaticParticle>& pvec,
       const SMCData& dat,
       const std::unique_ptr<PartitionFunction>& pfun,
@@ -97,6 +97,5 @@ private:
   const std::unique_ptr<PartialProposal> partial_aug_prop;
   const std::unique_ptr<PairwiseProposal> pairwise_aug_prop;
   const unsigned int latent_sampling_lag;
-  std::vector<StaticParticle> augment_partial(
-      const std::vector<StaticParticle>& pvec, const SMCData& dat) const;
+  StaticParticle augment_partial(const StaticParticle& pvec, const SMCData& dat) const;
 };

@@ -36,8 +36,8 @@ Rcpp::List  run_smc(
   size_t T = new_data.size();
   for(size_t t{}; t < T; t++) {
     dat.update(new_data[t]);
-    particle_vectors[t + 1] = augment_particles(particle_vectors[t], dat, aug);
-    aug.reweight(particle_vectors[t + 1], dat, pfun, distfun);
+    particle_vectors[t + 1] = prepare_particle_filter(particle_vectors[t], dat, aug);
+    aug.run_particle_filter(particle_vectors[t + 1], dat, pfun, distfun);
     pars.resample(particle_vectors[t + 1]);
     if(pars.rejuvenate) {
       par_for_each(
