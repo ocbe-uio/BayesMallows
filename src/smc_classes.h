@@ -4,22 +4,29 @@
 #include "classes.h"
 #include "resampler.h"
 
+struct LatentParticle {
+  LatentParticle(const arma::mat& augmented_data,
+                 const arma::uvec& particle_consistent,
+                 const unsigned int n_assessors);
+  arma::mat augmented_data;
+  arma::uvec consistent;
+  double aug_acceptance{};
+  int aug_count{};
+  arma::vec log_aug_prob;
+};
+
 struct StaticParticle {
-  StaticParticle(double alpha, const arma::vec& rho, const arma::mat& augmented_data,
-           const unsigned int n_assessors, const arma::uvec& particle_consistent);
+  StaticParticle(double alpha, const arma::vec& rho, const unsigned int n_assessors,
+                 const std::vector<LatentParticle>& lp);
   ~StaticParticle() = default;
 
+  std::vector<LatentParticle> particle_filters;
   double alpha;
   arma::vec rho;
-  arma::mat augmented_data;
   double log_inc_wgt{};
-  arma::vec log_aug_prob;
-  arma::uvec consistent;
   arma::vec previous_distance;
   double alpha_acceptance{};
   double rho_acceptance{};
-  double aug_acceptance{};
-  int aug_count{};
 };
 
 struct SMCData : Data {

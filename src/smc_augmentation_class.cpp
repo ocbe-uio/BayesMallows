@@ -32,7 +32,7 @@ void SMCAugmentation::reweight(
   if(dat.any_missing || dat.augpair) {
     par_for_each(
       pvec.begin(), pvec.end(), [distfun = &distfun](StaticParticle& p){
-          p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
+          p.previous_distance = distfun->get()->matdist(p.particle_filters[0].augmented_data, p.rho);
       });
     pvec = augment_partial(pvec, dat);
   }
@@ -41,10 +41,10 @@ void SMCAugmentation::reweight(
     pvec.begin(), pvec.end(), [&dat, distfun = &distfun, pfun = &pfun]
     (StaticParticle& p){
       double item_correction_contribution{};
-      if(!p.consistent.is_empty()) {
+      if(!p.particle_filters[0].consistent.is_empty()) {
         for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
-          if(p.consistent(user) == 0) {
-            double current_distance = distfun->get()->d(p.augmented_data.col(user), p.rho);
+          if(p.particle_filters[0].consistent(user) == 0) {
+            double current_distance = distfun->get()->d(p.particle_filters[0].augmented_data.col(user), p.rho);
 
             item_correction_contribution -= p.alpha / p.rho.size() *
               (current_distance - p.previous_distance(user));
@@ -56,7 +56,7 @@ void SMCAugmentation::reweight(
       if(dat.num_new_obs > 0) {
         mat new_rankings;
         if(dat.any_missing || dat.augpair) {
-          new_rankings = p.augmented_data(
+          new_rankings = p.particle_filters[0].augmented_data(
             span::all,
             span(dat.n_assessors - dat.num_new_obs, dat.n_assessors - 1));
         } else {
@@ -70,7 +70,7 @@ void SMCAugmentation::reweight(
       p.log_inc_wgt = p.log_inc_wgt +
         new_user_contribution + item_correction_contribution -
         dat.num_new_obs * pfun->get()->logz(p.alpha) -
-        sum(p.log_aug_prob);
+        sum(p.particle_filters[0].log_aug_prob);
     }
   );
 }
@@ -86,22 +86,22 @@ std::vector<StaticParticle> SMCAugmentation::augment_partial(
     (StaticParticle& p){
        for (size_t user{}; user < dat.n_assessors; user++) {
         if(user < dat.n_assessors - dat.num_new_obs) {
-          if(p.consistent.is_empty()) continue;
-          if(p.consistent(user) == 1) continue;
+          if(p.particle_filters[0].consistent.is_empty()) continue;
+          if(p.particle_filters[0].consistent(user) == 1) continue;
         }
 
         RankProposal pprop;
         if(dat.any_missing) {
           pprop = partial_aug_prop.get()->propose(
-            p.augmented_data.col(user), dat.missing_indicator.col(user),
+            p.particle_filters[0].augmented_data.col(user), dat.missing_indicator.col(user),
             p.alpha, p.rho);
         } else if(dat.augpair) {
           pprop = pairwise_aug_prop.get()->propose(
-            p.augmented_data.col(user), dat.items_above[user], dat.items_below[user]);
+            p.particle_filters[0].augmented_data.col(user), dat.items_above[user], dat.items_below[user]);
         }
 
-        p.augmented_data.col(user) = pprop.rankings;
-        p.log_aug_prob(user) = log(pprop.prob_forward);
+        p.particle_filters[0].augmented_data.col(user) = pprop.rankings;
+        p.particle_filters[0].log_aug_prob(user) = log(pprop.prob_forward);
       }
     }
   );
@@ -117,18 +117,18 @@ void SMCAugmentation::update_missing_ranks(
     std::pair<vec, bool> aug{};
     if(dat.any_missing) {
       aug = make_new_augmentation(
-          p.augmented_data.col(jj), dat.missing_indicator.col(jj), p.alpha,
+          p.particle_filters[0].augmented_data.col(jj), dat.missing_indicator.col(jj), p.alpha,
           p.rho, distfun, partial_aug_prop);
     } else if(dat.augpair) {
       aug = make_new_augmentation(
-        p.augmented_data.col(jj), p.alpha, p.rho, 0, distfun, pairwise_aug_prop,
+        p.particle_filters[0].augmented_data.col(jj), p.alpha, p.rho, 0, distfun, pairwise_aug_prop,
         dat.items_above[jj], dat.items_below[jj], "none"
       );
     }
-    p.aug_count++;
+    p.particle_filters[0].aug_count++;
     if(aug.second) {
-      p.augmented_data.col(jj) = aug.first;
-      p.aug_acceptance++;
+      p.particle_filters[0].augmented_data.col(jj) = aug.first;
+      p.particle_filters[0].aug_acceptance++;
     }
 
   }

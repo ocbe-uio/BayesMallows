@@ -28,7 +28,7 @@ void SMCParameters::update_alpha(
 
   AlphaRatio test = make_new_alpha(
     p.alpha, p.rho, alpha_prop_sd, distfun, pfun,
-    !p.augmented_data.empty() ? p.augmented_data : dat.rankings,
+    !p.particle_filters[0].augmented_data.empty() ? p.particle_filters[0].augmented_data : dat.rankings,
     dat.observation_frequency, dat.n_items, priors
   );
   if(test.accept) {
@@ -42,7 +42,7 @@ void SMCParameters::update_rho(
     const SMCData& dat,
     const std::unique_ptr<Distance>& distfun) const {
   auto proposal = make_new_rho(
-    p.rho, !p.augmented_data.empty() ? p.augmented_data : dat.rankings,
+    p.rho, !p.particle_filters[0].augmented_data.empty() ? p.particle_filters[0].augmented_data : dat.rankings,
     p.alpha, distfun, rho_proposal_function, dat.observation_frequency);
   if(proposal.second) {
     p.rho = proposal.first;

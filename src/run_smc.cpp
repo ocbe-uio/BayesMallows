@@ -53,7 +53,6 @@ Rcpp::List  run_smc(
          }
       );
     }
-
   }
 
   particle_vectors.erase(particle_vectors.begin());
