@@ -6,7 +6,7 @@
 
 using namespace arma;
 
-Particle::Particle(
+StaticParticle::StaticParticle(
   double alpha, const vec& rho, const mat& augmented_data,
   const unsigned int n_assessors, const uvec& particle_consistent) :
   alpha (alpha), rho (rho), augmented_data (augmented_data),
@@ -14,7 +14,7 @@ Particle::Particle(
   consistent(particle_consistent),
   previous_distance(zeros(n_assessors)){}
 
-std::vector<Particle> initialize_particles(
+std::vector<StaticParticle> initialize_particles(
     const Rcpp::List& initial_values,
     unsigned int n_particles,
     const SMCData& dat
@@ -26,7 +26,7 @@ std::vector<Particle> initialize_particles(
     Rcpp::stop("Wrong format for initial values for rho.");
   }
 
-  std::vector<Particle> pvec;
+  std::vector<StaticParticle> pvec;
   pvec.reserve(n_particles);
 
   for(size_t i{}; i < n_particles; i++) {
@@ -42,15 +42,15 @@ std::vector<Particle> initialize_particles(
     }
 
     pvec.emplace_back(
-      Particle(alpha_samples(i), rho_samples.col(i), augmented_data,
+      StaticParticle(alpha_samples(i), rho_samples.col(i), augmented_data,
                dat.n_assessors, particle_consistent));
   }
 
   return pvec;
 }
 
-std::vector<Particle> augment_particles(
-    const std::vector<Particle>& pvec_init,
+std::vector<StaticParticle> augment_particles(
+    const std::vector<StaticParticle>& pvec_init,
     const SMCData& dat, const SMCAugmentation& aug
 ) {
   auto pvec = pvec_init;
@@ -139,7 +139,7 @@ std::vector<Particle> augment_particles(
   return pvec;
 }
 
-cube wrapup_rho(const std::vector<std::vector<Particle>>& particle_vectors) {
+cube wrapup_rho(const std::vector<std::vector<StaticParticle>>& particle_vectors) {
   cube rho_samples(particle_vectors[0][0].rho.size(),
                    particle_vectors[0].size(),
                    particle_vectors.size());
@@ -152,7 +152,7 @@ cube wrapup_rho(const std::vector<std::vector<Particle>>& particle_vectors) {
   return rho_samples;
 }
 
-mat wrapup_alpha(const std::vector<std::vector<Particle>>& particle_vectors) {
+mat wrapup_alpha(const std::vector<std::vector<StaticParticle>>& particle_vectors) {
   mat alpha_samples(particle_vectors[0].size(), particle_vectors.size());
   for(size_t i{}; i < particle_vectors.size(); i++) {
     for(size_t j{}; j < particle_vectors[i].size(); j++) {
@@ -163,7 +163,7 @@ mat wrapup_alpha(const std::vector<std::vector<Particle>>& particle_vectors) {
   return alpha_samples;
 }
 
-cube wrapup_augmented_data(const std::vector<Particle>& pvec) {
+cube wrapup_augmented_data(const std::vector<StaticParticle>& pvec) {
   cube augmented_data;
   if(!pvec[0].augmented_data.is_empty()) {
     augmented_data.set_size(pvec[0].augmented_data.n_rows,
@@ -177,7 +177,7 @@ cube wrapup_augmented_data(const std::vector<Particle>& pvec) {
 }
 
 Rcpp::List compute_particle_acceptance(
-    const std::vector<std::vector<Particle>>& particle_vectors, int mcmc_steps) {
+    const std::vector<std::vector<StaticParticle>>& particle_vectors, int mcmc_steps) {
   vec alpha_acceptance(particle_vectors.size());
   vec rho_acceptance(particle_vectors.size());
   vec aug_acceptance(particle_vectors.size());
@@ -185,21 +185,21 @@ Rcpp::List compute_particle_acceptance(
     alpha_acceptance[i] =
       std::accumulate(
         particle_vectors[i].begin(), particle_vectors[i].end(), 0.0,
-        [](double accumulator, const Particle& p) {
+        [](double accumulator, const StaticParticle& p) {
           return accumulator + p.alpha_acceptance;
           });
     alpha_acceptance[i] /= particle_vectors[i].size() * mcmc_steps;
     rho_acceptance[i] =
       std::accumulate(
         particle_vectors[i].begin(), particle_vectors[i].end(), 0.0,
-        [](double accumulator, const Particle& p) {
+        [](double accumulator, const StaticParticle& p) {
           return accumulator + p.rho_acceptance;
         });
     rho_acceptance[i] /= particle_vectors[i].size() * mcmc_steps;
     aug_acceptance[i] =
       std::accumulate(
         particle_vectors[i].begin(), particle_vectors[i].end(), 0.0,
-        [](double accumulator, const Particle& p) {
+        [](double accumulator, const StaticParticle& p) {
           return accumulator + p.aug_acceptance / p.aug_count;
         });
     aug_acceptance[i] /= particle_vectors[i].size();

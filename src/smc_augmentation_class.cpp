@@ -24,14 +24,14 @@ SMCAugmentation::SMCAugmentation(
   latent_sampling_lag { read_lag(smc_options) } {}
 
 void SMCAugmentation::reweight(
-    std::vector<Particle>& pvec,
+    std::vector<StaticParticle>& pvec,
     const SMCData& dat,
     const std::unique_ptr<PartitionFunction>& pfun,
     const std::unique_ptr<Distance>& distfun
 ) const {
   if(dat.any_missing || dat.augpair) {
     par_for_each(
-      pvec.begin(), pvec.end(), [distfun = &distfun](Particle& p){
+      pvec.begin(), pvec.end(), [distfun = &distfun](StaticParticle& p){
           p.previous_distance = distfun->get()->matdist(p.augmented_data, p.rho);
       });
     pvec = augment_partial(pvec, dat);
@@ -39,7 +39,7 @@ void SMCAugmentation::reweight(
 
   par_for_each(
     pvec.begin(), pvec.end(), [&dat, distfun = &distfun, pfun = &pfun]
-    (Particle& p){
+    (StaticParticle& p){
       double item_correction_contribution{};
       if(!p.consistent.is_empty()) {
         for(size_t user{}; user < dat.n_assessors - dat.num_new_obs; user++) {
@@ -75,15 +75,15 @@ void SMCAugmentation::reweight(
   );
 }
 
-std::vector<Particle> SMCAugmentation::augment_partial(
-    const std::vector<Particle>& pvec, const SMCData& dat
+std::vector<StaticParticle> SMCAugmentation::augment_partial(
+    const std::vector<StaticParticle>& pvec, const SMCData& dat
 ) const {
-  std::vector<Particle> ret{pvec};
+  std::vector<StaticParticle> ret{pvec};
   par_for_each(
     ret.begin(), ret.end(),
     [&dat, partial_aug_prop = std::ref(partial_aug_prop),
      pairwise_aug_prop = std::ref(pairwise_aug_prop)]
-    (Particle& p){
+    (StaticParticle& p){
        for (size_t user{}; user < dat.n_assessors; user++) {
         if(user < dat.n_assessors - dat.num_new_obs) {
           if(p.consistent.is_empty()) continue;
@@ -109,7 +109,7 @@ std::vector<Particle> SMCAugmentation::augment_partial(
 }
 
 void SMCAugmentation::update_missing_ranks(
-    Particle& p, const SMCData& dat, const std::unique_ptr<Distance>& distfun) const {
+    StaticParticle& p, const SMCData& dat, const std::unique_ptr<Distance>& distfun) const {
   if(!dat.any_missing && !dat.augpair) return;
 
   uvec indices_to_loop = find(max(dat.timepoint) - dat.timepoint < latent_sampling_lag);

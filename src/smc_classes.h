@@ -4,10 +4,10 @@
 #include "classes.h"
 #include "resampler.h"
 
-struct Particle {
-  Particle(double alpha, const arma::vec& rho, const arma::mat& augmented_data,
+struct StaticParticle {
+  StaticParticle(double alpha, const arma::vec& rho, const arma::mat& augmented_data,
            const unsigned int n_assessors, const arma::uvec& particle_consistent);
-  ~Particle() = default;
+  ~StaticParticle() = default;
 
   double alpha;
   arma::vec rho;
@@ -43,19 +43,19 @@ struct SMCParameters {
   ~SMCParameters() = default;
 
   void update_alpha(
-      Particle& p,
+      StaticParticle& p,
       const SMCData& dat,
       const std::unique_ptr<PartitionFunction>& pfun,
       const std::unique_ptr<Distance>& distfun,
       const Priors& priors) const;
 
   void update_rho(
-      Particle& p,
+      StaticParticle& p,
       const SMCData& dat,
       const std::unique_ptr<Distance>& distfun
   ) const;
 
-  void resample(std::vector<Particle>& pvec);
+  void resample(std::vector<StaticParticle>& pvec);
   const unsigned int mcmc_steps;
   const std::string metric;
   const unsigned int n_particles;
@@ -76,12 +76,12 @@ struct SMCAugmentation {
   ~SMCAugmentation() = default;
 
   void reweight(
-      std::vector<Particle>& pvec,
+      std::vector<StaticParticle>& pvec,
       const SMCData& dat,
       const std::unique_ptr<PartitionFunction>& pfun,
       const std::unique_ptr<Distance>& distfun) const;
 
-  void update_missing_ranks(Particle& p, const SMCData& dat,
+  void update_missing_ranks(StaticParticle& p, const SMCData& dat,
       const std::unique_ptr<Distance>& distfun) const;
 
   const int max_topological_sorts;
@@ -90,6 +90,6 @@ private:
   const std::unique_ptr<PartialProposal> partial_aug_prop;
   const std::unique_ptr<PairwiseProposal> pairwise_aug_prop;
   const unsigned int latent_sampling_lag;
-  std::vector<Particle> augment_partial(
-      const std::vector<Particle>& pvec, const SMCData& dat) const;
+  std::vector<StaticParticle> augment_partial(
+      const std::vector<StaticParticle>& pvec, const SMCData& dat) const;
 };

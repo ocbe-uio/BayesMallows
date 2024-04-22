@@ -26,7 +26,7 @@ Rcpp::List  run_smc(
   Priors pris{priors};
   SMCAugmentation aug{compute_options, smc_options};
 
-  std::vector<std::vector<Particle>> particle_vectors(new_data.size() + 1);
+  std::vector<std::vector<StaticParticle>> particle_vectors(new_data.size() + 1);
   particle_vectors[0] = initialize_particles(initial_values, pars.n_particles, dat);
 
   auto pfun = choose_partition_function(
@@ -44,7 +44,7 @@ Rcpp::List  run_smc(
         particle_vectors[t + 1].begin(), particle_vectors[t + 1].end(),
         [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),
          pfun = std::ref(pfun)]
-        (Particle& p) {
+        (StaticParticle& p) {
            for(size_t i{}; i < pars.mcmc_steps; i++) {
              pars.update_rho(p, dat, distfun);
              pars.update_alpha(p, dat, pfun, distfun, pris);
