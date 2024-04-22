@@ -55,10 +55,7 @@ struct SMCParameters {
       const std::unique_ptr<Distance>& distfun
   ) const;
 
-  arma::ivec draw_resampling_index(
-      const std::vector<Particle>& pvec) const;
   void resample(std::vector<Particle>& pvec) const;
-
   const unsigned int mcmc_steps;
   const std::string metric;
   const unsigned int n_particles;
@@ -67,6 +64,7 @@ private:
   const std::unique_ptr<RhoProposal> rho_proposal_function;
   const double alpha_prop_sd;
   const std::unique_ptr<Resampler> resampler;
+  const int resampling_threshold;
 };
 
 struct SMCAugmentation {

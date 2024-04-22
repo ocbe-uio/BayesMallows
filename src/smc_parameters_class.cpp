@@ -1,6 +1,7 @@
 #include <utility>
 #include "smc_classes.h"
 #include "proposal_functions.h"
+#include "parallel_utils.h"
 using namespace arma;
 
 SMCParameters::SMCParameters(
@@ -15,7 +16,8 @@ SMCParameters::SMCParameters(
     choose_rho_proposal(compute_options["rho_proposal"],
                         compute_options["leap_size"])},
   alpha_prop_sd { compute_options["alpha_prop_sd"] },
-  resampler { choose_resampler(std::string(smc_options["resampler"])) } {}
+  resampler { choose_resampler(std::string(smc_options["resampler"])) },
+  resampling_threshold { smc_options["resampling_threshold"]} {}
 
 void SMCParameters::update_alpha(
     Particle& p,
@@ -48,21 +50,17 @@ void SMCParameters::update_rho(
   }
 }
 
-arma::ivec SMCParameters::draw_resampling_index(
-  const std::vector<Particle>& pvec
-) const {
+void SMCParameters::resample(std::vector<Particle>& pvec) const {
+
   arma::vec log_inc_wgt(pvec.size());
   std::transform(pvec.cbegin(), pvec.cend(), log_inc_wgt.begin(),
                  [](const Particle& p){ return p.log_inc_wgt; });
 
   arma::vec probs = exp(log_inc_wgt - max(log_inc_wgt) -
     log(sum(exp(log_inc_wgt - max(log_inc_wgt)))));
+  par_for_each(pvec.begin(), pvec.end(), [](Particle& p) { p.log_inc_wgt = 0;});
 
-  return resampler->resample(probs);
-}
-
-void SMCParameters::resample(std::vector<Particle>& pvec) const {
-  arma::ivec index = draw_resampling_index(pvec);
+  arma::ivec index = resampler->resample(probs);
   std::vector<Particle> pvec_old = pvec;
   for(size_t i{}; i < pvec.size(); i++) pvec[i] = pvec_old[index[i]];
 }

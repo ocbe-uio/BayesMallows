@@ -12,6 +12,9 @@
 #'   \insertCite{steinSequentialInferenceMallows2023;textual}{BayesMallows},
 #'   stratified, systematic, or residual resampling typically give lower Monte
 #'   Carlo error \insertCite{Douc2005,Hol2006,Naesseth2019}{BayesMallows}.
+#' @param resampling_threshold When the effective sample size goes below this
+#'   threshold, resampling is done. Set to `n_particles` for backward
+#'   compatibility.
 #' @param latent_sampling_lag Parameter specifying the number of timesteps to go
 #'   back when resampling the latent ranks in the move step. See Section 6.2.3
 #'   of \insertCite{Kantas2015}{BayesMallows} for details. The \eqn{L} in their
@@ -68,6 +71,7 @@ set_smc_options <- function(
     n_particles = 1000,
     mcmc_steps = 5,
     resampler = c("stratified", "systematic", "residual", "multinomial"),
+    resampling_threshold = n_particles,
     latent_sampling_lag = NA_integer_,
     max_topological_sorts = 1) {
   validate_integer(n_particles)

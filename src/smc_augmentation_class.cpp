@@ -67,7 +67,7 @@ void SMCAugmentation::reweight(
           sum(distfun->get()->matdist(new_rankings, p.rho));
       }
 
-      p.log_inc_wgt =
+      p.log_inc_wgt = p.log_inc_wgt +
         new_user_contribution + item_correction_contribution -
         dat.num_new_obs * pfun->get()->logz(p.alpha) -
         sum(p.log_aug_prob);
