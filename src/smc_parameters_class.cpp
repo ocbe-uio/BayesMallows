@@ -50,7 +50,7 @@ void SMCParameters::update_rho(
   }
 }
 
-void SMCParameters::resample(std::vector<Particle>& pvec) const {
+void SMCParameters::resample(std::vector<Particle>& pvec) {
 
   arma::vec log_inc_wgt(pvec.size());
   std::transform(pvec.cbegin(), pvec.cend(), log_inc_wgt.begin(),
@@ -58,9 +58,16 @@ void SMCParameters::resample(std::vector<Particle>& pvec) const {
 
   arma::vec probs = exp(log_inc_wgt - max(log_inc_wgt) -
     log(sum(exp(log_inc_wgt - max(log_inc_wgt)))));
-  par_for_each(pvec.begin(), pvec.end(), [](Particle& p) { p.log_inc_wgt = 0;});
 
-  arma::ivec index = resampler->resample(probs);
-  std::vector<Particle> pvec_old = pvec;
-  for(size_t i{}; i < pvec.size(); i++) pvec[i] = pvec_old[index[i]];
+  double ess = 1 / accu(pow(probs, 2));
+
+  if(ess < resampling_threshold) {
+    rejuvenate = true;
+    par_for_each(pvec.begin(), pvec.end(), [](Particle& p) { p.log_inc_wgt = 0;});
+    arma::ivec index = resampler->resample(probs);
+    std::vector<Particle> pvec_old = pvec;
+    for(size_t i{}; i < pvec.size(); i++) pvec[i] = pvec_old[index[i]];
+  } else {
+    rejuvenate = false;
+  }
 }

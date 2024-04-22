@@ -55,10 +55,11 @@ struct SMCParameters {
       const std::unique_ptr<Distance>& distfun
   ) const;
 
-  void resample(std::vector<Particle>& pvec) const;
+  void resample(std::vector<Particle>& pvec);
   const unsigned int mcmc_steps;
   const std::string metric;
   const unsigned int n_particles;
+  bool rejuvenate{false};
 
 private:
   const std::unique_ptr<RhoProposal> rho_proposal_function;

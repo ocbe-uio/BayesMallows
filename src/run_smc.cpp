@@ -39,18 +39,21 @@ Rcpp::List  run_smc(
     particle_vectors[t + 1] = augment_particles(particle_vectors[t], dat, aug);
     aug.reweight(particle_vectors[t + 1], dat, pfun, distfun);
     pars.resample(particle_vectors[t + 1]);
-    par_for_each(
-      particle_vectors[t + 1].begin(), particle_vectors[t + 1].end(),
-      [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),
-       pfun = std::ref(pfun)]
-      (Particle& p) {
-         for(size_t i{}; i < pars.mcmc_steps; i++) {
-           pars.update_rho(p, dat, distfun);
-           pars.update_alpha(p, dat, pfun, distfun, pris);
-           aug.update_missing_ranks(p, dat, distfun);
+    if(pars.rejuvenate) {
+      par_for_each(
+        particle_vectors[t + 1].begin(), particle_vectors[t + 1].end(),
+        [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),
+         pfun = std::ref(pfun)]
+        (Particle& p) {
+           for(size_t i{}; i < pars.mcmc_steps; i++) {
+             pars.update_rho(p, dat, distfun);
+             pars.update_alpha(p, dat, pfun, distfun, pris);
+             aug.update_missing_ranks(p, dat, distfun);
+           }
          }
-       }
-    );
+      );
+    }
+
   }
 
   particle_vectors.erase(particle_vectors.begin());
