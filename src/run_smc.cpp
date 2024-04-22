@@ -35,6 +35,8 @@ Rcpp::List  run_smc(
   auto resampler = choose_resampler(pars.resampling_method);
 
   size_t T = new_data.size();
+  vec ess(T);
+  mat alpha_trace(particle_vector.size(), T);
   for(size_t t{}; t < T; t++) {
     Rcpp::Rcout << t << std::endl;
     dat.update(new_data[t]);
@@ -43,9 +45,9 @@ Rcpp::List  run_smc(
     aug.run_particle_filter(particle_vector, dat, pfun, distfun, resampler, t);
 
     vec resampling_probs = normalize_probs(particle_vector);
-    double ess = 1 / accu(pow(resampling_probs, 2));
+    ess(t) = 1 / accu(pow(resampling_probs, 2));
 
-    if(ess < pars.resampling_threshold) {
+    if(ess(t) < pars.resampling_threshold) {
       resample(particle_vector, resampling_probs, resampler);
 
       for(auto& p : particle_vector) {
@@ -84,6 +86,11 @@ Rcpp::List  run_smc(
        }
      }
     }
+
+    std::transform(
+      particle_vector.cbegin(), particle_vector.cend(), alpha_trace.col(t).begin(),
+      [](const StaticParticle& p) { return p.alpha; }
+    );
   }
 
   Rcpp::List particle_history = Rcpp::List::create(
@@ -91,7 +98,9 @@ Rcpp::List  run_smc(
     Rcpp::Named("alpha_samples") = wrapup_alpha(particle_vector),
     Rcpp::Named("augmented_rankings") = wrapup_augmented_data(particle_vector),
     Rcpp::Named("data") = dat.wrapup(),
-    Rcpp::Named("acceptance_ratios") = 0
+    Rcpp::Named("acceptance_ratios") = 0,
+    Rcpp::Named("ess") = ess,
+    Rcpp::Named("alpha_trace") = alpha_trace
   );
   return particle_history;
 }

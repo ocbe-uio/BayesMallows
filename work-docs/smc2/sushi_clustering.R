@@ -20,10 +20,12 @@ mod <- compute_mallows_sequentially(
 
 hist(mod$alpha_samples)
 
+plot(mod$ess, type = "b")
+
 plot_dat <- data.frame(
   n_obs = seq_along(dat),
-  alpha_mean = apply(mod$alpha_samples, 2, mean),
-  alpha_sd = apply(mod$alpha_samples, 2, sd)
+  alpha_mean = apply(mod$alpha_trace, 2, mean),
+  alpha_sd = apply(mod$alpha_trace, 2, sd)
 )
 
 ggplot(plot_dat, aes(x = n_obs, y = alpha_mean, ymin = alpha_mean - alpha_sd,
