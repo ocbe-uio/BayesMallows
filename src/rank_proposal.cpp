@@ -93,7 +93,6 @@ std::pair<unsigned int, unsigned int> sample(
   return std::make_pair(ind1, ind2);
 }
 
-
 RhoProposal::RhoProposal(int leap_size) :
   leap_size { leap_size } {}
 

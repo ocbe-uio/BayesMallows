@@ -2,7 +2,6 @@
 #include <numeric>
 #include "smc_classes.h"
 #include "missing_data.h"
-#include "all_topological_sorts.h"
 
 using namespace arma;
 
@@ -11,7 +10,7 @@ LatentParticle::LatentParticle(
   const unsigned int n_assessors) :
   augmented_data (augmented_data),
   consistent(particle_consistent),
-  log_aug_prob (zeros(n_assessors)) {}
+  log_proposal_prob (zeros(n_assessors)) {}
 
 StaticParticle::StaticParticle(
   double alpha, const vec& rho, const unsigned int n_assessors,
@@ -20,9 +19,70 @@ StaticParticle::StaticParticle(
   alpha (alpha), rho (rho),
   previous_distance(zeros(n_assessors)) {}
 
+void StaticParticle::prepare_particle_filter(const SMCData& dat) {
+  alpha_acceptance = 0;
+  rho_acceptance = 0;
+
+  for(auto& pf : particle_filters) {
+    if(dat.any_missing || dat.augpair) {
+      pf.consistent = ones<uvec>(dat.n_assessors - dat.num_new_obs);
+    }
+
+    if(dat.any_missing) {
+      for(auto index : dat.updated_match) {
+        vec to_compare = dat.rankings.col(index);
+        uvec comparison_inds = find(to_compare > 0);
+        vec augmented = pf.augmented_data(span::all, span(index));
+        bool check = all(to_compare(comparison_inds) == augmented(comparison_inds));
+        pf.consistent(index) = check;
+        if(!check) {
+          pf.augmented_data.col(index) =
+            initialize_missing_ranks_vec(to_compare, dat.missing_indicator.col(index));
+        }
+      }
+
+      if(dat.num_new_obs > 0) {
+        mat tmp = initialize_missing_ranks(
+          dat.new_rankings,
+          dat.missing_indicator(
+            span::all,
+            span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)));
+
+        pf.augmented_data.resize(dat.n_items, dat.rankings.n_cols);
+        pf.augmented_data(
+            span::all,
+            span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)
+        ) = tmp;
+        pf.log_proposal_prob.resize(dat.rankings.n_cols);
+      }
+    } else if (dat.augpair) {
+      for(auto index : dat.updated_match) {
+        pf.consistent(index) = 1;
+        vec augmented = pf.augmented_data(span::all, span(index));
+        auto items_above_for_user = dat.items_above[index];
+        size_t item1{};
+        while(pf.consistent(index) == 1 && item1 < items_above_for_user.size()) {
+          size_t item2{};
+          while(pf.consistent(index) == 1 && item2 < items_above_for_user[item1].size()) {
+            if(augmented(items_above_for_user[item1][item2] - 1) > augmented(item1)) {
+              pf.consistent(index) = 0;
+            }
+            item2++;
+          }
+          item1++;
+        }
+      }
+
+      pf.augmented_data.resize(dat.n_items, dat.rankings.n_cols);
+      pf.log_proposal_prob.resize(dat.rankings.n_cols);
+    }
+  }
+}
+
 std::vector<StaticParticle> initialize_particles(
     const Rcpp::List& initial_values,
     unsigned int n_particles,
+    unsigned int n_particle_filters,
     const SMCData& dat
 ) {
   vec alpha_samples(initial_values["alpha_init"]);
@@ -38,19 +98,22 @@ std::vector<StaticParticle> initialize_particles(
   Rcpp::Nullable<cube> aug_init(initial_values["aug_init"]);
   for(size_t i{}; i < n_particles; i++) {
     std::vector<LatentParticle> latvec;
-    latvec.reserve(1);
-    uvec particle_consistent;
-    mat augmented_data;
-    if(dat.any_missing || dat.augpair) {
-      if(aug_init.isNotNull()) {
-        particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
-        augmented_data = Rcpp::as<cube>(aug_init).slice(i);
-      } else {
-        augmented_data = initialize_missing_ranks(dat.rankings, dat.missing_indicator);
+    latvec.reserve(n_particle_filters);
+
+    for(size_t j{}; j < n_particle_filters; j++) {
+      uvec particle_consistent;
+      mat augmented_data;
+      if(dat.any_missing || dat.augpair) {
+        if(aug_init.isNotNull()) {
+          particle_consistent = uvec(dat.n_assessors - dat.num_new_obs, fill::ones);
+          augmented_data = Rcpp::as<cube>(aug_init).slice(i);
+        } else {
+          augmented_data = initialize_missing_ranks(dat.rankings, dat.missing_indicator);
+        }
       }
+      latvec.emplace_back(LatentParticle(augmented_data, particle_consistent, dat.n_assessors));
     }
 
-    latvec.emplace_back(LatentParticle(augmented_data, particle_consistent, dat.n_assessors));
     pvec.emplace_back(
       StaticParticle(
         alpha_samples(i), rho_samples.col(i), dat.n_assessors,
@@ -60,113 +123,18 @@ std::vector<StaticParticle> initialize_particles(
   return pvec;
 }
 
-std::vector<StaticParticle> prepare_particle_filter(
-    const std::vector<StaticParticle>& pvec_init,
-    const SMCData& dat, const SMCAugmentation& aug
-) {
-  auto pvec = pvec_init;
-
-  for(size_t static_particle_i{}; static_particle_i < pvec.size(); static_particle_i++) {
-    pvec[static_particle_i].alpha_acceptance = 0;
-    pvec[static_particle_i].rho_acceptance = 0;
-
-    for(
-      size_t latent_particle_j{};
-      latent_particle_j < pvec[static_particle_i].particle_filters.size();
-      latent_particle_j++
-        ) {
-      if(dat.any_missing || dat.augpair) {
-        pvec[static_particle_i].particle_filters[latent_particle_j].consistent = ones<uvec>(dat.n_assessors - dat.num_new_obs);
-      }
-
-      if(dat.any_missing) {
-        for(auto index : dat.updated_match) {
-          vec to_compare = dat.rankings.col(index);
-          uvec comparison_inds = find(to_compare > 0);
-          vec augmented = pvec[static_particle_i].particle_filters[latent_particle_j].augmented_data(span::all, span(index));
-          bool check = all(to_compare(comparison_inds) == augmented(comparison_inds));
-          pvec[static_particle_i].particle_filters[latent_particle_j].consistent(index) = check;
-          if(!check) {
-            pvec[static_particle_i].particle_filters[latent_particle_j].augmented_data.col(index) =
-              initialize_missing_ranks_vec(to_compare, dat.missing_indicator.col(index));
-          }
-        }
-
-        if(dat.num_new_obs > 0) {
-          mat tmp = initialize_missing_ranks(
-            dat.new_rankings,
-            dat.missing_indicator(
-              span::all,
-              span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)));
-
-          pvec[static_particle_i].particle_filters[latent_particle_j].augmented_data.resize(dat.n_items, dat.rankings.n_cols);
-          pvec[static_particle_i].particle_filters[latent_particle_j].augmented_data(
-              span::all,
-              span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)
-          ) = tmp;
-          pvec[static_particle_i].particle_filters[latent_particle_j].log_aug_prob.resize(dat.rankings.n_cols);
-        }
-      } else if (dat.augpair) {
-        for(auto index : dat.updated_match) {
-          pvec[static_particle_i].particle_filters[latent_particle_j].consistent(index) = 1;
-          vec augmented = pvec[static_particle_i].particle_filters[latent_particle_j].augmented_data(span::all, span(index));
-          auto items_above_for_user = dat.items_above[index];
-          size_t item1{};
-          while(pvec[static_particle_i].particle_filters[latent_particle_j].consistent(index) == 1 && item1 < items_above_for_user.size()) {
-            size_t item2{};
-            while(pvec[static_particle_i].particle_filters[latent_particle_j].consistent(index) == 1 && item2 < items_above_for_user[item1].size()) {
-              if(augmented(items_above_for_user[item1][item2] - 1) > augmented(item1)) {
-                pvec[static_particle_i].particle_filters[latent_particle_j].consistent(index) = 0;
-              }
-              item2++;
-            }
-            item1++;
-          }
-        }
-
-        pvec[static_particle_i].particle_filters[latent_particle_j].augmented_data.resize(dat.n_items, dat.rankings.n_cols);
-
-        for(int k{}; k < dat.n_assessors; k++) {
-          Rcpp::IntegerVector test = Rcpp::intersect(dat.updated_match, Rcpp::IntegerVector{k});
-          if(k >= (dat.n_assessors - dat.num_new_obs) || test.size() > 0) {
-            uvec indices = find(dat.preferences.col(0) == dat.user_ids[k]);
-            imat prefs = dat.preferences.rows(indices);
-            imat sorts = all_topological_sorts(prefs.cols(1, 2), dat.n_items, aug.max_topological_sorts);
-
-            Rcpp::IntegerVector v = Rcpp::sample(sorts.n_rows, 1, false, R_NilValue, false);
-            ivec ordering = sorts.row(v[0]).t();
-            uvec rank = sort_index(ordering) + 1;
-            pvec[static_particle_i].particle_filters[latent_particle_j].augmented_data.col(k) = conv_to<vec>::from(rank);
-          }
-        }
-        pvec[static_particle_i].particle_filters[latent_particle_j].log_aug_prob.resize(dat.rankings.n_cols);
-      }
-    }
+mat wrapup_rho(const std::vector<StaticParticle>& particle_vector) {
+  mat rho_samples(particle_vector[0].rho.size(), particle_vector.size());
+  for(size_t j{}; j < particle_vector.size(); j++) {
+    rho_samples(span::all, span(j)) = particle_vector[j].rho;
   }
-
-  return pvec;
-}
-
-cube wrapup_rho(const std::vector<std::vector<StaticParticle>>& particle_vectors) {
-  cube rho_samples(particle_vectors[0][0].rho.size(),
-                   particle_vectors[0].size(),
-                   particle_vectors.size());
-  for(size_t i{}; i < particle_vectors.size(); i++) {
-    for(size_t j{}; j < particle_vectors[i].size(); j++) {
-      rho_samples(span::all, span(j), span(i)) = particle_vectors[i][j].rho;
-    }
-  }
-
   return rho_samples;
 }
 
-mat wrapup_alpha(const std::vector<std::vector<StaticParticle>>& particle_vectors) {
-  mat alpha_samples(particle_vectors[0].size(), particle_vectors.size());
-  for(size_t i{}; i < particle_vectors.size(); i++) {
-    for(size_t j{}; j < particle_vectors[i].size(); j++) {
-      alpha_samples(j, i) = particle_vectors[i][j].alpha;
-    }
-  }
+vec wrapup_alpha(const std::vector<StaticParticle>& particle_vector) {
+  vec alpha_samples(particle_vector.size());
+  std::transform(particle_vector.cbegin(), particle_vector.cend(), alpha_samples.begin(),
+                [](const StaticParticle& p) { return p.alpha; });
 
   return alpha_samples;
 }

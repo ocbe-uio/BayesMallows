@@ -24,14 +24,6 @@ test_that("compute_mallows_sequentially works", {
     )
   )
 
-  expect_equal(
-    mod$rho_samples[4, c(3, 9), c(1, 9, 10)],
-    matrix(c(9, 18, 11, 8, 16, 16), ncol = 3)
-  )
-
-  expect_equal(get_acceptance_ratios(mod)$alpha_acceptance[[5]], .80025)
-  expect_equal(get_acceptance_ratios(mod)$rho_acceptance[[7]], .3495)
-
   expect_error(
     compute_mallows_sequentially(potato_visual, initial_values),
     "data must be a list of BayesMallowsData objects."

@@ -26,42 +26,72 @@ Rcpp::List  run_smc(
   Priors pris{priors};
   SMCAugmentation aug{compute_options, smc_options};
 
-  std::vector<std::vector<StaticParticle>> particle_vectors(new_data.size() + 1);
-  particle_vectors[0] = initialize_particles(initial_values, pars.n_particles, dat);
+  std::vector<StaticParticle> particle_vector =
+    initialize_particles(initial_values, pars.n_particles, pars.n_particle_filters, dat);
 
   auto pfun = choose_partition_function(
     dat.n_items, pars.metric, pfun_values, pfun_estimate);
   auto distfun = choose_distance_function(pars.metric);
+  auto resampler = choose_resampler(pars.resampling_method);
 
   size_t T = new_data.size();
   for(size_t t{}; t < T; t++) {
+    Rcpp::Rcout << t << std::endl;
     dat.update(new_data[t]);
-    particle_vectors[t + 1] = prepare_particle_filter(particle_vectors[t], dat, aug);
-    aug.run_particle_filter(particle_vectors[t + 1], dat, pfun, distfun);
-    pars.resample(particle_vectors[t + 1]);
-    if(pars.rejuvenate) {
-      par_for_each(
-        particle_vectors[t + 1].begin(), particle_vectors[t + 1].end(),
-        [&pars, &dat, &pris, &aug, distfun = std::ref(distfun),
-         pfun = std::ref(pfun)]
-        (StaticParticle& p) {
-           for(size_t i{}; i < pars.mcmc_steps; i++) {
-             pars.update_rho(p, dat, distfun);
-             pars.update_alpha(p, dat, pfun, distfun, pris);
-             aug.update_missing_ranks(p, dat, distfun);
-           }
+    std::for_each(particle_vector.begin(), particle_vector.end(),
+                  [&dat](StaticParticle& p){ p.prepare_particle_filter(dat); });
+    aug.run_particle_filter(particle_vector, dat, pfun, distfun, resampler, t);
+
+    vec resampling_probs = normalize_probs(particle_vector);
+    double ess = 1 / accu(pow(resampling_probs, 2));
+
+    if(ess < pars.resampling_threshold) {
+      resample(particle_vector, resampling_probs, resampler);
+
+      for(auto& p : particle_vector) {
+       for(size_t i{}; i < pars.mcmc_steps; i++) {
+         RankProposal rho_proposal = pars.rho_proposal_function->propose(p.rho);
+         double alpha_proposal = R::rlnorm(std::log(p.alpha), pars.alpha_prop_sd);
+
+         Rcpp::List initial_values = Rcpp::List::create(
+           Rcpp::Named("alpha_init") = vec{alpha_proposal, p.alpha},
+           Rcpp::Named("rho_init") = join_rows(rho_proposal.rankings, p.rho),
+           Rcpp::Named("aug_init") = R_NilValue
+         );
+
+         SMCData proposal_dat{data};
+         std::vector<StaticParticle> proposal_particle =
+           initialize_particles(initial_values, 2, pars.n_particle_filters, proposal_dat);
+
+         for(size_t s{}; s < t; s++) {
+           proposal_dat.update(new_data[s]);
+           std::for_each(proposal_particle.begin(), proposal_particle.end(),
+                         [&proposal_dat](StaticParticle& p){ p.prepare_particle_filter(proposal_dat); });
+           aug.run_particle_filter(proposal_particle, proposal_dat, pfun, distfun, resampler, s);
          }
-      );
+         double log_ratio = proposal_particle[0].marginal_log_likelihood - proposal_particle[1].marginal_log_likelihood +
+           std::log(alpha_proposal) - std::log(p.alpha) - std::log(rho_proposal.prob_forward) +
+           std::log(rho_proposal.prob_backward) +
+           pris.lambda * (p.alpha - alpha_proposal) +
+           pris.gamma * (std::log(alpha_proposal) - std::log(p.alpha));
+
+         bool accept = std::log(R::runif(0, 1)) < log_ratio;
+
+         if(accept) {
+           p.alpha = alpha_proposal;
+           p.rho = rho_proposal.rankings;
+         }
+       }
+     }
     }
   }
 
-  particle_vectors.erase(particle_vectors.begin());
   Rcpp::List particle_history = Rcpp::List::create(
-    Rcpp::Named("rho_samples") = wrapup_rho(particle_vectors),
-    Rcpp::Named("alpha_samples") = wrapup_alpha(particle_vectors),
-    Rcpp::Named("augmented_rankings") = wrapup_augmented_data(particle_vectors[T - 1]),
+    Rcpp::Named("rho_samples") = wrapup_rho(particle_vector),
+    Rcpp::Named("alpha_samples") = wrapup_alpha(particle_vector),
+    Rcpp::Named("augmented_rankings") = wrapup_augmented_data(particle_vector),
     Rcpp::Named("data") = dat.wrapup(),
-    Rcpp::Named("acceptance_ratios") = compute_particle_acceptance(particle_vectors, pars.mcmc_steps)
+    Rcpp::Named("acceptance_ratios") = 0
   );
   return particle_history;
 }

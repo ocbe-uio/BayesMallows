@@ -6,6 +6,7 @@
 \usage{
 set_smc_options(
   n_particles = 1000,
+  n_particle_filters = 1,
   mcmc_steps = 5,
   resampler = c("stratified", "systematic", "residual", "multinomial"),
   resampling_threshold = n_particles,
@@ -15,6 +16,10 @@ set_smc_options(
 }
 \arguments{
 \item{n_particles}{Integer specifying the number of particles.}
+
+\item{n_particle_filters}{Number of particle filters for integrating out
+latent variables attached to each particle filters for static parameters.
+Defaults to 1.}
 
 \item{mcmc_steps}{Number of MCMC steps to be applied in the resample-move
 step.}

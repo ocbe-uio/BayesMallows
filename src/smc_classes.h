@@ -4,31 +4,6 @@
 #include "classes.h"
 #include "resampler.h"
 
-struct LatentParticle {
-  LatentParticle(const arma::mat& augmented_data,
-                 const arma::uvec& particle_consistent,
-                 const unsigned int n_assessors);
-  arma::mat augmented_data;
-  arma::uvec consistent;
-  double aug_acceptance{};
-  int aug_count{};
-  arma::vec log_aug_prob;
-};
-
-struct StaticParticle {
-  StaticParticle(double alpha, const arma::vec& rho, const unsigned int n_assessors,
-                 const std::vector<LatentParticle>& lp);
-  ~StaticParticle() = default;
-
-  std::vector<LatentParticle> particle_filters;
-  double alpha;
-  arma::vec rho;
-  double log_inc_wgt{};
-  arma::vec previous_distance;
-  double alpha_acceptance{};
-  double rho_acceptance{};
-};
-
 struct SMCData : Data {
   SMCData(const Rcpp::List& data);
   void update(const Rcpp::List& new_data);
@@ -40,6 +15,35 @@ struct SMCData : Data {
   Rcpp::IntegerVector user_ids{};
   Rcpp::IntegerVector updated_match{};
   arma::imat preferences;
+};
+
+struct LatentParticle {
+  LatentParticle(const arma::mat& augmented_data,
+                 const arma::uvec& particle_consistent,
+                 const unsigned int n_assessors);
+  arma::mat augmented_data;
+  arma::uvec consistent;
+  double aug_acceptance{};
+  int aug_count{};
+  arma::vec log_proposal_prob;
+  double log_inc_wgt{};
+};
+
+struct StaticParticle {
+  StaticParticle(double alpha, const arma::vec& rho, const unsigned int n_assessors,
+                 const std::vector<LatentParticle>& lp);
+  ~StaticParticle() = default;
+
+  void prepare_particle_filter(const SMCData& dat);
+
+  std::vector<LatentParticle> particle_filters;
+  double alpha;
+  arma::vec rho;
+  double log_inc_wgt{};
+  arma::vec previous_distance;
+  double alpha_acceptance{};
+  double rho_acceptance{};
+  double marginal_log_likelihood{};
 };
 
 struct SMCParameters {
@@ -62,17 +66,14 @@ struct SMCParameters {
       const std::unique_ptr<Distance>& distfun
   ) const;
 
-  void resample(std::vector<StaticParticle>& pvec);
   const unsigned int mcmc_steps;
   const std::string metric;
   const unsigned int n_particles;
-  bool rejuvenate{false};
-
-private:
+  const unsigned int n_particle_filters;
+  const int resampling_threshold;
   const std::unique_ptr<RhoProposal> rho_proposal_function;
   const double alpha_prop_sd;
-  const std::unique_ptr<Resampler> resampler;
-  const int resampling_threshold;
+  std::string resampling_method;
 };
 
 struct SMCAugmentation {
@@ -86,7 +87,9 @@ struct SMCAugmentation {
       std::vector<StaticParticle>& pvec,
       const SMCData& dat,
       const std::unique_ptr<PartitionFunction>& pfun,
-      const std::unique_ptr<Distance>& distfun) const;
+      const std::unique_ptr<Distance>& distfun,
+      const std::unique_ptr<Resampler>& resampler,
+      size_t time) const;
 
   void update_missing_ranks(StaticParticle& p, const SMCData& dat,
       const std::unique_ptr<Distance>& distfun) const;

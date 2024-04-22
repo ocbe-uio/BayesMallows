@@ -1,8 +1,10 @@
 devtools::load_all()
 library(ggplot2)
 
-dat <- lapply(1:150, function(i) {
-  setup_rank_data(sushi_rankings[i, ], user_ids = i)
+dat <- lapply(1:50, function(i) {
+  dd <- sushi_rankings[i, ]
+  dd[runif(10) > .7] <- NA
+  setup_rank_data(dd, user_ids = i)
 })
 
 initial_values <- sample_prior(
@@ -13,8 +15,10 @@ initial_values <- sample_prior(
 mod <- compute_mallows_sequentially(
   data = dat,
   initial_values = initial_values,
-  smc_options = set_smc_options(n_particles = 500, resampling_threshold = 250)
+  smc_options = set_smc_options(n_particles = 200, n_particle_filters = 10, resampling_threshold = 100)
 )
+
+hist(mod$alpha_samples)
 
 plot_dat <- data.frame(
   n_obs = seq_along(dat),
