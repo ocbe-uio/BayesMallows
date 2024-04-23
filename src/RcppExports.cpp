@@ -144,8 +144,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // run_smc
-Rcpp::List run_smc(Rcpp::List data, Rcpp::List new_data, Rcpp::List model_options, Rcpp::List smc_options, Rcpp::List compute_options, Rcpp::List priors, Rcpp::List initial_values, Rcpp::Nullable<arma::mat> pfun_values, Rcpp::Nullable<arma::mat> pfun_estimate);
-RcppExport SEXP _BayesMallows_run_smc(SEXP dataSEXP, SEXP new_dataSEXP, SEXP model_optionsSEXP, SEXP smc_optionsSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP initial_valuesSEXP, SEXP pfun_valuesSEXP, SEXP pfun_estimateSEXP) {
+Rcpp::List run_smc(Rcpp::List data, Rcpp::List new_data, Rcpp::List model_options, Rcpp::List smc_options, Rcpp::List compute_options, Rcpp::List priors, Rcpp::Nullable<arma::mat> pfun_values, Rcpp::Nullable<arma::mat> pfun_estimate);
+RcppExport SEXP _BayesMallows_run_smc(SEXP dataSEXP, SEXP new_dataSEXP, SEXP model_optionsSEXP, SEXP smc_optionsSEXP, SEXP compute_optionsSEXP, SEXP priorsSEXP, SEXP pfun_valuesSEXP, SEXP pfun_estimateSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -155,10 +155,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::List >::type smc_options(smc_optionsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type compute_options(compute_optionsSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type priors(priorsSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type initial_values(initial_valuesSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::mat> >::type pfun_values(pfun_valuesSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::mat> >::type pfun_estimate(pfun_estimateSEXP);
-    rcpp_result_gen = Rcpp::wrap(run_smc(data, new_data, model_options, smc_options, compute_options, priors, initial_values, pfun_values, pfun_estimate));
+    rcpp_result_gen = Rcpp::wrap(run_smc(data, new_data, model_options, smc_options, compute_options, priors, pfun_values, pfun_estimate));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -173,7 +172,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_BayesMallows_get_partition_function", (DL_FUNC) &_BayesMallows_get_partition_function, 4},
     {"_BayesMallows_rmallows", (DL_FUNC) &_BayesMallows_rmallows, 7},
     {"_BayesMallows_run_mcmc", (DL_FUNC) &_BayesMallows_run_mcmc, 8},
-    {"_BayesMallows_run_smc", (DL_FUNC) &_BayesMallows_run_smc, 9},
+    {"_BayesMallows_run_smc", (DL_FUNC) &_BayesMallows_run_smc, 8},
     {NULL, NULL, 0}
 };
 

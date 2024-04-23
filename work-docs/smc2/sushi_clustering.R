@@ -3,7 +3,7 @@ library(ggplot2)
 
 dat <- lapply(1:50, function(i) {
   dd <- sushi_rankings[i, ]
-  dd[runif(10) > .7] <- NA
+  #dd[runif(10) > .7] <- NA
   setup_rank_data(dd, user_ids = i)
 })
 
@@ -14,8 +14,8 @@ initial_values <- sample_prior(
 
 mod <- compute_mallows_sequentially(
   data = dat,
-  initial_values = initial_values,
-  smc_options = set_smc_options(n_particles = 500, n_particle_filters = 10, resampling_threshold = 250)
+  smc_options = set_smc_options(n_particles = 2000, n_particle_filters = 1, resampling_threshold = 1000),
+  priors = set_priors(gamma = 3, lambda = .1)
 )
 
 hist(mod$alpha_samples)
@@ -27,6 +27,7 @@ plot_dat <- data.frame(
   alpha_mean = apply(mod$alpha_trace, 2, mean),
   alpha_sd = apply(mod$alpha_trace, 2, sd)
 )
+
 
 
 ggplot(plot_dat[-1, ], aes(x = n_obs, y = alpha_mean, ymin = alpha_mean - alpha_sd,

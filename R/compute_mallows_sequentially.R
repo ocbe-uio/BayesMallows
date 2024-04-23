@@ -12,8 +12,6 @@
 #' @param data A list of objects of class "BayesMallowsData" returned from
 #'   [setup_rank_data()]. Each list element is interpreted as the data belonging
 #'   to a given timepoint.
-#' @param initial_values An object of class "BayesMallowsPriorSamples" returned
-#'   from [sample_prior()].
 #' @param model_options An object of class "BayesMallowsModelOptions" returned
 #'   from [set_model_options()].
 #' @param smc_options An object of class "SMCOptions" returned from
@@ -44,13 +42,12 @@
 #'
 compute_mallows_sequentially <- function(
     data,
-    initial_values,
     model_options = set_model_options(),
     smc_options = set_smc_options(),
     compute_options = set_compute_options(),
     priors = set_priors(),
     pfun_estimate = NULL) {
-  validate_class(initial_values, "BayesMallowsPriorSamples")
+
   if (!is.list(data) | !all(vapply(data, inherits, logical(1), "BayesMallowsData"))) {
     stop("data must be a list of BayesMallowsData objects.")
   }
@@ -70,8 +67,6 @@ compute_mallows_sequentially <- function(
     x
   })
   pfun_values <- extract_pfun_values(model_options$metric, data[[1]]$n_items, pfun_estimate)
-  alpha_init <- sample(initial_values$alpha, smc_options$n_particles, replace = TRUE)
-  rho_init <- initial_values$rho[, sample(ncol(initial_values$rho), smc_options$n_particles, replace = TRUE)]
 
   ret <- run_smc(
     data = flush(data[[1]]),
@@ -80,7 +75,6 @@ compute_mallows_sequentially <- function(
     smc_options = smc_options,
     compute_options = compute_options,
     priors = priors,
-    initial_values = list(alpha_init = alpha_init, rho_init = rho_init, aug_init = NULL),
     pfun_values = pfun_values,
     pfun_estimate = pfun_estimate
   )

@@ -17,7 +17,6 @@ Rcpp::List  run_smc(
   Rcpp::List smc_options,
   Rcpp::List compute_options,
   Rcpp::List priors,
-  Rcpp::List initial_values,
   Rcpp::Nullable<arma::mat> pfun_values,
   Rcpp::Nullable<arma::mat> pfun_estimate) {
 
@@ -25,6 +24,16 @@ Rcpp::List  run_smc(
   SMCParameters pars{model_options, compute_options, smc_options};
   Priors pris{priors};
   SMCAugmentation aug{compute_options, smc_options};
+
+  vec alpha_init = randg(pars.n_particles, distr_param(pris.gamma, 1 / pris.lambda));
+  Rcpp::List initial_values;
+  initial_values["alpha_init"] = alpha_init;
+  mat rho_init(dat.n_items, pars.n_particles);
+  for(size_t i{}; i < pars.n_particles; i++) {
+    rho_init.col(i) = conv_to<vec>::from(randperm(dat.n_items) + 1);
+  }
+  initial_values["rho_init"] = rho_init;
+  initial_values["aug_init"] = R_NilValue;
 
   std::vector<StaticParticle> particle_vector =
     initialize_particles(initial_values, pars.n_particles, pars.n_particle_filters, dat);
