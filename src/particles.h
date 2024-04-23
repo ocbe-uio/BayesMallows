@@ -39,5 +39,3 @@ arma::vec normalize_probs(std::vector<T>& pvec) {
 arma::mat wrapup_rho(const std::vector<StaticParticle>& particle_vector);
 arma::vec wrapup_alpha(const std::vector<StaticParticle>& pvec);
 arma::cube wrapup_augmented_data(const std::vector<StaticParticle>& pvec);
-
-Rcpp::List compute_particle_acceptance(const std::vector<std::vector<StaticParticle>>& particle_vectors, int mcmc_steps);

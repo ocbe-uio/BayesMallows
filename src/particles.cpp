@@ -2,6 +2,7 @@
 #include <numeric>
 #include "smc_classes.h"
 #include "missing_data.h"
+#include "parallel_utils.h"
 
 using namespace arma;
 
@@ -20,64 +21,62 @@ StaticParticle::StaticParticle(
   previous_distance(zeros(n_assessors)) {}
 
 void StaticParticle::prepare_particle_filter(const SMCData& dat) {
-  alpha_acceptance = 0;
-  rho_acceptance = 0;
+  par_for_each(
+    particle_filters.begin(), particle_filters.end(),
+    [&dat](LatentParticle& pf){
+     if(dat.any_missing || dat.augpair) {
+       pf.consistent = ones<uvec>(dat.n_assessors - dat.num_new_obs);
+     }
+     if(dat.any_missing) {
+       for(auto index : dat.updated_match) {
+         vec to_compare = dat.rankings.col(index);
+         uvec comparison_inds = find(to_compare > 0);
+         vec augmented = pf.augmented_data(span::all, span(index));
+         bool check = all(to_compare(comparison_inds) == augmented(comparison_inds));
+         pf.consistent(index) = check;
+         if(!check) {
+           pf.augmented_data.col(index) =
+             initialize_missing_ranks_vec(to_compare, dat.missing_indicator.col(index));
+         }
+       }
 
-  for(auto& pf : particle_filters) {
-    if(dat.any_missing || dat.augpair) {
-      pf.consistent = ones<uvec>(dat.n_assessors - dat.num_new_obs);
-    }
+       if(dat.num_new_obs > 0) {
+         mat tmp = initialize_missing_ranks(
+           dat.new_rankings,
+           dat.missing_indicator(
+             span::all,
+             span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)));
 
-    if(dat.any_missing) {
-      for(auto index : dat.updated_match) {
-        vec to_compare = dat.rankings.col(index);
-        uvec comparison_inds = find(to_compare > 0);
-        vec augmented = pf.augmented_data(span::all, span(index));
-        bool check = all(to_compare(comparison_inds) == augmented(comparison_inds));
-        pf.consistent(index) = check;
-        if(!check) {
-          pf.augmented_data.col(index) =
-            initialize_missing_ranks_vec(to_compare, dat.missing_indicator.col(index));
-        }
-      }
+         pf.augmented_data.resize(dat.n_items, dat.rankings.n_cols);
+         pf.augmented_data(
+           span::all,
+           span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)
+         ) = tmp;
+         pf.log_proposal_prob.resize(dat.rankings.n_cols);
+       }
+     } else if (dat.augpair) {
+       for(auto index : dat.updated_match) {
+         pf.consistent(index) = 1;
+         vec augmented = pf.augmented_data(span::all, span(index));
+         auto items_above_for_user = dat.items_above[index];
+         size_t item1{};
+         while(pf.consistent(index) == 1 && item1 < items_above_for_user.size()) {
+           size_t item2{};
+           while(pf.consistent(index) == 1 && item2 < items_above_for_user[item1].size()) {
+             if(augmented(items_above_for_user[item1][item2] - 1) > augmented(item1)) {
+               pf.consistent(index) = 0;
+             }
+             item2++;
+           }
+           item1++;
+         }
+       }
 
-      if(dat.num_new_obs > 0) {
-        mat tmp = initialize_missing_ranks(
-          dat.new_rankings,
-          dat.missing_indicator(
-            span::all,
-            span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)));
-
-        pf.augmented_data.resize(dat.n_items, dat.rankings.n_cols);
-        pf.augmented_data(
-            span::all,
-            span(dat.rankings.n_cols - dat.num_new_obs, dat.rankings.n_cols - 1)
-        ) = tmp;
-        pf.log_proposal_prob.resize(dat.rankings.n_cols);
-      }
-    } else if (dat.augpair) {
-      for(auto index : dat.updated_match) {
-        pf.consistent(index) = 1;
-        vec augmented = pf.augmented_data(span::all, span(index));
-        auto items_above_for_user = dat.items_above[index];
-        size_t item1{};
-        while(pf.consistent(index) == 1 && item1 < items_above_for_user.size()) {
-          size_t item2{};
-          while(pf.consistent(index) == 1 && item2 < items_above_for_user[item1].size()) {
-            if(augmented(items_above_for_user[item1][item2] - 1) > augmented(item1)) {
-              pf.consistent(index) = 0;
-            }
-            item2++;
-          }
-          item1++;
-        }
-      }
-
-      pf.augmented_data.resize(dat.n_items, dat.rankings.n_cols);
-      pf.log_proposal_prob.resize(dat.rankings.n_cols);
-    }
+       pf.augmented_data.resize(dat.n_items, dat.rankings.n_cols);
+       pf.log_proposal_prob.resize(dat.rankings.n_cols);
+     }
+   });
   }
-}
 
 std::vector<StaticParticle> initialize_particles(
     const Rcpp::List& initial_values,
@@ -150,39 +149,4 @@ cube wrapup_augmented_data(const std::vector<StaticParticle>& pvec) {
     }
   }
   return augmented_data;
-}
-
-Rcpp::List compute_particle_acceptance(
-    const std::vector<std::vector<StaticParticle>>& particle_vectors, int mcmc_steps) {
-  vec alpha_acceptance(particle_vectors.size());
-  vec rho_acceptance(particle_vectors.size());
-  vec aug_acceptance(particle_vectors.size());
-  for(size_t i{}; i < particle_vectors.size(); i++) {
-    alpha_acceptance[i] =
-      std::accumulate(
-        particle_vectors[i].begin(), particle_vectors[i].end(), 0.0,
-        [](double accumulator, const StaticParticle& p) {
-          return accumulator + p.alpha_acceptance;
-          });
-    alpha_acceptance[i] /= particle_vectors[i].size() * mcmc_steps;
-    rho_acceptance[i] =
-      std::accumulate(
-        particle_vectors[i].begin(), particle_vectors[i].end(), 0.0,
-        [](double accumulator, const StaticParticle& p) {
-          return accumulator + p.rho_acceptance;
-        });
-    rho_acceptance[i] /= particle_vectors[i].size() * mcmc_steps;
-    aug_acceptance[i] =
-      std::accumulate(
-        particle_vectors[i].begin(), particle_vectors[i].end(), 0.0,
-        [](double accumulator, const StaticParticle& p) {
-          return accumulator + p.particle_filters[0].aug_acceptance / p.particle_filters[0].aug_count;
-        });
-    aug_acceptance[i] /= particle_vectors[i].size();
-  }
-  return Rcpp::List::create(
-    Rcpp::Named("alpha_acceptance") = alpha_acceptance,
-    Rcpp::Named("rho_acceptance") = rho_acceptance,
-    Rcpp::Named("aug_acceptance") = aug_acceptance
-  );
 }

@@ -41,8 +41,6 @@ struct StaticParticle {
   arma::vec rho;
   double log_inc_wgt{};
   arma::vec previous_distance;
-  double alpha_acceptance{};
-  double rho_acceptance{};
   double marginal_log_likelihood{};
 };
 

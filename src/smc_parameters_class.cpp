@@ -34,7 +34,6 @@ void SMCParameters::update_alpha(
   );
   if(test.accept) {
     p.alpha = test.proposal;
-    p.alpha_acceptance++;
   }
 }
 
@@ -47,7 +46,6 @@ void SMCParameters::update_rho(
     p.alpha, distfun, rho_proposal_function, dat.observation_frequency);
   if(proposal.second) {
     p.rho = proposal.first;
-    p.rho_acceptance++;
   }
 }
 

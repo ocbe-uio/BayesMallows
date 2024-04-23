@@ -40,8 +40,8 @@ Rcpp::List  run_smc(
   for(size_t t{}; t < T; t++) {
     Rcpp::Rcout << t << std::endl;
     dat.update(new_data[t]);
-    std::for_each(particle_vector.begin(), particle_vector.end(),
-                  [&dat](StaticParticle& p){ p.prepare_particle_filter(dat); });
+    par_for_each(particle_vector.begin(), particle_vector.end(),
+                 [&dat](StaticParticle& p){ p.prepare_particle_filter(dat); });
     aug.run_particle_filter(particle_vector, dat, pfun, distfun, resampler, t);
 
     vec resampling_probs = normalize_probs(particle_vector);
@@ -49,11 +49,21 @@ Rcpp::List  run_smc(
 
     if(ess(t) < pars.resampling_threshold) {
       resample(particle_vector, resampling_probs, resampler);
+      vec current_alphas(particle_vector.size());
+      std::transform(particle_vector.cbegin(), particle_vector.cend(),
+                     current_alphas.begin(),
+                     [](const StaticParticle& p) { return p.alpha; });
+      double alpha_sd = stddev(current_alphas);
+      Rcpp::Rcout << "alpha_sd = " << alpha_sd << std::endl;
+      uvec initial_alphas = find_unique(current_alphas);
+      unsigned int initial_unique_alphas = initial_alphas.size();
+      Rcpp::Rcout << "initial unique = " << initial_unique_alphas << std::endl;
 
-      for(auto& p : particle_vector) {
-       for(size_t i{}; i < pars.mcmc_steps; i++) {
+      for(size_t i{}; i < pars.mcmc_steps; i++) {
+        double acceptance_rate{};
+        for(auto& p : particle_vector) {
          RankProposal rho_proposal = pars.rho_proposal_function->propose(p.rho);
-         double alpha_proposal = R::rlnorm(std::log(p.alpha), pars.alpha_prop_sd);
+         double alpha_proposal = R::rlnorm(std::log(p.alpha), alpha_sd);
 
          Rcpp::List initial_values = Rcpp::List::create(
            Rcpp::Named("alpha_init") = vec{alpha_proposal, p.alpha},
@@ -71,6 +81,7 @@ Rcpp::List  run_smc(
                          [&proposal_dat](StaticParticle& p){ p.prepare_particle_filter(proposal_dat); });
            aug.run_particle_filter(proposal_particle, proposal_dat, pfun, distfun, resampler, s);
          }
+
          double log_ratio = proposal_particle[0].marginal_log_likelihood - proposal_particle[1].marginal_log_likelihood +
            std::log(alpha_proposal) - std::log(p.alpha) - std::log(rho_proposal.prob_forward) +
            std::log(rho_proposal.prob_backward) +
@@ -83,7 +94,20 @@ Rcpp::List  run_smc(
            p.alpha = alpha_proposal;
            p.rho = rho_proposal.rankings;
          }
+         acceptance_rate += accept;
        }
+        Rcpp::Rcout << "acceptance rate " << acceptance_rate / particle_vector.size() << std::endl;
+
+        std::transform(particle_vector.cbegin(), particle_vector.cend(),
+                       current_alphas.begin(),
+                       [](const StaticParticle& p) { return p.alpha; });
+        uvec unique_alphas = find_unique(current_alphas);
+        unsigned int current_unique_alphas = unique_alphas.size();
+        Rcpp::Rcout << "unique particles " << current_unique_alphas << std::endl;
+        if(initial_unique_alphas < (2 * current_unique_alphas - particle_vector.size())) {
+          Rcpp::Rcout << "stopping the rejuvenation" << std::endl;
+          break;
+        }
      }
     }
 
@@ -97,8 +121,6 @@ Rcpp::List  run_smc(
     Rcpp::Named("rho_samples") = wrapup_rho(particle_vector),
     Rcpp::Named("alpha_samples") = wrapup_alpha(particle_vector),
     Rcpp::Named("augmented_rankings") = wrapup_augmented_data(particle_vector),
-    Rcpp::Named("data") = dat.wrapup(),
-    Rcpp::Named("acceptance_ratios") = 0,
     Rcpp::Named("ess") = ess,
     Rcpp::Named("alpha_trace") = alpha_trace
   );

@@ -15,7 +15,7 @@ initial_values <- sample_prior(
 mod <- compute_mallows_sequentially(
   data = dat,
   initial_values = initial_values,
-  smc_options = set_smc_options(n_particles = 200, n_particle_filters = 10, resampling_threshold = 100)
+  smc_options = set_smc_options(n_particles = 500, n_particle_filters = 10, resampling_threshold = 250)
 )
 
 hist(mod$alpha_samples)
@@ -28,7 +28,8 @@ plot_dat <- data.frame(
   alpha_sd = apply(mod$alpha_trace, 2, sd)
 )
 
-ggplot(plot_dat, aes(x = n_obs, y = alpha_mean, ymin = alpha_mean - alpha_sd,
+
+ggplot(plot_dat[-1, ], aes(x = n_obs, y = alpha_mean, ymin = alpha_mean - alpha_sd,
                      ymax = alpha_mean + alpha_sd)) +
   geom_line() +
   geom_ribbon(alpha = .1) +
