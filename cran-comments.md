@@ -1,6 +1,6 @@
 ## Resubmission Note
 
-This is a resubmission containing a large number of new features.
+This is a hotfix of a unit test failing on CRAN's M1 Mac builder. The test does not fail on our local M1 Mac and neither on the M1 Mac builder online, so I could not reproduce it. I have instead made sure the test is skipped on CRAN.
 
 
 ## Test Environments

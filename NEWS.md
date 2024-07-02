@@ -1,3 +1,12 @@
+# BayesMallows (development versions)
+
+* A bug in the Ulam distance implementation has been corrected. Thanks to 
+  Xavier Benavides for discovering.
+
+# BayesMallows 2.2.1
+
+* Skipping a unit test which failed on CRAN's M1 Mac builder.
+
 # BayesMallows 2.2.0
 
 * For initialization of latent ranks when using pairwise preference data, all
