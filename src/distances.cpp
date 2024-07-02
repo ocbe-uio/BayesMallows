@@ -113,25 +113,33 @@ double SpearmanDistance::d(const vec& r1, const vec& r2, const uvec& inds) {
   return d(r1(inds), r2(inds));
 }
 
-// Rewritten from https://www.geeksforgeeks.org/c-program-for-longest-increasing-subsequence/
-double longest_increasing_subsequence(const vec& permutation) {
-  int n = permutation.n_elem;
-  vec lis(n, fill::ones);
+// Rewritten from https://www.geeksforgeeks.org/longest-common-subsequence-dp-4/
+int longest_common_subsequence(
+    const arma::uvec& ordering_1,
+    const arma::uvec& ordering_2) {
+  int n = ordering_1.size();
+  int m = ordering_2.size();
 
-  for (int i = 1; i < n; i++) {
-    for (int j = 0; j < i; j++) {
-      if (permutation(i) > permutation(j) && lis(i) < lis(j) + 1) {
-        lis(i) = lis(j) + 1;
-      }
+  arma::vec prev = arma::zeros(m + 1);
+  arma::vec cur = arma::zeros(m + 1);
+
+  for (int idx1 = 1; idx1 < n + 1; idx1++) {
+    for (int idx2 = 1; idx2 < m + 1; idx2++) {
+      if (ordering_1(idx1 - 1) == ordering_2(idx2 - 1))
+        cur(idx2) = 1 + prev(idx2 - 1);
+      else
+        cur(idx2) = 0 + std::max(cur(idx2 - 1), prev(idx2));
     }
+    prev = cur;
   }
-  return max(lis);
+
+  return cur[m];
 }
 
-
 double UlamDistance::d(const vec& r1, const vec& r2) {
-  uvec x = sort_index(r2);
-  return r1.size() - longest_increasing_subsequence(r1(x));
+  uvec ordering_1 = sort_index(r1);
+  uvec ordering_2 = sort_index(r2);
+  return r1.size() - longest_common_subsequence(ordering_1, ordering_2);
 }
 
 double UlamDistance::d(const vec& r1, const vec& r2, const uvec& inds) {

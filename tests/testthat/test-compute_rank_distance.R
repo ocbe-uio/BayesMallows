@@ -76,6 +76,13 @@ test_that("compute_rank_distance works", {
       observation_frequency = observation_frequency
     ), c(6, 3)
   )
+  expect_equal(
+    compute_rank_distance(
+      create_ranking(c(5, 1, 4, 3, 2)),
+      create_ranking(c(3, 1, 2, 4, 5)),
+      "ulam"
+    ), 3
+  )
 })
 
 test_that("distances are right-invariant", {
