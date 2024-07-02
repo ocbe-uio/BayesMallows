@@ -1,7 +1,4 @@
-# BayesMallows 2.2.2
-
-* A bug in the Ulam distance implementation has been corrected. Thanks to 
-  Xavier Benavides for discovering.
+# BayesMallows (development versions)
 
 # BayesMallows 2.2.1
 
