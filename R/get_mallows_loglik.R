@@ -62,7 +62,7 @@ get_mallows_loglik <- function(
     weights[g] * exp(-alpha[g] / n_items * compute_rank_distance(rankings, rho[g, ],
       metric = metric,
       observation_frequency = observation_frequency
-    ) - BayesMallows:::get_partition_function(alpha = alpha[g], n_items = n_items, metric = metric, pfun_values))
+    ) - get_partition_function(alpha = alpha[g], n_items = n_items, metric = metric, pfun_values))
   })
 
 
