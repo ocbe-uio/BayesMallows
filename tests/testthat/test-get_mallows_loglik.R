@@ -119,3 +119,21 @@ test_that("get_mallows_loglik works", {
     "Partition function not available."
   )
 })
+
+test_that("get_mallows_loglik is correct with clusters", {
+  rankings <- R <- potato_visual
+  n_items <- ncol(R)
+  N <- nrow(R)
+
+  rho <- rbind(potato_true_ranking,1:20)
+  alpha <- c(2.5,1)
+  weights <- c(0.2,0.8)
+
+  expect_equal(
+    get_mallows_loglik(rho[1,],alpha[1],1,rankings = R,metric='spearman'),
+    -279.763590378285)
+
+  expect_equal(
+    get_mallows_loglik(rho,alpha,weights,rankings = R,metric='spearman'),
+    -299.076845327494)
+})
