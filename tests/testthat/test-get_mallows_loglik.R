@@ -130,10 +130,12 @@ test_that("get_mallows_loglik is correct with clusters", {
   weights <- c(0.2,0.8)
 
   expect_equal(
-    get_mallows_loglik(rho[1,],alpha[1],1,rankings = R,metric='spearman'),
+    get_mallows_loglik(rho = rho[1,], alpha = alpha[1], weights = 1,
+                       rankings = R, metric = 'spearman'),
     -279.763590378285)
 
   expect_equal(
-    get_mallows_loglik(rho,alpha,weights,rankings = R,metric='spearman'),
+    get_mallows_loglik(rho = rho, alpha = alpha, weights = weights,
+                       rankings = R, metric = 'spearman'),
     -299.076845327494)
 })
