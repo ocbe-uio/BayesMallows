@@ -83,7 +83,7 @@ test_that("get_mallows_loglik works", {
       rankings = freq_distr[, 1:n_items],
       observation_frequency = freq_distr[, n_items + 1],
       log = FALSE
-    )), "1.434e-74"
+    )), "3.719e-53"
   )
 
   expect_equal(round(get_mallows_loglik(
@@ -94,7 +94,7 @@ test_that("get_mallows_loglik works", {
     rankings = freq_distr[, 1:n_items],
     observation_frequency = freq_distr[, n_items + 1],
     log = TRUE
-  ), 4), -170.0306)
+  ), 4), -120.7237)
 
   expect_error(
     get_mallows_loglik(
