@@ -1,3 +1,8 @@
+# BayesMallows (development versions)
+
+* An error in compute_mallows_loglik when the number of clusters is more than
+  one has been corrected. Thanks to Marta Crispino.
+
 # BayesMallows 2.2.1
 
 * Skipping a unit test which failed on CRAN's M1 Mac builder.
