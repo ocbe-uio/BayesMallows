@@ -1,16 +1,11 @@
 ## Resubmission Note
 
-This is a hotfix of a unit test failing on CRAN's M1 Mac builder. The test does not fail on our local M1 Mac and neither on the M1 Mac builder online, so I could not reproduce it. I have instead made sure the test is skipped on CRAN.
-
+An error in compute_mallows_loglik when the number of clusters is more than one has been corrected.
 
 ## Test Environments
 
-* Local Ubuntu 23.04 with R 4.3.2 built from source with option "--with-valgrind-instrumentation=2", running R CMD check with --use-valgrind option.
-* r-devel-san via rocker/r-devel-san.
-* local Windows install, R 4.3.3.
 * windows, devel, release and old-release.
 * R-CMD-check via GitHub Actions on windows-latest, macOS-latest, ubuntu-20.04 (release), and ubuntu-20.04 (devel).
-* M1 builder.
 
 ## R CMD CHECK results
 

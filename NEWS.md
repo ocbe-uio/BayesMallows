@@ -1,4 +1,4 @@
-# BayesMallows (development versions)
+# BayesMallows 2.2.2
 
 * An error in compute_mallows_loglik when the number of clusters is more than
   one has been corrected. Thanks to Marta Crispino.
