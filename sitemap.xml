@@ -1,171 +1,59 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/articles/BayesMallows.html</loc>
-  </url>
-  <url>
-    <loc>/articles/SMC-Mallows.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/parallel_chains.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/BayesMallows-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/assess_convergence.html</loc>
-  </url>
-  <url>
-    <loc>/reference/assign_cluster.html</loc>
-  </url>
-  <url>
-    <loc>/reference/asymptotic_partition_function.html</loc>
-  </url>
-  <url>
-    <loc>/reference/beach_preferences.html</loc>
-  </url>
-  <url>
-    <loc>/reference/bernoulli_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/burnin-set.html</loc>
-  </url>
-  <url>
-    <loc>/reference/burnin.html</loc>
-  </url>
-  <url>
-    <loc>/reference/cluster_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_consensus.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_exact_partition_function.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_expected_distance.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_mallows.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_mallows_mixtures.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_mallows_sequentially.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_observation_frequency.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_posterior_intervals.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compute_rank_distance.html</loc>
-  </url>
-  <url>
-    <loc>/reference/create_ranking.html</loc>
-  </url>
-  <url>
-    <loc>/reference/estimate_partition_function.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_acceptance_ratios.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_cardinalities.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_mallows_loglik.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_transitive_closure.html</loc>
-  </url>
-  <url>
-    <loc>/reference/heat_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.BayesMallows.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.SMCMallows.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot_elbow.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot_top_k.html</loc>
-  </url>
-  <url>
-    <loc>/reference/potato_true_ranking.html</loc>
-  </url>
-  <url>
-    <loc>/reference/potato_visual.html</loc>
-  </url>
-  <url>
-    <loc>/reference/potato_weighing.html</loc>
-  </url>
-  <url>
-    <loc>/reference/predict_top_k.html</loc>
-  </url>
-  <url>
-    <loc>/reference/print.BayesMallows.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rmallows.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sample_mallows.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sample_prior.html</loc>
-  </url>
-  <url>
-    <loc>/reference/set_compute_options.html</loc>
-  </url>
-  <url>
-    <loc>/reference/set_initial_values.html</loc>
-  </url>
-  <url>
-    <loc>/reference/set_model_options.html</loc>
-  </url>
-  <url>
-    <loc>/reference/set_priors.html</loc>
-  </url>
-  <url>
-    <loc>/reference/set_progress_report.html</loc>
-  </url>
-  <url>
-    <loc>/reference/set_smc_options.html</loc>
-  </url>
-  <url>
-    <loc>/reference/setup_rank_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sushi_rankings.html</loc>
-  </url>
-  <url>
-    <loc>/reference/update_mallows.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/articles/BayesMallows.html</loc></url>
+<url><loc>/articles/SMC-Mallows.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/parallel_chains.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/BayesMallows-package.html</loc></url>
+<url><loc>/reference/assess_convergence.html</loc></url>
+<url><loc>/reference/assign_cluster.html</loc></url>
+<url><loc>/reference/asymptotic_partition_function.html</loc></url>
+<url><loc>/reference/beach_preferences.html</loc></url>
+<url><loc>/reference/bernoulli_data.html</loc></url>
+<url><loc>/reference/burnin-set.html</loc></url>
+<url><loc>/reference/burnin.html</loc></url>
+<url><loc>/reference/cluster_data.html</loc></url>
+<url><loc>/reference/compute_consensus.html</loc></url>
+<url><loc>/reference/compute_exact_partition_function.html</loc></url>
+<url><loc>/reference/compute_expected_distance.html</loc></url>
+<url><loc>/reference/compute_mallows.html</loc></url>
+<url><loc>/reference/compute_mallows_mixtures.html</loc></url>
+<url><loc>/reference/compute_mallows_sequentially.html</loc></url>
+<url><loc>/reference/compute_observation_frequency.html</loc></url>
+<url><loc>/reference/compute_posterior_intervals.html</loc></url>
+<url><loc>/reference/compute_rank_distance.html</loc></url>
+<url><loc>/reference/create_ranking.html</loc></url>
+<url><loc>/reference/estimate_partition_function.html</loc></url>
+<url><loc>/reference/get_acceptance_ratios.html</loc></url>
+<url><loc>/reference/get_cardinalities.html</loc></url>
+<url><loc>/reference/get_mallows_loglik.html</loc></url>
+<url><loc>/reference/get_transitive_closure.html</loc></url>
+<url><loc>/reference/heat_plot.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/plot.BayesMallows.html</loc></url>
+<url><loc>/reference/plot.SMCMallows.html</loc></url>
+<url><loc>/reference/plot_elbow.html</loc></url>
+<url><loc>/reference/plot_top_k.html</loc></url>
+<url><loc>/reference/potato_true_ranking.html</loc></url>
+<url><loc>/reference/potato_visual.html</loc></url>
+<url><loc>/reference/potato_weighing.html</loc></url>
+<url><loc>/reference/predict_top_k.html</loc></url>
+<url><loc>/reference/print.BayesMallows.html</loc></url>
+<url><loc>/reference/rmallows.html</loc></url>
+<url><loc>/reference/sample_mallows.html</loc></url>
+<url><loc>/reference/sample_prior.html</loc></url>
+<url><loc>/reference/set_compute_options.html</loc></url>
+<url><loc>/reference/set_initial_values.html</loc></url>
+<url><loc>/reference/set_model_options.html</loc></url>
+<url><loc>/reference/set_priors.html</loc></url>
+<url><loc>/reference/set_progress_report.html</loc></url>
+<url><loc>/reference/set_smc_options.html</loc></url>
+<url><loc>/reference/setup_rank_data.html</loc></url>
+<url><loc>/reference/sushi_rankings.html</loc></url>
+<url><loc>/reference/update_mallows.html</loc></url>
 </urlset>
+
