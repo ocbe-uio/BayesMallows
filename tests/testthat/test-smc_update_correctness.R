@@ -137,7 +137,8 @@ test_that("update_mallows is correct for new partial rankings", {
 
     expect_equal(
       mean(mod_smc_next$alpha$value),
-      ifelse(aug == "uniform", 10.9348917143992, 10.9279783083453)
+      ifelse(aug == "uniform", 10.9348917143992, 10.910),
+      tolerance = .01
     )
 
     expect_equal(

@@ -224,9 +224,11 @@ std::pair<arma::vec, double> PartialPseudoProposal::propose_pseudo(
     vec sample_probs = normalise(exp(log_numerator), 1);
 
     if(forward) {
-      ivec ans(sample_probs.size());
-      R::rmultinom(1, sample_probs.begin(), sample_probs.size(), ans.begin());
-      proposal(span(item_to_rank)) = available_rankings(find(ans == 1));
+      Rcpp::IntegerVector rank_index = Rcpp::sample(
+        sample_probs.size(), 1, true,
+        Rcpp::as<Rcpp::NumericVector>(Rcpp::wrap(sample_probs)),
+        false);
+      proposal(span(item_to_rank)) = available_rankings(rank_index(0));
     }
 
     int ranking_chosen = as_scalar(find(proposal(item_to_rank) == available_rankings));

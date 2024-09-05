@@ -1,3 +1,7 @@
+# BayesMallows (development versions)
+
+* A bug in the pseudolikelihood proposal for latent rankings has been corrected.
+
 # BayesMallows 2.2.2
 
 * An error in compute_mallows_loglik when the number of clusters is more than
