@@ -1,3 +1,8 @@
+# BayesMallows (development versions)
+
+* Fixed bug, clus_thinning argument did not work in the case of a single 
+  cluster. Thanks to Timothy Lee for pointing this out. Issue #423 on GitHub.
+
 # BayesMallows 2.2.2
 
 * An error in compute_mallows_loglik when the number of clusters is more than

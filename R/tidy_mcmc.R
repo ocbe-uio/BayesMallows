@@ -25,14 +25,14 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
   fit$cluster_assignment <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_cluster_assignment(
       fits[[i]]$cluster_assignment, i, model_options$n_clusters, data$n_assessors,
-      compute_options$nmc
+      floor(compute_options$nmc / compute_options$clus_thinning)
     )
   }))
 
   fit$cluster_probs <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_cluster_probabilities(
       fits[[i]]$cluster_probs, i, model_options$n_clusters,
-      compute_options$nmc
+      floor(compute_options$nmc / compute_options$clus_thinning)
     )
   }))
 
