@@ -1,6 +1,6 @@
 ## Resubmission Note
 
-An error in compute_mallows_loglik when the number of clusters is more than one has been corrected.
+A bug in the thinning option for cluster assignment in the case of a single cluster has been fixed.
 
 ## Test Environments
 

@@ -1,4 +1,4 @@
-# BayesMallows (development versions)
+# BayesMallows 2.2.3
 
 * Fixed bug, clus_thinning argument did not work in the case of a single 
   cluster. Thanks to Timothy Lee for pointing this out. Issue #423 on GitHub.
