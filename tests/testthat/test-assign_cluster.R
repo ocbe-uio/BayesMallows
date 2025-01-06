@@ -43,3 +43,28 @@ test_that("assign_cluster works", {
   expect_equal(dim(assign_cluster(mod)), c(60, 4))
   expect_equal(dim(assign_cluster(mod, expand = TRUE)), c(180, 4))
 })
+
+test_that("cluster thinning works", {
+  model_fit1 <- compute_mallows(
+    data = setup_rank_data(preferences = beach_preferences),
+    model_options = set_model_options(n_clusters = 1),
+    compute_options = set_compute_options(nmc = 100, clus_thinning = 10)
+  )
+
+  expect_equal(range(model_fit1$cluster_assignment$iteration), c(1, 10))
+  expect_equal(unique(model_fit1$cluster_assignment$iteration), 1:10)
+  expect_equal(range(model_fit1$cluster_probs$iteration), c(1, 10))
+  expect_equal(unique(model_fit1$cluster_probs$iteration), 1:10)
+
+  model_fit2 <- compute_mallows(
+    data = setup_rank_data(preferences = beach_preferences),
+    model_options = set_model_options(n_clusters = 2),
+    compute_options = set_compute_options(nmc = 100, clus_thinning = 10)
+  )
+
+  expect_equal(range(model_fit2$cluster_assignment$iteration), c(1, 10))
+  expect_equal(unique(model_fit2$cluster_assignment$iteration), 1:10)
+  expect_equal(range(model_fit2$cluster_probs$iteration), c(1, 10))
+  expect_equal(unique(model_fit2$cluster_probs$iteration), 1:10)
+
+})
