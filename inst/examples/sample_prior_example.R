@@ -1,3 +1,4 @@
+\dontrun{
 # We can use a collection of particles from the prior distribution as
 # initial values for the sequential Monte Carlo algorithm.
 # Here we start by drawing 1000 particles from the priors, using default
@@ -20,3 +21,4 @@ model3 <- update_mallows(
   model = model2,
   new_data = setup_rank_data(sushi_rankings[11:15, ]))
 plot(model3)
+}

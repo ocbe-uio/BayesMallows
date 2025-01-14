@@ -71,6 +71,7 @@ test_that("setup_rank_data works for preferences", {
   pp <- data.frame(assessor = 1:2, bottom_item = 3, top_item = 1)
   dat <- setup_rank_data(rankings = rr, preferences = pp)
 
+  skip_on_cran()
   cl <- parallel::makeCluster(2)
   dat2 <- setup_rank_data(rankings = rr, preferences = pp, cl = cl)
   parallel::stopCluster(cl)

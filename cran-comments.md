@@ -1,9 +1,9 @@
 ## Resubmission Note
 
 A bug in the thinning option for cluster assignment in the case of a single 
-cluster has been fixed. I have also reduced the computing time of examples, as a 
-consequence of pretest errors of a previous submission of the same version, 
-see below.
+cluster has been fixed. I have also reduced the computing time of examples and 
+CPU time of tests, as a consequence of pretest errors of a previous submission 
+of the same version, see below.
 
 This version has been submitted previously, and got the following pretest errors:
 

@@ -42,6 +42,7 @@ test_that("estimate_partition_function works", {
 })
 
 test_that("estimate_partition_function works in parallel", {
+  skip_on_cran()
   cl <- parallel::makeCluster(2)
   set.seed(1)
   alpha_vector <- seq(from = 0, to = 10, by = 0.5)

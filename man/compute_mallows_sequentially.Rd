@@ -58,6 +58,7 @@ for visualizing the posterior distribution do not yet work. See the examples
 for some workarounds.
 }
 \examples{
+\dontrun{
 # Observe one ranking at each of 12 timepoints
 library(ggplot2)
 data <- lapply(seq_len(nrow(potato_visual)), function(i) {
@@ -109,6 +110,7 @@ ggplot(plot_dat, aes(x = n_obs, y = rank_mean, ymin = rank_mean - rank_sd,
   theme_classic() +
   scale_x_continuous(
     breaks = seq(min(plot_dat$n_obs), max(plot_dat$n_obs), by = 1))
+}
 }
 \references{
 \insertAllCited{}

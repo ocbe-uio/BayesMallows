@@ -1,4 +1,5 @@
 test_that("acceptance rates are computed", {
+  skip_on_cran()
   cl <- parallel::makeCluster(2)
   set.seed(1)
   mod <- compute_mallows(

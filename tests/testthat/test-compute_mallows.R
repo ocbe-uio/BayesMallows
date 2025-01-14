@@ -1,3 +1,4 @@
+skip_on_cran()
 cl <- parallel::makeCluster(2)
 test_that("compute_mallows works with seed in parallel", {
   set.seed(1)
