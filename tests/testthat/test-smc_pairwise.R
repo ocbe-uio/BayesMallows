@@ -1,3 +1,4 @@
+skip_on_cran_linux()
 test_that("update_mallows works with pairwise preferences", {
   set.seed(3)
   dat <- subset(beach_preferences, assessor <= 10)

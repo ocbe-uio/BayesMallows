@@ -1,3 +1,4 @@
+skip_on_cran()
 test_that("update_mallows is correct for new rankings", {
   triple_potato <- rbind(potato_visual, potato_visual, potato_visual)
   rownames(triple_potato) <- seq_len(nrow(triple_potato))

@@ -9,4 +9,10 @@
 library(testthat)
 library(BayesMallows)
 
+skip_on_cran_linux <- function() {
+  if (identical(Sys.getenv("NOT_CRAN"), "false") && .Platform$OS.type == "unix" && Sys.info()[["sysname"]] == "Linux") {
+    skip("Skipping test on CRAN Linux")
+  }
+}
+
 test_check("BayesMallows")

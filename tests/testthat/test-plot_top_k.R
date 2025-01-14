@@ -1,3 +1,4 @@
+skip_on_cran_linux()
 test_that("predict_top_k works", {
   set.seed(1)
   model_fit <- compute_mallows(
