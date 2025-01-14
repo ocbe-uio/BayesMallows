@@ -1,3 +1,4 @@
+\dontrun{
 # IMPORTANCE SAMPLING
 # Let us estimate logZ(alpha) for 20 items with Spearman distance
 # We create a grid of alpha values from 0 to 10
@@ -51,3 +52,4 @@ model_fit <- compute_mallows(
   compute_options = set_compute_options(nmc = 200),
   pfun_estimate = fit2)
 
+}
