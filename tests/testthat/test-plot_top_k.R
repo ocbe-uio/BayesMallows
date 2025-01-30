@@ -14,9 +14,10 @@ test_that("predict_top_k works", {
 
   p <- plot_top_k(model_fit)
   expect_equal(dim(p$data), c(900, 3))
-  expect_equal(p$labels$fill, "Prob.")
-  expect_equal(p$labels$y, "Item")
-  expect_equal(p$labels$x, "Assessor")
+  labs <- if ("get_labs" %in% getNamespaceExports("ggplot2")) ggplot2::get_labs(p) else p$labels
+  expect_equal(labs$fill, "Prob.")
+  expect_equal(labs$y, "Item")
+  expect_equal(labs$x, "Assessor")
   expect_s3_class(p, "ggplot")
 
   model_fit <- compute_mallows(
