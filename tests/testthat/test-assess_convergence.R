@@ -227,6 +227,6 @@ test_that("assess_convergence.BayesMallowsMixtures works", {
   )
 
   p <- get_labs(assess_convergence(models, parameter = "cluster_probs"))
-  expect_equal(labs$x, "Iteration")
-  expect_equal(labs$colour, "cluster")
+  expect_equal(p$x, "Iteration")
+  expect_equal(p$colour, "cluster")
 })
