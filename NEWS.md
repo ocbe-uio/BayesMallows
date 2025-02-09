@@ -1,3 +1,7 @@
+# BayesMallows (development versions)
+
+* Making plotting functionality compatible with future versions of ggplot2.
+
 # BayesMallows 2.2.3
 
 * Fixed bug, clus_thinning argument did not work in the case of a single 
