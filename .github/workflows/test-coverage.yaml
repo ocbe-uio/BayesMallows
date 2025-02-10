@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [develop, master]
 
-name: test-coverage.yaml
+name: test-coverage
 
 permissions: read-all
 
@@ -54,7 +54,7 @@ jobs:
           find '${{ runner.temp }}/package' -name 'testthat.Rout*' -exec cat '{}' \; || true
         shell: bash
 
-      - name: Upload test results
+      - name: Upload failures, if any
         if: failure()
         uses: actions/upload-artifact@v4
         with:
