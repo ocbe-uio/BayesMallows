@@ -1,3 +1,8 @@
+get_labs <- function(x) x$labels
+if ("get_labs" %in% getNamespaceExports("ggplot2")) {
+  get_labs <- ggplot2::get_labs
+}
+
 test_that("assess_convergence and plot works for alpha and rho", {
   set.seed(123)
   mod <- compute_mallows(
@@ -5,13 +10,15 @@ test_that("assess_convergence and plot works for alpha and rho", {
     compute_options = set_compute_options(nmc = 50)
   )
   p <- assess_convergence(mod)
-  expect_equal(p$labels$x, "Iteration")
-  expect_equal(p$labels$group, "interaction(chain, cluster)")
+  labs <- get_labs(p)
+  expect_equal(labs$x, "Iteration")
+  expect_equal(labs$group, "interaction(chain, cluster)")
   expect_error(plot(mod), "Please specify the burnin")
   burnin(mod) <- 10
   p <- plot(mod)
-  expect_equal(p$labels$y, "Posterior density")
-  expect_equal(p$labels$x, expression(alpha))
+  labs <- get_labs(p)
+  expect_equal(labs$y, "Posterior density")
+  expect_equal(labs$x, expression(alpha))
   expect_error(
     plot(mod, parameter = "alfa"), "'arg' should be one of"
   )
@@ -19,8 +26,9 @@ test_that("assess_convergence and plot works for alpha and rho", {
     p <- plot(mod, parameter = "rho"),
     "Items not provided by user. Picking 5 at random."
   )
-  expect_equal(p$labels$y, "Posterior probability")
-  expect_equal(p$labels$x, "rank")
+  labs <- get_labs(p)
+  expect_equal(labs$y, "Posterior probability")
+  expect_equal(labs$x, "rank")
   p <- plot(mod, parameter = "rho", items = 1)
   expect_equal(dim(p$data), c(2, 5))
   expect_error(
@@ -44,25 +52,27 @@ test_that("assess_convergence and plot works for alpha and rho", {
   )
 
   p <- assess_convergence(mod, parameter = "rho", items = 1:4)
-  expect_equal(p$labels$x, "Iteration")
-  expect_equal(p$labels$colour, "item")
+  labs <- get_labs(p)
+  expect_equal(labs$x, "Iteration")
+  expect_equal(labs$colour, "item")
 
   expect_message(
     p <- assess_convergence(mod, parameter = "rho"),
     "Items not provided by user. Picking 5 at random."
   )
-  expect_equal(p$labels$x, "Iteration")
-  expect_equal(p$labels$colour, "item")
+  labs <- get_labs(p)
+  expect_equal(labs$x, "Iteration")
+  expect_equal(labs$colour, "item")
 
   mod <- compute_mallows(setup_rank_data(matrix(c(1, 1, 2, 2), ncol = 2)),
     compute_options = set_compute_options(nmc = 5)
   )
 
-  p1 <- assess_convergence(mod, parameter = "rho")
-  p2 <- assess_convergence(mod, parameter = "rho", items = 1:2)
-  p3 <- assess_convergence(mod, parameter = "rho", items = 2:1)
-  expect_equal(p1$labels, p2$labels)
-  expect_equal(p1$labels, p3$labels)
+  p1 <- get_labs(assess_convergence(mod, parameter = "rho"))
+  p2 <- get_labs(assess_convergence(mod, parameter = "rho", items = 1:2))
+  p3 <- get_labs(assess_convergence(mod, parameter = "rho", items = 2:1))
+  expect_equal(p1, p2)
+  expect_equal(p1, p3)
 })
 
 test_that("assess_convergence.BayesMallows works for Rtilde", {
@@ -77,8 +87,9 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
     parameter = "Rtilde", items = 1:4, assessors = 1:4
   )
 
-  expect_equal(p$labels$x, "Iteration")
-  expect_equal(p$labels$colour, "item")
+  labs <- get_labs(p)
+  expect_equal(labs$x, "Iteration")
+  expect_equal(labs$colour, "item")
   expect_error(
     plot(mod, parameter = "Rtilde"),
     "'arg' should be one of"
@@ -88,20 +99,23 @@ test_that("assess_convergence.BayesMallows works for Rtilde", {
     p <- assess_convergence(mod, parameter = "Rtilde", items = 1:4),
     "Assessors not provided by user. Picking 5 at random."
   )
-  expect_equal(p$labels$x, "Iteration")
-  expect_equal(p$labels$colour, "item")
+  labs <- get_labs(p)
+  expect_equal(labs$x, "Iteration")
+  expect_equal(labs$colour, "item")
 
   expect_message(
     p <- assess_convergence(mod, parameter = "Rtilde", assessors = 1:4),
     "Items not provided by user. Picking 5 at random."
   )
 
-  expect_equal(p$labels$x, "Iteration")
-  expect_equal(p$labels$colour, "item")
+  labs <- get_labs(p)
+  expect_equal(labs$x, "Iteration")
+  expect_equal(labs$colour, "item")
 
   expect_snapshot(p <- assess_convergence(mod, parameter = "Rtilde"))
-  expect_equal(p$labels$x, "Iteration")
-  expect_equal(p$labels$colour, "item")
+  labs <- get_labs(p)
+  expect_equal(labs$x, "Iteration")
+  expect_equal(labs$colour, "item")
 
   mod <- compute_mallows(
     setup_rank_data(preferences = subset(beach_preferences, assessor <= 3)),
@@ -142,17 +156,17 @@ test_that("assess_convergence.BayesMallows works for cluster_probs", {
     model_options = set_model_options(n_clusters = 3)
   )
 
-  p <- assess_convergence(mod, parameter = "rho", items = 1:3)
-  expect_equal(p$labels$x, "Iteration")
-  expect_equal(p$labels$colour, "item")
+  p <- get_labs(assess_convergence(mod, parameter = "rho", items = 1:3))
+  expect_equal(p$x, "Iteration")
+  expect_equal(p$colour, "item")
 
   p <- plot(mod, parameter = "cluster_probs")
   expect_equal(dim(p$data), c(120, 4))
   expect_s3_class(p, "ggplot")
 
-  p <- assess_convergence(mod, parameter = "cluster_probs")
-  expect_equal(p$labels$x, "Iteration")
-  expect_equal(p$labels$colour, "cluster")
+  p <- get_labs(assess_convergence(mod, parameter = "cluster_probs"))
+  expect_equal(p$x, "Iteration")
+  expect_equal(p$colour, "cluster")
 
   p <- plot(mod, parameter = "cluster_assignment")
   expect_s3_class(p, "ggplot")
@@ -173,7 +187,7 @@ test_that("assess_convergence.BayesMallows works for theta", {
   )
 
   p <- assess_convergence(mod, parameter = "theta")
-  expect_equal(p$labels$x, "Iteration")
+  expect_equal(get_labs(p)$x, "Iteration")
 
   p <- plot(mod, parameter = "theta")
   expect_equal(dim(p$data), c(8, 3))
@@ -201,18 +215,18 @@ test_that("assess_convergence.BayesMallowsMixtures works", {
     compute_options = set_compute_options(nmc = 100, include_wcd = TRUE)
   )
 
-  p <- assess_convergence(models)
-  expect_equal(p$labels$linetype, "Chain")
-  expect_equal(p$labels$colour, "Cluster")
-  expect_equal(p$labels$x, "Iteration")
-  expect_equal(p$labels$group, "interaction(chain, cluster)")
+  p <- get_labs(assess_convergence(models))
+  expect_equal(p$linetype, "Chain")
+  expect_equal(p$colour, "Cluster")
+  expect_equal(p$x, "Iteration")
+  expect_equal(p$group, "interaction(chain, cluster)")
 
   expect_error(
     assess_convergence(models, parameter = "rho", items = 1:4),
     "'arg' should be one of"
   )
 
-  p <- assess_convergence(models, parameter = "cluster_probs")
-  expect_equal(p$labels$x, "Iteration")
-  expect_equal(p$labels$colour, "cluster")
+  p <- get_labs(assess_convergence(models, parameter = "cluster_probs"))
+  expect_equal(p$x, "Iteration")
+  expect_equal(p$colour, "cluster")
 })

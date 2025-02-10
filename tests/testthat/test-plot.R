@@ -30,7 +30,8 @@ test_that("plot.SMCMallows works", {
   )
 
   p <- plot(mod_final)
-  expect_equal(p$labels$y, "Posterior density")
+  labs <- if ("get_labs" %in% getNamespaceExports("ggplot2")) ggplot2::get_labs(p) else p$labels
+  expect_equal(labs$y, "Posterior density")
   expect_equal(dim(p$data), c(10, 4))
 
   p <- plot(mod_final, parameter = "rho", items = c("P19", "P8"))

@@ -27,8 +27,9 @@ test_that("plot_elbow works", {
 
   p <- plot_elbow(models)
   expect_s3_class(p, "ggplot")
-  expect_equal(p$labels$y, "Within-cluster sum of distances")
-  expect_equal(p$labels$x, "Number of clusters")
+  labs <- if ("get_labs" %in% getNamespaceExports("ggplot2")) ggplot2::get_labs(p) else p$labels
+  expect_equal(labs$y, "Within-cluster sum of distances")
+  expect_equal(labs$x, "Number of clusters")
   expect_equal(dim(p$data), c(45, 3))
 
   mod <- compute_mallows(
