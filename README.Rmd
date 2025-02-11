@@ -21,9 +21,8 @@ knitr::opts_chunk$set(
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BayesMallows)](https://cran.r-project.org/package=BayesMallows)
 [![R-CMD-check](https://github.com/ocbe-uio/BayesMallows/workflows/R-CMD-check/badge.svg)](https://github.com/ocbe-uio/BayesMallows/actions)
-[![Codecov test coverage](https://codecov.io/gh/ocbe-uio/BayesMallows/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ocbe-uio/BayesMallows?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/ocbe-uio/BayesMallows/graph/badge.svg)](https://app.codecov.io/gh/ocbe-uio/BayesMallows)
 [![CodeFactor](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/badge/master)](https://www.codefactor.io/repository/github/ocbe-uio/bayesmallows/overview/master)
-
 This package provides a general framework for analyzing rank and preference data based on the Bayesian Mallows model.
 
 ## Installation
@@ -52,7 +51,7 @@ set.seed(123)
 
 
 
-The package comes with several example datasets. The simplest one contains 12 persons' assessments of the weights of 20 potatoes, either by visual inspection (`potato_visual`) or by lifting the potatoes and comparing their relative weights by hand (`potato_weighing`). 
+The package comes with several example datasets. The simplest one contains 12 persons' assessments of the weights of 20 potatoes, either by visual inspection (`potato_visual`) or by lifting the potatoes and comparing their relative weights by hand (`potato_weighing`).
 
 ### Metropolis-Hastings Algorithm
 
@@ -101,7 +100,7 @@ Sequential Monte Carlo can typically be useful when new data arrives in batches,
 
 ### Methodology
 
-The BayesMallows package currently implements the complete model described in @vitelli2018, which includes a large number of distance metrics, handling of missing ranks and pairwise comparisons, and clustering of users with similar preferences. The extension to non-transitive pairwise comparisons by @crispino2019 is also implemented. In addition, the partition function of the Mallows model can be estimated using the importance sampling algorithm of @vitelli2018 and the asymptotic approximation of @mukherjee2016. For a review of ranking models in general, see @liu2019. @crispino2022 outlines how informative priors can be used within the model. 
+The BayesMallows package currently implements the complete model described in @vitelli2018, which includes a large number of distance metrics, handling of missing ranks and pairwise comparisons, and clustering of users with similar preferences. The extension to non-transitive pairwise comparisons by @crispino2019 is also implemented. In addition, the partition function of the Mallows model can be estimated using the importance sampling algorithm of @vitelli2018 and the asymptotic approximation of @mukherjee2016. For a review of ranking models in general, see @liu2019. @crispino2022 outlines how informative priors can be used within the model.
 
 Updating of the posterior distribution based on new data, using sequential Monte Carlo methods, is implemented and described in [a separate vignette](https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html). The computational algorithms are described in further detail in @steinSequentialInferenceMallows2023.
 
