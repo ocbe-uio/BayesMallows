@@ -7,12 +7,16 @@ In this equation, \(\mathcal{D}_{n}\) a set containing all possible
 distances at the given number of items, and \(d_{m}\) is on element of
 this set. Finally, \(N_{m,n}\) is the number of possible configurations
 of the items that give the particular distance. See
-irurozki2016;textualBayesMallows,
-vitelli2018;textualBayesMallows, and
-crispino2023;textualBayesMallows for details.
+Irurozki et al. (2016)
+,
+Vitelli et al. (2018)
+, and
+Crispino et al. (2023)
+ for details.
 For footrule distance, the cardinalities come from entry A062869 in the
 On-Line Encyclopedia of Integer Sequences (OEIS)
-oeisBayesMallows. For Spearman distance, they come from
+(Sloane and Inc. 2020)
+. For Spearman distance, they come from
 entry A175929, and for Ulam distance from entry A126065."><meta property="og:description" content="The partition function for the Mallows model can be defined in a
 computationally efficient manner as
 $$Z_{n}(\alpha) = \sum_{d_{n} \in
@@ -21,12 +25,16 @@ In this equation, \(\mathcal{D}_{n}\) a set containing all possible
 distances at the given number of items, and \(d_{m}\) is on element of
 this set. Finally, \(N_{m,n}\) is the number of possible configurations
 of the items that give the particular distance. See
-irurozki2016;textualBayesMallows,
-vitelli2018;textualBayesMallows, and
-crispino2023;textualBayesMallows for details.
+Irurozki et al. (2016)
+,
+Vitelli et al. (2018)
+, and
+Crispino et al. (2023)
+ for details.
 For footrule distance, the cardinalities come from entry A062869 in the
 On-Line Encyclopedia of Integer Sequences (OEIS)
-oeisBayesMallows. For Spearman distance, they come from
+(Sloane and Inc. 2020)
+. For Spearman distance, they come from
 entry A175929, and for Ulam distance from entry A126065."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -35,7 +43,7 @@ entry A175929, and for Ulam distance from entry A126065."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +71,7 @@ entry A175929, and for Ulam distance from entry A126065."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Get cardinalities for each distance</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ocbe-uio/BayesMallows/blob/v2.2.3/R/get_cardinalities.R" class="external-link"><code>R/get_cardinalities.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ocbe-uio/BayesMallows/blob/v2.2.4/R/get_cardinalities.R" class="external-link"><code>R/get_cardinalities.R</code></a></small>
       <div class="d-none name"><code>get_cardinalities.Rd</code></div>
     </div>
 
@@ -76,12 +84,16 @@ In this equation, \(\mathcal{D}_{n}\) a set containing all possible
 distances at the given number of items, and \(d_{m}\) is on element of
 this set. Finally, \(N_{m,n}\) is the number of possible configurations
 of the items that give the particular distance. See
-irurozki2016;textualBayesMallows,
-vitelli2018;textualBayesMallows, and
-crispino2023;textualBayesMallows for details.</p>
+Irurozki et al. (2016)
+,
+Vitelli et al. (2018)
+, and
+Crispino et al. (2023)
+ for details.</p>
 <p>For footrule distance, the cardinalities come from entry A062869 in the
 On-Line Encyclopedia of Integer Sequences (OEIS)
-oeisBayesMallows. For Spearman distance, they come from
+(Sloane and Inc. 2020)
+. For Spearman distance, they come from
 entry A175929, and for Ulam distance from entry A126065.</p>
     </div>
 
@@ -111,7 +123,20 @@ i.e., \(N_{m,n}\).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p></p>
+    <p>Crispino M, Mollica C, Astuti V, Tardella L (2023).
+“Efficient and accurate inference for mixtures of Mallows models with Spearman distance.”
+<em>Statistics and Computing</em>, <b>33</b>(5).
+ISSN 1573-1375, <a href="https://doi.org/10.1007/s11222-023-10266-8" class="external-link">doi:10.1007/s11222-023-10266-8</a>
+, <a href="http://dx.doi.org/10.1007/s11222-023-10266-8" class="external-link">http://dx.doi.org/10.1007/s11222-023-10266-8</a>.<br><br> Irurozki E, Calvo B, Lozano JA (2016).
+“PerMallows: An R Package for Mallows and Generalized Mallows Models.”
+<em>Journal of Statistical Software</em>, <b>71</b>(12), 1–30.
+<a href="https://doi.org/10.18637/jss.v071.i12" class="external-link">doi:10.18637/jss.v071.i12</a>
+.<br><br> Sloane NJA, Inc. TOF (2020).
+“The on-line encyclopedia of integer sequences.”
+<a href="https://oeis.org/" class="external-link">https://oeis.org/</a>.<br><br> Vitelli V, Sørensen, Crispino M, Arjas E, Frigessi A (2018).
+“Probabilistic Preference Learning with the Mallows Rank Model.”
+<em>Journal of Machine Learning Research</em>, <b>18</b>(1), 1–49.
+<a href="https://jmlr.org/papers/v18/15-481.html" class="external-link">https://jmlr.org/papers/v18/15-481.html</a>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -155,7 +180,7 @@ i.e., \(N_{m,n}\).</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

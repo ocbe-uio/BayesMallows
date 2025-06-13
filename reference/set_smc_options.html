@@ -9,7 +9,7 @@ update_mallows.BayesMallows()."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,7 @@ update_mallows.BayesMallows()."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Set SMC compute options</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ocbe-uio/BayesMallows/blob/v2.2.3/R/set_smc_options.R" class="external-link"><code>R/set_smc_options.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ocbe-uio/BayesMallows/blob/v2.2.4/R/set_smc_options.R" class="external-link"><code>R/set_smc_options.R</code></a></small>
       <div class="d-none name"><code>set_smc_options.Rd</code></div>
     </div>
 
@@ -74,15 +74,18 @@ step.</p></dd>
 <dd><p>Character string defining the resampling method to use. One
 of "stratified", "systematic", "residual", and "multinomial". Defaults to
 "stratified". While multinomial resampling was used in
-steinSequentialInferenceMallows2023;textualBayesMallows,
+Stein (2023)
+,
 stratified, systematic, or residual resampling typically give lower Monte
-Carlo error Douc2005,Hol2006,Naesseth2019BayesMallows.</p></dd>
+Carlo error (Douc and Cappe 2005; Hol et al. 2006; Naesseth et al. 2019)
+.</p></dd>
 
 
 <dt id="arg-latent-sampling-lag">latent_sampling_lag<a class="anchor" aria-label="anchor" href="#arg-latent-sampling-lag"></a></dt>
 <dd><p>Parameter specifying the number of timesteps to go
 back when resampling the latent ranks in the move step. See Section 6.2.3
-of Kantas2015BayesMallows for details. The \(L\) in their
+of (Kantas et al. 2015)
+ for details. The \(L\) in their
 notation corresponds to <code>latent_sampling_lag</code>. See more under Details.
 Defaults to <code>NA</code>, which means that all latent ranks from previous timesteps
 are moved. If set to <code>0</code>, no move step is applied to the latent ranks.</p></dd>
@@ -109,9 +112,11 @@ of fewer rankings, then this determines the upper limit.</p></dd>
 
 
 <p>The parameter <code>latent_sampling_lag</code> corresponds to \(L\) in
-Kantas2015BayesMallows. Its use in this package is can be
+(Kantas et al. 2015)
+. Its use in this package is can be
 explained in terms of Algorithm 12 in
-steinSequentialInferenceMallows2023BayesMallows. The
+(Stein 2023)
+. The
 relevant line of the algorithm is:</p>
 <p><strong>for</strong> \(j = 1 : M_{t}\) <strong>do</strong> <br><strong>M-H step:</strong> update \(\tilde{\mathbf{R}}_{j}^{(i)}\) with proposal
 \(\tilde{\mathbf{R}}_{j}' \sim q(\tilde{\mathbf{R}}_{j}^{(i)} |
@@ -129,7 +134,25 @@ all latent ranks are part of the move step at each timestep.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p></p>
+    <p>Douc R, Cappe O (2005).
+“Comparison of resampling schemes for particle filtering.”
+In <em>ISPA 2005. Proceedings of the 4th International Symposium on Image and Signal Processing and Analysis,  2005.</em>.
+<a href="https://doi.org/10.1109/ispa.2005.195385" class="external-link">doi:10.1109/ispa.2005.195385</a>
+, <a href="http://dx.doi.org/10.1109/ISPA.2005.195385" class="external-link">http://dx.doi.org/10.1109/ISPA.2005.195385</a>.<br><br> Hol JD, Schon TB, Gustafsson F (2006).
+“On Resampling Algorithms for Particle Filters.”
+In <em>2006 IEEE Nonlinear Statistical Signal Processing Workshop</em>.
+<a href="https://doi.org/10.1109/nsspw.2006.4378824" class="external-link">doi:10.1109/nsspw.2006.4378824</a>
+, <a href="http://dx.doi.org/10.1109/NSSPW.2006.4378824" class="external-link">http://dx.doi.org/10.1109/NSSPW.2006.4378824</a>.<br><br> Kantas N, Doucet A, Singh SS, Maciejowski J, Chopin N (2015).
+“On Particle Methods for Parameter Estimation in State-Space Models.”
+<em>Statistical Science</em>, <b>30</b>(3).
+ISSN 0883-4237, <a href="https://doi.org/10.1214/14-sts511" class="external-link">doi:10.1214/14-sts511</a>
+, <a href="http://dx.doi.org/10.1214/14-STS511" class="external-link">http://dx.doi.org/10.1214/14-STS511</a>.<br><br> Naesseth CA, Lindsten F, Schön TB (2019).
+“Elements of Sequential Monte Carlo.”
+<em>Foundations and Trends® in Machine Learning</em>, <b>12</b>(3), 187–306.
+ISSN 1935-8245, <a href="https://doi.org/10.1561/2200000074" class="external-link">doi:10.1561/2200000074</a>
+, <a href="http://dx.doi.org/10.1561/2200000074" class="external-link">http://dx.doi.org/10.1561/2200000074</a>.<br><br> Stein A (2023).
+<em>Sequential Inference with the Mallows Model</em>.
+Ph.D. thesis, Lancaster University.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -152,7 +175,7 @@ all latent ranks are part of the move step at each timestep.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>
