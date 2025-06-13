@@ -1,4 +1,4 @@
-# BayesMallows (development versions)
+# BayesMallows 2.2.4
 
 * Making plotting functionality compatible with future versions of ggplot2.
 
