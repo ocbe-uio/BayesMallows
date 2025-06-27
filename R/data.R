@@ -61,3 +61,17 @@
 #'
 #' @family datasets
 "bernoulli_data"
+
+#' Sounds data
+#'
+#' Data from an experiment in which 46 individuals compared 12 different sounds
+#' \insertCite{barrett2018}{BayesMallows}. Each assessor was asked multiple
+#' times to compare a pair of two sounds, indicating which of the sounds sounded
+#' the most like it was human generated. The pairwise preference for each
+#' assessor are in general non-transitive. These data inspired the Mallows model
+#' for non-transitive pairwise preferences developed by
+#' \insertCite{crispino2019}{BayesMallows}.
+#'
+#' @family datasets
+#' @references \insertAllCited{}
+"sounds"
