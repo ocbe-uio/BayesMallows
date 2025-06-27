@@ -1,6 +1,6 @@
 ## Resubmission Note
 
-This is a small update to comply with the newest version of ggplot2.
+This is an update which adds a new example dataset.
  
 ## Test Environments
 

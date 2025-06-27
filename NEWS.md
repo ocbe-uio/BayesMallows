@@ -1,4 +1,4 @@
-# BayesMallows (development versions)
+# BayesMallows 2.2.5
 
 * Added sounds dataset from Barrett and Crispino (2018).
 
