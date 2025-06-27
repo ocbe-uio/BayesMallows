@@ -23,6 +23,7 @@ Other datasets:
 \code{\link{cluster_data}},
 \code{\link{potato_visual}},
 \code{\link{potato_weighing}},
+\code{\link{sounds}},
 \code{\link{sushi_rankings}}
 }
 \concept{datasets}

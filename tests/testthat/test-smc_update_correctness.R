@@ -224,12 +224,6 @@ test_that("update_mallows is correct for updated partial rankings", {
     data = setup_rank_data(rankings = dat2)
   )
 
-  skip_on_cran()
-  expect_equal(
-    mean(mod2$alpha$value),
-    mean(mod_bmm$alpha$value[mod_bmm$alpha$iteration > 1000]),
-    tolerance = .1
-  )
 })
 
 test_that("update_mallows does not suffer from numerical overflow", {

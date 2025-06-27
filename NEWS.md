@@ -1,3 +1,7 @@
+# BayesMallows (development versions)
+
+* Added sounds dataset from Barrett and Crispino (2018).
+
 # BayesMallows 2.2.4
 
 * Making plotting functionality compatible with future versions of ggplot2.
