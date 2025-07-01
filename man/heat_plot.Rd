@@ -23,6 +23,11 @@ Generates a heat plot with items in their consensus ordering along the
 horizontal axis and ranking along the vertical axis. The color denotes
 posterior probability.
 }
+\details{
+In models with a single cluster, the items are sorted along the
+x-axis according to the CP consensus ranking. In models with more than one
+cluster, the items are sorted alphabetically.
+}
 \examples{
 set.seed(1)
 model_fit <- compute_mallows(
@@ -31,6 +36,15 @@ model_fit <- compute_mallows(
 
 heat_plot(model_fit)
 heat_plot(model_fit, type = "MAP")
+
+## Model with three clusters
+mod <- compute_mallows(
+  data = setup_rank_data(rankings = cluster_data),
+  model_options = set_model_options(n_clusters = 3),
+  compute_options = set_compute_options(nmc = 10000, burnin = 1000)
+)
+
+heat_plot(mod)
 }
 \seealso{
 Other posterior quantities: 
