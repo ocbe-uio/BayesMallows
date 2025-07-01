@@ -151,5 +151,5 @@ plot_alpha <- function(x) {
     p <- p + ggplot2::facet_wrap(~ .data$cluster + .data$item)
   }
 
-  return(p)
+  p
 }
