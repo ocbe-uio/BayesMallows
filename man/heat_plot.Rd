@@ -25,7 +25,7 @@ posterior probability.
 }
 \details{
 In models with a single cluster, the items are sorted along the
-x-axis according to the CP consensus ranking. In models with more than one
+x-axis according to the consensus ranking. In models with more than one
 cluster, the items are sorted alphabetically.
 }
 \examples{
@@ -45,6 +45,7 @@ mod <- compute_mallows(
 )
 
 heat_plot(mod)
+heat_plot(mod, type = "MAP")
 }
 \seealso{
 Other posterior quantities: 

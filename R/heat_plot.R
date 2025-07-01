@@ -15,7 +15,7 @@
 #' @return A ggplot object.
 #' @export
 #' @details In models with a single cluster, the items are sorted along the
-#'   x-axis according to the CP consensus ranking. In models with more than one
+#'   x-axis according to the consensus ranking. In models with more than one
 #'   cluster, the items are sorted alphabetically.
 #'
 #' @example /inst/examples/heat_plot_example.R

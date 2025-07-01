@@ -14,3 +14,4 @@ mod <- compute_mallows(
 )
 
 heat_plot(mod)
+heat_plot(mod, type = "MAP")
