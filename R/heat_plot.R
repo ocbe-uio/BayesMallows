@@ -25,7 +25,7 @@ heat_plot <- function(model_fit, ...) {
     stop("Please specify the burnin with 'burnin(model_fit) <- value'.")
   }
 
-  if(model_fit$n_clusters == 1) {
+  if (model_fit$n_clusters == 1) {
     item_order <- unique(compute_consensus(model_fit, ...)[["item"]])
   } else {
     item_order <- model_fit$data$items
@@ -70,7 +70,7 @@ heat_plot <- function(model_fit, ...) {
     ggplot2::xlab("Item") +
     ggplot2::ylab("Rank")
 
-  if(model_fit$n_clusters > 1) {
+  if (model_fit$n_clusters > 1) {
     p + ggplot2::facet_wrap(ggplot2::vars(.data$cluster))
   } else {
     p
