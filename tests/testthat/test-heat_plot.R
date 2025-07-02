@@ -30,8 +30,7 @@ test_that("heat_plot works", {
     model_options = set_model_options(n_clusters = 3),
     compute_options = set_compute_options(nmc = 20, burnin = 10)
   )
-  expect_error(
-    heat_plot(model_fit),
-    "heat_plot only works for a single cluster"
-  )
+
+  expect_s3_class(heat_plot(model_fit), "ggplot")
+  expect_s3_class(heat_plot(model_fit, type = "MAP"), "ggplot")
 })

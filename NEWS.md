@@ -1,3 +1,7 @@
+# BayesMallows (development versions)
+
+* heat_plot() function now works with clusters.
+
 # BayesMallows 2.2.5
 
 * Added sounds dataset from Barrett and Crispino (2018).

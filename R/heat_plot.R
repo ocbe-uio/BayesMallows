@@ -14,6 +14,9 @@
 #'
 #' @return A ggplot object.
 #' @export
+#' @details In models with a single cluster, the items are sorted along the
+#'   x-axis according to the consensus ranking. In models with more than one
+#'   cluster, the items are sorted alphabetically.
 #'
 #' @example /inst/examples/heat_plot_example.R
 #' @family posterior quantities
@@ -21,11 +24,13 @@ heat_plot <- function(model_fit, ...) {
   if (is.null(burnin(model_fit))) {
     stop("Please specify the burnin with 'burnin(model_fit) <- value'.")
   }
-  if (model_fit$n_clusters != 1) {
-    stop("heat_plot only works for a single cluster")
+
+  if (model_fit$n_clusters == 1) {
+    item_order <- unique(compute_consensus(model_fit, ...)[["item"]])
+  } else {
+    item_order <- model_fit$data$items
   }
 
-  item_order <- unique(compute_consensus(model_fit, ...)[["item"]])
 
   posterior_ranks <- model_fit$rho[
     model_fit$rho$iteration > burnin(model_fit), ,
@@ -56,7 +61,7 @@ heat_plot <- function(model_fit, ...) {
   )
   heatplot_expanded$probability[is.na(heatplot_expanded$probability)] <- 0
 
-  ggplot2::ggplot(
+  p <- ggplot2::ggplot(
     heatplot_expanded,
     ggplot2::aes(x = .data$item, y = .data$value, fill = .data$probability)
   ) +
@@ -64,4 +69,10 @@ heat_plot <- function(model_fit, ...) {
     ggplot2::labs(fill = "Probability") +
     ggplot2::xlab("Item") +
     ggplot2::ylab("Rank")
+
+  if (model_fit$n_clusters > 1) {
+    p + ggplot2::facet_wrap(ggplot2::vars(.data$cluster))
+  } else {
+    p
+  }
 }
