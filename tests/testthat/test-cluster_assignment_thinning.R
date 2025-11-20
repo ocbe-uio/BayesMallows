@@ -8,4 +8,5 @@ test_that("Mixtures deals properly with thinning", {
   )
 
   expect_s3_class(assign_cluster(bmm), "data.frame")
+  expect_s3_class(plot(bmm, parameter = "cluster_probs"), "ggplot")
 })

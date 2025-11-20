@@ -51,10 +51,10 @@ test_that("cluster thinning works", {
     compute_options = set_compute_options(nmc = 100, clus_thinning = 10)
   )
 
-  expect_equal(range(model_fit1$cluster_assignment$iteration), c(1, 10))
-  expect_equal(unique(model_fit1$cluster_assignment$iteration), 1:10)
-  expect_equal(range(model_fit1$cluster_probs$iteration), c(1, 10))
-  expect_equal(unique(model_fit1$cluster_probs$iteration), 1:10)
+  expect_equal(range(model_fit1$cluster_assignment$iteration), c(1, 91))
+  expect_equal(unique(model_fit1$cluster_assignment$iteration), seq(from = 1, to = 91, by = 10))
+  expect_equal(range(model_fit1$cluster_probs$iteration), c(1, 91))
+  expect_equal(unique(model_fit1$cluster_probs$iteration), seq(from = 1, to = 91, by = 10))
 
   model_fit2 <- compute_mallows(
     data = setup_rank_data(preferences = beach_preferences),
@@ -62,9 +62,9 @@ test_that("cluster thinning works", {
     compute_options = set_compute_options(nmc = 100, clus_thinning = 10)
   )
 
-  expect_equal(range(model_fit2$cluster_assignment$iteration), c(1, 10))
-  expect_equal(unique(model_fit2$cluster_assignment$iteration), 1:10)
-  expect_equal(range(model_fit2$cluster_probs$iteration), c(1, 10))
-  expect_equal(unique(model_fit2$cluster_probs$iteration), 1:10)
+  expect_equal(range(model_fit2$cluster_assignment$iteration), c(1, 91))
+  expect_equal(unique(model_fit2$cluster_assignment$iteration), seq(from = 1, to = 91, by = 10))
+  expect_equal(range(model_fit2$cluster_probs$iteration), c(1, 91))
+  expect_equal(unique(model_fit2$cluster_probs$iteration), seq(from = 1, to = 91, by = 10))
 
 })

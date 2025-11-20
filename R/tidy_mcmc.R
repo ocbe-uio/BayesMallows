@@ -33,7 +33,8 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
   fit$cluster_probs <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_cluster_probabilities(
       fits[[i]]$cluster_probs, i, model_options$n_clusters,
-      floor(compute_options$nmc / compute_options$clus_thinning)
+      floor(compute_options$nmc / compute_options$clus_thinning),
+      compute_options$clus_thinning
     )
   }))
 
@@ -162,7 +163,7 @@ tidy_cluster_assignment <- function(
   )
 }
 
-tidy_cluster_probabilities <- function(cluster_probs, chain, n_clusters, nmc) {
+tidy_cluster_probabilities <- function(cluster_probs, chain, n_clusters, nmc, clus_thinning) {
   # Tidy cluster probabilities
   if (n_clusters > 1) {
     clusprob_dims <- dim(cluster_probs)
@@ -185,7 +186,7 @@ tidy_cluster_probabilities <- function(cluster_probs, chain, n_clusters, nmc) {
   )
 
   iteration <- rep(
-    seq(from = 1, to = clusprob_dims[[2]], by = 1),
+    seq(from = 1, to = clusprob_dims[[2]] * clus_thinning, by = clus_thinning),
     each = clusprob_dims[[1]]
   )
 
