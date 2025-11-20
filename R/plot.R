@@ -119,7 +119,7 @@ plot_alpha <- function(x) {
 }
 
 
-  plot_rho <- function(x, items) {
+plot_rho <- function(x, items) {
   if (is.null(items) && x$data$n_items > 5) {
     message("Items not provided by user. Picking 5 at random.")
     items <- sample.int(x$data$n_items, 5)
