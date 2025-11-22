@@ -1,0 +1,41 @@
+Time,Gender,Generation,Time in Norway,Rank1,Rank2,Rank3,Rank4,Rank5,Rank6,Rank7,Rank8,Rank9,Rank10,Rank11,Rank12,Rank13
+2025-11-17 19:18:41,Female,Gen Z,>15 years,Lakris,Eclairs,Marsipan,Caramel,,Banan,Japp,,Daim,Notti,,,
+2025-11-17 19:25:22,Male,Boomer,>15 years,Lakris,Cocos,Japp,Marsipan,Daim,,Caramel,,,Notti,,,
+2025-11-17 19:28:10,Female,Generation X,>15 years,Eclairs,Caramel,Lakris,Marsipan,Notti,,,,,,,,Japp
+2025-11-17 19:28:38,Male,Gen Z,>15 years,Caramel,Lakris,Cocos,,Marsipan,Notti,Daim,,,,,,Japp
+2025-11-17 19:55:12,Female,Generation X,>15 years,Banan,Lakris,Eclairs,Japp,Marsipan,Daim,Notti,,,,,,Caramel
+,Male,Millenial,>15 years,Cocos,Japp,Marsipan,Lakris,,,,Notti,Caramel,,,,
+,Female,Gen Z,>15 years,Lakris,Marsipan,,Eclairs,,Japp,,,Notti,,,,
+,Male,Boomer,>15 years,Marsipan,Cocos,Lakris,,,Daim,,Japp,,Notti,,,
+,Female,Generation X,>15 years,Eclairs,Lakris,Marsipan,,,,Caramel,Japp,,,Notti,,
+,Male,Gen Z,>15 years,Lakris,Japp,Marsipan,,Cocos,,Caramel,,,Daim,,Notti,
+,Female,Generation X,<5 years,Caramel,Eclairs,,,Japp,,,,,,Notti,Marsipan,Lakris
+,Male,Millenial,<5 years,Daim,Japp,Cocos,Caramel,,,,Banan,,Notti,Marsipan,,Lakris
+,Female,Gen Z,<5 years,,Daim,,,Eclairs,Caramel,,,Notti,Japp,Marsipan,,Lakris
+,Male,Boomer,<5 years,Cocos,,Caramel,,Japp,,,Notti,,,,Lakris,Marsipan
+,Female,Generation X,<5 years,Eclairs,,Daim,,,Japp,Notti,,,,,Lakris,Caramel
+,Male,Gen Z,<5 years,Cocos,,,,Japp,Banan,Daim,Notti,,Marsipan,,Lakris,Caramel
+,Female,Generation X,<5 years,,,Eclairs,,,,Notti,Japp,Caramel,Banan,Lakris,Marsipan,
+,Male,Millenial,<5 years,Japp,Cocos,Daim,,,Notti,,Caramel,,,Lakris,Marsipan,
+,Female,Generation X,<5 years,,Daim,,Notti,Eclairs,Japp,Caramel,,Marsipan,,Lakris,,
+,Male,Millenial,<5 years,,,Cocos,Banan,Notti,,Daim,Caramel,,Lakris,Marsipan,,Japp
+,Female,Gen Z,>15 years,Lakris,Marsipan,Eclairs,Japp,Caramel,,,,Daim,,,,
+,Male,Boomer,>15 years,Marsipan,Lakris,Cocos,Caramel,Banan,,,Daim,,,,,
+,Female,Generation X,>15 years,Eclairs,,Lakris,Marsipan,Caramel,,,,Daim,,,,
+,Male,Gen Z,>15 years,Cocos,Lakris,Marsipan,Banan,,Caramel,,Daim,,,,,
+,Female,Generation X,>15 years,Lakris,Marsipan,Eclairs,,Banan,,Caramel,,Daim,,,,
+,Male,Millenial,>15 years,Lakris,Marsipan,Banan,Cocos,,,,Caramel,,,,,
+,Female,Gen Z,>15 years,Eclairs,Lakris,Marsipan,Banan,,,,Daim,Caramel,,,,
+,Male,Boomer,>15 years,Marsipan,Cocos,Lakris,,Banan,,,,Daim,Caramel,,,
+,Female,Generation X,>15 years,Marsipan,Lakris,Banan,Eclairs,,,,Daim,,,Caramel,,
+,Male,Gen Z,>15 years,Lakris,Marsipan,Cocos,Banan,,,,,Daim,Caramel,,,
+,Female,Generation X,<5 years,Eclairs,,Banan,,,,,Daim,Caramel,,Lakris,Marsipan,
+,Male,Millenial,<5 years,Japp,Cocos,,Banan,,,,Caramel,Daim,,Marsipan,Lakris,
+,Female,Gen Z,<5 years,Eclairs,Japp,Banan,,,,Caramel,Marsipan,,,,,Lakris
+,Male,Boomer,<5 years,,Cocos,,Banan,,Caramel,,Daim,,,,Lakris,
+,Female,Generation X,<5 years,Eclairs,,Banan,,Caramel,,Daim,,,,Lakris,Marsipan,
+,Male,Gen Z,<5 years,Cocos,,Caramel,Japp,,,,Daim,,,Lakris,Marsipan,
+,Female,Generation X,<5 years,,Eclairs,Caramel,Banan,,,Daim,,,,,Lakris,Marsipan
+,Male,Millenial,<5 years,Cocos,,Banan,Caramel,,Japp,,Daim,,Marsipan,,,Lakris
+,Female,Generation X,<5 years,,,Eclairs,,Caramel,,Daim,,,,,Lakris,Marsipan
+,Male,Millenial,<5 years,,,Cocos,,,Caramel,Japp,,,,Lakris,Marsipan,

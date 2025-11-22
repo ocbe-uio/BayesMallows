@@ -25,14 +25,16 @@ tidy_mcmc <- function(fits, data, model_options, compute_options) {
   fit$cluster_assignment <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_cluster_assignment(
       fits[[i]]$cluster_assignment, i, model_options$n_clusters, data$n_assessors,
-      floor(compute_options$nmc / compute_options$clus_thinning)
+      floor(compute_options$nmc / compute_options$clus_thinning),
+      compute_options$clus_thinning
     )
   }))
 
   fit$cluster_probs <- do.call(rbind, lapply(seq_along(fits), function(i) {
     tidy_cluster_probabilities(
       fits[[i]]$cluster_probs, i, model_options$n_clusters,
-      floor(compute_options$nmc / compute_options$clus_thinning)
+      floor(compute_options$nmc / compute_options$clus_thinning),
+      compute_options$clus_thinning
     )
   }))
 
@@ -129,7 +131,7 @@ tidy_alpha <- function(alpha_mat, chain, alpha_jump) {
 }
 
 tidy_cluster_assignment <- function(
-    cluster_assignment, chain, n_clusters, n_assessors, nmc) {
+    cluster_assignment, chain, n_clusters, n_assessors, nmc, clus_thinning) {
   if (n_clusters > 1) {
     cluster_dims <- dim(cluster_assignment)
     value <- paste("Cluster", cluster_assignment)
@@ -149,7 +151,7 @@ tidy_cluster_assignment <- function(
     times = cluster_dims[[2]]
   )
   iteration <- rep(
-    seq(from = 1, to = cluster_dims[[2]], by = 1),
+    seq(from = 1, to = cluster_dims[[2]] * clus_thinning, by = clus_thinning),
     each = cluster_dims[[1]]
   )
 
@@ -161,7 +163,7 @@ tidy_cluster_assignment <- function(
   )
 }
 
-tidy_cluster_probabilities <- function(cluster_probs, chain, n_clusters, nmc) {
+tidy_cluster_probabilities <- function(cluster_probs, chain, n_clusters, nmc, clus_thinning) {
   # Tidy cluster probabilities
   if (n_clusters > 1) {
     clusprob_dims <- dim(cluster_probs)
@@ -184,7 +186,7 @@ tidy_cluster_probabilities <- function(cluster_probs, chain, n_clusters, nmc) {
   )
 
   iteration <- rep(
-    seq(from = 1, to = clusprob_dims[[2]], by = 1),
+    seq(from = 1, to = clusprob_dims[[2]] * clus_thinning, by = clus_thinning),
     each = clusprob_dims[[1]]
   )
 
