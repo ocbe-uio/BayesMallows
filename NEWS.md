@@ -1,4 +1,4 @@
-# BayesMallows (development versions)
+# BayesMallows 2.2.6
 
 * Fixed bug in assign_cluster() with burn-in and thinning. Issue #433 on GitHub.
 * heat_plot() function now works with clusters.
