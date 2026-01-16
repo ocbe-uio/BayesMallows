@@ -12,6 +12,7 @@
 #' @param ... Other arguments passed on to other methods. Currently not used.
 #'
 #' @export
+#' @return A list of acceptance values.
 #' @example /inst/examples/get_acceptance_ratios_example.R
 #'
 #' @family posterior quantities
