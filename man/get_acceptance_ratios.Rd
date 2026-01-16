@@ -17,6 +17,9 @@ get_acceptance_ratios(model_fit, ...)
 
 \item{...}{Other arguments passed on to other methods. Currently not used.}
 }
+\value{
+A list of acceptance values.
+}
 \description{
 Extract acceptance ratio from Metropolis-Hastings
 algorithm used by \code{\link[=compute_mallows]{compute_mallows()}} or by the move step in
