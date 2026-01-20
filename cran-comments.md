@@ -1,7 +1,6 @@
 ## Resubmission Note
 
-This is an update which fixes two bugs and adds a new feature, as described in
-NEWS.md.
+This is an update which fixes two bugs, as described in NEWS.md.
  
 ## Test Environments
 
