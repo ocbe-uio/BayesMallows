@@ -55,10 +55,11 @@ Rcpp::List run_mcmc(
     Rcpp::Named("cluster_probs") = clus.cluster_probs,
     Rcpp::Named("within_cluster_distance") = clus.within_cluster_distance,
     Rcpp::Named("augmented_data") = aug.augmented_data,
-    Rcpp::Named("alpha_acceptance") = pars.alpha_acceptance /
-      (pars.n_clusters * (pars.nmc - pars.burnin) / pars.alpha_jump),
-    Rcpp::Named("rho_acceptance") = pars.rho_acceptance / 
+    Rcpp::Named("alpha_acceptance") = 
+      (pars.alpha_acceptance * pars.alpha_jump) / 
       (pars.n_clusters * (pars.nmc - pars.burnin)),
+    Rcpp::Named("rho_acceptance") = 
+      pars.rho_acceptance / (pars.n_clusters * (pars.nmc - pars.burnin)),
     Rcpp::Named("aug_acceptance") = aug.aug_acceptance / aug.aug_count
   );
 
