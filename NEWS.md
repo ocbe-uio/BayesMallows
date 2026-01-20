@@ -1,4 +1,4 @@
-# BayesMallows (development version)
+# BayesMallows 2.2.7
 
 * A bug in the computation of acceptance ratios has been fixed. Issue #436 on 
   GitHub. Thanks to Jonas Nordstrøm for discovering.
