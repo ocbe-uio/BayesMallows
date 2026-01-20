@@ -18,13 +18,17 @@ get_acceptance_ratios(model_fit, ...)
 \item{...}{Other arguments passed on to other methods. Currently not used.}
 }
 \value{
-A list of acceptance values.
+A list with elements \code{alpha_acceptance}, \code{rho_acceptance}, and
+\code{aug_acceptance}. Each element contains acceptance ratios (between 0 and 1)
+for the corresponding parameter proposals in the Metropolis-Hastings algorithm.
+For models with multiple chains, each element is a list with one acceptance
+ratio per chain. Higher values indicate higher acceptance rates for the
+Metropolis-Hastings proposals.
 }
 \description{
 Extract acceptance ratio from Metropolis-Hastings
 algorithm used by \code{\link[=compute_mallows]{compute_mallows()}} or by the move step in
-\code{\link[=update_mallows]{update_mallows()}} and \code{\link[=compute_mallows_sequentially]{compute_mallows_sequentially()}}. Currently the
-function only returns the values, but it will be refined in the future. If
+\code{\link[=update_mallows]{update_mallows()}} and \code{\link[=compute_mallows_sequentially]{compute_mallows_sequentially()}}. If
 burnin is not set in the call to \code{\link[=compute_mallows]{compute_mallows()}}, the acceptance ratio
 for all iterations will be reported. Otherwise the post burnin acceptance
 ratio is reported. For the SMC method the acceptance ratios apply to all

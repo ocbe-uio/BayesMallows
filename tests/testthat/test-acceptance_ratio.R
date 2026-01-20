@@ -50,6 +50,24 @@ test_that("acceptance rates are computed", {
   parallel::stopCluster(cl)
 })
 
+test_that("acceptance rates are between 0 and 1 with multiple clusters", {
+  skip_on_cran()
+  set.seed(1)
+  mod <- compute_mallows(
+    data = setup_rank_data(potato_visual),
+    model_options = set_model_options(n_clusters = 3),
+    compute_options = set_compute_options(burnin = 100, nmc = 1000, alpha_jump = 10, leap_size = 2)
+  )
+  
+  # All acceptance ratios should be between 0 and 1
+  for (chain in seq_along(mod$acceptance_ratios$alpha_acceptance)) {
+    expect_true(mod$acceptance_ratios$alpha_acceptance[[chain]] >= 0)
+    expect_true(mod$acceptance_ratios$alpha_acceptance[[chain]] <= 1)
+    expect_true(mod$acceptance_ratios$rho_acceptance[[chain]] >= 0)
+    expect_true(mod$acceptance_ratios$rho_acceptance[[chain]] <= 1)
+  }
+})
+
 test_that("acceptance rates work with SMC", {
   set.seed(1)
   mod0 <- compute_mallows(
