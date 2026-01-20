@@ -1,5 +1,7 @@
 # BayesMallows (development version)
 
+* A bug in the computation of acceptance ratios has been fixed. Issue #439 on 
+  GitHub. Thanks to Jonas Nordstrøm for discovering.
 * Documentation of return value added to get_acceptance_ratios().
 
 # BayesMallows 2.2.6
