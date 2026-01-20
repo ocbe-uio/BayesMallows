@@ -22,7 +22,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/ocbe-uio/BayesMallows/blob/v2.2.6/inst/CITATION)
+[`inst/CITATION`](https://github.com/ocbe-uio/BayesMallows/blob/v2.2.7/inst/CITATION)
 
 Sørensen Ø, Crispino M, Liu Q, Vitelli V (2020). “BayesMallows: An R
 Package for the Bayesian Mallows Model.” *The R Journal*, **12**(1),

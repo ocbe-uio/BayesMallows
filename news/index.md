@@ -1,5 +1,12 @@
 # Changelog
 
+## BayesMallows 2.2.7
+
+- A bug in the computation of acceptance ratios has been fixed. Issue
+  [\#436](https://github.com/ocbe-uio/BayesMallows/issues/436) on
+  GitHub. Thanks to Jonas Nordstrøm for discovering.
+- Documentation of return value added to get_acceptance_ratios().
+
 ## BayesMallows 2.2.6
 
 CRAN release: 2025-11-25
