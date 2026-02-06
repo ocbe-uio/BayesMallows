@@ -80,6 +80,11 @@ vignette](https://ocbe-uio.github.io/BayesMallows/articles/parallel_chains.html)
 
 ### Sequential Monte Carlo Algorithm
 
+**Note:** For a more efficient and reliable Sequential Monte Carlo
+implementation, see the
+[BayesMallowsSMC2](https://github.com/osorensen/BayesMallowsSMC2)
+package, which is now available on CRAN.
+
 The package also supports updating a Bayesian Mallows model using
 sequential Monte Carlo, with the algorithm described in Stein
 ([2023](#ref-steinSequentialInferenceMallows2023)). For example, in

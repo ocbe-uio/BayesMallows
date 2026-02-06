@@ -80,6 +80,8 @@ For more examples, please see our [the introductory vignette](https://ocbe-uio.g
 
 ### Sequential Monte Carlo Algorithm
 
+**Note:** For a more efficient and reliable Sequential Monte Carlo implementation, see the [BayesMallowsSMC2](https://github.com/osorensen/BayesMallowsSMC2) package, which is now available on CRAN.
+
 The package also supports updating a Bayesian Mallows model using sequential Monte Carlo, with the algorithm described in @steinSequentialInferenceMallows2023. For example, in order to update the model fitted above with the potato ranks based on comparing their relative weights by hand, we do
 
 ```{r}
