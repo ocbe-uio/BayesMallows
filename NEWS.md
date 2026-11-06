@@ -1,5 +1,12 @@
 # BayesMallows (development versions)
 
+* Fixed a bug in the Bernoulli error model, in which each pairwise comparison
+  was counted twice when updating the error probability theta, so that the
+  posterior distribution of theta was too narrow. In addition, the pairwise
+  comparison between the two items being swapped in the proposal for the
+  latent rankings was counted twice. Issue #446 on GitHub. Thanks to Rowland
+  Seymour for discovering.
+
 # BayesMallows 2.2.7
 
 * A bug in the computation of acceptance ratios has been fixed. Issue #436 on 
