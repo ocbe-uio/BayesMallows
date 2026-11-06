@@ -1,6 +1,7 @@
 ## Resubmission Note
 
-This is an update which fixes two bugs, as described in NEWS.md.
+This is an update which fixes a bug in the Bernoulli error model for
+intransitive pairwise preferences, as described in NEWS.md.
  
 ## Test Environments
 

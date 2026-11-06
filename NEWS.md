@@ -1,4 +1,4 @@
-# BayesMallows (development versions)
+# BayesMallows 2.3.0
 
 * Fixed a bug in the Bernoulli error model, in which each pairwise comparison
   was counted twice when updating the error probability theta, so that the
@@ -6,6 +6,8 @@
   comparison between the two items being swapped in the proposal for the
   latent rankings was counted twice. Issue #446 on GitHub. Thanks to Rowland
   Seymour for discovering.
+* Corrected the documentation of the `kappa` argument in `set_priors()`, which
+  now states the truncated Beta prior for theta as implemented.
 
 # BayesMallows 2.2.7
 
