@@ -170,21 +170,32 @@ RankProposal PairwiseSwap::propose(
   std::swap(ret.rankings(inds.first), ret.rankings(inds.second));
   ret.mutated_items = {inds.first, inds.second};
 
+  // Change in the number of mistakes among the pairwise comparisons
+  // involving item `ind`, ignoring comparisons with the (zero-indexed) item
+  // `skip`, where `skip = -1` means that nothing is ignored.
   auto count_error_diff =
-    [&items_above, &items_below, &current_rank, &ret](int ind) {
+    [&items_above, &items_below, &current_rank, &ret](
+        unsigned int ind, int skip) {
       int result{};
-      for(const auto item_above_first : items_above[ind]) {
-        result += (ret.rankings(item_above_first - 1) > ret.rankings(ind)) -
-          (current_rank(item_above_first - 1) > current_rank(ind));
+      for(const auto item_above : items_above[ind]) {
+        if(static_cast<int>(item_above) - 1 == skip) continue;
+        result += (ret.rankings(item_above - 1) > ret.rankings(ind)) -
+          (current_rank(item_above - 1) > current_rank(ind));
       }
-      for(const auto item_below_first : items_below[ind]) {
-        result += (ret.rankings(item_below_first - 1) < ret.rankings(ind)) -
-          (current_rank(item_below_first - 1) < current_rank(ind));
+      for(const auto item_below : items_below[ind]) {
+        if(static_cast<int>(item_below) - 1 == skip) continue;
+        result += (ret.rankings(item_below - 1) < ret.rankings(ind)) -
+          (current_rank(item_below - 1) < current_rank(ind));
       }
       return result;
     };
 
-    ret.g_diff += count_error_diff(inds.first) + count_error_diff(inds.second);
+    // A stated comparison between the two swapped items is stored in the
+    // lists of both items. It is therefore skipped when processing the second
+    // item, so that every comparison is counted exactly once, cf. GitHub
+    // issue #446.
+    ret.g_diff += count_error_diff(inds.first, -1) +
+      count_error_diff(inds.second, static_cast<int>(inds.first));
     return ret;
 }
 

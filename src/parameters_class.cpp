@@ -75,20 +75,17 @@ void Parameters::update_rho(
 
 void Parameters::update_shape(const Data& dat, const Priors& priors) {
   if(error_model != "bernoulli") return;
+  // Each stated pairwise preference "item k preferred to item j" is stored
+  // once in items_above[i][j] (as k) and once more, mirrored, in
+  // items_below[i][k] (as j). Iterating over items_above only hence counts
+  // every pairwise comparison exactly once; iterating over both lists would
+  // count each comparison twice, cf. GitHub issue #446.
   int sum_1{};
   int sum_2{};
   for(size_t i = 0; i < dat.n_assessors; ++i){
     for(size_t j = 0; j < dat.n_items; ++j) {
-      uvec items_above = dat.items_above[i][j];
-      uvec items_below = dat.items_below[i][j];
-
-      for(size_t k = 0; k < items_above.n_elem; ++k){
-        int g = (as_scalar(dat.rankings.col(i).row(j)) < as_scalar(dat.rankings.col(i).row(items_above(k) - 1)));
-        sum_1 += g;
-        sum_2 += 1 - g;
-      }
-      for(size_t k = 0; k < items_below.n_elem; ++k){
-        int g = (as_scalar(dat.rankings.col(i).row(j)) > as_scalar(dat.rankings.col(i).row(items_below(k) - 1)));
+      for(const auto item_above : dat.items_above[i][j]) {
+        int g = (dat.rankings(j, i) < dat.rankings(item_above - 1, i));
         sum_1 += g;
         sum_2 += 1 - g;
       }

@@ -180,25 +180,25 @@ test_that("compute_mallows is correct with Bernoulli error", {
 
   expect_equal(
     mean(mod$alpha$value[mod$alpha$iteration > 1500]),
-    9.518804,
+    10.70225,
     tolerance = 1e-4
   )
 
   expect_equal(
     sd(mod$alpha$value[mod$alpha$iteration > 1500]),
-    0.7038427,
+    0.8655247,
     tolerance = 1e-4
   )
 
   expect_equal(
     mean(mod$theta$value[mod$theta$iteration > 1500]),
-    0.1023917,
+    0.1138726,
     tolerance = 1e-4
   )
 
   expect_equal(
     sd(mod$theta$value[mod$theta$iteration > 1500]),
-    0.004577318,
+    0.007721037,
     tolerance = 1e-4
   )
 })
@@ -215,25 +215,25 @@ test_that("compute_mallows is correct with Bernoulli error and partial data", {
 
   expect_equal(
     mean(mod$alpha$value[mod$alpha$iteration > 8000]),
-    9.260634,
+    9.947071,
     tolerance = 1e-4
   )
 
   expect_equal(
     sd(mod$alpha$value[mod$alpha$iteration > 8000]),
-    0.8246462,
+    1.041077,
     tolerance = 1e-4
   )
 
   expect_equal(
     mean(mod$theta$value[mod$theta$iteration > 8000]),
-    0.06693134,
+    0.09609923,
     tolerance = 1e-4
   )
 
   expect_equal(
     sd(mod$theta$value[mod$theta$iteration > 8000]),
-    0.009311273,
+    0.01617313,
     tolerance = 1e-4
   )
 })
