@@ -41,16 +41,12 @@ data0 <- sample_mallows(rho0 = 1:5, alpha = 10, n_samples = 1000,
                         burnin = 10, thinning = 1)
 # Find the frequency distribution
 compute_observation_frequency(rankings = data0)
-#>       [,1] [,2] [,3] [,4] [,5] [,6]
-#>  [1,]    1    2    3    4    5  867
-#>  [2,]    1    2    3    5    4   44
-#>  [3,]    1    2    4    3    5   27
-#>  [4,]    1    3    2    4    5   29
-#>  [5,]    1    3    4    2    5    5
-#>  [6,]    1    4    2    3    5    7
-#>  [7,]    1    4    3    2    5   12
-#>  [8,]    2    1    3    4    5    7
-#>  [9,]    2    1    3    5    4    2
+#>      [,1] [,2] [,3] [,4] [,5] [,6]
+#> [1,]    1    2    3    4    5  931
+#> [2,]    1    2    3    5    4   31
+#> [3,]    1    2    4    3    5    5
+#> [4,]    1    3    2    4    5   19
+#> [5,]    2    1    3    4    5   14
 
 # The function also works when the data have missing values
 rankings <- matrix(c(1, 2, 3, 4,

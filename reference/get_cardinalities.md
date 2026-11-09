@@ -41,9 +41,9 @@ distances, i.e., \\N\_{m,n}\\.
 
 Crispino M, Mollica C, Astuti V, Tardella L (2023). “Efficient and
 accurate inference for mixtures of Mallows models with Spearman
-distance.” *Statistics and Computing*, **33**(5). ISSN 1573-1375,
+distance.” *Statistics and Computing*, **33**(5). ISSN 1573-1375.
 [doi:10.1007/s11222-023-10266-8](https://doi.org/10.1007/s11222-023-10266-8)
-, <http://dx.doi.org/10.1007/s11222-023-10266-8>.  
+. <http://dx.doi.org/10.1007/s11222-023-10266-8>.  
   
 Irurozki E, Calvo B, Lozano JA (2016). “PerMallows: An R Package for
 Mallows and Generalized Mallows Models.” *Journal of Statistical

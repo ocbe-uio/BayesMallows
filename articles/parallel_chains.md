@@ -1,6 +1,7 @@
 # MCMC with Parallel Chains
 
 ``` r
+
 library(BayesMallows)
 set.seed(123)
 ```
@@ -19,11 +20,11 @@ vignette](https://ocbe-uio.github.io/BayesMallows/articles/SMC-Mallows.html).
 
 Modern computers have multiple cores, and on computing clusters one can
 get access to hundreds of cores easily. By running Markov Chains in
-parallel on $K$ cores, ideally from different starting points, we
+parallel on $`K`$ cores, ideally from different starting points, we
 achieve at least the following:
 
 1.  The time you have to wait to get the required number of post-burnin
-    samples scales like $1/K$.
+    samples scales like $`1/K`$.
 
 2.  You can check convergence by comparing chains.
 
@@ -32,9 +33,10 @@ achieve at least the following:
 In “BayesMallows” we use the “parallel” package for parallel
 computation. Parallelization is obtained by starting a cluster and
 providing it as an argument. Note that we also give one initial value of
-the dispersion parameter $\alpha$ to each chain.
+the dispersion parameter $`\alpha`$ to each chain.
 
 ``` r
+
 library(parallel)
 cl <- makeCluster(4)
 fit <- compute_mallows(
@@ -48,6 +50,7 @@ stopCluster(cl)
 We can assess convergence in the usual way:
 
 ``` r
+
 assess_convergence(fit)
 ```
 
@@ -56,11 +59,13 @@ chains.](parallel_assess_convergence_alpha-1.png)
 
 Trace plot of scale parameter for four chains.
 
-We can also assess convergence for the latent ranks $\mathbf{ρ}$. Since
-the initial value of $\mathbf{ρ}$ is sampled uniformly, the two chains
-automatically get different initial values.
+We can also assess convergence for the latent ranks
+$`\boldsymbol{\rho}`$. Since the initial value of $`\boldsymbol{\rho}`$
+is sampled uniformly, the two chains automatically get different initial
+values.
 
 ``` r
+
 assess_convergence(fit, parameter = "rho", items = 1:3)
 ```
 
@@ -72,6 +77,7 @@ Trace plot of modal ranking for four chains.
 Based on the convergence plots, we set the burnin to 3000.
 
 ``` r
+
 burnin(fit) <- 3000
 ```
 
@@ -79,9 +85,10 @@ We can now use all the tools for assessing the posterior distributions
 as usual. The post-burnin samples for all parallel chains are simply
 combined, as they should be.
 
-Below is a plot of the posterior distribution of $\alpha$.
+Below is a plot of the posterior distribution of $`\alpha`$.
 
 ``` r
+
 plot(fit)
 ```
 
@@ -91,9 +98,10 @@ chains.](parallel_posterior_alpha-1.png)
 Posterior of scale parameter, combing post-burnin samples from all
 chains.
 
-Next is a plot of the posterior distribution of $\mathbf{ρ}$.
+Next is a plot of the posterior distribution of $`\boldsymbol{\rho}`$.
 
 ``` r
+
 plot(fit, parameter = "rho", items = 4:7)
 ```
 
@@ -113,13 +121,15 @@ more thorough introduction to the aspects not directly related to
 parallelism.
 
 ``` r
+
 beach_data <- setup_rank_data(preferences = beach_preferences)
 ```
 
 We run four parallel chains, letting the package generate random initial
-rankings, but again providing a vector of initial values for $\alpha$.
+rankings, but again providing a vector of initial values for $`\alpha`$.
 
 ``` r
+
 cl <- makeCluster(4)
 fit <- compute_mallows(
   data = beach_data,
@@ -136,6 +146,7 @@ The convergence plots shows some long-range autocorrelation, but
 otherwise it seems to mix relatively well.
 
 ``` r
+
 assess_convergence(fit)
 ```
 
@@ -145,9 +156,10 @@ chains.](parallel_assess_converge_prefs_alpha-1.png)
 Trace plot of scale parameter for beach preferences data, on four
 chains.
 
-Here is the convergence plot for $\mathbf{ρ}$:
+Here is the convergence plot for $`\boldsymbol{\rho}`$:
 
 ``` r
+
 assess_convergence(fit, parameter = "rho", items = 4:6)
 ```
 
@@ -160,6 +172,7 @@ To avoid overplotting, it’s a good idea to pick a low number of
 assessors and chains. We here look at items 1-3 of assessors 1 and 2.
 
 ``` r
+
 assess_convergence(fit,
   parameter = "Rtilde",
   items = 1:3, assessors = 1:2
@@ -178,15 +191,17 @@ Based on the trace plots, the chains seem to be mixing well. We set the
 burnin to 1000.
 
 ``` r
+
 burnin(fit) <- 1000
 ```
 
 We can now study the posterior distributions. Here is the posterior for
-$\alpha$. Note that by increasing the `nmc` argument to
+$`\alpha`$. Note that by increasing the `nmc` argument to
 `compute_mallows` above, the density would appear smoother. In this
 vignette we have kept it low to reduce the run time.
 
 ``` r
+
 plot(fit)
 ```
 
@@ -195,9 +210,10 @@ parameter.](parallel_beach_prefs_alpha_posterior-1.png)
 
 Posterior distribution for scale parameter.
 
-We can also look at the posterior for $\mathbf{ρ}$.
+We can also look at the posterior for $`\boldsymbol{\rho}`$.
 
 ``` r
+
 plot(fit, parameter = "rho", items = 6:9)
 ```
 
@@ -209,12 +225,14 @@ Posterior distribution for modal rankings.
 We can also compute posterior intervals in the usual way:
 
 ``` r
+
 compute_posterior_intervals(fit, parameter = "alpha")
 #>   parameter  mean median          hpdi central_interval
 #> 1     alpha 4.798  4.793 [4.242,5.373]    [4.235,5.371]
 ```
 
 ``` r
+
 compute_posterior_intervals(fit, parameter = "rho")
 #>    parameter    item mean median    hpdi central_interval
 #> 1        rho  Item 1    7      7     [7]            [6,7]
@@ -237,6 +255,7 @@ compute_posterior_intervals(fit, parameter = "rho")
 And we can compute the consensus ranking:
 
 ``` r
+
 compute_consensus(fit)
 #>      cluster ranking    item   cumprob
 #> 1  Cluster 1       1  Item 9 0.8691667
@@ -257,6 +276,7 @@ compute_consensus(fit)
 ```
 
 ``` r
+
 compute_consensus(fit, type = "MAP")
 #>      cluster map_ranking    item probability
 #> 1  Cluster 1           1  Item 9   0.2683333
@@ -276,9 +296,10 @@ compute_consensus(fit, type = "MAP")
 #> 15 Cluster 1          15  Item 2   0.2683333
 ```
 
-We can compute the probability of being top-$k$, here for $k = 4$:
+We can compute the probability of being top-$`k`$, here for $`k=4`$:
 
 ``` r
+
 plot_top_k(fit, k = 4)
 ```
 

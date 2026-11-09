@@ -7,6 +7,7 @@ al. ([2020](#ref-sorensen2020)) for notation and all other details about
 the models and algorithms.
 
 ``` r
+
 library(BayesMallows)
 set.seed(123)
 ```
@@ -24,15 +25,16 @@ The true ranking of the potatoes’ weights is available in the vector
 datasets to have one row for each assessor and one column for each item.
 Each row has to be a proper permutation, possibly with missing values.
 We are interested in the posterior distribution of both the level of
-agreement between assessors, as described by $\alpha$, and in the latent
-ranking of the potatoes, as described by $\mathbf{ρ}$. We refer to the
-attached replication script for random number seeds for exact
-reproducibility.
+agreement between assessors, as described by $`\alpha`$, and in the
+latent ranking of the potatoes, as described by $`\boldsymbol{\rho}`$.
+We refer to the attached replication script for random number seeds for
+exact reproducibility.
 
 We start by defining our data object, which in this case consists of
 complete rankings.
 
 ``` r
+
 complete_data <- setup_rank_data(rankings = potato_visual)
 ```
 
@@ -40,6 +42,7 @@ First, we do a test run to check convergence of the MCMC algorithm, and
 then get trace plots with `assess_convergence`.
 
 ``` r
+
 bmm_test <- compute_mallows(data = complete_data)
 assess_convergence(bmm_test)
 ```
@@ -48,13 +51,14 @@ assess_convergence(bmm_test)
 
 Trace plot for scale parameter.
 
-By default, `assess_convergence` returns a trace plot for $\alpha$,
+By default, `assess_convergence` returns a trace plot for $`\alpha`$,
 shown in the figure above. The algorithm seems to be mixing well after
-around 500 iterations. Next, we study the convergence of $\mathbf{ρ}$.
-To avoid overly complex plots, we pick potatoes $1 - 5$ by specifying
-this in the `items` argument.
+around 500 iterations. Next, we study the convergence of
+$`\mathbf{\rho}`$. To avoid overly complex plots, we pick potatoes
+$`1-5`$ by specifying this in the `items` argument.
 
 ``` r
+
 assess_convergence(bmm_test, parameter = "rho", items = 1:5)
 ```
 
@@ -68,9 +72,10 @@ around 1,000 iterations.
 From the trace plots, we decide to discard the first 1,000 MCMC samples
 as burn-in. We rerun the algorithm to get 20,000 samples after burn-in.
 The object `bmm_visual` has `S3` class `BayesMallows`, so we plot the
-posterior distribution of $\alpha$ with `plot.BayesMallows`.
+posterior distribution of $`\alpha`$ with `plot.BayesMallows`.
 
 ``` r
+
 bmm_visual <- compute_mallows(
   data = complete_data, 
   compute_options = set_compute_options(nmc = 21000, burnin = 1000)
@@ -82,22 +87,24 @@ plot(bmm_visual)
 
 Posterior for scale parameter.
 
-We can also get posterior credible intervals for $\alpha$ using
+We can also get posterior credible intervals for $`\alpha`$ using
 `compute_posterior_intervals`, which returns both highest posterior
 density intervals (HPDI) and central intervals in a `data.frame`.
 
 ``` r
+
 compute_posterior_intervals(bmm_visual, decimals = 1L)
 #>   parameter mean median       hpdi central_interval
 #> 1     alpha 10.9   10.9 [9.5,12.3]       [9.5,12.3]
 ```
 
-Next, we can go on to study the posterior distribution of $\mathbf{ρ}$.
-If the argument is not provided, and the number of items exceeds five,
-five items are picked at random for plotting. To show all potatoes, we
-explicitly set .
+Next, we can go on to study the posterior distribution of
+$`\boldsymbol{\rho}`$. If the argument is not provided, and the number
+of items exceeds five, five items are picked at random for plotting. To
+show all potatoes, we explicitly set .
 
 ``` r
+
 plot(bmm_visual, parameter = "rho", items = 1:20)
 ```
 
@@ -107,14 +114,15 @@ Posterior for modal ranking.
 
 ### Jumping over the scale parameter
 
-Updating $\alpha$ in every step of the MCMC algorithm may not be
+Updating $`\alpha`$ in every step of the MCMC algorithm may not be
 necessary, as the number of posterior samples typically is more than
 large enough to obtain good estimates of its posterior distribution.
 With the `alpha_jump` argument, we can tell the MCMC algorithm to update
-$\alpha$ only every `alpha_jump`-th iteration. To update $\alpha$ every
-10th time $\mathbf{ρ}$ is updated, we do
+$`\alpha`$ only every `alpha_jump`-th iteration. To update $`\alpha`$
+every 10th time $`\boldsymbol{\rho}`$ is updated, we do
 
 ``` r
+
 bmm_visual <- compute_mallows(
   data = complete_data, 
   compute_options = 
@@ -130,6 +138,7 @@ distance. Running the same analysis of the potato data with Spearman
 distance is done with the command
 
 ``` r
+
 bmm <- compute_mallows(
   data = complete_data, 
   model_options = set_model_options(metric = "spearman"),
@@ -169,6 +178,7 @@ provided in the dataframe `beach_preferences`, whose first six rows are
 shown below:
 
 ``` r
+
 head(beach_preferences)
 #>   assessor bottom_item top_item
 #> 1        1           2       15
@@ -182,6 +192,7 @@ head(beach_preferences)
 We can define a rank data object based on these preferences.
 
 ``` r
+
 beach_data <- setup_rank_data(preferences = beach_preferences)
 ```
 
@@ -190,6 +201,7 @@ stated preferences. Let’s do this for all preferences stated by assessor
 1 involving beach 2. We first look at the raw preferences.
 
 ``` r
+
 subset(beach_preferences, assessor == 1 & (bottom_item == 2 | top_item == 2))
 #>   assessor bottom_item top_item
 #> 1        1           2       15
@@ -199,6 +211,7 @@ We then use the function `get_transitive_closure` to obtain the
 transitive closure, and then focus on the same subset:
 
 ``` r
+
 tc <- get_transitive_closure(beach_data)
 subset(tc, assessor == 1 & (bottom_item == 2 | top_item == 2))
 #>    assessor bottom_item top_item
@@ -222,15 +235,17 @@ generated above, based on the stated preferences. We also set
 hence letting us assess the convergence of the augmented rankings.
 
 ``` r
+
 bmm_test <- compute_mallows(
   data = beach_data,
   compute_options = set_compute_options(save_aug = TRUE))
 ```
 
-Running `assess_convergence` for $\alpha$ and $\mathbf{ρ}$ shows good
-convergence after 1000 iterations.
+Running `assess_convergence` for $`\alpha`$ and $`\boldsymbol{\rho}`$
+shows good convergence after 1000 iterations.
 
 ``` r
+
 assess_convergence(bmm_test)
 ```
 
@@ -239,6 +254,7 @@ assess_convergence(bmm_test)
 Trace plot for scale parameter.
 
 ``` r
+
 assess_convergence(bmm_test, parameter = "rho", items = 1:6)
 ```
 
@@ -252,6 +268,7 @@ plot. Let us start by considering items 2, 6, and 15 for assessor 1,
 which we studied above.
 
 ``` r
+
 assess_convergence(
   bmm_test, parameter = "Rtilde", items = c(2, 6, 15), assessors = 1)
 ```
@@ -269,6 +286,7 @@ orderings are implied between beach 1 and beach 15 for assessor 2. That
 is, the following statement returns zero rows.
 
 ``` r
+
 subset(tc, assessor == 2 & bottom_item %in% c(1, 15) & top_item %in% c(1, 15))
 #> [1] assessor    bottom_item top_item   
 #> <0 rows> (or 0-length row.names)
@@ -277,6 +295,7 @@ subset(tc, assessor == 2 & bottom_item %in% c(1, 15) & top_item %in% c(1, 15))
 With the following command, we create trace plots to confirm this:
 
 ``` r
+
 assess_convergence(
   bmm_test, parameter = "Rtilde", items = c(1, 15), assessors = 2)
 ```
@@ -297,6 +316,7 @@ arbitrarily pick items 13-15, but the same procedure can be repeated for
 other items.
 
 ``` r
+
 assess_convergence(
   bmm_test, parameter = "Rtilde", items = 13:15, assessors = 1:8)
 ```
@@ -315,6 +335,7 @@ discard the first 2,000 MCMC iterations as burn-in, and take 20,000
 additional samples.
 
 ``` r
+
 bmm_beaches <- compute_mallows(
   data = beach_data,
   compute_options = 
@@ -322,11 +343,13 @@ bmm_beaches <- compute_mallows(
 )
 ```
 
-The posterior distributions of $\alpha$ and $\mathbf{ρ}$ can be studied
-as shown in the previous sections. Posterior intervals for the latent
-rankings of each beach are obtained with `compute_posterior_intervals`:
+The posterior distributions of $`\alpha`$ and $`\boldsymbol{\rho}`$ can
+be studied as shown in the previous sections. Posterior intervals for
+the latent rankings of each beach are obtained with
+`compute_posterior_intervals`:
 
 ``` r
+
 compute_posterior_intervals(bmm_beaches, parameter = "rho")
 #>    parameter    item mean median    hpdi central_interval
 #> 1        rho  Item 1    7      7     [7]              [7]
@@ -352,6 +375,7 @@ maximum posterior (MAP) rankings. This is done with the function
 `compute_consensus`, and the following call returns the CP consensus:
 
 ``` r
+
 compute_consensus(bmm_beaches, type = "CP")
 #>      cluster ranking    item cumprob
 #> 1  Cluster 1       1  Item 9 0.89815
@@ -373,14 +397,15 @@ compute_consensus(bmm_beaches, type = "CP")
 
 The column `cumprob` shows the probability of having the given rank or
 lower. Looking at the second row, for example, this means that beach 6
-has probability 1 of having latent rank $\rho_{6} \leq 2$. Next, beach 3
-has probability 0.738 of having latent rank $\rho_{3} \leq 3$. This is
-an example of how the Bayesian framework can be used to not only rank
+has probability 1 of having latent rank $`\rho_{6} \leq 2`$. Next, beach
+3 has probability 0.738 of having latent rank $`\rho_{3}\leq 3`$. This
+is an example of how the Bayesian framework can be used to not only rank
 items, but also to give posterior assessments of the uncertainty of the
 rankings. The MAP consensus is obtained similarly, by setting
 `type = "MAP"`.
 
 ``` r
+
 compute_consensus(bmm_beaches, type = "MAP")
 #>      cluster map_ranking    item probability
 #> 1  Cluster 1           1  Item 9     0.04955
@@ -401,13 +426,14 @@ compute_consensus(bmm_beaches, type = "MAP")
 ```
 
 Keeping in mind that the ranking of beaches is based on sparse pairwise
-preferences, we can also ask: for beach $i$, what is the probability of
-being ranked top-$k$ by assessor $j$, and what is the probability of
-having latent rank among the top-$k$. The function `plot_top_k` plots
-these probabilities. By default, it sets `k = 3`, so a heatplot of the
-probability of being ranked top-3 is obtained with the call:
+preferences, we can also ask: for beach $`i`$, what is the probability
+of being ranked top-$`k`$ by assessor $`j`$, and what is the probability
+of having latent rank among the top-$`k`$. The function `plot_top_k`
+plots these probabilities. By default, it sets `k = 3`, so a heatplot of
+the probability of being ranked top-3 is obtained with the call:
 
 ``` r
+
 plot_top_k(bmm_beaches)
 ```
 
@@ -416,10 +442,10 @@ plot_top_k(bmm_beaches)
 Top-3 rankings for beach preferences.
 
 The plot shows, for each beach as indicated on the left axis, the
-probability that assessor $j$ ranks the beach among top-3. For example,
-we see that assessor 1 has a very low probability of ranking beach 9
-among her top-3, while assessor 3 has a very high probability of doing
-this.
+probability that assessor $`j`$ ranks the beach among top-3. For
+example, we see that assessor 1 has a very low probability of ranking
+beach 9 among her top-3, while assessor 3 has a very high probability of
+doing this.
 
 The function `predict_top_k` returns a dataframe with all the underlying
 probabilities. For example, in order to find all the beaches that are
@@ -427,6 +453,7 @@ among the top-3 of assessors 1-5 with more than 90 % probability, we
 would do:
 
 ``` r
+
 subset(predict_top_k(bmm_beaches), prob > .9 & assessor %in% 1:5)
 #>     assessor    item    prob
 #> 301        1  Item 6 0.99435
@@ -453,6 +480,7 @@ to a bug in the function that was used to sample cluster probabilities
 from the Dirichlet distribution. We start by defining the data object.
 
 ``` r
+
 sushi_data <- setup_rank_data(sushi_rankings)
 ```
 
@@ -476,6 +504,7 @@ run, we do not save within-cluster distances from each MCMC iteration
 and hence set `include_wcd = FALSE`.
 
 ``` r
+
 library("parallel")
 cl <- makeCluster(detectCores())
 bmm <- compute_mallows_mixtures(
@@ -488,9 +517,10 @@ stopCluster(cl)
 
 The function `assess_convergence` automatically creates a grid plot when
 given an object of class `BayesMallowsMixtures`, so we can check the
-convergence of $\alpha$ with the command
+convergence of $`\alpha`$ with the command
 
 ``` r
+
 assess_convergence(bmm)
 ```
 
@@ -500,11 +530,12 @@ Trace plots for scale parameters.
 
 The resulting plot shows that all the chains seem to be close to
 convergence quite quickly. We can also make sure that the posterior
-distributions of the cluster probabilities $\tau_{c}$,
-$(c = 1,\ldots,C)$ have converged properly, by setting
+distributions of the cluster probabilities $`\tau_{c}`$,
+$`(c = 1, \dots, C)`$ have converged properly, by setting
 `parameter = "cluster_probs"`.
 
 ``` r
+
 assess_convergence(bmm, parameter = "cluster_probs")
 ```
 
@@ -525,11 +556,12 @@ additional iterations, and try from 1 to 10 mixture components. Our goal
 is now to determine the number of mixture components to use, and in
 order to create an elbow plot, we set `include_wcd = TRUE` to compute
 the within-cluster distances in each step of the MCMC algorithm. Since
-the posterior distributions of $\rho_{c}$ ($c = 1,\ldots,C$) are highly
-peaked, we save some memory by only saving every 10th value of
-$\mathbf{ρ}$ by setting `rho_thinning = 10`.
+the posterior distributions of $`\rho_{c}`$ ($`c = 1,\dots,C`$) are
+highly peaked, we save some memory by only saving every 10th value of
+$`\boldsymbol{\rho}`$ by setting `rho_thinning = 10`.
 
 ``` r
+
 cl <- makeCluster(detectCores())
 bmm <- compute_mallows_mixtures(
   n_clusters = 1:10, 
@@ -544,6 +576,7 @@ stopCluster(cl)
 We then create an elbow plot:
 
 ``` r
+
 plot_elbow(bmm)
 ```
 
@@ -569,6 +602,7 @@ objects being stored in memory, thus slowing down computation. For
 statistical efficiency, it is best to avoid thinning.
 
 ``` r
+
 bmm <- compute_mallows(
   data = sushi_data,
   model_options = set_model_options(n_cluster = 5),
@@ -577,11 +611,12 @@ bmm <- compute_mallows(
 )
 ```
 
-We can plot the posterior distributions of $\alpha$ and $\mathbf{ρ}$ in
-each cluster using `plot.BayesMallows` as shown previously for the
-potato data.
+We can plot the posterior distributions of $`\alpha`$ and
+$`\boldsymbol{\rho}`$ in each cluster using `plot.BayesMallows` as shown
+previously for the potato data.
 
 ``` r
+
 plot(bmm)
 ```
 
@@ -594,6 +629,7 @@ Since there are five clusters, the easiest way of visualizing posterior
 rankings is by choosing a single item.
 
 ``` r
+
 plot(bmm, parameter = "rho", items = 1)
 ```
 
@@ -605,6 +641,7 @@ We can also show the posterior distributions of the cluster
 probabilities.
 
 ``` r
+
 plot(bmm, parameter = "cluster_probs")
 ```
 
@@ -617,6 +654,7 @@ the posterior probability for each assessor of belonging to each
 cluster:
 
 ``` r
+
 plot(bmm, parameter = "cluster_assignment")
 ```
 
@@ -629,6 +667,7 @@ The number underlying the plot can be found using `assign_cluster`.
 We can find clusterwise consensus rankings using `compute_consensus`.
 
 ``` r
+
 cp_consensus <- compute_consensus(bmm)
 reshape(
   cp_consensus, 
@@ -655,8 +694,8 @@ Note that for estimating cluster specific parameters, label switching is
 a potential problem that needs to be handled. `BayesMallows` ignores
 label switching issues inside the MCMC, because it has been shown that
 this approach is better for ensuring full convergence of the chain
-([Jasra, Holmes, and Stephens 2005](#ref-jasra2005); [Celeux, Hurn, and
-Robert 2000](#ref-celeux2000)). MCMC iterations can be re-ordered after
+([Jasra et al. 2005](#ref-jasra2005); [Celeux et al.
+2000](#ref-celeux2000)). MCMC iterations can be re-ordered after
 convergence is achieved, for example by using the implementation of
 Stephens’ algorithm ([Stephens 2000](#ref-Stephens2000)) provided by the
 R package `label.switching` ([Papastamoulis
@@ -676,9 +715,9 @@ Carlo Methods and the Label Switching Problem in Bayesian Mixture
 Modeling.” *Statistical Science* 20 (1): 50–67.
 
 Kamishima, T. 2003. “Nantonac Collaborative Filtering: Recommendation
-Based on Order Responses.” In *Proceedings of the Ninth ACM SIGKDD
-International Conference on Knowledge Discovery and Data Mining*,
-583–88. New York, NY, USA: ACM.
+Based on Order Responses.” *Proceedings of the Ninth ACM SIGKDD
+International Conference on Knowledge Discovery and Data Mining* (New
+York, NY, USA), 583–88.
 
 Liu, Q., Marta Crispino, I. Scheel, V. Vitelli, and A. Frigessi. 2019.
 “Model-Based Learning from Preference Data.” *Annual Review of

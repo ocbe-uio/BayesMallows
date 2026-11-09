@@ -1,6 +1,7 @@
 # Sequential Monte Carlo for the Bayesian Mallows model
 
 ``` r
+
 library(BayesMallows)
 library(ggplot2)
 set.seed(123)
@@ -23,6 +24,7 @@ We use the `sushi_rankings` dataset to illustrate the methodology
 5000 complete rankings for 10 sushi dishes.
 
 ``` r
+
 head(sushi_rankings)
 #>      shrimp sea eel tuna squid sea urchin salmon roe egg fatty tuna tuna roll cucumber roll
 #> [1,]      2       8   10     3          4          1   5          9         7             6
@@ -38,6 +40,7 @@ batches. Assume that we initially have only 300 observed rankings, in
 `data_batch1`:
 
 ``` r
+
 data_batch1 <- sushi_rankings[1:300, ]
 ```
 
@@ -46,12 +49,14 @@ We estimate a model on these data using
 full Metropolis-Hastings algorithm.
 
 ``` r
+
 model1 <- compute_mallows(data = setup_rank_data(data_batch1))
 ```
 
 We assess convergence, and find that 300 is an appropriate burnin value.
 
 ``` r
+
 assess_convergence(model1)
 ```
 
@@ -60,6 +65,7 @@ assess_convergence(model1)
 Trace plot for SMC model.
 
 ``` r
+
 burnin(model1) <- 300
 ```
 
@@ -67,6 +73,7 @@ Having saved this model, assume we receive another batch of preferences
 at a later timepoint, with an additional 300 rankings.
 
 ``` r
+
 data_batch2 <- sushi_rankings[301:600, ]
 ```
 
@@ -78,6 +85,7 @@ the sequential Monte Carlo algorithm of Stein
 thinned sample of size `n_particles` from `model1` as initial values.
 
 ``` r
+
 model2 <- update_mallows(
   model = model1, 
   new_data = setup_rank_data(data_batch2), 
@@ -88,6 +96,7 @@ All the posterior summary methods can be used for `model2`. For example,
 we can plot the posterior of \\\alpha\\.
 
 ``` r
+
 plot(model2)
 ```
 
@@ -99,6 +108,7 @@ Posterior distribution of scale parameter for model 2.
 And we can plot the posterior of the latent ranks of selected items:
 
 ``` r
+
 plot(model2, parameter = "rho", items = c("shrimp", "sea eel", "tuna"))
 ```
 
@@ -110,12 +120,14 @@ Posterior distribution of selected latent rankings for model 2.
 Next, assume we get yet another set of rankings later, now of size 1000.
 
 ``` r
+
 data_batch3 <- sushi_rankings[601:1600, ]
 ```
 
 We can re-update the model.
 
 ``` r
+
 model3 <- update_mallows(model2, new_data = setup_rank_data(data_batch3))
 ```
 
@@ -124,6 +136,7 @@ expected, the posterior uncertainty about the rankings has decreased
 once we added more data.
 
 ``` r
+
 plot(model3, parameter = "rho", items = c("shrimp", "sea eel", "tuna"))
 ```
 
@@ -135,6 +148,7 @@ Posterior distribution of selected latent rankings for model 3.
 Finally, we add a batch with the last data and re-update the model.
 
 ``` r
+
 data_batch4 <- sushi_rankings[1601:5000, ]
 model4 <- update_mallows(
   model3, 
@@ -144,6 +158,7 @@ model4 <- update_mallows(
 The posterior uncertainty is now very small:
 
 ``` r
+
 plot(model4, parameter = "rho", items = c("shrimp", "sea eel", "tuna"))
 ```
 
@@ -157,6 +172,7 @@ parameter for each model. Note how the intervals get increasingly
 narrower as more data is added.
 
 ``` r
+
 rbind(
   compute_posterior_intervals(model1),
   compute_posterior_intervals(model2), 
@@ -175,6 +191,7 @@ final model to what we get by running `compute_mallows` on the complete
 dataset:
 
 ``` r
+
 mod_bmm <- compute_mallows(
   data = setup_rank_data(rankings = sushi_rankings),
   compute_options = set_compute_options(nmc = 5000, burnin = 1000)
@@ -186,6 +203,7 @@ that although both are rather wiggly, they agree very well about
 location and scale.
 
 ``` r
+
 plot(mod_bmm)
 ```
 
@@ -196,6 +214,7 @@ Posterior distribution of scale parameter for Metropolis-Hastings run on
 the complete data.
 
 ``` r
+
 plot(model4)
 ```
 
@@ -207,6 +226,7 @@ Posterior distribution of scale parameter for model 4.
 The posterior intervals are also in good agreement.
 
 ``` r
+
 rbind(
   compute_posterior_intervals(mod_bmm),
   compute_posterior_intervals(model4)
@@ -219,6 +239,7 @@ rbind(
 The cumulative probability consensus is also in good agrement:
 
 ``` r
+
 compute_consensus(model4)
 #>      cluster ranking          item cumprob
 #> 1  Cluster 1       1    fatty tuna   1.000
@@ -255,6 +276,7 @@ For this demonstration we shall assume that we can only observe the
 top-5 ranked items from each user in the `sushi_rankings` dataset.
 
 ``` r
+
 data_partial <- sushi_rankings
 data_partial[data_partial > 5] <- NA
 head(data_partial)
@@ -271,6 +293,7 @@ Again, assume we start out with a batch of data, this time with 100
 rankings:
 
 ``` r
+
 data_batch1 <- data_partial[1:100, ]
 ```
 
@@ -281,6 +304,7 @@ We estimate this model using
 imputation over the missing ranks.
 
 ``` r
+
 model1 <- compute_mallows(
   data = setup_rank_data(data_batch1),
   compute_options = set_compute_options(nmc = 10000)
@@ -290,6 +314,7 @@ model1 <- compute_mallows(
 The trace plot shows that convergence is reached quickly.
 
 ``` r
+
 assess_convergence(model1)
 ```
 
@@ -300,12 +325,14 @@ Trace plot for SMC model.
 We set the burnin to 300.
 
 ``` r
+
 burnin(model1) <- 300
 ```
 
 Below is the posterior for \\\alpha\\ after this initial run:
 
 ``` r
+
 plot(model1)
 ```
 
@@ -317,6 +344,7 @@ Posterior distribution of scale parameter after initial run.
 Next, assume we receive 100 more top-5 rankings:
 
 ``` r
+
 data_batch2 <- data_partial[101:200, ]
 ```
 
@@ -329,6 +357,7 @@ by setting `aug_method = "pseudo"` in the call to
 do this here.
 
 ``` r
+
 model2 <- update_mallows(
   model = model1, 
   new_data = setup_rank_data(data_batch2), 
@@ -341,6 +370,7 @@ model2 <- update_mallows(
 Below is the posterior for \\\alpha\\:
 
 ``` r
+
 plot(model2)
 ```
 
@@ -354,16 +384,19 @@ When even more data arrives, we can update the model again. For example,
 assume we now get a set of complete rankings, with no missingness:
 
 ``` r
+
 data_batch3 <- sushi_rankings[201:300, ]
 ```
 
 We update the model just as before:
 
 ``` r
+
 model3 <- update_mallows(model2, new_data = setup_rank_data(data_batch3))
 ```
 
 ``` r
+
 plot(model3)
 ```
 
@@ -392,6 +425,7 @@ We assume that the initial batch of data contains top-3 rankings
 provided by the first 100 users.
 
 ``` r
+
 set.seed(123)
 sushi_reduced <- sushi_rankings[1:100, ]
 data_batch1 <- ifelse(sushi_reduced > 3, NA_real_, sushi_reduced)
@@ -401,6 +435,7 @@ To keep track of existing users updating their preferences, we also need
 a user ID in this case, which is required to be a number vector.
 
 ``` r
+
 rownames(data_batch1) <- seq_len(nrow(data_batch1))
 head(data_batch1)
 #>   shrimp sea eel tuna squid sea urchin salmon roe egg fatty tuna tuna roll cucumber roll
@@ -416,6 +451,7 @@ We fit the standard Metropolis-Hastings algorithm to these data,
 yielding a starting point.
 
 ``` r
+
 mod_init <- compute_mallows(
   data = setup_rank_data(
     rankings = data_batch1,
@@ -426,6 +462,7 @@ mod_init <- compute_mallows(
 Convergence seems to be quick, and we set the burnin to 300.
 
 ``` r
+
 assess_convergence(mod_init)
 ```
 
@@ -435,6 +472,7 @@ assess_convergence(mod_init)
 Trace plot for initial run on sushi batch 1.
 
 ``` r
+
 burnin(mod_init) <- 300
 ```
 
@@ -442,6 +480,7 @@ Next, assume we receive top-5 rankings from the same users. We now
 update the model using SMC.
 
 ``` r
+
 data_batch2 <- ifelse(sushi_reduced > 5, NA_real_, sushi_reduced)
 rownames(data_batch2) <- seq_len(nrow(data_batch2))
 model2 <- update_mallows(
@@ -456,6 +495,7 @@ model2 <- update_mallows(
 We can plot the posterior distributions of \\\alpha\\ before and after.
 
 ``` r
+
 plot(mod_init) + ggtitle("Posterior of dispersion parameter after data batch 1")
 ```
 
@@ -464,6 +504,7 @@ plot(mod_init) + ggtitle("Posterior of dispersion parameter after data batch 1")
 Posterior after sushi batch 1.
 
 ``` r
+
 plot(model2) + ggtitle("Posterior of dispersion parameter after data batch 2")
 ```
 
@@ -474,6 +515,7 @@ Posterior after sushi batch 2.
 Next, assume we receive top-8 rankings from the same users.
 
 ``` r
+
 data_batch3 <- ifelse(sushi_reduced > 8, NA_real_, sushi_reduced)
 rownames(data_batch3) <- seq_len(nrow(data_batch3))
 ```
@@ -482,6 +524,7 @@ Before proceeding, it is instructive to study why this situation needs
 special care. Below are the augmented rankings for user 1 in particle 1:
 
 ``` r
+
 (v1 <- model2$augmented_rankings[, 1, 1])
 #>  [1]  2  7 10  3  4  1  5  6  8  9
 ```
@@ -489,6 +532,7 @@ special care. Below are the augmented rankings for user 1 in particle 1:
 Next, we show the data provided by user 1 in `data_batch3`:
 
 ``` r
+
 (v2a <- unname(data_batch3[1, ]))
 #>  [1]  2  8 NA  3  4  1  5 NA  7  6
 ```
@@ -497,6 +541,7 @@ By comparing the non-missing ranks, we can check if they are consistent
 or not:
 
 ``` r
+
 (v2b <- v2a[!is.na(v2a)])
 #> [1] 2 8 3 4 1 5 7 6
 v1[v1 %in% v2b]
@@ -513,6 +558,7 @@ Luckily, this happens automatically in our implementation, so we can
 update the model again.
 
 ``` r
+
 model3 <- update_mallows(
   model = mod_init, 
   new_data = setup_rank_data(
@@ -522,6 +568,7 @@ model3 <- update_mallows(
 Next we plot the posterior:
 
 ``` r
+
 plot(model3) + ggtitle("Posterior of dispersion parameter after data batch 3")
 ```
 
@@ -533,6 +580,7 @@ Now assume we get a batch of new users, without missing ranks. These can
 be treated just as the other ones, but we need new user IDs.
 
 ``` r
+
 data_batch4 <- sushi_rankings[500:600, ]
 rownames(data_batch4) <- 500:600
 head(data_batch4)
@@ -546,6 +594,7 @@ head(data_batch4)
 ```
 
 ``` r
+
 model4 <- update_mallows(
   model = model3, 
   new_data = setup_rank_data(
@@ -555,6 +604,7 @@ model4 <- update_mallows(
 Here is the posterior for this model.
 
 ``` r
+
 plot(model4) + ggtitle("Posterior of dispersion parameter after data batch 4")
 ```
 
@@ -566,6 +616,7 @@ We can confirm that the implementation is sensible by giving the
 complete data to `compute_mallows`:
 
 ``` r
+
 full_data <- rbind(data_batch3, data_batch4)
 mod_bmm <- compute_mallows(data = setup_rank_data(rankings = full_data))
 ```
@@ -573,6 +624,7 @@ mod_bmm <- compute_mallows(data = setup_rank_data(rankings = full_data))
 The trace plot indicates good convergence, and we set the burnin to 300.
 
 ``` r
+
 assess_convergence(mod_bmm)
 ```
 
@@ -581,12 +633,14 @@ assess_convergence(mod_bmm)
 Trace plot for MCMC run on sushi data.
 
 ``` r
+
 burnin(mod_bmm) <- 300
 ```
 
 We see that the posterior is close to the one of `model4`:
 
 ``` r
+
 plot(mod_bmm)
 ```
 
@@ -597,9 +651,9 @@ Posterior for MCMC on sushi data.
 ## References
 
 Kamishima, Toshihiro. 2003. “Nantonac Collaborative Filtering:
-Recommendation Based on Order Responses.” In *Proceedings of the Ninth
-ACM SIGKDD International Conference on Knowledge Discovery and Data
-Mining*, 583–88.
+Recommendation Based on Order Responses.” *Proceedings of the Ninth ACM
+SIGKDD International Conference on Knowledge Discovery and Data Mining*,
+583–88.
 
 Stein, Anja. 2023. “Sequential Inference with the Mallows Model.” PhD
 thesis, Lancaster University.

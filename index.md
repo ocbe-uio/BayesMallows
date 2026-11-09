@@ -14,12 +14,14 @@ preference data based on the Bayesian Mallows model.
 To install the current release, use
 
 ``` r
+
 install.packages("BayesMallows")
 ```
 
 To install the current development version, use
 
 ``` r
+
 # install.packages("remotes")
 remotes::install_github("ocbe-uio/BayesMallows")
 ```
@@ -29,6 +31,7 @@ remotes::install_github("ocbe-uio/BayesMallows")
 To get started, load the package with
 
 ``` r
+
 library(BayesMallows)
 set.seed(123)
 ```
@@ -45,6 +48,7 @@ Metropolis-Hastings algorithm first described in Vitelli et al.
 ([2018](#ref-vitelli2018)), we do
 
 ``` r
+
 potato_data <- setup_rank_data(potato_visual)
 fit <- compute_mallows(data = potato_data)
 ```
@@ -55,6 +59,7 @@ below is for the scale parameter, which measures the variation between
 the individual rankings.
 
 ``` r
+
 assess_convergence(fit)
 ```
 
@@ -64,6 +69,7 @@ Setting the burnin to 500, we obtain a plot of the posterior
 distribution of the scale parameter with:
 
 ``` r
+
 burnin(fit) <- 500
 plot(fit)
 ```
@@ -78,6 +84,11 @@ vignette](https://ocbe-uio.github.io/BayesMallows/articles/parallel_chains.html)
 
 ### Sequential Monte Carlo Algorithm
 
+**Note:** For a more efficient and reliable Sequential Monte Carlo
+implementation, see the
+[BayesMallowsSMC2](https://github.com/osorensen/BayesMallowsSMC2)
+package, which is now available on CRAN.
+
 The package also supports updating a Bayesian Mallows model using
 sequential Monte Carlo, with the algorithm described in Stein
 ([2023](#ref-steinSequentialInferenceMallows2023)). For example, in
@@ -85,6 +96,7 @@ order to update the model fitted above with the potato ranks based on
 comparing their relative weights by hand, we do
 
 ``` r
+
 new_data <- setup_rank_data(rankings = potato_weighing)
 updated_fit <- update_mallows(model = fit, new_data = new_data)
 ```
@@ -93,6 +105,7 @@ We can go on to plot the posterior distribution of the scale parameter
 for this updated model.
 
 ``` r
+
 plot(updated_fit)
 ```
 
@@ -173,6 +186,7 @@ et al. ([2020](#ref-sorensen2020)), in addition to the relevant
 methodological papers.
 
 ``` r
+
 citation("BayesMallows")
 #> To cite package 'BayesMallows' in publications use:
 #> 

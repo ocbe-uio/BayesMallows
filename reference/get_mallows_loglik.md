@@ -95,7 +95,7 @@ get_mallows_loglik(
   rankings = mydata,
   log = FALSE
   )
-#> [1] 1.724993e-68
+#> [1] 5.786706e-72
 
 get_mallows_loglik(
   rho = rbind(1:n_items, 1:n_items),
@@ -105,7 +105,7 @@ get_mallows_loglik(
   rankings = mydata,
   log = TRUE
   )
-#> [1] -156.0306
+#> [1] -164.0306
 
 # or equivalently, by using the frequency distribution
 freq_distr <- compute_observation_frequency(mydata)
@@ -118,7 +118,7 @@ get_mallows_loglik(
   observation_frequency = freq_distr[, n_items + 1],
   log = FALSE
   )
-#> [1] 1.458226e-47
+#> [1] 8.566562e-51
 
 get_mallows_loglik(
   rho = rbind(1:n_items, 1:n_items),
@@ -129,5 +129,5 @@ get_mallows_loglik(
   observation_frequency = freq_distr[, n_items + 1],
   log = TRUE
   )
-#> [1] -107.8443
+#> [1] -115.284
 ```

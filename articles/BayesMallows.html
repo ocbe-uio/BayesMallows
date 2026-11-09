@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Introduction • BayesMallows</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction">
 </head>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">BayesMallows</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.7</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,7 @@
       <h1>Introduction</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/ocbe-uio/BayesMallows/blob/v2.2.7/vignettes/BayesMallows.Rmd" class="external-link"><code>vignettes/BayesMallows.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ocbe-uio/BayesMallows/blob/v2.3.0/vignettes/BayesMallows.Rmd" class="external-link"><code>vignettes/BayesMallows.Rmd</code></a></small>
       <div class="d-none name"><code>BayesMallows.Rmd</code></div>
     </div>
 
@@ -521,7 +521,7 @@ with the command</p>
 convergence quite quickly. We can also make sure that the posterior
 distributions of the cluster probabilities
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mi>c</mi></msub><annotation encoding="application/x-tex">\tau_{c}</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><mi>c</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>C</mi><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(c = 1, \dots, C)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>c</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>C</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(c = 1, \dots, C)</annotation></semantics></math>
 have converged properly, by setting
 <code>parameter = "cluster_probs"</code>.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
@@ -654,19 +654,18 @@ to each cluster:</p>
 is a potential problem that needs to be handled.
 <code>BayesMallows</code> ignores label switching issues inside the
 MCMC, because it has been shown that this approach is better for
-ensuring full convergence of the chain <span class="citation">(<a href="#ref-jasra2005">Jasra, Holmes, and Stephens 2005</a>; <a href="#ref-celeux2000">Celeux, Hurn, and Robert 2000</a>)</span>. MCMC
-iterations can be re-ordered after convergence is achieved, for example
-by using the implementation of Stephens’ algorithm <span class="citation">(<a href="#ref-Stephens2000">Stephens 2000</a>)</span>
-provided by the R package <code>label.switching</code> <span class="citation">(<a href="#ref-papastamoulis2016">Papastamoulis
-2016</a>)</span>. A full example of how to assess label switching is
-provided in the examples for the <code>compute_mallows</code>
-function.</p>
+ensuring full convergence of the chain <span class="citation">(<a href="#ref-jasra2005">Jasra et al. 2005</a>; <a href="#ref-celeux2000">Celeux et al. 2000</a>)</span>. MCMC iterations
+can be re-ordered after convergence is achieved, for example by using
+the implementation of Stephens’ algorithm <span class="citation">(<a href="#ref-Stephens2000">Stephens 2000</a>)</span> provided by the R
+package <code>label.switching</code> <span class="citation">(<a href="#ref-papastamoulis2016">Papastamoulis 2016</a>)</span>. A full
+example of how to assess label switching is provided in the examples for
+the <code>compute_mallows</code> function.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-celeux2000" class="csl-entry">
 Celeux, G., M. Hurn, and C. Robert. 2000. <span>“Computational and
 Inferential Difficulties with Mixture Posterior Distribution.”</span>
@@ -681,9 +680,9 @@ Problem in <span>B</span>ayesian Mixture Modeling.”</span>
 </div>
 <div id="ref-kamishima2003" class="csl-entry">
 Kamishima, T. 2003. <span>“Nantonac Collaborative Filtering:
-Recommendation Based on Order Responses.”</span> In <em>Proceedings of
-the Ninth ACM SIGKDD International Conference on Knowledge Discovery and
-Data Mining</em>, 583–88. New York, NY, USA: ACM.
+Recommendation Based on Order Responses.”</span> <em>Proceedings of the
+Ninth ACM SIGKDD International Conference on Knowledge Discovery and
+Data Mining</em> (New York, NY, USA), 583–88.
 </div>
 <div id="ref-liu2019" class="csl-entry">
 Liu, Q., Marta Crispino, I. Scheel, V. Vitelli, and A. Frigessi. 2019.
@@ -725,7 +724,7 @@ Model.”</span> <em>Journal of Machine Learning Research</em> 18 (1):
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

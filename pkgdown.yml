@@ -1,8 +1,8 @@
-pandoc: 3.1.11
-pkgdown: 2.2.0
+pandoc: 3.8.3
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   BayesMallows: BayesMallows.html
   parallel_chains: parallel_chains.html
   SMC-Mallows: SMC-Mallows.html
-last_built: 2026-01-20T11:21Z
+last_built: 2026-11-09T09:54Z

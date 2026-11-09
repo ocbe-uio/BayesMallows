@@ -91,24 +91,24 @@ Douc R, Cappe O (2005). “Comparison of resampling schemes for particle
 filtering.” In *ISPA 2005. Proceedings of the 4th International
 Symposium on Image and Signal Processing and Analysis, 2005.*.
 [doi:10.1109/ispa.2005.195385](https://doi.org/10.1109/ispa.2005.195385)
-, <http://dx.doi.org/10.1109/ISPA.2005.195385>.  
+. <http://dx.doi.org/10.1109/ISPA.2005.195385>.  
   
 Hol JD, Schon TB, Gustafsson F (2006). “On Resampling Algorithms for
 Particle Filters.” In *2006 IEEE Nonlinear Statistical Signal Processing
 Workshop*.
 [doi:10.1109/nsspw.2006.4378824](https://doi.org/10.1109/nsspw.2006.4378824)
-, <http://dx.doi.org/10.1109/NSSPW.2006.4378824>.  
+. <http://dx.doi.org/10.1109/NSSPW.2006.4378824>.  
   
 Kantas N, Doucet A, Singh SS, Maciejowski J, Chopin N (2015). “On
 Particle Methods for Parameter Estimation in State-Space Models.”
-*Statistical Science*, **30**(3). ISSN 0883-4237,
-[doi:10.1214/14-sts511](https://doi.org/10.1214/14-sts511) ,
+*Statistical Science*, **30**(3). ISSN 0883-4237.
+[doi:10.1214/14-sts511](https://doi.org/10.1214/14-sts511) .
 <http://dx.doi.org/10.1214/14-STS511>.  
   
 Naesseth CA, Lindsten F, Schön TB (2019). “Elements of Sequential Monte
 Carlo.” *Foundations and Trends® in Machine Learning*, **12**(3),
-187–306. ISSN 1935-8245,
-[doi:10.1561/2200000074](https://doi.org/10.1561/2200000074) ,
+187–306. ISSN 1935-8245.
+[doi:10.1561/2200000074](https://doi.org/10.1561/2200000074) .
 <http://dx.doi.org/10.1561/2200000074>.  
   
 Stein A (2023). *Sequential Inference with the Mallows Model*. Ph.D.

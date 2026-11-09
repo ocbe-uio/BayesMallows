@@ -36,11 +36,13 @@ set_priors(gamma = 1, lambda = 0.001, psi = 10, kappa = c(1, 3))
 - kappa:
 
   Hyperparameters of the truncated Beta prior used for error probability
-  \\\theta\\ in the Bernoulli error model. The prior has the form
-  \\\pi(\theta) = \theta^{\kappa\_{1}} (1 - \theta)^{\kappa\_{2}}\\.
-  Defaults to `c(1, 3)`, which means that the \\\theta\\ is a priori
-  expected to be closer to zero than to 0.5. See (Crispino et al. 2019)
-  for details.
+  \\\theta\\ in the Bernoulli error model. The prior is a Beta
+  distribution with shape parameters \\\kappa\_{1}\\ and
+  \\\kappa\_{2}\\, truncated to the interval \\\[0, 0.5)\\, i.e., its
+  density is proportional to \\\theta^{\kappa\_{1} - 1} (1 -
+  \theta)^{\kappa\_{2} - 1}\\ for \\0 \le \theta \< 0.5\\. Defaults to
+  `c(1, 3)`, which means that \\\theta\\ is a priori expected to be
+  closer to zero than to 0.5. See (Crispino et al. 2019) for details.
 
 ## Value
 
