@@ -20,10 +20,13 @@
 #'   not used.
 #'
 #' @param kappa Hyperparameters of the truncated Beta prior used for error
-#'   probability \eqn{\theta} in the Bernoulli error model. The prior has the
-#'   form \eqn{\pi(\theta) = \theta^{\kappa_{1}} (1 - \theta)^{\kappa_{2}}}.
-#'   Defaults to `c(1, 3)`, which means that the \eqn{\theta} is a priori
-#'   expected to be closer to zero than to 0.5. See
+#'   probability \eqn{\theta} in the Bernoulli error model. The prior is a
+#'   Beta distribution with shape parameters \eqn{\kappa_{1}} and
+#'   \eqn{\kappa_{2}}, truncated to the interval \eqn{[0, 0.5)}, i.e., its
+#'   density is proportional to
+#'   \eqn{\theta^{\kappa_{1} - 1} (1 - \theta)^{\kappa_{2} - 1}} for
+#'   \eqn{0 \le \theta < 0.5}. Defaults to `c(1, 3)`, which means that
+#'   \eqn{\theta} is a priori expected to be closer to zero than to 0.5. See
 #'   \insertCite{crispino2019}{BayesMallows} for details.
 #'
 #' @return An object of class `"BayesMallowsPriors"`, to be provided in the
